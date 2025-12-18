@@ -1,68 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fidelavis</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
-
-<style>
-:root { --brand:#C6A667; }
-body {
-  margin:0;
-  font-family:'Montserrat',sans-serif;
-  background:#fafafa;
-  color:var(--brand);
-  text-align:center;
-}
-header { padding:30px 20px; }
-header img { max-width:120px; }
-h1 { font-size:22px; margin-top:10px; }
-.actions {
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:16px;
-  max-width:480px;
-  margin:20px auto;
-}
-.actions a {
-  background:#fff;
-  padding:22px;
-  border-radius:16px;
-  text-decoration:none;
-  color:var(--brand);
-  box-shadow:0 6px 20px rgba(0,0,0,.08);
-  font-weight:600;
-}
-iframe {
-  width:100%;
-  min-height:520px;
-  border:none;
-  border-radius:16px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fidelavis</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
-
 <body>
+  <header class="header">
+    <img id="logo" src="/assets/logos/default.png" alt="Logo" />
+    <h1 id="resto-name">Fidelavis</h1>
+  </header>
 
-<header>
-  <img id="logo" src="">
-  <h1 id="restaurant-name">Fidelavis</h1>
-</header>
+  <main class="actions">
+    <a id="avis" class="btn">⭐ Avis Google</a>
+    <a id="offre" class="btn">🎁 Offre du jour</a>
+    <a id="call" class="btn">📞 Appeler</a>
+  </main>
 
-<section class="actions">
-  <a id="btn-avis" href="#">⭐ Avis Google</a>
-  <a href="#offre">🎁 Offre du jour</a>
-  <a id="btn-tel" href="#">📞 Appeler</a>
-  <a href="#partenaires">🤝 Partenaires</a>
-</section>
-
-<section id="offre">
-  <iframe id="ghl-form"></iframe>
-</section>
-
-<script src="/assets/js/fidelavis.js"></script>
-
+  <script src="/assets/js/fidelavis.js"></script>
 </body>
 </html>
