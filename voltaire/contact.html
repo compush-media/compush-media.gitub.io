@@ -1,1 +1,15 @@
-<h2>Contact</h2><a href='/'>Retour</a>
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Contact</title></head>
+<body>
+<h1 id="resto">Chargement…</h1>
+<h2>Contact</h2>
+<script>
+const p=location.pathname.split('/').filter(Boolean);
+const resto=p[p.length-2];
+fetch('../data/restaurants.json').then(r=>r.json()).then(d=>{
+ if(d[resto])document.getElementById('resto').innerText=d[resto].name;
+});
+</script>
+</body>
+</html>
