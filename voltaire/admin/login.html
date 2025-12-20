@@ -78,7 +78,7 @@
         const resto = window.location.hostname.split(".")[0];
         localStorage.setItem("admin_" + resto, "true");
         localStorage.setItem("role_" + resto, matched.role);
-        window.location.href = "/admin-offre-du-jour";
+        window.location.href = "/admin/index.html";
       } else {
         document.getElementById("error").innerText = "Identifiants incorrects";
       }
