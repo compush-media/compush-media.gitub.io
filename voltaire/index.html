@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accueil – Programme Fidélité</title>
+
+  <style>
+    :root {
+      --brand: #C6A667;
+      --bg: #fff8f2;
+      --text: #C6A667;
+      --icon: #C6A667;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      text-align: center;
+    }
+
+    .header {
+      margin-top: 30px;
+    }
+
+    .header img {
+      max-width: 120px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      margin-top: 10px;
+    }
+
+    .navbar {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 40px 20px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .navbar a {
+      background: #ffffff;
+      color: var(--brand);
+      border: 2px solid var(--brand);
+      border-radius: 14px;
+      padding: 25px 10px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .navbar svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 10px;
+      fill: var(--icon);
+    }
+
+    .navbar a.large {
+      grid-column: span 2;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <img id="logo" src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo" />
+    <h1 id="restoName">Restaurant</h1>
+  </div>
+
+  <div class="navbar">
+    <a id="btnOffredujour"><svg></svg>Offre du jour</a>
+    <a id="btnReservation"><svg></svg>Réservation</a>
+    <a id="btnCoupon"><svg></svg>Coupon</a>
+    <a id="btnAvis"><svg></svg>Avis</a>
+    <a id="btnContact" class="large"><svg></svg>Contact</a>
+  </div>
+
+  <script>
+    /* ===============================
+       SPA ROUTING (GitHub Pages)
+       =============================== */
+    const redirected = sessionStorage.redirect;
+    if (redirected) {
+      sessionStorage.removeItem("redirect");
+      history.replaceState(null, "", redirected);
+    }
+
+    /* ===============================
+       DÉTECTION DU RESTAURANT PAR PATH
+       =============================== */
+    function getRestoSlug() {
+      const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
+      return path.split("/")[0] || "voltaire";
+    }
+
+    const restoSlug = getRestoSlug();
+
+    /* ===============================
+       CONFIG RESTAURANTS
+       =============================== */
+    const restaurantData = {
+      voltaire: {
+        name: "Les Jardins de Voltaire",
+        brandColor: "#b6152b",
+        bgColor: "#fff8f2",
+        textColor: "#b6152b",
+        iconColor: "#b6152b"
+      },
+      resto3: {
+        name: "Resto 3",
+        brandColor: "#C6A667",
+        bgColor: "#fff8f2",
+        textColor: "#C6A667",
+        iconColor: "#C6A667"
+      }
+    };
+
+    const resto = restaurantData[restoSlug] || restaurantData.voltaire;
+
+    document.documentElement.style.setProperty('--brand', resto.brandColor);
+    document.documentElement.style.setProperty('--bg', resto.bgColor);
+    document.documentElement.style.setProperty('--text', resto.textColor);
+    document.documentElement.style.setProperty('--icon', resto.iconColor);
+
+    document.getElementById("restoName").innerText = resto.name;
+
+    /* ===============================
+       ICONES
+       =============================== */
+    const icons = {
+      btnOffredujour: `<svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`,
+      btnReservation: `<svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 10h5v5H7v-5Zm-2 9q-.825 0-1.413-.588T3 17V7q0-.825.588-1.413T5 5h1V3h2v2h8V3h2v2h1q.825 0 1.413.588T21 7v10q0 .825-.588 1.413T19 19H5Z"/></svg>`,
+      btnCoupon: `<svg viewBox="0 0 24 24"><path fill="currentColor" d="M21 5v3.5q-.625.275-1.063.713T19.225 10q0 .825.437 1.263T21 12.025V15q0 .825-.588 1.413T19 17H5Z"/></svg>`,
+      btnAvis: `<svg viewBox="0 0 24 24"><path d="M12 17.3l6.2 3.7-1.6-7 5.4-4.7-7.2-.6L12 2 9.2 8.7l-7.2.6 5.4 4.7-1.6 7z" fill="currentColor"/></svg>`,
+      btnContact: `<svg viewBox="0 0 24 24"><path d="M22 16.92V21a1 1 0 0 1-1.09 1A19.74 19.74 0 0 1 3 4.09Z" fill="currentColor"/></svg>`
+    };
+
+    /* ===============================
+       LIENS INTERNES (SPA)
+       =============================== */
+    const paths = {
+      btnOffredujour: "offre-du-jour",
+      btnReservation: "reservation",
+      btnCoupon: "coupon",
+      btnAvis: "avis",
+      btnContact: "contact"
+    };
+
+    for (const id in paths) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.href = `/${restoSlug}/${paths[id]}`;
+        el.querySelector("svg").outerHTML = icons[id];
+      }
+    }
+  </script>
+
+</body>
+</html>

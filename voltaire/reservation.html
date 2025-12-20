@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Réserver une table</title>
+
+<style>
+  :root {
+    --brand: #B48C4A;
+    --topbar-h: 56px;
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: #fafafa;
+    margin: 0;
+    text-align: center;
+    color: var(--brand);
+  }
+
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--topbar-h);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    background: transparent;
+    z-index: 9999;
+  }
+
+  .back-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(180, 140, 74, 0.15);
+    text-decoration: none;
+  }
+
+  .back-btn::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-left: 3px solid var(--brand);
+    border-bottom: 3px solid var(--brand);
+    transform: translateX(2px) rotate(45deg);
+    display: block;
+  }
+
+  h2 {
+    font-size: 26px;
+    margin-top: calc(var(--topbar-h) - 10px);
+    color: var(--brand);
+  }
+
+  .card {
+    max-width: 480px;
+    margin: 8px auto 0;
+    padding: 20px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    text-align: left;
+  }
+
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 12px 0 6px;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: 'Montserrat';
+    box-sizing: border-box;
+  }
+
+  textarea {
+    resize: none;
+    height: 90px;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    font-size: 17px;
+    border-radius: 12px;
+    margin-top: 18px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <a id="backLink" class="back-btn"></a>
+</header>
+
+<h2>📅 Réserver une table</h2>
+
+<div class="card">
+
+  <!-- 🔁 À REMPLACER PAR IFRAME GHL -->
+  <form>
+    <label>Nom</label>
+    <input type="text" placeholder="Votre nom" required>
+
+    <label>Nombre de personnes</label>
+    <input type="number" min="1" placeholder="Ex : 2" required>
+
+    <label>Date</label>
+    <input type="date" required>
+
+    <label>Heure</label>
+    <input type="time" required>
+
+    <label>Message (optionnel)</label>
+    <textarea placeholder="Informations supplémentaires…"></textarea>
+
+    <button type="submit" class="btn-submit">Envoyer</button>
+  </form>
+
+</div>
+
+<script>
+  /* ===============================
+     SPA ROUTING (GitHub Pages)
+     =============================== */
+  const redirected = sessionStorage.redirect;
+  if (redirected) {
+    sessionStorage.removeItem("redirect");
+    history.replaceState(null, "", redirected);
+  }
+
+  /* ===============================
+     DÉTECTION RESTAURANT PAR PATH
+     =============================== */
+  function getRestoSlug() {
+    const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
+    return path.split("/")[0] || "voltaire";
+  }
+
+  const restoSlug = getRestoSlug();
+
+  /* ===============================
+     LIEN RETOUR
+     =============================== */
+  document.getElementById("backLink").href = `/${restoSlug}`;
+</script>
+
+</body>
+</html>
