@@ -82,18 +82,18 @@
 
       const errorDiv = document.getElementById("error");
 
-      if (user) {
-        localStorage.setItem(`admin_${sub}`, "true");
-        localStorage.setItem(`role_${sub}`, user.role);
-        errorDiv.style.color = "green";
-        errorDiv.innerText = "Connexion réussie. Redirection...";
-        setTimeout(() => {
-          window.location.href = "/espace-admin";
-        }, 1000);
-      } else {
-        errorDiv.style.color = "red";
-        errorDiv.innerText = "Identifiants incorrects";
-      }
+    if (user) {
+  localStorage.setItem(`admin_${sub}`, "true");
+  localStorage.setItem(`role_${sub}`, user.role);
+  errorDiv.style.color = "green";
+  errorDiv.innerText = "Connexion réussie. Redirection...";
+  setTimeout(() => {
+    window.location.href = "/voltaire/admin/espace-admin.html";
+  }, 1000);
+} else {
+  errorDiv.style.color = "red";
+  errorDiv.innerText = "Identifiants incorrects";
+}
     }
   </script>
 </body>
