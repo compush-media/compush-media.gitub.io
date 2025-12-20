@@ -1,97 +1,57 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Admin – Fidelavis</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espace Admin – Fidelavis</title>
   <style>
     body {
-      margin: 0;
-      padding: 20px;
-      background: #fafafa;
       font-family: 'Montserrat', sans-serif;
+      background: #fafafa;
       color: #b6152b;
       text-align: center;
+      padding: 20px;
+      margin: 0;
     }
-
-    /* ... tous tes styles restent identiques ... */
-
-    #logoutBtn {
-      margin-top: 20px;
+    button {
+      padding: 12px 20px;
       background: #b6152b;
       color: white;
-      font-size: 15px;
-      padding: 12px;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      width: 100%;
-      max-width: 260px;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+      margin-top: 20px;
     }
-
-    /* ... autres styles inchangés ... */
   </style>
 </head>
-
 <body>
 
-<!-- ✅ Protection accès dès chargement -->
+<!-- ✅ Protection -->
 <script>
   (function () {
-    const sub = window.location.hostname.split(".")[0];
-    const site = window.location.pathname.split("/")[1]; // "voltaire"
-    const isLoggedIn = localStorage.getItem("admin_" + sub) === "true";
-    const role = localStorage.getItem("role_" + sub);
-
+    const site = window.location.pathname.split("/")[1]; // ex: "voltaire"
+    const isLoggedIn = localStorage.getItem("admin_" + site) === "true";
+    const role = localStorage.getItem("role_" + site);
     if (!isLoggedIn || !role) {
       window.location.href = `/${site}/admin/login`;
     }
   })();
 </script>
 
-<!-- le reste du HTML -->
 <h2>🛠️ Espace Admin – Fidelavis</h2>
+<p>Bienvenue dans l’espace d’administration.</p>
 
-<div class="tab-container">
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="offre">Offre du jour</button>
-    <button class="tab-btn" data-tab="coupon">Coupon</button>
-    <button class="tab-btn" data-tab="stats">Statistique</button>
-  </div>
-
-  <button id="logoutBtn">🚪 Déconnexion</button>
-
-  <!-- ... le reste de tes onglets ... -->
-</div>
-
-<!-- ... modal de confirmation ... -->
+<!-- ✅ Exemple de bouton de déconnexion -->
+<button onclick="logout()">🚪 Se déconnecter</button>
 
 <script>
-  // ✅ Redirection correcte à la déconnexion
-  const logoutBtn = document.getElementById("logoutBtn");
-  const confirmModal = document.getElementById("confirmModal");
-  const confirmYes = document.getElementById("confirmYes");
-  const confirmNo = document.getElementById("confirmNo");
-
-  logoutBtn.addEventListener("click", () => {
-    confirmModal.style.display = "flex";
-  });
-
-  confirmNo.addEventListener("click", () => {
-    confirmModal.style.display = "none";
-  });
-
-  confirmYes.addEventListener("click", () => {
-    const sub = window.location.hostname.split(".")[0];
+  function logout() {
     const site = window.location.pathname.split("/")[1];
-    localStorage.removeItem("admin_" + sub);
-    localStorage.removeItem("role_" + sub);
+    localStorage.removeItem(`admin_${site}`);
+    localStorage.removeItem(`role_${site}`);
     window.location.href = `/${site}/admin/login`;
-  });
-
-  // ✅ Onglets, miniature, PIN, etc. inchangés
-  // ... (garde tous tes scripts initiaux ici, aucun changement nécessaire) ...
+  }
 </script>
 
 </body>

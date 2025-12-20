@@ -2,64 +2,56 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Connexion Admin</title>
-
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
-      background: #f7f7f7;
-      text-align: center;
-      margin: 0;
-      padding: 0;
+      background:#f7f7f7;
+      text-align:center;
+      margin:0;
+      padding:0;
     }
-
     .login-box {
-      width: 90%;
-      max-width: 360px;
-      background: #fff;
-      margin: 110px auto;
-      padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      width:90%;
+      max-width:360px;
+      background:#fff;
+      margin:110px auto;
+      padding:25px;
+      border-radius:16px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.15);
     }
-
     input {
-      width: 90%;
-      padding: 12px;
-      margin-top: 10px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
+      width:90%;
+      padding:12px;
+      margin-top:10px;
+      font-size:16px;
+      border-radius:10px;
+      border:1px solid #ccc;
     }
-
     button {
-      width: 92%;
-      margin-top: 18px;
-      padding: 14px;
-      background: #b6152b;
-      color: #fff;
-      border-radius: 10px;
-      font-size: 17px;
-      border: none;
-      cursor: pointer;
+      width:92%;
+      margin-top:18px;
+      padding:14px;
+      background:#b6152b;
+      color:white;
+      border-radius:10px;
+      font-size:17px;
+      border:none;
+      cursor:pointer;
     }
-
     .err {
-      margin-top: 12px;
-      font-size: 14px;
+      margin-top:12px;
+      font-size:14px;
     }
   </style>
 </head>
-
 <body>
 
   <div class="login-box">
     <h2 style="color:#b6152b;">🔐 Connexion Admin</h2>
-
     <input id="user" placeholder="Identifiant" autocomplete="off">
     <input id="pass" placeholder="Mot de passe" type="password">
-
     <button onclick="login()">Se connecter</button>
     <div id="error" class="err"></div>
   </div>
@@ -70,32 +62,26 @@
       employe: { user: "employe", pass: "azerty123",    role: "employe" }
     };
 
-    function getSite() {
-      return window.location.pathname.split("/")[1]; // "voltaire"
-    }
-
     function login() {
       const u = document.getElementById("user").value.trim();
       const p = document.getElementById("pass").value.trim();
-      const site = getSite();
       const error = document.getElementById("error");
 
-      let matched = null;
+      const site = window.location.pathname.split("/")[1]; // ex: "voltaire"
+      let user = null;
 
-      for (const k in USERS) {
-        if (USERS[k].user === u && USERS[k].pass === p) {
-          matched = USERS[k];
+      for (const key in USERS) {
+        if (USERS[key].user === u && USERS[key].pass === p) {
+          user = USERS[key];
           break;
         }
       }
 
-      if (matched) {
+      if (user) {
         localStorage.setItem(`admin_${site}`, "true");
-        localStorage.setItem(`role_${site}`, matched.role);
-
+        localStorage.setItem(`role_${site}`, user.role);
         error.style.color = "green";
-        error.innerText = "Connexion réussie. Redirection…";
-
+        error.innerText = "Connexion réussie. Redirection...";
         setTimeout(() => {
           window.location.href = `/${site}/admin/espace-admin.html`;
         }, 800);
