@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Espace Admin – Fidelavis</title>
+
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
@@ -13,6 +14,7 @@
       padding: 20px;
       margin: 0;
     }
+
     button {
       padding: 12px 20px;
       background: #b6152b;
@@ -27,12 +29,13 @@
 </head>
 <body>
 
-<!-- ✅ Protection -->
+<!-- 🔐 Protection accès -->
 <script>
   (function () {
     const site = window.location.pathname.split("/")[1]; // ex: "voltaire"
     const isLoggedIn = localStorage.getItem("admin_" + site) === "true";
     const role = localStorage.getItem("role_" + site);
+
     if (!isLoggedIn || !role) {
       window.location.href = `/${site}/admin/login`;
     }
@@ -42,15 +45,19 @@
 <h2>🛠️ Espace Admin – Fidelavis</h2>
 <p>Bienvenue dans l’espace d’administration.</p>
 
-<!-- ✅ Exemple de bouton de déconnexion -->
 <button onclick="logout()">🚪 Se déconnecter</button>
 
+<!-- 🔁 Déconnexion + message -->
 <script>
   function logout() {
-    const site = window.location.pathname.split("/")[1];
+    const site = window.location.pathname.split("/")[1]; // "voltaire"
+
     localStorage.removeItem(`admin_${site}`);
     localStorage.removeItem(`role_${site}`);
-    window.location.href = `/${site}/admin/login`;
+
+    sessionStorage.setItem("logoutMessage", "✅ Vous avez été déconnecté avec succès.");
+
+    window.location.href = `/${site}/`; // retour index
   }
 </script>
 
