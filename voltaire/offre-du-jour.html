@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Offre du jour</title>
   <style>
     body {
@@ -12,9 +13,42 @@
       text-align: center;
       color: #B48C4A;
     }
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      background: transparent;
+      z-index: 9999;
+    }
+    .back-btn {
+      display: inline-grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(180, 140, 74, 0.15);
+      text-decoration: none;
+    }
+    .back-btn::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-left: 3px solid #B48C4A;
+      border-bottom: 3px solid #B48C4A;
+      transform: translateX(2px) rotate(45deg);
+      display: block;
+    }
+    h2 {
+      font-size: 26px;
+      padding-top: 60px;
+      margin: 0;
+    }
     .card {
       max-width: 480px;
-      margin: 80px auto;
+      margin: 8px auto 0;
       padding: 18px;
       background: #fff;
       border-radius: 14px;
@@ -24,8 +58,6 @@
       width: 100%;
       max-width: 420px;
       border-radius: 12px;
-      display: block;
-      margin: auto;
     }
     .empty {
       margin-top: 12px;
@@ -35,22 +67,34 @@
   </style>
 </head>
 <body>
+  <header class="topbar">
+    <a id="backLink" class="back-btn"></a>
+  </header>
+  <h2>📸 Offre du jour</h2>
+  <div id="contenu" class="card"></div>
+  <script>
+    const redirected = sessionStorage.redirect;
+    if (redirected) {
+      sessionStorage.removeItem("redirect");
+      history.replaceState(null, "", redirected);
+    }
 
-<h2>📸 Offre du jour</h2>
+    function getRestoSlug() {
+      const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
+      return path.split("/")[0] || "voltaire";
+    }
 
-<div id="contenu" class="card"></div>
+    const restoSlug = getRestoSlug();
+    document.getElementById("backLink").href = `/${restoSlug}`;
 
-<script>
-  const site = location.pathname.split("/")[1];
-  const img = localStorage.getItem(`offre_image_${site}`);
-  const box = document.getElementById("contenu");
+    const img = localStorage.getItem("offre_image_" + restoSlug);
+    const box = document.getElementById("contenu");
 
-  if (!img || img.length < 20) {
-    box.innerHTML = `<p class="empty">Aucune offre disponible.</p>`;
-  } else {
-    box.innerHTML = `<img src="${img}" alt="Offre du jour">`;
-  }
-</script>
-
+    if (!img || img === "null" || img.length < 5) {
+      box.innerHTML = `<p class="empty">Aucune offre disponible.</p>`;
+    } else {
+      box.innerHTML = `<img src="${img}" alt="Offre du jour">`;
+    }
+  </script>
 </body>
 </html>
