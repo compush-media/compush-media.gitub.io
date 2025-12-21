@@ -83,47 +83,32 @@
       max-width: 260px;
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     }
-    .miniature-container {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
+    .preview {
+      margin-top: 16px;
     }
-    .miniature-img {
-      width: 100%;
-      max-width: 220px;
-      height: auto;
+    .preview img {
+      max-width: 100%;
       border-radius: 12px;
       box-shadow: 0 3px 12px rgba(0,0,0,0.2);
-      cursor: pointer;
     }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.8);
-    }
-    .modal-content {
-      display: block;
-      max-width: 90%;
-      max-height: 90%;
-      margin: auto;
-      margin-top: 5%;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-    }
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 30px;
+    .btn {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #b6152b;
       color: white;
-      font-size: 40px;
-      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
       cursor: pointer;
+    }
+    .btn-delete {
+      margin-top: 16px;
+      background: #aaa;
+    }
+    .msg {
+      margin-top: 16px;
+      font-size: 15px;
+      color: green;
     }
   </style>
 </head>
@@ -141,11 +126,12 @@
   <button id="logoutBtn">🚪 Déconnexion</button>
 
   <div id="offre" class="tab-content active">
-    <h3>📸 Photo actuelle</h3>
-    <div class="miniature-container">
-      <img id="miniature" class="miniature-img" style="display:none;" alt="Image miniature" />
-    </div>
-    <iframe src="https://api.leadconnectorhq.com/widget/form/P786TmmvrYo9W1eqoh9q"></iframe>
+    <h3>📸 Offre du jour</h3>
+    <input type="file" id="imageInput" accept="image/*" />
+    <div class="preview" id="previewBox"></div>
+    <button class="btn" onclick="upload()">📤 Enregistrer l'image</button>
+    <button class="btn btn-delete" onclick="supprimer()">🗑️ Supprimer l'offre</button>
+    <div class="msg" id="message"></div>
   </div>
 
   <div id="coupon" class="tab-content">
@@ -164,12 +150,9 @@
   </div>
 </div>
 
-<div id="imageModal" class="modal">
-  <span class="close" id="closeModal">&times;</span>
-  <img class="modal-content" id="modalImg" alt="Image agrandie">
-</div>
-
 <script>
+  const resto = window.location.hostname.split('.')[0];
+
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", function () {
       document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -179,44 +162,32 @@
     });
   });
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const site = location.pathname.split("/")[1];
-    const storageKey = "offre_image_" + site;
-    const imageURL = localStorage.getItem(storageKey);
-    const img = document.getElementById("miniature");
-
-    if (imageURL && imageURL.length > 5) {
-      img.src = imageURL + "?v=" + Date.now();
-      img.style.display = "block";
+  function upload() {
+    const file = document.getElementById("imageInput").files[0];
+    if (!file) {
+      document.getElementById("message").innerText = "Veuillez sélectionner une image.";
+      return;
     }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      localStorage.setItem("offre_image_" + resto, e.target.result);
+      document.getElementById("previewBox").innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+      document.getElementById("message").innerText = "Image enregistrée avec succès.";
+    };
+    reader.readAsDataURL(file);
+  }
 
-    const modal = document.getElementById("imageModal");
-    const modalImg = document.getElementById("modalImg");
-    const closeBtn = document.getElementById("closeModal");
+  function supprimer() {
+    localStorage.removeItem("offre_image_" + resto);
+    document.getElementById("previewBox").innerHTML = "";
+    document.getElementById("message").innerText = "Offre supprimée.";
+  }
 
-    img.addEventListener("click", function () {
-      if (this.style.display !== "none" && this.src) {
-        modalImg.src = this.src;
-        modal.style.display = "block";
-      }
-    });
+  const current = localStorage.getItem("offre_image_" + resto);
+  if (current) {
+    document.getElementById("previewBox").innerHTML = `<img src="${current}" alt="Aperçu actuel">`;
+  }
 
-    closeBtn.addEventListener("click", () => modal.style.display = "none");
-
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) modal.style.display = "none";
-    });
-
-    const logoutBtn = document.getElementById("logoutBtn");
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("admin_" + site);
-      localStorage.removeItem("role_" + site);
-      sessionStorage.setItem("logoutMessage", "✅ Vous avez été déconnecté avec succès.");
-      window.location.href = `/${site}/`;
-    });
-  });
-
-  const SECRET_KEY = "OFFLINE123";
   function simpleHash(str) {
     let h = 0;
     for (let i = 0; i < str.length; i++) {
@@ -227,7 +198,7 @@
 
   function genererPinAdmin() {
     const minute = Math.floor(Date.now() / 60000);
-    const raw = SECRET_KEY + minute;
+    const raw = "OFFLINE123" + minute;
     const hash = simpleHash(raw);
     return (hash % 10000).toString().padStart(4, "0");
   }
@@ -241,7 +212,12 @@
 
   updatePinAdmin();
   setInterval(updatePinAdmin, 1000);
-</script>
 
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("admin_" + resto);
+    localStorage.removeItem("role_" + resto);
+    window.location.href = "/admin-login";
+  });
+</script>
 </body>
 </html>
