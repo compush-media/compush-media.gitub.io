@@ -1,38 +1,35 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Espace Admin – Fidelavis</title>
-
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
       background: #fafafa;
-      color: #b6152b;
       text-align: center;
       padding: 20px;
-      margin: 0;
+      color: #b6152b;
     }
-
     button {
       padding: 12px 20px;
       background: #b6152b;
       color: white;
       border: none;
       border-radius: 10px;
-      cursor: pointer;
       font-size: 16px;
+      cursor: pointer;
       margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-<!-- 🔐 Protection accès -->
+<!-- 🔐 Protection -->
 <script>
   (function () {
-    const site = window.location.pathname.split("/")[1]; // ex: "voltaire"
+    const site = location.pathname.match(/^\/([^\/]+)/)?.[1] || "";
     const isLoggedIn = localStorage.getItem("admin_" + site) === "true";
     const role = localStorage.getItem("role_" + site);
 
@@ -44,20 +41,16 @@
 
 <h2>🛠️ Espace Admin – Fidelavis</h2>
 <p>Bienvenue dans l’espace d’administration.</p>
-
 <button onclick="logout()">🚪 Se déconnecter</button>
 
 <!-- 🔁 Déconnexion + message -->
 <script>
   function logout() {
-    const site = window.location.pathname.split("/")[1]; // "voltaire"
-
-    localStorage.removeItem(`admin_${site}`);
-    localStorage.removeItem(`role_${site}`);
-
+    const site = location.pathname.match(/^\/([^\/]+)/)?.[1] || "";
+    localStorage.removeItem("admin_" + site);
+    localStorage.removeItem("role_" + site);
     sessionStorage.setItem("logoutMessage", "✅ Vous avez été déconnecté avec succès.");
-
-    window.location.href = `/${site}/`; // retour index
+    window.location.href = `/${site}/`;
   }
 </script>
 
