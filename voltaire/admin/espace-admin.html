@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -128,21 +129,6 @@
 </head>
 <body>
 
-<script>
-  (function () {
-    const site = location.pathname.split("/")[1];
-    const isLoggedIn = localStorage.getItem("admin_" + site) === "true";
-    const role = localStorage.getItem("role_" + site);
-    if (!isLoggedIn || !role) {
-      window.location.href = `/${site}/admin/login`;
-    }
-  })();
-</script>
-
-<span id="offreImageValue" style="display:none;">
-  {{custom_values.image_offre_resto_resto3}}
-</span>
-
 <h2>🛠️ Espace Admin – Fidelavis</h2>
 
 <div class="tab-container">
@@ -193,14 +179,42 @@
     });
   });
 
-  (function () {
-    const url = document.getElementById("offreImageValue").textContent.trim();
+  document.addEventListener("DOMContentLoaded", () => {
+    const site = location.pathname.split("/")[1];
+    const storageKey = "offre_image_" + site;
+    const imageURL = localStorage.getItem(storageKey);
     const img = document.getElementById("miniature");
-    if (url && url.length > 4) {
-      img.src = url + "?v=" + Date.now();
+
+    if (imageURL && imageURL.length > 5) {
+      img.src = imageURL + "?v=" + Date.now();
       img.style.display = "block";
     }
-  })();
+
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("modalImg");
+    const closeBtn = document.getElementById("closeModal");
+
+    img.addEventListener("click", function () {
+      if (this.style.display !== "none" && this.src) {
+        modalImg.src = this.src;
+        modal.style.display = "block";
+      }
+    });
+
+    closeBtn.addEventListener("click", () => modal.style.display = "none");
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.style.display = "none";
+    });
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("admin_" + site);
+      localStorage.removeItem("role_" + site);
+      sessionStorage.setItem("logoutMessage", "✅ Vous avez été déconnecté avec succès.");
+      window.location.href = `/${site}/`;
+    });
+  });
 
   const SECRET_KEY = "OFFLINE123";
   function simpleHash(str) {
@@ -227,40 +241,6 @@
 
   updatePinAdmin();
   setInterval(updatePinAdmin, 1000);
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const imgMiniature = document.getElementById("miniature");
-    const modal = document.getElementById("imageModal");
-    const modalImg = document.getElementById("modalImg");
-    const closeBtn = document.getElementById("closeModal");
-
-    imgMiniature.addEventListener("click", function () {
-      if (this.style.display !== "none" && this.src) {
-        modalImg.src = this.src;
-        modal.style.display = "block";
-      }
-    });
-
-    closeBtn.addEventListener("click", function () {
-      modal.style.display = "none";
-    });
-
-    modal.addEventListener("click", function (e) {
-      if (e.target === modal) {
-        modal.style.display = "none";
-      }
-    });
-  });
-
-  // Déconnexion
-  const logoutBtn = document.getElementById("logoutBtn");
-  logoutBtn.addEventListener("click", () => {
-    const site = location.pathname.split("/")[1];
-    localStorage.removeItem("admin_" + site);
-    localStorage.removeItem("role_" + site);
-    sessionStorage.setItem("logoutMessage", "✅ Vous avez été déconnecté avec succès.");
-    window.location.href = `/${site}/`;
-  });
 </script>
 
 </body>
