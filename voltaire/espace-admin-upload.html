@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Espace Admin – Fidelavis</title>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #fafafa;
+      text-align: center;
+      padding: 20px;
+      color: #b6152b;
+    }
+    button {
+      padding: 12px 20px;
+      background: #b6152b;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    img {
+      max-width: 220px;
+      margin: 10px auto;
+      display: block;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  (function () {
+    const site = location.pathname.split("/")[1];
+    const isLoggedIn = localStorage.getItem("admin_" + site) === "true";
+    const role = localStorage.getItem("role_" + site);
+    if (!isLoggedIn || !role) {
+      window.location.href = `/${site}/admin/login`;
+    }
+  })();
+</script>
+
+<h2>🛠️ Espace Admin – Fidelavis</h2>
+
+<h3>🖼️ Charger une nouvelle offre du jour</h3>
+<input type="file" id="uploadImage" accept="image/*"><br><br>
+<img id="preview" style="display:none;">
+<button onclick="saveImage()">💾 Enregistrer</button>
+<br>
+<button onclick="logout()">🚪 Se déconnecter</button>
+
+<script>
+  const preview = document.getElementById("preview");
+  const upload = document.getElementById("uploadImage");
+
+  upload.addEventListener("change", () => {
+    const file = upload.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function saveImage() {
+    const site = location.pathname.split("/")[1];
+    const dataUrl = preview.src;
+    if (dataUrl && dataUrl.startsWith("data:image")) {
+      localStorage.setItem(`offre_image_${site}`, dataUrl);
+      alert("✅ Image enregistrée !");
+    } else {
+      alert("⚠️ Aucune image valide.");
+    }
+  }
+
+  function logout() {
+    const site = location.pathname.split("/")[1];
+    localStorage.removeItem("admin_" + site);
+    localStorage.removeItem("role_" + site);
+    sessionStorage.setItem("logoutMessage", "✅ Vous avez été déconnecté avec succès.");
+    window.location.href = `/${site}/`;
+  }
+</script>
+
+</body>
+</html>

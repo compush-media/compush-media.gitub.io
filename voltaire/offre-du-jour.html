@@ -1,76 +1,32 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Offre du jour</title>
-
   <style>
-    :root {
-      --brand: #B48C4A;
-      --topbar-h: 56px;
-    }
-
     body {
       font-family: 'Montserrat', sans-serif;
       background: #fafafa;
       margin: 0;
       text-align: center;
-      color: var(--brand);
+      color: #B48C4A;
     }
-
-    .topbar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: var(--topbar-h);
-      display: flex;
-      align-items: center;
-      padding: 0 16px;
-      background: transparent;
-      z-index: 9999;
-    }
-
-    .back-btn {
-      display: inline-grid;
-      place-items: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(180, 140, 74, 0.15);
-      text-decoration: none;
-    }
-
-    .back-btn::before {
-      content: "";
-      width: 12px;
-      height: 12px;
-      border-left: 3px solid var(--brand);
-      border-bottom: 3px solid var(--brand);
-      transform: translateX(2px) rotate(45deg);
-      display: block;
-    }
-
-    h2 {
-      font-size: 26px;
-      padding-top: calc(var(--topbar-h) + 4px);
-      margin: 0;
-    }
-
     .card {
       max-width: 480px;
-      margin: 8px auto 0;
+      margin: 80px auto;
       padding: 18px;
       background: #fff;
       border-radius: 14px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
-
     img {
       width: 100%;
       max-width: 420px;
       border-radius: 12px;
+      display: block;
+      margin: auto;
     }
-
     .empty {
       margin-top: 12px;
       font-size: 18px;
@@ -78,52 +34,21 @@
     }
   </style>
 </head>
-
 <body>
-
-<header class="topbar">
-  <a id="backLink" class="back-btn"></a>
-</header>
 
 <h2>📸 Offre du jour</h2>
 
 <div id="contenu" class="card"></div>
 
 <script>
-  /* ===============================
-     SPA ROUTING (GitHub Pages)
-     =============================== */
-  const redirected = sessionStorage.redirect;
-  if (redirected) {
-    sessionStorage.removeItem("redirect");
-    history.replaceState(null, "", redirected);
-  }
-
-  /* ===============================
-     DÉTECTION RESTAURANT PAR PATH
-     =============================== */
-  function getRestoSlug() {
-    const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
-    return path.split("/")[0] || "voltaire";
-  }
-
-  const restoSlug = getRestoSlug();
-
-  /* ===============================
-     BOUTON RETOUR
-     =============================== */
-  document.getElementById("backLink").href = `/${restoSlug}`;
-
-  /* ===============================
-     IMAGE OFFRE (GHL)
-     =============================== */
-  const img = "{{custom_values.image_offre_resto_resto3}}".trim();
+  const site = location.pathname.split("/")[1];
+  const img = localStorage.getItem(`offre_image_${site}`);
   const box = document.getElementById("contenu");
 
-  if (!img || img === "null" || img.length < 5) {
+  if (!img || img.length < 20) {
     box.innerHTML = `<p class="empty">Aucune offre disponible.</p>`;
   } else {
-    box.innerHTML = `<img src="${img}?v=${Date.now()}" alt="Offre du jour">`;
+    box.innerHTML = `<img src="${img}" alt="Offre du jour">`;
   }
 </script>
 
