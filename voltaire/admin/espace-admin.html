@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -151,7 +150,8 @@
 </div>
 
 <script>
-  const resto = window.location.hostname.split('.')[0];
+  const site = location.pathname.split("/")[1];
+  const storageKey = "offre_image_" + site;
 
   document.querySelectorAll(".tab-btn").forEach(btn => {
     btn.addEventListener("click", function () {
@@ -170,7 +170,7 @@
     }
     const reader = new FileReader();
     reader.onload = function (e) {
-      localStorage.setItem("offre_image_" + resto, e.target.result);
+      localStorage.setItem(storageKey, e.target.result);
       document.getElementById("previewBox").innerHTML = `<img src="${e.target.result}" alt="Preview">`;
       document.getElementById("message").innerText = "Image enregistrée avec succès.";
     };
@@ -178,12 +178,12 @@
   }
 
   function supprimer() {
-    localStorage.removeItem("offre_image_" + resto);
+    localStorage.removeItem(storageKey);
     document.getElementById("previewBox").innerHTML = "";
     document.getElementById("message").innerText = "Offre supprimée.";
   }
 
-  const current = localStorage.getItem("offre_image_" + resto);
+  const current = localStorage.getItem(storageKey);
   if (current) {
     document.getElementById("previewBox").innerHTML = `<img src="${current}" alt="Aperçu actuel">`;
   }
@@ -214,8 +214,8 @@
   setInterval(updatePinAdmin, 1000);
 
   document.getElementById("logoutBtn").addEventListener("click", () => {
-    localStorage.removeItem("admin_" + resto);
-    localStorage.removeItem("role_" + resto);
+    localStorage.removeItem("admin_" + site);
+    localStorage.removeItem("role_" + site);
     window.location.href = "/admin-login";
   });
 </script>
