@@ -3,55 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Offre du jour</title>
+  <title>Offre du jour – Aperçu</title>
+
   <style>
+    :root {
+      --brand: #C6A667;
+      --bg: #fff8f2;
+    }
+
     body {
-      font-family: 'Montserrat', sans-serif;
-      background: #fafafa;
       margin: 0;
-      text-align: center;
-      color: #B48C4A;a
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
-    .card {
-      max-width: 480px;
-      margin: 80px auto;
-      padding: 18px;
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    img {
+
+    .frame-container {
       width: 100%;
       max-width: 420px;
-      border-radius: 12px;
-      display: block;
-      margin: auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+      overflow: hidden;
     }
-    .empty {
-      margin-top: 12px;
-      font-size: 18px;
-      color: #444;
+
+    .frame-header {
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--brand);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    iframe {
+      width: 100%;
+      height: 520px;
+      border: none;
+    }
+
+    @media (max-width: 480px) {
+      iframe {
+        height: 90vh;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<h2>📸 Offre du jour</h2>
+  <div class="frame-container">
+    <div class="frame-header">📸 Offre du jour</div>
 
-<div id="contenu" class="card"></div>
-
-<script>
-  const site = location.pathname.split("/")[1];
-  const storageKey = "offre_image_" + site;
-  const img = localStorage.getItem(storageKey);
-  const box = document.getElementById("contenu");
-
-  if (!img || img.length < 20) {
-    box.innerHTML = `<p class="empty">Aucune offre disponible.</p>`;
-  } else {
-    box.innerHTML = `<img src="${img}" alt="Offre du jour">`;
-  }
-</script>
+    <iframe
+      src="https://resto3.fidelavis.com/offre-du-jour"
+      title="Offre du jour – Fidelavis"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
 
 </body>
 </html>
