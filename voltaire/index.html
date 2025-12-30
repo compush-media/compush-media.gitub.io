@@ -83,7 +83,19 @@
       }
     }
   </style>
-  
+  <script>
+    // Vérifie si le token est présent dans l'URL
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get('email');
+
+    if (!email) {
+      // Redirige vers la page d'inscription GHL
+      window.location.href = 'https://app.cartefidelavis.com/voltaire/inscription.html';
+    } else {
+      // Optionnel : tu peux stocker le mail dans localStorage
+      localStorage.setItem('user_email', email);
+    }
+  </script>
  
 </head>
 <body>
