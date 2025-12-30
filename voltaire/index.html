@@ -83,39 +83,6 @@
       }
     }
   </style>
- <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      // 🔧 Domaine dynamique
-      const baseURL = window.location.origin; // ex: https://voltaire.fidelavis.com
-
-      // 🔒 Protection inscription
-      const inscrit = localStorage.getItem("fidelite_inscrit") === "true";
-      if (!inscrit) {
-        window.location.href = `${baseURL}/inscription.html`;
-        return;
-      }
-
-      // 🔁 Liens dynamiques
-      document.getElementById("linkMenu").href        = `${baseURL}/platj-page`;
-      document.getElementById("linkReservation").href = `${baseURL}/reservation-page`;
-      document.getElementById("linkCoupon").href      = `${baseURL}/coupon?fn={{contact.first_name}}&ln={{contact.last_name}}&email={{contact.email}}&commerce=Fidelavis`;
-      document.getElementById("linkAvis").href        = `${baseURL}/avisgoogleclient-page`;
-      document.getElementById("linkContact").href     = `${baseURL}/contact-page`;
-
-      // 🔔 Affichage message de bienvenue
-      document.getElementById("signupForm").style.display = "none";
-      if (!localStorage.getItem("fidelite_bienvenue")) {
-        document.getElementById("welcomeMsg").style.display = "block";
-        setTimeout(() => {
-          document.getElementById("welcomeMsg").style.display = "none";
-          document.getElementById("mainNav").style.display = "grid";
-          localStorage.setItem("fidelite_bienvenue", "true");
-        }, 2000);
-      } else {
-        document.getElementById("mainNav").style.display = "grid";
-      }
-    });
-  </script>
   
  
 </head>
