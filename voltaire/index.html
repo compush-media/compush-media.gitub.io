@@ -88,13 +88,25 @@
 <body>
 
 
-  <script src="https://embed.msgsndr.com/js/form_embed.js"></script>
-  <script>
-    window.formEmbed.init({
-      formId: "bwgyLTT6QnFBeH6fL5uT,
-      container: "#formulaire-ghl"
-    });
-  </script>
+ <script>
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const emailParam = params.get('email');
+
+    // Si l'email est présent dans l'URL, on le stocke dans localStorage
+    if (emailParam) {
+      localStorage.setItem('user_email', emailParam);
+    }
+
+    const userEmail = localStorage.getItem('user_email');
+
+    // Si aucun email stocké, rediriger vers le formulaire GHL
+    if (!userEmail) {
+      window.location.href = 'https://formulaire.ghl.com/widget/form/abc123xyz';
+    }
+  })();
+</script>
+
   <!-- HEADER -->
   <div class="header">
     <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo" />
