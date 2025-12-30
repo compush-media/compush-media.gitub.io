@@ -88,22 +88,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Page privée</title>
-  <script>
-    (function() {
-      const params = new URLSearchParams(window.location.search);
-      const emailParam = params.get('email');
-
-      if (emailParam) {
-        localStorage.setItem('user_email', emailParam);
-      }
-
-      const userEmail = localStorage.getItem('user_email');
-
-      if (!userEmail) {
-        window.location.href = 'https://api.leadconnectorhq.com/widget/form/bwgyLTT6QnFBeH6fL5uT';
-      }
-    })();
-  </script>
+ 
 </head>
 <body>
   <h1>Bienvenue sur la page protégée</h1>
