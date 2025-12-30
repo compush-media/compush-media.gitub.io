@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription Fidelavis</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: #fff;
+      color: #b6152b;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 0 auto;
+      padding-top: -30px; /* espace contrôlé en haut */
+    }
+
+    .logo {
+      width: 120px;
+      margin: 0 auto 15px;
+      display: block;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 25px;
+      color: #b6152b;
+      line-height: 1.4;
+    }
+
+    iframe {
+      width: 100%;
+      height: 520px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="" alt="Logo" class="logo">
+    <h2>Devenez membre et profitez<br>de vos avantages 🎉</h2>
+
+    <!-- Formulaire GHL -->
+    <iframe
+      src="https://api.leadconnectorhq.com/widget/form/bwgyLTT6QnFBeH6fL5uT"
+      title="Formulaire d'inscription"
+    ></iframe>
+  </div>
+
+</body>
+</html>
