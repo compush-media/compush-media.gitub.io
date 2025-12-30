@@ -83,24 +83,34 @@
       }
     }
   </style>
+ <!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Page privée</title>
   <script>
-  (function() {
-    const params = new URLSearchParams(window.location.search);
-    const emailParam = params.get('email');
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const emailParam = params.get('email');
 
-    // Si l'email est présent dans l'URL, on le stocke dans localStorage
-    if (emailParam) {
-      localStorage.setItem('user_email', emailParam);
-    }
+      if (emailParam) {
+        localStorage.setItem('user_email', emailParam);
+      }
 
-    const userEmail = localStorage.getItem('user_email');
+      const userEmail = localStorage.getItem('user_email');
 
-    // Si aucun email stocké, rediriger vers le formulaire GHL
-    if (!userEmail) {
-      window.location.href = 'https://formulaire.ghl.com/widget/form/abc123xyz';
-    }
-  })();
-</script>
+      if (!userEmail) {
+        window.location.href = 'https://api.leadconnectorhq.com/widget/form/bwgyLTT6QnFBeH6fL5uT';
+      }
+    })();
+  </script>
+</head>
+<body>
+  <h1>Bienvenue sur la page protégée</h1>
+  <p>Contenu réservé aux utilisateurs inscrits.</p>
+</body>
+</html>
+
 </head>
 
 <body>
