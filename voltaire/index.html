@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Accueil – Programme Fidélité</title>
 
+  <!-- SCRIPT DE PROTECTION -->
+  <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const emailParam = params.get('email');
+
+      if (emailParam) {
+        localStorage.setItem('user_email', emailParam);
+      }
+
+      const userEmail = localStorage.getItem('user_email');
+
+      if (!userEmail) {
+        window.location.href = 'https://app.cartefidelavis.com/voltaire/inscription.html';
+      }
+    })();
+  </script>
+
   <style>
     :root {
       --brand: #C6A667;
@@ -12,7 +30,6 @@
       --text: #C6A667;
       --icon: #C6A667;
     }
-
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
@@ -20,20 +37,16 @@
       color: var(--text);
       text-align: center;
     }
-
     .header {
       margin-top: 30px;
     }
-
     .header img {
       max-width: 120px;
     }
-
     .header h1 {
       font-size: 22px;
       margin-top: 10px;
     }
-
     .navbar {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -42,7 +55,6 @@
       max-width: 500px;
       margin: 0 auto;
     }
-
     .navbar a {
       background: #ffffff;
       color: var(--brand);
@@ -57,22 +69,18 @@
       align-items: center;
       transition: background 0.2s ease;
     }
-
     .navbar a:hover {
       background: rgba(198, 166, 103, 0.05);
     }
-
     .navbar svg {
       width: 48px;
       height: 48px;
       margin-bottom: 10px;
       fill: var(--icon);
     }
-
     .navbar a.large {
       grid-column: span 2;
     }
-
     @media (max-width: 480px) {
       .navbar {
         padding: 20px;
@@ -83,23 +91,8 @@
       }
     }
   </style>
-  <script>
-    // Vérifie si le token est présent dans l'URL
-    const params = new URLSearchParams(window.location.search);
-    const email = params.get('email');
-
-    if (!email) {
-      // Redirige vers la page d'inscription GHL
-      window.location.href = 'https://app.cartefidelavis.com/voltaire/inscription.html';
-    } else {
-      // Optionnel : tu peux stocker le mail dans localStorage
-      localStorage.setItem('user_email', email);
-    }
-  </script>
- 
 </head>
 <body>
-
 
   <!-- HEADER -->
   <div class="header">
@@ -117,18 +110,12 @@
   </div>
 
   <script>
-    /* ===============================
-       FIX REDIRECT (GitHub Pages)
-       =============================== */
     const redirected = sessionStorage.redirect;
     if (redirected) {
       sessionStorage.removeItem("redirect");
       history.replaceState(null, "", redirected);
     }
 
-    /* ===============================
-       DÉTECTION RESTAURANT PAR PATH
-       =============================== */
     function getRestoSlug() {
       const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
       return path.split("/")[0] || "voltaire";
@@ -136,9 +123,6 @@
 
     const restoSlug = getRestoSlug();
 
-    /* ===============================
-       CONFIG RESTAURANTS
-       =============================== */
     const restaurantData = {
       voltaire: {
         name: "Les Jardins de Voltaire",
@@ -162,83 +146,71 @@
     document.documentElement.style.setProperty('--bg', resto.bgColor);
     document.documentElement.style.setProperty('--text', resto.textColor);
     document.documentElement.style.setProperty('--icon', resto.iconColor);
-
     document.getElementById("restoName").innerText = resto.name;
 
-    /* ===============================
-       ICONES
-       =============================== */
     const icons = {
-  btnOffredujour: `
-    <svg viewBox="0 0 24 24">
-      <path d="M3 6h18M3 12h18M3 18h18"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        fill="none"/>
-    </svg>`,
+      btnOffredujour: `
+        <svg viewBox="0 0 24 24">
+          <path d="M3 6h18M3 12h18M3 18h18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            fill="none"/>
+        </svg>`,
+      btnReservation: `
+        <svg viewBox="0 0 24 24">
+          <path fill="currentColor"
+            d="M7 10h5v5H7v-5Zm-2 9q-.825 0-1.413-.588T3 17V7
+               q0-.825.588-1.413T5 5h1V3h2v2h8V3h2v2h1
+               q.825 0 1.413.588T21 7v10
+               q0 .825-.588 1.413T19 19H5Zm0-2h14V9H5v8Z"/>
+        </svg>`,
+      btnCoupon: `
+        <svg viewBox="0 0 24 24">
+          <path fill="currentColor"
+            d="M21 5v3.5q-.625.275-1.063.713T19.225 10
+               q0 .825.437 1.263T21 12.025V15
+               q0 .825-.588 1.413T19 17H5
+               q-.825 0-1.413-.588T3 15v-3
+               q.625-.275 1.063-.713T4.775 10
+               q0-.825-.437-1.263T3 7.525V5
+               q0-.825.588-1.413T5 3h14
+               q.825 0 1.413.588T21 5Zm-14 4
+               q.825 0 1.413-.588T9 7
+               q0-.825-.588-1.413T7 5
+               q-.825 0-1.413.588T5 7
+               q0 .825.588 1.413T7 9Zm3.5 6.5
+               6-6-1-1-6 6 1 1Zm5.5 1
+               q.825 0 1.413-.588T18 14
+               q0-.825-.588-1.413T16 12
+               q-.825 0-1.413.588T14 14
+               q0 .825.588 1.413T16 16Z"/>
+        </svg>`,
+      btnAvis: `
+        <svg viewBox="0 0 24 24">
+          <path fill="currentColor"
+            d="M12 17.3l6.2 3.7-1.6-7
+               5.4-4.7-7.2-.6L12 2
+               9.2 8.7l-7.2.6
+               5.4 4.7-1.6 7z"/>
+        </svg>`,
+      btnContact: `
+        <svg viewBox="0 0 24 24">
+          <path fill="currentColor"
+            d="M22 16.92V21
+               a1 1 0 0 1-1.09 1
+               A19.74 19.74 0 0 1 3 4.09
+               1 1 0 0 1 4 3h4.09
+               a1 1 0 0 1 1 .75l1.2 5
+               a1 1 0 0 1-.29 1
+               L8.91 11.09
+               a16 16 0 0 0 6 6
+               l1.36-1.36
+               a1 1 0 0 1 1-.29l5 1.2
+               a1 1 0 0 1 .75 1z"/>
+        </svg>`
+    };
 
-  btnReservation: `
-    <svg viewBox="0 0 24 24">
-      <path fill="currentColor"
-        d="M7 10h5v5H7v-5Zm-2 9q-.825 0-1.413-.588T3 17V7
-           q0-.825.588-1.413T5 5h1V3h2v2h8V3h2v2h1
-           q.825 0 1.413.588T21 7v10
-           q0 .825-.588 1.413T19 19H5Zm0-2h14V9H5v8Z"/>
-    </svg>`,
-
-  btnCoupon: `
-    <svg viewBox="0 0 24 24">
-      <path fill="currentColor"
-        d="M21 5v3.5q-.625.275-1.063.713T19.225 10
-           q0 .825.437 1.263T21 12.025V15
-           q0 .825-.588 1.413T19 17H5
-           q-.825 0-1.413-.588T3 15v-3
-           q.625-.275 1.063-.713T4.775 10
-           q0-.825-.437-1.263T3 7.525V5
-           q0-.825.588-1.413T5 3h14
-           q.825 0 1.413.588T21 5Zm-14 4
-           q.825 0 1.413-.588T9 7
-           q0-.825-.588-1.413T7 5
-           q-.825 0-1.413.588T5 7
-           q0 .825.588 1.413T7 9Zm3.5 6.5
-           6-6-1-1-6 6 1 1Zm5.5 1
-           q.825 0 1.413-.588T18 14
-           q0-.825-.588-1.413T16 12
-           q-.825 0-1.413.588T14 14
-           q0 .825.588 1.413T16 16Z"/>
-    </svg>`,
-
-  btnAvis: `
-    <svg viewBox="0 0 24 24">
-      <path fill="currentColor"
-        d="M12 17.3l6.2 3.7-1.6-7
-           5.4-4.7-7.2-.6L12 2
-           9.2 8.7l-7.2.6
-           5.4 4.7-1.6 7z"/>
-    </svg>`,
-
-  btnContact: `
-    <svg viewBox="0 0 24 24">
-      <path fill="currentColor"
-        d="M22 16.92V21
-           a1 1 0 0 1-1.09 1
-           A19.74 19.74 0 0 1 3 4.09
-           1 1 0 0 1 4 3h4.09
-           a1 1 0 0 1 1 .75l1.2 5
-           a1 1 0 0 1-.29 1
-           L8.91 11.09
-           a16 16 0 0 0 6 6
-           l1.36-1.36
-           a1 1 0 0 1 1-.29l5 1.2
-           a1 1 0 0 1 .75 1z"/>
-    </svg>`
-};
-
-
-    /* ===============================
-       LIENS INTERNES
-       =============================== */
     const paths = {
       btnOffredujour: "offre-du-jour",
       btnReservation: "reservation",
