@@ -5,19 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Accueil – Programme Fidélité</title>
 
-  <!-- SCRIPT DE PROTECTION -->
+  <!-- PROTECTION D'ACCÈS PAR EMAIL GHL -->
   <script>
     (function() {
       const params = new URLSearchParams(window.location.search);
       const emailParam = params.get('email');
+      const localEmail = localStorage.getItem('user_email');
 
       if (emailParam) {
         localStorage.setItem('user_email', emailParam);
+
+        // Nettoyer l'URL (supprimer ?email=...)
+        const cleanUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
       }
 
-      const userEmail = localStorage.getItem('user_email');
-
-      if (!userEmail) {
+      if (!emailParam && !localEmail) {
         window.location.href = 'https://app.cartefidelavis.com/voltaire/inscription.html';
       }
     })();
@@ -30,6 +33,7 @@
       --text: #C6A667;
       --icon: #C6A667;
     }
+
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
@@ -37,16 +41,20 @@
       color: var(--text);
       text-align: center;
     }
+
     .header {
       margin-top: 30px;
     }
+
     .header img {
       max-width: 120px;
     }
+
     .header h1 {
       font-size: 22px;
       margin-top: 10px;
     }
+
     .navbar {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -55,6 +63,7 @@
       max-width: 500px;
       margin: 0 auto;
     }
+
     .navbar a {
       background: #ffffff;
       color: var(--brand);
@@ -69,22 +78,27 @@
       align-items: center;
       transition: background 0.2s ease;
     }
+
     .navbar a:hover {
       background: rgba(198, 166, 103, 0.05);
     }
+
     .navbar svg {
       width: 48px;
       height: 48px;
       margin-bottom: 10px;
       fill: var(--icon);
     }
+
     .navbar a.large {
       grid-column: span 2;
     }
+
     @media (max-width: 480px) {
       .navbar {
         padding: 20px;
       }
+
       .navbar svg {
         width: 32px;
         height: 32px;
@@ -146,6 +160,7 @@
     document.documentElement.style.setProperty('--bg', resto.bgColor);
     document.documentElement.style.setProperty('--text', resto.textColor);
     document.documentElement.style.setProperty('--icon', resto.iconColor);
+
     document.getElementById("restoName").innerText = resto.name;
 
     const icons = {
@@ -227,6 +242,5 @@
       }
     }
   </script>
-
 </body>
 </html>
