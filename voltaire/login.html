@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Connexion...</title>
+  <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email');
+
+      if (email) {
+        localStorage.setItem('user_email', email);
+
+        // ✅ Redirection ABSOLUE vers index dans /voltaire
+        window.location.href = '/voltaire/index.html';
+      } else {
+        // ❌ Pas d'email → retour formulaire
+        window.location.href = 'https://app.cartefidelavis.com/voltaire/inscription.html';
+      }
+    })();
+  </script>
+</head>
+<body>
+  <p>Connexion en cours...</p>
+</body>
+</html>
