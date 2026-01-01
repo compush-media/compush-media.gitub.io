@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Merci pour votre inscription</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #fff8f2;
+      color: #C6A667;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+    }
+  </style>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email');
+      const resto = params.get('resto');
+
+      if (email) {
+        localStorage.setItem('user_email', email);
+      }
+
+      if (resto) {
+        setTimeout(() => {
+          window.location.href = '/' + resto + '/index.html';
+        }, 3000);
+      } else {
+        document.body.innerHTML = "<h1>Erreur</h1><p>Aucune redirection possible (paramètre 'resto' manquant).</p>";
+      }
+    })();
+  </script>
+</head>
+<body>
+  <h1>Merci pour votre inscription !</h1>
+  <p>Redirection vers votre espace en cours...</p>
+</body>
+</html>
