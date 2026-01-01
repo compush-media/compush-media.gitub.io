@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact</title>
 
+  <!-- 🔐 PROTECTION ACCÈS (INSCRIPTION OBLIGATOIRE) -->
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email');
+      const localEmail = localStorage.getItem('user_email');
+
+      if (email) {
+        localStorage.setItem('user_email', email);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
+      if (!email && !localEmail) {
+        const pathParts = window.location.pathname.split('/');
+        const basePath = '/' + pathParts[1] + '/';
+        window.location.href = basePath + 'inscription.html';
+      }
+    })();
+  </script>
+
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:wght@400;700" />
 
@@ -118,7 +138,6 @@
   <h1>Contact</h1>
 
   <div class="card">
-
     <div class="line">
       <span class="material-symbols-rounded icon">store</span>
       <span><strong>Nom :</strong> <span id="nom"></span></span>
@@ -156,53 +175,23 @@
     </div>
 
     <button class="go-btn" onclick="allerAEtablissement()">Y aller</button>
-
   </div>
 </div>
 
-<!-- 🔒 Accès admin discret -->
+<!-- 🔒 ACCÈS ADMIN DISCRET -->
 <div id="admin-access-button"
-     style="
-       position: fixed;
-       bottom: 12px;
-       right: 12px;
-       width: 18px;
-       height: 18px;
-       background-color: #B48C4A;
-       border-radius: 50%;
-       opacity: 0.5;
-       z-index: 9999;
-       cursor: pointer;
-     ">
+     style="position:fixed;bottom:12px;right:12px;width:18px;height:18px;
+            background:#B48C4A;border-radius:50%;opacity:.5;z-index:9999;">
 </div>
 
 <script>
-/* ===============================
-   SPA ROUTING (GitHub Pages)
-   =============================== */
-const redirected = sessionStorage.redirect;
-if (redirected) {
-  sessionStorage.removeItem("redirect");
-  history.replaceState(null, "", redirected);
-}
-
-/* ===============================
-   RESTAURANT PAR PATH
-   =============================== */
 function getRestoSlug() {
   const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
   return path.split("/")[0] || "voltaire";
 }
 const RESTO = getRestoSlug();
-
-/* ===============================
-   RETOUR
-   =============================== */
 document.getElementById("backLink").href = `/${RESTO}`;
 
-/* ===============================
-   DONNÉES RESTAURANTS
-   =============================== */
 const restoData = {
   voltaire: {
     nom: "Le Voltaire",
@@ -217,9 +206,6 @@ const restoData = {
 
 const resto = restoData[RESTO] || restoData.voltaire;
 
-/* ===============================
-   INJECTION DONNÉES
-   =============================== */
 document.getElementById("nom").innerText = resto.nom;
 document.getElementById("tel").innerText = resto.tel;
 document.getElementById("email").innerText = resto.email;
@@ -228,44 +214,17 @@ document.getElementById("horaires").innerText = resto.horaires;
 document.getElementById("instagram").href = resto.instagram;
 document.getElementById("facebook").href = resto.facebook;
 
-/* ===============================
-   GÉOLOCALISATION
-   =============================== */
 function allerAEtablissement() {
   const dest = encodeURIComponent(resto.adresse);
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(pos => {
-      window.open(
-        `https://www.google.com/maps/dir/?api=1&origin=${pos.coords.latitude},${pos.coords.longitude}&destination=${dest}`,
-        "_blank"
-      );
-    }, () => {
-      window.open(`https://www.google.com/maps/dir/?api=1&destination=${dest}`, "_blank");
-    });
-  } else {
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${dest}`, "_blank");
-  }
+  window.open(`https://www.google.com/maps/dir/?api=1&destination=${dest}`, "_blank");
 }
 
-/* ===============================
-   ACCÈS ADMIN (3 TAPS)
-   =============================== */
-let clickCount = 0;
-let resetTimer;
-document.getElementById("admin-access-button").addEventListener("click", () => {
-  clickCount++;
-  clearTimeout(resetTimer);
-  resetTimer = setTimeout(() => clickCount = 0, 2000);
-  if (clickCount === 3) {
-    window.location.href = `/${RESTO}/admin-login`;
-  }
-});
-
-document.addEventListener("keydown", e => {
-  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
-    window.location.href = `/${RESTO}/admin-login`;
-  }
-});
+/* 🔐 ACCÈS ADMIN SECRET */
+let clicks = 0;
+document.getElementById("admin-access-button").onclick = () => {
+  if (++clicks === 3) window.location.href = `/${RESTO}/admin-login`;
+  setTimeout(() => clicks = 0, 1500);
+};
 </script>
 
 </body>
