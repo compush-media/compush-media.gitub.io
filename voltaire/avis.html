@@ -5,6 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Avis Google</title>
 
+  <!-- 🔐 PROTECTION ACCÈS (INSCRIPTION OBLIGATOIRE) -->
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email');
+      const localEmail = localStorage.getItem('user_email');
+
+      if (email) {
+        localStorage.setItem('user_email', email);
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+
+      if (!email && !localEmail) {
+        const pathParts = window.location.pathname.split('/');
+        const basePath = '/' + pathParts[1] + '/';
+        window.location.href = basePath + 'inscription.html';
+      }
+    })();
+  </script>
+
   <style>
     :root {
       --brand: #B48C4A;
@@ -126,7 +147,7 @@
 
 <script>
 /* ===============================
-   SPA ROUTING (GitHub Pages)
+   SPA ROUTING
    =============================== */
 const redirected = sessionStorage.redirect;
 if (redirected) {
@@ -156,24 +177,11 @@ const restoData = {
     message: "Merci de partager votre expérience en un clic 🌿",
     link: "https://search.google.com/local/writereview?placeid=ChIJ6-iH2gBl5kcR_8dVpV-kiCE",
     qr: "https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/68b43a06ba67b31819ae53c9.png"
-  },
-  sushizen: {
-    message: "Merci pour votre repas chez Sushizen 🍣",
-    link: "https://g.page/r/YYYYY/review",
-    qr: "https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/sushizen_qr.png"
-  },
-  gourmet: {
-    message: "Merci d’avoir choisi Le Gourmet 🍷",
-    link: "https://g.page/r/ZZZZZ/review",
-    qr: "https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/gourmet_qr.png"
   }
 };
 
 const resto = restoData[RESTO] || restoData.voltaire;
 
-/* ===============================
-   APPLICATION DYNAMIQUE
-   =============================== */
 document.getElementById("messageTitre").innerText = resto.message;
 document.getElementById("googleReviewBtn").href = resto.link;
 document.getElementById("qrImg").src = resto.qr;
