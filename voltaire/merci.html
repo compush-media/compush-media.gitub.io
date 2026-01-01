@@ -32,24 +32,20 @@
     (function () {
       const params = new URLSearchParams(window.location.search);
       const email = params.get('email');
-      const resto = params.get('resto');
 
       if (email) {
         localStorage.setItem('user_email', email);
       }
 
-      if (resto) {
-        setTimeout(() => {
-          window.location.href = '/' + resto + '/index.html';
-        }, 3000);
-      } else {
-        document.body.innerHTML = "<h1>Erreur</h1><p>Aucune redirection possible (paramètre 'resto' manquant).</p>";
-      }
+      // Redirection locale vers index.html du même dossier
+      setTimeout(() => {
+        window.location.href = './index.html';
+      }, 3000);
     })();
   </script>
 </head>
 <body>
   <h1>Merci pour votre inscription !</h1>
-  <p>Redirection vers votre espace en cours...</p>
+  <p>Redirection vers l'accueil en cours...</p>
 </body>
 </html>
