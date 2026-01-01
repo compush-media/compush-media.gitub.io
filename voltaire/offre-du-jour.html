@@ -5,6 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aperçu – Offre du jour</title>
 
+  <!-- 🔐 Protection par e-mail (universelle) -->
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email');
+      const localEmail = localStorage.getItem('user_email');
+
+      if (email) {
+        localStorage.setItem('user_email', email);
+        // Nettoyer l'URL sans recharger la page
+        const cleanUrl = window.location.pathname.split('?')[0];
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+
+      if (!email && !localEmail) {
+        const pathParts = window.location.pathname.split('/');
+        const basePath = '/' + pathParts[1] + '/';
+        window.location.href = basePath + 'inscription.html';
+      }
+    })();
+  </script>
+
   <style>
     html, body {
       margin: 0;
