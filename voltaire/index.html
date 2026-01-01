@@ -5,23 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Accueil – Programme Fidélité</title>
 
-  <!-- PROTECTION D'ACCÈS PAR EMAIL GHL -->
+  <!-- 🔐 Protection par email via localStorage -->
   <script>
-    (function() {
+    (function () {
       const params = new URLSearchParams(window.location.search);
-      const emailParam = params.get('email');
+      const email = params.get('email');
       const localEmail = localStorage.getItem('user_email');
 
-      if (emailParam) {
-        localStorage.setItem('user_email', emailParam);
-
-        // Nettoyer l'URL (supprimer ?email=...)
-        const cleanUrl = window.location.origin + window.location.pathname;
+      if (email) {
+        localStorage.setItem('user_email', email);
+        // Supprimer le ?email de l’URL sans changer de dossier
+        const cleanUrl = window.location.pathname.split('?')[0];
         window.history.replaceState({}, document.title, cleanUrl);
       }
 
-      if (!emailParam && !localEmail) {
-        window.location.href = 'https://app.cartefidelavis.com/voltaire/inscription.html';
+      if (!email && !localEmail) {
+        // Redirige vers le formulaire d’inscription dans le même dossier
+        const pathParts = window.location.pathname.split('/');
+        const basePath = '/' + pathParts[1] + '/';
+        window.location.href = basePath + 'inscription.html';
       }
     })();
   </script>
