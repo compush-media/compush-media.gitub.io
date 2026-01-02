@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+      font-size: 16px;
+    }
+    .stat {
+      font-size: 16px;
+    }
+    .chart {
+      width: 100% !important;
+      height: auto !important;
+    }
+  }
+</style>
+
+  <meta charset="UTF-8">
+  <title>Admin – Stats Coupons</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      color: #b6152b;
+    }
+    .stat {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .chart {
+      margin-top: 20px;
+      width: 100%;
+      height: 300px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📊 Statistiques Coupons</h1>
+  <div class="stat">Aujourd’hui : <strong id="today">...</strong></div>
+  <div class="stat">Ce mois-ci : <strong id="month">...</strong></div>
+  <div class="stat">Total : <strong id="total">...</strong></div>
+
+  <div id="chart_daily" class="chart"></div>
+  <div id="chart_month" class="chart"></div>
+  <div id="chart_resto" class="chart"></div>
+
+  <script>
+    const API = "https://script.google.com/macros/s/AKfycbyiZWE_ThNbvMjXX5qnfTyBHLw8RL4DwO1TTMgLFH6F_xkWhQeNvLwHrL7qFno2fKSw/exec";
+
+    async function loadStats() {
+      try {
+        const res = await fetch(API);
+        const data = await res.json();
+
+        document.getElementById("today").textContent = data.today;
+        document.getElementById("month").textContent = data.thisMonth;
+        document.getElementById("total").textContent = data.all.length;
+
+        drawCharts(data.all);
+      } catch (e) {
+        document.body.innerHTML += "<p style='color:red;'>Erreur : " + e.message + "</p>";
+        console.error(e);
+      }
+    }
+
+    function drawCharts(all) {
+      google.charts.load("current", { packages: ["corechart"] });
+      google.charts.setOnLoadCallback(() => {
+        const countsByDay = {};
+        const countsByMonth = Array(12).fill(0);
+        const countsByResto = {};
+
+        all.forEach(r => {
+          const date = new Date(r.timestamp);
+          const dayKey = date.toISOString().slice(0, 10);
+          countsByDay[dayKey] = (countsByDay[dayKey] || 0) + 1;
+
+          const m = parseInt(r.mois) - 1;
+          countsByMonth[m] += 1;
+
+          countsByResto[r.restaurant] = (countsByResto[r.restaurant] || 0) + 1;
+        });
+
+        const dataDaily = [["Date", "Validations"]];
+        Object.entries(countsByDay).sort().forEach(([day, count]) => {
+          dataDaily.push([day, count]);
+        });
+
+        const mois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
+        const dataMonth = [["Mois", "Coupons"]];
+        mois.forEach((m, i) => dataMonth.push([m, countsByMonth[i]]));
+
+        const dataResto = [["Restaurant", "Coupons"]];
+        for (const [resto, count] of Object.entries(countsByResto)) {
+          dataResto.push([resto, count]);
+        }
+
+        const chart1 = new google.visualization.LineChart(document.getElementById("chart_daily"));
+        chart1.draw(google.visualization.arrayToDataTable(dataDaily), {
+          title: "Validations journalières",
+          curveType: "function",
+          legend: { position: "bottom" },
+          colors: ["#b6152b"]
+        });
+
+        const chart2 = new google.visualization.ColumnChart(document.getElementById("chart_month"));
+        chart2.draw(google.visualization.arrayToDataTable(dataMonth), {
+          title: "Coupons par Mois",
+          legend: "none",
+          colors: ["#b6152b"]
+        });
+
+        const chart3 = new google.visualization.PieChart(document.getElementById("chart_resto"));
+        chart3.draw(google.visualization.arrayToDataTable(dataResto), {
+          title: "Répartition par Restaurant"
+        });
+      });
+    }
+
+    loadStats();
+  </script>
+</body>
+</html>
