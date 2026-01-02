@@ -1,0 +1,15 @@
+<input id="t" placeholder="Mot de passe">
+<button onclick="gen()">Générer</button>
+<pre id="out"></pre>
+
+<script>
+async function gen() {
+  const v = document.getElementById("t").value;
+  const h = await crypto.subtle.digest(
+    "SHA-1",
+    new TextEncoder().encode(v)
+  );
+  document.getElementById("out").textContent =
+    [...new Uint8Array(h)].map(b => b.toString(16).padStart(2,"0")).join("");
+}
+</script>
