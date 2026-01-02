@@ -133,12 +133,28 @@
 <h2>📅 Réserver une table</h2>
 
 <div class="card">
+ <h2>📅 Réserver une table</h2>
+
+<div class="card">
   <!-- 🔁 À REMPLACER PAR IFRAME GHL -->
- <iframe
-    src="https://admin.fidelavis.com/resto1-offre-du-jour"
-    title="reservation"
-    loading="lazy">
-  </iframe>
+  <form>
+    <label>Nom</label>
+    <input type="text" placeholder="Votre nom" required>
+
+    <label>Nombre de personnes</label>
+    <input type="number" min="1" placeholder="Ex : 2" required>
+
+    <label>Date</label>
+    <input type="date" required>
+
+    <label>Heure</label>
+    <input type="time" required>
+
+    <label>Message (optionnel)</label>
+    <textarea placeholder="Informations supplémentaires…"></textarea>
+
+    <button type="submit" class="btn-submit">Envoyer</button>
+  </form>
 </div>
 
 <script>
