@@ -28,6 +28,11 @@
   </script>
 
   <style>
+    :root{
+      --brand:#B48C4A;
+      --topbar-h:56px;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
@@ -35,6 +40,47 @@
       height: 100%;
       background: transparent;
       font-family: 'Montserrat', sans-serif;
+    }
+
+    /* 🔝 Barre top + bouton retour */
+    .topbar{
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--topbar-h);
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      padding: 0 14px;
+      z-index: 99999;
+      pointer-events: none; /* pour laisser l’iframe scroller */
+    }
+
+    .back-btn{
+      pointer-events: auto; /* réactive le clic sur le bouton */
+      display: inline-grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(180,140,74,.16);
+      border: none;
+      cursor: pointer;
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    .back-btn:hover{
+      transform: scale(1.05);
+      background: rgba(180,140,74,.26);
+    }
+
+    .back-btn::before{
+      content:"";
+      display:block;
+      width: 12px;
+      height: 12px;
+      border-left: 3px solid var(--brand);
+      border-bottom: 3px solid var(--brand);
+      transform: translateX(2px) rotate(45deg);
     }
 
     iframe {
@@ -48,11 +94,29 @@
 
 <body>
 
+  <!-- 🔙 Bouton retour -->
+  <header class="topbar">
+    <button class="back-btn" type="button" aria-label="Retour" onclick="goBackUniversal()"></button>
+  </header>
+
   <iframe
     src="https://admin.fidelavis.com/voltaire-offre-du-jour"
     title="Offre du jour – Fidelavis"
     loading="lazy">
   </iframe>
+
+  <script>
+    function goBackUniversal(){
+      // 1) retour historique si possible
+      if (window.history.length > 1) {
+        window.history.back();
+        return;
+      }
+      // 2) fallback universel : page d’accueil du même dossier
+      // (modifie ici si tu veux un autre fallback)
+      window.location.href = "./index.html";
+    }
+  </script>
 
 </body>
 </html>
