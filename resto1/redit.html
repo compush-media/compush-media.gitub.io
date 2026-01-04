@@ -1,0 +1,32 @@
+<script>
+  let deferredPrompt = null;
+
+  const isStandalone =
+    window.matchMedia?.("(display-mode: standalone)")?.matches ||
+    window.navigator.standalone === true; // iOS Safari
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.documentElement.classList.add("can-install");
+  });
+
+  window.addEventListener("appinstalled", () => {
+    window.location.href = "/signup";
+  });
+
+  async function installPwa() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+  }
+
+  // Si l’utilisateur ouvre déjà l’app installée
+  if (isStandalone) {
+    window.location.href = "/signup";
+  }
+
+  // Expose pour ton bouton
+  window.installPwa = installPwa;
+</script>
