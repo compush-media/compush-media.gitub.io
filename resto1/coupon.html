@@ -149,12 +149,9 @@
 </audio>
 
 <script>
-const redirected = sessionStorage.redirect;
-if (redirected) {
-  sessionStorage.removeItem("redirect");
-  history.replaceState(null, "", redirected);
-}
-
+/* ============================
+   🔎 CONTEXTE RESTAURANT
+   ============================ */
 function getRestoSlug() {
   const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
   return path.split("/")[0] || "voltaire";
@@ -162,6 +159,9 @@ function getRestoSlug() {
 const RESTO = getRestoSlug();
 document.getElementById("backLink").href = `/${RESTO}`;
 
+/* ============================
+   🎁 OFFRE MENSUELLE
+   ============================ */
 const offers = [
   "🎁 Janvier : -10% menu", "🎁 Février : Dessert offert",
   "🎁 Mars : Café offert", "🎁 Avril : -15% végétarien",
@@ -179,21 +179,35 @@ document.getElementById("txtOffer").textContent = offers[MONTH];
 const COUPON_KEY = `coupon_${RESTO}_${YEAR}_${MONTH}`;
 if (now.getDate() === 1) localStorage.removeItem(COUPON_KEY);
 
-const SECRET_KEY = "OFFLINE123";
+/* ============================
+   🔐 PIN SYNCHRONISÉ ADMIN / CLIENT
+   ============================ */
+const PIN_SECRET = "FIDELAVIS2026";
 
 function simpleHash(str) {
   let h = 0;
-  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 1000000007;
+  for (let i = 0; i < str.length; i++) {
+    h = (h * 31 + str.charCodeAt(i)) % 1000000007;
+  }
   return h;
 }
-function genererPin(min) {
-  return (simpleHash(SECRET_KEY + min) % 10000).toString().padStart(4,"0");
-}
-function verifierPin(pin) {
-  const m = Math.floor(Date.now() / 60000);
-  return [-1,0,1].some(o => genererPin(m + o) === pin);
+
+function generatePinAt(offset = 0) {
+  const minute = Math.floor(Date.now() / 60000) + offset;
+  const hash = simpleHash(PIN_SECRET + minute);
+  return (hash % 10000).toString().padStart(4, "0");
 }
 
+function verifierPin(pin) {
+  return [
+    generatePinAt(0),
+    generatePinAt(-1)
+  ].includes(pin);
+}
+
+/* ============================
+   ✅ VALIDATION COUPON
+   ============================ */
 function soumettrePin() {
   const res = document.getElementById("result");
   const code = document.getElementById("pinInput").value.trim();
@@ -202,12 +216,14 @@ function soumettrePin() {
     res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
     return;
   }
+
   if (!/^\d{4}$/.test(code)) {
     res.innerHTML = `<div class="ok-box warn">⚠️ Code invalide</div>`;
     return;
   }
+
   if (verifierPin(code)) {
-    localStorage.setItem(COUPON_KEY,"used");
+    localStorage.setItem(COUPON_KEY, "used");
     res.innerHTML = `<div class="ok-box success">✅ Coupon validé</div>`;
     document.getElementById("audioOK").play();
 
@@ -222,6 +238,7 @@ function soumettrePin() {
         pageURL: location.href
       })
     });
+
   } else {
     res.innerHTML = `<div class="ok-box error">❌ Code incorrect</div>`;
   }
