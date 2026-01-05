@@ -79,6 +79,12 @@
       cursor: pointer;
       font-size: 16px;
     }
+    .btn-share {
+      background: #fff;
+      color: var(--brand);
+      border: 2px solid var(--brand);
+      margin-top: 10px;
+    }
     .ok-box {
       padding: 15px;
       border-radius: 12px;
@@ -107,6 +113,12 @@
   <input id="pinInput" maxlength="4" placeholder="----">
   <br>
   <button onclick="soumettrePin()">Valider</button>
+
+  <!-- 🔗 BOUTON PARTAGE -->
+  <button class="btn-share" onclick="partager()">
+    🔗 Partager ce restaurant
+  </button>
+
   <div id="result"></div>
   <small>Valable une fois par mois – Réinitialisation automatique chaque 1er.</small>
 </div>
@@ -138,7 +150,6 @@ const offers = [
 const now = new Date();
 const MONTH = now.getMonth();
 const YEAR = now.getFullYear();
-
 document.getElementById("txtOffer").textContent = offers[MONTH];
 
 const COUPON_KEY = `coupon_${RESTO}_${YEAR}_${MONTH}`;
@@ -168,7 +179,6 @@ function generatePin(offset = 0) {
 }
 
 function verifierPin(pin) {
-  // Tolérance anti-décalage horloge
   return [-2, -1, 0, 1, 2].some(o => generatePin(o) === pin);
 }
 
@@ -205,9 +215,28 @@ function soumettrePin() {
         pageURL: location.href
       })
     });
-
   } else {
     res.innerHTML = `<div class="ok-box error">❌ Code incorrect</div>`;
+  }
+}
+
+/* ============================
+   🔗 PARTAGE PWA
+============================ */
+function partager() {
+  const shareUrl = "https://app.cartefidelavis.com/resto1/redit.html?pswutlzoq=install";
+
+  const data = {
+    title: "Découvre ce restaurant",
+    text: "Je te recommande ce restaurant. Il y a des offres exclusives via Fidelavis 👇",
+    url: shareUrl
+  };
+
+  if (navigator.share) {
+    navigator.share(data).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(shareUrl);
+    alert("Lien d’installation copié 👍");
   }
 }
 
