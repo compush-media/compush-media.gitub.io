@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aperçu – Offre du jour</title>
 
-  <!-- 🔐 Protection par e-mail (universelle) -->
+  <!-- 🔐 Protection par e-mail -->
   <script>
     (function () {
       const params = new URLSearchParams(window.location.search);
@@ -14,7 +14,6 @@
 
       if (email) {
         localStorage.setItem('user_email', email);
-        // Nettoyer l'URL sans recharger la page
         const cleanUrl = window.location.pathname.split('?')[0];
         window.history.replaceState({}, document.title, cleanUrl);
       }
@@ -38,25 +37,24 @@
       padding: 0;
       width: 100%;
       height: 100%;
-      background: transparent;
       font-family: 'Montserrat', sans-serif;
+      background: #fafafa;
     }
 
-    /* 🔝 Barre top + bouton retour */
+    /* 🔝 Topbar */
     .topbar{
       position: fixed;
       top: 0; left: 0; right: 0;
       height: var(--topbar-h);
       display:flex;
       align-items:center;
-      justify-content:flex-start;
+      justify-content:space-between;
       padding: 0 14px;
-      z-index: 99999;
-      pointer-events: none; /* pour laisser l’iframe scroller */
+      z-index: 10000;
+      background: transparent;
     }
 
     .back-btn{
-      pointer-events: auto; /* réactive le clic sur le bouton */
       display: inline-grid;
       place-items: center;
       width: 40px;
@@ -65,17 +63,10 @@
       background: rgba(180,140,74,.16);
       border: none;
       cursor: pointer;
-      transition: transform .15s ease, background .15s ease;
-    }
-
-    .back-btn:hover{
-      transform: scale(1.05);
-      background: rgba(180,140,74,.26);
     }
 
     .back-btn::before{
       content:"";
-      display:block;
       width: 12px;
       height: 12px;
       border-left: 3px solid var(--brand);
@@ -83,10 +74,24 @@
       transform: translateX(2px) rotate(45deg);
     }
 
+    /* 🔗 Bouton partage */
+    .share-btn{
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0,0,0,.15);
+    }
+
     iframe {
       width: 100%;
       height: 100vh;
       border: none;
+      margin-top: var(--topbar-h);
       display: block;
     }
   </style>
@@ -94,11 +99,13 @@
 
 <body>
 
-  <!-- 🔙 Bouton retour -->
+  <!-- 🔝 Topbar -->
   <header class="topbar">
-    <button class="back-btn" type="button" aria-label="Retour" onclick="goBackUniversal()"></button>
+    <button class="back-btn" aria-label="Retour" onclick="goBackUniversal()"></button>
+    <button class="share-btn" onclick="shareOffer()">🔗 Partager</button>
   </header>
 
+  <!-- 📄 Offre du jour -->
   <iframe
     src="https://admin.fidelavis.com/resto1-offre-du-jour"
     title="Offre du jour – Fidelavis"
@@ -106,15 +113,27 @@
   </iframe>
 
   <script>
+    const SHARE_URL = "https://app.cartefidelavis.com/resto1/redit.html?pswutlzoq=install";
+
+    function shareOffer() {
+      if (navigator.share) {
+        navigator.share({
+          title: "Découvre cette offre Fidelavis",
+          text: "Une offre sympa à découvrir 👇",
+          url: SHARE_URL
+        });
+      } else {
+        navigator.clipboard.writeText(SHARE_URL);
+        alert("Lien copié 📋\nTu peux le partager maintenant.");
+      }
+    }
+
     function goBackUniversal(){
-      // 1) retour historique si possible
       if (window.history.length > 1) {
         window.history.back();
-        return;
+      } else {
+        window.location.href = "./index.html";
       }
-      // 2) fallback universel : page d’accueil du même dossier
-      // (modifie ici si tu veux un autre fallback)
-      window.location.href = "./index.html";
     }
   </script>
 
