@@ -182,7 +182,7 @@ if (now.getDate() === 1) localStorage.removeItem(COUPON_KEY);
 /* ============================
    🔐 PIN SYNCHRONISÉ ADMIN / CLIENT
    ============================ */
-const PIN_SECRET = "FIDELAVIS2026";
+const SECRET_KEY = "OFFLINE123"; // ⚠️ IDENTIQUE À L’ADMIN
 
 function simpleHash(str) {
   let h = 0;
@@ -194,15 +194,12 @@ function simpleHash(str) {
 
 function generatePinAt(offset = 0) {
   const minute = Math.floor(Date.now() / 60000) + offset;
-  const hash = simpleHash(PIN_SECRET + minute);
+  const hash = simpleHash(SECRET_KEY + minute);
   return (hash % 10000).toString().padStart(4, "0");
 }
 
 function verifierPin(pin) {
-  return [
-    generatePinAt(0),
-    generatePinAt(-1)
-  ].includes(pin);
+  return [-1, 0, 1].some(offset => generatePinAt(offset) === pin);
 }
 
 /* ============================
@@ -238,7 +235,6 @@ function soumettrePin() {
         pageURL: location.href
       })
     });
-
   } else {
     res.innerHTML = `<div class="ok-box error">❌ Code incorrect</div>`;
   }
