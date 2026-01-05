@@ -181,6 +181,17 @@ function soumettrePin() {
     localStorage.setItem(COUPON_KEY, "used");
     res.innerHTML = `<div class="ok-box success">✅ Coupon validé</div>`;
     document.getElementById("audioOK").play();
+    fetch("https://script.google.com/macros/s/AKfycbyiZWE_ThNbvMjXX5qnfTyBHLw8RL4DwO1TTMgLFH6F_xkWhQeNvLwHrL7qFno2fKSw/exec", {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify({
+        restaurant: RESTO,
+        mois: MONTH + 1,
+        annee: YEAR,
+        userAgent: navigator.userAgent,
+        pageURL: location.href
+      })
+    });
   } else {
     res.innerHTML = `<div class="ok-box error">❌ Code incorrect</div>`;
   }
