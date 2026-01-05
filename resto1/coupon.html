@@ -182,7 +182,7 @@ if (now.getDate() === 1) localStorage.removeItem(COUPON_KEY);
 /* ============================
    🔐 PIN SYNCHRONISÉ ADMIN / CLIENT
    ============================ */
-const SECRET_KEY = "OFFLINE123"; // ⚠️ IDENTIQUE À L’ADMIN
+const SECRET_KEY = "OFFLINE123";
 
 function simpleHash(str) {
   let h = 0;
@@ -192,11 +192,18 @@ function simpleHash(str) {
   return h;
 }
 
-function generatePinAt(offset = 0) {
+function generatePin(offset = 0) {
   const minute = Math.floor(Date.now() / 60000) + offset;
-  const hash = simpleHash(SECRET_KEY + minute);
-  return (hash % 10000).toString().padStart(4, "0");
+  return (simpleHash(SECRET_KEY + minute) % 10000)
+    .toString()
+    .padStart(4, "0");
 }
+
+function verifierPin(pin) {
+  // Tolérance élargie pour éviter TOUT rejet caisse
+  return [-2, -1, 0, 1, 2].some(o => generatePin(o) === pin);
+}
+
 
 function verifierPin(pin) {
   return [-1, 0, 1].some(offset => generatePinAt(offset) === pin);
