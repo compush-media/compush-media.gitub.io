@@ -39,7 +39,9 @@
       position: fixed; top: 0; left: 0; right: 0;
       height: var(--topbar-h);
       display: flex; align-items: center;
-      padding: 0 16px; background: transparent;
+      padding: 0 16px;
+      background: transparent;
+      z-index: 9999;
     }
     .back-btn {
       width: 40px; height: 40px; border-radius: 50%;
@@ -53,7 +55,7 @@
       border-bottom: 3px solid var(--brand);
       transform: rotate(45deg);
     }
-    h2 { margin-top: 60px; }
+    h2 { margin-top: 70px; font-size: 26px; }
     .card {
       max-width: 480px; margin: auto;
       padding: 20px; background: #fff;
@@ -63,23 +65,26 @@
     input {
       padding: 12px; width: 140px;
       border-radius: 10px; border: 2px solid var(--brand);
-      font-size: 18px; text-align: center;
+      font-size: 20px; text-align: center;
+      letter-spacing: 4px;
     }
     button {
       margin-top: 15px;
-      padding: 14px 18px;
+      padding: 14px 22px;
       background: var(--brand);
       color: #fff;
       border-radius: 12px;
       border: none;
       font-weight: 600;
       cursor: pointer;
+      font-size: 16px;
     }
     .ok-box {
       padding: 15px;
       border-radius: 12px;
       margin-top: 20px;
       font-weight: bold;
+      font-size: 18px;
     }
     .success { background:#d4edda;color:#155724; }
     .error { background:#f8d7da;color:#721c24; }
@@ -99,7 +104,7 @@
 <div class="card">
   <p id="txtOffer">Chargement…</p>
   <p>Entrez le code PIN affiché à la caisse :</p>
-  <input id="pinInput" maxlength="4" placeholder="____">
+  <input id="pinInput" maxlength="4" placeholder="----">
   <br>
   <button onclick="soumettrePin()">Valider</button>
   <div id="result"></div>
@@ -129,10 +134,14 @@ const offers = [
   "🎁 Juillet : Glace enfant","🎁 Août : Boisson gratuite","🎁 Septembre : -20% étudiants",
   "🎁 Octobre : Café gourmand","🎁 Novembre : Menu duo","🎁 Décembre : Chocolat chaud"
 ];
-const now = new Date();
-document.getElementById("txtOffer").textContent = offers[now.getMonth()];
 
-const COUPON_KEY = `coupon_${RESTO}_${now.getFullYear()}_${now.getMonth()}`;
+const now = new Date();
+const MONTH = now.getMonth();
+const YEAR = now.getFullYear();
+
+document.getElementById("txtOffer").textContent = offers[MONTH];
+
+const COUPON_KEY = `coupon_${RESTO}_${YEAR}_${MONTH}`;
 if (now.getDate() === 1) localStorage.removeItem(COUPON_KEY);
 
 /* ============================
@@ -148,18 +157,19 @@ function simpleHash(str) {
   return h;
 }
 
-function getUtcMinute(offset = 0) {
+function getMinute(offset = 0) {
   return Math.floor(Date.now() / 60000) + offset;
 }
 
 function generatePin(offset = 0) {
-  return (simpleHash(SECRET_KEY + getUtcMinute(offset)) % 10000)
+  return (simpleHash(SECRET_KEY + getMinute(offset)) % 10000)
     .toString()
     .padStart(4, "0");
 }
 
 function verifierPin(pin) {
-  return [-1, 0, 1].some(o => generatePin(o) === pin);
+  // Tolérance anti-décalage horloge
+  return [-2, -1, 0, 1, 2].some(o => generatePin(o) === pin);
 }
 
 /* ============================
@@ -173,14 +183,17 @@ function soumettrePin() {
     res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
     return;
   }
+
   if (!/^\d{4}$/.test(code)) {
     res.innerHTML = `<div class="ok-box warn">⚠️ Code invalide</div>`;
     return;
   }
+
   if (verifierPin(code)) {
     localStorage.setItem(COUPON_KEY, "used");
     res.innerHTML = `<div class="ok-box success">✅ Coupon validé</div>`;
     document.getElementById("audioOK").play();
+
     fetch("https://script.google.com/macros/s/AKfycbyiZWE_ThNbvMjXX5qnfTyBHLw8RL4DwO1TTMgLFH6F_xkWhQeNvLwHrL7qFno2fKSw/exec", {
       method: "POST",
       mode: "no-cors",
@@ -192,11 +205,13 @@ function soumettrePin() {
         pageURL: location.href
       })
     });
+
   } else {
     res.innerHTML = `<div class="ok-box error">❌ Code incorrect</div>`;
   }
 }
 
+/* État déjà utilisé */
 if (localStorage.getItem(COUPON_KEY) === "used") {
   document.getElementById("result").innerHTML =
     `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
