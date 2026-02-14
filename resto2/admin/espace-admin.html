@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Admin – Fidelavis</title>
+  <style>
+    body {a
+      margin: 0;
+      padding: 20px;
+      background: #fafafa;
+      font-family: 'Montserrat', sans-serif;
+      color: #b6152b;
+      text-align: center;
+    }
+    .tab-container {
+      max-width: 520px;
+      margin: auto;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 2px solid #b6152b;
+      background: #fff;
+      cursor: pointer;
+      font-weight: 600;
+      color: #b6152b;
+      transition: 0.2s;
+    }
+    .tab-btn.active {
+      background: #b6152b;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+    .pin-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    }
+    .pin-display {
+      font-size: 36px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      background: #f2f2f2;
+      border-radius: 12px;
+      padding: 10px;
+      border: 2px solid #b6152b;
+      width: 150px;
+      margin: auto;
+    }
+    #logoutBtn {
+      margin-top: 20px;
+      background: #b6152b;
+      color: white;
+      font-size: 15px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 260px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+    .preview {
+      margin-top: 16px;
+    }
+    .preview img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #b6152b;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .btn-delete {
+      margin-top: 16px;
+      background: #aaa;
+    }
+    .msg {
+      margin-top: 16px;
+      font-size: 15px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+<h2>🛠️ Espace Admin – Fidelavis</h2>
+
+<div class="tab-container">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="offre">Offre du jour</button>
+    <button class="tab-btn" data-tab="coupon">Coupon</button>
+    <button class="tab-btn" data-tab="stats">Statistique</button>
+  </div>
+
+  <button id="logoutBtn">🚪 Déconnexion</button>
+
+  <div id="offre" class="tab-content active">
+    <h3>📸 Offre du jour</h3>
+    <input type="file" id="imageInput" accept="image/*" />
+    <div class="preview" id="previewBox"></div>
+    <button class="btn" onclick="upload()">📤 Enregistrer l'image</button>
+    <button class="btn btn-delete" onclick="supprimer()">🗑️ Supprimer l'offre</button>
+    <div class="msg" id="message"></div>
+  </div>
+
+  <div id="coupon" class="tab-content">
+    <div class="pin-box">
+      <h3>🔐 Code PIN dynamique</h3>
+      <div id="pinDisplay" class="pin-display">----</div>
+      <p id="timerPin" style="color:#444;font-size:14px;margin-top:10px;">Nouveau code dans : --</p>
+    </div>
+  </div>
+
+  <div id="stats" class="tab-content">
+    <div class="pin-box">
+      <h3>📊 Statistiques Générales</h3>
+      <iframe src="https://resto3.fidelavis.com/offre-du-jour" title="Statistiques"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  const resto = window.location.hostname.split('.')[0];
+
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      this.classList.add("active");
+      document.getElementById(this.dataset.tab).classList.add("active");
+    });
+  });
+
+  function upload() {
+    const file = document.getElementById("imageInput").files[0];
+    if (!file) {
+      document.getElementById("message").innerText = "Veuillez sélectionner une image.";
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      localStorage.setItem("offre_image_" + resto, e.target.result);
+      document.getElementById("previewBox").innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+      document.getElementById("message").innerText = "Image enregistrée avec succès.";
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function supprimer() {
+    localStorage.removeItem("offre_image_" + resto);
+    document.getElementById("previewBox").innerHTML = "";
+    document.getElementById("message").innerText = "Offre supprimée.";
+  }
+
+  const current = localStorage.getItem("offre_image_" + resto);
+  if (current) {
+    document.getElementById("previewBox").innerHTML = `<img src="${current}" alt="Aperçu actuel">`;
+  }
+
+  function simpleHash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+      h = (h * 31 + str.charCodeAt(i)) % 1000000007;
+    }
+    return h;
+  }
+
+  function genererPinAdmin() {
+    const minute = Math.floor(Date.now() / 60000);
+    const raw = "OFFLINE123" + minute;
+    const hash = simpleHash(raw);
+    return (hash % 10000).toString().padStart(4, "0");
+  }
+
+  function updatePinAdmin() {
+    const now = Date.now();
+    const secs = Math.floor((60000 - (now % 60000)) / 1000);
+    document.getElementById("pinDisplay").textContent = genererPinAdmin();
+    document.getElementById("timerPin").textContent = "Nouveau code dans : " + secs + "s";
+  }
+
+  updatePinAdmin();
+  setInterval(updatePinAdmin, 1000);
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("admin_" + resto);
+    localStorage.removeItem("role_" + resto);
+    window.location.href = "/admin-login";
+  });
+</script>
+</body>
+</html>
+

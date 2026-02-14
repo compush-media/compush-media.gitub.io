@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Merci pour votre inscription</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #fff8f2;
+      color: #C6A667;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+    }
+  </style>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email');
+
+      if (email) {
+        localStorage.setItem('user_email', email);
+      }
+
+      // Redirection locale vers index.html du même dossier
+      setTimeout(() => {
+        window.location.href = './index.html';
+      }, 3000);
+    })();
+  </script>
+</head>
+<body>
+  <h1>Merci pour votre inscription !</h1>
+<p>Vous recevrez un e-mail chaque mois avec nos actualités.</p>
+<p>Redirection vers l'accueil en cours...</p>
+</body>
+</html>
