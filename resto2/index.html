@@ -6,6 +6,25 @@
 <title>Programme Fidélité</title>
 
 <!-- 🔐 Protection par email via localStorage -->
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get('email');
+  const localEmail = localStorage.getItem('user_email');
+
+  if (email) {
+    localStorage.setItem('user_email', email);
+    const cleanUrl = window.location.pathname.split('?')[0];
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
+
+  if (!email && !localEmail) {
+    const pathParts = window.location.pathname.split('/');
+    const basePath = '/' + pathParts[1] + '/';
+    window.location.href = basePath + 'inscription.html';
+  }
+})();
+</script>
 
 <style>
 :root{
@@ -111,7 +130,7 @@ body{
 .btn-sub{
   font-size: 12.5px;
   font-weight: 600;
-  opacity: .85;
+  opacity: .88;
   line-height:1.2;
 }
 
@@ -202,7 +221,7 @@ body{
 @media (max-width:480px){
   .navbar{ padding: 28px 14px 8px; gap: 16px; }
   .navbar a{ padding: 22px 14px; border-radius: 20px; gap: 12px; }
-  .navbar a.primary{ padding-top:56px; } /* slightly smaller on mobile */
+  .navbar a.primary{ padding-top:56px; }
   .btn-title{ font-size: 18px; }
   .btn-sub{ font-size: 12px; }
   .ico{ width: 42px; height: 42px; border-radius: 13px; }
@@ -221,7 +240,7 @@ body{
 </div>
 
 <div class="navbar">
-  <a id="btnCoupon" class="primary" aria-label="Activer -10%"></a>
+  <a id="btnCoupon" class="primary" aria-label="-10% prochaine visite"></a>
   <a id="btnAvis" class="secondary" aria-label="Laisser un avis"></a>
 </div>
 
@@ -251,54 +270,54 @@ document.documentElement.style.setProperty('--text', resto.textColor);
 
 document.getElementById("restoName").innerText = resto.name;
 
-// Last day of current month (urgence douce)
+// Last day of current month (for display only)
 const lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
 const lastDayFR = lastDay.toLocaleDateString("fr-FR", { day:"2-digit", month:"long" });
 
-// ✅ btnCoupon EXACT as requested + compliant copy
+// ✅ Updated copy: next visit + email (no immediate discount)
 const icons = {
   btnCoupon: `
-  <div class="ribbon">🔥 Offre du mois</div>
+    <div class="ribbon">🔥 Offre du mois</div>
 
-  <div class="ico">
-    <svg viewBox="0 0 24 24">
-      <path fill="currentColor"
-        d="M21 5v3.5q-.625.275-1.063.713T19.225 10
-           q0 .825.437 1.263T21 12.025V15
-           q0 .825-.588 1.413T19 17H5
-           q-.825 0-1.413-.588T3 15v-3
-           q.625-.275 1.063-.713T4.775 10
-           q0-.825-.437-1.263T3 7.525V5
-           q0-.825.588-1.413T5 3h14
-           q.825 0 1.413.588T21 5Z"/>
-    </svg>
-  </div>
+    <div class="ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path fill="currentColor"
+          d="M21 5v3.5q-.625.275-1.063.713T19.225 10
+             q0 .825.437 1.263T21 12.025V15
+             q0 .825-.588 1.413T19 17H5
+             q-.825 0-1.413-.588T3 15v-3
+             q.625-.275 1.063-.713T4.775 10
+             q0-.825-.437-1.263T3 7.525V5
+             q0-.825.588-1.413T5 3h14
+             q.825 0 1.413.588T21 5Z"/>
+      </svg>
+    </div>
 
-  <div class="txt">
-    <div class="btn-title">Activer -10% ce mois-ci</div>
-    <div class="btn-sub">Valable jusqu’au <b>${lastDayFR}</b> • Montrez l’écran au serveur</div>
-  </div>
+    <div class="txt">
+      <div class="btn-title">🎁 -10% pour votre prochaine visite</div>
+      <div class="btn-sub">Valable jusqu’au <b>${lastDayFR}</b> • envoyé par email</div>
+    </div>
 
-  <div class="pill">10s</div>
-`,
+    <div class="pill">10s</div>
+  `,
   btnAvis: `
-  <div class="ico" aria-hidden="true">
-    <svg viewBox="0 0 24 24">
-      <path fill="currentColor"
-        d="M12 17.3l6.2 3.7-1.6-7
-           5.4-4.7-7.2-.6L12 2
-           9.2 8.7l-7.2.6
-           5.4 4.7-1.6 7z"/>
-    </svg>
-  </div>
+    <div class="ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path fill="currentColor"
+          d="M12 17.3l6.2 3.7-1.6-7
+             5.4-4.7-7.2-.6L12 2
+             9.2 8.7l-7.2.6
+             5.4 4.7-1.6 7z"/>
+      </svg>
+    </div>
 
-  <div class="txt">
-    <div class="btn-title">Laisser un avis (facultatif)</div>
-    <div class="btn-sub">1 minute • Merci pour votre soutien</div>
-  </div>
+    <div class="txt">
+      <div class="btn-title">Laisser un avis (facultatif)</div>
+      <div class="btn-sub">1 minute • Merci pour votre soutien</div>
+    </div>
 
-  <div class="pill">1 min</div>
-`
+    <div class="pill">1 min</div>
+  `
 };
 
 const paths = { btnCoupon:"coupon", btnAvis:"avis" };
