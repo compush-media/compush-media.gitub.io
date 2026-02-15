@@ -6,27 +6,7 @@
   <title>Accueil – Programme Fidélité</title>
 
   <!-- 🔐 Protection par email via localStorage -->
-  <script>
-    (function () {
-      const params = new URLSearchParams(window.location.search);
-      const email = params.get('email');
-      const localEmail = localStorage.getItem('user_email');
 
-      if (email) {
-        localStorage.setItem('user_email', email);
-        // Supprimer le ?email de l’URL sans changer de dossier
-        const cleanUrl = window.location.pathname.split('?')[0];
-        window.history.replaceState({}, document.title, cleanUrl);
-      }
-
-      if (!email && !localEmail) {
-        // Redirige vers le formulaire d’inscription dans le même dossier
-        const pathParts = window.location.pathname.split('/');
-        const basePath = '/' + pathParts[1] + '/';
-        window.location.href = basePath + 'inscription.html';
-      }
-    })();
-  </script>
 
   <style>
     :root {
@@ -141,7 +121,7 @@
 
     const restaurantData = {
       voltaire: {
-        name: "Resto2",
+        name: "Resto1",
         brandColor: "#B48C4A",
         bgColor: "#ffffff",
         textColor: "#B48C4A",
