@@ -13,177 +13,190 @@
   --brand:#C6A667;
   --bg:#fff8f2;
   --text:#C6A667;
-  --icon:#C6A667;
 
-  --shadow: 0 14px 34px rgba(0,0,0,.10);
-  --shadow2: 0 18px 44px rgba(0,0,0,.14);
+  --shadow: 0 18px 46px rgba(0,0,0,.10);
+  --shadow2: 0 10px 26px rgba(0,0,0,.08);
+  --radius: 22px;
 }
 
-*{box-sizing:border-box}
 body{
   margin:0;
-  font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-family:'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   background: radial-gradient(900px 520px at 50% 0%, #ffffff 0%, var(--bg) 60%, #efe7db 100%);
-  color:var(--text);
+  color: var(--text);
   text-align:center;
 }
 
 /* HEADER */
-.header{ margin-top:56px; }
-.header img{ max-width:120px; }
+.header{ margin-top: 46px; }
+.header img{
+  max-width: 110px;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,.08));
+}
 .header h1{
-  font-size:24px;
-  margin:14px 0 0;
-  font-weight:800;
+  font-size: 22px;
+  margin: 12px 0 6px;
   letter-spacing:.2px;
 }
-.sub{
-  margin:10px 0 0;
-  font-size:13px;
-  opacity:.78;
-}
-.miniHook{
-  margin:10px auto 0;
-  display:inline-flex;
-  gap:8px;
-  align-items:center;
-  font-size:12px;
-  font-weight:800;
-  letter-spacing:.2px;
-  padding:8px 12px;
-  border-radius:999px;
-  background: rgba(0,0,0,.04);
-  border: 1px solid rgba(0,0,0,.06);
-  color: rgba(0,0,0,.62);
+.header .sub{
+  font-size: 13px;
+  opacity: .55;
+  font-weight: 600;
+  margin: 0;
 }
 
-/* NAV */
+/* Container */
 .navbar{
   display:flex;
   flex-direction:column;
-  gap:18px;
-  padding:44px 18px 38px;
-  max-width:520px;
-  margin:0 auto;
+  gap: 18px;
+  padding: 34px 18px 10px;
+  max-width: 520px;
+  margin: 0 auto;
 }
 
-/* Base bouton */
+/* BUTTON BASE */
 .navbar a{
   width:100%;
   text-decoration:none;
-  border-radius:22px;
-  padding:22px 18px;
+  border-radius: var(--radius);
+  padding: 24px 18px;
   display:flex;
   align-items:center;
-  gap:14px;
-  justify-content:flex-start;
-  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
-  box-shadow: var(--shadow);
-  border:2px solid rgba(180,140,74,.40);
-  background:#fff;
-  color:var(--brand);
+  justify-content:center;
+  flex-direction:row;
+  gap: 14px;
   position:relative;
-  overflow:hidden;
-}
-
-.navbar a:active{
-  transform: translateY(1px) scale(.99);
-  box-shadow: 0 10px 26px rgba(0,0,0,.10);
-}
-
-.navbar svg{
-  width:44px;
-  height:44px;
-  flex:0 0 auto;
-  fill: currentColor;
-  opacity:.95;
-}
-
-.btnText{
+  user-select:none;
   text-align:left;
+
+  transition: transform .10s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease, color .15s ease;
+}
+.navbar a:active{ transform: translateY(1px) scale(.995); }
+
+.ico{
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.22);
+}
+.navbar a.secondary .ico{
+  background: rgba(198,166,103,.10);
+  border: 1px solid rgba(198,166,103,.22);
+}
+.ico svg{
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+  opacity: .95;
+}
+
+.txt{
   display:flex;
   flex-direction:column;
   gap:4px;
-  line-height:1.15;
+  flex:1 1 auto;
+  min-width:0;
 }
-.btnTitle{
-  font-size:18px;
-  font-weight:900;
-  letter-spacing:.2px;
+.btn-title{
+  font-size: 19px;
+  font-weight: 900;
+  line-height:1.1;
 }
-.btnSub{
-  font-size:12.5px;
-  opacity:.78;
-  font-weight:600;
-}
-
-/* ✅ Hero bouton -10% */
-a.primary{
-  background: linear-gradient(180deg, rgba(202,162,83,1) 0%, rgba(167,122,42,1) 100%);
-  border-color: rgba(167,122,42,.55);
-  color:#fff;
-  box-shadow: var(--shadow2);
-}
-a.primary::before{
-  content:"";
-  position:absolute;
-  top:-40%;
-  left:-60%;
-  width:60%;
-  height:200%;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.28) 50%, transparent 100%);
-  transform: rotate(20deg);
-  transition: left .6s ease;
-}
-a.primary:hover::before{ left:120%; }
-
-/* ✅ Secondaire (Avis) */
-a.secondary{
-  background: rgba(255,255,255,.70);
-  border-color: rgba(180,140,74,.25);
-  color: rgba(180,140,74,.95);
-  box-shadow: 0 12px 28px rgba(0,0,0,.08);
-}
-a.secondary:hover{
-  transform: translateY(-1px);
-  box-shadow: 0 14px 34px rgba(0,0,0,.10);
+.btn-sub{
+  font-size: 12.5px;
+  font-weight: 600;
+  opacity: .85;
+  line-height:1.2;
 }
 
-.navbar a:hover{
+.pill{
+  flex:0 0 auto;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.28);
+  background: rgba(255,255,255,.16);
+}
+.navbar a.secondary .pill{
+  border: 1px solid rgba(198,166,103,.28);
+  background: rgba(198,166,103,.10);
+}
+
+/* PRIMARY CTA */
+.navbar a.primary{
+  background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 95%, #fff) 0%, var(--brand) 100%);
+  color: #ffffff;
+  border: 2px solid color-mix(in srgb, var(--brand) 92%, #000);
+  box-shadow: var(--shadow);
+}
+.navbar a.primary:hover{
+  box-shadow: 0 22px 60px rgba(0,0,0,.13);
   transform: translateY(-2px);
+}
+
+/* Badge */
+.badge{
+  position:absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing:.2px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.32);
+  color: #fff;
+}
+
+/* SECONDARY */
+.navbar a.secondary{
+  background: rgba(255,255,255,.82);
+  color: var(--brand);
+  border: 2px solid color-mix(in srgb, var(--brand) 75%, #0000);
   box-shadow: var(--shadow2);
 }
-
-/* Badges temps */
-.badge{
-  margin-left:auto;
-  font-size:12px;
-  font-weight:900;
-  padding:8px 10px;
-  border-radius:999px;
-  background: rgba(0,0,0,.06);
-  border:1px solid rgba(0,0,0,.08);
-  color: rgba(0,0,0,.55);
-}
-a.primary .badge{
-  background: rgba(255,255,255,.18);
-  border-color: rgba(255,255,255,.25);
-  color: rgba(255,255,255,.92);
+.navbar a.secondary:hover{
+  background: rgba(198,166,103,.06);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(0,0,0,.10);
 }
 
-.footerNote{
-  font-size:12px;
-  opacity:.7;
-  padding:0 18px 26px;
+/* Trust + Legal */
+.trust{
+  max-width: 520px;
+  margin: 10px auto 0;
+  padding: 0 18px;
+  font-size: 12px;
+  opacity: .65;
+  font-weight: 600;
 }
-.footerNote b{opacity:.95}
+.legal{
+  max-width: 520px;
+  margin: 14px auto 40px;
+  padding: 0 18px;
+  font-size: 11px;
+  opacity: .55;
+  line-height: 1.35;
+}
 
 @media (max-width:480px){
-  .header{margin-top:46px}
-  .navbar{padding:38px 16px 32px}
-  .navbar a{padding:20px 16px;border-radius:20px}
-  .navbar svg{width:40px;height:40px}
-  .btnTitle{font-size:17px}
+  .navbar{ padding: 28px 14px 8px; gap: 16px; }
+  .navbar a{ padding: 22px 14px; border-radius: 20px; gap: 12px; }
+  .btn-title{ font-size: 18px; }
+  .btn-sub{ font-size: 12px; }
+  .ico{ width: 42px; height: 42px; border-radius: 13px; }
+  .pill{ font-size: 11.5px; padding: 7px 9px; }
+  .badge{ top:10px; left:10px; font-size: 11px; }
 }
 </style>
 </head>
@@ -193,90 +206,87 @@ a.primary .badge{
 <div class="header">
   <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo" />
   <h1 id="restoName">Restaurant</h1>
-  <div class="sub">2 actions simples : avantage + avis</div>
-
-  <!-- ✅ Hook conversion -->
-  <div class="miniHook">Scannez • Activez -10% • Profitez</div>
+  <p class="sub">2 actions simples : avantage + avis</p>
 </div>
 
 <div class="navbar">
-  <a id="btnCoupon" class="primary"></a>
-  <a id="btnAvis" class="secondary"></a>
+  <a id="btnCoupon" class="primary" aria-label="Activer -10%"></a>
+  <a id="btnAvis" class="secondary" aria-label="Laisser un avis"></a>
 </div>
 
-<div class="footerNote">
-  <b>Démo 30 jours :</b> le restaurant mesure les inscriptions + avis.
+<div class="trust">✅ Simple • ✅ Rapide • ✅ Sans engagement</div>
+
+<div class="legal">
+  La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
 </div>
 
 <script>
-function getRestoSlug() {
+function getRestoSlug(){
   const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
   return path.split("/")[0] || "voltaire";
 }
 const restoSlug = getRestoSlug();
 
 const restaurantData = {
-  voltaire: {
-    name: "Resto2",
-    brandColor: "#B48C4A",
-    bgColor: "#ffffff",
-    textColor: "#B48C4A",
-    iconColor: "#B48C4A"
-  },
-  resto3: {
-    name: "Resto 3",
-    brandColor: "#C6A667",
-    bgColor: "#fff8f2",
-    textColor: "#C6A667",
-    iconColor: "#C6A667"
-  }
+  voltaire: { name:"Resto1", brandColor:"#B48C4A", bgColor:"#ffffff", textColor:"#B48C4A" },
+  resto3:   { name:"Resto 3", brandColor:"#C6A667", bgColor:"#fff8f2", textColor:"#C6A667" }
 };
-
 const resto = restaurantData[restoSlug] || restaurantData.voltaire;
 
+// Apply theme
 document.documentElement.style.setProperty('--brand', resto.brandColor);
 document.documentElement.style.setProperty('--bg', resto.bgColor);
 document.documentElement.style.setProperty('--text', resto.textColor);
-document.documentElement.style.setProperty('--icon', resto.iconColor);
 
 document.getElementById("restoName").innerText = resto.name;
 
+// Last day of current month (urgence douce)
+const lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+const lastDayFR = lastDay.toLocaleDateString("fr-FR", { day:"2-digit", month:"long" });
+
+// Icons + copy (Google compliant)
 const icons = {
   btnCoupon: `
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="currentColor"
-        d="M21 5v3.5q-.625.275-1.063.713T19.225 10
-           q0 .825.437 1.263T21 12.025V15
-           q0 .825-.588 1.413T19 17H5
-           q-.825 0-1.413-.588T3 15v-3
-           q.625-.275 1.063-.713T4.775 10
-           q0-.825-.437-1.263T3 7.525V5
-           q0-.825.588-1.413T5 3h14
-           q.825 0 1.413.588T21 5Z"/>
-    </svg>
-    <span class="btnText">
-      <span class="btnTitle">Activer -10% ce mois-ci</span>
-      <span class="btnSub">10 secondes • Montrez l’écran au serveur</span>
-    </span>
-    <span class="badge">10s</span>
+    <div class="badge">🔥 Offre du mois</div>
+    <div class="ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path fill="currentColor"
+          d="M21 5v3.5q-.625.275-1.063.713T19.225 10
+             q0 .825.437 1.263T21 12.025V15
+             q0 .825-.588 1.413T19 17H5
+             q-.825 0-1.413-.588T3 15v-3
+             q.625-.275 1.063-.713T4.775 10
+             q0-.825-.437-1.263T3 7.525V5
+             q0-.825.588-1.413T5 3h14
+             q.825 0 1.413.588T21 5Z"/>
+      </svg>
+    </div>
+    <div class="txt">
+      <div class="btn-title">Activer -10% ce mois-ci</div>
+      <div class="btn-sub">Valable jusqu’au <b>${lastDayFR}</b> • Montrez l’écran au serveur</div>
+    </div>
+    <div class="pill">10s</div>
   `,
+
   btnAvis: `
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="currentColor"
-        d="M12 17.3l6.2 3.7-1.6-7
-           5.4-4.7-7.2-.6L12 2
-           9.2 8.7l-7.2.6
-           5.4 4.7-1.6 7z"/>
-    </svg>
-    <span class="btnText">
-      <span class="btnTitle">Laisser un avis</span>
-      <span class="btnSub">1 minute • Ça aide énormément le restaurant</span>
-    </span>
-    <span class="badge">1 min</span>
+    <div class="ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path fill="currentColor"
+          d="M12 17.3l6.2 3.7-1.6-7
+             5.4-4.7-7.2-.6L12 2
+             9.2 8.7l-7.2.6
+             5.4 4.7-1.6 7z"/>
+      </svg>
+    </div>
+    <div class="txt">
+      <div class="btn-title">Laisser un avis (facultatif)</div>
+      <div class="btn-sub">1 minute • Merci pour votre soutien</div>
+    </div>
+    <div class="pill">1 min</div>
   `
 };
 
-const paths = { btnCoupon: "coupon", btnAvis: "avis" };
+const paths = { btnCoupon:"coupon", btnAvis:"avis" };
 
 for (const id in paths) {
   const el = document.getElementById(id);
