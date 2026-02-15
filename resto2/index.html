@@ -15,7 +15,6 @@
   --text:#C6A667;
   --icon:#C6A667;
 
-  /* WOW */
   --shadow: 0 14px 34px rgba(0,0,0,.10);
   --shadow2: 0 18px 44px rgba(0,0,0,.14);
 }
@@ -30,22 +29,32 @@ body{
 }
 
 /* HEADER */
-.header{
-  margin-top:56px;
-}
-.header img{max-width:120px}
+.header{ margin-top:56px; }
+.header img{ max-width:120px; }
 .header h1{
   font-size:24px;
   margin:14px 0 0;
   font-weight:800;
   letter-spacing:.2px;
 }
-
-/* petit sous-titre “démo” */
 .sub{
-  margin:8px 0 0;
+  margin:10px 0 0;
   font-size:13px;
-  opacity:.75;
+  opacity:.78;
+}
+.miniHook{
+  margin:10px auto 0;
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.2px;
+  padding:8px 12px;
+  border-radius:999px;
+  background: rgba(0,0,0,.04);
+  border: 1px solid rgba(0,0,0,.06);
+  color: rgba(0,0,0,.62);
 }
 
 /* NAV */
@@ -53,7 +62,7 @@ body{
   display:flex;
   flex-direction:column;
   gap:18px;
-  padding:44px 18px 54px;
+  padding:44px 18px 38px;
   max-width:520px;
   margin:0 auto;
 }
@@ -70,20 +79,18 @@ body{
   justify-content:flex-start;
   transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
   box-shadow: var(--shadow);
-  border:2px solid rgba(180,140,74,.45);
+  border:2px solid rgba(180,140,74,.40);
   background:#fff;
   color:var(--brand);
   position:relative;
   overflow:hidden;
 }
 
-/* Micro animation “press” */
 .navbar a:active{
   transform: translateY(1px) scale(.99);
   box-shadow: 0 10px 26px rgba(0,0,0,.10);
 }
 
-/* Icône */
 .navbar svg{
   width:44px;
   height:44px;
@@ -92,7 +99,6 @@ body{
   opacity:.95;
 }
 
-/* Texte */
 .btnText{
   text-align:left;
   display:flex;
@@ -111,15 +117,13 @@ body{
   font-weight:600;
 }
 
-/* ✅ Bouton principal -10% (dominant) */
+/* ✅ Hero bouton -10% */
 a.primary{
   background: linear-gradient(180deg, rgba(202,162,83,1) 0%, rgba(167,122,42,1) 100%);
   border-color: rgba(167,122,42,.55);
   color:#fff;
   box-shadow: var(--shadow2);
 }
-
-/* Petit “shine” premium */
 a.primary::before{
   content:"";
   position:absolute;
@@ -133,13 +137,24 @@ a.primary::before{
 }
 a.primary:hover::before{ left:120%; }
 
-/* Hover */
+/* ✅ Secondaire (Avis) */
+a.secondary{
+  background: rgba(255,255,255,.70);
+  border-color: rgba(180,140,74,.25);
+  color: rgba(180,140,74,.95);
+  box-shadow: 0 12px 28px rgba(0,0,0,.08);
+}
+a.secondary:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(0,0,0,.10);
+}
+
 .navbar a:hover{
   transform: translateY(-2px);
   box-shadow: var(--shadow2);
 }
 
-/* Badge time (10s / 1min) */
+/* Badges temps */
 .badge{
   margin-left:auto;
   font-size:12px;
@@ -156,22 +171,20 @@ a.primary .badge{
   color: rgba(255,255,255,.92);
 }
 
-/* Mobile tuning */
-@media (max-width:480px){
-  .header{margin-top:46px}
-  .navbar{padding:38px 16px 46px}
-  .navbar a{padding:20px 16px;border-radius:20px}
-  .navbar svg{width:40px;height:40px}
-  .btnTitle{font-size:17px}
-}
-
-/* Petit rappel en bas */
 .footerNote{
   font-size:12px;
   opacity:.7;
   padding:0 18px 26px;
 }
 .footerNote b{opacity:.95}
+
+@media (max-width:480px){
+  .header{margin-top:46px}
+  .navbar{padding:38px 16px 32px}
+  .navbar a{padding:20px 16px;border-radius:20px}
+  .navbar svg{width:40px;height:40px}
+  .btnTitle{font-size:17px}
+}
 </style>
 </head>
 
@@ -181,11 +194,14 @@ a.primary .badge{
   <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo" />
   <h1 id="restoName">Restaurant</h1>
   <div class="sub">2 actions simples : avantage + avis</div>
+
+  <!-- ✅ Hook conversion -->
+  <div class="miniHook">Scannez • Activez -10% • Profitez</div>
 </div>
 
 <div class="navbar">
   <a id="btnCoupon" class="primary"></a>
-  <a id="btnAvis"></a>
+  <a id="btnAvis" class="secondary"></a>
 </div>
 
 <div class="footerNote">
@@ -260,10 +276,7 @@ const icons = {
   `
 };
 
-const paths = {
-  btnCoupon: "coupon",
-  btnAvis: "avis"
-};
+const paths = { btnCoupon: "coupon", btnAvis: "avis" };
 
 for (const id in paths) {
   const el = document.getElementById(id);
