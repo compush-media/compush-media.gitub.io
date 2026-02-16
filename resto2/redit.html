@@ -1,11 +1,10 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Installer l’application</title>
 
-<!-- Progressier -->
 <link rel="manifest" href="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/progressier.json"/>
 <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
 
@@ -13,359 +12,130 @@
 :root{
   --brand:#C6A667;
   --bg:#fff8f2;
-  --radius:22px;
-  --shadow:0 20px 55px rgba(0,0,0,.10);
-  --shadow2:0 12px 30px rgba(0,0,0,.10);
 }
 
 body{
   margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(900px 520px at 50% 0%, #ffffff 0%, var(--bg) 70%, #efe7db 100%);
-  padding:26px 16px 90px;
-  color:#222;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: radial-gradient(900px 520px at 50% 0%, #ffffff 0%, var(--bg) 70%);
+  padding:30px 18px 120px;
   text-align:center;
 }
 
-.wrap{ max-width:520px; margin:0 auto; }
-
-.logo{
-  width:74px; height:74px;
-  border-radius:18px;
-  margin: 8px auto 12px;
-  background:#fff;
-  box-shadow: 0 12px 30px rgba(0,0,0,.08);
-  display:grid; place-items:center;
-  overflow:hidden;
+.wrap{
+  max-width:520px;
+  margin:0 auto;
 }
-.logo img{ width:58px; height:58px; object-fit:contain; }
 
 h1{
   font-size:24px;
-  margin: 0 0 6px;
-  letter-spacing:.2px;
+  margin:8px 0 6px;
 }
+
 .sub{
-  font-size:13px;
-  opacity:.70;
-  margin: 0 0 16px;
-}
-
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:7px 12px;
-  border-radius:999px;
-  font-size:12px;
-  border:1px solid rgba(0,0,0,.10);
-  background: rgba(255,255,255,.65);
-  margin-bottom: 16px;
-}
-.badge.ok{ border-color: rgba(10,150,10,.35); color:#075a07; }
-
-.hero{
-  text-align:left;
-  background:#fff;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding:18px 18px 16px;
-}
-
-.kpis{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin: 10px 0 14px;
-}
-.kpi{
-  font-size:12px;
-  font-weight:800;
-  color: rgba(34,34,34,.85);
-  background: rgba(198,166,103,.12);
-  border:1px solid rgba(198,166,103,.25);
-  padding:6px 10px;
-  border-radius:999px;
-}
-
-.bigcta{
-  width:100%;
-  border:none;
-  border-radius: 18px;
-  padding: 14px 14px;
-  font-weight: 950;
-  font-size: 16px;
-  cursor:pointer;
-  color:#fff;
-  background: linear-gradient(180deg, var(--brand), #b8924f);
-  box-shadow: 0 14px 34px rgba(0,0,0,.14);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-.bigcta:active{ transform: translateY(1px); }
-.bigcta .left{ display:flex; align-items:center; gap:10px; }
-.bigcta .pill{
-  font-size:12px;
-  font-weight:900;
-  padding:6px 10px;
-  border-radius:999px;
-  background: rgba(255,255,255,.20);
-  border:1px solid rgba(255,255,255,.28);
-}
-
-.secondaryRow{
-  display:flex;
-  gap:10px;
-  margin-top: 12px;
-  flex-wrap:wrap;
-}
-a.btn{
-  flex:1 1 170px;
-  text-decoration:none;
-  border-radius: 16px;
-  padding: 12px 12px;
-  font-weight: 900;
-  font-size: 14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-}
-a.btn.ghost{
-  background: rgba(255,255,255,.85);
-  color: var(--brand);
-  border: 2px solid var(--brand);
-  box-shadow: var(--shadow2);
-}
-a.btn.soft{
-  background: rgba(0,0,0,.05);
-  color:#222;
-  border:1px solid rgba(0,0,0,.08);
-}
-
-.mini{
-  margin-top: 12px;
-  font-size: 12px;
-  opacity:.72;
-  line-height:1.35;
+  font-size:14px;
+  opacity:.75;
+  margin-bottom:18px;
 }
 
 .card{
-  margin-top: 14px;
-  text-align:left;
-  background: rgba(255,255,255,.75);
-  border:1px solid rgba(0,0,0,.06);
-  border-radius: var(--radius);
-  padding: 14px 14px;
+  background:#fff;
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 20px 55px rgba(0,0,0,.10);
 }
 
-details{ text-align:left; }
-details summary{
-  cursor:pointer;
-  font-weight: 900;
-  font-size: 13px;
-  color: rgba(0,0,0,.82);
-  list-style:none;
+.highlight{
+  font-weight:900;
+  font-size:16px;
+  margin-bottom:10px;
 }
-details summary::-webkit-details-marker{ display:none; }
-.steps{
-  margin:10px 0 0;
-  padding-left:18px;
-  font-size: 13px;
-  line-height: 1.45;
+
+.mini{
+  font-size:13px;
+  opacity:.75;
 }
-.steps b{ color:#000; }
 
-.hidden{ display:none !important; }
+.ctaText{
+  margin-top:20px;
+  font-weight:900;
+  font-size:15px;
+  color:var(--brand);
+}
 
-/* ✅ Bulle guidance vers l’icône Progressier */
-#installHintBubble{
+/* Bulle */
+#installBubble{
   position: fixed;
-  bottom: 92px;
+  bottom: 90px;
   right: 20px;
   background: var(--brand);
   color: #fff;
-  padding: 10px 14px;
-  border-radius: 16px;
-  font-size: 13px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 14px;
   font-weight: 900;
   box-shadow: 0 12px 30px rgba(0,0,0,.15);
-  animation: bounce 1.2s infinite;
+  animation: bounce 1.3s infinite;
   z-index: 9999;
 }
-#installHintBubble::after{
+
+#installBubble::after{
   content:"";
   position:absolute;
-  right:22px;
-  bottom:-10px;
-  border-width:10px 10px 0 10px;
+  right:24px;
+  bottom:-12px;
+  border-width:12px 12px 0 12px;
   border-style:solid;
   border-color: var(--brand) transparent transparent transparent;
 }
+
 @keyframes bounce{
   0%,100%{ transform: translateY(0); }
   50%{ transform: translateY(-6px); }
-}
-
-@media (max-width:420px){
-  h1{ font-size:22px; }
-  .bigcta{ font-size:15px; }
 }
 </style>
 </head>
 
 <body>
+
 <div class="wrap">
 
-  <div class="logo">
-    <!-- Remplace si tu veux par ton logo -->
-    <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo">
-  </div>
-
   <h1>📲 Installer l’application</h1>
-  <p class="sub">Obligatoire pour utiliser le coupon en caisse.</p>
+  <p class="sub">Obligatoire pour valider votre coupon en caisse.</p>
 
-  <div id="statusBadge" class="badge">Détection…</div>
-
-  <div class="hero">
-    <div style="font-weight:950; font-size:16px; margin-bottom:6px;">
-      ✅ Activez votre coupon en 10 secondes
-    </div>
-
-    <div class="kpis">
-      <div class="kpi">🔒 Validé en caisse</div>
-      <div class="kpi">⚡ 10 sec</div>
-      <div class="kpi">📩 Coupon par email</div>
-    </div>
-
-    <!-- CTA principal -->
-    <button id="installMainBtn" class="bigcta" type="button">
-      <span class="left">🚀 Installer l’app maintenant</span>
-      <span class="pill">10s</span>
-    </button>
-
-    <div class="secondaryRow">
-      <a class="btn ghost" href="/inscription.html">Continuer vers l’inscription</a>
-      <a class="btn soft" href="#how">Voir comment faire</a>
-    </div>
-
+  <div class="card">
+    <div class="highlight">🎁 Activez votre -10% en 10 secondes</div>
     <div class="mini">
-      Si l’app est déjà installée, vous serez redirigé automatiquement vers l’inscription.
-    </div>
-  </div>
-
-  <!-- iOS / Android : explications MINIMES et repliables -->
-  <div id="how" class="card">
-
-    <div id="iosOnly" class="hidden">
-      <details open>
-        <summary>🍏 iPhone / iPad : 3 étapes</summary>
-        <ol class="steps">
-          <li>Ouvrez dans <b>Safari</b></li>
-          <li>Tapez <b>Partager</b> (⬆️)</li>
-          <li><b>Ajouter à l’écran d’accueil</b></li>
-        </ol>
-      </details>
+      Une fois installée, votre réduction sera accessible directement depuis l’app.
     </div>
 
-    <div id="androidOnly" class="hidden">
-      <details open>
-        <summary>🤖 Android / PC : 1 clic</summary>
-        <div class="mini" id="androidHint">
-          Si “Installer” n’apparaît pas, utilisez l’icône en bas à droite.
-        </div>
-      </details>
+    <div class="ctaText">
+      ⬇️ Cliquez sur l’icône en bas à droite
     </div>
-
   </div>
 
 </div>
 
-<!-- ✅ Indication pour cliquer sur l’icône Progressier (très efficace) -->
-<div id="installHintBubble">👇 Cliquez ici pour installer l’application</div>
+<div id="installBubble">
+  👇 Appuyez ici pour installer l’app
+</div>
 
 <script>
-function isIos(){
-  const ua = navigator.userAgent || "";
-  return /iPad|iPhone|iPod/.test(ua) ||
-         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-}
-
 function isStandalone(){
-  return window.matchMedia?.("(display-mode: standalone)")?.matches ||
+  return window.matchMedia("(display-mode: standalone)").matches ||
          window.navigator.standalone === true;
 }
 
-function setBadge(text, ok=false){
-  const badge = document.getElementById("statusBadge");
-  badge.textContent = text;
-  badge.classList.toggle("ok", ok);
-}
-
-function hideBubble(){
-  const bubble = document.getElementById("installHintBubble");
-  if(!bubble) return;
-  bubble.style.opacity = "0";
-  bubble.style.transition = "opacity .35s ease";
-  setTimeout(()=> bubble.remove(), 450);
-}
-
-// ✅ Si déjà installé : on file direct
+// Si déjà installé → inscription
 if(isStandalone()){
-  hideBubble();
-  setBadge("Mode app détecté ✅", true);
-  location.replace("/inscription.html");
-} else {
-  setBadge(isIos() ? "iOS détecté" : "Navigateur détecté");
+  window.location.href = "/inscription.html";
 }
 
-// Affichage blocs selon device
-const iosOnly = document.getElementById("iosOnly");
-const androidOnly = document.getElementById("androidOnly");
-if(isIos()){
-  iosOnly.classList.remove("hidden");
-} else {
-  androidOnly.classList.remove("hidden");
-}
-
-// Auto-hide bubble (soft guide)
-setTimeout(()=>{ if(!isStandalone()) hideBubble(); }, 7000);
-
-// ✅ Bouton principal : sur iOS → scroll vers la bulle / icône
-const installMainBtn = document.getElementById("installMainBtn");
-installMainBtn.addEventListener("click", async ()=>{
-  if(isIos()){
-    // iOS : pas de prompt, on guide vers l’icône Progressier + la zone bas droite
-    window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
-    const bubble = document.getElementById("installHintBubble");
-    if(bubble){
-      bubble.style.animation = "bounce .7s infinite";
-    }
-    return;
-  }
-  // Android/PC : on déclenche le prompt si dispo
-  if(window.__deferredPrompt){
-    window.__deferredPrompt.prompt();
-    try { await window.__deferredPrompt.userChoice; } catch(e){}
-    window.__deferredPrompt = null;
-  } else {
-    // sinon : on guide vers l’icône Progressier
-    window.scrollTo({ top: document.body.scrollHeight, behavior:"smooth" });
-  }
-});
-
-window.__deferredPrompt = null;
-window.addEventListener("beforeinstallprompt", (e)=>{
-  e.preventDefault();
-  window.__deferredPrompt = e;
-  setBadge("Installation disponible ✅", true);
-});
-
-window.addEventListener("appinstalled", ()=>{
-  location.href = "/inscription.html";
-});
+// Bulle persistante plus longtemps
+setTimeout(()=>{
+  document.getElementById("installBubble").style.opacity="0";
+}, 15000);
 </script>
+
 </body>
 </html>
