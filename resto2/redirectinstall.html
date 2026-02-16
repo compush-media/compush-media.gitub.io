@@ -1,1 +1,162 @@
 
+<!-- File: install/index.html -->
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Installer l’application</title>
+
+    <!-- Progressier -->
+   
+<link rel="manifest" href="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/progressier.json"/>
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+    <style>
+      :root { color-scheme: light; }
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 24px; }
+      .wrap { max-width: 720px; margin: 0 auto; }
+      .card { border: 1px solid #ddd; border-radius: 16px; padding: 16px; margin: 12px 0; }
+      h1 { font-size: 26px; margin: 0 0 10px; }
+      p { margin: 8px 0; line-height: 1.45; }
+      ol { margin: 8px 0 0 18px; }
+      .btnrow { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+      button, a.btn {
+        border: 1px solid #000;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-size: 16px;
+        background: #000;
+        color: #fff;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      a.btn.secondary, button.secondary { background: #fff; color: #000; }
+      .muted { color: #555; font-size: 14px; }
+      .hidden { display: none !important; }
+      .badge { display: inline-block; border: 1px solid #ddd; padding: 4px 8px; border-radius: 999px; font-size: 12px; color: #333; }
+      .ok { border-color: #0a0; color: #070; }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <h1>Installer l’application</h1>
+      <p class="muted">
+        <span id="statusBadge" class="badge">Détection…</span>
+      </p>
+
+      <div class="card" id="iosCard">
+        <p><strong>Sur iPhone / iPad</strong> (pas de popup automatique) :</p>
+        <ol>
+          <li>Ouvre ce site dans <strong>Safari</strong></li>
+          <li>Appuie sur <strong>Partager</strong> (icône carré + flèche)</li>
+          <li>Choisis <strong>Ajouter à l’écran d’accueil</strong></li>
+        </ol>
+        <p class="muted">Astuce : si tu es dans Instagram/Facebook, ouvre le lien dans Safari.</p>
+      </div>
+
+      <div class="card" id="androidCard">
+        <p><strong>Sur Android / PC</strong> :</p>
+        <p id="installHint" class="muted">
+          Si le bouton “Installer” n’apparaît pas, le navigateur ne propose pas l’installation pour le moment.
+        </p>
+
+        <div class="btnrow">
+          <button id="installBtn" class="hidden" type="button">Installer</button>
+          <a id="continueBtn" class="btn secondary" href="/signup">Continuer (inscription)</a>
+        </div>
+      </div>
+
+      <p class="muted">
+        Si tu as déjà installé l’app, tu peux simplement continuer vers l’inscription.
+      </p>
+    </div>
+
+    <script>
+      /**
+       * Edit these if needed.
+       * For GitHub Pages under a repo (ex: /mon-repo/...), keep SIGNUP_URL relative to that base.
+       */
+      const SIGNUP_URL = "/signup";
+
+      const els = {
+        statusBadge: document.getElementById("statusBadge"),
+        iosCard: document.getElementById("iosCard"),
+        installBtn: document.getElementById("installBtn"),
+        continueBtn: document.getElementById("continueBtn"),
+        installHint: document.getElementById("installHint"),
+      };
+
+      function isIos() {
+        const ua = navigator.userAgent || "";
+        return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      }
+
+      function isStandalone() {
+        return (
+          window.matchMedia?.("(display-mode: standalone)")?.matches ||
+          window.navigator.standalone === true
+        );
+      }
+
+      function setBadge(text, ok = false) {
+        els.statusBadge.textContent = text;
+        els.statusBadge.classList.toggle("ok", ok);
+      }
+
+      function resolveGithubPagesBase() {
+        // If hosted at https://user.github.io/repo/..., base is "/repo"
+        // If custom domain, base is "".
+        const parts = location.pathname.split("/").filter(Boolean);
+        if (location.hostname.endsWith("github.io") && parts.length > 0) return "/" + parts[0];
+        return "";
+      }
+
+      const base = resolveGithubPagesBase();
+      els.continueBtn.href = base + SIGNUP_URL;
+
+      // If opened as installed app, go to signup directly.
+      if (isStandalone()) {
+        setBadge("Mode app détecté ✅", true);
+        location.replace(base + SIGNUP_URL);
+      } else {
+        setBadge(isIos() ? "iOS détecté" : "Navigateur détecté");
+      }
+
+      // iOS instructions always visible if iOS, otherwise keep visible but less critical.
+      if (!isIos()) {
+        els.iosCard.classList.add("hidden");
+      }
+
+      let deferredPrompt = null;
+
+      window.addEventListener("beforeinstallprompt", (e) => {
+        // We want to show our own button.
+        e.preventDefault();
+        deferredPrompt = e;
+        els.installBtn.classList.remove("hidden");
+        els.installHint.textContent = "Clique sur “Installer” pour ajouter l’app sur ton appareil.";
+        setBadge("Installation disponible ✅", true);
+      });
+
+      window.addEventListener("appinstalled", () => {
+        // After install, send user to signup.
+        location.href = base + SIGNUP_URL;
+      });
+
+      els.installBtn.addEventListener("click", async () => {
+        if (!deferredPrompt) return;
+        try {
+          deferredPrompt.prompt();
+          await deferredPrompt.userChoice;
+        } finally {
+          deferredPrompt = null;
+          els.installBtn.classList.add("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>
