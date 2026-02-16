@@ -18,6 +18,8 @@
     window.history.replaceState({}, document.title, cleanUrl);
   }
 
+  // ⚠️ Conserve ton comportement actuel : si pas d'email, redirige vers pwa-requise.html
+  // (Si tu veux que l'index soit accessible sans email, dis-moi et je te le retire.)
   if (!email && !localEmail) {
     const pathParts = window.location.pathname.split('/');
     const basePath = '/' + pathParts[1] + '/';
@@ -123,7 +125,7 @@ body{
 .btn-title{
   font-weight: 900;
   font-size: clamp(15px, 4.5vw, 18px);
-  white-space: nowrap; /* ✅ 1 ligne garantie */
+  white-space: nowrap;
   line-height: 1.15;
 }
 .btn-sub{
@@ -259,14 +261,14 @@ const restaurantData = {
 };
 const resto = restaurantData[restoSlug] || restaurantData.voltaire;
 
-// Apply theme
+/* Apply theme */
 document.documentElement.style.setProperty('--brand', resto.brandColor);
 document.documentElement.style.setProperty('--bg', resto.bgColor);
 document.documentElement.style.setProperty('--text', resto.textColor);
 
 document.getElementById("restoName").innerText = resto.name;
 
-// Buttons content
+/* Buttons content */
 const icons = {
   btnCoupon: `
     <div class="ribbon">🔥 Offre du mois</div>
@@ -312,7 +314,11 @@ const icons = {
   `
 };
 
-const paths = { btnCoupon:"coupon", btnAvis:"avis" };
+/* ✅ LIENS : -10% -> pwa-requise.html */
+const paths = {
+  btnCoupon: "pwa-requise.html",
+  btnAvis: "avis"
+};
 
 for (const id in paths) {
   const el = document.getElementById(id);
