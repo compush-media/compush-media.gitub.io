@@ -67,6 +67,7 @@ body{
   position:relative;
   text-align:left;
   transition:.15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* PRIMARY */
@@ -77,9 +78,7 @@ body{
   padding-top:60px;
 }
 
-.primary:hover{
-  transform:translateY(-3px);
-}
+.primary:hover{ transform:translateY(-3px); }
 
 /* RIBBON */
 .ribbon{
@@ -118,15 +117,11 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
+  flex: 0 0 auto;
 }
 
-.primary .ico{
-  background:rgba(255,255,255,.2);
-}
-
-.secondary .ico{
-  background:rgba(198,166,103,.12);
-}
+.primary .ico{ background:rgba(255,255,255,.2); }
+.secondary .ico{ background:rgba(198,166,103,.12); }
 
 .ico svg{
   width:26px;
@@ -137,16 +132,30 @@ body{
 /* TEXT */
 .txt{
   flex:1;
+  min-width:0; /* ✅ IMPORTANT: wrap correct en flex (iOS/Safari) */
 }
 
 .btn-title{
   font-size:18px;
   font-weight:800;
+  line-height:1.12;
+  text-wrap: balance; /* ✅ équilibre les retours à la ligne (iOS récent) */
+  display:-webkit-box;
+  -webkit-line-clamp:2;      /* ✅ 2 lignes max */
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  overflow-wrap:anywhere;
 }
 
 .btn-sub{
   font-size:13px;
+  line-height:1.25;
   opacity:.9;
+  display:-webkit-box;
+  -webkit-line-clamp:2;      /* ✅ 2 lignes max */
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  overflow-wrap:anywhere;
 }
 
 /* PILL */
@@ -155,15 +164,12 @@ body{
   font-weight:800;
   padding:7px 10px;
   border-radius:999px;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
-.primary .pill{
-  background:rgba(255,255,255,.25);
-}
-
-.secondary .pill{
-  background:rgba(198,166,103,.12);
-}
+.primary .pill{ background:rgba(255,255,255,.25); }
+.secondary .pill{ background:rgba(198,166,103,.12); }
 
 /* TRUST */
 .trust{
@@ -185,64 +191,67 @@ body{
 <body>
 
 <div class="header">
-  <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" />
+  <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo restaurant" />
   <h1>Resto1</h1>
   <p>2 actions simples : avantage + avis</p>
 </div>
 
 <div class="navbar">
 
-<a href="/voltaire/coupon" class="primary">
-  <div class="ribbon">🔥 Offre du mois</div>
+  <a href="/voltaire/coupon" class="primary" aria-label="Offre du mois">
+    <div class="ribbon">🔥 Offre du mois</div>
 
-  <div class="ico">
-    <svg viewBox="0 0 24 24">
-      <path d="M21 5v3.5q-.625.275-1.063.713T19.225 10
-      q0 .825.437 1.263T21 12.025V15
-      q0 .825-.588 1.413T19 17H5
-      q-.825 0-1.413-.588T3 15v-3
-      q.625-.275 1.063-.713T4.775 10
-      q0-.825-.437-1.263T3 7.525V5
-      q0-.825.588-1.413T5 3h14
-      q.825 0 1.413.588T21 5Z"/>
-    </svg>
-  </div>
+    <div class="ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M21 5v3.5q-.625.275-1.063.713T19.225 10
+        q0 .825.437 1.263T21 12.025V15
+        q0 .825-.588 1.413T19 17H5
+        q-.825 0-1.413-.588T3 15v-3
+        q.625-.275 1.063-.713T4.775 10
+        q0-.825-.437-1.263T3 7.525V5
+        q0-.825.588-1.413T5 3h14
+        q.825 0 1.413.588T21 5Z"/>
+      </svg>
+    </div>
 
-  <div class="txt">
-    <div class="btn-title">🎁 Cadeau de bienvenue : -10%</div>
-    <div class="btn-sub">Reçu immédiatement par email • valable sur votre prochaine visite</div>
-  </div>
+    <div class="txt">
+      <!-- ✅ NBSP pour éviter la coupure "Cadeau de" -->
+      <div class="btn-title">🎁 Cadeau&nbsp;de bienvenue : -10%</div>
+      <!-- ✅ Texte rééquilibré (2 lignes propres) -->
+      <div class="btn-sub">Reçu immédiatement par email • Valable sur votre prochaine visite</div>
+    </div>
 
-  <div class="pill">10s</div>
-</a>
+    <div class="pill">10s</div>
+  </a>
 
 
-<a href="/voltaire/avis" class="secondary">
-  <div class="ico">
-    <svg viewBox="0 0 24 24">
-      <path d="M12 17.3l6.2 3.7-1.6-7
-      5.4-4.7-7.2-.6L12 2
-      9.2 8.7l-7.2.6
-      5.4 4.7-1.6 7z"/>
-    </svg>
-  </div>
+  <a href="/voltaire/avis" class="secondary" aria-label="Laisser un avis">
+    <div class="ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 17.3l6.2 3.7-1.6-7
+        5.4-4.7-7.2-.6L12 2
+        9.2 8.7l-7.2.6
+        5.4 4.7-1.6 7z"/>
+      </svg>
+    </div>
 
-  <div class="txt">
-    <div class="btn-title">⭐ Laisser un avis (facultatif)</div>
-    <div class="btn-sub">1 minute • Ça aide énormément le restaurant</div>
-  </div>
+    <div class="txt">
+      <!-- ✅ Titre optimisé pour mobile (wrap plus propre) -->
+      <div class="btn-title">⭐ Laisser un avis (facultatif)</div>
+      <div class="btn-sub">1 minute • Ça aide énormément le restaurant</div>
+    </div>
 
-  <div class="pill">1 min</div>
-</a>
+    <div class="pill">1 min</div>
+  </a>
 
 </div>
 
 <div class="trust">
-✅ Simple • ✅ Rapide • ✅ Sans engagement
+  ✅ Simple • ✅ Rapide • ✅ Sans engagement
 </div>
 
 <div class="legal">
-La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
+  La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
 </div>
 
 </body>
