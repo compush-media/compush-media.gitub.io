@@ -96,6 +96,38 @@ ol{
 .muted{ font-size:12px; opacity:.6; margin-top:16px; }
 
 .hidden{ display:none !important; }
+
+/* ✅ Bulle de guidance vers l’icône Progressier */
+#installHintBubble{
+  position: fixed;
+  bottom: 92px;  /* au-dessus de l’icône en bas à droite */
+  right: 20px;
+  background: var(--brand);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 12px 30px rgba(0,0,0,.15);
+  animation: bounce 1.2s infinite;
+  z-index: 9999;
+}
+
+/* petite flèche */
+#installHintBubble::after{
+  content:"";
+  position:absolute;
+  right:20px;
+  bottom:-10px;
+  border-width:10px 10px 0 10px;
+  border-style:solid;
+  border-color: var(--brand) transparent transparent transparent;
+}
+
+@keyframes bounce{
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(-6px); }
+}
 </style>
 </head>
 
@@ -120,7 +152,7 @@ ol{
     </ol>
   </div>
 
-  <!-- Android -->
+  <!-- Android / PC -->
   <div class="card">
     <strong>Sur Android / PC :</strong>
     <div id="installHint" class="muted">
@@ -145,6 +177,9 @@ ol{
 
 </div>
 
+<!-- ✅ Indication pour cliquer sur l’icône Progressier -->
+<div id="installHintBubble">👇 Cliquez ici pour installer l’application</div>
+
 <script>
 function isIos(){
   const ua = navigator.userAgent || "";
@@ -163,16 +198,32 @@ function setBadge(text, ok=false){
   badge.classList.toggle("ok", ok);
 }
 
+function hideBubble(){
+  const bubble = document.getElementById("installHintBubble");
+  if(!bubble) return;
+  bubble.style.opacity = "0";
+  bubble.style.transition = "opacity .35s ease";
+  setTimeout(()=> bubble.remove(), 450);
+}
+
+// Si l’app est déjà installée → on ne montre pas la bulle + on redirige
 if(isStandalone()){
+  hideBubble();
   setBadge("Mode app détecté ✅", true);
   location.replace("/inscription.html");
 }else{
   setBadge(isIos() ? "iOS détecté" : "Navigateur détecté");
 }
 
+// Sur non-iOS, on cache la card iOS
 if(!isIos()){
   document.getElementById("iosCard").classList.add("hidden");
 }
+
+// Auto-hide de la bulle après 6s (guide soft)
+setTimeout(() => {
+  if(!isStandalone()) hideBubble();
+}, 6000);
 
 let deferredPrompt = null;
 
