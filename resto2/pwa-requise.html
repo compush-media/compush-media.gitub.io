@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation requise</title>
+  <style>
+    :root{ --brand:#C6A667; --bg:#fff8f2; --radius:22px; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg,#fff 0%, var(--bg) 100%);
+      color:#222;
+      padding:28px 16px;
+    }
+    .card{
+      max-width:520px;
+      margin:30px auto 0;
+      background:#fff;
+      border-radius:var(--radius);
+      box-shadow:0 20px 55px rgba(0,0,0,.10);
+      padding:20px;
+      text-align:left;
+    }
+    h1{ font-size:20px; margin:6px 0 8px; }
+    .lead{ font-size:14px; opacity:.8; line-height:1.45; margin:0 0 14px; }
+    .box{
+      border:2px solid var(--brand);
+      border-radius:16px;
+      padding:14px;
+      background: rgba(198,166,103,.06);
+      margin:14px 0 16px;
+    }
+    .box b{ color:#111; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    .btn{
+      border:none; border-radius:999px;
+      padding:12px 14px;
+      font-weight:900;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .btn.primary{ background:var(--brand); color:#fff; }
+    .btn.ghost{ background:rgba(0,0,0,.06); color:#222; }
+    .hint{
+      margin-top:12px;
+      font-size:12px;
+      opacity:.7;
+      line-height:1.4;
+    }
+    .tiny{ font-size:11px; opacity:.55; margin-top:14px; line-height:1.4; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div style="font-size:32px">🔒</div>
+    <h1>Pour utiliser le coupon en caisse</h1>
+    <p class="lead">
+      L’installation de l’app (PWA) est nécessaire.
+      <br><b>Ça prend 10 secondes.</b>
+    </p>
+
+    <div class="box">
+      ✅ Ensuite, vous pourrez vous inscrire et recevoir votre <b>-10%</b>.<br>
+      🧾 Le coupon sera utilisable uniquement via l’app (PWA) en caisse.
+    </div>
+
+    <div class="row">
+      <button class="btn primary" id="btnInstall">Installer maintenant</button>
+      <button class="btn ghost" id="btnContinue">Continuer vers l’inscription</button>
+    </div>
+
+    <div class="hint" id="iosHint" style="display:none;">
+      iPhone : appuyez sur <b>Partager</b> (⬆️) puis <b>“Sur l’écran d’accueil”</b>.
+    </div>
+
+    <div class="tiny">
+      Installation facultative maintenant, mais <b>obligatoire pour utiliser le coupon en caisse</b>.
+    </div>
+  </div>
+
+<script>
+  function getRestoSlug(){
+    const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
+    return path.split("/")[0] || "voltaire";
+  }
+  const restoSlug = getRestoSlug();
+  const URL_INSCRIPTION = `/${restoSlug}/inscription.html`;
+
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+  let deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+
+  const btnInstall = document.getElementById("btnInstall");
+  const btnContinue = document.getElementById("btnContinue");
+  const iosHint = document.getElementById("iosHint");
+
+  if(isIOS){
+    iosHint.style.display = "block";
+  }
+
+  btnInstall.addEventListener("click", async () => {
+    if(isIOS){
+      // iOS = pas de prompt, on affiche juste l’info
+      iosHint.scrollIntoView({behavior:"smooth", block:"center"});
+      return;
+    }
+    if(deferredPrompt){
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+    } else {
+      alert("Si rien ne s’affiche : menu du navigateur → “Ajouter à l’écran d’accueil”.");
+    }
+  });
+
+  btnContinue.addEventListener("click", () => {
+    window.location.href = URL_INSCRIPTION;
+  });
+</script>
+
+</body>
+</html>
