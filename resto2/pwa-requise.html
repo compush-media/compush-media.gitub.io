@@ -67,16 +67,21 @@
     </div>
 
     <div class="row">
-      <button class="btn primary" id="btnInstall">Installer maintenant</button>
-      <button class="btn ghost" id="btnContinue">Continuer vers l’inscription</button>
+      <!-- ✅ Bouton universel -->
+      <a href="/redit.html" class="btn primary">Installer maintenant</a>
+
+      <button class="btn ghost" id="btnContinue">
+        Continuer vers l’inscription
+      </button>
     </div>
 
-    <div class="hint" id="iosHint" style="display:none;">
-      iPhone : appuyez sur <b>Partager</b> (⬆️) puis <b>“Sur l’écran d’accueil”</b>.
+    <div class="hint">
+      Si l’installation ne démarre pas automatiquement,
+      utilisez le menu du navigateur → “Ajouter à l’écran d’accueil”.
     </div>
 
     <div class="tiny">
-      Installation facultative maintenant, mais <b>obligatoire pour utiliser le coupon en caisse</b>.
+      Installation obligatoire pour utiliser le coupon en caisse.
     </div>
   </div>
 
@@ -88,37 +93,7 @@
   const restoSlug = getRestoSlug();
   const URL_INSCRIPTION = `/${restoSlug}/inscription.html`;
 
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-
-  let deferredPrompt = null;
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-  });
-
-  const btnInstall = document.getElementById("btnInstall");
-  const btnContinue = document.getElementById("btnContinue");
-  const iosHint = document.getElementById("iosHint");
-
-  if(isIOS){
-    iosHint.style.display = "block";
-  }
-
-  btnInstall.addEventListener("click", async () => {
-    if(isIOS){
-      iosHint.scrollIntoView({behavior:"smooth", block:"center"});
-      return;
-    }
-    if(deferredPrompt){
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-    } else {
-      alert("Si rien ne s’affiche : menu du navigateur → “Ajouter à l’écran d’accueil”.");
-    }
-  });
-
-  btnContinue.addEventListener("click", () => {
+  document.getElementById("btnContinue").addEventListener("click", () => {
     window.location.href = URL_INSCRIPTION;
   });
 </script>
