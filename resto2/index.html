@@ -5,25 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Programme Fidélité</title>
 
-<!-- 🔐 Protection par email via localStorage -->
+<!-- ✅ On conserve l’email si présent, mais on NE BLOQUE PLUS l’accès à l’index -->
 <script>
 (function () {
   const params = new URLSearchParams(window.location.search);
   const email = params.get('email');
-  const localEmail = localStorage.getItem('user_email');
 
   if (email) {
     localStorage.setItem('user_email', email);
-    const cleanUrl = window.location.pathname.split('?')[0];
-    window.history.replaceState({}, document.title, cleanUrl);
-  }
 
-  // ⚠️ Conserve ton comportement actuel : si pas d'email, redirige vers pwa-requise.html
-  // (Si tu veux que l'index soit accessible sans email, dis-moi et je te le retire.)
-  if (!email && !localEmail) {
-    const pathParts = window.location.pathname.split('/');
-    const basePath = '/' + pathParts[1] + '/';
-    window.location.href = basePath + 'pwa-requise.html';
+    // Nettoie l’URL (retire ?email=)
+    const cleanUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
   }
 })();
 </script>
@@ -249,12 +242,20 @@ body{
 </div>
 
 <script>
+/* ✅ Détection resto via URL */
 function getRestoSlug(){
   const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
   return path.split("/")[0] || "voltaire";
 }
 const restoSlug = getRestoSlug();
 
+/* ✅ Détection PWA installée (Android + iOS) */
+function isStandalone(){
+  return window.matchMedia('(display-mode: standalone)').matches
+      || window.navigator.standalone === true;
+}
+
+/* ✅ Données restos */
 const restaurantData = {
   voltaire: { name:"Resto1", brandColor:"#B48C4A", bgColor:"#ffffff", textColor:"#B48C4A" },
   resto3:   { name:"Resto 3", brandColor:"#C6A667", bgColor:"#fff8f2", textColor:"#C6A667" }
@@ -265,7 +266,6 @@ const resto = restaurantData[restoSlug] || restaurantData.voltaire;
 document.documentElement.style.setProperty('--brand', resto.brandColor);
 document.documentElement.style.setProperty('--bg', resto.bgColor);
 document.documentElement.style.setProperty('--text', resto.textColor);
-
 document.getElementById("restoName").innerText = resto.name;
 
 /* Buttons content */
@@ -314,17 +314,32 @@ const icons = {
   `
 };
 
-/* ✅ LIENS : -10% -> pwa-requise.html */
-const paths = {
-  btnCoupon: "pwa-requise.html",
-  btnAvis: "avis"
-};
+document.getElementById("btnCoupon").innerHTML = icons.btnCoupon;
+document.getElementById("btnAvis").innerHTML = icons.btnAvis;
 
-for (const id in paths) {
-  const el = document.getElementById(id);
-  el.href = `/${restoSlug}/${paths[id]}`;
-  el.innerHTML = icons[id];
-}
+/* ✅ Avis : lien direct */
+document.getElementById("btnAvis").href = `/${restoSlug}/avis`;
+
+/* ✅ Coupon : gating au clic (index toujours accessible) */
+document.getElementById("btnCoupon").href = "javascript:void(0)";
+document.getElementById("btnCoupon").addEventListener("click", () => {
+  const hasEmail = !!localStorage.getItem("user_email");
+
+  // Si l’app n’est pas installée -> page PWA requise
+  if (!isStandalone()) {
+    window.location.href = `/${restoSlug}/pwa-requise.html?next=coupon`;
+    return;
+  }
+
+  // Si PWA OK mais pas identifié -> inscription (ou autre)
+  if (!hasEmail) {
+    window.location.href = `/${restoSlug}/inscription.html?next=coupon`;
+    return;
+  }
+
+  // ✅ Tout OK -> page coupon
+  window.location.href = `/${restoSlug}/coupon.html`;
+});
 </script>
 
 </body>
