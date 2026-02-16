@@ -5,64 +5,162 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Programme Fidélité</title>
 
+<!-- 🔐 Protection par email via localStorage -->
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const email = params.get('email');
+  const localEmail = localStorage.getItem('user_email');
+
+  if (email) {
+    localStorage.setItem('user_email', email);
+    const cleanUrl = window.location.pathname.split('?')[0];
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
+
+  if (!email && !localEmail) {
+    const pathParts = window.location.pathname.split('/');
+    const basePath = '/' + pathParts[1] + '/';
+    window.location.href = basePath + 'inscription.html';
+  }
+})();
+</script>
+
 <style>
 :root{
   --brand:#C6A667;
   --bg:#fff8f2;
   --text:#C6A667;
-  --radius:22px;
+  --shadow: 0 18px 46px rgba(0,0,0,.10);
+  --shadow2: 0 10px 26px rgba(0,0,0,.08);
+  --radius: 22px;
 }
 
 body{
   margin:0;
-  font-family:'Montserrat', sans-serif;
-  background:linear-gradient(180deg,#ffffff 0%,var(--bg) 100%);
-  color:var(--text);
+  font-family:'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(900px 520px at 50% 0%, #ffffff 0%, var(--bg) 60%, #efe7db 100%);
+  color: var(--text);
   text-align:center;
 }
 
 /* HEADER */
-.header{ margin-top:50px; }
-.header img{ max-width:110px; }
-.header h1{ margin:12px 0 6px; font-size:22px; }
-.header p{ font-size:13px; opacity:.6; margin:0; }
+.header{ margin-top: 46px; }
+.header img{
+  max-width: 110px;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,.08));
+}
+.header h1{
+  font-size: 22px;
+  margin: 12px 0 6px;
+  letter-spacing:.2px;
+}
+.header .sub{
+  font-size: 13px;
+  opacity: .55;
+  font-weight: 600;
+  margin: 0;
+}
 
-/* CONTAINER */
+/* Container */
 .navbar{
   display:flex;
   flex-direction:column;
-  gap:20px;
-  padding:35px 18px 10px;
-  max-width:520px;
-  margin:0 auto;
+  gap: 18px;
+  padding: 34px 18px 10px;
+  max-width: 520px;
+  margin: 0 auto;
 }
 
 /* BUTTON BASE */
 .navbar a{
-  position:relative;
+  width:100%;
   text-decoration:none;
-  border-radius:var(--radius);
-  padding:26px 70px 26px 18px; /* ✅ réserve espace pour badge */
+  border-radius: var(--radius);
+  padding: 24px 18px;
   display:flex;
   align-items:center;
-  gap:14px;
+  justify-content:center;
+  flex-direction:row;
+  gap: 14px;
+  position:relative;
+  user-select:none;
   text-align:left;
-  transition:.15s ease;
+  transition: transform .10s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease, color .15s ease;
+}
+.navbar a:active{ transform: translateY(1px) scale(.995); }
+
+/* ICON BLOCK */
+.ico{
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.22);
+}
+.navbar a.secondary .ico{
+  background: rgba(198,166,103,.10);
+  border: 1px solid rgba(198,166,103,.22);
+}
+.ico svg{
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+  opacity: .95;
 }
 
-/* PRIMARY */
-.primary{
-  background:linear-gradient(180deg,var(--brand),#b8924f);
-  color:#fff;
-  box-shadow:0 20px 50px rgba(0,0,0,.12);
-  padding-top:60px;
+/* TEXT BLOCK */
+.txt{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  flex:1 1 auto;
+  min-width:0;
+}
+.btn-title{
+  font-weight: 900;
+  font-size: clamp(15px, 4.5vw, 18px);
+  white-space: nowrap; /* ✅ 1 ligne garantie */
+  line-height: 1.15;
+}
+.btn-sub{
+  font-size: 12.5px;
+  font-weight: 600;
+  opacity: .88;
+  line-height: 1.2;
 }
 
-.primary:hover{
-  transform:translateY(-3px);
+/* RIGHT PILL */
+.pill{
+  flex:0 0 auto;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.28);
+  background: rgba(255,255,255,.16);
+}
+.navbar a.secondary .pill{
+  border: 1px solid rgba(198,166,103,.28);
+  background: rgba(198,166,103,.10);
 }
 
-/* RIBBON */
+/* PRIMARY CTA */
+.navbar a.primary{
+  background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 95%, #fff) 0%, var(--brand) 100%);
+  color: #ffffff;
+  border: 2px solid color-mix(in srgb, var(--brand) 92%, #000);
+  box-shadow: var(--shadow);
+}
+.navbar a.primary:hover{
+  box-shadow: 0 22px 60px rgba(0,0,0,.13);
+  transform: translateY(-2px);
+}
+
+/* ✅ RIBBON (OFFRE DU MOIS) */
 .ribbon{
   position:absolute;
   top:0;
@@ -73,104 +171,58 @@ body{
   align-items:center;
   justify-content:center;
   font-size:13px;
-  font-weight:800;
-  background:rgba(0,0,0,.15);
-  border-top-left-radius:var(--radius);
-  border-top-right-radius:var(--radius);
+  font-weight:900;
+  letter-spacing:.4px;
+  background: rgba(0,0,0,.16);
+  color:#ffffff;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+}
+
+/* space for ribbon on primary button */
+.navbar a.primary{
+  padding-top:60px;
 }
 
 /* SECONDARY */
-.secondary{
-  background:#fff;
-  border:2px solid var(--brand);
-  color:var(--brand);
+.navbar a.secondary{
+  background: rgba(255,255,255,.82);
+  color: var(--brand);
+  border: 2px solid color-mix(in srgb, var(--brand) 75%, #0000);
+  box-shadow: var(--shadow2);
+}
+.navbar a.secondary:hover{
+  background: rgba(198,166,103,.06);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(0,0,0,.10);
 }
 
-.secondary:hover{
-  background:rgba(198,166,103,.05);
-  transform:translateY(-3px);
-}
-
-/* ICON */
-.ico{
-  width:46px;
-  height:46px;
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.primary .ico{
-  background:rgba(255,255,255,.2);
-}
-
-.secondary .ico{
-  background:rgba(198,166,103,.12);
-}
-
-.ico svg{
-  width:26px;
-  height:26px;
-  fill:currentColor;
-}
-
-/* TEXT */
-.txt{
-  flex:1;
-  min-width:0; /* ✅ permet ellipsis */
-}
-
-.btn-title{
-  font-weight:900;
-  font-size:clamp(15px,4.5vw,18px);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis; /* ✅ coupe propre si trop long */
-  line-height:1.15;
-}
-
-.btn-sub{
-  font-size:13px;
-  opacity:.9;
-}
-
-/* BADGE */
-.pill{
-  position:absolute;
-  right:14px;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:12px;
-  font-weight:800;
-  padding:7px 10px;
-  border-radius:999px;
-  pointer-events:none;
-}
-
-.primary .pill{
-  background:rgba(255,255,255,.25);
-  color:#fff;
-}
-
-.secondary .pill{
-  background:rgba(198,166,103,.12);
-  color:var(--brand);
-}
-
-/* TRUST */
+/* Trust + Legal */
 .trust{
-  margin-top:10px;
-  font-size:12px;
-  opacity:.7;
+  max-width: 520px;
+  margin: 10px auto 0;
+  padding: 0 18px;
+  font-size: 12px;
+  opacity: .65;
+  font-weight: 600;
+}
+.legal{
+  max-width: 520px;
+  margin: 14px auto 40px;
+  padding: 0 18px;
+  font-size: 11px;
+  opacity: .55;
+  line-height: 1.35;
 }
 
-.legal{
-  margin:15px auto 40px;
-  max-width:500px;
-  font-size:11px;
-  opacity:.55;
-  padding:0 18px;
+@media (max-width:480px){
+  .navbar{ padding: 28px 14px 8px; gap: 16px; }
+  .navbar a{ padding: 22px 14px; border-radius: 20px; gap: 12px; }
+  .navbar a.primary{ padding-top:56px; }
+  .btn-sub{ font-size: 12px; }
+  .ico{ width: 42px; height: 42px; border-radius: 13px; }
+  .pill{ font-size: 11.5px; padding: 7px 9px; }
+  .ribbon{ height:32px; font-size:12.5px; }
 }
 </style>
 </head>
@@ -178,64 +230,96 @@ body{
 <body>
 
 <div class="header">
-  <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" />
-  <h1>Resto1</h1>
-  <p>2 actions simples : avantage + avis</p>
+  <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo" />
+  <h1 id="restoName">Restaurant</h1>
+  <p class="sub">2 actions simples : avantage + avis</p>
 </div>
 
 <div class="navbar">
-
-<a href="#" class="primary">
-  <div class="ribbon">🔥 Offre du mois</div>
-
-  <div class="ico">
-    <svg viewBox="0 0 24 24">
-      <path d="M21 5v3.5q-.625.275-1.063.713T19.225 10
-      q0 .825.437 1.263T21 12.025V15
-      q0 .825-.588 1.413T19 17H5
-      q-.825 0-1.413-.588T3 15v-3
-      q.625-.275 1.063-.713T4.775 10
-      q0-.825-.437-1.263T3 7.525V5
-      q0-.825.588-1.413T5 3h14
-      q.825 0 1.413.588T21 5Z"/>
-    </svg>
-  </div>
-
-  <div class="txt">
-    <div class="btn-title">🎁 -10% OFFERT (prochaine visite)</div>
-    <div class="btn-sub">Reçu immédiatement par email • à utiliser lors de votre prochain passage</div>
-  </div>
-
-  <div class="pill">10s</div>
-</a>
-
-<a href="#" class="secondary">
-  <div class="ico">
-    <svg viewBox="0 0 24 24">
-      <path d="M12 17.3l6.2 3.7-1.6-7
-      5.4-4.7-7.2-.6L12 2
-      9.2 8.7l-7.2.6
-      5.4 4.7-1.6 7z"/>
-    </svg>
-  </div>
-
-  <div class="txt">
-    <div class="btn-title">⭐ Laisser un avis (facultatif)</div>
-    <div class="btn-sub">1 minute • Ça aide énormément le restaurant</div>
-  </div>
-
-  <div class="pill">1 min</div>
-</a>
-
+  <a id="btnCoupon" class="primary" aria-label="Activer -10% prochaine visite"></a>
+  <a id="btnAvis" class="secondary" aria-label="Laisser un avis"></a>
 </div>
 
-<div class="trust">
-✅ Simple • ✅ Rapide • ✅ Sans engagement
-</div>
+<div class="trust">✅ Simple • ✅ Rapide • ✅ Sans engagement</div>
 
 <div class="legal">
-La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
+  La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
 </div>
+
+<script>
+function getRestoSlug(){
+  const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
+  return path.split("/")[0] || "voltaire";
+}
+const restoSlug = getRestoSlug();
+
+const restaurantData = {
+  voltaire: { name:"Resto1", brandColor:"#B48C4A", bgColor:"#ffffff", textColor:"#B48C4A" },
+  resto3:   { name:"Resto 3", brandColor:"#C6A667", bgColor:"#fff8f2", textColor:"#C6A667" }
+};
+const resto = restaurantData[restoSlug] || restaurantData.voltaire;
+
+// Apply theme
+document.documentElement.style.setProperty('--brand', resto.brandColor);
+document.documentElement.style.setProperty('--bg', resto.bgColor);
+document.documentElement.style.setProperty('--text', resto.textColor);
+
+document.getElementById("restoName").innerText = resto.name;
+
+// Buttons content
+const icons = {
+  btnCoupon: `
+    <div class="ribbon">🔥 Offre du mois</div>
+
+    <div class="ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path fill="currentColor"
+          d="M21 5v3.5q-.625.275-1.063.713T19.225 10
+             q0 .825.437 1.263T21 12.025V15
+             q0 .825-.588 1.413T19 17H5
+             q-.825 0-1.413-.588T3 15v-3
+             q.625-.275 1.063-.713T4.775 10
+             q0-.825-.437-1.263T3 7.525V5
+             q0-.825.588-1.413T5 3h14
+             q.825 0 1.413.588T21 5Z"/>
+      </svg>
+    </div>
+
+    <div class="txt">
+      <div class="btn-title">🎁 -10% OFFERT (prochaine visite)</div>
+      <div class="btn-sub">Reçu immédiatement par email • à utiliser lors de votre prochain passage</div>
+    </div>
+
+    <div class="pill">10s</div>
+  `,
+  btnAvis: `
+    <div class="ico" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path fill="currentColor"
+          d="M12 17.3l6.2 3.7-1.6-7
+             5.4-4.7-7.2-.6L12 2
+             9.2 8.7l-7.2.6
+             5.4 4.7-1.6 7z"/>
+      </svg>
+    </div>
+
+    <div class="txt">
+      <div class="btn-title">⭐ Laisser un avis (facultatif)</div>
+      <div class="btn-sub">1 minute • Ça aide énormément le restaurant</div>
+    </div>
+
+    <div class="pill">1 min</div>
+  `
+};
+
+const paths = { btnCoupon:"coupon", btnAvis:"avis" };
+
+for (const id in paths) {
+  const el = document.getElementById(id);
+  el.href = `/${restoSlug}/${paths[id]}`;
+  el.innerHTML = icons[id];
+}
+</script>
 
 </body>
 </html>
