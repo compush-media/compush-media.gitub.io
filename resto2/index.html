@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Programme Fidélité</title>
 
-<!-- ✅ On conserve l’email si présent, mais on NE BLOQUE PLUS l’accès à l’index -->
+<!-- ✅ Email: on le stocke si présent, mais on NE BLOQUE PLUS l'accès à l'index -->
 <script>
 (function () {
   const params = new URLSearchParams(window.location.search);
@@ -13,7 +13,6 @@
 
   if (email) {
     localStorage.setItem('user_email', email);
-
     // Nettoie l’URL (retire ?email=)
     const cleanUrl = window.location.pathname;
     window.history.replaceState({}, document.title, cleanUrl);
@@ -317,7 +316,7 @@ const icons = {
 document.getElementById("btnCoupon").innerHTML = icons.btnCoupon;
 document.getElementById("btnAvis").innerHTML = icons.btnAvis;
 
-/* ✅ Avis : lien direct */
+/* ✅ Avis : lien universel vers avis.html */
 document.getElementById("btnAvis").href = `/${restoSlug}/avis.html`;
 
 /* ✅ Coupon : gating au clic (index toujours accessible) */
