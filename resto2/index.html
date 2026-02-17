@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Programme Fidélité</title>
 
-<!-- ✅ Email: on le stocke si présent, mais on NE BLOQUE PLUS l'accès à l'index -->
+<!-- ✅ Email: on le stocke si présent, mais on NE BLOQUE PAS l’accès à l’index -->
 <script>
 (function () {
   const params = new URLSearchParams(window.location.search);
@@ -28,6 +28,9 @@
   --shadow: 0 18px 46px rgba(0,0,0,.10);
   --shadow2: 0 10px 26px rgba(0,0,0,.08);
   --radius: 22px;
+
+  --card:#ffffff;
+  --muted: rgba(0,0,0,.55);
 }
 
 body{
@@ -172,11 +175,8 @@ body{
   border-top-left-radius: var(--radius);
   border-top-right-radius: var(--radius);
 }
-
 /* space for ribbon on primary button */
-.navbar a.primary{
-  padding-top:60px;
-}
+.navbar a.primary{ padding-top:60px; }
 
 /* SECONDARY */
 .navbar a.secondary{
@@ -209,6 +209,132 @@ body{
   line-height: 1.35;
 }
 
+/* ===========================
+   ✅ OVERLAY INSTALL (INLINE)
+   =========================== */
+.overlay{
+  position:fixed;
+  inset:0;
+  background: rgba(0,0,0,.46);
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  z-index:9999;
+  padding: 14px;
+}
+.sheet{
+  width:min(560px, 100%);
+  background: var(--card);
+  border-radius: 22px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.25);
+  overflow:hidden;
+  border: 1px solid rgba(0,0,0,.06);
+}
+.sheetTop{
+  padding: 16px 18px 12px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+.sheetTitle{
+  text-align:left;
+}
+.sheetTitle h2{
+  margin:0;
+  font-size: 18px;
+  color: #111;
+  letter-spacing:.1px;
+}
+.sheetTitle p{
+  margin:6px 0 0;
+  font-size: 13px;
+  color: rgba(0,0,0,.58);
+  line-height: 1.25;
+  font-weight: 600;
+}
+.closeBtn{
+  border:0;
+  background: rgba(0,0,0,.06);
+  color:#111;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  font-size: 18px;
+  cursor:pointer;
+}
+
+.sheetBody{
+  padding: 0 18px 16px;
+}
+.notice{
+  border: 2px solid color-mix(in srgb, var(--brand) 40%, #0000);
+  background: color-mix(in srgb, var(--brand) 10%, #fff);
+  border-radius: 16px;
+  padding: 12px 12px;
+  text-align:left;
+  color:#111;
+}
+.notice b{ color:#111; }
+.notice .small{
+  margin-top:6px;
+  font-size: 12.5px;
+  color: rgba(0,0,0,.62);
+  font-weight: 600;
+}
+
+.actions{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top: 14px;
+}
+.btn{
+  border:0;
+  width:100%;
+  border-radius: 16px;
+  padding: 14px 14px;
+  font-weight: 900;
+  font-size: 15px;
+  cursor:pointer;
+}
+.btnPrimary{
+  background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 95%, #fff) 0%, var(--brand) 100%);
+  color:#fff;
+  box-shadow: 0 14px 40px rgba(0,0,0,.14);
+}
+.btnGhost{
+  background: rgba(0,0,0,.06);
+  color:#111;
+}
+.helper{
+  margin-top: 12px;
+  font-size: 12px;
+  color: rgba(0,0,0,.55);
+  text-align:left;
+  line-height: 1.35;
+  font-weight: 600;
+}
+.helper code{
+  background: rgba(0,0,0,.06);
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+.badgeRow{
+  display:flex;
+  gap:8px;
+  margin-top: 10px;
+  flex-wrap:wrap;
+}
+.badge{
+  font-size: 12px;
+  font-weight: 900;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.06);
+  color:#111;
+}
+
 @media (max-width:480px){
   .navbar{ padding: 28px 14px 8px; gap: 16px; }
   .navbar a{ padding: 22px 14px; border-radius: 20px; gap: 12px; }
@@ -217,6 +343,7 @@ body{
   .ico{ width: 42px; height: 42px; border-radius: 13px; }
   .pill{ font-size: 11.5px; padding: 7px 9px; }
   .ribbon{ height:32px; font-size:12.5px; }
+  .overlay{ align-items:flex-end; }
 }
 </style>
 </head>
@@ -240,34 +367,83 @@ body{
   La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
 </div>
 
+<!-- ✅ OVERLAY INSTALL (1 SEUL ÉCRAN) -->
+<div class="overlay" id="installOverlay" role="dialog" aria-modal="true" aria-label="Installer l’application">
+  <div class="sheet">
+    <div class="sheetTop">
+      <div class="sheetTitle">
+        <h2>🔒 Activer votre réduction en caisse</h2>
+        <p>Pour éviter les captures d’écran, l’accès au coupon se fait via l’application (PWA).</p>
+      </div>
+      <button class="closeBtn" id="closeOverlay" aria-label="Fermer">✕</button>
+    </div>
+
+    <div class="sheetBody">
+      <div class="notice">
+        <b>🎁 -10% OFFERT</b> — activation en <b>10 secondes</b>.
+        <div class="small">Ensuite, vous pourrez vous inscrire et recevoir votre réduction par email.</div>
+
+        <div class="badgeRow">
+          <div class="badge">✅ 10 secondes</div>
+          <div class="badge">✅ Sans compte</div>
+          <div class="badge">✅ Sans engagement</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btnPrimary" id="btnInstallNow">Installer maintenant</button>
+        <button class="btn btnGhost" id="btnContinueAnyway">Continuer vers l’inscription</button>
+      </div>
+
+      <div class="helper" id="iosHelp" style="display:none;">
+        <b>iPhone :</b> appuyez sur <code>Partager</code> (⬆︎) puis <code>Ajouter à l’écran d’accueil</code>.
+      </div>
+
+      <div class="helper" style="margin-top:10px;">
+        <span style="opacity:.8;">Astuce :</span> une fois installée, vous la retrouvez sur votre écran d’accueil.
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-/* ✅ Détection resto via URL */
+/* ===========
+   RESTO SLUG
+   =========== */
 function getRestoSlug(){
   const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
   return path.split("/")[0] || "voltaire";
 }
 const restoSlug = getRestoSlug();
 
-/* ✅ Détection PWA installée (Android + iOS) */
+/* ===========
+   PWA CHECKS
+   =========== */
 function isStandalone(){
   return window.matchMedia('(display-mode: standalone)').matches
-      || window.navigator.standalone === true;
+      || window.navigator.standalone === true; // iOS Safari
+}
+function isIOS(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent);
 }
 
-/* ✅ Données restos */
+/* ===========
+   THEME DATA
+   =========== */
 const restaurantData = {
   voltaire: { name:"Resto1", brandColor:"#B48C4A", bgColor:"#ffffff", textColor:"#B48C4A" },
   resto3:   { name:"Resto 3", brandColor:"#C6A667", bgColor:"#fff8f2", textColor:"#C6A667" }
 };
 const resto = restaurantData[restoSlug] || restaurantData.voltaire;
 
-/* Apply theme */
 document.documentElement.style.setProperty('--brand', resto.brandColor);
 document.documentElement.style.setProperty('--bg', resto.bgColor);
 document.documentElement.style.setProperty('--text', resto.textColor);
 document.getElementById("restoName").innerText = resto.name;
 
-/* Buttons content */
+/* ===========
+   BUTTON HTML
+   =========== */
 const icons = {
   btnCoupon: `
     <div class="ribbon">🔥 Offre du mois</div>
@@ -313,30 +489,120 @@ const icons = {
   `
 };
 
-document.getElementById("btnCoupon").innerHTML = icons.btnCoupon;
-document.getElementById("btnAvis").innerHTML = icons.btnAvis;
+const btnCoupon = document.getElementById("btnCoupon");
+const btnAvis   = document.getElementById("btnAvis");
 
-/* ✅ Avis : lien universel vers avis.html */
-document.getElementById("btnAvis").href = `/${restoSlug}/avis.html`;
+btnCoupon.innerHTML = icons.btnCoupon;
+btnAvis.innerHTML   = icons.btnAvis;
 
-/* ✅ Coupon : gating au clic (index toujours accessible) */
-document.getElementById("btnCoupon").href = "javascript:void(0)";
-document.getElementById("btnCoupon").addEventListener("click", () => {
-  const hasEmail = !!localStorage.getItem("user_email");
+/* ✅ Avis : universel vers avis.html */
+btnAvis.href = `/${restoSlug}/avis.html`;
 
-  // Si l’app n’est pas installée -> page PWA requise
-  if (!isStandalone()) {
-    window.location.href = `/${restoSlug}/pwa-requise.html?next=coupon`;
+/* ===========
+   INSTALL FLOW
+   =========== */
+let deferredPrompt = null;
+
+// Android/Chrome : capture le prompt install natif
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+// Overlay UI
+const overlay = document.getElementById("installOverlay");
+const closeOverlayBtn = document.getElementById("closeOverlay");
+const btnInstallNow = document.getElementById("btnInstallNow");
+const btnContinueAnyway = document.getElementById("btnContinueAnyway");
+const iosHelp = document.getElementById("iosHelp");
+
+let nextAfterInstall = "coupon"; // "coupon" ou "inscription"
+function openOverlay(next){
+  nextAfterInstall = next || "coupon";
+  overlay.style.display = "flex";
+  iosHelp.style.display = (isIOS() ? "block" : "none");
+
+  // Texte bouton selon contexte
+  if (deferredPrompt) {
+    btnInstallNow.textContent = "Installer maintenant";
+  } else {
+    // iOS ou navigateur sans BIP
+    btnInstallNow.textContent = isIOS() ? "Voir comment installer" : "Installer l’app";
+  }
+}
+function closeOverlay(){
+  overlay.style.display = "none";
+}
+
+closeOverlayBtn.addEventListener("click", closeOverlay);
+overlay.addEventListener("click", (e) => {
+  if (e.target === overlay) closeOverlay();
+});
+
+// Bouton install
+btnInstallNow.addEventListener("click", async () => {
+  // Android/Chrome (prompt natif)
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+
+    // On laisse 600ms puis on tente d'avancer (si l’utilisateur a installé)
+    setTimeout(() => {
+      closeOverlay();
+      routeAfterInstall();
+    }, 600);
     return;
   }
 
-  // Si PWA OK mais pas identifié -> inscription (ou autre)
+  // iOS : pas de prompt natif => on affiche l’aide (déjà visible)
+  iosHelp.style.display = "block";
+});
+
+// Continuer vers inscription (même sans install)
+btnContinueAnyway.addEventListener("click", () => {
+  closeOverlay();
+  // on envoie direct vers inscription
+  window.location.href = `/${restoSlug}/inscription.html?next=coupon`;
+});
+
+function routeAfterInstall(){
+  const hasEmail = !!localStorage.getItem("user_email");
+
+  if (nextAfterInstall === "coupon") {
+    // Si pas encore en standalone, on ne force pas : l’utilisateur peut installer puis revenir
+    if (!isStandalone()) return;
+
+    if (!hasEmail) {
+      window.location.href = `/${restoSlug}/inscription.html?next=coupon`;
+      return;
+    }
+    window.location.href = `/${restoSlug}/coupon.html`;
+  } else {
+    window.location.href = `/${restoSlug}/inscription.html?next=coupon`;
+  }
+}
+
+/* ===========
+   COUPON GATING (INLINE, 1 écran)
+   =========== */
+btnCoupon.href = "javascript:void(0)";
+btnCoupon.addEventListener("click", () => {
+  const hasEmail = !!localStorage.getItem("user_email");
+
+  // 1) Pas installé => overlay (1 seul écran, pas de page)
+  if (!isStandalone()) {
+    openOverlay("coupon");
+    return;
+  }
+
+  // 2) Installée mais pas identifié => inscription
   if (!hasEmail) {
     window.location.href = `/${restoSlug}/inscription.html?next=coupon`;
     return;
   }
 
-  // ✅ Tout OK -> page coupon
+  // 3) OK => coupon
   window.location.href = `/${restoSlug}/coupon.html`;
 });
 </script>
