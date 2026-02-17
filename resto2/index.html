@@ -10,9 +10,8 @@
   --brand:#C6A667;
   --bg:#fff8f2;
   --text:#C6A667;
-  --card:#fff;
-  --radius:22px;
   --shadow:0 18px 46px rgba(0,0,0,.12);
+  --radius:22px;
 }
 
 body{
@@ -25,9 +24,9 @@ body{
 
 /* HEADER */
 .header{margin-top:40px}
-.header img{width:110px}
+.header img{width:110px; filter: drop-shadow(0 6px 16px rgba(0,0,0,.08));}
 .header h1{margin:10px 0 5px}
-.sub{opacity:.6;font-size:13px}
+.sub{opacity:.6;font-size:13px;font-weight:700}
 
 /* CONTAINER */
 .navbar{
@@ -39,12 +38,11 @@ body{
   gap:18px;
 }
 
-/* BUTTON */
 .navbar a{
   text-decoration:none;
   color:inherit;
   background:#fff;
-  border-radius:22px;
+  border-radius:var(--radius);
   padding:24px 18px;
   display:flex;
   gap:14px;
@@ -54,47 +52,40 @@ body{
 }
 
 .primary{
-  background:linear-gradient(180deg,#e2c77f,var(--brand));
+  background:linear-gradient(180deg,color-mix(in srgb, var(--brand) 65%, #fff) 0%, var(--brand) 100%);
   color:#fff;
+  padding-top:56px;
 }
-
-.ico{
-  width:44px;
-  height:44px;
-  border-radius:14px;
-  background:rgba(255,255,255,.25);
-  display:grid;
-  place-items:center;
-  font-size:20px;
-}
-
-.txt{
-  flex:1;
-  text-align:left;
-}
-
-.title{font-weight:900}
-.subt{font-size:13px;opacity:.85}
 
 .ribbon{
   position:absolute;
   top:0;left:0;right:0;
   height:32px;
-  background:rgba(0,0,0,.2);
+  background:rgba(0,0,0,.18);
   color:#fff;
   font-size:13px;
-  font-weight:800;
+  font-weight:900;
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:22px 22px 0 0;
+  border-radius:var(--radius) var(--radius) 0 0;
 }
 
-.primary{padding-top:56px}
+.ico{
+  width:44px;height:44px;border-radius:14px;
+  background:rgba(255,255,255,.22);
+  display:grid;place-items:center;
+  font-size:20px;
+  flex:0 0 auto;
+}
+
+.txt{flex:1;text-align:left}
+.title{font-weight:900}
+.subt{font-size:13px;opacity:.85;font-weight:700}
 
 /* FOOTER */
-.trust{font-size:12px;opacity:.6}
-.legal{font-size:11px;opacity:.5;margin-bottom:30px}
+.trust{font-size:12px;opacity:.6;font-weight:700}
+.legal{font-size:11px;opacity:.5;margin:14px 0 30px;line-height:1.35}
 
 /* OVERLAY */
 .overlay{
@@ -113,7 +104,7 @@ body{
   border-radius:22px;
   width:100%;
   max-width:560px;
-  box-shadow:0 25px 60px rgba(0,0,0,.3);
+  box-shadow:0 25px 60px rgba(0,0,0,.30);
   overflow:hidden;
 }
 
@@ -125,6 +116,7 @@ body{
   padding:16px;
   text-align:left;
 }
+
 .sheetTop h2{
   margin:0;
   font-size:18px;
@@ -134,15 +126,14 @@ body{
 .sheetTop p{
   margin:6px 0 0;
   font-size:13px;
-  color:rgba(0,0,0,.6);
+  color:rgba(0,0,0,.60);
   font-weight:700;
 }
+
 .closeBtn{
   border:0;
   background:rgba(0,0,0,.06);
-  width:38px;
-  height:38px;
-  border-radius:12px;
+  width:38px;height:38px;border-radius:12px;
   font-size:18px;
   cursor:pointer;
 }
@@ -158,7 +149,7 @@ body{
   padding:14px;
   border-radius:16px;
   color:#111;
-  font-weight:800;
+  font-weight:900;
 }
 
 .actions{
@@ -170,102 +161,118 @@ body{
 
 .btn{
   border:0;
-  border-radius:14px;
+  border-radius:16px;
   padding:14px;
   font-weight:900;
   cursor:pointer;
   font-size:15px;
 }
-
 .btnMain{
-  background:linear-gradient(180deg,#e2c77f,var(--brand));
+  background:linear-gradient(180deg,color-mix(in srgb, var(--brand) 65%, #fff) 0%, var(--brand) 100%);
   color:#fff;
+  box-shadow: 0 14px 40px rgba(0,0,0,.12);
 }
-
 .btnAlt{
   background:#eee;
   color:#111;
 }
 
-/* IOS HELP (visible + scroll) */
-#iosHelp{
+/* ✅ Panneau iOS façon image de droite */
+.iosPanel{
   display:none;
-  margin-top:12px;
-  font-size:13px;
-  color:rgba(0,0,0,.72);
-  font-weight:800;
-  line-height:1.35;
-}
-#iosHelp code{
-  background:rgba(0,0,0,.06);
-  padding:2px 6px;
-  border-radius:8px;
-}
-
-/* CALLOUT IOS */
-.iosCallout{
-  position:fixed;
-  right:14px;
-  bottom:90px;
-  display:none;
-  z-index:10000;
-  pointer-events:auto;
-}
-
-.bubble{
-  background:linear-gradient(180deg,#e2c77f,var(--brand));
-  color:#fff;
-  padding:12px 12px;
-  border-radius:14px;
-  font-weight:900;
-  margin-bottom:8px;
-  max-width:260px;
-  text-align:left;
-  box-shadow:0 14px 40px rgba(0,0,0,.2);
-  position:relative;
-}
-.bubble::after{
-  content:"";
-  position:absolute;
-  right:16px;
-  bottom:-10px;
-  border-width:10px 10px 0 10px;
-  border-style:solid;
-  border-color: color-mix(in srgb, var(--brand) 92%, #fff) transparent transparent transparent;
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,.15));
-}
-
-.logo{
-  width:64px;
-  height:64px;
-  border-radius:50%;
+  margin-top:14px;
+  border-radius:18px;
+  border:1px solid rgba(0,0,0,.08);
   background:#fff;
-  display:grid;
-  place-items:center;
-  box-shadow:0 10px 40px rgba(0,0,0,.3);
+  overflow:hidden;
+  box-shadow: 0 14px 40px rgba(0,0,0,.08);
 }
-.logo img{width:40px;height:40px;object-fit:contain}
 
-/* ANIM */
-@keyframes pulse{
-  0%{transform:scale(1); box-shadow:0 0 0 0 rgba(198,166,103,.45);}
-  70%{transform:scale(1.08); box-shadow:0 0 0 18px rgba(198,166,103,0);}
-  100%{transform:scale(1); box-shadow:0 0 0 0 rgba(198,166,103,0);}
+.iosPanelHead{
+  padding:14px 14px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  border-bottom:1px solid rgba(0,0,0,.06);
 }
-@keyframes bounce{
-  0%{transform:translateY(0)}
-  30%{transform:translateY(-6px)}
-  60%{transform:translateY(2px)}
-  100%{transform:translateY(0)}
-}
-.active .logo{animation:pulse 2.2s infinite}
-.active .bubble{animation:bounce 2.2s infinite}
 
-@media (max-width:390px){
-  .iosCallout{right:12px;bottom:84px}
-  .logo{width:60px;height:60px}
-  .logo img{width:38px;height:38px}
-  .bubble{font-size:13.5px}
+.iosPanelHead .t{
+  font-size:16px;
+  font-weight:900;
+  color:#111;
+}
+.iosPanelHead .x{
+  border:0;
+  background:rgba(0,0,0,.06);
+  width:34px;height:34px;border-radius:12px;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.iosAppCard{
+  margin:12px 14px 0;
+  border-radius:16px;
+  border:1px solid rgba(0,0,0,.08);
+  background:rgba(0,0,0,.02);
+  padding:12px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.iosAppIcon{
+  width:44px;height:44px;border-radius:12px;
+  background:#fff;
+  border:1px solid rgba(0,0,0,.06);
+  display:grid;place-items:center;
+  overflow:hidden;
+}
+.iosAppIcon img{width:28px;height:28px;object-fit:contain}
+.iosAppMeta .name{font-weight:900;color:#111;line-height:1.1}
+.iosAppMeta .host{font-weight:700;color:rgba(0,0,0,.55);font-size:12.5px;margin-top:2px}
+
+.steps{
+  padding: 10px 14px 14px;
+}
+.step{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  padding:10px 0;
+  border-bottom:1px solid rgba(0,0,0,.05);
+}
+.step:last-child{border-bottom:none}
+.stepNum{
+  width:26px;height:26px;border-radius:10px;
+  background:rgba(0,0,0,.06);
+  display:grid;place-items:center;
+  font-weight:900;
+  color:#111;
+  flex:0 0 auto;
+}
+.stepText{
+  color:#111;
+  font-weight:800;
+  font-size:14px;
+  line-height:1.25;
+}
+.kbd{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:12px;
+  border:1px solid rgba(0,0,0,.12);
+  background:#fff;
+  font-weight:900;
+  font-size:13px;
+}
+.muted{color:rgba(0,0,0,.55);font-weight:700}
+
+/* petit bouton “Partager” look */
+.shareIcon{
+  width:18px;height:18px;display:inline-block;
+  vertical-align:-3px;
 }
 </style>
 </head>
@@ -279,7 +286,6 @@ body{
 </div>
 
 <div class="navbar">
-
   <a id="btnCoupon" class="primary" href="#">
     <div class="ribbon">🔥 Offre du mois</div>
     <div class="ico">🎁</div>
@@ -296,11 +302,10 @@ body{
       <div class="subt">1 minute • Facultatif</div>
     </div>
   </a>
-
 </div>
 
 <div class="trust">✅ Simple • Rapide • Sécurisé</div>
-<div class="legal">La réduction est indépendante de l’avis.</div>
+<div class="legal">La réduction est indépendante de l’avis. Laisser un avis reste facultatif.</div>
 
 <!-- OVERLAY -->
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Installer l’application">
@@ -321,19 +326,62 @@ body{
         <button class="btn btnAlt" id="btnContinue">Continuer vers l’inscription</button>
       </div>
 
-      <div id="iosHelp">
-        <b>iPhone :</b> appuyez sur <code>Partager</code> (⬆︎) puis <code>Ajouter à l’écran d’accueil</code>.<br>
-        Ensuite, ouvrez l’app depuis votre écran d’accueil.
-      </div>
-    </div>
-  </div>
-</div>
+      <!-- ✅ Panneau iOS "logique" (comme image de droite) -->
+      <div class="iosPanel" id="iosPanel">
+        <div class="iosPanelHead">
+          <div class="t">Installer l'application</div>
+          <button class="x" id="iosPanelClose" aria-label="Fermer">✕</button>
+        </div>
 
-<!-- IOS CALLOUT -->
-<div class="iosCallout" id="iosCallout" aria-hidden="true">
-  <div class="bubble" id="bubbleText">👇 Partager → Ajouter à l’écran d’accueil</div>
-  <div class="logo">
-    <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="">
+        <div class="iosAppCard">
+          <div class="iosAppIcon">
+            <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="">
+          </div>
+          <div class="iosAppMeta">
+            <div class="name" id="iosAppName">resto</div>
+            <div class="host">app.cartefidelavis.com</div>
+          </div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="stepNum">1</div>
+            <div class="stepText">
+              Appuyez sur
+              <span class="kbd">
+                <!-- icône partage -->
+                <svg class="shareIcon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M5 10v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Partager
+              </span>
+              <span class="muted">dans la barre d'URL</span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="stepNum">2</div>
+            <div class="stepText">
+              Cliquez sur
+              <span class="kbd">… Plus</span>
+              <span class="muted">pour afficher la liste d'actions</span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="stepNum">3</div>
+            <div class="stepText">
+              Choisissez
+              <span class="kbd">＋ Sur l'écran d'accueil</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- fin panneau iOS -->
+
+    </div>
   </div>
 </div>
 
@@ -356,16 +404,18 @@ const slug = getSlug();
 
 /* Lien avis universel */
 document.getElementById("btnAvis").href = `/${slug}/avis.html`;
-
-/* (Optionnel) Nom resto */
 document.getElementById("restoName").textContent = slug;
 
 /* UI */
 const overlay = document.getElementById("overlay");
 const closeBtn = document.getElementById("closeBtn");
-const iosHelp = document.getElementById("iosHelp");
-const iosCallout = document.getElementById("iosCallout");
-const bubbleText = document.getElementById("bubbleText");
+const btnCoupon = document.getElementById("btnCoupon");
+const btnInstall = document.getElementById("btnInstall");
+const btnContinue = document.getElementById("btnContinue");
+
+const iosPanel = document.getElementById("iosPanel");
+const iosPanelClose = document.getElementById("iosPanelClose");
+const iosAppName = document.getElementById("iosAppName");
 
 /* INSTALL PROMPT ANDROID */
 let deferredPrompt = null;
@@ -374,46 +424,32 @@ window.addEventListener("beforeinstallprompt", (e) => {
   deferredPrompt = e;
 });
 
-/* ✅ Auto redirect : si déjà installée => inscription */
+/* ✅ si déjà installée -> inscription directe */
 if (isStandalone()) {
   location.href = `/${slug}/inscription.html`;
 }
 
-/* Overlay */
 function openOverlay(){
   overlay.style.display = "flex";
+  // reset panneau
+  iosPanel.style.display = "none";
+  iosAppName.textContent = slug;
 
-  // Reset
-  iosHelp.style.display = "none";
-  iosCallout.classList.remove("active");
-
-  // iOS : afficher callout
-  if (isIOS() && !isStandalone()) {
-    iosCallout.style.display = "block";
-    bubbleText.textContent = "👇 Partager → Ajouter à l’écran d’accueil";
-
-    setTimeout(() => {
-      iosCallout.classList.add("active");
-    }, 250);
-
-    // stop animation après 12s
-    setTimeout(() => {
-      iosCallout.classList.remove("active");
-    }, 12000);
+  // sur iOS on change le texte du bouton pour éviter confusion
+  if (isIOS() && !isStandalone()){
+    btnInstall.textContent = "Voir comment installer (iPhone)";
   } else {
-    iosCallout.style.display = "none";
+    btnInstall.textContent = "Installer maintenant";
   }
 }
 
 function closeOverlay(){
   overlay.style.display = "none";
-  iosCallout.style.display = "none";
-  iosCallout.classList.remove("active");
+  iosPanel.style.display = "none";
 }
 
-/* ✅ FIX: Installer (Android prompt / iOS aide + scroll) */
+/* ✅ “Installer” : Android = prompt natif ; iOS = ouvre le panneau logique */
 async function tryInstall(){
-
   // ANDROID
   if (deferredPrompt) {
     deferredPrompt.prompt();
@@ -429,36 +465,27 @@ async function tryInstall(){
     return;
   }
 
-  // IOS : impossible d’installer via bouton -> on montre l’aide clairement
-  iosHelp.style.display = "block";
-
-  iosHelp.scrollIntoView({
-    behavior: "smooth",
-    block: "center"
-  });
-
-  iosCallout.style.display = "block";
-  iosCallout.classList.add("active");
-  setTimeout(() => iosCallout.classList.remove("active"), 10000);
+  // iOS : on affiche le panneau (comme l’image de droite)
+  iosPanel.style.display = "block";
+  iosPanel.scrollIntoView({ behavior:"smooth", block:"center" });
 }
 
 /* Events */
-document.getElementById("btnCoupon").addEventListener("click", (e) => {
+btnCoupon.addEventListener("click", (e) => {
   e.preventDefault();
 
-  // pas installé => popup
   if (!isStandalone()) {
     openOverlay();
     return;
   }
 
-  // installé => inscription (ton choix final)
+  // installé => inscription (ton choix)
   location.href = `/${slug}/inscription.html`;
 });
 
-document.getElementById("btnInstall").addEventListener("click", tryInstall);
+btnInstall.addEventListener("click", tryInstall);
 
-document.getElementById("btnContinue").addEventListener("click", () => {
+btnContinue.addEventListener("click", () => {
   closeOverlay();
   location.href = `/${slug}/inscription.html`;
 });
@@ -468,9 +495,8 @@ overlay.addEventListener("click", (e) => {
   if (e.target === overlay) closeOverlay();
 });
 
-iosCallout.addEventListener("click", () => {
-  iosHelp.style.display = "block";
-  iosHelp.scrollIntoView({ behavior:"smooth", block:"center" });
+iosPanelClose.addEventListener("click", () => {
+  iosPanel.style.display = "none";
 });
 </script>
 
