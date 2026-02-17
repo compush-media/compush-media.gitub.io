@@ -65,6 +65,7 @@ body{
   background:rgba(255,255,255,.25);
   display:grid;
   place-items:center;
+  font-size:20px;
 }
 
 .txt{
@@ -73,7 +74,7 @@ body{
 }
 
 .title{font-weight:900}
-.subt{font-size:13px;opacity:.8}
+.subt{font-size:13px;opacity:.85}
 
 .ribbon{
   position:absolute;
@@ -119,13 +120,31 @@ body{
 .sheetTop{
   display:flex;
   justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
   padding:16px;
+  text-align:left;
 }
-
 .sheetTop h2{
   margin:0;
   font-size:18px;
   color:#111;
+  line-height:1.2;
+}
+.sheetTop p{
+  margin:6px 0 0;
+  font-size:13px;
+  color:rgba(0,0,0,.6);
+  font-weight:700;
+}
+.closeBtn{
+  border:0;
+  background:rgba(0,0,0,.06);
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  font-size:18px;
+  cursor:pointer;
 }
 
 .sheetBody{
@@ -134,11 +153,12 @@ body{
 }
 
 .notice{
-  background:rgba(198,166,103,.1);
-  border:2px solid rgba(198,166,103,.4);
+  background:rgba(198,166,103,.10);
+  border:2px solid rgba(198,166,103,.35);
   padding:14px;
   border-radius:16px;
   color:#111;
+  font-weight:800;
 }
 
 .actions{
@@ -154,6 +174,7 @@ body{
   padding:14px;
   font-weight:900;
   cursor:pointer;
+  font-size:15px;
 }
 
 .btnMain{
@@ -163,6 +184,22 @@ body{
 
 .btnAlt{
   background:#eee;
+  color:#111;
+}
+
+/* IOS HELP (visible + scroll) */
+#iosHelp{
+  display:none;
+  margin-top:12px;
+  font-size:13px;
+  color:rgba(0,0,0,.72);
+  font-weight:800;
+  line-height:1.35;
+}
+#iosHelp code{
+  background:rgba(0,0,0,.06);
+  padding:2px 6px;
+  border-radius:8px;
 }
 
 /* CALLOUT IOS */
@@ -172,15 +209,30 @@ body{
   bottom:90px;
   display:none;
   z-index:10000;
+  pointer-events:auto;
 }
 
 .bubble{
   background:linear-gradient(180deg,#e2c77f,var(--brand));
   color:#fff;
-  padding:12px;
+  padding:12px 12px;
   border-radius:14px;
   font-weight:900;
   margin-bottom:8px;
+  max-width:260px;
+  text-align:left;
+  box-shadow:0 14px 40px rgba(0,0,0,.2);
+  position:relative;
+}
+.bubble::after{
+  content:"";
+  position:absolute;
+  right:16px;
+  bottom:-10px;
+  border-width:10px 10px 0 10px;
+  border-style:solid;
+  border-color: color-mix(in srgb, var(--brand) 92%, #fff) transparent transparent transparent;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,.15));
 }
 
 .logo{
@@ -192,44 +244,53 @@ body{
   place-items:center;
   box-shadow:0 10px 40px rgba(0,0,0,.3);
 }
-
-.logo img{width:40px}
+.logo img{width:40px;height:40px;object-fit:contain}
 
 /* ANIM */
 @keyframes pulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.08)}
-  100%{transform:scale(1)}
+  0%{transform:scale(1); box-shadow:0 0 0 0 rgba(198,166,103,.45);}
+  70%{transform:scale(1.08); box-shadow:0 0 0 18px rgba(198,166,103,0);}
+  100%{transform:scale(1); box-shadow:0 0 0 0 rgba(198,166,103,0);}
 }
+@keyframes bounce{
+  0%{transform:translateY(0)}
+  30%{transform:translateY(-6px)}
+  60%{transform:translateY(2px)}
+  100%{transform:translateY(0)}
+}
+.active .logo{animation:pulse 2.2s infinite}
+.active .bubble{animation:bounce 2.2s infinite}
 
-.active .logo{animation:pulse 2s infinite}
+@media (max-width:390px){
+  .iosCallout{right:12px;bottom:84px}
+  .logo{width:60px;height:60px}
+  .logo img{width:38px;height:38px}
+  .bubble{font-size:13.5px}
+}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-  <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png">
+  <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo">
   <h1 id="restoName">Restaurant</h1>
   <p class="sub">2 actions simples : avantage + avis</p>
 </div>
 
 <div class="navbar">
 
-  <a id="btnCoupon" class="primary">
+  <a id="btnCoupon" class="primary" href="#">
     <div class="ribbon">🔥 Offre du mois</div>
-
     <div class="ico">🎁</div>
-
     <div class="txt">
       <div class="title">-10% OFFERT</div>
       <div class="subt">Utilisable prochaine visite</div>
     </div>
   </a>
 
-  <a id="btnAvis">
+  <a id="btnAvis" href="#">
     <div class="ico">⭐</div>
-
     <div class="txt">
       <div class="title">Laisser un avis</div>
       <div class="subt">1 minute • Facultatif</div>
@@ -242,146 +303,175 @@ body{
 <div class="legal">La réduction est indépendante de l’avis.</div>
 
 <!-- OVERLAY -->
-<div class="overlay" id="overlay">
-
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Installer l’application">
   <div class="sheet">
-
     <div class="sheetTop">
-      <h2>Activer votre réduction</h2>
-      <button onclick="closeOverlay()">✕</button>
+      <div>
+        <h2>🔒 Activer votre réduction</h2>
+        <p>Pour éviter les captures d’écran, le coupon est accessible via l’app.</p>
+      </div>
+      <button class="closeBtn" id="closeBtn" aria-label="Fermer">✕</button>
     </div>
 
     <div class="sheetBody">
-
-      <div class="notice">
-        🎁 Installez l’app pour sécuriser votre coupon
-      </div>
+      <div class="notice">🎁 Installez l’app pour activer votre coupon en caisse</div>
 
       <div class="actions">
-        <button class="btn btnMain" id="btnInstall">
-          Installer maintenant
-        </button>
-
-        <button class="btn btnAlt" id="btnContinue">
-          Continuer vers inscription
-        </button>
+        <button class="btn btnMain" id="btnInstall">Installer maintenant</button>
+        <button class="btn btnAlt" id="btnContinue">Continuer vers l’inscription</button>
       </div>
 
-      <div id="iosHelp" style="display:none;margin-top:10px;font-size:13px">
-        iPhone : Partager → Ajouter à l’écran d’accueil
+      <div id="iosHelp">
+        <b>iPhone :</b> appuyez sur <code>Partager</code> (⬆︎) puis <code>Ajouter à l’écran d’accueil</code>.<br>
+        Ensuite, ouvrez l’app depuis votre écran d’accueil.
       </div>
-
     </div>
   </div>
 </div>
 
 <!-- IOS CALLOUT -->
-<div class="iosCallout" id="iosCallout">
-  <div class="bubble">👇 Partager → Ajouter</div>
-
+<div class="iosCallout" id="iosCallout" aria-hidden="true">
+  <div class="bubble" id="bubbleText">👇 Partager → Ajouter à l’écran d’accueil</div>
   <div class="logo">
-    <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png">
+    <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="">
   </div>
 </div>
 
 <script>
-
 /* HELPERS */
 function isStandalone(){
   return window.matchMedia('(display-mode:standalone)').matches
-    || window.navigator.standalone===true;
+    || window.navigator.standalone === true;
 }
-
 function isIOS(){
   return /iphone|ipad|ipod/i.test(navigator.userAgent);
 }
 
-/* AUTO REDIRECT */
-if(isStandalone()){
-  location.href="inscription.html";
-}
-
-/* RESTO */
+/* RESTO SLUG (universel /resto2/index.html) */
 function getSlug(){
-  return location.pathname.split("/")[1]||"resto";
+  const parts = location.pathname.split("/").filter(Boolean);
+  return parts[0] || "resto";
 }
-const slug=getSlug();
+const slug = getSlug();
 
-document.getElementById("btnAvis").href=`/${slug}/avis.html`;
+/* Lien avis universel */
+document.getElementById("btnAvis").href = `/${slug}/avis.html`;
 
-/* INSTALL PROMPT ANDROID */
-let deferredPrompt=null;
-
-window.addEventListener("beforeinstallprompt",e=>{
-  e.preventDefault();
-  deferredPrompt=e;
-});
+/* (Optionnel) Nom resto */
+document.getElementById("restoName").textContent = slug;
 
 /* UI */
-const overlay=document.getElementById("overlay");
-const iosHelp=document.getElementById("iosHelp");
-const iosCallout=document.getElementById("iosCallout");
+const overlay = document.getElementById("overlay");
+const closeBtn = document.getElementById("closeBtn");
+const iosHelp = document.getElementById("iosHelp");
+const iosCallout = document.getElementById("iosCallout");
+const bubbleText = document.getElementById("bubbleText");
 
+/* INSTALL PROMPT ANDROID */
+let deferredPrompt = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+/* ✅ Auto redirect : si déjà installée => inscription */
+if (isStandalone()) {
+  location.href = `/${slug}/inscription.html`;
+}
+
+/* Overlay */
 function openOverlay(){
-  overlay.style.display="flex";
+  overlay.style.display = "flex";
 
-  if(isIOS() && !isStandalone()){
-    iosHelp.style.display="block";
-    iosCallout.style.display="block";
-    iosCallout.classList.add("active");
+  // Reset
+  iosHelp.style.display = "none";
+  iosCallout.classList.remove("active");
+
+  // iOS : afficher callout
+  if (isIOS() && !isStandalone()) {
+    iosCallout.style.display = "block";
+    bubbleText.textContent = "👇 Partager → Ajouter à l’écran d’accueil";
+
+    setTimeout(() => {
+      iosCallout.classList.add("active");
+    }, 250);
+
+    // stop animation après 12s
+    setTimeout(() => {
+      iosCallout.classList.remove("active");
+    }, 12000);
+  } else {
+    iosCallout.style.display = "none";
   }
 }
 
 function closeOverlay(){
-  overlay.style.display="none";
-  iosCallout.style.display="none";
+  overlay.style.display = "none";
+  iosCallout.style.display = "none";
   iosCallout.classList.remove("active");
 }
 
-/* INSTALL */
+/* ✅ FIX: Installer (Android prompt / iOS aide + scroll) */
 async function tryInstall(){
 
-  /* ANDROID */
-  if(deferredPrompt){
+  // ANDROID
+  if (deferredPrompt) {
     deferredPrompt.prompt();
     await deferredPrompt.userChoice;
-    deferredPrompt=null;
+    deferredPrompt = null;
 
-    setTimeout(()=>{
-      if(isStandalone()){
-        location.href="inscription.html";
+    setTimeout(() => {
+      if (isStandalone()) {
+        location.href = `/${slug}/inscription.html`;
       }
-    },800);
+    }, 800);
 
     return;
   }
 
-  /* IOS */
-  iosHelp.style.display="block";
+  // IOS : impossible d’installer via bouton -> on montre l’aide clairement
+  iosHelp.style.display = "block";
+
+  iosHelp.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+
+  iosCallout.style.display = "block";
+  iosCallout.classList.add("active");
+  setTimeout(() => iosCallout.classList.remove("active"), 10000);
 }
 
-/* EVENTS */
-document.getElementById("btnCoupon").onclick=e=>{
+/* Events */
+document.getElementById("btnCoupon").addEventListener("click", (e) => {
   e.preventDefault();
 
-  if(!isStandalone()){
+  // pas installé => popup
+  if (!isStandalone()) {
     openOverlay();
     return;
   }
 
-  location.href="coupon.html";
-};
+  // installé => inscription (ton choix final)
+  location.href = `/${slug}/inscription.html`;
+});
 
-document.getElementById("btnInstall").onclick=tryInstall;
+document.getElementById("btnInstall").addEventListener("click", tryInstall);
 
-document.getElementById("btnContinue").onclick=()=>{
-  location.href="inscription.html";
-};
+document.getElementById("btnContinue").addEventListener("click", () => {
+  closeOverlay();
+  location.href = `/${slug}/inscription.html`;
+});
 
-iosCallout.onclick=()=>{
-  iosHelp.style.display="block";
-};
+closeBtn.addEventListener("click", closeOverlay);
+overlay.addEventListener("click", (e) => {
+  if (e.target === overlay) closeOverlay();
+});
 
+iosCallout.addEventListener("click", () => {
+  iosHelp.style.display = "block";
+  iosHelp.scrollIntoView({ behavior:"smooth", block:"center" });
+});
 </script>
 
 </body>
