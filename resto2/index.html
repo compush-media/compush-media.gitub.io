@@ -13,7 +13,6 @@
 
   if (email) {
     localStorage.setItem('user_email', email);
-    // Nettoie l’URL (retire ?email=)
     const cleanUrl = window.location.pathname;
     window.history.replaceState({}, document.title, cleanUrl);
   }
@@ -335,6 +334,69 @@ body{
   color:#111;
 }
 
+/* ✅ iOS callout bas-droite */
+.iosCallout{
+  position: fixed;
+  right: 14px;
+  bottom: 92px; /* au-dessus de la barre Safari */
+  z-index: 10000;
+  display: none;
+  pointer-events: auto;
+}
+.iosBubble{
+  background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 92%, #fff) 0%, var(--brand) 100%);
+  color: #fff;
+  font-weight: 900;
+  font-size: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  box-shadow: 0 16px 44px rgba(0,0,0,.20);
+  position: relative;
+  margin-bottom: 10px;
+  max-width: 250px;
+}
+.iosBubble::after{
+  content:"";
+  position:absolute;
+  right: 18px;
+  bottom: -10px;
+  border-width: 10px 10px 0 10px;
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--brand) 92%, #fff) transparent transparent transparent;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,.15));
+}
+.iosLogo{
+  width: 66px;
+  height: 66px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.92);
+  border: 2px solid rgba(255,255,255,.9);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 18px 52px rgba(0,0,0,.22);
+  overflow: hidden;
+}
+.iosLogo img{
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+/* ✅ Animations */
+@keyframes iosPulse {
+  0%   { transform: scale(1);   box-shadow: 0 0 0 0 rgba(198,166,103,.45); }
+  70%  { transform: scale(1.08); box-shadow: 0 0 0 18px rgba(198,166,103,0); }
+  100% { transform: scale(1);   box-shadow: 0 0 0 0 rgba(198,166,103,0); }
+}
+@keyframes iosBounce {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-6px); }
+  60%  { transform: translateY(2px); }
+  100% { transform: translateY(0); }
+}
+.iosCallout.active .iosLogo{ animation: iosPulse 2.2s infinite; }
+.iosCallout.active .iosBubble{ animation: iosBounce 2.2s infinite; }
+
 @media (max-width:480px){
   .navbar{ padding: 28px 14px 8px; gap: 16px; }
   .navbar a{ padding: 22px 14px; border-radius: 20px; gap: 12px; }
@@ -344,6 +406,10 @@ body{
   .pill{ font-size: 11.5px; padding: 7px 9px; }
   .ribbon{ height:32px; font-size:12.5px; }
   .overlay{ align-items:flex-end; }
+  .iosCallout{ bottom: 84px; right: 12px; }
+  .iosLogo{ width: 60px; height: 60px; }
+  .iosLogo img{ width: 40px; height: 40px; }
+  .iosBubble{ font-size: 13.5px; }
 }
 </style>
 </head>
@@ -367,7 +433,7 @@ body{
   La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
 </div>
 
-<!-- ✅ OVERLAY INSTALL (1 SEUL ÉCRAN) -->
+<!-- ✅ OVERLAY INSTALL (1 écran) -->
 <div class="overlay" id="installOverlay" role="dialog" aria-modal="true" aria-label="Installer l’application">
   <div class="sheet">
     <div class="sheetTop">
@@ -403,6 +469,17 @@ body{
         <span style="opacity:.8;">Astuce :</span> une fois installée, vous la retrouvez sur votre écran d’accueil.
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ✅ iOS: callout bas-droite (bulle + flèche + logo) -->
+<div class="iosCallout" id="iosCallout" aria-hidden="true">
+  <div class="iosBubble">👇 Appuyez ici pour installer l’app</div>
+  <div class="iosLogo">
+    <img
+      src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png"
+      alt=""
+    />
   </div>
 </div>
 
@@ -456,7 +533,7 @@ const icons = {
              q0 .825-.588 1.413T19 17H5
              q-.825 0-1.413-.588T3 15v-3
              q.625-.275 1.063-.713T4.775 10
-             q0-.825-.437-1.263T3 7.525V5
+             q0 .825-.437 1.263T3 7.525V5
              q0-.825.588-1.413T5 3h14
              q.825 0 1.413.588T21 5Z"/>
       </svg>
@@ -516,22 +593,40 @@ const btnInstallNow = document.getElementById("btnInstallNow");
 const btnContinueAnyway = document.getElementById("btnContinueAnyway");
 const iosHelp = document.getElementById("iosHelp");
 
+// iOS callout
+const iosCallout = document.getElementById("iosCallout");
+
 let nextAfterInstall = "coupon"; // "coupon" ou "inscription"
+
 function openOverlay(next){
   nextAfterInstall = next || "coupon";
   overlay.style.display = "flex";
-  iosHelp.style.display = (isIOS() ? "block" : "none");
+
+  const showIOS = isIOS() && !isStandalone();
+  iosHelp.style.display = (showIOS ? "block" : "none");
+  iosCallout.style.display = (showIOS ? "block" : "none");
+
+  if (showIOS){
+    // Active animation après 300ms
+    setTimeout(() => {
+      iosCallout.classList.add("active");
+      // Stop animation après 12s (optionnel mais recommandé)
+      setTimeout(() => iosCallout.classList.remove("active"), 12000);
+    }, 300);
+  }
 
   // Texte bouton selon contexte
   if (deferredPrompt) {
     btnInstallNow.textContent = "Installer maintenant";
   } else {
-    // iOS ou navigateur sans BIP
     btnInstallNow.textContent = isIOS() ? "Voir comment installer" : "Installer l’app";
   }
 }
+
 function closeOverlay(){
   overlay.style.display = "none";
+  iosCallout.style.display = "none";
+  iosCallout.classList.remove("active");
 }
 
 closeOverlayBtn.addEventListener("click", closeOverlay);
@@ -539,7 +634,12 @@ overlay.addEventListener("click", (e) => {
   if (e.target === overlay) closeOverlay();
 });
 
-// Bouton install
+// Cliquer le callout => (re)affiche l'aide iOS
+iosCallout.addEventListener("click", () => {
+  iosHelp.style.display = "block";
+});
+
+/* Bouton install */
 btnInstallNow.addEventListener("click", async () => {
   // Android/Chrome (prompt natif)
   if (deferredPrompt) {
@@ -547,7 +647,6 @@ btnInstallNow.addEventListener("click", async () => {
     await deferredPrompt.userChoice;
     deferredPrompt = null;
 
-    // On laisse 600ms puis on tente d'avancer (si l’utilisateur a installé)
     setTimeout(() => {
       closeOverlay();
       routeAfterInstall();
@@ -559,10 +658,9 @@ btnInstallNow.addEventListener("click", async () => {
   iosHelp.style.display = "block";
 });
 
-// Continuer vers inscription (même sans install)
+/* Continuer vers inscription (même sans install) */
 btnContinueAnyway.addEventListener("click", () => {
   closeOverlay();
-  // on envoie direct vers inscription
   window.location.href = `/${restoSlug}/inscription.html?next=coupon`;
 });
 
@@ -570,7 +668,7 @@ function routeAfterInstall(){
   const hasEmail = !!localStorage.getItem("user_email");
 
   if (nextAfterInstall === "coupon") {
-    // Si pas encore en standalone, on ne force pas : l’utilisateur peut installer puis revenir
+    // Si pas encore en standalone, on ne force pas
     if (!isStandalone()) return;
 
     if (!hasEmail) {
@@ -584,13 +682,13 @@ function routeAfterInstall(){
 }
 
 /* ===========
-   COUPON GATING (INLINE, 1 écran)
+   COUPON GATING (INLINE)
    =========== */
 btnCoupon.href = "javascript:void(0)";
 btnCoupon.addEventListener("click", () => {
   const hasEmail = !!localStorage.getItem("user_email");
 
-  // 1) Pas installé => overlay (1 seul écran, pas de page)
+  // 1) Pas installé => overlay (1 seul écran)
   if (!isStandalone()) {
     openOverlay("coupon");
     return;
