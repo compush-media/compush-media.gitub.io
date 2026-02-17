@@ -1,708 +1,387 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Programme Fidélité</title>
-
-<!-- ✅ Email: on le stocke si présent, mais on NE BLOQUE PAS l’accès à l’index -->
-<script>
-(function () {
-  const params = new URLSearchParams(window.location.search);
-  const email = params.get('email');
-
-  if (email) {
-    localStorage.setItem('user_email', email);
-    const cleanUrl = window.location.pathname;
-    window.history.replaceState({}, document.title, cleanUrl);
-  }
-})();
-</script>
 
 <style>
 :root{
   --brand:#C6A667;
   --bg:#fff8f2;
   --text:#C6A667;
-  --shadow: 0 18px 46px rgba(0,0,0,.10);
-  --shadow2: 0 10px 26px rgba(0,0,0,.08);
-  --radius: 22px;
-
-  --card:#ffffff;
-  --muted: rgba(0,0,0,.55);
+  --card:#fff;
+  --radius:22px;
+  --shadow:0 18px 46px rgba(0,0,0,.12);
 }
 
 body{
   margin:0;
-  font-family:'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(900px 520px at 50% 0%, #ffffff 0%, var(--bg) 60%, #efe7db 100%);
-  color: var(--text);
+  font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:radial-gradient(900px 520px at 50% 0%,#fff 0%,var(--bg) 60%,#efe7db 100%);
+  color:var(--text);
   text-align:center;
 }
 
 /* HEADER */
-.header{ margin-top: 46px; }
-.header img{
-  max-width: 110px;
-  filter: drop-shadow(0 6px 16px rgba(0,0,0,.08));
-}
-.header h1{
-  font-size: 22px;
-  margin: 12px 0 6px;
-  letter-spacing:.2px;
-}
-.header .sub{
-  font-size: 13px;
-  opacity: .55;
-  font-weight: 600;
-  margin: 0;
-}
+.header{margin-top:40px}
+.header img{width:110px}
+.header h1{margin:10px 0 5px}
+.sub{opacity:.6;font-size:13px}
 
-/* Container */
+/* CONTAINER */
 .navbar{
+  max-width:520px;
+  margin:0 auto;
+  padding:30px 16px;
   display:flex;
   flex-direction:column;
-  gap: 18px;
-  padding: 34px 18px 10px;
-  max-width: 520px;
-  margin: 0 auto;
+  gap:18px;
 }
 
-/* BUTTON BASE */
+/* BUTTON */
 .navbar a{
-  width:100%;
   text-decoration:none;
-  border-radius: var(--radius);
-  padding: 24px 18px;
+  color:inherit;
+  background:#fff;
+  border-radius:22px;
+  padding:24px 18px;
   display:flex;
+  gap:14px;
   align-items:center;
-  justify-content:center;
-  flex-direction:row;
-  gap: 14px;
+  box-shadow:var(--shadow);
   position:relative;
-  user-select:none;
-  text-align:left;
-  transition: transform .10s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease, color .15s ease;
 }
-.navbar a:active{ transform: translateY(1px) scale(.995); }
 
-/* ICON BLOCK */
+.primary{
+  background:linear-gradient(180deg,#e2c77f,var(--brand));
+  color:#fff;
+}
+
 .ico{
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:rgba(255,255,255,.25);
   display:grid;
   place-items:center;
-  flex:0 0 auto;
-  background: rgba(255,255,255,.16);
-  border: 1px solid rgba(255,255,255,.22);
-}
-.navbar a.secondary .ico{
-  background: rgba(198,166,103,.10);
-  border: 1px solid rgba(198,166,103,.22);
-}
-.ico svg{
-  width: 26px;
-  height: 26px;
-  fill: currentColor;
-  opacity: .95;
 }
 
-/* TEXT BLOCK */
 .txt{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  flex:1 1 auto;
-  min-width:0;
-}
-.btn-title{
-  font-weight: 900;
-  font-size: clamp(15px, 4.5vw, 18px);
-  white-space: nowrap;
-  line-height: 1.15;
-}
-.btn-sub{
-  font-size: 12.5px;
-  font-weight: 600;
-  opacity: .88;
-  line-height: 1.2;
+  flex:1;
+  text-align:left;
 }
 
-/* RIGHT PILL */
-.pill{
-  flex:0 0 auto;
-  font-size: 12px;
-  font-weight: 900;
-  padding: 8px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.28);
-  background: rgba(255,255,255,.16);
-}
-.navbar a.secondary .pill{
-  border: 1px solid rgba(198,166,103,.28);
-  background: rgba(198,166,103,.10);
-}
+.title{font-weight:900}
+.subt{font-size:13px;opacity:.8}
 
-/* PRIMARY CTA */
-.navbar a.primary{
-  background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 95%, #fff) 0%, var(--brand) 100%);
-  color: #ffffff;
-  border: 2px solid color-mix(in srgb, var(--brand) 92%, #000);
-  box-shadow: var(--shadow);
-}
-.navbar a.primary:hover{
-  box-shadow: 0 22px 60px rgba(0,0,0,.13);
-  transform: translateY(-2px);
-}
-
-/* ✅ RIBBON (OFFRE DU MOIS) */
 .ribbon{
   position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:34px;
+  top:0;left:0;right:0;
+  height:32px;
+  background:rgba(0,0,0,.2);
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:.4px;
-  background: rgba(0,0,0,.16);
-  color:#ffffff;
-  border-top-left-radius: var(--radius);
-  border-top-right-radius: var(--radius);
-}
-/* space for ribbon on primary button */
-.navbar a.primary{ padding-top:60px; }
-
-/* SECONDARY */
-.navbar a.secondary{
-  background: rgba(255,255,255,.82);
-  color: var(--brand);
-  border: 2px solid color-mix(in srgb, var(--brand) 75%, #0000);
-  box-shadow: var(--shadow2);
-}
-.navbar a.secondary:hover{
-  background: rgba(198,166,103,.06);
-  transform: translateY(-2px);
-  box-shadow: 0 16px 40px rgba(0,0,0,.10);
+  border-radius:22px 22px 0 0;
 }
 
-/* Trust + Legal */
-.trust{
-  max-width: 520px;
-  margin: 10px auto 0;
-  padding: 0 18px;
-  font-size: 12px;
-  opacity: .65;
-  font-weight: 600;
-}
-.legal{
-  max-width: 520px;
-  margin: 14px auto 40px;
-  padding: 0 18px;
-  font-size: 11px;
-  opacity: .55;
-  line-height: 1.35;
-}
+.primary{padding-top:56px}
 
-/* ===========================
-   ✅ OVERLAY INSTALL (INLINE)
-   =========================== */
+/* FOOTER */
+.trust{font-size:12px;opacity:.6}
+.legal{font-size:11px;opacity:.5;margin-bottom:30px}
+
+/* OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
-  background: rgba(0,0,0,.46);
+  background:rgba(0,0,0,.45);
   display:none;
-  align-items:flex-end;
   justify-content:center;
+  align-items:flex-end;
   z-index:9999;
-  padding: 14px;
+  padding:14px;
 }
+
 .sheet{
-  width:min(560px, 100%);
-  background: var(--card);
-  border-radius: 22px;
-  box-shadow: 0 24px 70px rgba(0,0,0,.25);
+  background:#fff;
+  border-radius:22px;
+  width:100%;
+  max-width:560px;
+  box-shadow:0 25px 60px rgba(0,0,0,.3);
   overflow:hidden;
-  border: 1px solid rgba(0,0,0,.06);
 }
+
 .sheetTop{
-  padding: 16px 18px 12px;
   display:flex;
-  align-items:flex-start;
   justify-content:space-between;
-  gap:10px;
+  padding:16px;
 }
-.sheetTitle{
-  text-align:left;
-}
-.sheetTitle h2{
+
+.sheetTop h2{
   margin:0;
-  font-size: 18px;
-  color: #111;
-  letter-spacing:.1px;
-}
-.sheetTitle p{
-  margin:6px 0 0;
-  font-size: 13px;
-  color: rgba(0,0,0,.58);
-  line-height: 1.25;
-  font-weight: 600;
-}
-.closeBtn{
-  border:0;
-  background: rgba(0,0,0,.06);
+  font-size:18px;
   color:#111;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  font-size: 18px;
-  cursor:pointer;
 }
 
 .sheetBody{
-  padding: 0 18px 16px;
-}
-.notice{
-  border: 2px solid color-mix(in srgb, var(--brand) 40%, #0000);
-  background: color-mix(in srgb, var(--brand) 10%, #fff);
-  border-radius: 16px;
-  padding: 12px 12px;
+  padding:16px;
   text-align:left;
-  color:#111;
 }
-.notice b{ color:#111; }
-.notice .small{
-  margin-top:6px;
-  font-size: 12.5px;
-  color: rgba(0,0,0,.62);
-  font-weight: 600;
+
+.notice{
+  background:rgba(198,166,103,.1);
+  border:2px solid rgba(198,166,103,.4);
+  padding:14px;
+  border-radius:16px;
+  color:#111;
 }
 
 .actions{
+  margin-top:14px;
   display:flex;
   flex-direction:column;
   gap:10px;
-  margin-top: 14px;
 }
+
 .btn{
   border:0;
-  width:100%;
-  border-radius: 16px;
-  padding: 14px 14px;
-  font-weight: 900;
-  font-size: 15px;
+  border-radius:14px;
+  padding:14px;
+  font-weight:900;
   cursor:pointer;
 }
-.btnPrimary{
-  background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 95%, #fff) 0%, var(--brand) 100%);
+
+.btnMain{
+  background:linear-gradient(180deg,#e2c77f,var(--brand));
   color:#fff;
-  box-shadow: 0 14px 40px rgba(0,0,0,.14);
-}
-.btnGhost{
-  background: rgba(0,0,0,.06);
-  color:#111;
-}
-.helper{
-  margin-top: 12px;
-  font-size: 12px;
-  color: rgba(0,0,0,.55);
-  text-align:left;
-  line-height: 1.35;
-  font-weight: 600;
-}
-.helper code{
-  background: rgba(0,0,0,.06);
-  padding: 2px 6px;
-  border-radius: 8px;
-}
-.badgeRow{
-  display:flex;
-  gap:8px;
-  margin-top: 10px;
-  flex-wrap:wrap;
-}
-.badge{
-  font-size: 12px;
-  font-weight: 900;
-  padding: 8px 10px;
-  border-radius: 999px;
-  background: rgba(0,0,0,.06);
-  color:#111;
 }
 
-/* ✅ iOS callout bas-droite */
+.btnAlt{
+  background:#eee;
+}
+
+/* CALLOUT IOS */
 .iosCallout{
-  position: fixed;
-  right: 14px;
-  bottom: 92px; /* au-dessus de la barre Safari */
-  z-index: 10000;
-  display: none;
-  pointer-events: auto;
-}
-.iosBubble{
-  background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 92%, #fff) 0%, var(--brand) 100%);
-  color: #fff;
-  font-weight: 900;
-  font-size: 14px;
-  padding: 12px 14px;
-  border-radius: 16px;
-  box-shadow: 0 16px 44px rgba(0,0,0,.20);
-  position: relative;
-  margin-bottom: 10px;
-  max-width: 250px;
-}
-.iosBubble::after{
-  content:"";
-  position:absolute;
-  right: 18px;
-  bottom: -10px;
-  border-width: 10px 10px 0 10px;
-  border-style: solid;
-  border-color: color-mix(in srgb, var(--brand) 92%, #fff) transparent transparent transparent;
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,.15));
-}
-.iosLogo{
-  width: 66px;
-  height: 66px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.92);
-  border: 2px solid rgba(255,255,255,.9);
-  display: grid;
-  place-items: center;
-  box-shadow: 0 18px 52px rgba(0,0,0,.22);
-  overflow: hidden;
-}
-.iosLogo img{
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
+  position:fixed;
+  right:14px;
+  bottom:90px;
+  display:none;
+  z-index:10000;
 }
 
-/* ✅ Animations */
-@keyframes iosPulse {
-  0%   { transform: scale(1);   box-shadow: 0 0 0 0 rgba(198,166,103,.45); }
-  70%  { transform: scale(1.08); box-shadow: 0 0 0 18px rgba(198,166,103,0); }
-  100% { transform: scale(1);   box-shadow: 0 0 0 0 rgba(198,166,103,0); }
+.bubble{
+  background:linear-gradient(180deg,#e2c77f,var(--brand));
+  color:#fff;
+  padding:12px;
+  border-radius:14px;
+  font-weight:900;
+  margin-bottom:8px;
 }
-@keyframes iosBounce {
-  0%   { transform: translateY(0); }
-  30%  { transform: translateY(-6px); }
-  60%  { transform: translateY(2px); }
-  100% { transform: translateY(0); }
-}
-.iosCallout.active .iosLogo{ animation: iosPulse 2.2s infinite; }
-.iosCallout.active .iosBubble{ animation: iosBounce 2.2s infinite; }
 
-@media (max-width:480px){
-  .navbar{ padding: 28px 14px 8px; gap: 16px; }
-  .navbar a{ padding: 22px 14px; border-radius: 20px; gap: 12px; }
-  .navbar a.primary{ padding-top:56px; }
-  .btn-sub{ font-size: 12px; }
-  .ico{ width: 42px; height: 42px; border-radius: 13px; }
-  .pill{ font-size: 11.5px; padding: 7px 9px; }
-  .ribbon{ height:32px; font-size:12.5px; }
-  .overlay{ align-items:flex-end; }
-  .iosCallout{ bottom: 84px; right: 12px; }
-  .iosLogo{ width: 60px; height: 60px; }
-  .iosLogo img{ width: 40px; height: 40px; }
-  .iosBubble{ font-size: 13.5px; }
+.logo{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  background:#fff;
+  display:grid;
+  place-items:center;
+  box-shadow:0 10px 40px rgba(0,0,0,.3);
 }
+
+.logo img{width:40px}
+
+/* ANIM */
+@keyframes pulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.08)}
+  100%{transform:scale(1)}
+}
+
+.active .logo{animation:pulse 2s infinite}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-  <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo" />
+  <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png">
   <h1 id="restoName">Restaurant</h1>
   <p class="sub">2 actions simples : avantage + avis</p>
 </div>
 
 <div class="navbar">
-  <a id="btnCoupon" class="primary" aria-label="Activer -10% prochaine visite"></a>
-  <a id="btnAvis" class="secondary" aria-label="Laisser un avis"></a>
+
+  <a id="btnCoupon" class="primary">
+    <div class="ribbon">🔥 Offre du mois</div>
+
+    <div class="ico">🎁</div>
+
+    <div class="txt">
+      <div class="title">-10% OFFERT</div>
+      <div class="subt">Utilisable prochaine visite</div>
+    </div>
+  </a>
+
+  <a id="btnAvis">
+    <div class="ico">⭐</div>
+
+    <div class="txt">
+      <div class="title">Laisser un avis</div>
+      <div class="subt">1 minute • Facultatif</div>
+    </div>
+  </a>
+
 </div>
 
-<div class="trust">✅ Simple • ✅ Rapide • ✅ Sans engagement</div>
+<div class="trust">✅ Simple • Rapide • Sécurisé</div>
+<div class="legal">La réduction est indépendante de l’avis.</div>
 
-<div class="legal">
-  La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
-</div>
+<!-- OVERLAY -->
+<div class="overlay" id="overlay">
 
-<!-- ✅ OVERLAY INSTALL (1 écran) -->
-<div class="overlay" id="installOverlay" role="dialog" aria-modal="true" aria-label="Installer l’application">
   <div class="sheet">
+
     <div class="sheetTop">
-      <div class="sheetTitle">
-        <h2>🔒 Activer votre réduction en caisse</h2>
-        <p>Pour éviter les captures d’écran, l’accès au coupon se fait via l’application (PWA).</p>
-      </div>
-      <button class="closeBtn" id="closeOverlay" aria-label="Fermer">✕</button>
+      <h2>Activer votre réduction</h2>
+      <button onclick="closeOverlay()">✕</button>
     </div>
 
     <div class="sheetBody">
-      <div class="notice">
-        <b>🎁 -10% OFFERT</b> — activation en <b>10 secondes</b>.
-        <div class="small">Ensuite, vous pourrez vous inscrire et recevoir votre réduction par email.</div>
 
-        <div class="badgeRow">
-          <div class="badge">✅ 10 secondes</div>
-          <div class="badge">✅ Sans compte</div>
-          <div class="badge">✅ Sans engagement</div>
-        </div>
+      <div class="notice">
+        🎁 Installez l’app pour sécuriser votre coupon
       </div>
 
       <div class="actions">
-        <button class="btn btnPrimary" id="btnInstallNow">Installer maintenant</button>
-        <button class="btn btnGhost" id="btnContinueAnyway">Continuer vers l’inscription</button>
+        <button class="btn btnMain" id="btnInstall">
+          Installer maintenant
+        </button>
+
+        <button class="btn btnAlt" id="btnContinue">
+          Continuer vers inscription
+        </button>
       </div>
 
-      <div class="helper" id="iosHelp" style="display:none;">
-        <b>iPhone :</b> appuyez sur <code>Partager</code> (⬆︎) puis <code>Ajouter à l’écran d’accueil</code>.
+      <div id="iosHelp" style="display:none;margin-top:10px;font-size:13px">
+        iPhone : Partager → Ajouter à l’écran d’accueil
       </div>
 
-      <div class="helper" style="margin-top:10px;">
-        <span style="opacity:.8;">Astuce :</span> une fois installée, vous la retrouvez sur votre écran d’accueil.
-      </div>
     </div>
   </div>
 </div>
 
-<!-- ✅ iOS: callout bas-droite (bulle + flèche + logo) -->
-<div class="iosCallout" id="iosCallout" aria-hidden="true">
-  <div class="iosBubble">👇 Appuyez ici pour installer l’app</div>
-  <div class="iosLogo">
-    <img
-      src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png"
-      alt=""
-    />
+<!-- IOS CALLOUT -->
+<div class="iosCallout" id="iosCallout">
+  <div class="bubble">👇 Partager → Ajouter</div>
+
+  <div class="logo">
+    <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png">
   </div>
 </div>
 
 <script>
-/* ===========
-   RESTO SLUG
-   =========== */
-function getRestoSlug(){
-  const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
-  return path.split("/")[0] || "voltaire";
-}
-const restoSlug = getRestoSlug();
 
-/* ===========
-   PWA CHECKS
-   =========== */
+/* HELPERS */
 function isStandalone(){
-  return window.matchMedia('(display-mode: standalone)').matches
-      || window.navigator.standalone === true; // iOS Safari
+  return window.matchMedia('(display-mode:standalone)').matches
+    || window.navigator.standalone===true;
 }
+
 function isIOS(){
   return /iphone|ipad|ipod/i.test(navigator.userAgent);
 }
 
-/* ===========
-   THEME DATA
-   =========== */
-const restaurantData = {
-  voltaire: { name:"Resto1", brandColor:"#B48C4A", bgColor:"#ffffff", textColor:"#B48C4A" },
-  resto3:   { name:"Resto 3", brandColor:"#C6A667", bgColor:"#fff8f2", textColor:"#C6A667" }
-};
-const resto = restaurantData[restoSlug] || restaurantData.voltaire;
+/* AUTO REDIRECT */
+if(isStandalone()){
+  location.href="inscription.html";
+}
 
-document.documentElement.style.setProperty('--brand', resto.brandColor);
-document.documentElement.style.setProperty('--bg', resto.bgColor);
-document.documentElement.style.setProperty('--text', resto.textColor);
-document.getElementById("restoName").innerText = resto.name;
+/* RESTO */
+function getSlug(){
+  return location.pathname.split("/")[1]||"resto";
+}
+const slug=getSlug();
 
-/* ===========
-   BUTTON HTML
-   =========== */
-const icons = {
-  btnCoupon: `
-    <div class="ribbon">🔥 Offre du mois</div>
+document.getElementById("btnAvis").href=`/${slug}/avis.html`;
 
-    <div class="ico" aria-hidden="true">
-      <svg viewBox="0 0 24 24">
-        <path fill="currentColor"
-          d="M21 5v3.5q-.625.275-1.063.713T19.225 10
-             q0 .825.437 1.263T21 12.025V15
-             q0 .825-.588 1.413T19 17H5
-             q-.825 0-1.413-.588T3 15v-3
-             q.625-.275 1.063-.713T4.775 10
-             q0 .825-.437 1.263T3 7.525V5
-             q0-.825.588-1.413T5 3h14
-             q.825 0 1.413.588T21 5Z"/>
-      </svg>
-    </div>
+/* INSTALL PROMPT ANDROID */
+let deferredPrompt=null;
 
-    <div class="txt">
-      <div class="btn-title">🎁 -10% OFFERT (prochaine visite)</div>
-      <div class="btn-sub">Reçu immédiatement par email • à utiliser lors de votre prochain passage</div>
-    </div>
-
-    <div class="pill">10s</div>
-  `,
-  btnAvis: `
-    <div class="ico" aria-hidden="true">
-      <svg viewBox="0 0 24 24">
-        <path fill="currentColor"
-          d="M12 17.3l6.2 3.7-1.6-7
-             5.4-4.7-7.2-.6L12 2
-             9.2 8.7l-7.2.6
-             5.4 4.7-1.6 7z"/>
-      </svg>
-    </div>
-
-    <div class="txt">
-      <div class="btn-title">⭐ Laisser un avis (facultatif)</div>
-      <div class="btn-sub">1 minute • Ça aide énormément le restaurant</div>
-    </div>
-
-    <div class="pill">1 min</div>
-  `
-};
-
-const btnCoupon = document.getElementById("btnCoupon");
-const btnAvis   = document.getElementById("btnAvis");
-
-btnCoupon.innerHTML = icons.btnCoupon;
-btnAvis.innerHTML   = icons.btnAvis;
-
-/* ✅ Avis : universel vers avis.html */
-btnAvis.href = `/${restoSlug}/avis.html`;
-
-/* ===========
-   INSTALL FLOW
-   =========== */
-let deferredPrompt = null;
-
-// Android/Chrome : capture le prompt install natif
-window.addEventListener('beforeinstallprompt', (e) => {
+window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
-  deferredPrompt = e;
+  deferredPrompt=e;
 });
 
-// Overlay UI
-const overlay = document.getElementById("installOverlay");
-const closeOverlayBtn = document.getElementById("closeOverlay");
-const btnInstallNow = document.getElementById("btnInstallNow");
-const btnContinueAnyway = document.getElementById("btnContinueAnyway");
-const iosHelp = document.getElementById("iosHelp");
+/* UI */
+const overlay=document.getElementById("overlay");
+const iosHelp=document.getElementById("iosHelp");
+const iosCallout=document.getElementById("iosCallout");
 
-// iOS callout
-const iosCallout = document.getElementById("iosCallout");
+function openOverlay(){
+  overlay.style.display="flex";
 
-let nextAfterInstall = "coupon"; // "coupon" ou "inscription"
-
-function openOverlay(next){
-  nextAfterInstall = next || "coupon";
-  overlay.style.display = "flex";
-
-  const showIOS = isIOS() && !isStandalone();
-  iosHelp.style.display = (showIOS ? "block" : "none");
-  iosCallout.style.display = (showIOS ? "block" : "none");
-
-  if (showIOS){
-    // Active animation après 300ms
-    setTimeout(() => {
-      iosCallout.classList.add("active");
-      // Stop animation après 12s (optionnel mais recommandé)
-      setTimeout(() => iosCallout.classList.remove("active"), 12000);
-    }, 300);
-  }
-
-  // Texte bouton selon contexte
-  if (deferredPrompt) {
-    btnInstallNow.textContent = "Installer maintenant";
-  } else {
-    btnInstallNow.textContent = isIOS() ? "Voir comment installer" : "Installer l’app";
+  if(isIOS() && !isStandalone()){
+    iosHelp.style.display="block";
+    iosCallout.style.display="block";
+    iosCallout.classList.add("active");
   }
 }
 
 function closeOverlay(){
-  overlay.style.display = "none";
-  iosCallout.style.display = "none";
+  overlay.style.display="none";
+  iosCallout.style.display="none";
   iosCallout.classList.remove("active");
 }
 
-closeOverlayBtn.addEventListener("click", closeOverlay);
-overlay.addEventListener("click", (e) => {
-  if (e.target === overlay) closeOverlay();
-});
+/* INSTALL */
+async function tryInstall(){
 
-// Cliquer le callout => (re)affiche l'aide iOS
-iosCallout.addEventListener("click", () => {
-  iosHelp.style.display = "block";
-});
-
-/* Bouton install */
-btnInstallNow.addEventListener("click", async () => {
-  // Android/Chrome (prompt natif)
-  if (deferredPrompt) {
+  /* ANDROID */
+  if(deferredPrompt){
     deferredPrompt.prompt();
     await deferredPrompt.userChoice;
-    deferredPrompt = null;
+    deferredPrompt=null;
 
-    setTimeout(() => {
-      closeOverlay();
-      routeAfterInstall();
-    }, 600);
+    setTimeout(()=>{
+      if(isStandalone()){
+        location.href="inscription.html";
+      }
+    },800);
+
     return;
   }
 
-  // iOS : pas de prompt natif => on affiche l’aide (déjà visible)
-  iosHelp.style.display = "block";
-});
-
-/* Continuer vers inscription (même sans install) */
-btnContinueAnyway.addEventListener("click", () => {
-  closeOverlay();
-  window.location.href = `/${restoSlug}/inscription.html?next=coupon`;
-});
-
-function routeAfterInstall(){
-  const hasEmail = !!localStorage.getItem("user_email");
-
-  if (nextAfterInstall === "coupon") {
-    // Si pas encore en standalone, on ne force pas
-    if (!isStandalone()) return;
-
-    if (!hasEmail) {
-      window.location.href = `/${restoSlug}/inscription.html?next=coupon`;
-      return;
-    }
-    window.location.href = `/${restoSlug}/coupon.html`;
-  } else {
-    window.location.href = `/${restoSlug}/inscription.html?next=coupon`;
-  }
+  /* IOS */
+  iosHelp.style.display="block";
 }
 
-/* ===========
-   COUPON GATING (INLINE)
-   =========== */
-btnCoupon.href = "javascript:void(0)";
-btnCoupon.addEventListener("click", () => {
-  const hasEmail = !!localStorage.getItem("user_email");
+/* EVENTS */
+document.getElementById("btnCoupon").onclick=e=>{
+  e.preventDefault();
 
-  // 1) Pas installé => overlay (1 seul écran)
-  if (!isStandalone()) {
-    openOverlay("coupon");
+  if(!isStandalone()){
+    openOverlay();
     return;
   }
 
-  // 2) Installée mais pas identifié => inscription
-  if (!hasEmail) {
-    window.location.href = `/${restoSlug}/inscription.html?next=coupon`;
-    return;
-  }
+  location.href="coupon.html";
+};
 
-  // 3) OK => coupon
-  window.location.href = `/${restoSlug}/coupon.html`;
-});
+document.getElementById("btnInstall").onclick=tryInstall;
+
+document.getElementById("btnContinue").onclick=()=>{
+  location.href="inscription.html";
+};
+
+iosCallout.onclick=()=>{
+  iosHelp.style.display="block";
+};
+
 </script>
 
 </body>
