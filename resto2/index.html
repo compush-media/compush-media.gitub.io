@@ -1,417 +1,452 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Fidelavis</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Fidelavis</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<style>
-:root{
-  --gold:#B8924F;
-  --gold2:#9E7A3E;
-  --bg:#f6efe5;
-  --ink:#1d1d1d;
-  --muted:#6c6c6c;
-  --card:#ffffff;
-  --line:rgba(0,0,0,0.06);
-  --shadow:0 18px 40px rgba(0,0,0,0.10);
-  --shadow2:0 10px 25px rgba(0,0,0,0.10);
-  --radius:22px;
-}
+  <style>
+    :root{
+      --gold:#B8924F;
+      --gold2:#9E7A3E;
+      --bg:#f6efe5;
+      --card:#ffffff;
+      --ink:#1d1d1d;
+      --muted:#6f6f6f;
+      --line:rgba(0,0,0,0.06);
+      --shadow:0 18px 40px rgba(0,0,0,0.10);
+      --shadow2:0 10px 22px rgba(0,0,0,0.10);
+      --radius:22px;
+    }
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background: radial-gradient(900px 380px at 50% -30%, rgba(184,146,79,0.25), transparent 60%), var(--bg);
-  color:var(--ink);
-  padding:28px 16px 110px; /* laisse la place au sticky */
-  text-align:center;
-}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
 
-.wrap{max-width:460px;margin:0 auto}
+    body{
+      margin:0;
+      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(900px 380px at 50% -30%, rgba(184,146,79,0.22), transparent 60%),
+        var(--bg);
+      color:var(--ink);
+      text-align:center;
+      padding:26px 16px calc(110px + env(safe-area-inset-bottom));
+    }
 
-.logo{
-  width:118px;
-  height:118px;
-  object-fit:contain;
-  border-radius:26px;
-  background:rgba(255,255,255,0.55);
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
-  padding:10px;
-  margin:10px auto 10px;
-  display:block;
-}
+    .wrap{ max-width:460px; margin:0 auto; }
 
-h1{
-  margin:10px 0 4px;
-  font-size:34px;
-  line-height:1.05;
-  letter-spacing:-0.5px;
-  color:var(--gold2);
-  font-weight:800;
-}
-.sub{
-  margin:0 0 18px;
-  color:#a58d63;
-  font-size:14px;
-  font-weight:600;
-}
+    /* Header */
+    .logo{
+      width:110px; height:110px;
+      object-fit:contain;
+      border-radius:26px;
+      background:rgba(255,255,255,0.55);
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+      padding:10px;
+      margin:10px auto 10px;
+      display:block;
+    }
 
-.pillrow{
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  flex-wrap:wrap;
-  margin:0 0 18px;
-}
-.pill{
-  font-size:12px;
-  font-weight:700;
-  padding:8px 12px;
-  border-radius:999px;
-  background:rgba(255,255,255,0.65);
-  border:1px solid var(--line);
-  color:#6b5a3a;
-}
+    h1{
+      margin:10px 0 6px;
+      font-size:34px;
+      line-height:1.05;
+      letter-spacing:-0.6px;
+      color:var(--gold2);
+      font-weight:800;
+    }
 
-/* CARDS */
-.card{
-  background:var(--card);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  border:1px solid var(--line);
-  overflow:hidden;
-  margin:14px 0;
-  text-align:left;
-}
+    .headline{
+      margin:0 0 8px;
+      font-size:16px;
+      font-weight:800;
+      color:#7b633a;
+    }
 
-.cardHead{
-  padding:14px 16px 12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  border-bottom:1px solid var(--line);
-}
+    .subline{
+      margin:0 0 16px;
+      font-size:13px;
+      font-weight:700;
+      color:#9a8258;
+    }
 
-.titleLeft{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
+    .pillrow{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      flex-wrap:wrap;
+      margin:0 0 16px;
+    }
+    .pill{
+      font-size:12px;
+      font-weight:800;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.70);
+      border:1px solid var(--line);
+      color:#6b5a3a;
+    }
 
-.tag{
-  font-weight:800;
-  font-size:13px;
-  letter-spacing:0.2px;
-}
+    /* Cards */
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid var(--line);
+      overflow:hidden;
+      margin:14px 0;
+      text-align:left;
+    }
 
-.badge{
-  font-size:12px;
-  font-weight:800;
-  padding:8px 12px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,0.25);
-  background:rgba(255,255,255,0.18);
-  color:#fff;
-}
+    .cardHead{
+      padding:13px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:1px solid var(--line);
+    }
 
-/* OFFER: top bar gold */
-.offerBar{
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
-  color:#fff;
-}
-.offerBar .tag{color:#fff}
-.offerBar .mini{color:rgba(255,255,255,0.92)}
-.mini{
-  font-size:12px;
-  font-weight:600;
-  opacity:0.95;
-}
+    .titleLeft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
 
-/* content */
-.cardBody{padding:16px}
+    .tag{
+      font-weight:900;
+      font-size:13px;
+      letter-spacing:0.2px;
+      white-space:nowrap;
+    }
 
-.row{
-  display:flex;
-  gap:14px;
-  align-items:flex-start;
-}
+    .mini{
+      font-size:12px;
+      font-weight:700;
+      opacity:.92;
+      white-space:nowrap;
+    }
 
-.iconBox{
-  width:56px;height:56px;
-  border-radius:16px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:24px;
-  flex:0 0 56px;
-  box-shadow:var(--shadow2);
-}
+    .badge{
+      font-size:12px;
+      font-weight:900;
+      padding:8px 12px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
 
-.offer .iconBox{
-  background:rgba(255,255,255,0.22);
-  color:#fff;
-  border:1px solid rgba(255,255,255,0.25);
-}
-.review .iconBox{
-  background:#f3e7cf;
-  color:var(--gold2);
-  border:1px solid rgba(184,146,79,0.35);
-}
+    .cardBody{ padding:16px; }
 
-.big{
-  font-size:18px;
-  font-weight:900;
-  line-height:1.15;
-}
-.desc{
-  margin-top:6px;
-  font-size:13px;
-  color:rgba(255,255,255,0.92);
-  font-weight:600;
-}
-.review .desc{color:#6f6f6f;font-weight:600}
+    .row{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
 
-.benefits{
-  margin-top:10px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-}
-.b{
-  font-size:12px;
-  font-weight:800;
-  padding:7px 10px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,0.25);
-  background:rgba(255,255,255,0.14);
-  color:#fff;
-}
-.review .b{
-  color:#6b5a3a;
-  background:#fff;
-  border:1px solid rgba(184,146,79,0.25);
-}
+    .iconBox{
+      width:56px;height:56px;
+      border-radius:16px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:24px;
+      flex:0 0 56px;
+      box-shadow:var(--shadow2);
+    }
 
-/* CTA buttons inside cards */
-.cta{
-  margin-top:14px;
-  width:100%;
-  border:none;
-  border-radius:18px;
-  padding:15px 14px;
-  font-weight:900;
-  font-size:16px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  transform:translateZ(0);
-}
-.cta:active{transform:scale(0.985)}
+    .big{
+      font-size:20px;
+      font-weight:900;
+      line-height:1.1;
+      letter-spacing:-0.2px;
+    }
 
-.ctaOffer{
-  background:#fff;
-  color:#5b4727;
-  box-shadow:0 10px 26px rgba(0,0,0,0.18);
-}
-.ctaOffer .spark{animation:pulse 1.3s infinite}
-@keyframes pulse{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.15)}
-}
+    .desc{
+      margin-top:7px;
+      font-size:13px;
+      font-weight:700;
+      color:rgba(255,255,255,0.92);
+      line-height:1.35;
+    }
 
-.ctaReview{
-  background:linear-gradient(135deg, rgba(184,146,79,0.22), rgba(184,146,79,0.08));
-  color:var(--gold2);
-  border:1px solid rgba(184,146,79,0.35);
-}
+    /* Offer (psychology optimized) */
+    .offerBar{
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color:#fff;
+    }
+    .offerBar .tag{ color:#fff; }
+    .offerBar .mini{ color:rgba(255,255,255,0.92); }
 
-/* Sticky bottom CTA (conversion) */
-.sticky{
-  position:fixed;
-  left:0; right:0; bottom:0;
-  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
-  background:rgba(246,239,229,0.86);
-  backdrop-filter: blur(10px);
-  border-top:1px solid var(--line);
-  z-index:50;
-}
+    .offerBody{
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color:#fff;
+    }
 
-.stickyInner{
-  max-width:460px;
-  margin:0 auto;
-  display:flex;
-  gap:10px;
-}
+    .offer .iconBox{
+      background:rgba(255,255,255,0.20);
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.22);
+    }
 
-.stickyBtn{
-  flex:1;
-  border:none;
-  border-radius:18px;
-  padding:14px 10px;
-  font-weight:900;
-  font-size:15px;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  gap:10px;
-  box-shadow:0 12px 28px rgba(0,0,0,0.14);
-}
-.primary{
-  background:linear-gradient(135deg, var(--gold), var(--gold2));
-  color:#fff;
-}
-.secondary{
-  background:#fff;
-  color:var(--gold2);
-  border:1px solid rgba(184,146,79,0.35);
-  box-shadow:0 10px 22px rgba(0,0,0,0.10);
-}
-.smallnote{
-  max-width:460px;
-  margin:12px auto 0;
-  font-size:12px;
-  color:#8c8c8c;
-  line-height:1.35;
-}
+    .microproof{
+      margin-top:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .proof{
+      font-size:12px;
+      font-weight:900;
+      padding:8px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.22);
+      background:rgba(255,255,255,0.12);
+      color:#fff;
+      white-space:nowrap;
+    }
 
-/* Tap highlight */
-.tapFlash{
-  position:fixed; inset:0;
-  background:rgba(184,146,79,0.14);
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .18s ease;
-  z-index:80;
-}
-.tapFlash.on{opacity:1}
+    .cta{
+      margin-top:14px;
+      width:100%;
+      border:none;
+      border-radius:18px;
+      padding:16px 14px;
+      font-weight:900;
+      font-size:16px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      box-shadow:0 14px 30px rgba(0,0,0,0.18);
+      background:#fff;
+      color:#4e3c1f;
+      transform:translateZ(0);
+    }
+    .cta:active{ transform:scale(0.985); }
 
-/* Accessibility */
-a{color:inherit}
-</style>
+    .ctanote{
+      margin-top:10px;
+      font-size:12px;
+      font-weight:800;
+      color:rgba(255,255,255,0.92);
+      display:flex;
+      gap:8px;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+
+    /* Review (secondary) */
+    .reviewHead{
+      background:#fff;
+      color:var(--gold2);
+    }
+    .reviewHead .mini{ color:#8a8a8a; }
+
+    .review .iconBox{
+      background:#f3e7cf;
+      color:var(--gold2);
+      border:1px solid rgba(184,146,79,0.30);
+    }
+
+    .review .big{ color:var(--gold2); font-size:18px; }
+    .review .desc{ color:#6f6f6f; font-weight:700; }
+
+    .cta2{
+      margin-top:14px;
+      width:100%;
+      border-radius:18px;
+      padding:14px 14px;
+      font-weight:900;
+      font-size:15px;
+      cursor:pointer;
+      border:1px solid rgba(184,146,79,0.35);
+      background:linear-gradient(135deg, rgba(184,146,79,0.18), rgba(184,146,79,0.06));
+      color:var(--gold2);
+    }
+    .cta2:active{ transform:scale(0.985); }
+
+    .legal{
+      max-width:460px;
+      margin:12px auto 0;
+      font-size:12px;
+      color:#8c8c8c;
+      line-height:1.35;
+      text-align:center;
+    }
+
+    /* Sticky */
+    .sticky{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+      background:rgba(246,239,229,0.88);
+      backdrop-filter: blur(10px);
+      border-top:1px solid var(--line);
+      z-index:50;
+    }
+    .stickyInner{
+      max-width:460px;
+      margin:0 auto;
+      display:flex;
+      gap:10px;
+    }
+    .stickyBtn{
+      flex:1;
+      border:none;
+      border-radius:18px;
+      padding:14px 10px;
+      font-weight:900;
+      font-size:15px;
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      gap:10px;
+      box-shadow:0 12px 26px rgba(0,0,0,0.14);
+    }
+    .primary{
+      background:linear-gradient(135deg, var(--gold), var(--gold2));
+      color:#fff;
+    }
+    .secondary{
+      background:#fff;
+      color:var(--gold2);
+      border:1px solid rgba(184,146,79,0.35);
+      box-shadow:0 10px 22px rgba(0,0,0,0.10);
+    }
+
+    /* Tap feedback */
+    .tapFlash{
+      position:fixed; inset:0;
+      background:rgba(184,146,79,0.14);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .18s ease;
+      z-index:80;
+    }
+    .tapFlash.on{ opacity:1; }
+  </style>
 </head>
 
 <body>
-<div class="wrap">
+  <div class="wrap">
 
-  <!-- Remplace si besoin -->
-  <img src="logo.png" class="logo" alt="Logo restaurant">
+    <!-- Remplace par ton logo -->
+    <img class="logo" src="logo.png" alt="Logo restaurant">
 
-  <h1>Resto1</h1>
-  <div class="sub">2 actions simples : avantage + avis</div>
+    <!-- Remplace par le nom resto -->
+    <h1>Resto1</h1>
 
-  <div class="pillrow">
-    <div class="pill">✅ Simple</div>
-    <div class="pill">⚡ Rapide</div>
-    <div class="pill">🔒 Sans engagement</div>
-  </div>
+    <!-- Psychology optimized header -->
+    <div class="headline">🎁 Votre -10% vous attend</div>
+    <div class="subline">10 secondes • Aucun engagement • Sans obligation d’avis</div>
 
-  <!-- OFFRE -->
-  <div class="card offer">
-    <div class="cardHead offerBar">
-      <div class="titleLeft">
-        <div class="tag">🔥 Offre du mois</div>
-        <div class="mini">Instant • par email</div>
-      </div>
-      <div class="badge">10s</div>
+    <div class="pillrow">
+      <div class="pill">✅ Simple</div>
+      <div class="pill">⚡ Rapide</div>
+      <div class="pill">🔒 Sans engagement</div>
     </div>
 
-    <div class="cardBody" style="background:linear-gradient(135deg, var(--gold), var(--gold2)); color:#fff;">
-      <div class="row">
-        <div class="iconBox">🎁</div>
-        <div style="flex:1">
-          <div class="big">-10% OFFERT (prochaine visite)</div>
-          <div class="desc">Reçu immédiatement par email • valable dès votre prochain passage</div>
+    <!-- OFFRE -->
+    <div class="card offer">
+      <div class="cardHead offerBar">
+        <div class="titleLeft">
+          <div class="tag">🔥 Offre du mois</div>
+          <div class="mini">Instant • par email</div>
+        </div>
+        <div class="badge" style="background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.22);color:#fff;">10s</div>
+      </div>
 
-          <div class="benefits">
-            <div class="b">📩 Email immédiat</div>
-            <div class="b">🎟️ Utilisable 1 fois</div>
-            <div class="b">✅ Sans avis</div>
+      <div class="cardBody offerBody">
+        <div class="row">
+          <div class="iconBox">🎁</div>
+
+          <div style="flex:1; min-width:0;">
+            <div class="big">-10% OFFERT (prochaine visite)</div>
+            <div class="desc">Recevez votre avantage immédiatement par email, utilisable dès votre prochain passage.</div>
+
+            <div class="microproof">
+              <div class="proof">📩 Email immédiat</div>
+              <div class="proof">🎟️ Utilisable 1 fois</div>
+              <div class="proof">✅ Sans avis</div>
+            </div>
+
+            <!-- CTA psychology: "Récupérer" implies already yours -->
+            <button class="cta" id="btnOffer" type="button">🎁 Récupérer mon -10%</button>
+
+            <div class="ctanote">⚡ Reçu immédiatement après validation</div>
           </div>
-
-          <button class="cta ctaOffer" id="btnOffer">
-            <span class="spark">✨</span> Je veux mon -10% maintenant
-          </button>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- AVIS -->
-  <div class="card review">
-    <div class="cardHead" style="background:#fff;">
-      <div class="titleLeft">
-        <div class="tag" style="color:var(--gold2)">⭐ Laisser un avis (facultatif)</div>
-        <div class="mini" style="color:#888">Aide le restaurant</div>
+    <!-- AVIS (secondaire) -->
+    <div class="card review">
+      <div class="cardHead reviewHead">
+        <div class="titleLeft">
+          <div class="tag">⭐ Avis (facultatif)</div>
+          <div class="mini">Aide le restaurant</div>
+        </div>
+        <div class="badge" style="background:#f3e7cf;border:1px solid rgba(184,146,79,0.25);color:var(--gold2);">1 min</div>
       </div>
-      <div class="badge" style="background:#f3e7cf;color:var(--gold2);border:1px solid rgba(184,146,79,0.25);">1 min</div>
-    </div>
 
-    <div class="cardBody">
-      <div class="row">
-        <div class="iconBox">⭐</div>
-        <div style="flex:1">
-          <div class="big" style="color:var(--gold2)">Votre avis compte vraiment</div>
-          <div class="desc">1 minute • ça aide énormément le restaurant à être visible</div>
+      <div class="cardBody">
+        <div class="row">
+          <div class="iconBox">⭐</div>
 
-          <div class="benefits">
-            <div class="b">👍 Facile</div>
-            <div class="b">🧡 Utile</div>
-            <div class="b">🎁 Indépendant</div>
+          <div style="flex:1; min-width:0;">
+            <div class="big">Vous aidez énormément</div>
+            <div class="desc">1 minute • améliore la visibilité du restaurant</div>
+
+            <button class="cta2" id="btnReview" type="button">✍️ Laisser un avis (optionnel)</button>
           </div>
-
-          <button class="cta ctaReview" id="btnReview">
-            ✍️ Laisser un avis (optionnel)
-          </button>
         </div>
       </div>
     </div>
+
+    <div class="legal">
+      La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
+    </div>
+
   </div>
 
-  <div class="smallnote">
-    La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
+  <!-- Tap feedback overlay -->
+  <div class="tapFlash" id="tapFlash"></div>
+
+  <script>
+    /** ✅ METS TES URL ICI */
+    const OFFER_URL  = "inscription.html"; // ex: "/resto1/inscription.html" ou lien GHL
+    const REVIEW_URL = "avis.html";        // ex: lien Google Reviews
+
+    function flash(){
+      const el = document.getElementById('tapFlash');
+      el.classList.add('on');
+      setTimeout(()=>el.classList.remove('on'), 180);
+    }
+
+    function go(url){
+      flash();
+      setTimeout(()=>{ window.location.href = url; }, 140);
+    }
+
+    document.getElementById('btnOffer').addEventListener('click', ()=>go(OFFER_URL));
+    document.getElementById('btnReview').addEventListener('click', ()=>go(REVIEW_URL));
+
+    // Sticky CTA
+    document.getElementById('stickyOffer').addEventListener('click', ()=>go(OFFER_URL));
+    document.getElementById('stickyReview').addEventListener('click', ()=>go(REVIEW_URL));
+  </script>
+
+  <!-- Sticky bar (conversion) -->
+  <div class="sticky">
+    <div class="stickyInner">
+      <button class="stickyBtn primary" id="stickyOffer" type="button">🎁 Obtenir -10%</button>
+      <button class="stickyBtn secondary" id="stickyReview" type="button">⭐ Avis</button>
+    </div>
   </div>
-
-</div>
-
-<!-- Overlay tap feedback -->
-<div class="tapFlash" id="tapFlash"></div>
-
-<script>
-/** ✅ METS TES URL ICI */
-const OFFER_URL  = "inscription.html";  // ex: "/resto1/inscription.html" ou lien GHL
-const REVIEW_URL = "avis.html";         // ex: lien Google Review
-
-function flash(){
-  const el = document.getElementById('tapFlash');
-  el.classList.add('on');
-  setTimeout(()=>el.classList.remove('on'), 180);
-}
-
-function go(url){
-  flash();
-  setTimeout(()=>{ window.location.href = url; }, 140);
-}
-
-document.getElementById('btnOffer').addEventListener('click', ()=>go(OFFER_URL));
-document.getElementById('btnReview').addEventListener('click', ()=>go(REVIEW_URL));
-
-/** Sticky CTA */
-document.getElementById('stickyOffer').addEventListener('click', ()=>go(OFFER_URL));
-document.getElementById('stickyReview').addEventListener('click', ()=>go(REVIEW_URL));
-</script>
-
-<!-- Sticky bottom bar (toujours visible) -->
-<div class="sticky">
-  <div class="stickyInner">
-    <button class="stickyBtn primary" id="stickyOffer">🎁 Obtenir -10%</button>
-    <button class="stickyBtn secondary" id="stickyReview">⭐ Avis (optionnel)</button>
-  </div>
-</div>
 
 </body>
 </html>
