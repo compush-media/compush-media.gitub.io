@@ -1,251 +1,573 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <link rel="manifest" href="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/progressier.json"/>
-<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Accueil – Programme Fidélité</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Fidelavis</title>
 
-
-  <!-- 🔐 Protection par email via localStorage -->
-  <script>
-    (function () {
-      const params = new URLSearchParams(window.location.search);
-      const email = params.get('email');
-      const localEmail = localStorage.getItem('user_email');
-
-      if (email) {
-        localStorage.setItem('user_email', email);
-        // Supprimer le ?email de l’URL sans changer de dossier
-        const cleanUrl = window.location.pathname.split('?')[0];
-        window.history.replaceState({}, document.title, cleanUrl);
-      }
-
-      if (!email && !localEmail) {
-        // Redirige vers le formulaire d’inscription dans le même dossier
-        const pathParts = window.location.pathname.split('/');
-        const basePath = '/' + pathParts[1] + '/';
-        window.location.href = basePath + 'inscription.html';
-      }
-    })();
-  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --brand: #C6A667;
-      --bg: #fff8f2;
-      --text: #C6A667;
-      --icon: #C6A667;
+    :root{
+      --gold:#B8924F;
+      --gold2:#9E7A3E;
+      --bg:#f6efe5;
+      --card:#ffffff;
+      --ink:#1d1d1d;
+      --muted:#6f6f6f;
+      --line:rgba(0,0,0,0.06);
+      --shadow:0 18px 40px rgba(0,0,0,0.10);
+      --shadow2:0 10px 22px rgba(0,0,0,0.10);
+      --radius:22px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+
+    body{
+      margin:0;
+      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(900px 380px at 50% -30%, rgba(184,146,79,0.22), transparent 60%),
+        var(--bg);
+      color:var(--ink);
+      text-align:center;
+      padding:24px 16px calc(92px + env(safe-area-inset-bottom));
     }
 
-    body {
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      text-align: center;
+    .wrap{ max-width:460px; margin:0 auto; }
+
+    /* Header (logo trust) */
+    .brand{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      margin-top:6px;
+      margin-bottom:6px;
     }
 
-    .header {
-      margin-top: 30px;
+    .logoWrap{
+      width:116px; height:116px;
+      border-radius:28px;
+      background:rgba(255,255,255,0.70);
+      box-shadow:0 10px 28px rgba(0,0,0,0.08);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,0.05);
     }
 
-    .header img {
-      max-width: 120px;
+    .logoImg{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      padding:12px;
+      display:block;
     }
 
-    .header h1 {
-      font-size: 22px;
-      margin-top: 10px;
+    .logoFallback{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      font-size:34px;
+      color:var(--gold2);
+      letter-spacing:-1px;
     }
 
-    .navbar {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      padding: 40px 20px;
-      max-width: 500px;
-      margin: 0 auto;
+    h1{
+      margin:6px 0 6px;
+      font-size:34px;
+      line-height:1.05;
+      letter-spacing:-0.6px;
+      color:var(--gold2);
+      font-weight:800;
     }
 
-    .navbar a {
-      background: #ffffff;
-      color: var(--brand);
-      border: 2px solid var(--brand);
-      border-radius: 14px;
-      padding: 25px 10px;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: 600;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: background 0.2s ease;
+    .headline{
+      margin:0 0 6px;
+      font-size:18px;
+      font-weight:900;
+      color:#7b633a;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      align-items:center;
     }
 
-    .navbar a:hover {
-      background: rgba(198, 166, 103, 0.05);
+    .subline{
+      margin:0 0 14px;
+      font-size:13px;
+      font-weight:700;
+      color:#9a8258;
+      line-height:1.25;
     }
 
-    .navbar svg {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 10px;
-      fill: var(--icon);
+    .pillrow{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      flex-wrap:wrap;
+      margin:0 0 14px;
+    }
+    .pill{
+      font-size:12px;
+      font-weight:800;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.72);
+      border:1px solid var(--line);
+      color:#6b5a3a;
     }
 
-    .navbar a.large {
-      grid-column: span 2;
+    /* Main offer card (single focus) */
+    .offerCard{
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color:#fff;
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,0.10);
+      padding:18px 18px 16px;
+      text-align:left;
+      margin:14px 0 16px;
+      position:relative;
+      overflow:hidden;
     }
 
-    @media (max-width: 480px) {
-      .navbar {
-        padding: 20px;
-      }
-
-      .navbar svg {
-        width: 32px;
-        height: 32px;
-      }
+    .offerTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
     }
+
+    .offerTopLeft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+      font-size:14px;
+      letter-spacing:0.2px;
+      white-space:nowrap;
+    }
+
+    .badge{
+      font-size:12px;
+      font-weight:900;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.18);
+      border:1px solid rgba(255,255,255,0.22);
+      color:#fff;
+      white-space:nowrap;
+    }
+
+    .offerRow{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+
+    .iconBox{
+      width:58px;height:58px;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:26px;
+      flex:0 0 58px;
+      background:rgba(255,255,255,0.20);
+      border:1px solid rgba(255,255,255,0.22);
+      box-shadow:var(--shadow2);
+    }
+
+    .big{
+      font-size:26px;
+      font-weight:900;
+      line-height:1.05;
+      letter-spacing:-0.4px;
+      margin-top:2px;
+    }
+
+    .desc{
+      margin-top:10px;
+      font-size:14px;
+      font-weight:700;
+      color:rgba(255,255,255,0.92);
+      line-height:1.35;
+    }
+
+    /* Social proof (credible) */
+    .socialProof{
+      margin-top:12px;
+      background:rgba(255,255,255,0.14);
+      border:1px solid rgba(255,255,255,0.18);
+      border-radius:16px;
+      padding:10px 12px;
+      font-size:13px;
+      font-weight:900;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      color:#fff;
+    }
+
+    .facts{
+      margin-top:12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      font-size:13px;
+      font-weight:900;
+      color:#fff;
+    }
+
+    .fact{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      white-space:nowrap;
+      opacity:0.95;
+    }
+
+    /* Pre-CTA microcopy (reduces friction) */
+    .preCta{
+      margin-top:14px;
+      font-size:13px;
+      font-weight:900;
+      color:rgba(255,255,255,0.95);
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    /* CTA */
+    .cta{
+      margin-top:12px;
+      width:100%;
+      border:none;
+      border-radius:22px;
+      padding:16px 14px;
+      font-weight:900;
+      font-size:17px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      box-shadow:0 14px 30px rgba(0,0,0,0.18);
+      background:#fff;
+      color:#4e3c1f;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .cta:active{ transform:scale(0.985); }
+
+    .postCta{
+      margin-top:10px;
+      font-size:12px;
+      font-weight:900;
+      color:rgba(255,255,255,0.92);
+      text-align:center;
+      line-height:1.25;
+    }
+
+    /* Optional review card (secondary) */
+    .reviewCard{
+      background:#fff;
+      border-radius:24px;
+      border:1px solid rgba(184,146,79,0.22);
+      box-shadow:0 14px 28px rgba(0,0,0,0.07);
+      padding:16px;
+      text-align:left;
+      margin-bottom:10px;
+    }
+
+    .reviewTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .reviewTitle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+      color:var(--gold2);
+    }
+
+    .reviewBadge{
+      font-size:12px;
+      font-weight:900;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#f3e7cf;
+      border:1px solid rgba(184,146,79,0.25);
+      color:var(--gold2);
+    }
+
+    .reviewBody{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+
+    .reviewIcon{
+      width:58px;height:58px;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:26px;
+      flex:0 0 58px;
+      background:#f3e7cf;
+      border:1px solid rgba(184,146,79,0.25);
+      color:var(--gold2);
+      box-shadow:0 10px 22px rgba(0,0,0,0.08);
+    }
+
+    .reviewBig{
+      font-size:18px;
+      font-weight:900;
+      color:var(--gold2);
+    }
+
+    .reviewDesc{
+      margin-top:8px;
+      font-size:13px;
+      font-weight:700;
+      color:#6f6f6f;
+      line-height:1.35;
+    }
+
+    .cta2{
+      margin-top:12px;
+      width:100%;
+      border-radius:18px;
+      padding:14px 14px;
+      font-weight:900;
+      font-size:15px;
+      cursor:pointer;
+      border:1px solid rgba(184,146,79,0.35);
+      background:linear-gradient(135deg, rgba(184,146,79,0.18), rgba(184,146,79,0.06));
+      color:var(--gold2);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .cta2:active{ transform:scale(0.985); }
+
+    .legal{
+      max-width:460px;
+      margin:12px auto 0;
+      font-size:12px;
+      color:#8c8c8c;
+      line-height:1.35;
+      text-align:center;
+    }
+
+    /* Sticky bar: smaller + different wording (no confusion) */
+    .sticky{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      padding:8px 14px calc(8px + env(safe-area-inset-bottom));
+      background:rgba(246,239,229,0.90);
+      backdrop-filter: blur(10px);
+      border-top:1px solid var(--line);
+      z-index:50;
+    }
+    .stickyInner{
+      max-width:460px;
+      margin:0 auto;
+      display:flex;
+      gap:10px;
+    }
+    .stickyBtn{
+      flex:1;
+      border:none;
+      border-radius:18px;
+      padding:12px 10px; /* smaller */
+      font-weight:900;
+      font-size:15px;
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      gap:10px;
+      box-shadow:0 12px 26px rgba(0,0,0,0.14);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .primary{
+      background:linear-gradient(135deg, var(--gold), var(--gold2));
+      color:#fff;
+    }
+    .secondary{
+      background:#fff;
+      color:var(--gold2);
+      border:1px solid rgba(184,146,79,0.35);
+      box-shadow:0 10px 22px rgba(0,0,0,0.10);
+    }
+
+    /* Tap feedback */
+    .tapFlash{
+      position:fixed; inset:0;
+      background:rgba(184,146,79,0.14);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .18s ease;
+      z-index:80;
+    }
+    .tapFlash.on{ opacity:1; }
   </style>
 </head>
+
 <body>
+  <div class="wrap">
 
-  <!-- HEADER -->
-  <div class="header">
-    <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo" />
-    <h1 id="restoName">Restaurant</h1>
+    <!-- Brand / trust -->
+    <div class="brand">
+      <div class="logoWrap" aria-label="Logo restaurant">
+        <img id="logoImg" class="logoImg" src="logo.png" alt="Logo restaurant">
+        <div id="logoFallback" class="logoFallback" style="display:none;">R</div>
+      </div>
+    </div>
+
+    <!-- Nom resto (tu peux changer) -->
+    <h1 id="restoName">Resto2</h1>
+
+    <!-- Headline optimisée -->
+    <div class="headline"><span>🎁</span> <span>Votre cadeau vous attend</span></div>
+    <div class="subline">Activez maintenant, utilisez à votre prochaine visite.</div>
+
+    <div class="pillrow">
+      <div class="pill">⏱️ 10 secondes</div>
+      <div class="pill">🔒 Aucun engagement</div>
+      <div class="pill">💳 Pas de carte bancaire</div>
+    </div>
+
+    <!-- OFFRE (focus unique) -->
+    <section class="offerCard" aria-label="Offre -10%">
+      <div class="offerTop">
+        <div class="offerTopLeft">🔥 Offre du mois <span style="opacity:.92;font-weight:800;">• Instant par email</span></div>
+        <div class="badge">10s</div>
+      </div>
+
+      <div class="offerRow">
+        <div class="iconBox">🎁</div>
+        <div style="flex:1; min-width:0;">
+          <div class="big">-10% OFFERT (prochaine visite)</div>
+          <div class="desc">
+            Activez votre remise maintenant et recevez-la immédiatement par email.
+          </div>
+
+          <!-- Social proof (credible, less risky) -->
+          <div class="socialProof">⭐ Très utilisé aujourd’hui dans le restaurant</div>
+
+          <div class="facts">
+            <div class="fact">⏱️ 10 secondes</div>
+            <div class="fact">🔒 Aucun engagement</div>
+            <div class="fact">🗑️ Désinscription 1 clic</div>
+          </div>
+
+          <!-- Pre-CTA microcopy -->
+          <div class="preCta">✅ Simple : votre remise arrive par email après validation</div>
+
+          <button class="cta" id="btnOffer" type="button">🎁 Activer mon -10% maintenant</button>
+
+          <div class="postCta">📩 Aucune carte bancaire • Remise envoyée immédiatement après validation</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AVIS (secondaire, optionnel) -->
+    <section class="reviewCard" aria-label="Avis facultatif">
+      <div class="reviewTop">
+        <div class="reviewTitle">⭐ Laisser un avis (facultatif)</div>
+        <div class="reviewBadge">1 min</div>
+      </div>
+
+      <div class="reviewBody">
+        <div class="reviewIcon">⭐</div>
+        <div style="flex:1; min-width:0;">
+          <div class="reviewBig">Un avis aide énormément</div>
+          <div class="reviewDesc">1 minute • améliore la visibilité du restaurant (sans impact sur votre remise)</div>
+          <button class="cta2" id="btnReview" type="button">✍️ Laisser un avis (optionnel)</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="legal">
+      La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
+    </div>
   </div>
 
-  <!-- MENU -->
-  <div class="navbar">
-    <a id="btnOffredujour"><svg></svg>Offre du jour</a>
-    <a id="btnReservation"><svg></svg>Réservation</a>
-    <a id="btnCoupon"><svg></svg>Coupon</a>
-    <a id="btnAvis"><svg></svg>Avis</a>
-    <a id="btnContact" class="large"><svg></svg>Contact</a>
-  </div>
+  <div class="tapFlash" id="tapFlash"></div>
 
   <script>
-    const redirected = sessionStorage.redirect;
-    if (redirected) {
-      sessionStorage.removeItem("redirect");
-      history.replaceState(null, "", redirected);
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      // Auto basePath: "/resto2/" depuis "https://app.cartefidelavis.com/resto2/"
+      const parts = window.location.pathname.split("/").filter(Boolean);
+      const basePath = parts.length ? `/${parts[0]}/` : "/";
 
-    function getRestoSlug() {
-      const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
-      return path.split("/")[0] || "voltaire";
-    }
+      // ✅ Pages
+      const OFFER_URL  = basePath + "redit.html";
+      const REVIEW_URL = basePath + "avis.html";
 
-    const restoSlug = getRestoSlug();
+      // Logo fallback (trust)
+      const img = document.getElementById("logoImg");
+      const fb  = document.getElementById("logoFallback");
+      const rn  = document.getElementById("restoName");
 
-    const restaurantData = {
-      voltaire: {
-        name: "Resto2",
-        brandColor: "#B48C4A",
-        bgColor: "#ffffff",
-        textColor: "#B48C4A",
-        iconColor: "#B48C4A"
-      },
-      resto3: {
-        name: "Resto 3",
-        brandColor: "#C6A667",
-        bgColor: "#fff8f2",
-        textColor: "#C6A667",
-        iconColor: "#C6A667"
+      function setFallback(){
+        const name = (rn?.textContent || "R").trim();
+        fb.textContent = name ? name[0].toUpperCase() : "R";
+        fb.style.display = "flex";
+        img.style.display = "none";
       }
-    };
-
-    const resto = restaurantData[restoSlug] || restaurantData.voltaire;
-
-    document.documentElement.style.setProperty('--brand', resto.brandColor);
-    document.documentElement.style.setProperty('--bg', resto.bgColor);
-    document.documentElement.style.setProperty('--text', resto.textColor);
-    document.documentElement.style.setProperty('--icon', resto.iconColor);
-
-    document.getElementById("restoName").innerText = resto.name;
-
-    const icons = {
-      btnOffredujour: `
-        <svg viewBox="0 0 24 24">
-          <path d="M3 6h18M3 12h18M3 18h18"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            fill="none"/>
-        </svg>`,
-      btnReservation: `
-        <svg viewBox="0 0 24 24">
-          <path fill="currentColor"
-            d="M7 10h5v5H7v-5Zm-2 9q-.825 0-1.413-.588T3 17V7
-               q0-.825.588-1.413T5 5h1V3h2v2h8V3h2v2h1
-               q.825 0 1.413.588T21 7v10
-               q0 .825-.588 1.413T19 19H5Zm0-2h14V9H5v8Z"/>
-        </svg>`,
-      btnCoupon: `
-        <svg viewBox="0 0 24 24">
-          <path fill="currentColor"
-            d="M21 5v3.5q-.625.275-1.063.713T19.225 10
-               q0 .825.437 1.263T21 12.025V15
-               q0 .825-.588 1.413T19 17H5
-               q-.825 0-1.413-.588T3 15v-3
-               q.625-.275 1.063-.713T4.775 10
-               q0-.825-.437-1.263T3 7.525V5
-               q0-.825.588-1.413T5 3h14
-               q.825 0 1.413.588T21 5Zm-14 4
-               q.825 0 1.413-.588T9 7
-               q0-.825-.588-1.413T7 5
-               q-.825 0-1.413.588T5 7
-               q0 .825.588 1.413T7 9Zm3.5 6.5
-               6-6-1-1-6 6 1 1Zm5.5 1
-               q.825 0 1.413-.588T18 14
-               q0-.825-.588-1.413T16 12
-               q-.825 0-1.413.588T14 14
-               q0 .825.588 1.413T16 16Z"/>
-        </svg>`,
-      btnAvis: `
-        <svg viewBox="0 0 24 24">
-          <path fill="currentColor"
-            d="M12 17.3l6.2 3.7-1.6-7
-               5.4-4.7-7.2-.6L12 2
-               9.2 8.7l-7.2.6
-               5.4 4.7-1.6 7z"/>
-        </svg>`,
-      btnContact: `
-        <svg viewBox="0 0 24 24">
-          <path fill="currentColor"
-            d="M22 16.92V21
-               a1 1 0 0 1-1.09 1
-               A19.74 19.74 0 0 1 3 4.09
-               1 1 0 0 1 4 3h4.09
-               a1 1 0 0 1 1 .75l1.2 5
-               a1 1 0 0 1-.29 1
-               L8.91 11.09
-               a16 16 0 0 0 6 6
-               l1.36-1.36
-               a1 1 0 0 1 1-.29l5 1.2
-               a1 1 0 0 1 .75 1z"/>
-        </svg>`
-    };
-
-    const paths = {
-      btnOffredujour: "offre-du-jour",
-      btnReservation: "reservation",
-      btnCoupon: "coupon",
-      btnAvis: "avis",
-      btnContact: "contact"
-    };
-
-    for (const id in paths) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.href = `/${restoSlug}/${paths[id]}`;
-        el.querySelector("svg").outerHTML = icons[id];
+      if (img) {
+        img.addEventListener("error", setFallback);
+        // si le logo est vide (rare), fallback aussi
+        if (!img.getAttribute("src")) setFallback();
       }
-    }
+
+      function flash(){
+        const el = document.getElementById('tapFlash');
+        el.classList.add('on');
+        setTimeout(()=>el.classList.remove('on'), 160);
+      }
+      function go(url){
+        flash();
+        setTimeout(()=>{ window.location.href = url; }, 90);
+      }
+
+      const map = [
+        ["btnOffer", OFFER_URL],
+        ["stickyOffer", OFFER_URL],
+        ["btnReview", REVIEW_URL],
+        ["stickyReview", REVIEW_URL],
+      ];
+
+      map.forEach(([id, url]) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("click", () => go(url), { passive: true });
+      });
+    });
   </script>
+
+  <!-- Sticky bar (compact + wording different) -->
+  <div class="sticky">
+    <div class="stickyInner">
+      <button class="stickyBtn primary" id="stickyOffer" type="button">🎁 Activer -10%</button>
+      <button class="stickyBtn secondary" id="stickyReview" type="button">⭐ Avis</button>
+    </div>
+  </div>
 </body>
 </html>
