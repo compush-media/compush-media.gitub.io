@@ -16,13 +16,11 @@
       --bg:#f6efe5;
       --card:#ffffff;
       --ink:#1d1d1d;
-      --muted:#6f6f6f;
       --line:rgba(0,0,0,0.06);
       --shadow:0 18px 40px rgba(0,0,0,0.10);
       --shadow2:0 10px 22px rgba(0,0,0,0.10);
       --radius:22px;
     }
-
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
 
@@ -50,7 +48,6 @@
       margin:10px auto 10px;
       display:block;
     }
-
     h1{
       margin:10px 0 6px;
       font-size:34px;
@@ -59,21 +56,18 @@
       color:var(--gold2);
       font-weight:800;
     }
-
     .headline{
       margin:0 0 8px;
       font-size:16px;
       font-weight:800;
       color:#7b633a;
     }
-
     .subline{
       margin:0 0 16px;
       font-size:13px;
       font-weight:700;
       color:#9a8258;
     }
-
     .pillrow{
       display:flex;
       justify-content:center;
@@ -101,7 +95,6 @@
       margin:14px 0;
       text-align:left;
     }
-
     .cardHead{
       padding:13px 16px;
       display:flex;
@@ -110,28 +103,24 @@
       gap:12px;
       border-bottom:1px solid var(--line);
     }
-
     .titleLeft{
       display:flex;
       align-items:center;
       gap:10px;
       min-width:0;
     }
-
     .tag{
       font-weight:900;
       font-size:13px;
       letter-spacing:0.2px;
       white-space:nowrap;
     }
-
     .mini{
       font-size:12px;
       font-weight:700;
       opacity:.92;
       white-space:nowrap;
     }
-
     .badge{
       font-size:12px;
       font-weight:900;
@@ -139,15 +128,12 @@
       border-radius:999px;
       white-space:nowrap;
     }
-
     .cardBody{ padding:16px; }
-
     .row{
       display:flex;
       gap:14px;
       align-items:flex-start;
     }
-
     .iconBox{
       width:56px;height:56px;
       border-radius:16px;
@@ -156,14 +142,12 @@
       flex:0 0 56px;
       box-shadow:var(--shadow2);
     }
-
     .big{
       font-size:20px;
       font-weight:900;
       line-height:1.1;
       letter-spacing:-0.2px;
     }
-
     .desc{
       margin-top:7px;
       font-size:13px;
@@ -172,7 +156,7 @@
       line-height:1.35;
     }
 
-    /* Offer (psychology optimized) */
+    /* Offer */
     .offerBar{
       background: linear-gradient(135deg, var(--gold), var(--gold2));
       color:#fff;
@@ -184,7 +168,6 @@
       background: linear-gradient(135deg, var(--gold), var(--gold2));
       color:#fff;
     }
-
     .offer .iconBox{
       background:rgba(255,255,255,0.20);
       color:#fff;
@@ -227,7 +210,6 @@
       transform:translateZ(0);
     }
     .cta:active{ transform:scale(0.985); }
-
     .ctanote{
       margin-top:10px;
       font-size:12px;
@@ -240,19 +222,17 @@
       text-align:center;
     }
 
-    /* Review (secondary) */
+    /* Review */
     .reviewHead{
       background:#fff;
       color:var(--gold2);
     }
     .reviewHead .mini{ color:#8a8a8a; }
-
     .review .iconBox{
       background:#f3e7cf;
       color:var(--gold2);
       border:1px solid rgba(184,146,79,0.30);
     }
-
     .review .big{ color:var(--gold2); font-size:18px; }
     .review .desc{ color:#6f6f6f; font-weight:700; }
 
@@ -335,10 +315,10 @@
   <div class="wrap">
 
     <!-- Remplace par ton logo -->
-    <img class="logo" src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo restaurant">
+    <img class="logo" src="logo.png" alt="Logo restaurant">
 
     <!-- Remplace par le nom resto -->
-    <h1>Resto1</h1>
+    <h1>Resto2</h1>
 
     <!-- Psychology optimized header -->
     <div class="headline">🎁 Votre -10% vous attend</div>
@@ -374,7 +354,7 @@
               <div class="proof">✅ Sans avis</div>
             </div>
 
-            <!-- CTA psychology: "Récupérer" implies already yours -->
+            <!-- OFFER -> redit.html (auto basePath) -->
             <button class="cta" id="btnOffer" type="button">🎁 Récupérer mon -10%</button>
 
             <div class="ctanote">⚡ Reçu immédiatement après validation</div>
@@ -383,7 +363,7 @@
       </div>
     </div>
 
-    <!-- AVIS (secondaire) -->
+    <!-- AVIS -> avis.html (auto basePath) -->
     <div class="card review">
       <div class="cardHead reviewHead">
         <div class="titleLeft">
@@ -413,34 +393,43 @@
 
   </div>
 
-  <!-- Tap feedback overlay -->
   <div class="tapFlash" id="tapFlash"></div>
 
   <script>
-    /** ✅ METS TES URL ICI */
-    const OFFER_URL  = "redit.html"; // ex: "/resto1/inscription.html" ou lien GHL
-    const REVIEW_URL = "avis.html";        // ex: lien Google Reviews
+    document.addEventListener("DOMContentLoaded", () => {
+      // Auto basePath: "/resto2/" depuis "https://app.cartefidelavis.com/resto2/"
+      const parts = window.location.pathname.split("/").filter(Boolean);
+      const basePath = parts.length ? `/${parts[0]}/` : "/";
 
-    function flash(){
-      const el = document.getElementById('tapFlash');
-      el.classList.add('on');
-      setTimeout(()=>el.classList.remove('on'), 180);
-    }
+      // ✅ Tes pages
+      const OFFER_URL  = basePath + "redit.html";
+      const REVIEW_URL = basePath + "avis.html";
 
-    function go(url){
-      flash();
-      setTimeout(()=>{ window.location.href = url; }, 140);
-    }
+      function flash(){
+        const el = document.getElementById('tapFlash');
+        el.classList.add('on');
+        setTimeout(()=>el.classList.remove('on'), 180);
+      }
+      function go(url){
+        flash();
+        setTimeout(()=>{ window.location.href = url; }, 120);
+      }
 
-    document.getElementById('btnOffer').addEventListener('click', ()=>go(OFFER_URL));
-    document.getElementById('btnReview').addEventListener('click', ()=>go(REVIEW_URL));
+      const map = [
+        ["btnOffer", OFFER_URL],
+        ["stickyOffer", OFFER_URL],
+        ["btnReview", REVIEW_URL],
+        ["stickyReview", REVIEW_URL],
+      ];
 
-    // Sticky CTA
-    document.getElementById('stickyOffer').addEventListener('click', ()=>go(OFFER_URL));
-    document.getElementById('stickyReview').addEventListener('click', ()=>go(REVIEW_URL));
+      map.forEach(([id, url]) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("click", () => go(url));
+      });
+    });
   </script>
 
-  <!-- Sticky bar (conversion) -->
+  <!-- Sticky bar -->
   <div class="sticky">
     <div class="stickyInner">
       <button class="stickyBtn primary" id="stickyOffer" type="button">🎁 Obtenir -10%</button>
