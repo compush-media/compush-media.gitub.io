@@ -1,454 +1,245 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Fidelavis</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Fidelavis</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --gold:#B8924F;
-      --gold2:#9E7A3E;
-      --bg:#f6efe5;
-      --card:#ffffff;
-      --ink:#1d1d1d;
-      --line:rgba(0,0,0,0.06);
-      --shadow:0 18px 40px rgba(0,0,0,0.10);
-      --shadow2:0 10px 22px rgba(0,0,0,0.10);
-      --radius:22px;
-    }
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+<style>
+:root{
+  --gold:#B8924F;
+  --gold2:#9E7A3E;
+  --bg:#f6efe5;
+  --card:#ffffff;
+  --ink:#1d1d1d;
+  --line:rgba(0,0,0,0.06);
+  --shadow:0 18px 40px rgba(0,0,0,0.10);
+  --radius:22px;
+}
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family:'Montserrat',sans-serif;
+  background:var(--bg);
+  text-align:center;
+  padding:26px 16px 120px;
+  color:var(--ink);
+}
 
-    body{
-      margin:0;
-      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(900px 380px at 50% -30%, rgba(184,146,79,0.22), transparent 60%),
-        var(--bg);
-      color:var(--ink);
-      text-align:center;
-      padding:26px 16px calc(110px + env(safe-area-inset-bottom));
-    }
+.wrap{ max-width:460px; margin:auto; }
 
-    .wrap{ max-width:460px; margin:0 auto; }
+.logo{
+  width:110px;
+  margin:10px auto;
+  display:block;
+}
 
-    /* Header */
-    .logo{
-      width:110px; height:110px;
-      object-fit:contain;
-      border-radius:26px;
-      background:rgba(255,255,255,0.55);
-      box-shadow:0 10px 30px rgba(0,0,0,0.08);
-      padding:10px;
-      margin:10px auto 10px;
-      display:block;
-    }
-    h1{
-      margin:10px 0 6px;
-      font-size:34px;
-      line-height:1.05;
-      letter-spacing:-0.6px;
-      color:var(--gold2);
-      font-weight:800;
-    }
-    .headline{
-      margin:0 0 8px;
-      font-size:16px;
-      font-weight:800;
-      color:#7b633a;
-    }
-    .subline{
-      margin:0 0 16px;
-      font-size:13px;
-      font-weight:700;
-      color:#9a8258;
-    }
-    .pillrow{
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      flex-wrap:wrap;
-      margin:0 0 16px;
-    }
-    .pill{
-      font-size:12px;
-      font-weight:800;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.70);
-      border:1px solid var(--line);
-      color:#6b5a3a;
-    }
+h1{
+  font-size:32px;
+  margin:10px 0 6px;
+  color:var(--gold2);
+  font-weight:800;
+}
 
-    /* Cards */
-    .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      border:1px solid var(--line);
-      overflow:hidden;
-      margin:14px 0;
-      text-align:left;
-    }
-    .cardHead{
-      padding:13px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      border-bottom:1px solid var(--line);
-    }
-    .titleLeft{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:0;
-    }
-    .tag{
-      font-weight:900;
-      font-size:13px;
-      letter-spacing:0.2px;
-      white-space:nowrap;
-    }
-    .mini{
-      font-size:12px;
-      font-weight:700;
-      opacity:.92;
-      white-space:nowrap;
-    }
-    .badge{
-      font-size:12px;
-      font-weight:900;
-      padding:8px 12px;
-      border-radius:999px;
-      white-space:nowrap;
-    }
-    .cardBody{ padding:16px; }
-    .row{
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
-    }
-    .iconBox{
-      width:56px;height:56px;
-      border-radius:16px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:24px;
-      flex:0 0 56px;
-      box-shadow:var(--shadow2);
-    }
-    .big{
-      font-size:20px;
-      font-weight:900;
-      line-height:1.1;
-      letter-spacing:-0.2px;
-    }
-    .desc{
-      margin-top:7px;
-      font-size:13px;
-      font-weight:700;
-      color:rgba(255,255,255,0.92);
-      line-height:1.35;
-    }
+.headline{
+  font-size:18px;
+  font-weight:800;
+  color:var(--gold2);
+  margin-bottom:4px;
+}
 
-    /* Offer */
-    .offerBar{
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      color:#fff;
-    }
-    .offerBar .tag{ color:#fff; }
-    .offerBar .mini{ color:rgba(255,255,255,0.92); }
+.subline{
+  font-size:13px;
+  font-weight:700;
+  color:#8a7a5a;
+  margin-bottom:18px;
+}
 
-    .offerBody{
-      background: linear-gradient(135deg, var(--gold), var(--gold2));
-      color:#fff;
-    }
-    .offer .iconBox{
-      background:rgba(255,255,255,0.20);
-      color:#fff;
-      border:1px solid rgba(255,255,255,0.22);
-    }
+.card{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#fff;
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+  text-align:left;
+}
 
-    .microproof{
-      margin-top:10px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-    .proof{
-      font-size:12px;
-      font-weight:900;
-      padding:8px 10px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.22);
-      background:rgba(255,255,255,0.12);
-      color:#fff;
-      white-space:nowrap;
-    }
+.big{
+  font-size:22px;
+  font-weight:900;
+  line-height:1.2;
+}
 
-    .cta{
-      margin-top:14px;
-      width:100%;
-      border:none;
-      border-radius:18px;
-      padding:16px 14px;
-      font-weight:900;
-      font-size:16px;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      box-shadow:0 14px 30px rgba(0,0,0,0.18);
-      background:#fff;
-      color:#4e3c1f;
-      transform:translateZ(0);
-      -webkit-tap-highlight-color: transparent;
-    }
-    .cta:active{ transform:scale(0.985); }
-    .ctanote{
-      margin-top:10px;
-      font-size:12px;
-      font-weight:800;
-      color:rgba(255,255,255,0.92);
-      display:flex;
-      gap:8px;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-    }
+.desc{
+  font-size:14px;
+  font-weight:600;
+  margin-top:8px;
+  opacity:.95;
+}
 
-    /* Review */
-    .reviewHead{
-      background:#fff;
-      color:var(--gold2);
-    }
-    .reviewHead .mini{ color:#8a8a8a; }
-    .review .iconBox{
-      background:#f3e7cf;
-      color:var(--gold2);
-      border:1px solid rgba(184,146,79,0.30);
-    }
-    .review .big{ color:var(--gold2); font-size:18px; }
-    .review .desc{ color:#6f6f6f; font-weight:700; }
+.proofline{
+  margin-top:12px;
+  font-size:13px;
+  font-weight:800;
+  background:rgba(255,255,255,0.15);
+  padding:8px 10px;
+  border-radius:12px;
+  display:inline-block;
+}
 
-    .cta2{
-      margin-top:14px;
-      width:100%;
-      border-radius:18px;
-      padding:14px 14px;
-      font-weight:900;
-      font-size:15px;
-      cursor:pointer;
-      border:1px solid rgba(184,146,79,0.35);
-      background:linear-gradient(135deg, rgba(184,146,79,0.18), rgba(184,146,79,0.06));
-      color:var(--gold2);
-      -webkit-tap-highlight-color: transparent;
-    }
-    .cta2:active{ transform:scale(0.985); }
+.micro{
+  margin-top:14px;
+  font-size:12px;
+  font-weight:700;
+  opacity:.95;
+}
 
-    .legal{
-      max-width:460px;
-      margin:12px auto 0;
-      font-size:12px;
-      color:#8c8c8c;
-      line-height:1.35;
-      text-align:center;
-    }
+.cta{
+  margin-top:18px;
+  width:100%;
+  border:none;
+  border-radius:18px;
+  padding:16px;
+  font-weight:900;
+  font-size:16px;
+  background:#fff;
+  color:#4e3c1f;
+  cursor:pointer;
+  box-shadow:0 12px 26px rgba(0,0,0,0.2);
+}
 
-    /* Sticky */
-    .sticky{
-      position:fixed;
-      left:0; right:0; bottom:0;
-      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
-      background:rgba(246,239,229,0.88);
-      backdrop-filter: blur(10px);
-      border-top:1px solid var(--line);
-      z-index:50;
-    }
-    .stickyInner{
-      max-width:460px;
-      margin:0 auto;
-      display:flex;
-      gap:10px;
-    }
-    .stickyBtn{
-      flex:1;
-      border:none;
-      border-radius:18px;
-      padding:14px 10px;
-      font-weight:900;
-      font-size:15px;
-      cursor:pointer;
-      display:flex;align-items:center;justify-content:center;
-      gap:10px;
-      box-shadow:0 12px 26px rgba(0,0,0,0.14);
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-    .primary{
-      background:linear-gradient(135deg, var(--gold), var(--gold2));
-      color:#fff;
-    }
-    .secondary{
-      background:#fff;
-      color:var(--gold2);
-      border:1px solid rgba(184,146,79,0.35);
-      box-shadow:0 10px 22px rgba(0,0,0,0.10);
-    }
+.cta:active{ transform:scale(0.98); }
 
-    /* Tap feedback */
-    .tapFlash{
-      position:fixed; inset:0;
-      background:rgba(184,146,79,0.14);
-      opacity:0;
-      pointer-events:none;
-      transition:opacity .18s ease;
-      z-index:80;
-    }
-    .tapFlash.on{ opacity:1; }
-  </style>
+.ctanote{
+  margin-top:10px;
+  font-size:12px;
+  font-weight:700;
+  opacity:.9;
+  text-align:center;
+}
+
+.legal{
+  margin-top:16px;
+  font-size:12px;
+  color:#777;
+  text-align:center;
+}
+
+.sticky{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(246,239,229,0.95);
+  padding:12px;
+  border-top:1px solid var(--line);
+}
+
+.stickyBtn{
+  width:100%;
+  border:none;
+  border-radius:18px;
+  padding:16px;
+  font-weight:900;
+  font-size:16px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#fff;
+  cursor:pointer;
+  box-shadow:0 12px 26px rgba(0,0,0,0.2);
+}
+.stickyBtn:active{ transform:scale(0.98); }
+
+.tapFlash{
+  position:fixed;
+  inset:0;
+  background:rgba(184,146,79,0.15);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease;
+}
+.tapFlash.on{ opacity:1; }
+
+</style>
 </head>
 
 <body>
-  <div class="wrap">
 
-    <!-- Remplace par ton logo -->
-    <img class="logo" src="logo.png" alt="Logo restaurant">
+<div class="wrap">
 
-    <!-- Remplace par le nom resto -->
-    <h1>Resto2</h1>
+<img class="logo" src="logo.png" alt="Logo">
 
-    <!-- Psychology optimized header -->
-    <div class="headline">🎁 Votre -10% vous attend</div>
-    <div class="subline">10 secondes • Aucun engagement • Sans obligation d’avis</div>
+<h1>Resto2</h1>
 
-    <div class="pillrow">
-      <div class="pill">✅ Simple</div>
-      <div class="pill">⚡ Rapide</div>
-      <div class="pill">🔒 Sans engagement</div>
-    </div>
+<div class="headline">🎁 Votre cadeau vous attend</div>
+<div class="subline">À activer pendant votre présence au restaurant</div>
 
-    <!-- OFFRE -->
-    <div class="card offer">
-      <div class="cardHead offerBar">
-        <div class="titleLeft">
-          <div class="tag">🔥 Offre du mois</div>
-          <div class="mini">Instant • par email</div>
-        </div>
-        <div class="badge" style="background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.22);color:#fff;">10s</div>
-      </div>
+<div class="card">
+  <div class="big">-10% OFFERT<br>(prochaine visite)</div>
 
-      <div class="cardBody offerBody">
-        <div class="row">
-          <div class="iconBox">🎁</div>
-
-          <div style="flex:1; min-width:0;">
-            <div class="big">-10% OFFERT (prochaine visite)</div>
-            <div class="desc">Recevez votre avantage immédiatement par email, utilisable dès votre prochain passage.</div>
-
-            <div class="microproof">
-              <div class="proof">📩 Email immédiat</div>
-              <div class="proof">🎟️ Utilisable 1 fois</div>
-              <div class="proof">✅ Sans avis</div>
-            </div>
-
-            <!-- OFFER -> redit.html (auto basePath) -->
-            <button class="cta" id="btnOffer" type="button">🎁 Récupérer mon -10%</button>
-
-            <div class="ctanote">⚡ Reçu immédiatement après validation</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- AVIS -> avis.html (auto basePath) -->
-    <div class="card review">
-      <div class="cardHead reviewHead">
-        <div class="titleLeft">
-          <div class="tag">⭐ Avis (facultatif)</div>
-          <div class="mini">Aide le restaurant</div>
-        </div>
-        <div class="badge" style="background:#f3e7cf;border:1px solid rgba(184,146,79,0.25);color:var(--gold2);">1 min</div>
-      </div>
-
-      <div class="cardBody">
-        <div class="row">
-          <div class="iconBox">⭐</div>
-
-          <div style="flex:1; min-width:0;">
-            <div class="big">Vous aidez énormément</div>
-            <div class="desc">1 minute • améliore la visibilité du restaurant</div>
-
-            <button class="cta2" id="btnReview" type="button">✍️ Laisser un avis (optionnel)</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="legal">
-      La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
-    </div>
-
+  <div class="desc">
+    Activez votre remise maintenant et recevez-la immédiatement par email.
   </div>
 
-  <div class="tapFlash" id="tapFlash"></div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // Auto basePath: "/resto2/" depuis "https://app.cartefidelavis.com/resto2/"
-      const parts = window.location.pathname.split("/").filter(Boolean);
-      const basePath = parts.length ? `/${parts[0]}/` : "/";
-
-      // ✅ Tes pages
-      const OFFER_URL  = basePath + "redit.html";
-      const REVIEW_URL = basePath + "avis.html";
-
-      // Bonus: debug rapide (si tu veux vérifier dans la console)
-      // console.log({ basePath, OFFER_URL, REVIEW_URL });
-
-      function flash(){
-        const el = document.getElementById('tapFlash');
-        el.classList.add('on');
-        setTimeout(()=>el.classList.remove('on'), 180);
-      }
-      function go(url){
-        flash();
-        setTimeout(()=>{ window.location.href = url; }, 120);
-      }
-
-      const map = [
-        ["btnOffer", OFFER_URL],
-        ["stickyOffer", OFFER_URL],
-        ["btnReview", REVIEW_URL],
-        ["stickyReview", REVIEW_URL],
-      ];
-
-      map.forEach(([id, url]) => {
-        const el = document.getElementById(id);
-        if (!el) {
-          // console.warn("Element missing:", id);
-          return;
-        }
-        // Click + touch (iOS Safari parfois capricieux)
-        el.addEventListener("click", () => go(url), { passive: true });
-        el.addEventListener("touchend", (e) => { e.preventDefault(); go(url); }, { passive: false });
-      });
-    });
-  </script>
-
-  <!-- Sticky bar -->
-  <div class="sticky">
-    <div class="stickyInner">
-      <button class="stickyBtn primary" id="stickyOffer" type="button">🎁 Obtenir -10%</button>
-      <button class="stickyBtn secondary" id="stickyReview" type="button">⭐ Avis</button>
-    </div>
+  <div class="proofline">
+    ⭐ Déjà activé par 12 tables aujourd’hui
   </div>
+
+  <div class="micro">
+    🕒 10 secondes • 🔒 Aucun engagement • 🗑️ Supprimable à tout moment
+  </div>
+
+  <button class="cta" id="btnOffer">
+    🎁 Activer mon -10% maintenant
+  </button>
+
+  <div class="ctanote">
+    Remise envoyée immédiatement après validation
+  </div>
+</div>
+
+<div class="legal">
+Offre réservée aux clients présents aujourd’hui. Aucun avis requis.
+</div>
+
+</div>
+
+<div class="tapFlash" id="tapFlash"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const parts = window.location.pathname.split("/").filter(Boolean);
+  const basePath = parts.length ? `/${parts[0]}/` : "/";
+  const OFFER_URL  = basePath + "redit.html";
+
+  function flash(){
+    const el = document.getElementById('tapFlash');
+    el.classList.add('on');
+    setTimeout(()=>el.classList.remove('on'), 200);
+  }
+
+  function go(url){
+    flash();
+    setTimeout(()=>{ window.location.href = url; }, 120);
+  }
+
+  const btn = document.getElementById("btnOffer");
+  const sticky = document.getElementById("stickyOffer");
+
+  btn.addEventListener("click", ()=>go(OFFER_URL));
+  sticky.addEventListener("click", ()=>go(OFFER_URL));
+
+});
+</script>
+
+<div class="sticky">
+  <button class="stickyBtn" id="stickyOffer">
+    🎁 Activer mon -10% maintenant
+  </button>
+</div>
 
 </body>
 </html>
