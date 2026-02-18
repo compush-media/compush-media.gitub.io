@@ -208,6 +208,7 @@
       background:#fff;
       color:#4e3c1f;
       transform:translateZ(0);
+      -webkit-tap-highlight-color: transparent;
     }
     .cta:active{ transform:scale(0.985); }
     .ctanote{
@@ -247,6 +248,7 @@
       border:1px solid rgba(184,146,79,0.35);
       background:linear-gradient(135deg, rgba(184,146,79,0.18), rgba(184,146,79,0.06));
       color:var(--gold2);
+      -webkit-tap-highlight-color: transparent;
     }
     .cta2:active{ transform:scale(0.985); }
 
@@ -286,6 +288,8 @@
       display:flex;align-items:center;justify-content:center;
       gap:10px;
       box-shadow:0 12px 26px rgba(0,0,0,0.14);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
     .primary{
       background:linear-gradient(135deg, var(--gold), var(--gold2));
@@ -315,7 +319,7 @@
   <div class="wrap">
 
     <!-- Remplace par ton logo -->
-    <img class="logo" src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png" alt="Logo restaurant">
+    <img class="logo" src="logo.png" alt="Logo restaurant">
 
     <!-- Remplace par le nom resto -->
     <h1>Resto2</h1>
@@ -405,6 +409,9 @@
       const OFFER_URL  = basePath + "redit.html";
       const REVIEW_URL = basePath + "avis.html";
 
+      // Bonus: debug rapide (si tu veux vérifier dans la console)
+      // console.log({ basePath, OFFER_URL, REVIEW_URL });
+
       function flash(){
         const el = document.getElementById('tapFlash');
         el.classList.add('on');
@@ -424,7 +431,13 @@
 
       map.forEach(([id, url]) => {
         const el = document.getElementById(id);
-        if (el) el.addEventListener("click", () => go(url));
+        if (!el) {
+          // console.warn("Element missing:", id);
+          return;
+        }
+        // Click + touch (iOS Safari parfois capricieux)
+        el.addEventListener("click", () => go(url), { passive: true });
+        el.addEventListener("touchend", (e) => { e.preventDefault(); go(url); }, { passive: false });
       });
     });
   </script>
