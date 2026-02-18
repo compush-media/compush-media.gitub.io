@@ -1,180 +1,417 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Programme Fidélité</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Fidelavis</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --brand:#C6A667;
-  --bg:#fff8f2;
-  --text:#C6A667;
-  --shadow:0 18px 46px rgba(0,0,0,.12);
+  --gold:#B8924F;
+  --gold2:#9E7A3E;
+  --bg:#f6efe5;
+  --ink:#1d1d1d;
+  --muted:#6c6c6c;
+  --card:#ffffff;
+  --line:rgba(0,0,0,0.06);
+  --shadow:0 18px 40px rgba(0,0,0,0.10);
+  --shadow2:0 10px 25px rgba(0,0,0,0.10);
   --radius:22px;
 }
 
+*{box-sizing:border-box}
+html,body{height:100%}
 body{
   margin:0;
-  font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto;
-  background:radial-gradient(900px 520px at 50% 0%,#fff 0%,var(--bg) 60%,#efe7db 100%);
-  color:var(--text);
+  font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background: radial-gradient(900px 380px at 50% -30%, rgba(184,146,79,0.25), transparent 60%), var(--bg);
+  color:var(--ink);
+  padding:28px 16px 110px; /* laisse la place au sticky */
   text-align:center;
 }
 
-/* HEADER */
-.header{margin-top:40px}
-.header img{width:110px}
-.header h1{margin:10px 0 5px}
-.sub{opacity:.6;font-size:13px;font-weight:700}
+.wrap{max-width:460px;margin:0 auto}
 
-/* CONTAINER */
-.navbar{
-  max-width:520px;
-  margin:0 auto;
-  padding:30px 16px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
+.logo{
+  width:118px;
+  height:118px;
+  object-fit:contain;
+  border-radius:26px;
+  background:rgba(255,255,255,0.55);
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  padding:10px;
+  margin:10px auto 10px;
+  display:block;
 }
 
-.navbar a{
-  text-decoration:none;
-  color:inherit;
-  background:#fff;
+h1{
+  margin:10px 0 4px;
+  font-size:34px;
+  line-height:1.05;
+  letter-spacing:-0.5px;
+  color:var(--gold2);
+  font-weight:800;
+}
+.sub{
+  margin:0 0 18px;
+  color:#a58d63;
+  font-size:14px;
+  font-weight:600;
+}
+
+.pillrow{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 18px;
+}
+.pill{
+  font-size:12px;
+  font-weight:700;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.65);
+  border:1px solid var(--line);
+  color:#6b5a3a;
+}
+
+/* CARDS */
+.card{
+  background:var(--card);
   border-radius:var(--radius);
-  padding:24px 18px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--line);
+  overflow:hidden;
+  margin:14px 0;
+  text-align:left;
+}
+
+.cardHead{
+  padding:14px 16px 12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border-bottom:1px solid var(--line);
+}
+
+.titleLeft{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.tag{
+  font-weight:800;
+  font-size:13px;
+  letter-spacing:0.2px;
+}
+
+.badge{
+  font-size:12px;
+  font-weight:800;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.25);
+  background:rgba(255,255,255,0.18);
+  color:#fff;
+}
+
+/* OFFER: top bar gold */
+.offerBar{
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color:#fff;
+}
+.offerBar .tag{color:#fff}
+.offerBar .mini{color:rgba(255,255,255,0.92)}
+.mini{
+  font-size:12px;
+  font-weight:600;
+  opacity:0.95;
+}
+
+/* content */
+.cardBody{padding:16px}
+
+.row{
   display:flex;
   gap:14px;
-  align-items:center;
-  box-shadow:var(--shadow);
-  position:relative;
+  align-items:flex-start;
 }
 
-.primary{
-  background:linear-gradient(180deg,
-    color-mix(in srgb, var(--brand) 65%, #fff),
-    var(--brand));
-  color:#fff;
-  padding-top:56px;
+.iconBox{
+  width:56px;height:56px;
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;
+  flex:0 0 56px;
+  box-shadow:var(--shadow2);
 }
 
-.ribbon{
-  position:absolute;
-  top:0;left:0;right:0;
-  height:32px;
-  background:rgba(0,0,0,.18);
+.offer .iconBox{
+  background:rgba(255,255,255,0.22);
   color:#fff;
-  font-size:13px;
+  border:1px solid rgba(255,255,255,0.25);
+}
+.review .iconBox{
+  background:#f3e7cf;
+  color:var(--gold2);
+  border:1px solid rgba(184,146,79,0.35);
+}
+
+.big{
+  font-size:18px;
   font-weight:900;
+  line-height:1.15;
+}
+.desc{
+  margin-top:6px;
+  font-size:13px;
+  color:rgba(255,255,255,0.92);
+  font-weight:600;
+}
+.review .desc{color:#6f6f6f;font-weight:600}
+
+.benefits{
+  margin-top:10px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.b{
+  font-size:12px;
+  font-weight:800;
+  padding:7px 10px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.25);
+  background:rgba(255,255,255,0.14);
+  color:#fff;
+}
+.review .b{
+  color:#6b5a3a;
+  background:#fff;
+  border:1px solid rgba(184,146,79,0.25);
+}
+
+/* CTA buttons inside cards */
+.cta{
+  margin-top:14px;
+  width:100%;
+  border:none;
+  border-radius:18px;
+  padding:15px 14px;
+  font-weight:900;
+  font-size:16px;
+  cursor:pointer;
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:var(--radius) var(--radius) 0 0;
+  gap:10px;
+  transform:translateZ(0);
+}
+.cta:active{transform:scale(0.985)}
+
+.ctaOffer{
+  background:#fff;
+  color:#5b4727;
+  box-shadow:0 10px 26px rgba(0,0,0,0.18);
+}
+.ctaOffer .spark{animation:pulse 1.3s infinite}
+@keyframes pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.15)}
 }
 
-.ico{
-  width:44px;height:44px;border-radius:14px;
-  background:rgba(255,255,255,.22);
-  display:grid;place-items:center;
-  font-size:20px;
+.ctaReview{
+  background:linear-gradient(135deg, rgba(184,146,79,0.22), rgba(184,146,79,0.08));
+  color:var(--gold2);
+  border:1px solid rgba(184,146,79,0.35);
 }
 
-.txt{flex:1;text-align:left}
-.title{font-weight:900}
-.subt{font-size:13px;opacity:.9;font-weight:700}
+/* Sticky bottom CTA (conversion) */
+.sticky{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(246,239,229,0.86);
+  backdrop-filter: blur(10px);
+  border-top:1px solid var(--line);
+  z-index:50;
+}
 
-.trust{font-size:12px;opacity:.6;font-weight:700}
-.legal{font-size:11px;opacity:.5;margin:14px 0 30px}
+.stickyInner{
+  max-width:460px;
+  margin:0 auto;
+  display:flex;
+  gap:10px;
+}
+
+.stickyBtn{
+  flex:1;
+  border:none;
+  border-radius:18px;
+  padding:14px 10px;
+  font-weight:900;
+  font-size:15px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  gap:10px;
+  box-shadow:0 12px 28px rgba(0,0,0,0.14);
+}
+.primary{
+  background:linear-gradient(135deg, var(--gold), var(--gold2));
+  color:#fff;
+}
+.secondary{
+  background:#fff;
+  color:var(--gold2);
+  border:1px solid rgba(184,146,79,0.35);
+  box-shadow:0 10px 22px rgba(0,0,0,0.10);
+}
+.smallnote{
+  max-width:460px;
+  margin:12px auto 0;
+  font-size:12px;
+  color:#8c8c8c;
+  line-height:1.35;
+}
+
+/* Tap highlight */
+.tapFlash{
+  position:fixed; inset:0;
+  background:rgba(184,146,79,0.14);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s ease;
+  z-index:80;
+}
+.tapFlash.on{opacity:1}
+
+/* Accessibility */
+a{color:inherit}
 </style>
 </head>
 
 <body>
+<div class="wrap">
 
-<div class="header">
-  <img src="https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/693872ebdaae41354591b36f.png">
-  <h1 id="restoName">Restaurant</h1>
-  <p class="sub">2 actions simples : avantage + avis</p>
-</div>
+  <!-- Remplace si besoin -->
+  <img src="logo.png" class="logo" alt="Logo restaurant">
 
-<div class="navbar">
+  <h1>Resto1</h1>
+  <div class="sub">2 actions simples : avantage + avis</div>
 
-  <!-- BOUTON COUPON -->
-  <a id="btnCoupon" class="primary" href="#">
-    <div class="ribbon">🔥 Offre du mois</div>
+  <div class="pillrow">
+    <div class="pill">✅ Simple</div>
+    <div class="pill">⚡ Rapide</div>
+    <div class="pill">🔒 Sans engagement</div>
+  </div>
 
-    <div class="ico">🎁</div>
+  <!-- OFFRE -->
+  <div class="card offer">
+    <div class="cardHead offerBar">
+      <div class="titleLeft">
+        <div class="tag">🔥 Offre du mois</div>
+        <div class="mini">Instant • par email</div>
+      </div>
+      <div class="badge">10s</div>
+    </div>
 
-    <div class="txt">
-      <div class="title">-10% OFFERT</div>
-      <div class="subt">
-        Reçu par email • utilisable prochaine visite
+    <div class="cardBody" style="background:linear-gradient(135deg, var(--gold), var(--gold2)); color:#fff;">
+      <div class="row">
+        <div class="iconBox">🎁</div>
+        <div style="flex:1">
+          <div class="big">-10% OFFERT (prochaine visite)</div>
+          <div class="desc">Reçu immédiatement par email • valable dès votre prochain passage</div>
+
+          <div class="benefits">
+            <div class="b">📩 Email immédiat</div>
+            <div class="b">🎟️ Utilisable 1 fois</div>
+            <div class="b">✅ Sans avis</div>
+          </div>
+
+          <button class="cta ctaOffer" id="btnOffer">
+            <span class="spark">✨</span> Je veux mon -10% maintenant
+          </button>
+        </div>
       </div>
     </div>
-  </a>
+  </div>
 
-  <!-- BOUTON AVIS -->
-  <a id="btnAvis" href="#">
-    <div class="ico">⭐</div>
-
-    <div class="txt">
-      <div class="title">Laisser un avis</div>
-      <div class="subt">1 minute • Aide le restaurant</div>
+  <!-- AVIS -->
+  <div class="card review">
+    <div class="cardHead" style="background:#fff;">
+      <div class="titleLeft">
+        <div class="tag" style="color:var(--gold2)">⭐ Laisser un avis (facultatif)</div>
+        <div class="mini" style="color:#888">Aide le restaurant</div>
+      </div>
+      <div class="badge" style="background:#f3e7cf;color:var(--gold2);border:1px solid rgba(184,146,79,0.25);">1 min</div>
     </div>
-  </a>
+
+    <div class="cardBody">
+      <div class="row">
+        <div class="iconBox">⭐</div>
+        <div style="flex:1">
+          <div class="big" style="color:var(--gold2)">Votre avis compte vraiment</div>
+          <div class="desc">1 minute • ça aide énormément le restaurant à être visible</div>
+
+          <div class="benefits">
+            <div class="b">👍 Facile</div>
+            <div class="b">🧡 Utile</div>
+            <div class="b">🎁 Indépendant</div>
+          </div>
+
+          <button class="cta ctaReview" id="btnReview">
+            ✍️ Laisser un avis (optionnel)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="smallnote">
+    La réduction est indépendante de tout avis. Laisser un avis est totalement facultatif et n’influence pas l’avantage proposé.
+  </div>
 
 </div>
 
-<div class="trust">✅ Simple • ✅ Rapide • ✅ Sans engagement</div>
-
-<div class="legal">
-La réduction est indépendante de tout avis.
-</div>
+<!-- Overlay tap feedback -->
+<div class="tapFlash" id="tapFlash"></div>
 
 <script>
-/* Détection app installée */
-function isStandalone(){
-  return window.matchMedia('(display-mode:standalone)').matches
-    || navigator.standalone === true;
+/** ✅ METS TES URL ICI */
+const OFFER_URL  = "inscription.html";  // ex: "/resto1/inscription.html" ou lien GHL
+const REVIEW_URL = "avis.html";         // ex: lien Google Review
+
+function flash(){
+  const el = document.getElementById('tapFlash');
+  el.classList.add('on');
+  setTimeout(()=>el.classList.remove('on'), 180);
 }
 
-/* Base : /restoX/ */
-function getBase(){
-  const p = location.pathname;
-  if(p.endsWith("/")) return p;
-  return p.substring(0,p.lastIndexOf("/")+1);
+function go(url){
+  flash();
+  setTimeout(()=>{ window.location.href = url; }, 140);
 }
 
-const BASE = getBase();
+document.getElementById('btnOffer').addEventListener('click', ()=>go(OFFER_URL));
+document.getElementById('btnReview').addEventListener('click', ()=>go(REVIEW_URL));
 
-/* URLs */
-const INSCRIPTION = BASE + "inscription.html";
-const AVIS        = BASE + "avis.html";
-const REDIT       = BASE + "redit.html";
-
-/* Nom resto */
-document.getElementById("restoName").textContent =
-  BASE.split("/").filter(Boolean).pop() || "Restaurant";
-
-/* Lien avis */
-document.getElementById("btnAvis").href = AVIS;
-
-
-/* ✅ BOUTON COUPON → DIRECT INSTALL */
-document.getElementById("btnCoupon").addEventListener("click", (e)=>{
-
-  e.preventDefault();
-
-  // Si déjà installée → inscription
-  if(isStandalone()){
-    location.href = INSCRIPTION;
-    return;
-  }
-
-  // Sinon → page installation
-  location.href = REDIT;
-});
+/** Sticky CTA */
+document.getElementById('stickyOffer').addEventListener('click', ()=>go(OFFER_URL));
+document.getElementById('stickyReview').addEventListener('click', ()=>go(REVIEW_URL));
 </script>
+
+<!-- Sticky bottom bar (toujours visible) -->
+<div class="sticky">
+  <div class="stickyInner">
+    <button class="stickyBtn primary" id="stickyOffer">🎁 Obtenir -10%</button>
+    <button class="stickyBtn secondary" id="stickyReview">⭐ Avis (optionnel)</button>
+  </div>
+</div>
 
 </body>
 </html>
