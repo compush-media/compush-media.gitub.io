@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Fidelavis — Activation</title>
+  <title>Fidelavis — Activer -10%</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,6 @@
       --ok:#1f8a4c;
     }
     *{ box-sizing:border-box; }
-    html,body{ height:100%; }
     body{
       margin:0;
       font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -31,32 +30,18 @@
         radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
         linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
       color:var(--ink);
-      padding:22px 14px 140px; /* + place sticky */
+      padding:22px 14px 150px;
       text-align:center;
     }
     .wrap{ max-width:520px; margin:0 auto; }
 
-    .brand{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-    }
     .resto{
-      font-size:38px;
+      font-size:40px;
       line-height:1.05;
-      margin:6px 0 0;
+      margin:10px 0 0;
       font-weight:900;
       color:#7a5b26;
-      letter-spacing:-0.7px;
-    }
-    .badgeRow{
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:8px;
+      letter-spacing:-0.8px;
     }
     .badge{
       display:inline-flex;
@@ -66,26 +51,26 @@
       border-radius:999px;
       background:rgba(255,255,255,0.72);
       border:1px solid var(--line);
-      font-weight:800;
+      font-weight:900;
       color:#3b3b3b;
       font-size:13px;
       box-shadow:0 10px 18px rgba(0,0,0,0.05);
+      margin-top:10px;
     }
     .dot{
-      width:8px; height:8px;
-      border-radius:99px;
+      width:8px;height:8px;border-radius:99px;
       background:var(--ok);
       box-shadow:0 0 0 6px rgba(31,138,76,0.12);
     }
 
     .hero{
-      margin:16px 0 12px;
+      margin:18px 0 12px;
       padding:0 10px;
     }
     .hero h2{
       margin:0;
       font-size:20px;
-      font-weight:900;
+      font-weight:950;
       color:#2b2b2b;
       letter-spacing:-0.2px;
     }
@@ -100,7 +85,7 @@
       background:rgba(182,21,43,0.08);
       border:1px solid rgba(182,21,43,0.18);
       color:#7a1120;
-      font-weight:900;
+      font-weight:950;
       font-size:13.5px;
     }
 
@@ -111,8 +96,6 @@
       padding:18px 16px 16px;
       box-shadow:var(--shadow);
       text-align:left;
-      position:relative;
-      overflow:hidden;
     }
     .card h3{
       margin:0 0 10px;
@@ -150,7 +133,7 @@
       background:rgba(255,255,255,0.18);
       border:1px solid rgba(255,255,255,0.22);
       color:#fff;
-      font-weight:900;
+      font-weight:950;
       font-size:14px;
     }
 
@@ -163,7 +146,7 @@
       flex-wrap:wrap;
       color:#4a4a4a;
       font-size:12.5px;
-      font-weight:800;
+      font-weight:900;
     }
     .trust span{
       background:rgba(255,255,255,0.72);
@@ -192,7 +175,6 @@
       padding:10px;
       box-shadow:0 16px 30px rgba(0,0,0,0.10);
     }
-
     .cta{
       width:100%;
       border:0;
@@ -212,10 +194,8 @@
       justify-content:center;
       gap:10px;
     }
-    .cta:active{ transform:scale(0.985); }
     .pulse{
-      width:10px; height:10px;
-      border-radius:99px;
+      width:10px;height:10px;border-radius:99px;
       background:var(--danger);
       box-shadow:0 0 0 0 rgba(182,21,43,0.35);
       animation:pulse 1.15s infinite;
@@ -225,14 +205,15 @@
       70%{ box-shadow:0 0 0 12px rgba(182,21,43,0.00); }
       100%{ box-shadow:0 0 0 0 rgba(182,21,43,0.00); }
     }
-
-    .row2{
-      margin-top:10px;
+    .below{
+      margin-top:8px;
+      font-size:12.5px;
+      color:#5a5a5a;
+      font-weight:900;
       display:flex;
+      justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
-      justify-content:space-between;
-      align-items:center;
     }
     .timer{
       display:inline-flex;
@@ -244,56 +225,21 @@
       border:1px solid rgba(182,21,43,0.18);
       color:#7a1120;
       font-weight:950;
-      font-size:12.5px;
     }
-
-    /* Bouton accès install (secondaire mais très visible) */
-    .installBtn{
-      flex:1 1 220px;
-      border:1px solid rgba(184,146,79,0.35);
-      background:#fff;
-      color:#2b2b2b;
-      border-radius:14px;
-      padding:12px 12px;
-      font-weight:950;
-      font-size:13.5px;
-      cursor:pointer;
-      box-shadow:0 10px 18px rgba(0,0,0,0.06);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-    }
-    .installHint{
-      width:100%;
-      margin-top:8px;
-      font-size:12px;
-      font-weight:800;
-      color:#5a5a5a;
-    }
-
-    .hidden{ display:none !important; }
   </style>
 </head>
 
 <body>
   <div class="wrap">
+    <div id="restoName" class="resto">Restaurant</div>
+    <div class="badge"><span class="dot"></span>Client invité aujourd’hui</div>
 
-    <header class="brand">
-      <div>
-        <div id="restoName" class="resto">Restaurant</div>
-        <div class="badgeRow">
-          <div class="badge"><span class="dot"></span>Client invité aujourd’hui</div>
-        </div>
-      </div>
-    </header>
-
-    <section class="hero">
+    <div class="hero">
       <h2>🎁 Votre réduction est réservée pour vous</h2>
       <div class="expire">Expire si vous quittez le restaurant</div>
-    </section>
+    </div>
 
-    <section class="card" aria-label="Offre">
+    <div class="card">
       <h3>-10% OFFERT</h3>
       <p class="sub">💎 Sur votre prochaine <b>addition</b><br>📩 Reçu par email en 10 secondes</p>
 
@@ -304,144 +250,96 @@
       </div>
 
       <div class="social">🔥 <span id="socialCount">27</span> clients ont activé aujourd’hui</div>
-    </section>
+    </div>
 
     <div class="trust">
       <span>📍 Sur place</span>
       <span>🎁 Gratuit</span>
       <span>✅ 1 clic</span>
     </div>
-
   </div>
 
-  <!-- Sticky CTA + accès install -->
   <div class="sticky">
     <div class="ctaWrap">
-
-      <!-- CTA principal -->
       <button class="cta" id="ctaBtn" type="button">
         <span class="pulse" aria-hidden="true"></span>
-        🎁 Oui, je veux mes -10% maintenant
+        🎁 Activer mon -10% maintenant
       </button>
 
-      <div class="row2">
-        <!-- Accès à la page d’installation -->
-        <button class="installBtn" id="installBtn" type="button">
-          📲 Installer l’app du restaurant
-        </button>
-
-        <div class="timer">⏳ Offre réservée : <span id="countdown">05:00</span></div>
+      <div class="below">
+        <div>📲 Installation requise (1 seule fois)</div>
+        <div class="timer">⏳ Offre : <span id="countdown">05:00</span></div>
       </div>
-
-      <div class="installHint" id="installHint">
-        (Recommandé) L’installation permet d’accéder au coupon plus vite et de le valider en caisse.
-      </div>
-
     </div>
   </div>
 
-  <script>
-    // -----------------------------
-    // CONFIG
-    // -----------------------------
-    const MAIN_CTA_LINK = "inscription.html"; // ou ta page de formulaire
-    const INSTALL_PAGE = "redit.html";        // ta page d’installation PWA
-    const COUNTDOWN_SECONDS = 5 * 60;
+<script>
+  const COUNTDOWN_SECONDS = 5*60;
 
-    // -----------------------------
-    // Helpers
-    // -----------------------------
-    function qs(name){ return new URLSearchParams(location.search).get(name); }
+  function qs(name){ return new URLSearchParams(location.search).get(name); }
 
-    function isStandalone(){
-      return window.matchMedia("(display-mode: standalone)").matches ||
-             window.navigator.standalone === true;
+  function detectRestoName(){
+    const fromParam = qs("resto");
+    if (fromParam) return fromParam;
+
+    const host = location.hostname || "";
+    const parts = host.split(".");
+    if (parts.length >= 3) {
+      const sub = parts[0];
+      if (sub && sub !== "app" && sub !== "www") return sub.charAt(0).toUpperCase() + sub.slice(1);
+    }
+    return "Restaurant";
+  }
+
+  function stableDailyRandom(min, max){
+    const d = new Date();
+    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}-${location.hostname}`;
+    let hash = 0;
+    for (let i=0;i<key.length;i++) hash = (hash*31 + key.charCodeAt(i)) >>> 0;
+    return (hash % (max - min + 1)) + min;
+  }
+
+  function startCountdown(){
+    const out = document.getElementById("countdown");
+    const startKey = "fidelavis_offer_v4_start";
+    let start = Number(localStorage.getItem(startKey));
+    const now = Date.now();
+
+    if (!start || (now - start) > (COUNTDOWN_SECONDS * 1000)) {
+      start = now;
+      localStorage.setItem(startKey, String(start));
     }
 
-    // 1) Nom resto : ?resto=... | sinon sous-domaine | sinon "Restaurant"
-    function detectRestoName(){
-      const fromParam = qs("resto");
-      if (fromParam) return fromParam;
-
-      const host = location.hostname || "";
-      const parts = host.split(".");
-      if (parts.length >= 3) {
-        const sub = parts[0];
-        if (sub && sub !== "app" && sub !== "www") {
-          return sub.charAt(0).toUpperCase() + sub.slice(1);
-        }
-      }
-      return "Restaurant";
+    function tick(){
+      const elapsed = Math.floor((Date.now() - start) / 1000);
+      const left = Math.max(0, COUNTDOWN_SECONDS - elapsed);
+      const mm = String(Math.floor(left/60)).padStart(2,"0");
+      const ss = String(left%60).padStart(2,"0");
+      out.textContent = `${mm}:${ss}`;
     }
+    tick();
+    setInterval(tick, 250);
+  }
 
-    // 2) Preuve sociale stable (par jour) pour éviter de changer à chaque refresh
-    function stableDailyRandom(min, max){
-      const d = new Date();
-      const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}-${location.hostname}`;
-      let hash = 0;
-      for (let i=0;i<key.length;i++) hash = (hash*31 + key.charCodeAt(i)) >>> 0;
-      return (hash % (max - min + 1)) + min;
-    }
+  function buildReditLink(){
+    const url = new URL("redit.html", location.href);
+    const params = new URLSearchParams(location.search);
+    if (params.get("resto")) url.searchParams.set("resto", params.get("resto"));
+    if (params.get("logo")) url.searchParams.set("logo", params.get("logo"));
+    return url.toString();
+  }
 
-    // 3) Construit le lien vers redit.html en gardant ?resto= et ?logo= si présents
-    function buildInstallLink(){
-      const url = new URL(INSTALL_PAGE, location.href);
-      const params = new URLSearchParams(location.search);
+  (function init(){
+    document.getElementById("restoName").textContent = detectRestoName();
+    document.getElementById("socialCount").textContent = String(stableDailyRandom(18, 38));
 
-      // conserve resto/logo si existants
-      if (params.get("resto")) url.searchParams.set("resto", params.get("resto"));
-      if (params.get("logo")) url.searchParams.set("logo", params.get("logo"));
+    document.getElementById("ctaBtn").addEventListener("click", () => {
+      // V4 : pas de choix -> on passe par install
+      window.location.href = buildReditLink();
+    });
 
-      return url.toString();
-    }
-
-    // 4) Countdown
-    function startCountdown(){
-      const out = document.getElementById("countdown");
-      const startKey = "fidelavis_offer_countdown_start";
-      let start = Number(localStorage.getItem(startKey));
-      const now = Date.now();
-
-      if (!start || (now - start) > (COUNTDOWN_SECONDS * 1000)) {
-        start = now;
-        localStorage.setItem(startKey, String(start));
-      }
-
-      function tick(){
-        const elapsed = Math.floor((Date.now() - start) / 1000);
-        const left = Math.max(0, COUNTDOWN_SECONDS - elapsed);
-        const mm = String(Math.floor(left / 60)).padStart(2,"0");
-        const ss = String(left % 60).padStart(2,"0");
-        out.textContent = `${mm}:${ss}`;
-      }
-      tick();
-      setInterval(tick, 250);
-    }
-
-    // Init
-    (function init(){
-      document.getElementById("restoName").textContent = detectRestoName();
-      document.getElementById("socialCount").textContent = String(stableDailyRandom(18, 38));
-
-      // CTA principal -> inscription (ou ton flow)
-      document.getElementById("ctaBtn").addEventListener("click", () => {
-        window.location.href = MAIN_CTA_LINK;
-      });
-
-      // Bouton install -> redit.html (+ params)
-      const installBtn = document.getElementById("installBtn");
-      installBtn.addEventListener("click", () => {
-        window.location.href = buildInstallLink();
-      });
-
-      // Si déjà installé : on cache le bouton “Installer l’app”
-      if (isStandalone()){
-        installBtn.classList.add("hidden");
-        document.getElementById("installHint").classList.add("hidden");
-      }
-
-      startCountdown();
-    })();
-  </script>
+    startCountdown();
+  })();
+</script>
 </body>
 </html>
