@@ -22,222 +22,426 @@
       --danger:#b6152b;
       --ok:#1f8a4c;
     }
-
     *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      font-family:'Montserrat',sans-serif;
-      background:#f6efe5;
+      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
+        linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
       color:var(--ink);
-      padding:22px 14px 110px;
+      padding:22px 14px 140px; /* + place sticky */
       text-align:center;
     }
+    .wrap{ max-width:520px; margin:0 auto; }
 
-    .wrap{ max-width:520px; margin:auto; }
-
-    .logo{
-      width:90px;height:90px;
-      margin:auto;
-      border-radius:18px;
-      background:#fff;
-      border:1px solid var(--line);
-      display:grid;
-      place-items:center;
-      font-weight:800;
-      color:var(--gold2);
+    .brand{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
     }
-
-    h1{
-      margin:10px 0 0;
-      font-size:34px;
+    .resto{
+      font-size:38px;
+      line-height:1.05;
+      margin:6px 0 0;
+      font-weight:900;
       color:#7a5b26;
+      letter-spacing:-0.7px;
     }
-
+    .badgeRow{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
     .badge{
-      margin:8px auto 0;
-      display:inline-block;
-      padding:6px 14px;
-      border-radius:20px;
-      background:#fff;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.72);
       border:1px solid var(--line);
+      font-weight:800;
+      color:#3b3b3b;
       font-size:13px;
-      font-weight:700;
+      box-shadow:0 10px 18px rgba(0,0,0,0.05);
+    }
+    .dot{
+      width:8px; height:8px;
+      border-radius:99px;
+      background:var(--ok);
+      box-shadow:0 0 0 6px rgba(31,138,76,0.12);
     }
 
     .hero{
-      margin:18px 0 10px;
+      margin:16px 0 12px;
+      padding:0 10px;
     }
-
     .hero h2{
       margin:0;
-      font-size:18px;
-      font-weight:800;
+      font-size:20px;
+      font-weight:900;
+      color:#2b2b2b;
+      letter-spacing:-0.2px;
     }
-
     .expire{
-      margin:10px auto;
-      display:inline-block;
-      padding:8px 14px;
-      border-radius:14px;
-      background:rgba(182,21,43,.1);
-      border:1px solid rgba(182,21,43,.2);
-      font-size:13px;
-      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      margin-top:12px;
+      padding:10px 14px;
+      border-radius:16px;
+      background:rgba(182,21,43,0.08);
+      border:1px solid rgba(182,21,43,0.18);
       color:#7a1120;
+      font-weight:900;
+      font-size:13.5px;
     }
 
     .card{
-      background:linear-gradient(180deg,var(--gold),var(--gold2));
-      border-radius:22px;
-      padding:18px;
-      margin:14px 0;
-      color:#fff;
+      margin:14px auto 12px;
+      background:linear-gradient(180deg, rgba(184,146,79,0.96) 0%, rgba(158,122,62,0.96) 100%);
+      border-radius:var(--radius);
+      padding:18px 16px 16px;
       box-shadow:var(--shadow);
       text-align:left;
+      position:relative;
+      overflow:hidden;
     }
-
     .card h3{
-      margin:0;
-      font-size:34px;
-      font-weight:900;
+      margin:0 0 10px;
+      color:#fff;
+      font-size:40px;
+      line-height:1.02;
+      font-weight:950;
+      letter-spacing:-0.9px;
     }
-
-    .card p{
-      margin:10px 0;
-      font-size:15px;
-      line-height:1.4;
-      font-weight:600;
-    }
-
-    .pill{
-      display:inline-block;
-      margin:4px 6px 0 0;
-      padding:6px 12px;
-      border-radius:20px;
-      background:rgba(255,255,255,.2);
-      font-size:12px;
+    .sub{
+      color:rgba(255,255,255,0.95);
+      font-size:15.5px;
+      line-height:1.35;
+      margin:0 0 12px;
       font-weight:700;
     }
-
+    .miniLine{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.22);
+      border:1px solid rgba(255,255,255,0.22);
+      color:#fff;
+      font-weight:900;
+      font-size:13px;
+      backdrop-filter: blur(8px);
+    }
     .social{
       margin-top:12px;
-      background:rgba(255,255,255,.2);
-      padding:10px;
-      border-radius:14px;
+      padding:12px 12px;
+      border-radius:16px;
+      background:rgba(255,255,255,0.18);
+      border:1px solid rgba(255,255,255,0.22);
+      color:#fff;
+      font-weight:900;
       font-size:14px;
-      font-weight:700;
     }
 
     .trust{
-      margin:12px 0;
-      font-size:12px;
-      font-weight:700;
-      color:#444;
+      margin:12px auto 0;
+      max-width:520px;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+      color:#4a4a4a;
+      font-size:12.5px;
+      font-weight:800;
+    }
+    .trust span{
+      background:rgba(255,255,255,0.72);
+      border:1px solid var(--line);
+      padding:10px 12px;
+      border-radius:999px;
+      box-shadow:0 10px 18px rgba(0,0,0,0.04);
     }
 
+    /* Sticky */
     .sticky{
       position:fixed;
-      left:0;right:0;bottom:0;
-      background:#f6efe5;
-      padding:10px 14px;
+      left:0; right:0;
+      bottom:0;
+      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+      background:linear-gradient(180deg, rgba(246,239,229,0.0) 0%, rgba(246,239,229,0.92) 28%, rgba(246,239,229,0.98) 100%);
+      backdrop-filter: blur(10px);
+      z-index:50;
+    }
+    .ctaWrap{
+      max-width:520px;
+      margin:0 auto;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:10px;
+      box-shadow:0 16px 30px rgba(0,0,0,0.10);
     }
 
     .cta{
       width:100%;
       border:0;
-      background:#fff;
-      border-radius:16px;
-      padding:16px;
-      font-size:16px;
-      font-weight:900;
-      border:2px solid var(--gold);
       cursor:pointer;
+      border-radius:16px;
+      padding:16px 14px;
+      font-family:inherit;
+      font-weight:950;
+      font-size:16px;
+      letter-spacing:-0.2px;
+      color:#1c1c1c;
+      background:linear-gradient(180deg, #ffffff 0%, #fbf7f1 100%);
+      border:2px solid rgba(184,146,79,0.45);
+      box-shadow:0 14px 26px rgba(184,146,79,0.25);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+    .cta:active{ transform:scale(0.985); }
+    .pulse{
+      width:10px; height:10px;
+      border-radius:99px;
+      background:var(--danger);
+      box-shadow:0 0 0 0 rgba(182,21,43,0.35);
+      animation:pulse 1.15s infinite;
+    }
+    @keyframes pulse{
+      0%{ box-shadow:0 0 0 0 rgba(182,21,43,0.35); }
+      70%{ box-shadow:0 0 0 12px rgba(182,21,43,0.00); }
+      100%{ box-shadow:0 0 0 0 rgba(182,21,43,0.00); }
     }
 
-    .timer{
-      margin-top:6px;
-      font-size:13px;
-      font-weight:800;
-      color:#7a1120;
+    .row2{
+      margin-top:10px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:center;
     }
+    .timer{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:rgba(182,21,43,0.08);
+      border:1px solid rgba(182,21,43,0.18);
+      color:#7a1120;
+      font-weight:950;
+      font-size:12.5px;
+    }
+
+    /* Bouton accès install (secondaire mais très visible) */
+    .installBtn{
+      flex:1 1 220px;
+      border:1px solid rgba(184,146,79,0.35);
+      background:#fff;
+      color:#2b2b2b;
+      border-radius:14px;
+      padding:12px 12px;
+      font-weight:950;
+      font-size:13.5px;
+      cursor:pointer;
+      box-shadow:0 10px 18px rgba(0,0,0,0.06);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+    .installHint{
+      width:100%;
+      margin-top:8px;
+      font-size:12px;
+      font-weight:800;
+      color:#5a5a5a;
+    }
+
+    .hidden{ display:none !important; }
   </style>
 </head>
 
 <body>
+  <div class="wrap">
 
-<div class="wrap">
+    <header class="brand">
+      <div>
+        <div id="restoName" class="resto">Restaurant</div>
+        <div class="badgeRow">
+          <div class="badge"><span class="dot"></span>Client invité aujourd’hui</div>
+        </div>
+      </div>
+    </header>
 
-  <div class="logo">LOGO</div>
+    <section class="hero">
+      <h2>🎁 Votre réduction est réservée pour vous</h2>
+      <div class="expire">Expire si vous quittez le restaurant</div>
+    </section>
 
-  <h1 id="resto">Restaurant</h1>
+    <section class="card" aria-label="Offre">
+      <h3>-10% OFFERT</h3>
+      <p class="sub">💎 Sur votre prochaine <b>addition</b><br>📩 Reçu par email en 10 secondes</p>
 
-  <div class="badge">⭐ Client invité aujourd’hui</div>
+      <div class="miniLine">
+        <div class="pill">🔒 Sans spam</div>
+        <div class="pill">✅ Sans engagement</div>
+        <div class="pill">🗑 Désinscription 1 clic</div>
+      </div>
 
-  <div class="hero">
-    <h2>🎁 Votre réduction est réservée pour vous</h2>
-    <div class="expire">Expire si vous quittez le restaurant</div>
-  </div>
+      <div class="social">🔥 <span id="socialCount">27</span> clients ont activé aujourd’hui</div>
+    </section>
 
-  <div class="card">
-    <h3>-10% OFFERT</h3>
-
-    <p>
-      💎 Sur votre prochaine <b>addition</b><br>
-      📩 Reçu par email en 10 secondes
-    </p>
-
-    <div>
-      <span class="pill">🔒 Sans spam</span>
-      <span class="pill">✅ Sans engagement</span>
-      <span class="pill">🗑 Désinscription 1 clic</span>
+    <div class="trust">
+      <span>📍 Sur place</span>
+      <span>🎁 Gratuit</span>
+      <span>✅ 1 clic</span>
     </div>
 
-    <div class="social">
-      🔥 <span id="count">17</span> clients ont activé aujourd’hui
+  </div>
+
+  <!-- Sticky CTA + accès install -->
+  <div class="sticky">
+    <div class="ctaWrap">
+
+      <!-- CTA principal -->
+      <button class="cta" id="ctaBtn" type="button">
+        <span class="pulse" aria-hidden="true"></span>
+        🎁 Oui, je veux mes -10% maintenant
+      </button>
+
+      <div class="row2">
+        <!-- Accès à la page d’installation -->
+        <button class="installBtn" id="installBtn" type="button">
+          📲 Installer l’app du restaurant
+        </button>
+
+        <div class="timer">⏳ Offre réservée : <span id="countdown">05:00</span></div>
+      </div>
+
+      <div class="installHint" id="installHint">
+        (Recommandé) L’installation permet d’accéder au coupon plus vite et de le valider en caisse.
+      </div>
+
     </div>
   </div>
 
-  <div class="trust">
-    📍 Sur place • 🎁 Gratuit • ✅ 1 clic
-  </div>
+  <script>
+    // -----------------------------
+    // CONFIG
+    // -----------------------------
+    const MAIN_CTA_LINK = "inscription.html"; // ou ta page de formulaire
+    const INSTALL_PAGE = "redit.html";        // ta page d’installation PWA
+    const COUNTDOWN_SECONDS = 5 * 60;
 
-</div>
+    // -----------------------------
+    // Helpers
+    // -----------------------------
+    function qs(name){ return new URLSearchParams(location.search).get(name); }
 
-<div class="sticky">
+    function isStandalone(){
+      return window.matchMedia("(display-mode: standalone)").matches ||
+             window.navigator.standalone === true;
+    }
 
-  <button class="cta" onclick="location.href='redit.html'">
-    🎁 Oui, je veux mes -10% maintenant
-  </button>
+    // 1) Nom resto : ?resto=... | sinon sous-domaine | sinon "Restaurant"
+    function detectRestoName(){
+      const fromParam = qs("resto");
+      if (fromParam) return fromParam;
 
-  <div class="timer">
-    ⏳ Offre réservée : <span id="time">05:00</span>
-  </div>
+      const host = location.hostname || "";
+      const parts = host.split(".");
+      if (parts.length >= 3) {
+        const sub = parts[0];
+        if (sub && sub !== "app" && sub !== "www") {
+          return sub.charAt(0).toUpperCase() + sub.slice(1);
+        }
+      }
+      return "Restaurant";
+    }
 
-</div>
+    // 2) Preuve sociale stable (par jour) pour éviter de changer à chaque refresh
+    function stableDailyRandom(min, max){
+      const d = new Date();
+      const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}-${location.hostname}`;
+      let hash = 0;
+      for (let i=0;i<key.length;i++) hash = (hash*31 + key.charCodeAt(i)) >>> 0;
+      return (hash % (max - min + 1)) + min;
+    }
 
-<script>
+    // 3) Construit le lien vers redit.html en gardant ?resto= et ?logo= si présents
+    function buildInstallLink(){
+      const url = new URL(INSTALL_PAGE, location.href);
+      const params = new URLSearchParams(location.search);
 
-  // Nom resto depuis URL
-  const p = new URLSearchParams(location.search);
-  document.getElementById("resto").textContent =
-    p.get("resto") || "Restaurant";
+      // conserve resto/logo si existants
+      if (params.get("resto")) url.searchParams.set("resto", params.get("resto"));
+      if (params.get("logo")) url.searchParams.set("logo", params.get("logo"));
 
-  // Social proof
-  document.getElementById("count").textContent =
-    Math.floor(Math.random()*15)+15;
+      return url.toString();
+    }
 
-  // Timer
-  let t = 300;
-  const el = document.getElementById("time");
+    // 4) Countdown
+    function startCountdown(){
+      const out = document.getElementById("countdown");
+      const startKey = "fidelavis_offer_countdown_start";
+      let start = Number(localStorage.getItem(startKey));
+      const now = Date.now();
 
-  setInterval(()=>{
-    if(t>0) t--;
-    const m = String(Math.floor(t/60)).padStart(2,"0");
-    const s = String(t%60).padStart(2,"0");
-    el.textContent = m+":"+s;
-  },1000);
+      if (!start || (now - start) > (COUNTDOWN_SECONDS * 1000)) {
+        start = now;
+        localStorage.setItem(startKey, String(start));
+      }
 
-</script>
+      function tick(){
+        const elapsed = Math.floor((Date.now() - start) / 1000);
+        const left = Math.max(0, COUNTDOWN_SECONDS - elapsed);
+        const mm = String(Math.floor(left / 60)).padStart(2,"0");
+        const ss = String(left % 60).padStart(2,"0");
+        out.textContent = `${mm}:${ss}`;
+      }
+      tick();
+      setInterval(tick, 250);
+    }
 
+    // Init
+    (function init(){
+      document.getElementById("restoName").textContent = detectRestoName();
+      document.getElementById("socialCount").textContent = String(stableDailyRandom(18, 38));
+
+      // CTA principal -> inscription (ou ton flow)
+      document.getElementById("ctaBtn").addEventListener("click", () => {
+        window.location.href = MAIN_CTA_LINK;
+      });
+
+      // Bouton install -> redit.html (+ params)
+      const installBtn = document.getElementById("installBtn");
+      installBtn.addEventListener("click", () => {
+        window.location.href = buildInstallLink();
+      });
+
+      // Si déjà installé : on cache le bouton “Installer l’app”
+      if (isStandalone()){
+        installBtn.classList.add("hidden");
+        document.getElementById("installHint").classList.add("hidden");
+      }
+
+      startCountdown();
+    })();
+  </script>
 </body>
 </html>
