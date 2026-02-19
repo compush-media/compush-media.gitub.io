@@ -1,447 +1,469 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Fidelavis — Activation</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Installer l’application</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="manifest" href="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/progressier.json"/>
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
 
-  <style>
-    :root{
-      --gold:#B8924F;
-      --gold2:#9E7A3E;
-      --bg:#f6efe5;
-      --ink:#1d1d1d;
-      --muted:#6b6b6b;
-      --line:rgba(0,0,0,0.08);
-      --shadow:0 18px 40px rgba(0,0,0,0.12);
-      --radius:22px;
-      --danger:#b6152b;
-      --ok:#1f8a4c;
-    }
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
-        linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
-      color:var(--ink);
-      padding:22px 14px 140px; /* + place sticky */
-      text-align:center;
-    }
-    .wrap{ max-width:520px; margin:0 auto; }
+<style>
+:root{
+  --brand:#C6A667;
+  --brand2:#B8924F;
+  --bg:#fff8f2;
+  --ink:#1d1d1d;
+  --muted:#666;
+  --line:rgba(0,0,0,0.08);
+  --shadow:0 18px 40px rgba(0,0,0,0.12);
+  --danger:#b6152b;
+  --radius:22px;
+}
 
-    .brand{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .resto{
-      font-size:38px;
-      line-height:1.05;
-      margin:6px 0 0;
-      font-weight:900;
-      color:#7a5b26;
-      letter-spacing:-0.7px;
-    }
-    .badgeRow{
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:8px;
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.72);
-      border:1px solid var(--line);
-      font-weight:800;
-      color:#3b3b3b;
-      font-size:13px;
-      box-shadow:0 10px 18px rgba(0,0,0,0.05);
-    }
-    .dot{
-      width:8px; height:8px;
-      border-radius:99px;
-      background:var(--ok);
-      box-shadow:0 0 0 6px rgba(31,138,76,0.12);
-    }
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
 
-    .hero{
-      margin:16px 0 12px;
-      padding:0 10px;
-    }
-    .hero h2{
-      margin:0;
-      font-size:20px;
-      font-weight:900;
-      color:#2b2b2b;
-      letter-spacing:-0.2px;
-    }
-    .expire{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      margin-top:12px;
-      padding:10px 14px;
-      border-radius:16px;
-      background:rgba(182,21,43,0.08);
-      border:1px solid rgba(182,21,43,0.18);
-      color:#7a1120;
-      font-weight:900;
-      font-size:13.5px;
-    }
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background:
+    radial-gradient(900px 520px at 50% 0%, #ffffff 0%, var(--bg) 70%),
+    linear-gradient(180deg, #fff 0%, var(--bg) 100%);
+  color:var(--ink);
+  padding:26px 16px 120px;
+  text-align:center;
+}
 
-    .card{
-      margin:14px auto 12px;
-      background:linear-gradient(180deg, rgba(184,146,79,0.96) 0%, rgba(158,122,62,0.96) 100%);
-      border-radius:var(--radius);
-      padding:18px 16px 16px;
-      box-shadow:var(--shadow);
-      text-align:left;
-      position:relative;
-      overflow:hidden;
-    }
-    .card h3{
-      margin:0 0 10px;
-      color:#fff;
-      font-size:40px;
-      line-height:1.02;
-      font-weight:950;
-      letter-spacing:-0.9px;
-    }
-    .sub{
-      color:rgba(255,255,255,0.95);
-      font-size:15.5px;
-      line-height:1.35;
-      margin:0 0 12px;
-      font-weight:700;
-    }
-    .miniLine{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.22);
-      border:1px solid rgba(255,255,255,0.22);
-      color:#fff;
-      font-weight:900;
-      font-size:13px;
-      backdrop-filter: blur(8px);
-    }
-    .social{
-      margin-top:12px;
-      padding:12px 12px;
-      border-radius:16px;
-      background:rgba(255,255,255,0.18);
-      border:1px solid rgba(255,255,255,0.22);
-      color:#fff;
-      font-weight:900;
-      font-size:14px;
-    }
+.wrap{
+  max-width:520px;
+  margin:0 auto;
+}
 
-    .trust{
-      margin:12px auto 0;
-      max-width:520px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-      color:#4a4a4a;
-      font-size:12.5px;
-      font-weight:800;
-    }
-    .trust span{
-      background:rgba(255,255,255,0.72);
-      border:1px solid var(--line);
-      padding:10px 12px;
-      border-radius:999px;
-      box-shadow:0 10px 18px rgba(0,0,0,0.04);
-    }
+.topBadge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.75);
+  border:1px solid var(--line);
+  box-shadow:0 10px 18px rgba(0,0,0,0.05);
+  font-weight:800;
+  font-size:13px;
+  color:#3b3b3b;
+}
+.dot{
+  width:8px;height:8px;border-radius:99px;
+  background:#1f8a4c;
+  box-shadow:0 0 0 6px rgba(31,138,76,0.12);
+}
 
-    /* Sticky */
-    .sticky{
-      position:fixed;
-      left:0; right:0;
-      bottom:0;
-      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
-      background:linear-gradient(180deg, rgba(246,239,229,0.0) 0%, rgba(246,239,229,0.92) 28%, rgba(246,239,229,0.98) 100%);
-      backdrop-filter: blur(10px);
-      z-index:50;
-    }
-    .ctaWrap{
-      max-width:520px;
-      margin:0 auto;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:10px;
-      box-shadow:0 16px 30px rgba(0,0,0,0.10);
-    }
+h1{
+  font-size:26px;
+  margin:14px 0 6px;
+  letter-spacing:-0.3px;
+}
+.sub{
+  font-size:14px;
+  color:var(--muted);
+  margin:0 0 16px;
+  line-height:1.35;
+}
 
-    .cta{
-      width:100%;
-      border:0;
-      cursor:pointer;
-      border-radius:16px;
-      padding:16px 14px;
-      font-family:inherit;
-      font-weight:950;
-      font-size:16px;
-      letter-spacing:-0.2px;
-      color:#1c1c1c;
-      background:linear-gradient(180deg, #ffffff 0%, #fbf7f1 100%);
-      border:2px solid rgba(184,146,79,0.45);
-      box-shadow:0 14px 26px rgba(184,146,79,0.25);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-    }
-    .cta:active{ transform:scale(0.985); }
-    .pulse{
-      width:10px; height:10px;
-      border-radius:99px;
-      background:var(--danger);
-      box-shadow:0 0 0 0 rgba(182,21,43,0.35);
-      animation:pulse 1.15s infinite;
-    }
-    @keyframes pulse{
-      0%{ box-shadow:0 0 0 0 rgba(182,21,43,0.35); }
-      70%{ box-shadow:0 0 0 12px rgba(182,21,43,0.00); }
-      100%{ box-shadow:0 0 0 0 rgba(182,21,43,0.00); }
-    }
+.card{
+  background:#fff;
+  border-radius:var(--radius);
+  padding:20px 18px;
+  box-shadow:0 20px 55px rgba(0,0,0,.10);
+  border:1px solid var(--line);
+  text-align:left;
+}
 
-    .row2{
-      margin-top:10px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:space-between;
-      align-items:center;
-    }
-    .timer{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      background:rgba(182,21,43,0.08);
-      border:1px solid rgba(182,21,43,0.18);
-      color:#7a1120;
-      font-weight:950;
-      font-size:12.5px;
-    }
+.highlight{
+  font-weight:950;
+  font-size:16px;
+  margin:0 0 10px;
+}
+.mini{
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.45;
+  margin:0;
+}
+.warn{
+  margin-top:12px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(182,21,43,.08);
+  border:1px solid rgba(182,21,43,.18);
+  color:#7a1120;
+  font-weight:900;
+  font-size:13px;
+}
 
-    /* Bouton accès install (secondaire mais très visible) */
-    .installBtn{
-      flex:1 1 220px;
-      border:1px solid rgba(184,146,79,0.35);
-      background:#fff;
-      color:#2b2b2b;
-      border-radius:14px;
-      padding:12px 12px;
-      font-weight:950;
-      font-size:13.5px;
-      cursor:pointer;
-      box-shadow:0 10px 18px rgba(0,0,0,0.06);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-    }
-    .installHint{
-      width:100%;
-      margin-top:8px;
-      font-size:12px;
-      font-weight:800;
-      color:#5a5a5a;
-    }
+.steps{
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px dashed rgba(0,0,0,0.12);
+}
+.step{
+  display:flex;
+  gap:10px;
+  margin:10px 0 0;
+  font-size:13.5px;
+  color:#3b3b3b;
+  line-height:1.35;
+}
+.num{
+  width:26px;height:26px;
+  border-radius:9px;
+  background:rgba(198,166,103,.18);
+  color:#6f5522;
+  display:grid;
+  place-items:center;
+  font-weight:950;
+  flex:0 0 auto;
+}
 
-    .hidden{ display:none !important; }
-  </style>
+/* Sticky CTA */
+.sticky{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg, rgba(255,248,242,0.0) 0%, rgba(255,248,242,0.90) 30%, rgba(255,248,242,0.98) 100%);
+  backdrop-filter: blur(10px);
+  z-index:60;
+}
+.ctaWrap{
+  max-width:520px;
+  margin:0 auto;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:10px;
+  box-shadow:0 16px 30px rgba(0,0,0,0.10);
+}
+.cta{
+  width:100%;
+  border:0;
+  cursor:pointer;
+  border-radius:16px;
+  padding:16px 14px;
+  font-weight:950;
+  font-size:16px;
+  letter-spacing:-0.2px;
+  color:#1c1c1c;
+  background:linear-gradient(180deg, #ffffff 0%, #fbf7f1 100%);
+  border:2px solid rgba(198,166,103,0.55);
+  box-shadow:0 14px 26px rgba(198,166,103,0.20);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.pulse{
+  width:10px;height:10px;border-radius:99px;
+  background:var(--danger);
+  box-shadow:0 0 0 0 rgba(182,21,43,0.35);
+  animation:pulse 1.15s infinite;
+}
+@keyframes pulse{
+  0%{ box-shadow:0 0 0 0 rgba(182,21,43,0.35); }
+  70%{ box-shadow:0 0 0 12px rgba(182,21,43,0); }
+  100%{ box-shadow:0 0 0 0 rgba(182,21,43,0); }
+}
+.underCta{
+  margin-top:8px;
+  font-size:12.5px;
+  color:#5a5a5a;
+  font-weight:800;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:999px;
+  background:rgba(182,21,43,0.08);
+  border:1px solid rgba(182,21,43,0.18);
+  color:#7a1120;
+  font-weight:950;
+}
+
+/* Overlay attention */
+#overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter: blur(2px);
+  z-index:70;
+  display:none;
+}
+#overlay .panel{
+  position:absolute;
+  left:50%;
+  top:18%;
+  transform:translateX(-50%);
+  width:min(520px, calc(100% - 24px));
+  background:#fff;
+  border-radius:22px;
+  padding:18px 16px;
+  border:1px solid var(--line);
+  box-shadow:0 24px 70px rgba(0,0,0,0.22);
+  text-align:left;
+}
+#overlay h2{
+  margin:0 0 6px;
+  font-size:18px;
+  font-weight:950;
+}
+#overlay p{
+  margin:0 0 12px;
+  font-size:13.5px;
+  color:#444;
+  line-height:1.35;
+}
+.closeRow{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.btnSmall{
+  border:0;
+  cursor:pointer;
+  border-radius:14px;
+  padding:12px 12px;
+  font-weight:950;
+  font-size:13.5px;
+}
+.primary{
+  background:linear-gradient(180deg,var(--brand),var(--brand2));
+  color:#fff;
+}
+.ghost{
+  background:#f6efe5;
+  color:#2b2b2b;
+  border:1px solid var(--line);
+}
+
+/* Pointer iOS bottom-right */
+#pointer{
+  position:fixed;
+  right:14px;
+  bottom:78px;
+  z-index:80;
+  display:none;
+  text-align:right;
+  pointer-events:none;
+}
+#bubble{
+  display:inline-block;
+  background:var(--brand);
+  color:#fff;
+  padding:12px 14px;
+  border-radius:18px;
+  font-size:14px;
+  font-weight:950;
+  box-shadow:0 12px 30px rgba(0,0,0,.18);
+  animation:bounce 1.3s infinite;
+}
+#bubble::after{
+  content:"";
+  position:absolute;
+  right:22px;
+  bottom:-12px;
+  border-width:12px 12px 0 12px;
+  border-style:solid;
+  border-color:var(--brand) transparent transparent transparent;
+}
+.arrow{
+  margin-top:8px;
+  font-size:34px;
+  font-weight:950;
+  color:var(--brand);
+  text-shadow:0 12px 22px rgba(0,0,0,0.25);
+  animation:bounce 1.3s infinite;
+}
+@keyframes bounce{
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(-6px); }
+}
+
+/* Hide pointer in standalone */
+.standalone #pointer{ display:none !important; }
+</style>
 </head>
 
 <body>
-  <div class="wrap">
 
-    <header class="brand">
-      <div>
-        <div id="restoName" class="resto">Restaurant</div>
-        <div class="badgeRow">
-          <div class="badge"><span class="dot"></span>Client invité aujourd’hui</div>
-        </div>
-      </div>
-    </header>
+<div class="wrap">
+  <div class="topBadge"><span class="dot"></span>Installation requise (1 seule fois)</div>
 
-    <section class="hero">
-      <h2>🎁 Votre réduction est réservée pour vous</h2>
-      <div class="expire">Expire si vous quittez le restaurant</div>
-    </section>
+  <h1>📲 Installez l’app du restaurant</h1>
+  <p class="sub">C’est obligatoire pour afficher et valider votre coupon en caisse.</p>
 
-    <section class="card" aria-label="Offre">
-      <h3>-10% OFFERT</h3>
-      <p class="sub">💎 Sur votre prochaine <b>addition</b><br>📩 Reçu par email en 10 secondes</p>
+  <div class="card">
+    <p class="highlight">🎁 Votre -10% sur votre prochaine <b>addition</b> est prêt</p>
+    <p class="mini">Installez l’app maintenant : vous y retrouverez votre réduction en un clic, à tout moment.</p>
 
-      <div class="miniLine">
-        <div class="pill">🔒 Sans spam</div>
-        <div class="pill">✅ Sans engagement</div>
-        <div class="pill">🗑 Désinscription 1 clic</div>
-      </div>
+    <div class="warn">⛔ Faites-le maintenant (sinon vous risquez de perdre l’accès)</div>
 
-      <div class="social">🔥 <span id="socialCount">27</span> clients ont activé aujourd’hui</div>
-    </section>
-
-    <div class="trust">
-      <span>📍 Sur place</span>
-      <span>🎁 Gratuit</span>
-      <span>✅ 1 clic</span>
+    <div class="steps" id="iosSteps" style="display:none;">
+      <div class="step"><div class="num">1</div><div>Appuyez sur <b>Partager</b> (icône en bas).</div></div>
+      <div class="step"><div class="num">2</div><div>Choisissez <b>Sur l’écran d’accueil</b>.</div></div>
+      <div class="step"><div class="num">3</div><div>Appuyez sur <b>Ajouter</b>. (C’est fini ✅)</div></div>
     </div>
 
-  </div>
-
-  <!-- Sticky CTA + accès install -->
-  <div class="sticky">
-    <div class="ctaWrap">
-
-      <!-- CTA principal -->
-      <button class="cta" id="ctaBtn" type="button">
-        <span class="pulse" aria-hidden="true"></span>
-        🎁 Oui, je veux mes -10% maintenant
-      </button>
-
-      <div class="row2">
-        <!-- Accès à la page d’installation -->
-        <button class="installBtn" id="installBtn" type="button">
-          📲 Installer l’app du restaurant
-        </button>
-
-        <div class="timer">⏳ Offre réservée : <span id="countdown">05:00</span></div>
-      </div>
-
-      <div class="installHint" id="installHint">
-        (Recommandé) L’installation permet d’accéder au coupon plus vite et de le valider en caisse.
-      </div>
-
+    <div class="steps" id="androidSteps" style="display:none;">
+      <div class="step"><div class="num">1</div><div>Appuyez sur <b>Installer</b> (pop-up ou bouton).</div></div>
+      <div class="step"><div class="num">2</div><div>Validez. L’app s’ajoute sur votre écran d’accueil ✅</div></div>
     </div>
   </div>
+</div>
 
-  <script>
-    // -----------------------------
-    // CONFIG
-    // -----------------------------
-    const MAIN_CTA_LINK = "inscription.html"; // ou ta page de formulaire
-    const INSTALL_PAGE = "redit.html";        // ta page d’installation PWA
-    const COUNTDOWN_SECONDS = 5 * 60;
+<!-- Overlay -->
+<div id="overlay" aria-hidden="true">
+  <div class="panel">
+    <h2>✅ Dernière étape : installer l’app</h2>
+    <p>Une fois installée, votre coupon est accessible instantanément et pourra être validé en caisse.</p>
+    <div class="closeRow">
+      <button class="btnSmall primary" id="showHowBtn">📲 Voir comment faire</button>
+      <button class="btnSmall ghost" id="closeOverlayBtn">Continuer</button>
+    </div>
+  </div>
+</div>
 
-    // -----------------------------
-    // Helpers
-    // -----------------------------
-    function qs(name){ return new URLSearchParams(location.search).get(name); }
+<!-- Pointer iOS bottom-right -->
+<div id="pointer" aria-hidden="true">
+  <div style="position:relative; display:inline-block;">
+    <div id="bubble">👇 Appuyez ici pour installer</div>
+  </div>
+  <div class="arrow">↘︎</div>
+</div>
 
-    function isStandalone(){
-      return window.matchMedia("(display-mode: standalone)").matches ||
-             window.navigator.standalone === true;
-    }
+<!-- Sticky CTA -->
+<div class="sticky">
+  <div class="ctaWrap">
+    <button class="cta" id="ctaBtn" type="button">
+      <span class="pulse" aria-hidden="true"></span>
+      📲 Installer maintenant (1 clic)
+    </button>
 
-    // 1) Nom resto : ?resto=... | sinon sous-domaine | sinon "Restaurant"
-    function detectRestoName(){
-      const fromParam = qs("resto");
-      if (fromParam) return fromParam;
+    <div class="underCta">
+      <div>🔒 Aucun engagement • 1 seule fois</div>
+      <div class="pill" id="devicePill">Détection…</div>
+    </div>
+  </div>
+</div>
 
-      const host = location.hostname || "";
-      const parts = host.split(".");
-      if (parts.length >= 3) {
-        const sub = parts[0];
-        if (sub && sub !== "app" && sub !== "www") {
-          return sub.charAt(0).toUpperCase() + sub.slice(1);
-        }
-      }
-      return "Restaurant";
-    }
+<script>
+function isStandalone(){
+  return window.matchMedia("(display-mode: standalone)").matches ||
+         window.navigator.standalone === true;
+}
+function isIOS(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+function isAndroid(){
+  return /android/i.test(navigator.userAgent);
+}
 
-    // 2) Preuve sociale stable (par jour) pour éviter de changer à chaque refresh
-    function stableDailyRandom(min, max){
-      const d = new Date();
-      const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}-${location.hostname}`;
-      let hash = 0;
-      for (let i=0;i<key.length;i++) hash = (hash*31 + key.charCodeAt(i)) >>> 0;
-      return (hash % (max - min + 1)) + min;
-    }
+// Si déjà installé → inscription
+if (isStandalone()){
+  document.documentElement.classList.add("standalone");
+  window.location.href = "/inscription.html";
+}
 
-    // 3) Construit le lien vers redit.html en gardant ?resto= et ?logo= si présents
-    function buildInstallLink(){
-      const url = new URL(INSTALL_PAGE, location.href);
-      const params = new URLSearchParams(location.search);
+const overlay = document.getElementById("overlay");
+const pointer = document.getElementById("pointer");
+const iosSteps = document.getElementById("iosSteps");
+const androidSteps = document.getElementById("androidSteps");
+const devicePill = document.getElementById("devicePill");
 
-      // conserve resto/logo si existants
-      if (params.get("resto")) url.searchParams.set("resto", params.get("resto"));
-      if (params.get("logo")) url.searchParams.set("logo", params.get("logo"));
+const showHowBtn = document.getElementById("showHowBtn");
+const closeOverlayBtn = document.getElementById("closeOverlayBtn");
+const ctaBtn = document.getElementById("ctaBtn");
 
-      return url.toString();
-    }
+// Détection device & instructions
+const ios = isIOS();
+const andr = isAndroid();
 
-    // 4) Countdown
-    function startCountdown(){
-      const out = document.getElementById("countdown");
-      const startKey = "fidelavis_offer_countdown_start";
-      let start = Number(localStorage.getItem(startKey));
-      const now = Date.now();
+if (ios){
+  devicePill.textContent = "iPhone détecté";
+  iosSteps.style.display = "block";
+  pointer.style.display = "block"; // flèche vers le bouton partage
+} else if (andr){
+  devicePill.textContent = "Android détecté";
+  androidSteps.style.display = "block";
+} else {
+  devicePill.textContent = "Mobile détecté";
+  androidSteps.style.display = "block";
+}
 
-      if (!start || (now - start) > (COUNTDOWN_SECONDS * 1000)) {
-        start = now;
-        localStorage.setItem(startKey, String(start));
-      }
+// Overlay affiché au chargement (force l'attention)
+setTimeout(() => {
+  overlay.style.display = "block";
+  overlay.setAttribute("aria-hidden","false");
+}, 250);
 
-      function tick(){
-        const elapsed = Math.floor((Date.now() - start) / 1000);
-        const left = Math.max(0, COUNTDOWN_SECONDS - elapsed);
-        const mm = String(Math.floor(left / 60)).padStart(2,"0");
-        const ss = String(left % 60).padStart(2,"0");
-        out.textContent = `${mm}:${ss}`;
-      }
-      tick();
-      setInterval(tick, 250);
-    }
+// Boutons overlay
+closeOverlayBtn.addEventListener("click", () => {
+  overlay.style.display = "none";
+  overlay.setAttribute("aria-hidden","true");
+});
 
-    // Init
-    (function init(){
-      document.getElementById("restoName").textContent = detectRestoName();
-      document.getElementById("socialCount").textContent = String(stableDailyRandom(18, 38));
+// "Voir comment" = garde overlay mais met l'attention sur la zone iOS
+showHowBtn.addEventListener("click", () => {
+  if (ios){
+    // petit flash pour l'attention
+    pointer.style.display = "block";
+    document.getElementById("bubble").textContent = "👇 Touchez Partager puis “Sur l’écran d’accueil”";
+  } else {
+    // sur Android : on tente de déclencher l'install (Progressier doit gérer le prompt)
+    tryInstall();
+  }
+});
 
-      // CTA principal -> inscription (ou ton flow)
-      document.getElementById("ctaBtn").addEventListener("click", () => {
-        window.location.href = MAIN_CTA_LINK;
-      });
+// CTA principal
+ctaBtn.addEventListener("click", () => {
+  if (ios){
+    // iOS Safari : impossible de déclencher l'ajout à l'écran d'accueil par code
+    overlay.style.display = "block";
+    overlay.setAttribute("aria-hidden","false");
+    document.getElementById("bubble").textContent = "👇 Appuyez sur Partager → “Sur l’écran d’accueil”";
+    // Option : on masque overlay après quelques secondes
+    setTimeout(() => { overlay.style.display = "none"; }, 2500);
+  } else {
+    tryInstall();
+  }
+});
 
-      // Bouton install -> redit.html (+ params)
-      const installBtn = document.getElementById("installBtn");
-      installBtn.addEventListener("click", () => {
-        window.location.href = buildInstallLink();
-      });
+// Tentative install (Android/Chrome)
+function tryInstall(){
+  // Progressier gère généralement l'install prompt.
+  // On donne un "nudge" UX + on masque overlay.
+  overlay.style.display = "none";
+  overlay.setAttribute("aria-hidden","true");
+  devicePill.textContent = "Appuyez sur Installer";
+  // Si Progressier expose un bouton, il sera pris en charge.
+  // Sinon, on laisse le prompt natif apparaître.
+}
 
-      // Si déjà installé : on cache le bouton “Installer l’app”
-      if (isStandalone()){
-        installBtn.classList.add("hidden");
-        document.getElementById("installHint").classList.add("hidden");
-      }
+// Bulle iOS persistante puis fade léger (mais reste visible)
+if (ios){
+  // On laisse plus longtemps + légère baisse d'opacité après 20s
+  setTimeout(()=>{ pointer.style.opacity = "0.85"; }, 20000);
+}
+</script>
 
-      startCountdown();
-    })();
-  </script>
 </body>
 </html>
