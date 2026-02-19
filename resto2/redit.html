@@ -11,7 +11,6 @@
 <style>
 :root{
   --gold:#B8924F;
-  --gold2:#9E7A3E;
   --bg:#f6efe5;
   --card:#ffffff;
   --ink:#1d1d1d;
@@ -21,9 +20,7 @@
   --danger:#b6152b;
   --radius:22px;
 }
-
 *{ box-sizing:border-box; }
-html,body{ height:100%; }
 body{
   margin:0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
@@ -34,7 +31,6 @@ body{
   padding:22px 14px 120px;
   text-align:center;
 }
-
 .wrap{ max-width:520px; margin:0 auto; }
 
 .badge{
@@ -46,7 +42,7 @@ body{
   background:rgba(255,255,255,0.75);
   border:1px solid var(--line);
   box-shadow:0 10px 18px rgba(0,0,0,0.05);
-  font-weight:900;
+  font-weight:950;
   font-size:13px;
   color:#3b3b3b;
 }
@@ -58,7 +54,7 @@ body{
 
 h1{
   margin:14px 0 6px;
-  font-size:28px;
+  font-size:30px;
   font-weight:950;
   letter-spacing:-0.4px;
 }
@@ -77,17 +73,23 @@ h1{
   border:1px solid var(--line);
   text-align:left;
 }
-
 .big{
   font-weight:950;
   font-size:16px;
   margin:0 0 10px;
 }
-.mini{
-  margin:0;
-  color:var(--muted);
-  font-size:13.5px;
-  line-height:1.45;
+.note{
+  margin-top:10px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(182,21,43,.08);
+  border:1px solid rgba(182,21,43,.18);
+  color:#7a1120;
+  font-weight:950;
+  font-size:13px;
 }
 
 .steps{
@@ -114,21 +116,6 @@ h1{
   flex:0 0 auto;
 }
 
-.note{
-  margin-top:12px;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:10px 12px;
-  border-radius:14px;
-  background:rgba(182,21,43,.08);
-  border:1px solid rgba(182,21,43,.18);
-  color:#7a1120;
-  font-weight:950;
-  font-size:13px;
-}
-
-/* Sticky actions */
 .sticky{
   position:fixed;
   left:0; right:0; bottom:0;
@@ -171,18 +158,18 @@ h1{
   color:#2b2b2b;
 }
 
-.pill{
+.pillRow{
   width:100%;
+  margin-top:6px;
   display:flex;
-  justify-content:space-between;
   gap:10px;
   flex-wrap:wrap;
-  margin-top:6px;
+  justify-content:space-between;
   font-size:12.5px;
   color:#5a5a5a;
-  font-weight:900;
+  font-weight:950;
 }
-.pill span{
+.pillRow span{
   display:inline-flex;
   align-items:center;
   gap:8px;
@@ -234,7 +221,6 @@ h1{
   0%,100%{ transform: translateY(0); }
   50%{ transform: translateY(-6px); }
 }
-
 .hidden{ display:none !important; }
 </style>
 </head>
@@ -244,29 +230,24 @@ h1{
   <div class="badge"><span class="dot"></span>Installation requise (1 seule fois)</div>
 
   <h1 id="title">📲 Installer l’app</h1>
-  <p class="sub">Ensuite, vous pourrez accéder et valider votre coupon en caisse.</p>
+  <p class="sub">Après installation, vous accédez au coupon et vous pourrez le valider en caisse.</p>
 
   <div class="card">
     <p class="big">🎁 Votre -10% sur votre prochaine <b>addition</b> est prêt.</p>
-    <p class="mini">Installez maintenant pour le retrouver instantanément sur votre écran d’accueil.</p>
-
     <div class="note">⛔ Faites-le maintenant (sinon vous risquez de perdre l’accès)</div>
 
-    <!-- iPhone steps (2 étapes max) -->
     <div class="steps hidden" id="iosSteps">
       <div class="step"><div class="num">1</div><div>Appuyez sur <b>Partager</b> (icône en bas).</div></div>
       <div class="step"><div class="num">2</div><div>Choisissez <b>Sur l’écran d’accueil</b> → <b>Ajouter</b>.</div></div>
     </div>
 
-    <!-- Android steps -->
     <div class="steps hidden" id="androidSteps">
-      <div class="step"><div class="num">1</div><div>Appuyez sur <b>Installer</b> ci-dessous.</div></div>
+      <div class="step"><div class="num">1</div><div>Appuyez sur <b>Installer maintenant</b> ci-dessous.</div></div>
       <div class="step"><div class="num">2</div><div>Validez. L’app apparaît sur votre écran d’accueil ✅</div></div>
     </div>
   </div>
 </div>
 
-<!-- iPhone pointer -->
 <div id="pointer" aria-hidden="true">
   <div style="position:relative; display:inline-block;">
     <div id="bubble">👇 Touchez “Partager”</div>
@@ -274,13 +255,12 @@ h1{
   <div class="arrow">↘︎</div>
 </div>
 
-<!-- Sticky actions -->
 <div class="sticky">
   <div class="ctaWrap">
     <button class="btn primary" id="installBtn" type="button">📲 Installer maintenant</button>
     <button class="btn secondary" id="doneBtn" type="button">✅ J’ai installé</button>
 
-    <div class="pill">
+    <div class="pillRow">
       <span id="devicePill">Détection…</span>
       <span>🔒 Aucun engagement</span>
     </div>
@@ -301,16 +281,14 @@ function isAndroid(){
 }
 function qs(name){ return new URLSearchParams(location.search).get(name); }
 
-// 1) Si déjà installé -> inscription
+// Si déjà installé -> inscription (direct)
 if (isStandalone()){
   window.location.href = "/inscription.html";
 }
 
-// 2) Optional: titre resto
 const resto = qs("resto");
 if (resto) document.getElementById("title").textContent = "📲 Installer l’app — " + resto;
 
-// 3) Device UI
 const ios = isIOS();
 const andr = isAndroid();
 
@@ -325,28 +303,23 @@ if (ios){
   iosSteps.classList.remove("hidden");
   pointer.style.display = "block";
 
-  // Sur iPhone : le bouton "Installer" ne peut pas déclencher A2HS.
-  // On le transforme en aide courte.
+  // iOS: pas de déclenchement programmatique -> le bouton sert d'aide (nudge)
   installBtn.textContent = "📤 Ouvrir les instructions";
   installBtn.addEventListener("click", () => {
-    // micro-feedback: change bulle
     document.getElementById("bubble").textContent = "👇 Partager → “Sur l’écran d’accueil”";
-    pointer.style.opacity = "1";
-  }, { once:false });
+  });
 
 } else {
   devicePill.textContent = andr ? "🤖 Android détecté" : "📱 Mobile détecté";
   androidSteps.classList.remove("hidden");
 
-  // Android/Chrome : Progressier gère le prompt.
+  // Android/Chrome: Progressier déclenche le prompt
   installBtn.addEventListener("click", () => {
-    // Laisse Progressier afficher son prompt
-    // (aucune action JS nécessaire ici)
     devicePill.textContent = "✅ Appuyez sur Installer";
   });
 }
 
-// 4) Bouton "J’ai installé" -> inscription (toujours)
+// Toujours possible d'avancer
 document.getElementById("doneBtn").addEventListener("click", () => {
   window.location.href = "/inscription.html";
 });
