@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Politique de confidentialité — Fidelavis</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --gold:#B8924F;
+      --bg:#f6efe5;
+      --ink:#1d1d1d;
+      --muted:#6b6b6b;
+      --line:rgba(0,0,0,.08);
+      --shadow:0 18px 40px rgba(0,0,0,.12);
+      --radius:22px;
+      --danger:#b6152b;
+      --ok:#1f8a4c;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
+        linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
+      color:var(--ink);
+      padding:22px 14px 40px;
+    }
+    .wrap{max-width:860px;margin:0 auto;}
+    .top{
+      display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;
+      margin-bottom:14px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;
+      font-weight:950;
+      letter-spacing:-0.3px;
+    }
+    .mark{
+      width:38px;height:38px;border-radius:14px;
+      background:linear-gradient(180deg, rgba(184,146,79,.18), rgba(184,146,79,.06));
+      border:1px solid rgba(184,146,79,.25);
+      display:grid;place-items:center;
+      box-shadow:0 12px 22px rgba(0,0,0,.08);
+    }
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;
+      background:rgba(255,255,255,.75);
+      border:1px solid var(--line);
+      box-shadow:0 10px 18px rgba(0,0,0,.05);
+      font-weight:900;font-size:13px;color:#3b3b3b;
+    }
+    h1{
+      margin:6px 0 6px;
+      font-size:28px;
+      font-weight:950;
+      letter-spacing:-0.4px;
+    }
+    .sub{
+      margin:0 0 16px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+      font-weight:600;
+      max-width:72ch;
+    }
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px 18px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    @media (min-width: 900px){
+      .grid{ grid-template-columns:1fr 1fr; }
+    }
+    .box{
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:18px;
+      padding:14px 14px;
+      background:linear-gradient(180deg,#ffffff 0%, #fcfaf7 100%);
+    }
+    .box h2{
+      margin:0 0 8px;
+      font-size:16px;
+      font-weight:950;
+      letter-spacing:-0.2px;
+    }
+    .box p, .box li{
+      margin:0;
+      color:#2f2f2f;
+      font-size:13.5px;
+      line-height:1.5;
+      font-weight:600;
+    }
+    .box ul{ margin:10px 0 0; padding-left:18px; }
+    .inline{
+      display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 0;
+    }
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      background:rgba(184,146,79,0.12);
+      border:1px solid rgba(184,146,79,0.20);
+      color:#3b3b3b;font-weight:900;font-size:12.5px;
+    }
+    .footer{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.45;
+      font-weight:600;
+    }
+    a{color:#2b2b2b;font-weight:900;text-decoration:underline;}
+    .danger{
+      background:rgba(182,21,43,.07);
+      border:1px solid rgba(182,21,43,.14);
+    }
+    .ok{
+      background:rgba(31,138,76,.07);
+      border:1px solid rgba(31,138,76,.14);
+    }
+    .mini{
+      margin-top:10px;
+      font-size:12px;color:var(--muted);font-weight:700;
+    }
+    code{
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;
+      background:rgba(0,0,0,.04);
+      border:1px solid rgba(0,0,0,.06);
+      padding:2px 6px;
+      border-radius:8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="mark">🔒</div>
+        <div>Fidelavis</div>
+      </div>
+      <div class="badge">Politique de confidentialité</div>
+    </div>
+
+    <h1>Protection de vos données</h1>
+    <p class="sub">
+      Cette politique explique quelles informations sont collectées lors de l’utilisation des pages Fidelavis (scan NFC/QR, formulaire, coupon),
+      pourquoi elles le sont, et comment exercer vos droits.
+    </p>
+
+    <div class="card">
+      <div class="grid">
+
+        <div class="box">
+          <h2>1) Données collectées</h2>
+          <p>Selon les pages utilisées, nous pouvons collecter :</p>
+          <ul>
+            <li><b>Email</b> (obligatoire) pour envoyer le coupon et les confirmations.</li>
+            <li><b>Prénom</b> (optionnel) pour personnaliser les messages.</li>
+            <li>Données techniques : type d’appareil, pages consultées, horodatage (anti-fraude, statistiques).</li>
+          </ul>
+          <div class="inline">
+            <span class="pill">📩 Email</span>
+            <span class="pill">🧾 Coupon</span>
+            <span class="pill">📈 Statistiques</span>
+          </div>
+        </div>
+
+        <div class="box">
+          <h2>2) Finalités</h2>
+          <ul>
+            <li>Envoyer votre réduction / coupon et les messages de service.</li>
+            <li>Gérer le programme de fidélité et prévenir les abus.</li>
+            <li>Mesurer la performance (activations, visites, conversions).</li>
+          </ul>
+          <p class="mini">Base légale : exécution du service, intérêt légitime (anti-fraude & mesures), et consentement si requis selon vos choix.</p>
+        </div>
+
+        <div class="box ok">
+          <h2>3) Anti-spam & désinscription</h2>
+          <p>
+            Vous pouvez vous désinscrire à tout moment via le lien présent dans nos emails.
+            La désinscription est immédiate (1 clic).
+          </p>
+        </div>
+
+        <div class="box danger">
+          <h2>4) Durées de conservation</h2>
+          <ul>
+            <li>Données liées au coupon : durée nécessaire à l’exécution du programme et au suivi.</li>
+            <li>Données techniques : durée limitée, utile à la sécurité et aux statistiques.</li>
+          </ul>
+          <p class="mini">Nous limitons la conservation au strict nécessaire.</p>
+        </div>
+
+        <div class="box">
+          <h2>5) Partage des données</h2>
+          <p>
+            Les données peuvent être traitées par des prestataires techniques (hébergement, formulaires, emailing)
+            uniquement pour fournir le service. Nous ne vendons pas vos données.
+          </p>
+        </div>
+
+        <div class="box">
+          <h2>6) Vos droits</h2>
+          <ul>
+            <li>Accès, rectification, suppression</li>
+            <li>Opposition / limitation</li>
+            <li>Portabilité (selon cas)</li>
+          </ul>
+          <p class="mini">
+            Contact : <code>support@fidelavis.com</code> (à adapter) en précisant l’email utilisé.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="footer">
+        <p>
+          Mise à jour : <b>à compléter</b>.  
+          Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de l’autorité compétente.
+        </p>
+        <p class="mini">
+          Liens utiles : <a href="/cgu.html">Conditions d’utilisation</a> (si tu les crées) — <a href="/">Retour</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
