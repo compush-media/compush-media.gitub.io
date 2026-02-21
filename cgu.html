@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Conditions d’utilisation — Fidelavis</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --gold:#B8924F;
+      --bg:#f6efe5;
+      --ink:#1d1d1d;
+      --muted:#6b6b6b;
+      --line:rgba(0,0,0,.08);
+      --shadow:0 18px 40px rgba(0,0,0,.12);
+      --radius:22px;
+      --danger:#b6152b;
+      --ok:#1f8a4c;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
+        linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
+      color:var(--ink);
+      padding:22px 14px 40px;
+    }
+    .wrap{max-width:860px;margin:0 auto;}
+    .top{
+      display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;
+      margin-bottom:14px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;
+      font-weight:950;
+      letter-spacing:-0.3px;
+    }
+    .mark{
+      width:38px;height:38px;border-radius:14px;
+      background:linear-gradient(180deg, rgba(184,146,79,.18), rgba(184,146,79,.06));
+      border:1px solid rgba(184,146,79,.25);
+      display:grid;place-items:center;
+      box-shadow:0 12px 22px rgba(0,0,0,.08);
+    }
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;
+      background:rgba(255,255,255,.75);
+      border:1px solid var(--line);
+      box-shadow:0 10px 18px rgba(0,0,0,.05);
+      font-weight:900;font-size:13px;color:#3b3b3b;
+    }
+    h1{
+      margin:6px 0 6px;
+      font-size:28px;
+      font-weight:950;
+      letter-spacing:-0.4px;
+    }
+    .sub{
+      margin:0 0 16px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+      font-weight:600;
+      max-width:80ch;
+    }
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px 18px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    @media (min-width: 900px){
+      .grid{ grid-template-columns:1fr 1fr; }
+    }
+    .box{
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:18px;
+      padding:14px 14px;
+      background:linear-gradient(180deg,#ffffff 0%, #fcfaf7 100%);
+    }
+    .box h2{
+      margin:0 0 8px;
+      font-size:16px;
+      font-weight:950;
+      letter-spacing:-0.2px;
+    }
+    .box p, .box li{
+      margin:0;
+      color:#2f2f2f;
+      font-size:13.5px;
+      line-height:1.5;
+      font-weight:600;
+    }
+    .box ul{ margin:10px 0 0; padding-left:18px; }
+    .inline{
+      display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 0;
+    }
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      background:rgba(184,146,79,0.12);
+      border:1px solid rgba(184,146,79,0.20);
+      color:#3b3b3b;font-weight:900;font-size:12.5px;
+    }
+    .footer{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.45;
+      font-weight:600;
+    }
+    a{color:#2b2b2b;font-weight:900;text-decoration:underline;}
+    .danger{
+      background:rgba(182,21,43,.07);
+      border:1px solid rgba(182,21,43,.14);
+    }
+    .ok{
+      background:rgba(31,138,76,.07);
+      border:1px solid rgba(31,138,76,.14);
+    }
+    .mini{
+      margin-top:10px;
+      font-size:12px;color:var(--muted);font-weight:700;
+    }
+    code{
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12px;
+      background:rgba(0,0,0,.04);
+      border:1px solid rgba(0,0,0,.06);
+      padding:2px 6px;
+      border-radius:8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="mark">📄</div>
+        <div>Fidelavis</div>
+      </div>
+      <div class="badge">Conditions d’utilisation (CGU)</div>
+    </div>
+
+    <h1>Conditions Générales d’Utilisation</h1>
+    <p class="sub">
+      Ces conditions encadrent l’accès et l’usage des pages Fidelavis (scan NFC/QR, inscription, coupon, avis, offre du jour).
+      En utilisant le service, vous acceptez les présentes conditions.
+    </p>
+
+    <div class="card">
+      <div class="grid">
+
+        <div class="box">
+          <h2>1) Objet du service</h2>
+          <p>
+            Fidelavis propose un parcours digital permettant aux clients d’un établissement partenaire d’accéder à des avantages
+            (ex : réductions/coupons), de consulter des informations et d’interagir (ex : avis).
+          </p>
+          <div class="inline">
+            <span class="pill">📲 NFC / QR</span>
+            <span class="pill">🎟️ Coupons</span>
+            <span class="pill">⭐ Avis</span>
+          </div>
+        </div>
+
+        <div class="box ok">
+          <h2>2) Accès et compatibilité</h2>
+          <ul>
+            <li>L’accès nécessite un smartphone compatible et une connexion internet.</li>
+            <li>Certaines fonctionnalités peuvent demander l’installation de la PWA.</li>
+            <li>Le service est fourni “en l’état”, avec améliorations possibles.</li>
+          </ul>
+        </div>
+
+        <div class="box">
+          <h2>3) Création de compte / inscription</h2>
+          <ul>
+            <li>L’email est requis pour recevoir le coupon et les confirmations.</li>
+            <li>Le prénom peut être demandé/optionnel selon l’établissement.</li>
+            <li>Vous vous engagez à fournir des informations exactes.</li>
+          </ul>
+          <p class="mini">Détails sur les données : <a href="/privacy.html">Politique de confidentialité</a>.</p>
+        </div>
+
+        <div class="box danger">
+          <h2>4) Coupons et avantages</h2>
+          <ul>
+            <li>Les coupons sont personnels, non transférables (sauf mention contraire).</li>
+            <li>Les conditions d’utilisation (période, exclusions) peuvent varier selon l’établissement.</li>
+            <li>En cas de suspicion d’abus, l’accès peut être restreint.</li>
+          </ul>
+        </div>
+
+        <div class="box">
+          <h2>5) Bon usage et interdictions</h2>
+          <ul>
+            <li>Ne pas tenter de contourner les mécanismes de validation/anti-fraude.</li>
+            <li>Ne pas perturber le service (scripts, spam, attaques, etc.).</li>
+            <li>Ne pas usurper l’identité d’un tiers.</li>
+          </ul>
+        </div>
+
+        <div class="box">
+          <h2>6) Responsabilités</h2>
+          <p>
+            Fidelavis met en œuvre des moyens raisonnables pour assurer la disponibilité du service,
+            sans garantir une absence totale d’interruptions. Les avantages et leur exécution relèvent de l’établissement partenaire.
+          </p>
+        </div>
+
+        <div class="box">
+          <h2>7) Propriété intellectuelle</h2>
+          <p>
+            Les contenus, marques et éléments graphiques Fidelavis sont protégés. Toute reproduction non autorisée est interdite.
+          </p>
+        </div>
+
+        <div class="box">
+          <h2>8) Contact</h2>
+          <p>Pour toute demande : <code>support@fidelavis.com</code> (à adapter).</p>
+          <p class="mini">Merci d’indiquer l’email utilisé lors de l’inscription.</p>
+        </div>
+
+      </div>
+
+      <div class="footer">
+        <p>
+          Mise à jour : <b>à compléter</b>.  
+          Fidelavis peut modifier ces conditions pour refléter l’évolution du service. La version en ligne fait foi.
+        </p>
+        <p class="mini">
+          Liens : <a href="/privacy.html">Politique de confidentialité</a> — <a href="/">Retour</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
