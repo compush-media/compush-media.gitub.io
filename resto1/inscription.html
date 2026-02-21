@@ -1,201 +1,169 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Inscription — Fidelavis</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inscription Fidelavis</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- Core commun -->
-  <script src="../assets/core.js"></script>
+<style>
+:root{
+  --gold:#B8924F;
+  --bg:#f6efe5;
+  --card:#ffffff;
+  --ink:#1d1d1d;
+  --muted:#6b6b6b;
+  --line:rgba(0,0,0,0.08);
+  --shadow:0 18px 40px rgba(0,0,0,0.12);
+  --radius:20px;
+}
 
-  <style>
-    :root{
-      --gold:#B8924F;
-      --gold2:#9E7A3E;
-      --bg:#f6efe5;
-      --ink:#1d1d1d;
-      --muted:#6b6b6b;
-      --line:rgba(0,0,0,0.08);
-      --shadow:0 18px 40px rgba(0,0,0,0.12);
-      --radius:22px;
-      --danger:#b6152b;
-    }
-    *{box-sizing:border-box;}
-    body{
-      margin:0;
-      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
-        linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
-      color:var(--ink);
-      padding:18px 14px 30px;
-      text-align:center;
-    }
-    .wrap{max-width:520px;margin:0 auto;}
-    .top{
-      margin-top:6px;
-      display:flex;
-      justify-content:center;
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.75);
-      border:1px solid var(--line);
-      box-shadow:0 10px 18px rgba(0,0,0,0.05);
-      font-weight:900;
-      font-size:13px;
-      color:#3b3b3b;
-    }
-    .dot{
-      width:8px;height:8px;border-radius:99px;
-      background:#1f8a4c;
-      box-shadow:0 0 0 6px rgba(31,138,76,0.12);
-    }
+*{box-sizing:border-box;}
 
-    h1{
-      margin:14px 0 8px;
-      font-size:22px;
-      font-weight:950;
-      letter-spacing:-0.3px;
-      color:#2b2b2b;
-    }
-    .sub{
-      margin:0 0 14px;
-      color:var(--muted);
-      font-size:13.5px;
-      line-height:1.35;
-      font-weight:700;
-    }
+body{
+  margin:0;
+  font-family:'Montserrat',sans-serif;
+  background:linear-gradient(180deg,#f7f0e8 0%, #f4eadf 100%);
+  padding:16px 16px 40px;
+  color:var(--ink);
+  text-align:center;
+}
 
-    .card{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:0 20px 55px rgba(0,0,0,.10);
-      padding:14px;
-      text-align:left;
-    }
+.container{
+  max-width:460px;
+  margin:0 auto;
+}
 
-    .miniPerks{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin:10px 0 12px;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius:999px;
-      background:rgba(184,146,79,0.12);
-      border:1px solid rgba(184,146,79,0.20);
-      color:#3b3b3b;
-      font-weight:900;
-      font-size:12.5px;
-    }
+/* HEADER */
 
-    iframe{
-      width:100%;
-      height:520px;
-      border:none;
-      border-radius:16px;
-      overflow:hidden;
-      background:#fff;
-    }
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 14px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid var(--line);
+  font-weight:700;
+  font-size:13px;
+  margin-bottom:10px;
+}
 
-    .legal{
-      margin:12px 2px 0;
-      color:#6b6b6b;
-      font-size:12px;
-      line-height:1.35;
-      font-weight:600;
-      text-align:left;
-    }
-    .legal a{
-      color:#2b2b2b;
-      text-decoration:underline;
-      font-weight:800;
-    }
+.badge .dot{
+  width:8px;height:8px;
+  background:#1f8a4c;
+  border-radius:50%;
+}
 
-    .smallNote{
-      margin-top:10px;
-      text-align:left;
-      padding:10px 12px;
-      border-radius:14px;
-      background:rgba(31,138,76,0.08);
-      border:1px solid rgba(31,138,76,0.18);
-      color:#155a34;
-      font-size:12.5px;
-      font-weight:800;
-      line-height:1.35;
-    }
-  </style>
+h1{
+  font-size:26px;
+  font-weight:900;
+  margin:6px 0 6px;
+  line-height:1.2;
+}
+
+.sub{
+  font-size:14px;
+  color:var(--muted);
+  margin-bottom:16px;
+}
+
+/* CARD */
+
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:18px 18px 22px;
+  box-shadow:var(--shadow);
+}
+
+/* PILLS */
+
+.pills{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+
+.pill{
+  padding:8px 14px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:700;
+  background:rgba(184,146,79,0.12);
+  border:1px solid rgba(184,146,79,0.25);
+}
+
+/* FORM TITLE */
+
+.form-title{
+  font-size:18px;
+  font-weight:800;
+  margin:6px 0 14px;
+}
+
+/* IFRAME */
+
+iframe{
+  width:100%;
+  height:500px;
+  border:none;
+  border-radius:14px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.08);
+}
+
+/* FOOTER LEGAL */
+
+.legal{
+  margin-top:18px;
+  font-size:12px;
+  color:#555;
+  line-height:1.4;
+}
+
+</style>
 </head>
 
 <body>
-  <div class="wrap">
 
-    <div class="top">
-      <div class="badge"><span class="dot"></span>Dernière étape</div>
-    </div>
+<div class="container">
 
-    <h1>Devenez membre de <span data-resto-name>Restaurant</span></h1>
-    <p class="sub">Recevez votre réduction par email en quelques secondes.</p>
-
-    <div class="card">
-
-      <div class="miniPerks">
-        <div class="pill">🎁 -10% prêt</div>
-        <div class="pill">⚡ 10 secondes</div>
-        <div class="pill">🔒 Anti-spam</div>
-      </div>
-
-      <!-- FORMULAIRE -->
-      <iframe
-        id="ghlForm"
-        src="https://api.leadconnectorhq.com/widget/form/MAbxQNqssstYs2a4VbuI"
-        title="Formulaire d'inscription"
-        loading="eager"
-        referrerpolicy="no-referrer-when-downgrade"
-      ></iframe>
-
-      <!-- TEXTE LEGAL (sans checkbox obligatoire) -->
-      <div class="legal">
-        En continuant, vous acceptez de recevoir votre réduction et des messages liés au programme Fidelavis (désinscription en 1 clic à tout moment).
-        Consultez notre <a href="/privacy.html" target="_blank" rel="noopener">Politique de confidentialité</a> et nos
-        <a href="/cgu.html" target="_blank" rel="noopener">Conditions d’utilisation</a>.
-      </div>
-
-      <div class="smallNote">
-        ✅ Astuce : gardez ce lien ouvert jusqu’à confirmation (cela prend moins de 10 secondes).
-      </div>
-
-    </div>
+  <div class="badge">
+    <div class="dot"></div>
+    Dernière étape
   </div>
 
-<script>
-  // Charge config pour nom + couleurs
-  (async function(){
-    try { await Fidelavis.loadConfig(); } catch(e) {}
-  })();
+  <h1>Devenez membre</h1>
+  <div class="sub">Recevez votre réduction par email en quelques secondes.</div>
 
-  // ✅ Option B (fallback) : si tu rediriges vers /inscription.html?ok=1 depuis GHL
-  // alors on bascule automatiquement vers merci.html
-  (function(){
-    const params = new URLSearchParams(location.search);
-    if(params.get("ok") === "1"){
-      setTimeout(()=> Fidelavis.go("merci.html"), 350);
-    }
-  })();
-</script>
+  <div class="card">
+
+    <div class="pills">
+      <div class="pill">🎁 -10% prêt</div>
+      <div class="pill">⚡ 10 secondes</div>
+      <div class="pill">🔒 Anti-spam</div>
+    </div>
+
+    <div class="form-title">
+      🎁 Recevez votre -10% maintenant
+    </div>
+
+    <iframe
+      src="https://api.leadconnectorhq.com/widget/form/meg8u98n1nNyA4he57qX"
+      title="Formulaire d'inscription">
+    </iframe>
+
+  </div>
+
+  <div class="legal">
+    En continuant, vous acceptez de recevoir votre réduction et des messages liés au programme Fidelavis (désinscription en 1 clic à tout moment).
+  </div>
+
+</div>
+
 </body>
 </html>
