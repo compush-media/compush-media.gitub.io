@@ -124,22 +124,6 @@ function currentFolderBase(){
   return p.slice(0, p.lastIndexOf("/") + 1);
 }
 
-function saveEmailFromUrl(){
-  const params = new URLSearchParams(location.search);
-  const email = (params.get("email") || "").trim();
-
-  // Si l'email est valide, on le stocke pour les pages suivantes (coupon.html, etc.)
-   { const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
-  if (emailOk) {
-    localStorage.setItem("user_email", email);
-
-    // Nettoie l'URL (on enlève email de la barre)
-    params.delete("email");
-    const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
-    history.replaceState({}, document.title, clean);
-  }
-}
-
 function goTo(page){
   const base = currentFolderBase();
   const url = new URL(base + page, location.origin);
@@ -150,6 +134,28 @@ function goTo(page){
   params.forEach((v,k)=>url.searchParams.set(k,v));
 
   location.href = url.toString();
+}
+
+function saveEmailFromUrl(){
+  const params = new URLSearchParams(location.search);
+  const email = (params.get("email") || "").trim();
+
+  // Validation email stricte (évite les faux emails type .frj)
+  const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
+  if (!emailOk) return;
+
+  // Stocke pour coupon.html / pages suivantes
+  localStorage.setItem("user_email", email);
+
+  // Retire email de l'URL (sans recharger)
+  params.delete("email");
+  const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
+  try { history.replaceState({}, document.title, clean); } catch(e) {}
+
+  // iOS/Safari: parfois nécessaire
+  setTimeout(() => {
+    try { history.replaceState({}, document.title, clean); } catch(e) {}
+  }, 250);
 }
 
 function getRestoName(){
@@ -163,7 +169,7 @@ function getRestoName(){
   return null;
 }
 
-// INIT: on sauve l’email dès l’arrivée sur merci.html
+// INIT
 saveEmailFromUrl();
 
 const resto = getRestoName();
