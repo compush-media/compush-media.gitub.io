@@ -124,12 +124,30 @@ function currentFolderBase(){
   return p.slice(0, p.lastIndexOf("/") + 1);
 }
 
+function saveEmailFromUrl(){
+  const params = new URLSearchParams(location.search);
+  const email = (params.get("email") || "").trim();
+
+  // Si l'email est valide, on le stocke pour les pages suivantes (coupon.html, etc.)
+  if (email && email.includes("@")) {
+    localStorage.setItem("user_email", email);
+
+    // Nettoie l'URL (on enlève email de la barre)
+    params.delete("email");
+    const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
+    history.replaceState({}, document.title, clean);
+  }
+}
+
 function goTo(page){
   const base = currentFolderBase();
   const url = new URL(base + page, location.origin);
-  // conserve tous les paramètres (resto, logo, etc.)
+
+  // Conserve les paramètres utiles (resto, logo...) mais JAMAIS email
   const params = new URLSearchParams(location.search);
+  params.delete("email");
   params.forEach((v,k)=>url.searchParams.set(k,v));
+
   location.href = url.toString();
 }
 
@@ -138,11 +156,14 @@ function getRestoName(){
   const fromParam = params.get("resto");
   if (fromParam) return fromParam;
 
-  // Optionnel: si tu veux détecter "resto2" dans /resto2/...
+  // Optionnel: détecter "resto2" dans /resto2/...
   const parts = location.pathname.split("/").filter(Boolean);
   if (parts.length >= 1) return parts[0]; // "resto2"
   return null;
 }
+
+// INIT: on sauve l’email dès l’arrivée sur merci.html
+saveEmailFromUrl();
 
 const resto = getRestoName();
 if (resto){
@@ -156,8 +177,6 @@ if (resto){
 }
 
 document.getElementById("goCoupon").addEventListener("click", () => {
-  // si tu veux forcer que ce soit dans l'app installée, tu peux laisser,
-  // sinon on ouvre le coupon normal.
   goTo("coupon.html");
 });
 </script>
