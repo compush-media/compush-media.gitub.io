@@ -1,27 +1,50 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Coupon du Mois – Fidelavis</title>
 
-  <!-- 🔐 Protection email GHL -->
+  <!-- 🔐 Protection email (par dossier + clean URL + redirection locale) -->
   <script>
     (function () {
-      const params = new URLSearchParams(window.location.search);
-      const email = params.get('email');
-      const localEmail = localStorage.getItem('user_email');
-
-      if (email) {
-        localStorage.setItem('user_email', email);
-        const cleanUrl = window.location.pathname.split('?')[0];
-        window.history.replaceState({}, document.title, cleanUrl);
+      function currentFolderBase(){
+        // /resto2/coupon.html -> /resto2/
+        const p = window.location.pathname;
+        return p.slice(0, p.lastIndexOf("/") + 1);
       }
 
-      if (!email && !localEmail) {
-        const pathParts = window.location.pathname.split('/');
-        const basePath = '/' + pathParts[1] + '/';
-        window.location.href = basePath + 'inscription.html';
+      // Helper global : toujours naviguer dans le même dossier
+      window.goLocal = function(page){
+        const base = currentFolderBase();
+        const url = new URL(base + page, window.location.origin);
+
+        // Conserve params utiles, mais jamais email
+        const params = new URLSearchParams(window.location.search);
+        params.delete("email");
+        params.forEach((v,k)=>url.searchParams.set(k,v));
+
+        window.location.href = url.toString();
+      };
+
+      // 1) Si on reçoit ?email=... -> stocke puis nettoie l'URL
+      const params = new URLSearchParams(window.location.search);
+      const email = (params.get("email") || "").trim();
+      const localEmail = localStorage.getItem("user_email");
+
+      const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
+
+      if (emailOk) {
+        localStorage.setItem("user_email", email);
+        params.delete("email");
+        const clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+        try { history.replaceState({}, document.title, clean); } catch(e) {}
+        setTimeout(() => { try { history.replaceState({}, document.title, clean); } catch(e) {} }, 250);
+      }
+
+      // 2) Si pas d'email stocké -> inscription locale
+      if (!emailOk && !localEmail) {
+        window.goLocal("inscription.html");
       }
     })();
   </script>
@@ -102,7 +125,7 @@
 <body>
 
 <header class="topbar">
-  <a id="backLink" class="back-btn"></a>
+  <a id="backLink" class="back-btn" href="#"></a>
 </header>
 
 <h2>🎉 Coupon du Mois</h2>
@@ -110,14 +133,11 @@
 <div class="card">
   <p id="txtOffer">Chargement…</p>
   <p>Entrez le code PIN affiché à la caisse :</p>
-  <input id="pinInput" maxlength="4" placeholder="----">
-  <br>
-  <button onclick="soumettrePin()">Valider</button>
+  <input id="pinInput" maxlength="4" placeholder="----" inputmode="numeric" />
+  <br />
+  <button type="button" onclick="soumettrePin()">Valider</button>
 
-  <!-- 🔗 BOUTON PARTAGE -->
-  <button class="btn-share" onclick="partager()">
-    🔗 Partager ce restaurant
-  </button>
+  <button class="btn-share" type="button" onclick="partager()">🔗 Partager ce restaurant</button>
 
   <div id="result"></div>
   <small>Valable une fois par mois – Réinitialisation automatique chaque 1er.</small>
@@ -129,13 +149,35 @@
 
 <script>
 /* ============================
+   NAVIGATION LOCALE (par dossier)
+============================ */
+function currentFolderBase(){
+  const p = location.pathname;
+  return p.slice(0, p.lastIndexOf("/") + 1);
+}
+function goLocal(page){
+  const base = currentFolderBase();
+  const url = new URL(base + page, location.origin);
+  const params = new URLSearchParams(location.search);
+  params.delete("email");
+  params.forEach((v,k)=>url.searchParams.set(k,v));
+  location.href = url.toString();
+}
+
+/* ============================
    CONTEXTE RESTAURANT
 ============================ */
 function getRestoSlug() {
+  // /resto2/coupon.html -> resto2
   return location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] || "voltaire";
 }
 const RESTO = getRestoSlug();
-document.getElementById("backLink").href = `/${RESTO}`;
+
+// Back = index.html du même dossier (recommandé)
+document.getElementById("backLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  goLocal("index.html");
+});
 
 /* ============================
    OFFRE MENSUELLE
@@ -152,6 +194,7 @@ const MONTH = now.getMonth();
 const YEAR = now.getFullYear();
 document.getElementById("txtOffer").textContent = offers[MONTH];
 
+// 1er du mois => reset
 const COUPON_KEY = `coupon_${RESTO}_${YEAR}_${MONTH}`;
 if (now.getDate() === 1) localStorage.removeItem(COUPON_KEY);
 
@@ -162,25 +205,14 @@ const SECRET_KEY = "OFFLINE123";
 
 function simpleHash(str) {
   let h = 0;
-  for (let i = 0; i < str.length; i++) {
-    h = (h * 31 + str.charCodeAt(i)) % 1000000007;
-  }
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 1000000007;
   return h;
 }
-
-function getMinute(offset = 0) {
-  return Math.floor(Date.now() / 60000) + offset;
-}
-
+function getMinute(offset = 0) { return Math.floor(Date.now() / 60000) + offset; }
 function generatePin(offset = 0) {
-  return (simpleHash(SECRET_KEY + getMinute(offset)) % 10000)
-    .toString()
-    .padStart(4, "0");
+  return (simpleHash(SECRET_KEY + getMinute(offset)) % 10000).toString().padStart(4, "0");
 }
-
-function verifierPin(pin) {
-  return [-2, -1, 0, 1, 2].some(o => generatePin(o) === pin);
-}
+function verifierPin(pin) { return [-2, -1, 0, 1, 2].some(o => generatePin(o) === pin); }
 
 /* ============================
    VALIDATION COUPON
@@ -202,7 +234,7 @@ function soumettrePin() {
   if (verifierPin(code)) {
     localStorage.setItem(COUPON_KEY, "used");
     res.innerHTML = `<div class="ok-box success">✅ Coupon validé</div>`;
-    document.getElementById("audioOK").play();
+    document.getElementById("audioOK").play().catch(()=>{});
 
     fetch("https://script.google.com/macros/s/AKfycbyiZWE_ThNbvMjXX5qnfTyBHLw8RL4DwO1TTMgLFH6F_xkWhQeNvLwHrL7qFno2fKSw/exec", {
       method: "POST",
@@ -214,7 +246,7 @@ function soumettrePin() {
         userAgent: navigator.userAgent,
         pageURL: location.href
       })
-    });
+    }).catch(()=>{});
   } else {
     res.innerHTML = `<div class="ok-box error">❌ Code incorrect</div>`;
   }
@@ -225,7 +257,6 @@ function soumettrePin() {
 ============================ */
 function partager() {
   const shareUrl = "https://bit.ly/4psvq0G";
-
   const data = {
     title: "Découvre ce restaurant",
     text: "Je te recommande ce restaurant. Il y a des offres exclusives via Fidelavis 👇",
@@ -234,9 +265,10 @@ function partager() {
 
   if (navigator.share) {
     navigator.share(data).catch(() => {});
+  } else if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(shareUrl).then(() => alert("Lien copié 👍")).catch(()=>alert("Copiez ce lien : " + shareUrl));
   } else {
-    navigator.clipboard.writeText(shareUrl);
-    alert("Lien d’installation copié 👍");
+    alert("Copiez ce lien : " + shareUrl);
   }
 }
 
