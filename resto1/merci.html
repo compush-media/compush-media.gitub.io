@@ -129,7 +129,8 @@ function saveEmailFromUrl(){
   const email = (params.get("email") || "").trim();
 
   // Si l'email est valide, on le stocke pour les pages suivantes (coupon.html, etc.)
-  if (email && email.includes("@")) {
+   { const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
+  if (emailOk) {
     localStorage.setItem("user_email", email);
 
     // Nettoie l'URL (on enlève email de la barre)
