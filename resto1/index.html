@@ -5,57 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Coupon du Mois – Fidelavis</title>
 
- <!-- 🔐 Protection email (par dossier + clean URL + redirection locale) -->
+ <!-- 🔐 BOOTSTRAP EMAIL (coupon = home PWA) -->
 <script>
-  (function () {
-    function currentFolderBase(){
-      // /resto1/coupon.html -> /resto1/
-      const p = window.location.pathname;
-      return p.slice(0, p.lastIndexOf("/") + 1);
-    }
+(function () {
+  function currentFolderBase(){
+    const p = window.location.pathname;
+    return p.slice(0, p.lastIndexOf("/") + 1);
+  }
 
-    // Helper global : toujours naviguer dans le même dossier
-    window.goLocal = function(page){
-      const base = currentFolderBase();
-      const url = new URL(base + page, window.location.origin);
+  window.goLocal = function(page){
+    const base = currentFolderBase();
+    const url = new URL(base + page, window.location.origin);
 
-      // Conserve params utiles, mais jamais email
-      const params = new URLSearchParams(window.location.search);
-      params.delete("email");
-      params.forEach((v,k)=>url.searchParams.set(k,v));
-
-      window.location.href = url.toString();
-    };
-
-    // 1) Si on reçoit ?email=... -> stocke puis nettoie l'URL
     const params = new URLSearchParams(window.location.search);
-    const emailRaw = params.get("email") || "";
+    params.delete("email");
+    params.forEach((v,k)=>url.searchParams.set(k,v));
 
-    // IMPORTANT: decode + trim + lowercase (même format que redit.html)
-    let email = "";
-    try { email = decodeURIComponent(emailRaw).trim().toLowerCase(); }
-    catch(e){ email = (emailRaw || "").trim().toLowerCase(); }
+    window.location.href = url.toString();
+  };
 
-    const localEmail = (localStorage.getItem("user_email") || "").trim().toLowerCase();
+  // 1) Capture ?email=... (si présent) -> localStorage, puis clean URL
+  const params = new URLSearchParams(window.location.search);
+  const emailRaw = params.get("email") || "";
 
-    const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
+  let email = "";
+  try { email = decodeURIComponent(emailRaw).trim().toLowerCase(); }
+  catch(e){ email = (emailRaw || "").trim().toLowerCase(); }
 
-    if (emailOk) {
-      localStorage.setItem("user_email", email);
-      localStorage.setItem("is_registered", "1");
+  const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
 
-      // Nettoie l'URL (enlève ?email=...)
-      params.delete("email");
-      const clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
-      try { history.replaceState({}, document.title, clean); } catch(e) {}
-      setTimeout(() => { try { history.replaceState({}, document.title, clean); } catch(e) {} }, 250);
-    }
+  if (emailOk) {
+    localStorage.setItem("user_email", email);
+    localStorage.setItem("is_registered", "1");
 
-    // 2) Si pas d'email stocké -> inscription locale
-    if (!localEmail && !emailOk) {
-      window.goLocal("inscription.html");
-    }
-  })();
+    params.delete("email");
+    const clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+    try { history.replaceState({}, document.title, clean); } catch(e) {}
+    setTimeout(() => { try { history.replaceState({}, document.title, clean); } catch(e) {} }, 250);
+  }
+
+  // 2) Vérification robuste (tolérance iOS/PWA)
+  function hasEmail(){
+    return ((localStorage.getItem("user_email") || "").trim().length > 0);
+  }
+
+  // Si déjà ok -> on laisse la page charger (coupon s’affiche)
+  if (hasEmail()) return;
+
+  // Petite tolérance: certaines install PWA iOS ont un timing storage/chargement
+  setTimeout(() => {
+    if (!hasEmail()) window.goLocal("inscription.html");
+  }, 400);
+})();
 </script>
   <style>
     :root { --brand: #B48C4A; --topbar-h: 56px; }
