@@ -20,7 +20,6 @@
   --muted:#6b6b6b;
   --line:rgba(0,0,0,0.08);
   --shadow:0 18px 40px rgba(0,0,0,0.12);
-  --danger:#b6152b;
   --radius:22px;
 }
 *{ box-sizing:border-box; }
@@ -81,17 +80,17 @@ h1{
   font-size:16px;
   margin:0 0 10px;
 }
-.note{
+.soft{
   margin-top:10px;
   display:inline-flex;
   align-items:center;
   gap:8px;
   padding:10px 12px;
   border-radius:14px;
-  background:rgba(182,21,43,.08);
-  border:1px solid rgba(182,21,43,.18);
-  color:#7a1120;
-  font-weight:950;
+  background:rgba(184,146,79,0.12);
+  border:1px solid rgba(184,146,79,0.22);
+  color:#4a3a18;
+  font-weight:850;
   font-size:13px;
 }
 
@@ -136,15 +135,15 @@ h1{
   padding:10px;
   box-shadow:0 16px 30px rgba(0,0,0,0.10);
   display:flex;
+  flex-direction:column;
   gap:10px;
-  flex-wrap:wrap;
 }
 .btn{
-  flex:1 1 220px;
+  width:100%;
   border:0;
   cursor:pointer;
   border-radius:16px;
-  padding:14px 12px;
+  padding:15px 12px;
   font-weight:950;
   font-size:15px;
   letter-spacing:-0.2px;
@@ -155,15 +154,8 @@ h1{
   border:2px solid rgba(184,146,79,0.45);
   box-shadow:0 14px 26px rgba(184,146,79,0.22);
 }
-.secondary{
-  background:#f6efe5;
-  border:1px solid var(--line);
-  color:#2b2b2b;
-}
 
 .pillRow{
-  width:100%;
-  margin-top:6px;
   display:flex;
   gap:10px;
   flex-wrap:wrap;
@@ -232,13 +224,14 @@ h1{
 <div class="wrap">
   <div class="badge"><span class="dot"></span>🎉 Votre -10% est prêt.</div>
 
-  <!-- ✅ on garde TON titre, on remplace juste le nom par config.json -->
-  <h1 id="title">📲 Installer l’app — <span data-resto-name>Restaurant</span></h1>
-  <p class="sub">Après installation, vous accédez au coupon et vous pourrez le valider en caisse.</p>
+  <h1 id="title">📲 Ajouter l’app — <span data-resto-name>Restaurant</span></h1>
+  <p class="sub">Ajoutez-la à votre écran d'accueil pour présenter votre réduction en caisse.</p>
 
   <div class="card">
     <p class="big">🎁 Votre -10% sur votre prochaine <b>addition</b> est prêt.</p>
-    <div class="note">⛔ Faites-le maintenant (sinon vous risquez de perdre l’accès)</div>
+
+    <!-- ✅ message premium (sans pression) -->
+    <div class="soft">✨ Cela prend 5 secondes (1 seule fois).</div>
 
     <div class="steps hidden" id="iosSteps">
       <div class="step"><div class="num">1</div><div>Appuyez sur <b>Partager</b> (icône en bas).</div></div>
@@ -246,13 +239,12 @@ h1{
     </div>
 
     <div class="steps hidden" id="androidSteps">
-      <div class="step"><div class="num">1</div><div>Appuyez sur <b>Installer maintenant</b> ci-dessous.</div></div>
+      <div class="step"><div class="num">1</div><div>Appuyez sur <b>Installer</b> ci-dessous.</div></div>
       <div class="step"><div class="num">2</div><div>Validez. L’app apparaît sur votre écran d’accueil ✅</div></div>
     </div>
   </div>
 </div>
 
-<!-- ✅ pointer conservé -->
 <div id="pointer" aria-hidden="true">
   <div style="position:relative; display:inline-block;">
     <div id="bubble">👇 Touchez “Partager”</div>
@@ -262,8 +254,8 @@ h1{
 
 <div class="sticky">
   <div class="ctaWrap">
+    <!-- ✅ Un seul CTA -->
     <button class="btn primary" id="installBtn" type="button">📲 Installer maintenant</button>
-    <button class="btn secondary" id="doneBtn" type="button">✅ J’ai installé</button>
 
     <div class="pillRow">
       <span id="devicePill">Détection…</span>
@@ -285,7 +277,7 @@ function isAndroid(){
   return /android/i.test(navigator.userAgent);
 }
 
-// ✅ par dossier: si déjà installé -> inscription (relative)
+// ✅ si déjà installé -> inscription (relative)
 if (isStandalone()){
   if (window.Fidelavis && typeof Fidelavis.go === "function") {
     Fidelavis.go("inscription.html");
@@ -308,7 +300,7 @@ if (ios){
   iosSteps.classList.remove("hidden");
   pointer.style.display = "block";
 
-  // iOS: pas de déclenchement programmatique -> le bouton sert d'aide (nudge)
+  // iOS: le bouton sert d'aide (nudge)
   installBtn.textContent = "📤 Ouvrir les instructions";
   installBtn.addEventListener("click", () => {
     document.getElementById("bubble").textContent = "👇 Partager → “Sur l’écran d’accueil”";
@@ -323,15 +315,6 @@ if (ios){
     devicePill.textContent = "✅ Appuyez sur Installer";
   });
 }
-
-// ✅ Toujours possible d'avancer (relative)
-document.getElementById("doneBtn").addEventListener("click", () => {
-  if (window.Fidelavis && typeof Fidelavis.go === "function") {
-    Fidelavis.go("inscription.html");
-  } else {
-    window.location.href = "inscription.html";
-  }
-});
 
 // ✅ charge config.json pour nom + couleurs
 (async function(){
