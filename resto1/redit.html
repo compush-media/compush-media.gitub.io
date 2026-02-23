@@ -277,7 +277,27 @@ function isAndroid(){
   return /android/i.test(navigator.userAgent);
 }
 
-// ✅ si déjà installé -> inscription (relative)
+/* ✅ NOUVEAU: Capture email URL -> localStorage (DOIT ÊTRE AVANT redirect standalone) */
+(function persistEmailFromUrl(){
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const emailRaw = params.get("email");
+
+    if (emailRaw) {
+      const email = decodeURIComponent(emailRaw).trim().toLowerCase();
+      localStorage.setItem("user_email", email);
+      localStorage.setItem("is_registered", "1");
+
+      // Nettoie l'URL (enlève ?email=...)
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  } catch(e) {
+    console.warn("persistEmailFromUrl error:", e);
+  }
+})();
+
+// ✅ Si l’app est ouverte depuis l’icône (standalone), on va au coupon
 if (isStandalone()){
   if (window.Fidelavis && typeof Fidelavis.go === "function") {
     Fidelavis.go("coupon.html");
