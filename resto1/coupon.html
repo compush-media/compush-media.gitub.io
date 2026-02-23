@@ -5,50 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Coupon du Mois – Fidelavis</title>
 
-  <!-- 🔐 Protection email (par dossier + clean URL + redirection locale) -->
-  <script>
-    (function () {
-      function currentFolderBase(){
-        // /resto1/coupon.html -> /resto2/
-        const p = window.location.pathname;
-        return p.slice(0, p.lastIndexOf("/") + 1);
-      }
+ <!-- 🔐 Protection email (par dossier + clean URL + redirection locale) -->
+<script>
+  (function () {
+    function currentFolderBase(){
+      // /resto1/coupon.html -> /resto1/
+      const p = window.location.pathname;
+      return p.slice(0, p.lastIndexOf("/") + 1);
+    }
 
-      // Helper global : toujours naviguer dans le même dossier
-      window.goLocal = function(page){
-        const base = currentFolderBase();
-        const url = new URL(base + page, window.location.origin);
+    // Helper global : toujours naviguer dans le même dossier
+    window.goLocal = function(page){
+      const base = currentFolderBase();
+      const url = new URL(base + page, window.location.origin);
 
-        // Conserve params utiles, mais jamais email
-        const params = new URLSearchParams(window.location.search);
-        params.delete("email");
-        params.forEach((v,k)=>url.searchParams.set(k,v));
-
-        window.location.href = url.toString();
-      };
-
-      // 1) Si on reçoit ?email=... -> stocke puis nettoie l'URL
+      // Conserve params utiles, mais jamais email
       const params = new URLSearchParams(window.location.search);
-      const email = (params.get("email") || "").trim();
-      const localEmail = localStorage.getItem("user_email");
+      params.delete("email");
+      params.forEach((v,k)=>url.searchParams.set(k,v));
 
-      const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
+      window.location.href = url.toString();
+    };
 
-      if (emailOk) {
-        localStorage.setItem("user_email", email);
-        params.delete("email");
-        const clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
-        try { history.replaceState({}, document.title, clean); } catch(e) {}
-        setTimeout(() => { try { history.replaceState({}, document.title, clean); } catch(e) {} }, 250);
-      }
+    // 1) Si on reçoit ?email=... -> stocke puis nettoie l'URL
+    const params = new URLSearchParams(window.location.search);
+    const emailRaw = params.get("email") || "";
 
-      // 2) Si pas d'email stocké -> inscription locale
-      if (!emailOk && !localEmail) {
-        window.goLocal("inscription.html");
-      }
-    })();
-  </script>
+    // IMPORTANT: decode + trim + lowercase (même format que redit.html)
+    let email = "";
+    try { email = decodeURIComponent(emailRaw).trim().toLowerCase(); }
+    catch(e){ email = (emailRaw || "").trim().toLowerCase(); }
 
+    const localEmail = (localStorage.getItem("user_email") || "").trim().toLowerCase();
+
+    const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
+
+    if (emailOk) {
+      localStorage.setItem("user_email", email);
+      localStorage.setItem("is_registered", "1");
+
+      // Nettoie l'URL (enlève ?email=...)
+      params.delete("email");
+      const clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+      try { history.replaceState({}, document.title, clean); } catch(e) {}
+      setTimeout(() => { try { history.replaceState({}, document.title, clean); } catch(e) {} }, 250);
+    }
+
+    // 2) Si pas d'email stocké -> inscription locale
+    if (!localEmail && !emailOk) {
+      window.goLocal("inscription.html");
+    }
+  })();
+</script>
   <style>
     :root { --brand: #B48C4A; --topbar-h: 56px; }
     body {
