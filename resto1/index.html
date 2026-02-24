@@ -173,34 +173,38 @@
       line-height:1.2;
     }
 
+    /* ✅ Nouveau PIN (4 cases) */
     .pinLabel{
-      margin:10px 0 8px;
+      margin:10px 0 10px;
       color:#2a2a2a;
       font-weight:900;
       font-size:13px;
+      text-align:left;
     }
-
-    .pinRow{
-      display:flex;
-      gap:10px;
-      align-items:center;
+    .pinGrid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:12px;
+      margin:0 0 6px;
     }
-
-    input{
-      flex:1;
-      padding:14px 14px;
-      border-radius:14px;
-      border:2px solid rgba(180,140,74,.55);
-      font-size:20px;
-      text-align:center;
-      letter-spacing:6px;
-      outline:none;
+    .pinBox{
+      width:100%;
+      height:64px;
+      border-radius:16px;
+      border:2px solid rgba(180,140,74,.45);
       background:#fff;
+      font-size:26px;
+      font-weight:950;
+      text-align:center;
+      outline:none;
+      box-shadow:0 10px 22px rgba(180,140,74,.06);
     }
-    input:focus{
+    .pinBox:focus{
       border-color: rgba(180,140,74,.85);
-      box-shadow:0 10px 22px rgba(180,140,74,.16);
+      box-shadow:0 14px 26px rgba(180,140,74,.14);
     }
+    .pinBox::-webkit-outer-spin-button,
+    .pinBox::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
 
     .btn{
       width:100%;
@@ -263,8 +267,12 @@
 
     <div class="pinLabel">Code PIN (4 chiffres)</div>
 
-    <div class="pinRow">
-      <input id="pinInput" maxlength="4" placeholder="----" inputmode="numeric" />
+    <!-- ✅ Remplace l'input unique par 4 cases -->
+    <div class="pinGrid" id="pinGrid" aria-label="Code PIN 4 chiffres">
+      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" aria-label="Chiffre 1">
+      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 2">
+      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 3">
+      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 4">
     </div>
 
     <button class="btn btnPrimary" type="button" onclick="soumettrePin()">Valider le coupon</button>
@@ -280,6 +288,56 @@
   </audio>
 
 </div>
+
+<script>
+/* ============================
+   PIN UX (auto-avance, backspace, collage)
+============================ */
+(function pinUX(){
+  const grid = document.getElementById("pinGrid");
+  if (!grid) return;
+
+  const boxes = Array.from(grid.querySelectorAll(".pinBox"));
+  function sanitizeDigit(v){ return (v || "").replace(/\D/g, "").slice(0,1); }
+
+  setTimeout(()=> boxes[0]?.focus(), 250);
+
+  boxes.forEach((box, idx) => {
+    box.addEventListener("input", () => {
+      const d = sanitizeDigit(box.value);
+      box.value = d;
+      if (d && idx < boxes.length - 1) boxes[idx + 1].focus();
+    });
+
+    box.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && !box.value && idx > 0) {
+        boxes[idx - 1].focus();
+        boxes[idx - 1].value = "";
+        e.preventDefault();
+      }
+      if (e.key === "Enter") soumettrePin();
+    });
+
+    box.addEventListener("paste", (e) => {
+      const txt = (e.clipboardData || window.clipboardData).getData("text") || "";
+      const digits = txt.replace(/\D/g, "").slice(0, 4).split("");
+      if (!digits.length) return;
+
+      e.preventDefault();
+      const start = idx;
+      for (let i = 0; i < digits.length && (start + i) < boxes.length; i++){
+        boxes[start + i].value = digits[i];
+      }
+      const nextIndex = Math.min(start + digits.length, boxes.length - 1);
+      boxes[nextIndex].focus();
+    });
+  });
+
+  window.getPinCode = function(){
+    return boxes.map(b => (b.value || "")).join("");
+  };
+})();
+</script>
 
 <script>
 /* ============================
@@ -330,7 +388,7 @@ function verifierPin(pin) { return [-2, -1, 0, 1, 2].some(o => generatePin(o) ==
 ============================ */
 function soumettrePin() {
   const res = document.getElementById("result");
-  const code = document.getElementById("pinInput").value.trim();
+  const code = (window.getPinCode ? window.getPinCode() : "").trim();
 
   if (localStorage.getItem(COUPON_KEY) === "used") {
     res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
