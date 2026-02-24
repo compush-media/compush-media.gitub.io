@@ -5,59 +5,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Coupon du Mois – Fidelavis</title>
 
- <!-- 🔐 BOOTSTRAP EMAIL (coupon = home PWA) -->
-<script>
-(function () {
-  function currentFolderBase(){
-    const p = window.location.pathname;
-    return p.slice(0, p.lastIndexOf("/") + 1);
-  }
+  <!-- 🔐 BOOTSTRAP EMAIL + COOKIE FALLBACK (coupon = home PWA) -->
+  <script>
+  (function () {
+    function currentFolderBase(){
+      const p = window.location.pathname;
+      return p.slice(0, p.lastIndexOf("/") + 1);
+    }
 
-  window.goLocal = function(page){
-    const base = currentFolderBase();
-    const url = new URL(base + page, window.location.origin);
+    // Helper global : toujours naviguer dans le même dossier
+    window.goLocal = function(page){
+      const base = currentFolderBase();
+      const url = new URL(base + page, window.location.origin);
 
+      // Conserve params utiles, mais jamais email
+      const params = new URLSearchParams(window.location.search);
+      params.delete("email");
+      params.forEach((v,k)=>url.searchParams.set(k,v));
+
+      window.location.href = url.toString();
+    };
+
+    /* ----------------------------
+       ✅ Cookie helpers (fallback iOS)
+    ---------------------------- */
+    function setCookie(name, value, days){
+      const maxAge = days * 24 * 60 * 60;
+      document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; SameSite=Lax`;
+    }
+    function getCookie(name){
+      const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return m ? decodeURIComponent(m[2]) : "";
+    }
+    function restoreEmailFromCookie(){
+      const localEmail = (localStorage.getItem("user_email") || "").trim().toLowerCase();
+      if (localEmail) return localEmail;
+
+      const c = (getCookie("user_email") || "").trim().toLowerCase();
+      if (c) {
+        localStorage.setItem("user_email", c);
+        localStorage.setItem("is_registered", "1");
+        return c;
+      }
+      return "";
+    }
+
+    // 1) Capture ?email=... (si présent) -> localStorage + cookie, puis clean URL
     const params = new URLSearchParams(window.location.search);
-    params.delete("email");
-    params.forEach((v,k)=>url.searchParams.set(k,v));
+    const emailRaw = params.get("email") || "";
 
-    window.location.href = url.toString();
-  };
+    let email = "";
+    try { email = decodeURIComponent(emailRaw).trim().toLowerCase(); }
+    catch(e){ email = (emailRaw || "").trim().toLowerCase(); }
 
-  // 1) Capture ?email=... (si présent) -> localStorage, puis clean URL
-  const params = new URLSearchParams(window.location.search);
-  const emailRaw = params.get("email") || "";
+    const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
 
-  let email = "";
-  try { email = decodeURIComponent(emailRaw).trim().toLowerCase(); }
-  catch(e){ email = (emailRaw || "").trim().toLowerCase(); }
+    if (emailOk) {
+      // localStorage
+      localStorage.setItem("user_email", email);
+      localStorage.setItem("is_registered", "1");
 
-  const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
+      // cookie fallback (1 an)
+      setCookie("user_email", email, 365);
+      setCookie("is_registered", "1", 365);
 
-  if (emailOk) {
-    localStorage.setItem("user_email", email);
-    localStorage.setItem("is_registered", "1");
+      // clean URL (retire email)
+      params.delete("email");
+      const clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+      try { history.replaceState({}, document.title, clean); } catch(e) {}
+      setTimeout(() => { try { history.replaceState({}, document.title, clean); } catch(e) {} }, 250);
+    } else {
+      // si pas d'email dans l'URL, on restaure depuis cookie si possible
+      restoreEmailFromCookie();
+    }
 
-    params.delete("email");
-    const clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
-    try { history.replaceState({}, document.title, clean); } catch(e) {}
-    setTimeout(() => { try { history.replaceState({}, document.title, clean); } catch(e) {} }, 250);
-  }
+    // 2) Vérification robuste (tolérance iOS/PWA)
+    function hasEmail(){
+      // IMPORTANT: tente aussi cookie si localStorage vide
+      return (restoreEmailFromCookie().trim().length > 0);
+    }
 
-  // 2) Vérification robuste (tolérance iOS/PWA)
-  function hasEmail(){
-    return ((localStorage.getItem("user_email") || "").trim().length > 0);
-  }
+    // Si déjà ok -> on laisse la page charger (coupon s’affiche)
+    if (hasEmail()) return;
 
-  // Si déjà ok -> on laisse la page charger (coupon s’affiche)
-  if (hasEmail()) return;
+    // Petite tolérance: certaines install PWA iOS ont un timing storage/chargement
+    setTimeout(() => {
+      if (!hasEmail()) window.goLocal("inscription.html");
+    }, 450);
+  })();
+  </script>
 
-  // Petite tolérance: certaines install PWA iOS ont un timing storage/chargement
-  setTimeout(() => {
-    if (!hasEmail()) window.goLocal("inscription.html");
-  }, 400);
-})();
-</script>
   <style>
     :root { --brand: #B48C4A; --topbar-h: 56px; }
     body {
