@@ -170,9 +170,7 @@
 
 <body>
 
-<header class="topbar">
-  <a id="backLink" class="back-btn" href="#"></a>
-</header>
+
 
 <h2>🎉 Coupon du Mois</h2>
 
@@ -220,10 +218,7 @@ function getRestoSlug() {
 const RESTO = getRestoSlug();
 
 // Back = index.html du même dossier (recommandé)
-document.getElementById("backLink").addEventListener("click", (e) => {
-  e.preventDefault();
-  goLocal("index.html");
-});
+
 
 /* ============================
    OFFRE MENSUELLE
