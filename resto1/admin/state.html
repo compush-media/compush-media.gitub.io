@@ -2,226 +2,325 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Stats – Fidelavis</title>
-
-  <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – Stats Fidelavis</title>
 
   <style>
-    :root{--brand:#b6152b;--bg:#f9f9f9;--card:#fff;--ink:#222;--muted:#666;--line:rgba(0,0,0,.08);--r:16px}
-    body{font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:920px;margin:18px auto;padding:14px;background:var(--bg);color:var(--ink)}
-    h1{color:var(--brand);margin:8px 0 12px}
-    .top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-    .pill{background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-size:13px;color:var(--muted)}
-    select{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-    .k{font-size:12px;color:var(--muted)}
-    .v{font-size:26px;font-weight:800;color:var(--brand);margin-top:6px}
-    .sub{font-size:12px;color:var(--muted);margin-top:4px}
-    .charts{margin-top:14px;display:grid;grid-template-columns:1fr;gap:12px}
-    .chart{background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-    .chart > div{width:100%;height:320px}
-    .err{color:var(--brand);margin-top:10px;font-size:13px}
-    @media (max-width:720px){.grid{grid-template-columns:1fr}}
+    :root{
+      --brand:#b6152b;
+      --bg:#f9f9f9;
+      --card:#fff;
+      --ink:#222;
+      --muted:#6b6b6b;
+      --line:rgba(0,0,0,.10);
+      --shadow:0 10px 24px rgba(0,0,0,.08);
+      --r:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:var(--bg);
+      color:var(--ink);
+      padding:18px 14px 26px;
+      max-width:980px;
+      margin-inline:auto;
+    }
+    h1{
+      margin:6px 0 14px;
+      font-size:20px;
+      color:var(--brand);
+      letter-spacing:-.2px;
+    }
+    .topbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+    }
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:10px 12px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      font-weight:800;
+      font-size:13px;
+      color:#333;
+    }
+    .muted{ color:var(--muted); font-weight:700; }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:12px;
+    }
+    .card{
+      grid-column: span 12;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+    .kpiRow{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:12px;
+    }
+    .kpi{
+      grid-column: span 12;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:linear-gradient(180deg, rgba(182,21,43,.06), rgba(0,0,0,0));
+    }
+    .kpi .label{ font-size:12px; color:var(--muted); font-weight:800; }
+    .kpi .val{ font-size:22px; font-weight:950; margin-top:4px; color:#111; }
+    .kpi .sub{ font-size:12px; color:var(--muted); margin-top:4px; font-weight:700; }
+    .split{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    select, button{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:800;
+    }
+    button{
+      background:var(--brand);
+      color:#fff;
+      border:none;
+      cursor:pointer;
+    }
+    .err{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(182,21,43,.25);
+      background:rgba(182,21,43,.08);
+      color:#7b1020;
+      font-weight:800;
+      font-size:13px;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+      font-size:13px;
+    }
+    th, td{
+      padding:10px 8px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+    }
+    th{ color:#333; font-weight:950; }
+    @media (min-width: 760px){
+      .kpi{ grid-column: span 4; }
+    }
   </style>
 </head>
 
 <body>
-  <div class="top">
-    <h1>📊 Statistiques Fidelavis</h1>
-    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <div id="restoPill" class="pill">Resto : —</div>
-      <label class="pill" style="display:flex;gap:8px;align-items:center">
-        Période
-        <select id="days">
-          <option value="7">7 jours</option>
-          <option value="30" selected>30 jours</option>
-          <option value="90">90 jours</option>
-        </select>
-      </label>
+  <div class="topbar">
+    <div>
+      <h1>📊 Statistiques Fidelavis</h1>
+      <div class="pill">Restaurant : <span id="restoName">...</span> <span class="muted">•</span> Période : <span id="periodLabel">30 jours</span></div>
+    </div>
+
+    <div class="split">
+      <select id="daysSelect">
+        <option value="7">7 jours</option>
+        <option value="30" selected>30 jours</option>
+        <option value="90">90 jours</option>
+        <option value="365">365 jours</option>
+      </select>
+      <button id="reloadBtn">Rafraîchir</button>
     </div>
   </div>
 
-  <!-- KPI cards -->
   <div class="grid">
     <div class="card">
-      <div class="k">Validations coupon</div>
-      <div id="today" class="v">—</div>
-      <div class="sub">Aujourd’hui</div>
-    </div>
-    <div class="card">
-      <div class="k">Validations coupon</div>
-      <div id="month" class="v">—</div>
-      <div class="sub">Ce mois-ci</div>
-    </div>
-    <div class="card">
-      <div class="k">Validations coupon</div>
-      <div id="total" class="v">—</div>
-      <div class="sub">Sur la période</div>
+      <div class="kpiRow">
+        <div class="kpi">
+          <div class="label">Coupons validés</div>
+          <div class="val" id="k_coupon">—</div>
+          <div class="sub">event = coupon_validate</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Clics avis Google</div>
+          <div class="val" id="k_review">—</div>
+          <div class="sub">event = review_click</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Clients captés</div>
+          <div class="val" id="k_signup">—</div>
+          <div class="sub">event = signup (si activé)</div>
+        </div>
+
+        <div class="kpi">
+          <div class="label">Scans</div>
+          <div class="val" id="k_scan">—</div>
+          <div class="sub">event = scan (si activé)</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Installs</div>
+          <div class="val" id="k_install">—</div>
+          <div class="sub">event = install (si activé)</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Taux d’utilisation coupon</div>
+          <div class="val" id="r_coupon">—</div>
+          <div class="sub">coupon_validate / signup</div>
+        </div>
+
+        <div class="kpi">
+          <div class="label">Taux d’activation</div>
+          <div class="val" id="r_activation">—</div>
+          <div class="sub">signup / scan</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Taux d’installation</div>
+          <div class="val" id="r_install">—</div>
+          <div class="sub">install / scan</div>
+        </div>
+      </div>
+
+      <div id="errorBox" class="err" style="display:none;"></div>
     </div>
 
-    <!-- KPI “complets” (si ton API renvoie des events un jour) -->
     <div class="card">
-      <div class="k">Scans</div>
-      <div id="scans" class="v">—</div>
-      <div class="sub">Ouvertures PWA (si disponible)</div>
-    </div>
-    <div class="card">
-      <div class="k">Clients captés</div>
-      <div id="signups" class="v">—</div>
-      <div class="sub">Signup (si disponible)</div>
-    </div>
-    <div class="card">
-      <div class="k">Taux utilisation coupon</div>
-      <div id="useRate" class="v">—</div>
-      <div class="sub">validés / captés</div>
+      <div class="split">
+        <div style="font-weight:950;">Derniers événements (triés par date)</div>
+        <div class="muted" id="countRows">—</div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Event</th>
+            <th>User</th>
+            <th>Page</th>
+          </tr>
+        </thead>
+        <tbody id="rowsTbody">
+          <tr><td colspan="4" class="muted">Chargement…</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
-
-  <div class="charts">
-    <div class="chart">
-      <div id="chart_daily"></div>
-    </div>
-    <div class="chart">
-      <div id="chart_month"></div>
-    </div>
-  </div>
-
-  <div id="err" class="err"></div>
 
 <script>
-  // ✅ Ton endpoint actuel
-  const API = "https://script.google.com/macros/s/AKfycbyiZWE_ThNbvMjXX5qnfTyBHLw8RL4DwO1TTMgLFH6F_xkWhQeNvLwHrL7qFno2fKSw/exec";
+  // ✅ API (global)
+  const API = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
 
-  function getCompanyFromPath(){
-    const parts = location.pathname.split("/").filter(Boolean);
-    return parts[0] || "default";
+  // ✅ détecte resto depuis URL: /resto1/admin/state.html
+  function getRestoSlug(){
+    return location.pathname.replace(/^\/+|\/+$/g,"").split("/")[0] || "voltaire";
+  }
+  const RESTO = getRestoSlug();
+  document.getElementById("restoName").textContent = RESTO;
+
+  function pct(n){
+    if (!isFinite(n)) return "—";
+    return (n*100).toFixed(1).replace(".", ",") + "%";
   }
 
-  function startOfToday(){
-    const d = new Date();
-    d.setHours(0,0,0,0);
-    return d.getTime();
+  function safeDiv(a,b){
+    if (!b) return NaN;
+    return a / b;
   }
 
-  function sameMonth(d){
-    const now = new Date();
-    return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
-  }
-
-  function fmtPct(x){
-    if(!isFinite(x)) return "—";
-    return Math.round(x*100) + "%";
-  }
-
-  async function loadStats(){
-    const COMPANY = getCompanyFromPath();
-    document.getElementById("restoPill").textContent = "Resto : " + COMPANY;
-
-    const days = Number(document.getElementById("days").value || 30);
-    const since = Date.now() - days*24*60*60*1000;
-
-    document.getElementById("err").textContent = "";
-
+  function fmtDate(iso){
     try{
-      const res = await fetch(API, {cache:"no-store"});
-      const data = await res.json();
-
-      // --- 1) MODE A : ton API actuel renvoie data.all = validations coupons
-      // rows: { timestamp, mois, restaurant }
-      const all = Array.isArray(data.all) ? data.all : [];
-
-      const rows = all
-        .filter(r => String(r.restaurant||"").toLowerCase() === COMPANY.toLowerCase())
-        .map(r => ({...r, _t: new Date(r.timestamp).getTime()}))
-        .filter(r => isFinite(r._t) && r._t >= since);
-
-      // KPIs coupons
-      const todayCount = rows.filter(r => r._t >= startOfToday()).length;
-      const monthCount = rows.filter(r => sameMonth(new Date(r._t))).length;
-      const totalCount = rows.length;
-
-      document.getElementById("today").textContent = todayCount;
-      document.getElementById("month").textContent = monthCount;
-      document.getElementById("total").textContent = totalCount;
-
-      // --- 2) MODE B : si plus tard tu ajoutes data.rows avec events (scan/signup/etc.)
-      // fallback: on affiche "—" si pas présent
-      let scans = NaN, signups = NaN, useRate = NaN;
-
-      if(Array.isArray(data.rows)){ // si tu passes au modèle events
-        const ev = data.rows
-          .filter(x => String(x.resto||"").toLowerCase() === COMPANY.toLowerCase())
-          .map(x => ({...x, _t: new Date(x.ts).getTime()}))
-          .filter(x => isFinite(x._t) && x._t >= since);
-
-        const count = (name)=> ev.filter(x => String(x.event||"")===name).length;
-        scans = count("scan");
-        signups = count("signup");
-        const valids = count("coupon_validate");
-        useRate = valids / (signups||0);
-      }
-
-      document.getElementById("scans").textContent   = isFinite(scans) ? scans : "—";
-      document.getElementById("signups").textContent = isFinite(signups) ? signups : "—";
-      document.getElementById("useRate").textContent = isFinite(useRate) ? fmtPct(useRate) : "—";
-
-      drawCharts(rows);
-
+      const d = new Date(iso);
+      return d.toLocaleString("fr-FR", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
     }catch(e){
-      document.getElementById("err").textContent = "Erreur : " + (e.message || e);
-      console.error(e);
+      return String(iso||"");
     }
   }
 
-  function drawCharts(rows){
-    google.charts.load("current", { packages: ["corechart"] });
-    google.charts.setOnLoadCallback(() => {
+  async function load(){
+    const days = Number(document.getElementById("daysSelect").value || 30);
+    document.getElementById("periodLabel").textContent = days + " jours";
+    document.getElementById("errorBox").style.display = "none";
 
-      // daily line
-      const countsByDay = {};
-      rows.forEach(r=>{
-        const d = new Date(r._t);
-        const key = d.toISOString().slice(0,10);
-        countsByDay[key] = (countsByDay[key]||0) + 1;
-      });
+    const url = `${API}?resto=${encodeURIComponent(RESTO)}&days=${days}&_=${Date.now()}`;
+    try{
+      const res = await fetch(url);
+      const data = await res.json();
 
-      const dataDaily = [["Date","Validations"]];
-      Object.entries(countsByDay).sort().forEach(([day,count])=>dataDaily.push([day,count]));
+      const rows = Array.isArray(data.rows) ? data.rows : [];
 
-      const chart1 = new google.visualization.LineChart(document.getElementById("chart_daily"));
-      chart1.draw(google.visualization.arrayToDataTable(dataDaily), {
-        title: "Validations journalières (coupon)",
-        curveType: "function",
-        legend: { position: "bottom" },
-        colors: ["#b6152b"]
-      });
+      // Comptage events
+      const count = (ev) => rows.filter(r => r.event === ev).length;
 
-      // month bars (sur la période)
-      const countsByMonth = {}; // "YYYY-MM"
-      rows.forEach(r=>{
-        const d = new Date(r._t);
-        const key = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
-        countsByMonth[key] = (countsByMonth[key]||0) + 1;
-      });
+      const cCoupon  = count("coupon_validate");
+      const cReview  = count("review_click");
+      const cSignup  = count("signup");
+      const cScan    = count("scan");
+      const cInstall = count("install");
 
-      const dataMonth = [["Mois","Validations"]];
-      Object.entries(countsByMonth).sort().forEach(([m,count])=>dataMonth.push([m,count]));
+      // KPIs
+      document.getElementById("k_coupon").textContent  = cCoupon;
+      document.getElementById("k_review").textContent  = cReview;
+      document.getElementById("k_signup").textContent  = cSignup;
+      document.getElementById("k_scan").textContent    = cScan;
+      document.getElementById("k_install").textContent = cInstall;
 
-      const chart2 = new google.visualization.ColumnChart(document.getElementById("chart_month"));
-      chart2.draw(google.visualization.arrayToDataTable(dataMonth), {
-        title: "Validations par mois (sur la période)",
-        legend: "none",
-        colors: ["#b6152b"]
-      });
-    });
+      document.getElementById("r_coupon").textContent      = pct(safeDiv(cCoupon, cSignup));
+      document.getElementById("r_activation").textContent  = pct(safeDiv(cSignup, cScan));
+      document.getElementById("r_install").textContent     = pct(safeDiv(cInstall, cScan));
+
+      // Table derniers events
+      rows.sort((a,b) => new Date(b.ts) - new Date(a.ts));
+      document.getElementById("countRows").textContent = rows.length + " events";
+
+      const tb = document.getElementById("rowsTbody");
+      tb.innerHTML = "";
+
+      if (!rows.length){
+        tb.innerHTML = `<tr><td colspan="4" class="muted">Aucun événement sur la période.</td></tr>`;
+        return;
+      }
+
+      const max = Math.min(rows.length, 30);
+      for (let i=0;i<max;i++){
+        const r = rows[i];
+        const page = (r.pageURL || "");
+        const pageShort = page.length > 44 ? page.slice(0,44) + "…" : page;
+
+        tb.insertAdjacentHTML("beforeend", `
+          <tr>
+            <td>${fmtDate(r.ts)}</td>
+            <td><strong>${r.event || ""}</strong></td>
+            <td>${(r.user || "").toString().slice(0,28)}</td>
+            <td title="${page.replace(/"/g,"&quot;")}">${pageShort}</td>
+          </tr>
+        `);
+      }
+
+    } catch(err){
+      const box = document.getElementById("errorBox");
+      box.style.display = "block";
+      box.textContent = "Erreur API : " + (err && err.message ? err.message : err);
+    }
   }
 
-  document.getElementById("days").addEventListener("change", loadStats);
-  window.addEventListener("resize", loadStats);
-  loadStats();
-</script>
+  document.getElementById("reloadBtn").addEventListener("click", load);
+  document.getElementById("daysSelect").addEventListener("change", load);
 
+  load();
+</script>
 </body>
 </html>
