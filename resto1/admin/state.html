@@ -1,135 +1,227 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  @media (max-width: 600px) {
-    body {
-      padding: 10px;
-      font-size: 16px;
-    }
-    .stat {
-      font-size: 16px;
-    }
-    .chart {
-      width: 100% !important;
-      height: auto !important;
-    }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Stats – Fidelavis</title>
 
-  <meta charset="UTF-8">
-  <title>Admin – Stats Coupons</title>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+
   <style>
-    body {
-      font-family: sans-serif;
-      max-width: 800px;
-      margin: 30px auto;
-      padding: 20px;
-      background: #f9f9f9;
-      color: #333;
-    }
-    h1 {
-      color: #b6152b;
-    }
-    .stat {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-    .chart {
-      margin-top: 20px;
-      width: 100%;
-      height: 300px;
-    }
+    :root{--brand:#b6152b;--bg:#f9f9f9;--card:#fff;--ink:#222;--muted:#666;--line:rgba(0,0,0,.08);--r:16px}
+    body{font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:920px;margin:18px auto;padding:14px;background:var(--bg);color:var(--ink)}
+    h1{color:var(--brand);margin:8px 0 12px}
+    .top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .pill{background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-size:13px;color:var(--muted)}
+    select{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+    .k{font-size:12px;color:var(--muted)}
+    .v{font-size:26px;font-weight:800;color:var(--brand);margin-top:6px}
+    .sub{font-size:12px;color:var(--muted);margin-top:4px}
+    .charts{margin-top:14px;display:grid;grid-template-columns:1fr;gap:12px}
+    .chart{background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+    .chart > div{width:100%;height:320px}
+    .err{color:var(--brand);margin-top:10px;font-size:13px}
+    @media (max-width:720px){.grid{grid-template-columns:1fr}}
   </style>
 </head>
+
 <body>
-  <h1>📊 Statistiques Coupons</h1>
-  <div class="stat">Aujourd’hui : <strong id="today">...</strong></div>
-  <div class="stat">Ce mois-ci : <strong id="month">...</strong></div>
-  <div class="stat">Total : <strong id="total">...</strong></div>
+  <div class="top">
+    <h1>📊 Statistiques Fidelavis</h1>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div id="restoPill" class="pill">Resto : —</div>
+      <label class="pill" style="display:flex;gap:8px;align-items:center">
+        Période
+        <select id="days">
+          <option value="7">7 jours</option>
+          <option value="30" selected>30 jours</option>
+          <option value="90">90 jours</option>
+        </select>
+      </label>
+    </div>
+  </div>
 
-  <div id="chart_daily" class="chart"></div>
-  <div id="chart_month" class="chart"></div>
-  <div id="chart_resto" class="chart"></div>
+  <!-- KPI cards -->
+  <div class="grid">
+    <div class="card">
+      <div class="k">Validations coupon</div>
+      <div id="today" class="v">—</div>
+      <div class="sub">Aujourd’hui</div>
+    </div>
+    <div class="card">
+      <div class="k">Validations coupon</div>
+      <div id="month" class="v">—</div>
+      <div class="sub">Ce mois-ci</div>
+    </div>
+    <div class="card">
+      <div class="k">Validations coupon</div>
+      <div id="total" class="v">—</div>
+      <div class="sub">Sur la période</div>
+    </div>
 
-  <script>
-    const API ="https://script.google.com/macros/s/AKfycbyiZWE_ThNbvMjXX5qnfTyBHLw8RL4DwO1TTMgLFH6F_xkWhQeNvLwHrL7qFno2fKSw/exec";
+    <!-- KPI “complets” (si ton API renvoie des events un jour) -->
+    <div class="card">
+      <div class="k">Scans</div>
+      <div id="scans" class="v">—</div>
+      <div class="sub">Ouvertures PWA (si disponible)</div>
+    </div>
+    <div class="card">
+      <div class="k">Clients captés</div>
+      <div id="signups" class="v">—</div>
+      <div class="sub">Signup (si disponible)</div>
+    </div>
+    <div class="card">
+      <div class="k">Taux utilisation coupon</div>
+      <div id="useRate" class="v">—</div>
+      <div class="sub">validés / captés</div>
+    </div>
+  </div>
 
-    async function loadStats() {
-      try {
-        const res = await fetch(API);
-        const data = await res.json();
+  <div class="charts">
+    <div class="chart">
+      <div id="chart_daily"></div>
+    </div>
+    <div class="chart">
+      <div id="chart_month"></div>
+    </div>
+  </div>
 
-        document.getElementById("today").textContent = data.today;
-        document.getElementById("month").textContent = data.thisMonth;
-        document.getElementById("total").textContent = data.all.length;
+  <div id="err" class="err"></div>
 
-        drawCharts(data.all);
-      } catch (e) {
-        document.body.innerHTML += "<p style='color:red;'>Erreur : " + e.message + "</p>";
-        console.error(e);
+<script>
+  // ✅ Ton endpoint actuel
+  const API = "https://script.google.com/macros/s/AKfycbyiZWE_ThNbvMjXX5qnfTyBHLw8RL4DwO1TTMgLFH6F_xkWhQeNvLwHrL7qFno2fKSw/exec";
+
+  function getCompanyFromPath(){
+    const parts = location.pathname.split("/").filter(Boolean);
+    return parts[0] || "default";
+  }
+
+  function startOfToday(){
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    return d.getTime();
+  }
+
+  function sameMonth(d){
+    const now = new Date();
+    return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
+  }
+
+  function fmtPct(x){
+    if(!isFinite(x)) return "—";
+    return Math.round(x*100) + "%";
+  }
+
+  async function loadStats(){
+    const COMPANY = getCompanyFromPath();
+    document.getElementById("restoPill").textContent = "Resto : " + COMPANY;
+
+    const days = Number(document.getElementById("days").value || 30);
+    const since = Date.now() - days*24*60*60*1000;
+
+    document.getElementById("err").textContent = "";
+
+    try{
+      const res = await fetch(API, {cache:"no-store"});
+      const data = await res.json();
+
+      // --- 1) MODE A : ton API actuel renvoie data.all = validations coupons
+      // rows: { timestamp, mois, restaurant }
+      const all = Array.isArray(data.all) ? data.all : [];
+
+      const rows = all
+        .filter(r => String(r.restaurant||"").toLowerCase() === COMPANY.toLowerCase())
+        .map(r => ({...r, _t: new Date(r.timestamp).getTime()}))
+        .filter(r => isFinite(r._t) && r._t >= since);
+
+      // KPIs coupons
+      const todayCount = rows.filter(r => r._t >= startOfToday()).length;
+      const monthCount = rows.filter(r => sameMonth(new Date(r._t))).length;
+      const totalCount = rows.length;
+
+      document.getElementById("today").textContent = todayCount;
+      document.getElementById("month").textContent = monthCount;
+      document.getElementById("total").textContent = totalCount;
+
+      // --- 2) MODE B : si plus tard tu ajoutes data.rows avec events (scan/signup/etc.)
+      // fallback: on affiche "—" si pas présent
+      let scans = NaN, signups = NaN, useRate = NaN;
+
+      if(Array.isArray(data.rows)){ // si tu passes au modèle events
+        const ev = data.rows
+          .filter(x => String(x.resto||"").toLowerCase() === COMPANY.toLowerCase())
+          .map(x => ({...x, _t: new Date(x.ts).getTime()}))
+          .filter(x => isFinite(x._t) && x._t >= since);
+
+        const count = (name)=> ev.filter(x => String(x.event||"")===name).length;
+        scans = count("scan");
+        signups = count("signup");
+        const valids = count("coupon_validate");
+        useRate = valids / (signups||0);
       }
+
+      document.getElementById("scans").textContent   = isFinite(scans) ? scans : "—";
+      document.getElementById("signups").textContent = isFinite(signups) ? signups : "—";
+      document.getElementById("useRate").textContent = isFinite(useRate) ? fmtPct(useRate) : "—";
+
+      drawCharts(rows);
+
+    }catch(e){
+      document.getElementById("err").textContent = "Erreur : " + (e.message || e);
+      console.error(e);
     }
+  }
 
-    function drawCharts(all) {
-      google.charts.load("current", { packages: ["corechart"] });
-      google.charts.setOnLoadCallback(() => {
-        const countsByDay = {};
-        const countsByMonth = Array(12).fill(0);
-        const countsByResto = {};
+  function drawCharts(rows){
+    google.charts.load("current", { packages: ["corechart"] });
+    google.charts.setOnLoadCallback(() => {
 
-        all.forEach(r => {
-          const date = new Date(r.timestamp);
-          const dayKey = date.toISOString().slice(0, 10);
-          countsByDay[dayKey] = (countsByDay[dayKey] || 0) + 1;
-
-          const m = parseInt(r.mois) - 1;
-          countsByMonth[m] += 1;
-
-          countsByResto[r.restaurant] = (countsByResto[r.restaurant] || 0) + 1;
-        });
-
-        const dataDaily = [["Date", "Validations"]];
-        Object.entries(countsByDay).sort().forEach(([day, count]) => {
-          dataDaily.push([day, count]);
-        });
-
-        const mois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
-        const dataMonth = [["Mois", "Coupons"]];
-        mois.forEach((m, i) => dataMonth.push([m, countsByMonth[i]]));
-
-        const dataResto = [["Restaurant", "Coupons"]];
-        for (const [resto, count] of Object.entries(countsByResto)) {
-          dataResto.push([resto, count]);
-        }
-
-        const chart1 = new google.visualization.LineChart(document.getElementById("chart_daily"));
-        chart1.draw(google.visualization.arrayToDataTable(dataDaily), {
-          title: "Validations journalières",
-          curveType: "function",
-          legend: { position: "bottom" },
-          colors: ["#b6152b"]
-        });
-
-        const chart2 = new google.visualization.ColumnChart(document.getElementById("chart_month"));
-        chart2.draw(google.visualization.arrayToDataTable(dataMonth), {
-          title: "Coupons par Mois",
-          legend: "none",
-          colors: ["#b6152b"]
-        });
-
-        const chart3 = new google.visualization.PieChart(document.getElementById("chart_resto"));
-        chart3.draw(google.visualization.arrayToDataTable(dataResto), {
-          title: "Répartition par Restaurant"
-        });
+      // daily line
+      const countsByDay = {};
+      rows.forEach(r=>{
+        const d = new Date(r._t);
+        const key = d.toISOString().slice(0,10);
+        countsByDay[key] = (countsByDay[key]||0) + 1;
       });
-    }
 
-    loadStats();
-  </script>
+      const dataDaily = [["Date","Validations"]];
+      Object.entries(countsByDay).sort().forEach(([day,count])=>dataDaily.push([day,count]));
+
+      const chart1 = new google.visualization.LineChart(document.getElementById("chart_daily"));
+      chart1.draw(google.visualization.arrayToDataTable(dataDaily), {
+        title: "Validations journalières (coupon)",
+        curveType: "function",
+        legend: { position: "bottom" },
+        colors: ["#b6152b"]
+      });
+
+      // month bars (sur la période)
+      const countsByMonth = {}; // "YYYY-MM"
+      rows.forEach(r=>{
+        const d = new Date(r._t);
+        const key = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
+        countsByMonth[key] = (countsByMonth[key]||0) + 1;
+      });
+
+      const dataMonth = [["Mois","Validations"]];
+      Object.entries(countsByMonth).sort().forEach(([m,count])=>dataMonth.push([m,count]));
+
+      const chart2 = new google.visualization.ColumnChart(document.getElementById("chart_month"));
+      chart2.draw(google.visualization.arrayToDataTable(dataMonth), {
+        title: "Validations par mois (sur la période)",
+        legend: "none",
+        colors: ["#b6152b"]
+      });
+    });
+  }
+
+  document.getElementById("days").addEventListener("change", loadStats);
+  window.addEventListener("resize", loadStats);
+  loadStats();
+</script>
+
 </body>
 </html>
