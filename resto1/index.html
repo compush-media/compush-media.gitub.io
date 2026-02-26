@@ -398,7 +398,7 @@ if (now.getDate() === 1) localStorage.removeItem(COUPON_KEY);
 const REVIEW_KEY = `review_${RESTO}_${YEAR}_${MONTH}`;
 
 /* ============================
-   TRACK HELPER
+   TRACK HELPER (PATCH ✅ sendBeacon + keepalive)
 ============================ */
 function track(eventName, extra = {}) {
   const payload = {
@@ -412,22 +412,39 @@ function track(eventName, extra = {}) {
     ...extra
   };
 
+  const body = JSON.stringify(payload);
+
+  // ✅ Best: sendBeacon (survit aux redirections)
+  if (navigator.sendBeacon) {
+    try {
+      const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
+      navigator.sendBeacon(API_TRACK, blob);
+      return;
+    } catch(e) {}
+  }
+
+  // ✅ Fallback: fetch keepalive
   fetch(API_TRACK, {
     method: "POST",
     mode: "no-cors",
+    keepalive: true,
     headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
+    body
   }).catch(()=>{});
 }
 
 /* ============================
-   ✅ Aller vers la page avis (même dossier)
+   ✅ Aller vers la page avis (même dossier) (PATCH délai)
 ============================ */
 function allerAvis(){
   localStorage.setItem(REVIEW_KEY, "done"); // anti-spam
   track("review_click");
-  if (typeof window.goLocal === "function") window.goLocal("avis.html");
-  else window.location.href = "avis.html";
+
+  // ✅ mini délai pour laisser le beacon partir
+  setTimeout(() => {
+    if (typeof window.goLocal === "function") window.goLocal("avis.html");
+    else window.location.href = "avis.html";
+  }, 120);
 }
 
 // ✅ "Plus tard" => ne repropose plus ce mois-ci
