@@ -2,74 +2,59 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Fidelavis – Dashboard (KPI)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Fidelavis — Dashboard Global</title>
 
   <script src="https://www.gstatic.com/charts/loader.js"></script>
 
   <style>
     :root{
-      --brand:#B48C4A;
-      --bg:#fbfaf8;
-      --card:#ffffff;
-      --ink:#191919;
-      --muted:#6f6f6f;
+      --brand:#b6152b;
+      --bg:#f7f7f7;
+      --card:#fff;
+      --ink:#1b1b1b;
+      --muted:#6b6b6b;
       --line:rgba(0,0,0,.08);
-      --shadow:0 18px 50px rgba(0,0,0,.08);
-      --r:18px;
+      --r:16px;
+      --shadow:0 10px 24px rgba(0,0,0,.08);
     }
     *{ box-sizing:border-box; }
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: linear-gradient(180deg, #fbfaf8 0%, #f6f2ec 100%);
+      background:var(--bg);
       color:var(--ink);
-      padding:16px;
+      padding:14px;
     }
-    .wrap{ max-width: 980px; margin:0 auto; }
+    .wrap{ max-width:1100px; margin:0 auto; }
 
     .top{
-      display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
       flex-wrap:wrap;
-      margin-bottom:14px;
+      margin-bottom:12px;
     }
-    h1{
-      margin:0;
-      font-size:20px;
-      font-weight:950;
-      letter-spacing:-.2px;
-    }
-    .sub{ margin:4px 0 0; color:var(--muted); font-size:13px; }
+    h1{ margin:0; font-size:18px; }
+    .sub{ color:var(--muted); font-size:12.5px; margin-top:4px; }
 
     .controls{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-      background:rgba(255,255,255,.65);
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      background:var(--card);
       border:1px solid var(--line);
-      border-radius:14px;
+      border-radius:var(--r);
       padding:10px;
-      box-shadow:0 10px 22px rgba(0,0,0,.04);
+      box-shadow:var(--shadow);
     }
-    label{ font-size:12px; color:var(--muted); font-weight:700; display:block; margin:0 0 4px; }
-    select, input{
-      appearance:none;
+    select{
+      padding:10px 12px;
+      border-radius:12px;
       border:1px solid var(--line);
       background:#fff;
-      padding:10px 12px;
-      border-radius:12px;
       font-weight:800;
-      color:#2a2a2a;
+      color:#222;
       outline:none;
-      min-width: 160px;
-    }
-    input{ min-width:110px; width:110px; }
-    .btn{
-      border:none; cursor:pointer;
-      border-radius:12px;
-      padding:10px 12px;
-      font-weight:950;
-      background: linear-gradient(180deg, var(--brand) 0%, #a97f37 100%);
-      color:#fff;
-      box-shadow:0 12px 20px rgba(180,140,74,.18);
     }
 
     .grid{
@@ -83,367 +68,285 @@
       border:1px solid var(--line);
       border-radius:var(--r);
       box-shadow:var(--shadow);
-      padding:14px;
+      padding:12px;
     }
-    .kpi{
-      grid-column: span 4;
-      padding:14px;
-    }
-    .kpi .title{ color:var(--muted); font-size:12px; font-weight:800; }
-    .kpi .value{
-      margin-top:6px;
-      font-size:26px;
-      font-weight:950;
-      letter-spacing:-.4px;
-      color:#1a1a1a;
-    }
-    .kpi .hint{ margin-top:6px; font-size:12px; color:var(--muted); }
-
-    .sectionTitle{
-      margin:0 0 10px;
-      font-weight:950;
-      font-size:14px;
-      color:#2a2a2a;
-      display:flex; align-items:center; gap:8px;
-    }
-
+    .kpi{ grid-column: span 3; }
+    .chart{ grid-column: span 12; }
     .half{ grid-column: span 6; }
-    .full{ grid-column: span 12; }
 
-    .chart{
-      width:100%;
-      min-height:320px;
-    }
-
-    .note{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:10px;
-      line-height:1.35;
-    }
-
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(180,140,74,.22);
-      background: rgba(180,140,74,.10);
-      font-size:12px;
-      font-weight:900;
-      color:#4a3a18;
-    }
-
-    @media (max-width: 900px){
+    @media (max-width: 860px){
       .kpi{ grid-column: span 6; }
       .half{ grid-column: span 12; }
     }
     @media (max-width: 520px){
-      body{ padding:10px; }
       .kpi{ grid-column: span 12; }
-      select{ min-width: 100%; }
-      input{ width:100%; min-width: 100%; }
-      .controls{ width:100%; }
+    }
+
+    .kpiLabel{ color:var(--muted); font-size:12px; font-weight:800; }
+    .kpiValue{ font-size:26px; font-weight:950; margin-top:6px; color:var(--brand); }
+    .chartDiv{ width:100%; height:320px; }
+
+    table{ width:100%; border-collapse:collapse; }
+    th, td{
+      padding:10px 8px;
+      border-bottom:1px solid rgba(0,0,0,.06);
+      font-size:13px;
+      text-align:left;
+    }
+    th{ color:#333; font-weight:950; }
+    td{ color:#222; font-weight:700; }
+    .muted{ color:var(--muted); font-weight:700; }
+
+    .err{
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(182,21,43,.18);
+      background:rgba(182,21,43,.06);
+      color:#7a1120;
+      font-weight:800;
     }
   </style>
 </head>
 
 <body>
 <div class="wrap">
-
   <div class="top">
     <div>
-      <h1>📊 Dashboard Fidelavis</h1>
-      <div class="sub" id="subLine">Chargement…</div>
+      <h1>🧠 Dashboard Global — Fidelavis</h1>
+      <div class="sub">Vue réseau (tous restos) — filtres par période, resto et type d’événement</div>
     </div>
 
     <div class="controls">
-      <div>
-        <label>Restaurant</label>
+      <label style="display:flex;align-items:center;gap:8px;font-weight:950;font-size:12px;color:#333;">
+        Période
+        <select id="daysSelect">
+          <option value="7">7 jours</option>
+          <option value="30" selected>30 jours</option>
+          <option value="90">90 jours</option>
+        </select>
+      </label>
+
+      <label style="display:flex;align-items:center;gap:8px;font-weight:950;font-size:12px;color:#333;">
+        Resto
         <select id="restoSelect">
           <option value="">Tous</option>
         </select>
-      </div>
+      </label>
 
-      <div>
-        <label>Période (jours)</label>
-        <select id="daysSelect">
-          <option value="7">7</option>
-          <option value="30" selected>30</option>
-          <option value="90">90</option>
-          <option value="365">365</option>
+      <label style="display:flex;align-items:center;gap:8px;font-weight:950;font-size:12px;color:#333;">
+        Event
+        <select id="eventSelect">
+          <option value="">Tous</option>
+          <option value="scan">scan</option>
+          <option value="signup">signup</option>
+          <option value="install">install</option>
+          <option value="coupon_validate">coupon_validate</option>
+          <option value="review_click">review_click</option>
         </select>
-      </div>
-
-      <div>
-        <label>Actualiser</label>
-        <button class="btn" id="refreshBtn">↻ Rafraîchir</button>
-      </div>
+      </label>
     </div>
   </div>
 
-  <!-- KPI -->
   <div class="grid">
     <div class="card kpi">
-      <div class="title">Scans</div>
-      <div class="value" id="kpi_scan">—</div>
-      <div class="hint">event = <span class="pill">scan</span></div>
+      <div class="kpiLabel">Scans</div>
+      <div class="kpiValue" id="kScan">—</div>
     </div>
-
     <div class="card kpi">
-      <div class="title">Clients captés</div>
-      <div class="value" id="kpi_signup">—</div>
-      <div class="hint">event = <span class="pill">signup</span></div>
+      <div class="kpiLabel">Signups</div>
+      <div class="kpiValue" id="kSignup">—</div>
     </div>
-
     <div class="card kpi">
-      <div class="title">Installs PWA</div>
-      <div class="value" id="kpi_install">—</div>
-      <div class="hint">event = <span class="pill">install</span></div>
+      <div class="kpiLabel">Installs</div>
+      <div class="kpiValue" id="kInstall">—</div>
     </div>
-
     <div class="card kpi">
-      <div class="title">Coupons validés</div>
-      <div class="value" id="kpi_coupon">—</div>
-      <div class="hint">event = <span class="pill">coupon_validate</span></div>
+      <div class="kpiLabel">Coupons validés</div>
+      <div class="kpiValue" id="kCoupon">—</div>
     </div>
 
-    <div class="card kpi">
-      <div class="title">Clics vers Google</div>
-      <div class="value" id="kpi_review">—</div>
-      <div class="hint">event = <span class="pill">review_open</span></div>
-    </div>
-
-    <div class="card kpi">
-      <div class="title">Taux d’activation</div>
-      <div class="value" id="kpi_activation">—</div>
-      <div class="hint">signup / scan</div>
-    </div>
-
-    <div class="card kpi">
-      <div class="title">Taux d’installation</div>
-      <div class="value" id="kpi_install_rate">—</div>
-      <div class="hint">install / scan</div>
-    </div>
-
-    <div class="card kpi">
-      <div class="title">Taux utilisation coupon</div>
-      <div class="value" id="kpi_coupon_rate">—</div>
-      <div class="hint">coupon_validate / signup</div>
-    </div>
-
-    <div class="card kpi">
-      <div class="title">Taux intention avis</div>
-      <div class="value" id="kpi_review_rate">—</div>
-      <div class="hint">review_open / coupon_validate</div>
-    </div>
-
-    <!-- Charts -->
-    <div class="card half">
-      <div class="sectionTitle">📈 Évolution quotidienne (Coupons vs Avis)</div>
-      <div id="chart_daily" class="chart"></div>
-      <div class="note">Basé sur les events <b>coupon_validate</b> et <b>review_open</b> sur la période.</div>
+    <div class="card chart">
+      <div style="font-weight:950;color:var(--brand);margin-bottom:8px;">📈 Évolution journalière</div>
+      <div id="chartDaily" class="chartDiv"></div>
+      <div id="errBox"></div>
     </div>
 
     <div class="card half">
-      <div class="sectionTitle">📊 Répartition des événements</div>
-      <div id="chart_events" class="chart"></div>
-      <div class="note">Utile pour vérifier que tes pages trackent bien : scan, signup, install, coupon, avis.</div>
+      <div style="font-weight:950;color:var(--brand);margin-bottom:8px;">🏆 Top restos (par event)</div>
+      <div class="muted" style="margin-bottom:8px;">Basé sur le filtre event (ou tous si “Tous”)</div>
+      <table>
+        <thead>
+          <tr><th>Restaurant</th><th>Count</th></tr>
+        </thead>
+        <tbody id="topBody"></tbody>
+      </table>
     </div>
 
-    <div class="card full">
-      <div class="sectionTitle">🧾 Debug (optionnel)</div>
-      <div class="note" id="debugBox">—</div>
+    <div class="card half">
+      <div style="font-weight:950;color:var(--brand);margin-bottom:8px;">🥧 Répartition par resto</div>
+      <div id="chartPie" class="chartDiv" style="height:320px;"></div>
     </div>
   </div>
-
 </div>
 
 <script>
-/* ============================
-   CONFIG
-============================ */
-const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
+  const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
 
-/* ============================
-   UTILS
-============================ */
-function pct(num, den){
-  if (!den || !isFinite(den) || den === 0) return "—";
-  const v = (num / den) * 100;
-  return (Math.round(v * 10) / 10).toFixed(1) + "%";
-}
-function ymd(d){
-  const dt = new Date(d);
-  if (!isFinite(dt.getTime())) return "";
-  const y = dt.getFullYear();
-  const m = String(dt.getMonth()+1).padStart(2,"0");
-  const da = String(dt.getDate()).padStart(2,"0");
-  return `${y}-${m}-${da}`;
-}
-function safeRows(apiJson){
-  // Nouveau format: rows[]
-  if (apiJson && Array.isArray(apiJson.rows)) return apiJson.rows;
-
-  // Ancien format: all[] (coupon_validate only) -> on le transforme en "rows"
-  if (apiJson && Array.isArray(apiJson.all)) {
-    return apiJson.all.map(x => ({
-      ts: x.timestamp || x.ts || "",
-      resto: (x.restaurant || x.resto || ""),
-      event: "coupon_validate",
-      mois: x.mois,
-      annee: x.annee,
-      userAgent: x.userAgent,
-      pageURL: x.pageURL
-    }));
+  function groupByDay(rows){
+    const map = {};
+    rows.forEach(r=>{
+      const d = new Date(r.ts);
+      if (!isFinite(d.getTime())) return;
+      const key = d.toISOString().slice(0,10);
+      map[key] = (map[key] || 0) + 1;
+    });
+    return map;
   }
-  return [];
-}
-function uniq(arr){
-  return Array.from(new Set(arr.filter(Boolean)));
-}
 
-/* ============================
-   GOOGLE CHARTS INIT
-============================ */
-google.charts.load("current", { packages: ["corechart"] });
+  function groupByResto(rows){
+    const map = {};
+    rows.forEach(r=>{
+      const k = String(r.resto || "").toLowerCase() || "inconnu";
+      map[k] = (map[k] || 0) + 1;
+    });
+    return map;
+  }
 
-/* ============================
-   STATE
-============================ */
-const el = (id)=>document.getElementById(id);
-const restoSelect = el("restoSelect");
-const daysSelect = el("daysSelect");
-const refreshBtn = el("refreshBtn");
+  function countEvent(rows, name){
+    return rows.filter(r => r.event === name).length;
+  }
 
-let ALL_ROWS = [];
+  async function fetchData(resto, days){
+    const url = `${API_TRACK}?resto=${encodeURIComponent(resto || "")}&days=${encodeURIComponent(days || 30)}`;
+    const res = await fetch(url, { cache:"no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    return await res.json();
+  }
 
-async function fetchData(){
-  const days = Number(daysSelect.value || 30);
-  // On récupère tout sur la période (sans filtre resto),
-  // puis on filtre en front => dropdown auto.
-  const url = `${API_TRACK}?days=${encodeURIComponent(days)}`;
+  function drawLine(countsByDay){
+    const keys = Object.keys(countsByDay).sort();
+    const arr = [["Date","Count"]];
+    keys.forEach(k => arr.push([k, countsByDay[k]]));
 
-  const r = await fetch(url, { method:"GET" });
-  const j = await r.json();
-  ALL_ROWS = safeRows(j);
+    if (arr.length === 1){
+      const today = new Date().toISOString().slice(0,10);
+      arr.push([today, 0]);
+    }
 
-  // Popule dropdown restos depuis la data
-  const restos = uniq(ALL_ROWS.map(x => (x.resto || x.restaurant || "").toString().trim().toLowerCase()));
-  const current = restoSelect.value;
+    const data = google.visualization.arrayToDataTable(arr);
+    const chart = new google.visualization.LineChart(document.getElementById("chartDaily"));
+    chart.draw(data, {
+      title: "Événements / jour",
+      legend: { position:"none" },
+      curveType: "function",
+      colors: ["#b6152b"],
+      chartArea: { left:50, right:20, top:50, bottom:50 },
+      hAxis: { textStyle:{ fontSize:11 } },
+      vAxis: { minValue:0, textStyle:{ fontSize:11 } }
+    });
+  }
 
-  // reset options (garde "Tous")
-  restoSelect.innerHTML = `<option value="">Tous</option>` + restos
-    .sort()
-    .map(s => `<option value="${s}">${s}</option>`)
-    .join("");
+  function drawPie(countsByResto){
+    const arr = [["Restaurant","Count"]];
+    Object.entries(countsByResto)
+      .sort((a,b)=>b[1]-a[1])
+      .slice(0, 12)
+      .forEach(([k,v]) => arr.push([k, v]));
 
-  // restaure la sélection si possible
-  if (restos.includes(current)) restoSelect.value = current;
+    if (arr.length === 1){
+      arr.push(["aucune donnée", 1]);
+    }
 
-  el("subLine").textContent = `Source: Google Sheet (events) • Période: ${days} jours • Lignes: ${ALL_ROWS.length}`;
-  el("debugBox").textContent = `GET ${url}`;
-}
+    const data = google.visualization.arrayToDataTable(arr);
+    const chart = new google.visualization.PieChart(document.getElementById("chartPie"));
+    chart.draw(data, {
+      title: "Top 12 restos",
+      chartArea: { left:10, right:10, top:40, bottom:20 }
+    });
+  }
 
-function computeFiltered(){
-  const resto = (restoSelect.value || "").trim().toLowerCase();
-  const rows = ALL_ROWS.filter(x => {
-    const r = (x.resto || x.restaurant || "").toString().trim().toLowerCase();
-    return !resto || r === resto;
-  });
+  function fillTopTable(countsByResto){
+    const body = document.getElementById("topBody");
+    body.innerHTML = "";
+    const entries = Object.entries(countsByResto).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    if (!entries.length){
+      body.innerHTML = `<tr><td class="muted">Aucune donnée</td><td class="muted">0</td></tr>`;
+      return;
+    }
+    entries.forEach(([k,v])=>{
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${k}</td><td>${v}</td>`;
+      body.appendChild(tr);
+    });
+  }
 
-  const count = (evt)=> rows.filter(x => (x.event || "").toString() === evt).length;
+  function populateRestoSelect(allRows){
+    const sel = document.getElementById("restoSelect");
+    const current = sel.value;
 
-  const scan = count("scan");
-  const signup = count("signup");
-  const install = count("install");
-  const coupon = count("coupon_validate");
-  const review = count("review_open");
+    const restos = Array.from(new Set(allRows.map(r => String(r.resto||"").toLowerCase()).filter(Boolean)))
+      .sort();
 
-  el("kpi_scan").textContent = scan;
-  el("kpi_signup").textContent = signup;
-  el("kpi_install").textContent = install;
-  el("kpi_coupon").textContent = coupon;
-  el("kpi_review").textContent = review;
+    // rebuild only first time or if empty list
+    if (sel.options.length <= 1){
+      restos.forEach(r=>{
+        const opt = document.createElement("option");
+        opt.value = r;
+        opt.textContent = r;
+        sel.appendChild(opt);
+      });
+    }
 
-  el("kpi_activation").textContent = pct(signup, scan);
-  el("kpi_install_rate").textContent = pct(install, scan);
-  el("kpi_coupon_rate").textContent = pct(coupon, signup);
-  el("kpi_review_rate").textContent = pct(review, coupon);
+    // restore selection if possible
+    sel.value = current;
+  }
 
-  drawCharts(rows);
-}
+  async function refresh(){
+    const errBox = document.getElementById("errBox");
+    errBox.innerHTML = "";
 
-function drawCharts(rows){
-  // Daily: coupon_validate + review_open
-  const byDay = {};
-  rows.forEach(x => {
-    const day = ymd(x.ts);
-    if (!day) return;
-    byDay[day] ||= { coupon:0, review:0 };
-    if (x.event === "coupon_validate") byDay[day].coupon += 1;
-    if (x.event === "review_open") byDay[day].review += 1;
-  });
+    const days = Number(document.getElementById("daysSelect").value || 30);
 
-  const daily = [["Date", "Coupons validés", "Clics avis (Google)"]];
-  Object.keys(byDay).sort().forEach(day => {
-    daily.push([day, byDay[day].coupon, byDay[day].review]);
-  });
+    // ⚠️ Pour remplir la liste resto, on récupère le réseau (resto vide)
+    let network;
+    try{
+      network = await fetchData("", days);
+    }catch(e){
+      errBox.innerHTML = `<div class="err">Erreur fetch réseau : ${String(e.message || e)}</div>`;
+      return;
+    }
+    const allRows = Array.isArray(network.rows) ? network.rows : [];
+    populateRestoSelect(allRows);
 
-  const dailyData = google.visualization.arrayToDataTable(daily);
-  const dailyChart = new google.visualization.LineChart(el("chart_daily"));
-  dailyChart.draw(dailyData, {
-    title: "",
-    legend: { position:"bottom" },
-    curveType: "function",
-    height: 320
-  });
+    const resto = document.getElementById("restoSelect").value || "";
+    const ev = document.getElementById("eventSelect").value || "";
 
-  // Events totals (bar)
-  const events = ["scan","signup","install","coupon_validate","review_open","review_page_view","review_qr_view"];
-  const totals = events.map(evt => [evt, rows.filter(x => x.event === evt).length]);
-  const eventsData = google.visualization.arrayToDataTable([["Event","Total"], ...totals]);
+    // Filtrage local (plus rapide et évite multi-calls)
+    let rows = allRows;
+    if (resto) rows = rows.filter(r => String(r.resto||"").toLowerCase() === resto);
+    if (ev) rows = rows.filter(r => r.event === ev);
 
-  const eventsChart = new google.visualization.ColumnChart(el("chart_events"));
-  eventsChart.draw(eventsData, {
-    title: "",
-    legend: "none",
-    height: 320
-  });
-}
+    // KPI (toujours sur les rows filtrés)
+    document.getElementById("kScan").textContent   = countEvent(rows, "scan");
+    document.getElementById("kSignup").textContent = countEvent(rows, "signup");
+    document.getElementById("kInstall").textContent= countEvent(rows, "install");
+    document.getElementById("kCoupon").textContent = countEvent(rows, "coupon_validate");
 
-/* ============================
-   INIT
-============================ */
-async function init(){
-  await fetchData();
+    // Charts / Top
+    drawLine(groupByDay(rows));
+    const byR = groupByResto(rows);
+    fillTopTable(byR);
+    drawPie(byR);
+  }
 
-  // Attends que Google Charts soit prêt
+  google.charts.load("current", { packages:["corechart"] });
   google.charts.setOnLoadCallback(() => {
-    computeFiltered();
+    ["daysSelect","restoSelect","eventSelect"].forEach(id=>{
+      document.getElementById(id).addEventListener("change", refresh);
+    });
+    refresh();
   });
-
-  restoSelect.addEventListener("change", computeFiltered);
-  daysSelect.addEventListener("change", async () => {
-    await fetchData();
-    computeFiltered();
-  });
-  refreshBtn.addEventListener("click", async () => {
-    await fetchData();
-    computeFiltered();
-  });
-
-  // responsive redraw on resize
-  window.addEventListener("resize", () => {
-    if (!ALL_ROWS.length) return;
-    computeFiltered();
-  });
-}
-
-init().catch(err => {
-  el("subLine").textContent = "Erreur chargement API";
-  el("debugBox").textContent = String(err && err.message ? err.message : err);
-});
 </script>
-
 </body>
 </html>
