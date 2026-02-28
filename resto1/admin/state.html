@@ -84,6 +84,8 @@
 
     .kpiLabel{ color:var(--muted); font-size:12px; font-weight:800; }
     .kpiValue{ font-size:26px; font-weight:950; margin-top:6px; color:var(--brand); }
+    .kpiHint{ margin-top:6px; font-size:12px; color:var(--muted); font-weight:800; }
+
     .chartDiv{ width:100%; height:320px; }
 
     table{ width:100%; border-collapse:collapse; }
@@ -153,17 +155,29 @@
       <div class="kpiLabel">Scans</div>
       <div class="kpiValue" id="kScan">—</div>
     </div>
+
+    <!-- ✅ PATCH KPI: Clients captés -->
     <div class="card kpi">
-      <div class="kpiLabel">Signups</div>
+      <div class="kpiLabel">Clients captés</div>
       <div class="kpiValue" id="kSignup">—</div>
+      <div class="kpiHint">Inscrits / activations (event: signup)</div>
     </div>
+
     <div class="card kpi">
       <div class="kpiLabel">Installs</div>
       <div class="kpiValue" id="kInstall">—</div>
     </div>
+
     <div class="card kpi">
       <div class="kpiLabel">Coupons validés</div>
       <div class="kpiValue" id="kCoupon">—</div>
+    </div>
+
+    <!-- ✅ Bonus KPI conversion -->
+    <div class="card kpi">
+      <div class="kpiLabel">Taux conversion</div>
+      <div class="kpiValue" id="kConv">—</div>
+      <div class="kpiHint">Clients captés / Scans</div>
     </div>
 
     <div class="card chart">
@@ -215,6 +229,12 @@
 
   function countEvent(rows, name){
     return rows.filter(r => r.event === name).length;
+  }
+
+  function pct(a,b){
+    if (!b) return "—";
+    const p = (a / b) * 100;
+    return (Math.round(p * 10) / 10).toFixed(1) + "%";
   }
 
   async function fetchData(resto, days){
@@ -288,7 +308,6 @@
     const restos = Array.from(new Set(allRows.map(r => String(r.resto||"").toLowerCase()).filter(Boolean)))
       .sort();
 
-    // rebuild only first time or if empty list
     if (sel.options.length <= 1){
       restos.forEach(r=>{
         const opt = document.createElement("option");
@@ -298,7 +317,6 @@
       });
     }
 
-    // restore selection if possible
     sel.value = current;
   }
 
@@ -308,7 +326,6 @@
 
     const days = Number(document.getElementById("daysSelect").value || 30);
 
-    // ⚠️ Pour remplir la liste resto, on récupère le réseau (resto vide)
     let network;
     try{
       network = await fetchData("", days);
@@ -316,24 +333,30 @@
       errBox.innerHTML = `<div class="err">Erreur fetch réseau : ${String(e.message || e)}</div>`;
       return;
     }
+
     const allRows = Array.isArray(network.rows) ? network.rows : [];
     populateRestoSelect(allRows);
 
     const resto = document.getElementById("restoSelect").value || "";
     const ev = document.getElementById("eventSelect").value || "";
 
-    // Filtrage local (plus rapide et évite multi-calls)
     let rows = allRows;
     if (resto) rows = rows.filter(r => String(r.resto||"").toLowerCase() === resto);
     if (ev) rows = rows.filter(r => r.event === ev);
 
-    // KPI (toujours sur les rows filtrés)
-    document.getElementById("kScan").textContent   = countEvent(rows, "scan");
-    document.getElementById("kSignup").textContent = countEvent(rows, "signup");
-    document.getElementById("kInstall").textContent= countEvent(rows, "install");
-    document.getElementById("kCoupon").textContent = countEvent(rows, "coupon_validate");
+    const scans   = countEvent(rows, "scan");
+    const signups = countEvent(rows, "signup");
+    const installs= countEvent(rows, "install");
+    const coupons = countEvent(rows, "coupon_validate");
 
-    // Charts / Top
+    document.getElementById("kScan").textContent   = scans;
+    document.getElementById("kSignup").textContent = signups;  // ✅ Clients captés
+    document.getElementById("kInstall").textContent= installs;
+    document.getElementById("kCoupon").textContent = coupons;
+
+    // ✅ Conversion (signup/scan)
+    document.getElementById("kConv").textContent = pct(signups, scans);
+
     drawLine(groupByDay(rows));
     const byR = groupByResto(rows);
     fillTopTable(byR);
