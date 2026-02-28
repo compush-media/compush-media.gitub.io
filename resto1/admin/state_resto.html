@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Fidelavis – Admin Dashboard</title>
+  <title>Fidelavis – KPI Restaurant</title>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
 
   <style>
@@ -12,16 +12,21 @@
       --line:rgba(0,0,0,.08); --shadow:0 18px 50px rgba(0,0,0,.08); --r:18px;
     }
     *{ box-sizing:border-box; }
-    body{ margin:0; padding:14px; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: linear-gradient(180deg, #fbfaf8 0%, #f6f2ec 100%); color:var(--ink); }
-    .wrap{ max-width:1100px; margin:0 auto; }
-
-    .top{ display:flex; gap:12px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; margin-bottom:12px; }
+    body{
+      margin:0; padding:14px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: linear-gradient(180deg, #fbfaf8 0%, #f6f2ec 100%);
+      color:var(--ink);
+    }
+    .wrap{ max-width:920px; margin:0 auto; }
+    .top{
+      display:flex; gap:12px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+      margin-bottom:12px;
+    }
     h1{ margin:0; font-size:20px; font-weight:950; letter-spacing:-.2px; }
     .sub{ margin:4px 0 0; color:var(--muted); font-size:13px; }
-
     .controls{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
       background:rgba(255,255,255,.65);
       border:1px solid var(--line);
       border-radius:14px;
@@ -37,38 +42,50 @@
       font-weight:900;
       color:#2a2a2a;
       outline:none;
-      min-width: 180px;
+      min-width: 160px;
     }
     .btn{
-      border:none; cursor:pointer; border-radius:12px;
-      padding:10px 12px; font-weight:950;
+      border:none; cursor:pointer;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:950;
       background: linear-gradient(180deg, var(--brand) 0%, #a97f37 100%);
-      color:#fff; box-shadow:0 12px 20px rgba(180,140,74,.18);
-    }
-    .btnGhost{
-      background:#fff; color:#4a3a18;
-      border:1px solid rgba(180,140,74,.35);
-      box-shadow:none;
+      color:#fff;
+      box-shadow:0 12px 20px rgba(180,140,74,.18);
     }
 
     .grid{ display:grid; grid-template-columns:repeat(12,1fr); gap:12px; }
     .card{ background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); padding:14px; }
-    .kpi{ grid-column: span 3; }
+    .kpi{ grid-column: span 4; }
     .kpi .t{ color:var(--muted); font-size:12px; font-weight:900; }
-    .kpi .v{ margin-top:6px; font-size:24px; font-weight:950; letter-spacing:-.4px; }
+    .kpi .v{ margin-top:6px; font-size:26px; font-weight:950; letter-spacing:-.4px; }
     .kpi .h{ margin-top:6px; font-size:12px; color:var(--muted); }
-
     .half{ grid-column: span 6; }
     .full{ grid-column: span 12; }
     .title{ margin:0 0 10px; font-weight:950; font-size:14px; color:#2a2a2a; display:flex; gap:8px; align-items:center; }
     .chart{ width:100%; min-height:320px; }
 
-    table{ width:100%; border-collapse:collapse; }
-    th, td{ text-align:left; padding:10px 8px; border-bottom:1px solid rgba(0,0,0,.06); font-size:13px; }
-    th{ color:#4a3a18; font-weight:950; font-size:12px; text-transform:uppercase; letter-spacing:.3px; }
+    .callout{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(180,140,74,.22);
+      background: rgba(180,140,74,.08);
+      color:#4a3a18;
+      font-weight:900;
+      font-size:13px;
+      line-height:1.35;
+    }
 
-    @media (max-width:960px){ .kpi{ grid-column: span 4; } .half{ grid-column: span 12; } }
-    @media (max-width:520px){ .kpi{ grid-column: span 12; } select{ min-width:100%; } .controls{ width:100%; } }
+    @media (max-width:900px){
+      .kpi{ grid-column: span 6; }
+      .half{ grid-column: span 12; }
+    }
+    @media (max-width:520px){
+      .kpi{ grid-column: span 12; }
+      select{ min-width: 100%; }
+      .controls{ width:100%; }
+    }
   </style>
 </head>
 
@@ -76,15 +93,11 @@
 <div class="wrap">
   <div class="top">
     <div>
-      <h1>🛠️ Admin Fidelavis – Dashboard</h1>
+      <h1 id="title">📊 KPI Restaurant</h1>
       <div class="sub" id="subLine">Chargement…</div>
     </div>
 
     <div class="controls">
-      <div>
-        <label>Restaurant</label>
-        <select id="restoSelect"><option value="">Tous</option></select>
-      </div>
       <div>
         <label>Période</label>
         <select id="daysSelect">
@@ -95,71 +108,98 @@
         </select>
       </div>
       <div>
-        <label>Actions</label>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn" id="refreshBtn">↻ Rafraîchir</button>
-          <button class="btn btnGhost" id="exportBtn">⬇ Export CSV</button>
-        </div>
+        <label>Action</label>
+        <button class="btn" id="refreshBtn">↻ Rafraîchir</button>
       </div>
     </div>
   </div>
 
   <div class="grid">
-    <div class="card kpi"><div class="t">Scans</div><div class="v" id="scan">—</div><div class="h">scan</div></div>
-    <div class="card kpi"><div class="t">Signups</div><div class="v" id="signup">—</div><div class="h">signup</div></div>
-    <div class="card kpi"><div class="t">Installs</div><div class="v" id="install">—</div><div class="h">install</div></div>
-    <div class="card kpi"><div class="t">Coupons</div><div class="v" id="coupon">—</div><div class="h">coupon_validate</div></div>
+    <div class="card kpi">
+      <div class="t">Scans</div>
+      <div class="v" id="scan">—</div>
+      <div class="h">Combien de fois la carte a été scannée.</div>
+    </div>
 
-    <div class="card kpi"><div class="t">Avis (clics)</div><div class="v" id="review">—</div><div class="h">review_open</div></div>
-    <div class="card kpi"><div class="t">Taux coupon</div><div class="v" id="couponRate">—</div><div class="h">coupon_validate / signup</div></div>
-    <div class="card kpi"><div class="t">Taux avis</div><div class="v" id="reviewRate">—</div><div class="h">review_open / coupon_validate</div></div>
-    <div class="card kpi"><div class="t">Activation</div><div class="v" id="activationRate">—</div><div class="h">signup / scan</div></div>
+    <div class="card kpi">
+      <div class="t">Clients captés</div>
+      <div class="v" id="signup">—</div>
+      <div class="h">Inscrits / activations.</div>
+    </div>
 
-    <div class="card half">
-      <div class="title">📈 Daily (Coupons vs Avis)</div>
+    <div class="card kpi">
+      <div class="t">Coupons utilisés</div>
+      <div class="v" id="coupon">—</div>
+      <div class="h">Coupons validés en caisse.</div>
+    </div>
+
+    <div class="card kpi">
+      <div class="t">Installs PWA</div>
+      <div class="v" id="install">—</div>
+      <div class="h">Ajouts sur l’écran d’accueil.</div>
+    </div>
+
+    <div class="card kpi">
+      <div class="t">Clics vers Google</div>
+      <div class="v" id="review">—</div>
+      <div class="h">Opportunités d’avis générées.</div>
+    </div>
+
+    <div class="card kpi">
+      <div class="t">Taux d’activation</div>
+      <div class="v" id="activationRate">—</div>
+      <div class="h">signup / scan</div>
+    </div>
+
+    <div class="card kpi">
+      <div class="t">Taux d’installation</div>
+      <div class="v" id="installRate">—</div>
+      <div class="h">install / scan</div>
+    </div>
+
+    <div class="card kpi">
+      <div class="t">Taux utilisation coupon</div>
+      <div class="v" id="couponRate">—</div>
+      <div class="h">coupon_validate / signup</div>
+    </div>
+
+    <div class="card kpi">
+      <div class="t">Intention avis</div>
+      <div class="v" id="reviewRate">—</div>
+      <div class="h">review_open / coupon_validate</div>
+    </div>
+
+    <div class="card full">
+      <div class="title">📈 Évolution (Coupons vs Avis Google)</div>
       <div id="chart_daily" class="chart"></div>
-    </div>
-
-    <div class="card half">
-      <div class="title">📊 Events (répartition)</div>
-      <div id="chart_events" class="chart"></div>
-    </div>
-
-    <div class="card full">
-      <div class="title">🔎 Top pages trackées</div>
-      <div style="overflow:auto;">
-        <table>
-          <thead><tr><th>Page URL</th><th>Events</th></tr></thead>
-          <tbody id="topPagesBody"><tr><td colspan="2">—</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card full">
-      <div class="title">🧾 Debug</div>
-      <div class="sub" id="debugBox">—</div>
+      <div class="callout" id="pitchLine">—</div>
     </div>
   </div>
 </div>
 
 <script>
 const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
-const el = (id)=>document.getElementById(id);
-const restoSelect = el("restoSelect");
-const daysSelect = el("daysSelect");
 
-let ALL_ROWS = [];
-let FILTERED = [];
+function getRestoSlug(){
+  const path = location.pathname.replace(/^\/+|\/+$/g,"");
+  return path.split("/")[0] || "voltaire";
+}
+const RESTO = getRestoSlug();
+
+const el = (id)=>document.getElementById(id);
 
 function pct(n,d){
   if (!d) return "—";
-  const v=(n/d)*100;
-  return (Math.round(v*10)/10).toFixed(1)+"%";
+  const v = (n/d)*100;
+  return (Math.round(v*10)/10).toFixed(1) + "%";
 }
 function ymd(d){
-  const dt=new Date(d);
-  if(!isFinite(dt.getTime())) return "";
-  return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
+  const dt = new Date(d);
+  if (!isFinite(dt.getTime())) return "";
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth()+1).padStart(2,"0");
+  const da = String(dt.getDate()).padStart(2,"0");
+  return `${y}-${m}-${da}`;
 }
 function safeRows(apiJson){
   if (apiJson && Array.isArray(apiJson.rows)) return apiJson.rows;
@@ -176,35 +216,21 @@ function safeRows(apiJson){
   }
   return [];
 }
-function uniq(arr){ return Array.from(new Set(arr.filter(Boolean))); }
 
 google.charts.load("current", { packages:["corechart"] });
 
-async function fetchAll(){
-  const days = Number(daysSelect.value || 30);
-  const url = `${API_TRACK}?days=${encodeURIComponent(days)}`;
+async function load(){
+  const days = Number(el("daysSelect").value || 30);
+  el("title").textContent = `📊 KPI – ${RESTO}`;
+  const url = `${API_TRACK}?resto=${encodeURIComponent(RESTO)}&days=${encodeURIComponent(days)}`;
+
   const r = await fetch(url);
   const j = await r.json();
-  ALL_ROWS = safeRows(j);
+  const rows = safeRows(j);
 
-  const restos = uniq(ALL_ROWS.map(x => String(x.resto||x.restaurant||"").trim().toLowerCase())).sort();
-  const current = restoSelect.value;
+  el("subLine").textContent = `Période: ${days} jours • Lignes: ${rows.length}`;
 
-  restoSelect.innerHTML = `<option value="">Tous</option>` + restos.map(s=>`<option value="${s}">${s}</option>`).join("");
-  if (restos.includes(current)) restoSelect.value = current;
-
-  el("subLine").textContent = `Période: ${days} jours • Total events: ${ALL_ROWS.length}`;
-  el("debugBox").textContent = `GET ${url}`;
-}
-
-function applyFilter(){
-  const resto = String(restoSelect.value||"").trim().toLowerCase();
-  FILTERED = ALL_ROWS.filter(x => {
-    const r = String(x.resto||x.restaurant||"").trim().toLowerCase();
-    return !resto || r === resto;
-  });
-
-  const count = (evt)=> FILTERED.filter(x=>String(x.event||"")===evt).length;
+  const count = (evt)=> rows.filter(x => String(x.event||"") === evt).length;
 
   const scan = count("scan");
   const signup = count("signup");
@@ -218,18 +244,20 @@ function applyFilter(){
   el("coupon").textContent = coupon;
   el("review").textContent = review;
 
+  el("activationRate").textContent = pct(signup, scan);
+  el("installRate").textContent = pct(install, scan);
   el("couponRate").textContent = pct(coupon, signup);
   el("reviewRate").textContent = pct(review, coupon);
-  el("activationRate").textContent = pct(signup, scan);
 
-  drawDaily();
-  drawEvents();
-  drawTopPages();
+  el("pitchLine").textContent =
+    `Sur ${days} jours, vous avez généré ${coupon} utilisations de coupon et ${review} opportunités d’avis Google (clics).`;
+
+  drawDaily(rows);
 }
 
-function drawDaily(){
+function drawDaily(rows){
   const byDay = {};
-  FILTERED.forEach(x=>{
+  rows.forEach(x=>{
     const day = ymd(x.ts);
     if(!day) return;
     byDay[day] ||= { coupon:0, review:0 };
@@ -238,89 +266,27 @@ function drawDaily(){
   });
 
   const table = [["Date","Coupons","Avis (clics)"]];
-  Object.keys(byDay).sort().forEach(day=> table.push([day, byDay[day].coupon, byDay[day].review]));
-  if(table.length===1) table.push([ymd(new Date()), 0, 0]);
+  Object.keys(byDay).sort().forEach(day=>{
+    table.push([day, byDay[day].coupon, byDay[day].review]);
+  });
+  if (table.length === 1) table.push([ymd(new Date()), 0, 0]);
 
   const data = google.visualization.arrayToDataTable(table);
-  new google.visualization.LineChart(el("chart_daily"))
-    .draw(data, { legend:{position:"bottom"}, curveType:"function", height:320 });
-}
-
-function drawEvents(){
-  const events = ["scan","signup","install","coupon_validate","review_open","review_page_view","review_qr_view"];
-  const table = [["Event","Total"]];
-  events.forEach(evt => table.push([evt, FILTERED.filter(x=>x.event===evt).length]));
-  const data = google.visualization.arrayToDataTable(table);
-
-  new google.visualization.ColumnChart(el("chart_events"))
-    .draw(data, { legend:"none", height:320 });
-}
-
-function drawTopPages(){
-  const map = {};
-  FILTERED.forEach(x=>{
-    const u = String(x.pageURL||"").trim();
-    if(!u) return;
-    map[u] = (map[u]||0) + 1;
-  });
-
-  const top = Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0, 12);
-  const tbody = el("topPagesBody");
-  if(!top.length){
-    tbody.innerHTML = `<tr><td colspan="2">Aucune URL trackée sur la période.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = top.map(([url,c]) => `<tr><td>${escapeHtml(url)}</td><td><b>${c}</b></td></tr>`).join("");
-}
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
-
-function exportCSV(){
-  // export sur la sélection courante FILTERED
-  const headers = ["ts","resto","event","mois","annee","user","userAgent","pageURL"];
-  const lines = [headers.join(",")];
-
-  FILTERED.forEach(x=>{
-    const row = headers.map(h => {
-      const v = (x[h] ?? (h==="resto" ? (x.resto||x.restaurant) : ""));
-      const s = String(v ?? "").replace(/"/g,'""');
-      return `"${s}"`;
-    });
-    lines.push(row.join(","));
-  });
-
-  const blob = new Blob([lines.join("\n")], { type:"text/csv;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  const resto = restoSelect.value ? restoSelect.value : "TOUS";
-  const days = daysSelect.value || "30";
-  a.download = `fidelavis_events_${resto}_${days}j.csv`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-
-async function refreshAll(){
-  await fetchAll();
-  applyFilter();
+  const chart = new google.visualization.LineChart(el("chart_daily"));
+  chart.draw(data, { legend:{ position:"bottom" }, curveType:"function", height:320 });
 }
 
 async function init(){
-  await fetchAll();
+  await load();
+  google.charts.setOnLoadCallback(()=>{ load(); });
 
-  google.charts.setOnLoadCallback(()=> applyFilter());
-
-  el("refreshBtn").addEventListener("click", refreshAll);
-  el("exportBtn").addEventListener("click", exportCSV);
-  restoSelect.addEventListener("change", applyFilter);
-  daysSelect.addEventListener("change", refreshAll);
-
-  window.addEventListener("resize", ()=> applyFilter());
+  el("refreshBtn").addEventListener("click", load);
+  el("daysSelect").addEventListener("change", load);
+  window.addEventListener("resize", ()=> load().catch(()=>{}));
 }
 init().catch(err=>{
   el("subLine").textContent = "Erreur chargement API";
-  el("debugBox").textContent = String(err && err.message ? err.message : err);
+  el("pitchLine").textContent = String(err && err.message ? err.message : err);
 });
 </script>
 </body>
