@@ -194,6 +194,7 @@ h1{
   font-weight:950;
   box-shadow:0 12px 30px rgba(0,0,0,.18);
   animation:bounce 1.3s infinite;
+  position:relative;
 }
 #bubble::after{
   content:"";
@@ -229,6 +230,8 @@ h1{
 
   <div class="card">
     <p class="big">🎁 Votre -10% sur votre prochaine <b>addition</b> est prêt.</p>
+
+    <!-- ✅ message premium (sans pression) -->
     <div class="soft">✨ Cela prend 5 secondes (1 seule fois).</div>
 
     <div class="steps hidden" id="iosSteps">
@@ -252,6 +255,7 @@ h1{
 
 <div class="sticky">
   <div class="ctaWrap">
+    <!-- ✅ Un seul CTA -->
     <button class="btn primary" id="installBtn" type="button">📲 Installer maintenant</button>
 
     <div class="pillRow">
@@ -262,16 +266,9 @@ h1{
 </div>
 
 <script>
-/* =========================
-   CONFIG / HELPERS
-========================= */
-const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
-
-function getRestoSlug(){
-  return location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] || "voltaire";
-}
-const RESTO = getRestoSlug();
-
+/* ============================
+   Détection device
+============================ */
 function isStandalone(){
   return window.matchMedia("(display-mode: standalone)").matches ||
          window.navigator.standalone === true;
@@ -284,9 +281,9 @@ function isAndroid(){
   return /android/i.test(navigator.userAgent);
 }
 
-/* ----------------------------
+/* ============================
    Cookie helpers (fallback iOS)
----------------------------- */
+============================ */
 function setCookie(name, value, days){
   const maxAge = days * 24 * 60 * 60;
   document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; SameSite=Lax`;
@@ -296,16 +293,78 @@ function getCookie(name){
   return m ? decodeURIComponent(m[2]) : "";
 }
 
-/* ----------------------------
-   Tracking
----------------------------- */
-function track(eventName, extra = {}){
-  const d = new Date();
+/* ============================
+   Persist email URL -> localStorage + cookie (robuste iOS)
+   IMPORTANT: avant redirect standalone
+============================ */
+(function persistEmailFromUrl(){
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const emailRaw = params.get("email");
+
+    if (emailRaw) {
+      let email = "";
+      try { email = decodeURIComponent(emailRaw).trim().toLowerCase(); }
+      catch(e){ email = String(emailRaw || "").trim().toLowerCase(); }
+
+      // validation email stricte
+      const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
+      if (emailOk){
+        localStorage.setItem("user_email", email);
+        localStorage.setItem("is_registered", "1");
+        setCookie("user_email", email, 365);
+        setCookie("is_registered", "1", 365);
+      }
+
+      // Nettoie l'URL (enlève ?email=...)
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+
+    } else {
+      // si pas de param, restore cookie -> localStorage
+      const c = (getCookie("user_email") || "").trim().toLowerCase();
+      if (c && !localStorage.getItem("user_email")) {
+        localStorage.setItem("user_email", c);
+        localStorage.setItem("is_registered", "1");
+      }
+    }
+  } catch(e) {
+    console.warn("persistEmailFromUrl error:", e);
+  }
+})();
+
+/* ============================
+   Si l’app est ouverte depuis l’icône (standalone), on va au coupon
+   (et on NE compte PAS install ici)
+============================ */
+if (isStandalone()){
+  if (window.Fidelavis && typeof Fidelavis.go === "function") {
+    Fidelavis.go("coupon.html");
+  } else {
+    window.location.href = "coupon.html";
+  }
+}
+
+/* ============================
+   RESTO slug
+============================ */
+function getRestoSlug(){
+  return location.pathname.replace(/^\/+|\/+$/g,"").split("/")[0] || "resto1";
+}
+const RESTO = getRestoSlug();
+
+/* ============================
+   TRACKING (GLOBAL SHEET)
+============================ */
+const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
+
+function track(eventName, extra = {}) {
+  const now = new Date();
   const payload = {
     resto: RESTO,
     event: eventName,
-    mois: d.getMonth() + 1,
-    annee: d.getFullYear(),
+    mois: now.getMonth() + 1,
+    annee: now.getFullYear(),
     user: (localStorage.getItem("user_email") || ""),
     userAgent: navigator.userAgent,
     pageURL: location.href,
@@ -320,68 +379,22 @@ function track(eventName, extra = {}){
   }).catch(()=>{});
 }
 
-/* ✅ Patch: capture email URL -> localStorage + COOKIE + nettoyage URL (garde src)
-   IMPORTANT: DOIT ÊTRE AVANT redirect standalone
-*/
-(function persistEmailFromUrl(){
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const emailRaw = params.get("email");
-
-    if (emailRaw) {
-      const email = decodeURIComponent(emailRaw).trim().toLowerCase();
-      // localStorage
-      localStorage.setItem("user_email", email);
-      localStorage.setItem("is_registered", "1");
-      // cookie fallback
-      setCookie("user_email", email, 365);
-      setCookie("is_registered", "1", 365);
-
-      // ✅ Nettoie l'URL MAIS garde les autres params (src etc.)
-      params.delete("email");
-      const cleanUrl = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
-      window.history.replaceState({}, document.title, cleanUrl);
-    } else {
-      // restore depuis cookie si besoin
-      const c = (getCookie("user_email") || "").trim().toLowerCase();
-      if (c && !localStorage.getItem("user_email")) {
-        localStorage.setItem("user_email", c);
-        localStorage.setItem("is_registered", "1");
-      }
-    }
-  } catch(e) {
-    console.warn("persistEmailFromUrl error:", e);
-  }
+/* ============================
+   ✅ PATCH KPI: event = install
+   1 fois / jour / appareil / resto
+============================ */
+(function trackInstallOncePerDay(){
+  const d = new Date();
+  const dayKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  const key = `install_${RESTO}_${dayKey}`;
+  if (localStorage.getItem(key) === "1") return;
+  localStorage.setItem(key, "1");
+  track("install");
 })();
 
-/* ✅ Patch: track signup 1 fois / 24h / resto */
-(function trackSignupOnce(){
-  try{
-    const key = `signup_${RESTO}`;
-    const last = Number(localStorage.getItem(key) || "0");
-    const now = Date.now();
-    if (!last || (now - last) > 24*60*60*1000) {
-      localStorage.setItem(key, String(now));
-      const src = new URLSearchParams(location.search).get("src") || "signup";
-      track("signup", { source:"redit.html", src });
-    }
-  } catch(e){
-    console.warn("trackSignupOnce error:", e);
-  }
-})();
-
-/* ✅ Si l’app est ouverte depuis l’icône (standalone), on va au coupon */
-if (isStandalone()){
-  if (window.Fidelavis && typeof Fidelavis.go === "function") {
-    Fidelavis.go("coupon.html");
-  } else {
-    window.location.href = "coupon.html";
-  }
-}
-
-/* =========================
-   UI DEVICE
-========================= */
+/* ============================
+   UI instructions
+============================ */
 const ios = isIOS();
 const andr = isAndroid();
 
@@ -396,22 +409,25 @@ if (ios){
   iosSteps.classList.remove("hidden");
   pointer.style.display = "block";
 
+  // iOS: le bouton sert d'aide (nudge)
   installBtn.textContent = "📤 Ouvrir les instructions";
   installBtn.addEventListener("click", () => {
-    const bubble = document.getElementById("bubble");
-    if (bubble) bubble.textContent = "👇 Partager → “Sur l’écran d’accueil”";
+    document.getElementById("bubble").textContent = "👇 Partager → “Sur l’écran d’accueil”";
   });
 
 } else {
   devicePill.textContent = andr ? "🤖 Android détecté" : "📱 Mobile détecté";
   androidSteps.classList.remove("hidden");
 
+  // Android/Chrome: Progressier déclenche le prompt
   installBtn.addEventListener("click", () => {
     devicePill.textContent = "✅ Appuyez sur Installer";
   });
 }
 
-/* ✅ charge config.json pour nom + couleurs */
+/* ============================
+   Charge config.json pour nom + couleurs
+============================ */
 (async function(){
   try {
     if (window.Fidelavis && typeof Fidelavis.loadConfig === "function") {
