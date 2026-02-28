@@ -276,6 +276,53 @@
   </div>
 
 <script>
+  /* ============================
+     TRACKING (GLOBAL SHEET)
+     - scan: 1 fois / session (évite spam refresh)
+     - signup_open: clic CTA vers inscription
+  ============================ */
+  const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
+
+  function getRestoSlug() {
+    const p = location.pathname.replace(/^\/+|\/+$/g, "");
+    return (p.split("/")[0] || "voltaire").toLowerCase();
+  }
+  const RESTO = getRestoSlug();
+
+  const now = new Date();
+  const MONTH = now.getMonth() + 1;
+  const YEAR = now.getFullYear();
+
+  function track(eventName, extra = {}) {
+    const payload = {
+      resto: RESTO,
+      event: eventName,
+      mois: MONTH,
+      annee: YEAR,
+      user: (localStorage.getItem("user_email") || ""),
+      userAgent: navigator.userAgent,
+      pageURL: location.href,
+      ...extra
+    };
+
+    fetch(API_TRACK, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    }).catch(()=>{});
+  }
+
+  // ✅ Scan : on log 1 fois / session (sinon un refresh = 10 scans)
+  (function trackScanOnce(){
+    const key = `scan_${RESTO}_${YEAR}_${MONTH}_${now.getDate()}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    track("scan");
+  })();
+</script>
+
+<script>
   const COUNTDOWN_SECONDS = 5*60;
 
   function stableDailyRandom(min, max, seed){
@@ -316,6 +363,8 @@
       String(stableDailyRandom(18, 38, (cfg && cfg.name) ? cfg.name : "resto"));
 
     document.getElementById("ctaBtn").addEventListener("click", () => {
+      // ✅ KPI: ouverture parcours inscription
+      track("signup_open");
       Fidelavis.go("inscription.html");
     });
 
