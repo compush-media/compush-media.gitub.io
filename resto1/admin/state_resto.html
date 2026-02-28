@@ -134,6 +134,8 @@
         <select id="eventSelect">
           <option value="">Tous</option>
           <option value="scan">scan</option>
+          <option value="signup_open">signup_open</option>
+          <option value="scan_to_signup">scan_to_signup</option>
           <option value="signup">signup</option>
           <option value="install">install</option>
           <option value="coupon_validate">coupon_validate</option>
@@ -150,6 +152,18 @@
     </div>
 
     <div class="card kpi">
+      <div class="kpiLabel">Ouvertures formulaire</div>
+      <div class="kpiValue" id="kOpen">—</div>
+      <div class="kpiHint">signup_open</div>
+    </div>
+
+    <div class="card kpi">
+      <div class="kpiLabel">Scans → Formulaire</div>
+      <div class="kpiValue" id="kScanToSignup">—</div>
+      <div class="kpiHint">scan_to_signup</div>
+    </div>
+
+    <div class="card kpi">
       <div class="kpiLabel">Clients captés</div>
       <div class="kpiValue" id="kSignup">—</div>
       <div class="kpiHint">Inscrits / activations (signup)</div>
@@ -158,11 +172,13 @@
     <div class="card kpi">
       <div class="kpiLabel">Installs</div>
       <div class="kpiValue" id="kInstall">—</div>
+      <div class="kpiHint">install</div>
     </div>
 
     <div class="card kpi">
       <div class="kpiLabel">Coupons validés</div>
       <div class="kpiValue" id="kCoupon">—</div>
+      <div class="kpiHint">coupon_validate</div>
     </div>
 
     <div class="card kpi">
@@ -172,9 +188,27 @@
     </div>
 
     <div class="card kpi">
-      <div class="kpiLabel">Taux conversion</div>
+      <div class="kpiLabel">Conv. Scan → Inscription</div>
       <div class="kpiValue" id="kConv">—</div>
-      <div class="kpiHint">Clients captés / Scans</div>
+      <div class="kpiHint">signup / scan</div>
+    </div>
+
+    <div class="card kpi">
+      <div class="kpiLabel">Conv. Scan → Form</div>
+      <div class="kpiValue" id="kConvScanForm">—</div>
+      <div class="kpiHint">scan_to_signup / scan</div>
+    </div>
+
+    <div class="card kpi">
+      <div class="kpiLabel">Conv. Form → Inscription</div>
+      <div class="kpiValue" id="kConvFormSignup">—</div>
+      <div class="kpiHint">signup / scan_to_signup</div>
+    </div>
+
+    <div class="card kpi">
+      <div class="kpiLabel">Conv. Inscription → Install</div>
+      <div class="kpiValue" id="kConvInstall">—</div>
+      <div class="kpiHint">install / signup</div>
     </div>
 
     <div class="card chart">
@@ -196,7 +230,7 @@
 
     <div class="card half">
       <div style="font-weight:950;color:var(--brand);margin-bottom:8px;">🧾 Récap événements</div>
-      <div class="muted" style="margin-bottom:10px;">Utilise les KPIs ci-dessus pour piloter l’équipe</div>
+      <div class="muted" style="margin-bottom:10px;">Pilotage simple</div>
       <table>
         <tbody id="recapBody"></tbody>
       </table>
@@ -287,15 +321,20 @@
     });
   }
 
-  function fillRecap(scans, signups, installs, coupons, reviews){
+  function fillRecap(obj){
     const recap = document.getElementById("recapBody");
     recap.innerHTML = `
-      <tr><td class="muted">Scans</td><td>${scans}</td></tr>
-      <tr><td class="muted">Clients captés (signup)</td><td>${signups}</td></tr>
-      <tr><td class="muted">Installs</td><td>${installs}</td></tr>
-      <tr><td class="muted">Coupons validés</td><td>${coupons}</td></tr>
-      <tr><td class="muted">Clic avis</td><td>${reviews}</td></tr>
-      <tr><td class="muted">Conversion (signup/scan)</td><td>${pct(signups, scans)}</td></tr>
+      <tr><td class="muted">Scans</td><td>${obj.scans}</td></tr>
+      <tr><td class="muted">Ouvertures formulaire</td><td>${obj.opens}</td></tr>
+      <tr><td class="muted">Scans → Formulaire</td><td>${obj.scanTo}</td></tr>
+      <tr><td class="muted">Clients captés (signup)</td><td>${obj.signups}</td></tr>
+      <tr><td class="muted">Installs</td><td>${obj.installs}</td></tr>
+      <tr><td class="muted">Coupons validés</td><td>${obj.coupons}</td></tr>
+      <tr><td class="muted">Clic avis</td><td>${obj.reviews}</td></tr>
+      <tr><td class="muted">Conv. scan → form</td><td>${pct(obj.scanTo, obj.scans)}</td></tr>
+      <tr><td class="muted">Conv. form → signup</td><td>${pct(obj.signups, obj.scanTo)}</td></tr>
+      <tr><td class="muted">Conv. signup → install</td><td>${pct(obj.installs, obj.signups)}</td></tr>
+      <tr><td class="muted">Conv. signup / scan</td><td>${pct(obj.signups, obj.scans)}</td></tr>
     `;
   }
 
@@ -315,34 +354,37 @@
     }
 
     let rows = Array.isArray(data.rows) ? data.rows : [];
-
-    // Sécurité : re-filtre resto côté front (au cas où)
     rows = rows.filter(r => String(r.resto||"").toLowerCase() === RESTO);
 
-    // Filtre event (optionnel)
+    // KPIs globaux resto
+    const scans    = countEvent(rows, "scan");
+    const opens    = countEvent(rows, "signup_open");
+    const scanTo   = countEvent(rows, "scan_to_signup");
+    const signups  = countEvent(rows, "signup");
+    const installs = countEvent(rows, "install");
+    const coupons  = countEvent(rows, "coupon_validate");
+    const reviews  = countEvent(rows, "review_click");
+
+    document.getElementById("kScan").textContent        = scans;
+    document.getElementById("kOpen").textContent        = opens;
+    document.getElementById("kScanToSignup").textContent= scanTo;
+    document.getElementById("kSignup").textContent      = signups;
+    document.getElementById("kInstall").textContent     = installs;
+    document.getElementById("kCoupon").textContent      = coupons;
+    document.getElementById("kReview").textContent      = reviews;
+
+    document.getElementById("kConv").textContent         = pct(signups, scans);
+    document.getElementById("kConvScanForm").textContent = pct(scanTo, scans);
+    document.getElementById("kConvFormSignup").textContent= pct(signups, scanTo);
+    document.getElementById("kConvInstall").textContent  = pct(installs, signups);
+
+    // Charts / tables respectent le filtre event (optionnel)
     const filteredRows = ev ? rows.filter(r => r.event === ev) : rows;
-
-    // KPIs (toujours sur le dataset du resto, pas sur filteredRows pour conversion globale)
-    const scans   = countEvent(rows, "scan");
-    const signups = countEvent(rows, "signup");
-    const installs= countEvent(rows, "install");
-    const coupons = countEvent(rows, "coupon_validate");
-    const reviews = countEvent(rows, "review_click");
-
-    document.getElementById("kScan").textContent   = scans;
-    document.getElementById("kSignup").textContent = signups;
-    document.getElementById("kInstall").textContent= installs;
-    document.getElementById("kCoupon").textContent = coupons;
-    document.getElementById("kReview").textContent = reviews;
-    document.getElementById("kConv").textContent   = pct(signups, scans);
-
-    // Charts / tables sur filteredRows (respecte le filtre event)
     const byDay = groupByDay(filteredRows);
     drawLine(byDay);
     fillTopDays(byDay);
 
-    // recap global resto
-    fillRecap(scans, signups, installs, coupons, reviews);
+    fillRecap({ scans, opens, scanTo, signups, installs, coupons, reviews });
   }
 
   google.charts.load("current", { packages:["corechart"] });
