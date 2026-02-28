@@ -229,8 +229,6 @@ h1{
 
   <div class="card">
     <p class="big">🎁 Votre -10% sur votre prochaine <b>addition</b> est prêt.</p>
-
-    <!-- ✅ message premium (sans pression) -->
     <div class="soft">✨ Cela prend 5 secondes (1 seule fois).</div>
 
     <div class="steps hidden" id="iosSteps">
@@ -254,7 +252,6 @@ h1{
 
 <div class="sticky">
   <div class="ctaWrap">
-    <!-- ✅ Un seul CTA -->
     <button class="btn primary" id="installBtn" type="button">📲 Installer maintenant</button>
 
     <div class="pillRow">
@@ -265,6 +262,16 @@ h1{
 </div>
 
 <script>
+/* =========================
+   CONFIG / HELPERS
+========================= */
+const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
+
+function getRestoSlug(){
+  return location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] || "voltaire";
+}
+const RESTO = getRestoSlug();
+
 function isStandalone(){
   return window.matchMedia("(display-mode: standalone)").matches ||
          window.navigator.standalone === true;
@@ -278,7 +285,7 @@ function isAndroid(){
 }
 
 /* ----------------------------
-   ✅ Cookie helpers (fallback iOS)
+   Cookie helpers (fallback iOS)
 ---------------------------- */
 function setCookie(name, value, days){
   const maxAge = days * 24 * 60 * 60;
@@ -289,7 +296,31 @@ function getCookie(name){
   return m ? decodeURIComponent(m[2]) : "";
 }
 
-/* ✅ NOUVEAU: Capture email URL -> localStorage + COOKIE (BEAUCOUP PLUS ROBUSTE iOS)
+/* ----------------------------
+   Tracking
+---------------------------- */
+function track(eventName, extra = {}){
+  const d = new Date();
+  const payload = {
+    resto: RESTO,
+    event: eventName,
+    mois: d.getMonth() + 1,
+    annee: d.getFullYear(),
+    user: (localStorage.getItem("user_email") || ""),
+    userAgent: navigator.userAgent,
+    pageURL: location.href,
+    ...extra
+  };
+
+  fetch(API_TRACK, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).catch(()=>{});
+}
+
+/* ✅ Patch: capture email URL -> localStorage + COOKIE + nettoyage URL (garde src)
    IMPORTANT: DOIT ÊTRE AVANT redirect standalone
 */
 (function persistEmailFromUrl(){
@@ -299,20 +330,19 @@ function getCookie(name){
 
     if (emailRaw) {
       const email = decodeURIComponent(emailRaw).trim().toLowerCase();
-
       // localStorage
       localStorage.setItem("user_email", email);
       localStorage.setItem("is_registered", "1");
-
-      // cookie fallback (1 an)
+      // cookie fallback
       setCookie("user_email", email, 365);
       setCookie("is_registered", "1", 365);
 
-      // Nettoie l'URL (enlève ?email=...)
-      const cleanUrl = window.location.pathname;
+      // ✅ Nettoie l'URL MAIS garde les autres params (src etc.)
+      params.delete("email");
+      const cleanUrl = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
       window.history.replaceState({}, document.title, cleanUrl);
     } else {
-      // Si pas de param, on tente de restaurer depuis cookie (au cas où)
+      // restore depuis cookie si besoin
       const c = (getCookie("user_email") || "").trim().toLowerCase();
       if (c && !localStorage.getItem("user_email")) {
         localStorage.setItem("user_email", c);
@@ -324,7 +354,23 @@ function getCookie(name){
   }
 })();
 
-// ✅ Si l’app est ouverte depuis l’icône (standalone), on va au coupon
+/* ✅ Patch: track signup 1 fois / 24h / resto */
+(function trackSignupOnce(){
+  try{
+    const key = `signup_${RESTO}`;
+    const last = Number(localStorage.getItem(key) || "0");
+    const now = Date.now();
+    if (!last || (now - last) > 24*60*60*1000) {
+      localStorage.setItem(key, String(now));
+      const src = new URLSearchParams(location.search).get("src") || "signup";
+      track("signup", { source:"redit.html", src });
+    }
+  } catch(e){
+    console.warn("trackSignupOnce error:", e);
+  }
+})();
+
+/* ✅ Si l’app est ouverte depuis l’icône (standalone), on va au coupon */
 if (isStandalone()){
   if (window.Fidelavis && typeof Fidelavis.go === "function") {
     Fidelavis.go("coupon.html");
@@ -333,6 +379,9 @@ if (isStandalone()){
   }
 }
 
+/* =========================
+   UI DEVICE
+========================= */
 const ios = isIOS();
 const andr = isAndroid();
 
@@ -347,23 +396,22 @@ if (ios){
   iosSteps.classList.remove("hidden");
   pointer.style.display = "block";
 
-  // iOS: le bouton sert d'aide (nudge)
   installBtn.textContent = "📤 Ouvrir les instructions";
   installBtn.addEventListener("click", () => {
-    document.getElementById("bubble").textContent = "👇 Partager → “Sur l’écran d’accueil”";
+    const bubble = document.getElementById("bubble");
+    if (bubble) bubble.textContent = "👇 Partager → “Sur l’écran d’accueil”";
   });
 
 } else {
   devicePill.textContent = andr ? "🤖 Android détecté" : "📱 Mobile détecté";
   androidSteps.classList.remove("hidden");
 
-  // Android/Chrome: Progressier déclenche le prompt
   installBtn.addEventListener("click", () => {
     devicePill.textContent = "✅ Appuyez sur Installer";
   });
 }
 
-// ✅ charge config.json pour nom + couleurs
+/* ✅ charge config.json pour nom + couleurs */
 (async function(){
   try {
     if (window.Fidelavis && typeof Fidelavis.loadConfig === "function") {
