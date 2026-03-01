@@ -263,7 +263,7 @@ h1{
 
 <script>
 /* ============================
-   CONTEXTE RESTO + TRACKING
+   RESTO + TRACKING
 ============================ */
 function getRestoSlug() {
   const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
@@ -273,6 +273,50 @@ const RESTO = getRestoSlug();
 
 const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
 
+/* ============================
+   DEMO PERSISTANT
+============================ */
+(function persistDemo(){
+  try{
+    const p = new URLSearchParams(location.search);
+    if (p.get("demo") === "1") localStorage.setItem("fv_demo","1");
+  }catch(e){}
+})();
+function isDemo(){
+  try{
+    const p = new URLSearchParams(location.search);
+    if (p.get("demo") === "1") return true;
+  }catch(e){}
+  return localStorage.getItem("fv_demo") === "1";
+}
+
+/* ============================
+   DEVICE / SESSION IDs
+============================ */
+function getDeviceId(){
+  const k = "fv_device_id";
+  let id = "";
+  try{ id = localStorage.getItem(k) || ""; }catch(e){}
+  if (!id){
+    id = "d_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
+    try{ localStorage.setItem(k, id); }catch(e){}
+  }
+  return id;
+}
+function getSessionId(){
+  const k = "fv_session_id";
+  let id = "";
+  try{ id = sessionStorage.getItem(k) || ""; }catch(e){}
+  if (!id){
+    id = "s_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
+    try{ sessionStorage.setItem(k, id); }catch(e){}
+  }
+  return id;
+}
+
+/* ============================
+   Beacon / fetch
+============================ */
 function beaconOrFetch(payload){
   try{
     const data = JSON.stringify(payload);
@@ -300,21 +344,16 @@ function track(eventName, extra = {}) {
     user: (localStorage.getItem("user_email") || ""),
     userAgent: navigator.userAgent,
     pageURL: location.href,
+    demo: isDemo() ? 1 : 0,
+    deviceId: getDeviceId(),
+    sessionId: getSessionId(),
     ...extra
   };
   beaconOrFetch(payload);
 }
 
 /* ============================
-   MODE DEMO
-============================ */
-function isDemo(){
-  try{ return (new URLSearchParams(location.search).get("demo") || "") === "1"; }
-  catch(e){ return false; }
-}
-
-/* ============================
-   Détection device / standalone
+   Standalone / device
 ============================ */
 function isStandalone(){
   return window.matchMedia("(display-mode: standalone)").matches ||
@@ -340,7 +379,7 @@ function getCookie(name){
   return m ? decodeURIComponent(m[2]) : "";
 }
 
-/* ✅ PATCH: capture email URL -> localStorage + COOKIE (robuste iOS) */
+/* ✅ Email URL -> localStorage + cookie */
 (function persistEmailFromUrl(){
   try {
     const params = new URLSearchParams(window.location.search);
@@ -353,7 +392,6 @@ function getCookie(name){
       setCookie("user_email", email, 365);
       setCookie("is_registered", "1", 365);
 
-      // Nettoie l’URL mais garde les autres params
       params.delete("email");
       const clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
       try { window.history.replaceState({}, document.title, clean); } catch(e) {}
@@ -368,73 +406,60 @@ function getCookie(name){
 })();
 
 /* ============================
-   DEVICE ID (stable par téléphone)
+   ✅ INSTALL TRACKING (CORRECT)
+   - install_attempt : arrivée + clic bouton
+   - install : confirmé = standalone
+   Anti-doublon:
+     PROD -> 1 / mois / device
+     DEMO -> 1 / jour / device
 ============================ */
-function getDeviceId(){
-  const k = "fv_device_id";
-  let id = "";
-  try{ id = localStorage.getItem(k) || ""; }catch(e){}
-  if (!id){
-    id = "d_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
-    try{ localStorage.setItem(k, id); }catch(e){}
-  }
-  return id;
-}
-
-/* ============================
-   ✅ INSTALL EVENT (anti-doublon)
-   - PROD : 1 / resto / device / mois
-   - DEMO : 1 / resto / device / session
-============================ */
-(function installOnceLogic(){
+(function installTracking(){
   const demo = isDemo();
-  const d = new Date();
+  const now = new Date();
   const deviceId = getDeviceId();
 
-  const key = demo
-    ? `fv_install_${RESTO}_${deviceId}_session`
-    : `fv_install_${RESTO}_${deviceId}_${d.getFullYear()}_${d.getMonth()+1}`;
+  const dayKey = now.toISOString().slice(0,10);
+  const monthKey = `${now.getFullYear()}_${now.getMonth()+1}`;
 
-  function already(){
+  const keyInstallConfirmed = demo
+    ? `fv_install_confirmed_${RESTO}_${deviceId}_${dayKey}`
+    : `fv_install_confirmed_${RESTO}_${deviceId}_${monthKey}`;
+
+  const keyAttemptSession = `fv_install_attempt_${RESTO}_${deviceId}_${demo ? "demo" : "prod"}`;
+
+  function attemptOncePerSession(src){
     try{
-      return (demo ? sessionStorage.getItem(key) : localStorage.getItem(key)) === "1";
-    }catch(e){ return false; }
-  }
-  function mark(){
-    try{
-      if (demo) sessionStorage.setItem(key, "1");
-      else localStorage.setItem(key, "1");
+      if (sessionStorage.getItem(keyAttemptSession) === "1") return;
+      sessionStorage.setItem(keyAttemptSession, "1");
     }catch(e){}
+    track("install_attempt", { src: src || "redit" });
   }
 
-  function fireInstall(src){
-    if (already()) return;
-    mark();
-    track("install", { src: src || "redit", demo: demo ? 1 : 0, deviceId });
+  function confirmInstallOnce(src){
+    try{
+      if (localStorage.getItem(keyInstallConfirmed) === "1") return;
+      localStorage.setItem(keyInstallConfirmed, "1");
+    }catch(e){}
+    track("install", { src: src || "standalone" });
   }
 
-  // expose pour le bouton
-  window.__fireInstall = fireInstall;
+  // 1) Arrivée sur page = tentative (utile pour funnel)
+  attemptOncePerSession("page_load");
 
-  // ✅ VRAI signal: ouverture en standalone
-  if (isStandalone()) {
-    fireInstall("standalone");
+  // 2) Seul vrai signal = standalone
+  if (isStandalone()){
+    confirmInstallOnce("standalone_open");
     if (window.Fidelavis && typeof Fidelavis.go === "function") Fidelavis.go("coupon.html");
     else window.location.href = "coupon.html";
     return;
   }
 
-  // ✅ param possible
-  try{
-    const p = new URLSearchParams(location.search);
-    if ((p.get("launchedfrom") || "").toLowerCase() === "homescreen") {
-      fireInstall("homescreen_param");
-    }
-  }catch(e){}
+  // 3) Click bouton = tentative (et “nudge”)
+  window.__installAttempt = () => attemptOncePerSession("cta_click");
 })();
 
 /* ============================
-   UI + CTA (inviter à installer)
+   UI + CTA
 ============================ */
 const ios = isIOS();
 const andr = isAndroid();
@@ -452,17 +477,17 @@ const softCopy = document.getElementById("softCopy");
   if (subCopy){
     if (ios){
       subCopy.innerHTML =
-        (demo ? "🧪 <b>Mode démo</b> activé — " : "") +
+        (demo ? "🧪 <b>Mode démo</b> — " : "") +
         "Pour utiliser votre <b>-10%</b> en caisse, ajoutez l’app à votre écran d’accueil maintenant. <b>(5 secondes)</b>";
     }else{
       subCopy.innerHTML =
-        (demo ? "🧪 <b>Mode démo</b> activé — " : "") +
+        (demo ? "🧪 <b>Mode démo</b> — " : "") +
         "Appuyez sur <b>Installer maintenant</b> : votre coupon sera disponible en 1 tap.";
     }
   }
   if (softCopy){
     softCopy.textContent = ios
-      ? "✨ Sur iPhone : ajoutez-la via “Partager” → “Sur l’écran d’accueil”."
+      ? "✨ Sur iPhone : Partager → Sur l’écran d’accueil."
       : "✨ Sur Android : confirmez “Installer” quand la fenêtre s’affiche.";
   }
 })();
@@ -474,7 +499,7 @@ if (ios){
 
   installBtn.textContent = "📤 Ouvrir les instructions";
   installBtn.addEventListener("click", () => {
-    if (window.__fireInstall) window.__fireInstall("ios_instructions_click"); // proxy (utile démo)
+    if (window.__installAttempt) window.__installAttempt();
     document.getElementById("bubble").textContent = "👇 Partager → “Sur l’écran d’accueil”";
     devicePill.textContent = "✅ Partager → Sur l’écran d’accueil";
   });
@@ -484,9 +509,8 @@ if (ios){
   androidSteps.classList.remove("hidden");
 
   installBtn.addEventListener("click", () => {
-    if (window.__fireInstall) window.__fireInstall("install_click"); // proxy (utile démo)
+    if (window.__installAttempt) window.__installAttempt();
     devicePill.textContent = andr ? "✅ Confirmez “Installer”" : "✅ Confirmez l’installation";
-    // Progressier gère le prompt sur Android/Chrome
   });
 }
 
