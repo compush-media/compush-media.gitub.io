@@ -364,31 +364,58 @@ function getCookie(name){
 ============================ */
 (function installOnceLogic(){
   const d = new Date();
-  const key = `install_${RESTO}_${d.getFullYear()}_${d.getMonth()+1}`;
+  const keyMonth = `install_${RESTO}_${d.getFullYear()}_${d.getMonth()+1}`;
 
-  function markInstall(){
-    if (localStorage.getItem(key) === "1") return;
-    localStorage.setItem(key, "1");
-    track("install");
+  function markInstall(extra){
+    if (localStorage.getItem(keyMonth) === "1") return false;
+    localStorage.setItem(keyMonth, "1");
+    track("install", extra || {});
+    return true;
   }
 
   // Cas #1: ouverture depuis l’icône (standalone)
   if (isStandalone()) {
-    markInstall();
-    // Ensuite, on envoie au coupon
+    markInstall({ src: "standalone" });
     if (window.Fidelavis && typeof Fidelavis.go === "function") Fidelavis.go("coupon.html");
     else window.location.href = "coupon.html";
     return;
   }
 
-  // Cas #2: certains iOS ouvrent via param "launchedfrom=homescreen"
+  // Cas #2: iOS/Progressier peut ajouter launchedfrom=homescreen
   const p = new URLSearchParams(location.search);
   if ((p.get("launchedfrom") || "").toLowerCase() === "homescreen") {
-    markInstall();
+    markInstall({ src: "homescreen_param" });
   }
 
-  // Cas #3: si l’utilisateur clique “Installer” on log aussi (et on marque)
-  window.__markInstall = markInstall;
+  // Cas #3: on expose un hook pour le bouton
+  window.__markInstall = function(){
+    markInstall({ src: "redit_click" });
+  };
+
+  /* ============================
+     ✅ PATCH USER (fallback session)
+     - ne s’exécute QUE si rien n’a été log ce mois-ci
+  ============================ */
+  (function(){
+    try {
+      if (localStorage.getItem(keyMonth) === "1") return; // déjà log => stop
+    } catch(e){}
+
+    const keySession = "fv_install_" + RESTO;
+    try {
+      if (sessionStorage.getItem(keySession) === "1") return;
+      sessionStorage.setItem(keySession, "1");
+    } catch(e){}
+
+    // fallback ultra simple (GET no-cors)
+    fetch(API_TRACK
+      + "?event=install"
+      + "&resto=" + encodeURIComponent(RESTO)
+      + "&pageURL=" + encodeURIComponent(location.href),
+      { mode:"no-cors" }
+    ).catch(()=>{});
+  })();
+
 })();
 
 /* ============================
@@ -410,7 +437,6 @@ if (ios){
 
   installBtn.textContent = "📤 Ouvrir les instructions";
   installBtn.addEventListener("click", () => {
-    // ✅ on compte aussi comme tentative d’installation
     if (window.__markInstall) window.__markInstall();
     document.getElementById("bubble").textContent = "👇 Partager → “Sur l’écran d’accueil”";
   });
@@ -420,10 +446,8 @@ if (ios){
   androidSteps.classList.remove("hidden");
 
   installBtn.addEventListener("click", () => {
-    // ✅ on compte aussi comme install (si l’utilisateur clique)
     if (window.__markInstall) window.__markInstall();
     devicePill.textContent = "✅ Appuyez sur Installer";
-    // Progressier gère le prompt sur Android/Chrome
   });
 }
 
@@ -438,17 +462,3 @@ if (ios){
 </script>
 </body>
 </html>
- // ✅ TRACK INSTALL (1 seule fois par session)
-(function(){
-  const key = "fv_install_" + (window.Fidelavis ? Fidelavis.getRestoSlug() : "resto");
-  if (window.Fidelavis && typeof Fidelavis.trackOnce === "function") {
-    Fidelavis.trackOnce("install", key, { src: "redit" });
-  } else {
-    // fallback ultra simple
-    try {
-      if (sessionStorage.getItem(key) === "1") return;
-      sessionStorage.setItem(key, "1");
-    } catch(e){}
-    fetch("https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec?event=install&resto=" + encodeURIComponent((location.pathname.split("/").filter(Boolean)[0]||"resto1")) + "&pageURL=" + encodeURIComponent(location.href), { mode:"no-cors" });
-  }
-})();
