@@ -144,8 +144,14 @@
           <option value="">Tous</option>
           <option value="scan">scan</option>
           <option value="signup">signup</option>
+
+          <!-- ✅ nouveau -->
           <option value="install_attempt">install_attempt</option>
           <option value="install_confirmed">install_confirmed</option>
+
+          <!-- ✅ legacy -->
+          <option value="install">install (ancien)</option>
+
           <option value="coupon_validate">coupon_validate</option>
           <option value="review_click">review_click</option>
           <option value="signup_open">signup_open</option>
@@ -165,13 +171,13 @@
     <div class="card kpi">
       <div class="kpiLabel">Clients captés</div>
       <div class="kpiValue" id="kSignup">—</div>
-      <div class="kpiHint">Inscrits / activations (signup)</div>
+      <div class="kpiHint">signup</div>
     </div>
 
     <div class="card kpi">
       <div class="kpiLabel">Installs (tentatives)</div>
       <div class="kpiValue" id="kInstallAttempt">—</div>
-      <div class="kpiHint">install_attempt</div>
+      <div class="kpiHint">install_attempt + install (ancien)</div>
     </div>
 
     <div class="card kpi">
@@ -201,7 +207,7 @@
     <div class="card kpi">
       <div class="kpiLabel">Taux install réel</div>
       <div class="kpiValue" id="kInstallRate">—</div>
-      <div class="kpiHint">install_confirmed / install_attempt</div>
+      <div class="kpiHint">install_confirmed / installs(tentatives)</div>
     </div>
 
     <div class="card chart">
@@ -243,7 +249,7 @@
   document.getElementById("subtitle").textContent = `KPIs & courbes — Restaurant: ${RESTO}`;
 
   function toDemo01(v){
-    // si absent => PROD (0)
+    // absent => PROD (0)
     const n = Number(v);
     return (n === 1) ? 1 : 0;
   }
@@ -261,6 +267,16 @@
 
   function countEvent(rows, name){
     return rows.filter(r => r.event === name).length;
+  }
+
+  // ✅ compte plusieurs events (utile compat legacy)
+  function countAny(rows, names){
+    const set = new Set(names);
+    let n = 0;
+    for (const r of rows){
+      if (set.has(r.event)) n++;
+    }
+    return n;
   }
 
   function pct(a,b){
@@ -360,25 +376,38 @@
       rows = rows.filter(r => toDemo01(r.demo) === wanted);
     }
 
-    // KPIs globaux (sur rows filtrées prod/demo)
+    // ✅ KPIs globaux (sur rows filtrées prod/demo)
     const scans   = countEvent(rows, "scan");
     const signups = countEvent(rows, "signup");
-    const ia      = countEvent(rows, "install_attempt");
-    const ic      = countEvent(rows, "install_confirmed");
+
+    // ✅ tentatives = nouveau + legacy
+    const ia = countAny(rows, ["install_attempt", "install"]);
+
+    // ✅ confirmées = seulement standalone
+    const ic = countEvent(rows, "install_confirmed");
+
     const coupons = countEvent(rows, "coupon_validate");
     const reviews = countEvent(rows, "review_click");
 
-    document.getElementById("kScan").textContent            = scans;
-    document.getElementById("kSignup").textContent          = signups;
-    document.getElementById("kInstallAttempt").textContent  = ia;
-    document.getElementById("kInstallConfirmed").textContent= ic;
-    document.getElementById("kCoupon").textContent          = coupons;
-    document.getElementById("kReview").textContent          = reviews;
-    document.getElementById("kConv").textContent            = pct(signups, scans);
-    document.getElementById("kInstallRate").textContent     = pct(ic, ia);
+    document.getElementById("kScan").textContent             = scans;
+    document.getElementById("kSignup").textContent           = signups;
+    document.getElementById("kInstallAttempt").textContent   = ia;
+    document.getElementById("kInstallConfirmed").textContent = ic;
+    document.getElementById("kCoupon").textContent           = coupons;
+    document.getElementById("kReview").textContent           = reviews;
+    document.getElementById("kConv").textContent             = pct(signups, scans);
+    document.getElementById("kInstallRate").textContent      = pct(ic, ia);
 
-    // Graphe / topDays sur filtre event optionnel
-    const filteredRows = ev ? rows.filter(r => r.event === ev) : rows;
+    // Graphe / topDays sur filtre event optionnel (attention: si ev=install_attempt, on veut inclure legacy install ?)
+    let filteredRows = rows;
+    if (ev){
+      if (ev === "install_attempt"){
+        filteredRows = rows.filter(r => r.event === "install_attempt" || r.event === "install");
+      } else {
+        filteredRows = rows.filter(r => r.event === ev);
+      }
+    }
+
     const byDay = groupByDay(filteredRows);
     drawLine(byDay);
     fillTopDays(byDay);
