@@ -194,6 +194,7 @@ h1{
   font-weight:950;
   box-shadow:0 12px 30px rgba(0,0,0,.18);
   animation:bounce 1.3s infinite;
+  position:relative;
 }
 #bubble::after{
   content:"";
@@ -225,11 +226,11 @@ h1{
   <div class="badge"><span class="dot"></span>🎉 Votre -10% est prêt.</div>
 
   <h1 id="title">📲 Ajouter l’app — <span data-resto-name>Restaurant</span></h1>
-  <p class="sub">Ajoutez-la à votre écran d'accueil pour présenter votre réduction en caisse.</p>
+  <p class="sub" id="subCopy">Ajoutez-la à votre écran d'accueil pour présenter votre réduction en caisse.</p>
 
   <div class="card">
     <p class="big">🎁 Votre -10% sur votre prochaine <b>addition</b> est prêt.</p>
-    <div class="soft">✨ Cela prend 5 secondes (1 seule fois).</div>
+    <div class="soft" id="softCopy">✨ Cela prend 5 secondes (1 seule fois).</div>
 
     <div class="steps hidden" id="iosSteps">
       <div class="step"><div class="num">1</div><div>Appuyez sur <b>Partager</b> (icône en bas).</div></div>
@@ -266,7 +267,7 @@ h1{
 ============================ */
 function getRestoSlug() {
   const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
-  return path.split("/")[0] || "voltaire";
+  return path.split("/")[0] || "resto1";
 }
 const RESTO = getRestoSlug();
 
@@ -302,6 +303,14 @@ function track(eventName, extra = {}) {
     ...extra
   };
   beaconOrFetch(payload);
+}
+
+/* ============================
+   MODE DEMO
+============================ */
+function isDemo(){
+  try{ return (new URLSearchParams(location.search).get("demo") || "") === "1"; }
+  catch(e){ return false; }
 }
 
 /* ============================
@@ -359,67 +368,73 @@ function getCookie(name){
 })();
 
 /* ============================
+   DEVICE ID (stable par téléphone)
+============================ */
+function getDeviceId(){
+  const k = "fv_device_id";
+  let id = "";
+  try{ id = localStorage.getItem(k) || ""; }catch(e){}
+  if (!id){
+    id = "d_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
+    try{ localStorage.setItem(k, id); }catch(e){}
+  }
+  return id;
+}
+
+/* ============================
    ✅ INSTALL EVENT (anti-doublon)
-   - 1 fois / resto / mois
+   - PROD : 1 / resto / device / mois
+   - DEMO : 1 / resto / device / session
 ============================ */
 (function installOnceLogic(){
+  const demo = isDemo();
   const d = new Date();
-  const keyMonth = `install_${RESTO}_${d.getFullYear()}_${d.getMonth()+1}`;
+  const deviceId = getDeviceId();
 
-  function markInstall(extra){
-    if (localStorage.getItem(keyMonth) === "1") return false;
-    localStorage.setItem(keyMonth, "1");
-    track("install", extra || {});
-    return true;
+  const key = demo
+    ? `fv_install_${RESTO}_${deviceId}_session`
+    : `fv_install_${RESTO}_${deviceId}_${d.getFullYear()}_${d.getMonth()+1}`;
+
+  function already(){
+    try{
+      return (demo ? sessionStorage.getItem(key) : localStorage.getItem(key)) === "1";
+    }catch(e){ return false; }
+  }
+  function mark(){
+    try{
+      if (demo) sessionStorage.setItem(key, "1");
+      else localStorage.setItem(key, "1");
+    }catch(e){}
   }
 
-  // Cas #1: ouverture depuis l’icône (standalone)
+  function fireInstall(src){
+    if (already()) return;
+    mark();
+    track("install", { src: src || "redit", demo: demo ? 1 : 0, deviceId });
+  }
+
+  // expose pour le bouton
+  window.__fireInstall = fireInstall;
+
+  // ✅ VRAI signal: ouverture en standalone
   if (isStandalone()) {
-    markInstall({ src: "standalone" });
+    fireInstall("standalone");
     if (window.Fidelavis && typeof Fidelavis.go === "function") Fidelavis.go("coupon.html");
     else window.location.href = "coupon.html";
     return;
   }
 
-  // Cas #2: iOS/Progressier peut ajouter launchedfrom=homescreen
-  const p = new URLSearchParams(location.search);
-  if ((p.get("launchedfrom") || "").toLowerCase() === "homescreen") {
-    markInstall({ src: "homescreen_param" });
-  }
-
-  // Cas #3: on expose un hook pour le bouton
-  window.__markInstall = function(){
-    markInstall({ src: "redit_click" });
-  };
-
-  /* ============================
-     ✅ PATCH USER (fallback session)
-     - ne s’exécute QUE si rien n’a été log ce mois-ci
-  ============================ */
-  (function(){
-    try {
-      if (localStorage.getItem(keyMonth) === "1") return; // déjà log => stop
-    } catch(e){}
-
-    const keySession = "fv_install_" + RESTO;
-    try {
-      if (sessionStorage.getItem(keySession) === "1") return;
-      sessionStorage.setItem(keySession, "1");
-    } catch(e){}
-
-    // fallback ultra simple (GET no-cors)
-    fetch(API_TRACK
-      + "?event=install"
-      + "&resto=" + encodeURIComponent(RESTO)
-      + "&pageURL=" + encodeURIComponent(location.href),
-      { mode:"no-cors" }
-    ).catch(()=>{});
-  })();
-
+  // ✅ param possible
+  try{
+    const p = new URLSearchParams(location.search);
+    if ((p.get("launchedfrom") || "").toLowerCase() === "homescreen") {
+      fireInstall("homescreen_param");
+    }
+  }catch(e){}
 })();
 
 /* ============================
-   UI + CTA
+   UI + CTA (inviter à installer)
 ============================ */
 const ios = isIOS();
 const andr = isAndroid();
@@ -429,6 +444,28 @@ const androidSteps = document.getElementById("androidSteps");
 const pointer = document.getElementById("pointer");
 const devicePill = document.getElementById("devicePill");
 const installBtn = document.getElementById("installBtn");
+const subCopy = document.getElementById("subCopy");
+const softCopy = document.getElementById("softCopy");
+
+(function copyInstall(){
+  const demo = isDemo();
+  if (subCopy){
+    if (ios){
+      subCopy.innerHTML =
+        (demo ? "🧪 <b>Mode démo</b> activé — " : "") +
+        "Pour utiliser votre <b>-10%</b> en caisse, ajoutez l’app à votre écran d’accueil maintenant. <b>(5 secondes)</b>";
+    }else{
+      subCopy.innerHTML =
+        (demo ? "🧪 <b>Mode démo</b> activé — " : "") +
+        "Appuyez sur <b>Installer maintenant</b> : votre coupon sera disponible en 1 tap.";
+    }
+  }
+  if (softCopy){
+    softCopy.textContent = ios
+      ? "✨ Sur iPhone : ajoutez-la via “Partager” → “Sur l’écran d’accueil”."
+      : "✨ Sur Android : confirmez “Installer” quand la fenêtre s’affiche.";
+  }
+})();
 
 if (ios){
   devicePill.textContent = "📱 iPhone détecté";
@@ -437,8 +474,9 @@ if (ios){
 
   installBtn.textContent = "📤 Ouvrir les instructions";
   installBtn.addEventListener("click", () => {
-    if (window.__markInstall) window.__markInstall();
+    if (window.__fireInstall) window.__fireInstall("ios_instructions_click"); // proxy (utile démo)
     document.getElementById("bubble").textContent = "👇 Partager → “Sur l’écran d’accueil”";
+    devicePill.textContent = "✅ Partager → Sur l’écran d’accueil";
   });
 
 } else {
@@ -446,8 +484,9 @@ if (ios){
   androidSteps.classList.remove("hidden");
 
   installBtn.addEventListener("click", () => {
-    if (window.__markInstall) window.__markInstall();
-    devicePill.textContent = "✅ Appuyez sur Installer";
+    if (window.__fireInstall) window.__fireInstall("install_click"); // proxy (utile démo)
+    devicePill.textContent = andr ? "✅ Confirmez “Installer”" : "✅ Confirmez l’installation";
+    // Progressier gère le prompt sur Android/Chrome
   });
 }
 
