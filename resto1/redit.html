@@ -436,5 +436,19 @@ if (ios){
   } catch(e) {}
 })();
 </script>
+  // ✅ TRACK INSTALL (1 seule fois par session)
+(function(){
+  const key = "fv_install_" + (window.Fidelavis ? Fidelavis.getRestoSlug() : "resto");
+  if (window.Fidelavis && typeof Fidelavis.trackOnce === "function") {
+    Fidelavis.trackOnce("install", key, { src: "redit" });
+  } else {
+    // fallback ultra simple
+    try {
+      if (sessionStorage.getItem(key) === "1") return;
+      sessionStorage.setItem(key, "1");
+    } catch(e){}
+    fetch("https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec?event=install&resto=" + encodeURIComponent((location.pathname.split("/").filter(Boolean)[0]||"resto1")) + "&pageURL=" + encodeURIComponent(location.href), { mode:"no-cors" });
+  }
+})();
 </body>
 </html>
