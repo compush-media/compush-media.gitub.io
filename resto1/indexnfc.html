@@ -9,8 +9,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 
+  <!-- ✅ PWA (PROD) — resto1 -->
+  <link rel="manifest" href="/resto1/progressier.json">
+  <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+
   <!-- Core (commun) -->
   <script src="../assets/core.js"></script>
+
+  <!-- ✅ Séparation acquisition vs app :
+       Si déjà inscrit (email en localStorage) => on envoie vers la home PWA (index.html)
+       (On le fait tôt dans le head pour éviter le flash UI) -->
+  <script>
+    (function () {
+      const email = localStorage.getItem("user_email");
+      if (email) {
+        // déjà onboardé => home
+        window.location.replace("./index.html");
+      }
+    })();
+  </script>
 
   <style>
     :root{
@@ -281,7 +298,7 @@
      - scan: 1 fois / session (évite spam refresh)
      - signup_open: clic CTA vers inscription
   ============================ */
-  const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
+  const API_TRACK = "https://script.google.com/macros/s/AKfycbysXX-RuPkLVVy5w3ceXbIC3BLrAjw9KLnWxwApgKw76HCa3ouKNzjnF0Cr-7RuAaf9/exec";
 
   function getRestoSlug() {
     const p = location.pathname.replace(/^\/+|\/+$/g, "");
@@ -305,6 +322,7 @@
       ...extra
     };
 
+    // On garde no-cors comme tu avais (robuste en prod côté Apps Script)
     fetch(API_TRACK, {
       method: "POST",
       mode: "no-cors",
@@ -371,5 +389,14 @@
     startCountdown();
   })();
 </script>
+
+<!-- ✅ SW register (scope limité au dossier /resto1/) -->
+<script>
+  (function () {
+    if (!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/resto1/sw.js", { scope: "/resto1/" }).catch(()=>{});
+  })();
+</script>
+
 </body>
 </html>
