@@ -151,19 +151,13 @@
 })();
 </script>
 
-<!-- ✅ PATCH TRACKING (GLOBAL SHEET) -->
+<!-- ✅ TRACKING + REDIRECT PROPRE -->
 <script>
-/* ============================
-   RESTO SLUG
-============================ */
 function getRestoSlug() {
   return location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] || "voltaire";
 }
 const RESTO = getRestoSlug();
 
-/* ============================
-   API TRACKING
-============================ */
 const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
 
 function track(eventName, extra = {}) {
@@ -187,9 +181,7 @@ function track(eventName, extra = {}) {
   }).catch(()=>{});
 }
 
-/* ============================
-   1) Event "scan_to_signup" (optionnel, mais utile)
-============================ */
+/* 1) scan_to_signup (1x / session / jour) */
 (function(){
   const key = `scan_to_signup_${RESTO}_${new Date().toISOString().slice(0,10)}`;
   if (!sessionStorage.getItem(key)) {
@@ -198,35 +190,40 @@ function track(eventName, extra = {}) {
   }
 })();
 
-/* ============================
-   2) Event "signup" si confirmé par redirect ?submitted=1
-   ➜ tu règles GHL pour rediriger vers: /resto1/coupon.html?submitted=1
-============================ */
+/* 2) signup_submit + redirect → redit.html */
 (function(){
   const params = new URLSearchParams(location.search);
   const submitted = params.get("submitted");
 
-  if (submitted === "1") {
+  if (submitted !== "1") return;
 
-    const dedupKey = `signup_submit_${RESTO}`;
-    const last = Number(localStorage.getItem(dedupKey) || "0");
-    const now = Date.now();
+  // ✅ Flag d’accès : évite les boucles index → indexnfc
+  try{
+    localStorage.setItem("is_registered", "1");
+    localStorage.setItem("fv_onboarding_done", "1");
+    localStorage.setItem(`fv_registered_${RESTO}`, "1");
+  }catch(e){}
 
-    // Anti doublon 24h
-    if (!last || (now - last) > (24 * 60 * 60 * 1000)) {
-      localStorage.setItem(dedupKey, String(now));
-      track("signup_submit", { source: "ghl_redirect" });
-    }
+  // Anti-doublon 24h
+  const dedupKey = `signup_submit_${RESTO}`;
+  const last = Number(localStorage.getItem(dedupKey) || "0");
+  const now = Date.now();
 
-    // Nettoie l’URL (enlève ?submitted=1)
+  if (!last || (now - last) > (24 * 60 * 60 * 1000)) {
+    localStorage.setItem(dedupKey, String(now));
+    track("signup_submit", { source: "ghl_redirect" });
+  }
+
+  // Nettoie l’URL (enlève ?submitted=1)
+  try{
     const cleanUrl = window.location.pathname;
     history.replaceState({}, document.title, cleanUrl);
+  }catch(e){}
 
-    // Redirection vers installation PWA
-    setTimeout(() => {
-      window.location.replace("redit.html");
-    }, 250);
-  }
+  // ✅ Redirection vers installation PWA
+  setTimeout(() => {
+    window.location.replace("redit.html");
+  }, 250);
 })();
 </script>
 
