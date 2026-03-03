@@ -245,6 +245,20 @@
       color:#7a1120;
       font-weight:950;
     }
+/* ✅ Cache le bouton/install widget injecté par Progressier (icône ronde à droite) */
+progressier-install-button,
+pwa-install,
+#progressier-install-button,
+.progressier-install-button,
+#progressier-widget,
+.progressier-widget,
+[id*="progressier"][style*="position: fixed"],
+[class*="progressier"][style*="position: fixed"]{
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
   </style>
 </head>
 
