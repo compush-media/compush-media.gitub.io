@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Installer l’app Fidelavis</title>
 
+  <link rel="manifest" href="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/progressier.json"/>
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+
   <!-- ✅ PWA locale (1 resto = 1 PWA) -->
   <link rel="manifest" href="/resto1/progressier.json">
 
@@ -658,7 +661,7 @@ if (!ios) {
 <script>
 (function(){
   if (!("serviceWorker" in navigator)) return;
-  navigator.serviceWorker.register("/resto1/sw.js", { scope: "/resto1/" }).catch(()=>{});
+ .catch(()=>{});
 })();
 </script>
 
