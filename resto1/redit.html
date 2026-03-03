@@ -1,320 +1,465 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Installer l’app</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Installer l’app Fidelavis</title>
 
-<!-- ✅ Core commun (par dossier) -->
-<script src="../assets/core.js"></script>
+  <!-- ✅ PWA locale (1 resto = 1 PWA) -->
+  <link rel="manifest" href="/resto1/progressier.json">
 
-<style>
-:root{
-  --gold:#B8924F;
-  --bg:#f6efe5;
-  --card:#ffffff;
-  --ink:#1d1d1d;
-  --muted:#6b6b6b;
-  --line:rgba(0,0,0,0.08);
-  --shadow:0 18px 40px rgba(0,0,0,0.12);
-  --radius:22px;
-}
-*{ box-sizing:border-box; }
-body{
-  margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background:
-    radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
-    linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
-  color:var(--ink);
-  padding:22px 14px 120px;
-  text-align:center;
-}
-.wrap{ max-width:520px; margin:0 auto; }
+  <!-- ✅ Core commun (par dossier) -->
+  <script src="../assets/core.js"></script>
 
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 12px;
-  border-radius:999px;
-  background:rgba(255,255,255,0.75);
-  border:1px solid var(--line);
-  box-shadow:0 10px 18px rgba(0,0,0,0.05);
-  font-weight:950;
-  font-size:13px;
-  color:#3b3b3b;
-}
-.dot{
-  width:8px;height:8px;border-radius:99px;
-  background:#1f8a4c;
-  box-shadow:0 0 0 6px rgba(31,138,76,0.12);
-}
+  <style>
+    :root{
+      --gold:#B8924F;
+      --gold2:#9E7A3E;
+      --bg:#f6efe5;
+      --card:#ffffff;
+      --ink:#1d1d1d;
+      --muted:#6b6b6b;
+      --line:rgba(0,0,0,0.08);
+      --shadow:0 18px 40px rgba(0,0,0,0.12);
+      --radius:22px;
 
-h1{
-  margin:14px 0 6px;
-  font-size:30px;
-  font-weight:950;
-  letter-spacing:-0.4px;
-}
-.sub{
-  margin:0 0 16px;
-  font-size:14px;
-  color:var(--muted);
-  line-height:1.35;
-}
+      --ok:#1f8a4c;
+      --danger:#b6152b;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
+        linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
+      color:var(--ink);
+      padding:22px 14px 140px;
+      text-align:center;
+    }
+    .wrap{ max-width:560px; margin:0 auto; }
 
-.card{
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:18px 16px;
-  box-shadow:0 20px 55px rgba(0,0,0,.10);
-  border:1px solid var(--line);
-  text-align:left;
-}
-.big{
-  font-weight:950;
-  font-size:16px;
-  margin:0 0 10px;
-}
-.soft{
-  margin-top:10px;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:10px 12px;
-  border-radius:14px;
-  background:rgba(184,146,79,0.12);
-  border:1px solid rgba(184,146,79,0.22);
-  color:#4a3a18;
-  font-weight:850;
-  font-size:13px;
-}
+    .topBadge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.75);
+      border:1px solid var(--line);
+      box-shadow:0 10px 18px rgba(0,0,0,0.05);
+      font-weight:950;
+      font-size:13px;
+      color:#3b3b3b;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:99px;
+      background:var(--ok);
+      box-shadow:0 0 0 6px rgba(31,138,76,0.12);
+    }
 
-.steps{
-  margin-top:14px;
-  padding-top:14px;
-  border-top:1px dashed rgba(0,0,0,0.12);
-}
-.step{
-  display:flex;
-  gap:10px;
-  margin:10px 0 0;
-  font-size:13.5px;
-  color:#2f2f2f;
-  line-height:1.35;
-}
-.num{
-  width:28px;height:28px;
-  border-radius:10px;
-  background:rgba(184,146,79,0.18);
-  color:#6f5522;
-  display:grid;
-  place-items:center;
-  font-weight:950;
-  flex:0 0 auto;
-}
+    h1{
+      margin:14px 0 8px;
+      font-size:30px;
+      font-weight:950;
+      letter-spacing:-0.4px;
+      line-height:1.1;
+    }
+    .sub{
+      margin:0 auto 16px;
+      max-width:520px;
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.35;
+      font-weight:800;
+    }
 
-.sticky{
-  position:fixed;
-  left:0; right:0; bottom:0;
-  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
-  background:linear-gradient(180deg, rgba(246,239,229,0.0) 0%, rgba(246,239,229,0.92) 28%, rgba(246,239,229,0.98) 100%);
-  backdrop-filter: blur(10px);
-  z-index:50;
-}
-.ctaWrap{
-  max-width:520px;
-  margin:0 auto;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:10px;
-  box-shadow:0 16px 30px rgba(0,0,0,0.10);
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-.btn{
-  width:100%;
-  border:0;
-  cursor:pointer;
-  border-radius:16px;
-  padding:15px 12px;
-  font-weight:950;
-  font-size:15px;
-  letter-spacing:-0.2px;
-}
-.primary{
-  color:#1c1c1c;
-  background:linear-gradient(180deg, #ffffff 0%, #fbf7f1 100%);
-  border:2px solid rgba(184,146,79,0.45);
-  box-shadow:0 14px 26px rgba(184,146,79,0.22);
-}
+    .heroCard{
+      background:linear-gradient(180deg, rgba(184,146,79,0.96) 0%, rgba(158,122,62,0.96) 100%);
+      color:#fff;
+      border-radius:var(--radius);
+      padding:18px 16px;
+      box-shadow:var(--shadow);
+      text-align:left;
+      position:relative;
+      overflow:hidden;
+      margin-top:14px;
+    }
+    .heroCard:before{
+      content:"";
+      position:absolute;
+      inset:-60px -60px auto auto;
+      width:240px;height:240px;
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35), rgba(255,255,255,0) 60%);
+      transform:rotate(18deg);
+      pointer-events:none;
+    }
+    .heroTitle{
+      margin:0 0 8px;
+      font-size:18px;
+      font-weight:950;
+      letter-spacing:-0.2px;
+    }
+    .heroLine{
+      margin:0;
+      font-size:15px;
+      font-weight:850;
+      opacity:.95;
+      line-height:1.35;
+    }
+    .chips{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.18);
+      border:1px solid rgba(255,255,255,0.22);
+      backdrop-filter: blur(8px);
+      color:#fff;
+      font-weight:950;
+      font-size:13px;
+    }
 
-.pillRow{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  justify-content:space-between;
-  font-size:12.5px;
-  color:#5a5a5a;
-  font-weight:950;
-}
-.pillRow span{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 10px;
-  border-radius:999px;
-  background:rgba(255,255,255,0.75);
-  border:1px solid var(--line);
-}
+    .card{
+      margin-top:12px;
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:18px 16px;
+      box-shadow:0 20px 55px rgba(0,0,0,.10);
+      border:1px solid var(--line);
+      text-align:left;
+    }
+    .big{
+      font-weight:950;
+      font-size:16px;
+      margin:0 0 10px;
+      letter-spacing:-0.1px;
+    }
+    .soft{
+      margin-top:10px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(184,146,79,0.12);
+      border:1px solid rgba(184,146,79,0.22);
+      color:#4a3a18;
+      font-weight:900;
+      font-size:13px;
+    }
 
-/* iPhone pointer */
-#pointer{
-  position:fixed;
-  right:14px;
-  bottom:78px;
-  z-index:60;
-  display:none;
-  text-align:right;
-  pointer-events:none;
-}
-#bubble{
-  display:inline-block;
-  background:var(--gold);
-  color:#fff;
-  padding:12px 14px;
-  border-radius:18px;
-  font-size:14px;
-  font-weight:950;
-  box-shadow:0 12px 30px rgba(0,0,0,.18);
-  animation:bounce 1.3s infinite;
-  position:relative;
-}
-#bubble::after{
-  content:"";
-  position:absolute;
-  right:22px;
-  bottom:-12px;
-  border-width:12px 12px 0 12px;
-  border-style:solid;
-  border-color:var(--gold) transparent transparent transparent;
-}
-.arrow{
-  margin-top:8px;
-  font-size:34px;
-  font-weight:950;
-  color:var(--gold);
-  text-shadow:0 12px 22px rgba(0,0,0,0.25);
-  animation:bounce 1.3s infinite;
-}
-@keyframes bounce{
-  0%,100%{ transform: translateY(0); }
-  50%{ transform: translateY(-6px); }
-}
-.hidden{ display:none !important; }
-</style>
+    .steps{
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px dashed rgba(0,0,0,0.12);
+    }
+    .step{
+      display:flex;
+      gap:10px;
+      margin:10px 0 0;
+      font-size:13.5px;
+      color:#2f2f2f;
+      line-height:1.35;
+      font-weight:800;
+    }
+    .num{
+      width:28px;height:28px;
+      border-radius:10px;
+      background:rgba(184,146,79,0.18);
+      color:#6f5522;
+      display:grid;
+      place-items:center;
+      font-weight:950;
+      flex:0 0 auto;
+    }
+
+    .progressWrap{
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px dashed rgba(0,0,0,0.12);
+    }
+    .bar{
+      height:10px;
+      border-radius:999px;
+      background:rgba(0,0,0,0.06);
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,0.06);
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, rgba(184,146,79,0.9), rgba(158,122,62,0.9));
+      border-radius:999px;
+      transition:width .35s ease;
+    }
+    .barText{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:10px;
+      font-size:12.5px;
+      color:#5a5a5a;
+      font-weight:950;
+      flex-wrap:wrap;
+    }
+    .barText span{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.75);
+      border:1px solid var(--line);
+    }
+
+    .sticky{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+      background:linear-gradient(180deg, rgba(246,239,229,0.0) 0%, rgba(246,239,229,0.92) 28%, rgba(246,239,229,0.98) 100%);
+      backdrop-filter: blur(10px);
+      z-index:50;
+    }
+    .ctaWrap{
+      max-width:560px;
+      margin:0 auto;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:10px;
+      box-shadow:0 16px 30px rgba(0,0,0,0.10);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .btn{
+      width:100%;
+      border:0;
+      cursor:pointer;
+      border-radius:16px;
+      padding:16px 12px;
+      font-weight:950;
+      font-size:16px;
+      letter-spacing:-0.2px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+    .primary{
+      color:#1c1c1c;
+      background:linear-gradient(180deg, #ffffff 0%, #fbf7f1 100%);
+      border:2px solid rgba(184,146,79,0.55);
+      box-shadow:0 14px 26px rgba(184,146,79,0.22);
+      position:relative;
+    }
+    .pulse{
+      width:10px;height:10px;border-radius:99px;
+      background:var(--danger);
+      box-shadow:0 0 0 0 rgba(182,21,43,0.35);
+      animation:pulse 1.15s infinite;
+    }
+    @keyframes pulse{
+      0%{ box-shadow:0 0 0 0 rgba(182,21,43,0.35); }
+      70%{ box-shadow:0 0 0 12px rgba(182,21,43,0.00); }
+      100%{ box-shadow:0 0 0 0 rgba(182,21,43,0.00); }
+    }
+
+    /* iPhone pointer */
+    #pointer{
+      position:fixed;
+      right:14px;
+      bottom:92px;
+      z-index:60;
+      display:none;
+      text-align:right;
+      pointer-events:none;
+    }
+    #bubble{
+      display:inline-block;
+      background:var(--gold);
+      color:#fff;
+      padding:12px 14px;
+      border-radius:18px;
+      font-size:14px;
+      font-weight:950;
+      box-shadow:0 12px 30px rgba(0,0,0,.18);
+      animation:bounce 1.3s infinite;
+      position:relative;
+    }
+    #bubble::after{
+      content:"";
+      position:absolute;
+      right:22px;
+      bottom:-12px;
+      border-width:12px 12px 0 12px;
+      border-style:solid;
+      border-color:var(--gold) transparent transparent transparent;
+    }
+    .arrow{
+      margin-top:8px;
+      font-size:34px;
+      font-weight:950;
+      color:var(--gold);
+      text-shadow:0 12px 22px rgba(0,0,0,0.25);
+      animation:bounce 1.3s infinite;
+    }
+    @keyframes bounce{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-6px); }
+    }
+
+    .hidden{ display:none !important; }
+
+    /* Success overlay */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.55);
+      backdrop-filter: blur(10px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      padding:16px;
+    }
+    .modal{
+      width:min(520px, 100%);
+      background:#fff;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,0.25);
+      box-shadow:0 30px 80px rgba(0,0,0,0.35);
+      padding:18px 16px;
+      text-align:center;
+    }
+    .modal h2{
+      margin:6px 0 8px;
+      font-size:22px;
+      font-weight:950;
+      letter-spacing:-0.2px;
+    }
+    .modal p{
+      margin:0 0 14px;
+      color:#5a5a5a;
+      font-weight:850;
+      line-height:1.35;
+      font-size:14px;
+    }
+    .modal .go{
+      width:100%;
+      padding:16px 12px;
+      border-radius:16px;
+      border:0;
+      cursor:pointer;
+      font-weight:950;
+      font-size:16px;
+      background:linear-gradient(180deg, var(--gold) 0%, var(--gold2) 100%);
+      color:#fff;
+      box-shadow:0 16px 30px rgba(184,146,79,.28);
+    }
+  </style>
 </head>
 
 <body>
-<div class="wrap">
-  <div class="badge"><span class="dot"></span>🎉 Votre -10% est prêt.</div>
+  <div class="wrap">
+    <div class="topBadge"><span class="dot"></span>Votre -10% est prêt ✅</div>
 
-  <h1 id="title">📲 Ajouter l’app — <span data-resto-name>Restaurant</span></h1>
-  <p class="sub" id="subCopy">Ajoutez-la à votre écran d'accueil pour présenter votre réduction en caisse.</p>
+    <h1>📲 Ajoutez l’app — <span data-resto-name>Restaurant</span></h1>
+    <p class="sub" id="subCopy">Pour présenter votre coupon en caisse, ajoutez l’app à votre écran d’accueil. <b>(5 secondes, 1 seule fois)</b></p>
 
-  <div class="card">
-    <p class="big">🎁 Votre -10% sur votre prochaine <b>addition</b> est prêt.</p>
-    <div class="soft" id="softCopy">✨ Cela prend 5 secondes (1 seule fois).</div>
-
-    <div class="steps hidden" id="iosSteps">
-      <div class="step"><div class="num">1</div><div>Appuyez sur <b>Partager</b> (icône en bas).</div></div>
-      <div class="step"><div class="num">2</div><div>Choisissez <b>Sur l’écran d’accueil</b> → <b>Ajouter</b>.</div></div>
+    <div class="heroCard">
+      <p class="heroTitle">🎁 Votre avantage est sécurisé</p>
+      <p class="heroLine">Une fois l’app ajoutée, votre coupon sera toujours disponible en 1 tap.</p>
+      <div class="chips">
+        <div class="chip">🔒 Sans compte</div>
+        <div class="chip">✅ Sans spam</div>
+        <div class="chip">⚡ Ultra rapide</div>
+      </div>
     </div>
 
-    <div class="steps hidden" id="androidSteps">
-      <div class="step"><div class="num">1</div><div>Appuyez sur <b>Installer</b> ci-dessous.</div></div>
-      <div class="step"><div class="num">2</div><div>Validez. L’app apparaît sur votre écran d’accueil ✅</div></div>
+    <div class="card">
+      <p class="big">👉 Faites l’installation maintenant pour ne pas perdre votre -10%.</p>
+      <div class="soft" id="softCopy">✨ Cela prend 5 secondes (1 seule fois).</div>
+
+      <div class="steps hidden" id="iosSteps">
+        <div class="step"><div class="num">1</div><div>Appuyez sur <b>Partager</b> (icône Safari).</div></div>
+        <div class="step"><div class="num">2</div><div>Choisissez <b>Sur l’écran d’accueil</b> → <b>Ajouter</b>.</div></div>
+      </div>
+
+      <div class="steps hidden" id="androidSteps">
+        <div class="step"><div class="num">1</div><div>Appuyez sur <b>Installer maintenant</b> ci-dessous.</div></div>
+        <div class="step"><div class="num">2</div><div>Validez. L’app apparaît sur votre écran d’accueil ✅</div></div>
+      </div>
+
+      <div class="progressWrap">
+        <div class="bar" aria-label="Progression">
+          <i id="barFill"></i>
+        </div>
+        <div class="barText">
+          <span id="devicePill">Détection…</span>
+          <span id="statusPill">⏳ En attente d’installation</span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="pointer" aria-hidden="true">
-  <div style="position:relative; display:inline-block;">
-    <div id="bubble">👇 Touchez “Partager”</div>
+  <div id="pointer" aria-hidden="true">
+    <div style="position:relative; display:inline-block;">
+      <div id="bubble">👇 Touchez “Partager”</div>
+    </div>
+    <div class="arrow">↘︎</div>
   </div>
-  <div class="arrow">↘︎</div>
-</div>
 
-<div class="sticky">
-  <div class="ctaWrap">
-    <button class="btn primary" id="installBtn" type="button">📲 Installer maintenant</button>
-    <div class="pillRow">
-      <span id="devicePill">Détection…</span>
-      <span>🔒 Aucun engagement</span>
+  <div class="sticky">
+    <div class="ctaWrap">
+      <button class="btn primary" id="installBtn" type="button">
+        <span class="pulse" aria-hidden="true"></span>
+        📲 Installer maintenant
+      </button>
     </div>
   </div>
-</div>
+
+  <!-- Success -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div style="font-size:38px;">🎉</div>
+      <h2>Installation détectée !</h2>
+      <p>Ouvrez l’app et présentez votre coupon en caisse.</p>
+      <button class="go" id="goCoupon" type="button">✅ Ouvrir mon coupon</button>
+    </div>
+  </div>
 
 <script>
 /* ============================
-   RESTO + TRACKING
+   RESTO + TRACKING (PROD)
 ============================ */
 function getRestoSlug() {
-  const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
-  return path.split("/")[0] || "resto1";
+  const path = location.pathname.replace(/^\/+|\/+$/g, "");
+  return (path.split("/")[0] || "resto1").toLowerCase();
 }
 const RESTO = getRestoSlug();
 
-const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
+/* ✅ Mets ici LE MÊME endpoint que indexnfc/index */
+const API_TRACK = "https://script.google.com/macros/s/AKfycbysXX-RuPkLVVy5w3ceXbIC3BLrAjw9KLnWxwApgKw76HCa3ouKNzjnF0Cr-7RuAaf9/exec";
 
-/* ============================
-   DEMO PERSISTANT
-============================ */
-(function persistDemo(){
-  try{
-    const p = new URLSearchParams(location.search);
-    if (p.get("demo") === "1") localStorage.setItem("fv_demo","1");
-  }catch(e){}
-})();
-function isDemo(){
-  try{
-    const p = new URLSearchParams(location.search);
-    if (p.get("demo") === "1") return true;
-  }catch(e){}
-  return localStorage.getItem("fv_demo") === "1";
-}
+function track(eventName, extra = {}) {
+  const now = new Date();
+  const payload = {
+    resto: RESTO,
+    event: eventName,
+    mois: now.getMonth() + 1,
+    annee: now.getFullYear(),
+    user: (localStorage.getItem("user_email") || ""),
+    userAgent: navigator.userAgent,
+    pageURL: location.href,
+    ...extra
+  };
 
-/* ============================
-   DEVICE / SESSION IDs
-============================ */
-function getDeviceId(){
-  const k = "fv_device_id";
-  let id = "";
-  try{ id = localStorage.getItem(k) || ""; }catch(e){}
-  if (!id){
-    id = "d_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
-    try{ localStorage.setItem(k, id); }catch(e){}
-  }
-  return id;
-}
-function getSessionId(){
-  const k = "fv_session_id";
-  let id = "";
-  try{ id = sessionStorage.getItem(k) || ""; }catch(e){}
-  if (!id){
-    id = "s_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
-    try{ sessionStorage.setItem(k, id); }catch(e){}
-  }
-  return id;
-}
-
-/* ============================
-   Beacon / fetch
-============================ */
-function beaconOrFetch(payload){
+  // sendBeacon -> fetch fallback
   try{
     const data = JSON.stringify(payload);
     if (navigator.sendBeacon) {
@@ -331,26 +476,8 @@ function beaconOrFetch(payload){
   }).catch(()=>{});
 }
 
-function track(eventName, extra = {}) {
-  const now = new Date();
-  const payload = {
-    resto: RESTO,
-    event: eventName,
-    mois: now.getMonth() + 1,
-    annee: now.getFullYear(),
-    user: (localStorage.getItem("user_email") || ""),
-    userAgent: navigator.userAgent,
-    pageURL: location.href,
-    demo: isDemo() ? 1 : 0,
-    deviceId: getDeviceId(),
-    sessionId: getSessionId(),
-    ...extra
-  };
-  beaconOrFetch(payload);
-}
-
 /* ============================
-   Standalone / device
+   Device helpers
 ============================ */
 function isStandalone(){
   return window.matchMedia("(display-mode: standalone)").matches ||
@@ -364,99 +491,8 @@ function isAndroid(){
   return /android/i.test(navigator.userAgent);
 }
 
-/* ----------------------------
-   Cookie helpers (fallback iOS)
----------------------------- */
-function setCookie(name, value, days){
-  const maxAge = days * 24 * 60 * 60;
-  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; SameSite=Lax`;
-}
-function getCookie(name){
-  const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return m ? decodeURIComponent(m[2]) : "";
-}
-
-/* ✅ Email URL -> localStorage + cookie */
-(function persistEmailFromUrl(){
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const emailRaw = params.get("email");
-
-    if (emailRaw) {
-      const email = decodeURIComponent(emailRaw).trim().toLowerCase();
-      localStorage.setItem("user_email", email);
-      localStorage.setItem("is_registered", "1");
-      setCookie("user_email", email, 365);
-      setCookie("is_registered", "1", 365);
-
-      params.delete("email");
-      const clean = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
-      try { window.history.replaceState({}, document.title, clean); } catch(e) {}
-    } else {
-      const c = (getCookie("user_email") || "").trim().toLowerCase();
-      if (c && !localStorage.getItem("user_email")) {
-        localStorage.setItem("user_email", c);
-        localStorage.setItem("is_registered", "1");
-      }
-    }
-  } catch(e) {}
-})();
-
 /* ============================
-   ✅ INSTALL TRACKING (CORRECT)
-   - install_attempt : arrivée + clic bouton
-   - install : confirmé = standalone
-   Anti-doublon:
-     PROD -> 1 / mois / device
-     DEMO -> 1 / jour / device
-============================ */
-(function installTracking(){
-  const demo = isDemo();
-  const now = new Date();
-  const deviceId = getDeviceId();
-
-  const dayKey = now.toISOString().slice(0,10);
-  const monthKey = `${now.getFullYear()}_${now.getMonth()+1}`;
-
-  const keyInstallConfirmed = demo
-    ? `fv_install_confirmed_${RESTO}_${deviceId}_${dayKey}`
-    : `fv_install_confirmed_${RESTO}_${deviceId}_${monthKey}`;
-
-  const keyAttemptSession = `fv_install_attempt_${RESTO}_${deviceId}_${demo ? "demo" : "prod"}`;
-
-  function attemptOncePerSession(src){
-    try{
-      if (sessionStorage.getItem(keyAttemptSession) === "1") return;
-      sessionStorage.setItem(keyAttemptSession, "1");
-    }catch(e){}
-    track("install_attempt", { src: src || "redit" });
-  }
-
-  function confirmInstallOnce(src){
-    try{
-      if (localStorage.getItem(keyInstallConfirmed) === "1") return;
-      localStorage.setItem(keyInstallConfirmed, "1");
-    }catch(e){}
-    track("install", { src: src || "standalone" });
-  }
-
-  // 1) Arrivée sur page = tentative (utile pour funnel)
-  attemptOncePerSession("page_load");
-
-  // 2) Seul vrai signal = standalone
-  if (isStandalone()){
-    confirmInstallOnce("standalone_open");
-    if (window.Fidelavis && typeof Fidelavis.go === "function") Fidelavis.go("coupon.html");
-    else window.location.href = "coupon.html";
-    return;
-  }
-
-  // 3) Click bouton = tentative (et “nudge”)
-  window.__installAttempt = () => attemptOncePerSession("cta_click");
-})();
-
-/* ============================
-   UI + CTA
+   UI refs
 ============================ */
 const ios = isIOS();
 const andr = isAndroid();
@@ -465,53 +501,150 @@ const iosSteps = document.getElementById("iosSteps");
 const androidSteps = document.getElementById("androidSteps");
 const pointer = document.getElementById("pointer");
 const devicePill = document.getElementById("devicePill");
+const statusPill = document.getElementById("statusPill");
 const installBtn = document.getElementById("installBtn");
 const subCopy = document.getElementById("subCopy");
 const softCopy = document.getElementById("softCopy");
+const barFill = document.getElementById("barFill");
 
-(function copyInstall(){
-  const demo = isDemo();
-  if (subCopy){
-    if (ios){
-      subCopy.innerHTML =
-        (demo ? "🧪 <b>Mode démo</b> — " : "") +
-        "Pour utiliser votre <b>-10%</b> en caisse, ajoutez l’app à votre écran d’accueil maintenant. <b>(5 secondes)</b>";
-    }else{
-      subCopy.innerHTML =
-        (demo ? "🧪 <b>Mode démo</b> — " : "") +
-        "Appuyez sur <b>Installer maintenant</b> : votre coupon sera disponible en 1 tap.";
-    }
+const overlay = document.getElementById("overlay");
+const goCoupon = document.getElementById("goCoupon");
+
+/* ============================
+   Premium progress animation
+============================ */
+function setProgress(pct){
+  barFill.style.width = Math.max(0, Math.min(100, pct)) + "%";
+}
+setProgress(25);
+
+/* ============================
+   Funnel tracking
+============================ */
+// Arrivée sur page install (1 fois / session)
+(function(){
+  const k = `install_attempt_${RESTO}_${new Date().toISOString().slice(0,10)}`;
+  if (sessionStorage.getItem(k)) return;
+  sessionStorage.setItem(k, "1");
+  track("install_attempt", { src: "page_load" });
+})();
+
+// Android: event natif
+window.addEventListener("appinstalled", () => {
+  track("install", { src: "appinstalled_event" });
+});
+
+/* ============================
+   After install: show success + go coupon
+============================ */
+function onInstalledDetected(src){
+  // Anti doublon / mois
+  const now = new Date();
+  const monthKey = `${now.getFullYear()}_${now.getMonth()+1}`;
+  const k = `install_confirmed_${RESTO}_${monthKey}`;
+  if (localStorage.getItem(k) === "1") {
+    // déjà loggé ce mois-ci : on peut juste ouvrir le coupon
+  } else {
+    localStorage.setItem(k, "1");
+    track("install", { src: src || "standalone_open" });
   }
-  if (softCopy){
-    softCopy.textContent = ios
-      ? "✨ Sur iPhone : Partager → Sur l’écran d’accueil."
-      : "✨ Sur Android : confirmez “Installer” quand la fenêtre s’affiche.";
+
+  setProgress(100);
+  statusPill.textContent = "✅ Installée";
+  overlay.style.display = "flex";
+}
+
+goCoupon.addEventListener("click", () => {
+  // ta home coupon = index.html
+  if (window.Fidelavis && typeof Fidelavis.go === "function") Fidelavis.go("index.html");
+  else window.location.href = "index.html";
+});
+
+/* ============================
+   If already standalone => go coupon
+============================ */
+if (isStandalone()){
+  onInstalledDetected("standalone_open");
+}
+
+/* ============================
+   Copy + steps
+============================ */
+(function(){
+  if (ios){
+    devicePill.textContent = "📱 iPhone détecté";
+    statusPill.textContent = "👇 Suivez les étapes";
+    iosSteps.classList.remove("hidden");
+    pointer.style.display = "block";
+
+    subCopy.innerHTML = "Sur iPhone, l’installation se fait via <b>Partager</b>. Faites-le maintenant pour garder votre <b>-10%</b> sous la main.";
+    softCopy.textContent = "✨ Sur iPhone : Partager → Sur l’écran d’accueil.";
+
+    // Sur iOS, le bouton sert de “nudge” (pas de prompt natif)
+    installBtn.innerHTML = '<span class="pulse" aria-hidden="true"></span> 📤 Afficher comment faire';
+    installBtn.addEventListener("click", () => {
+      track("install_attempt", { src: "cta_click_ios" });
+      setProgress(55);
+      statusPill.textContent = "✅ Partager → Sur l’écran d’accueil";
+      document.getElementById("bubble").textContent = "👇 Partager → “Sur l’écran d’accueil”";
+    });
+
+  } else {
+    devicePill.textContent = andr ? "🤖 Android détecté" : "📱 Mobile détecté";
+    statusPill.textContent = "✅ Installation en 1 clic";
+    androidSteps.classList.remove("hidden");
+
+    subCopy.innerHTML = "Appuyez sur <b>Installer maintenant</b>. Votre coupon sera disponible en 1 tap sur votre écran d’accueil.";
+    softCopy.textContent = "✨ Sur Android : confirmez “Installer” quand la fenêtre s’affiche.";
   }
 })();
 
-if (ios){
-  devicePill.textContent = "📱 iPhone détecté";
-  iosSteps.classList.remove("hidden");
-  pointer.style.display = "block";
+/* ============================
+   Android native install prompt (beforeinstallprompt)
+============================ */
+let deferredPrompt = null;
 
-  installBtn.textContent = "📤 Ouvrir les instructions";
-  installBtn.addEventListener("click", () => {
-    if (window.__installAttempt) window.__installAttempt();
-    document.getElementById("bubble").textContent = "👇 Partager → “Sur l’écran d’accueil”";
-    devicePill.textContent = "✅ Partager → Sur l’écran d’accueil";
-  });
+window.addEventListener("beforeinstallprompt", (e) => {
+  // Android/Chrome: on garde le prompt pour notre bouton
+  e.preventDefault();
+  deferredPrompt = e;
 
-} else {
-  devicePill.textContent = andr ? "🤖 Android détecté" : "📱 Mobile détecté";
-  androidSteps.classList.remove("hidden");
+  setProgress(55);
+  statusPill.textContent = "✅ Prêt à installer";
+});
 
-  installBtn.addEventListener("click", () => {
-    if (window.__installAttempt) window.__installAttempt();
-    devicePill.textContent = andr ? "✅ Confirmez “Installer”" : "✅ Confirmez l’installation";
+if (!ios) {
+  installBtn.addEventListener("click", async () => {
+    track("install_attempt", { src: "cta_click" });
+    setProgress(75);
+    statusPill.textContent = "⏳ Ouverture de l’installation…";
+
+    // Si le prompt n'est pas dispo (critères pas remplis), on guide quand même
+    if (!deferredPrompt) {
+      statusPill.textContent = "⚠️ Installation non disponible";
+      // Petit fallback utile
+      setTimeout(() => { statusPill.textContent = "✅ Réessayez dans 3 secondes"; }, 900);
+      return;
+    }
+
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+
+    if (choice && choice.outcome === "accepted") {
+      statusPill.textContent = "✅ Installation en cours…";
+      setProgress(90);
+      // la confirmation arrivera via standalone ou appinstalled
+    } else {
+      statusPill.textContent = "❌ Installation annulée";
+      setProgress(55);
+    }
   });
 }
 
-/* ✅ charge config.json pour nom + couleurs */
+/* ============================
+   Config resto (nom + couleurs)
+============================ */
 (async function(){
   try {
     if (window.Fidelavis && typeof Fidelavis.loadConfig === "function") {
@@ -520,5 +653,14 @@ if (ios){
   } catch(e) {}
 })();
 </script>
+
+<!-- ✅ SW register (scope limité au dossier /resto1/) -->
+<script>
+(function(){
+  if (!("serviceWorker" in navigator)) return;
+  navigator.serviceWorker.register("/resto1/sw.js", { scope: "/resto1/" }).catch(()=>{});
+})();
+</script>
+
 </body>
 </html>
