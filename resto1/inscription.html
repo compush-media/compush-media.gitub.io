@@ -207,15 +207,25 @@ function track(eventName, extra = {}) {
   const submitted = params.get("submitted");
 
   if (submitted === "1") {
-    const dedupKey = `signup_${RESTO}`;
+
+    const dedupKey = `signup_submit_${RESTO}`;
     const last = Number(localStorage.getItem(dedupKey) || "0");
     const now = Date.now();
 
-    // Anti-doublon 24h
+    // Anti doublon 24h
     if (!last || (now - last) > (24 * 60 * 60 * 1000)) {
       localStorage.setItem(dedupKey, String(now));
-      track("signup", { source: "ghl_redirect_submitted" });
+      track("signup_submit", { source: "ghl_redirect" });
     }
+
+    // Nettoie l’URL (enlève ?submitted=1)
+    const cleanUrl = window.location.pathname;
+    history.replaceState({}, document.title, cleanUrl);
+
+    // Redirection vers installation PWA
+    setTimeout(() => {
+      window.location.replace("redit.html");
+    }, 250);
   }
 })();
 </script>
