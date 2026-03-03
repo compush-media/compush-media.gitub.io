@@ -3,23 +3,24 @@
   "name": "resto1",
   "dir": "auto",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "theme_color": "#B8924F",
   "display": "standalone",
 
-  "start_url": "/resto1/",
+  "start_url": "/resto1/index.html?source=pwa",
   "scope": "/resto1/",
 
   "prefer_related_applications": false,
   "related_applications": [],
+
   "icons": [
     {
-      "src": "https://pwa.xyz/V2S6e7ysDUVjMpxHWCwq%2FAnbiTnsiShfrzhN.png?alt=media&token=e23dc178-52f6-4bc5-bf5c-2875fc5ea583",
+      "src": "/resto1/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://pwa.xyz/V2S6e7ysDUVjMpxHWCwq%2FwKAZsjXFfvkyYUf.png?alt=media&token=0f96ef9b-c10a-414f-92e5-a520db9b5a9c",
+      "src": "/resto1/icons/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
