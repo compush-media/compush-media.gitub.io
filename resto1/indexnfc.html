@@ -16,8 +16,8 @@
   <!-- Core (commun) -->
   <script src="../assets/core.js"></script>
 
-  <!-- ✅ Patch anti-boucle acquisition/app (robuste) :
-       Si déjà onboardé (email OU flags) => on envoie vers la home PWA (index.html)
+  <!-- ✅ Patch anti-boucle acquisition/app (ULTRA ROBUSTE)
+       Si déjà onboardé (email OU flags OU cookies) => index.html
        (tôt dans le head pour éviter le flash UI) -->
   <script>
     (function () {
@@ -27,17 +27,44 @@
       }
       const RESTO = getRestoSlug();
 
+      function getCookie(name){
+        try{
+          const m = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+          return m ? decodeURIComponent(m[2]) : "";
+        }catch(e){ return ""; }
+      }
+
       function hasAccess(){
         try{
-          const email = (localStorage.getItem("user_email") || "").trim();
-          if (email) return true;
+          const emailLS = (localStorage.getItem("user_email") || "").trim();
+          if (emailLS) return true;
 
+          // flags
           if (localStorage.getItem("is_registered") === "1") return true;
           if (localStorage.getItem("fv_onboarding_done") === "1") return true;
           if (localStorage.getItem(`fv_registered_${RESTO}`) === "1") return true;
+
+          // cookie fallback
+          const emailC = (getCookie("user_email") || "").trim();
+          if (emailC) {
+            localStorage.setItem("user_email", emailC);
+            localStorage.setItem("is_registered", "1");
+            localStorage.setItem("fv_onboarding_done", "1");
+            localStorage.setItem(`fv_registered_${RESTO}`, "1");
+            return true;
+          }
+          if ((getCookie("is_registered") || "").trim() === "1") {
+            localStorage.setItem("is_registered", "1");
+            localStorage.setItem("fv_onboarding_done", "1");
+            localStorage.setItem(`fv_registered_${RESTO}`, "1");
+            return true;
+          }
         }catch(e){}
         return false;
       }
+
+      // marqueur (debug / anti-boucle)
+      try{ localStorage.setItem("fv_seen_indexnfc", "1"); }catch(e){}
 
       if (hasAccess()) {
         window.location.replace("./index.html");
@@ -326,7 +353,7 @@
 <script>
   /* ============================
      TRACKING (GLOBAL SHEET)
-     - scan: 1 fois / session (évite spam refresh)
+     - scan: 1 fois / session
      - signup_open: clic CTA vers inscription
   ============================ */
   const API_TRACK = "https://script.google.com/macros/s/AKfycbysXX-RuPkLVVy5w3ceXbIC3BLrAjw9KLnWxwApgKw76HCa3ouKNzjnF0Cr-7RuAaf9/exec";
@@ -402,6 +429,16 @@
     setInterval(tick, 250);
   }
 
+  function goToInscription(){
+    // tracking + navigation robuste (même si core.js ne charge pas)
+    try{ track("signup_open"); }catch(e){}
+    if (window.Fidelavis && typeof Fidelavis.go === "function") {
+      Fidelavis.go("inscription.html");
+    } else {
+      window.location.href = "./inscription.html";
+    }
+  }
+
   (async function init(){
     let cfg = null;
     try { cfg = await Fidelavis.loadConfig(); } catch(e){}
@@ -409,10 +446,7 @@
     document.getElementById("socialCount").textContent =
       String(stableDailyRandom(18, 38, (cfg && cfg.name) ? cfg.name : "resto"));
 
-    document.getElementById("ctaBtn").addEventListener("click", () => {
-      track("signup_open");
-      Fidelavis.go("inscription.html");
-    });
+    document.getElementById("ctaBtn").addEventListener("click", goToInscription);
 
     startCountdown();
   })();
@@ -447,7 +481,6 @@
       if(style.position === "fixed") el.remove();
     });
   }
-
   kill();
   setTimeout(kill, 300);
   setTimeout(kill, 1200);
