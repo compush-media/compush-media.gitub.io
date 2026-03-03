@@ -1,4 +1,4 @@
-const CACHE_NAME = "fidelavis-resto1-v1";
+const CACHE_NAME = "fidelavis-resto1-v2";
 
 const FILES_TO_CACHE = [
   "/resto1/",
