@@ -12,6 +12,12 @@
   <!-- 🔐 BOOTSTRAP EMAIL + COOKIE FALLBACK (coupon = home PWA) -->
   <script>
   (function () {
+
+    function getRestoSlug(){
+      return location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] || "resto1";
+    }
+    const RESTO = getRestoSlug();
+
     function currentFolderBase(){
       const p = window.location.pathname;
       return p.slice(0, p.lastIndexOf("/") + 1);
@@ -44,6 +50,9 @@
       if (c) {
         localStorage.setItem("user_email", c);
         localStorage.setItem("is_registered", "1");
+        // ✅ onboarding flag (évite boucle)
+        localStorage.setItem("fv_onboarding_done", "1");
+        localStorage.setItem(`fv_registered_${RESTO}`, "1");
         return c;
       }
       return "";
@@ -61,6 +70,10 @@
     if (emailOk) {
       localStorage.setItem("user_email", email);
       localStorage.setItem("is_registered", "1");
+      // ✅ onboarding flag (évite boucle)
+      localStorage.setItem("fv_onboarding_done", "1");
+      localStorage.setItem(`fv_registered_${RESTO}`, "1");
+
       setCookie("user_email", email, 365);
       setCookie("is_registered", "1", 365);
 
@@ -76,11 +89,24 @@
       return (restoreEmailFromCookie().trim().length > 0);
     }
 
-    if (hasEmail()) return;
+    // ✅ PATCH ANTI-BOUCLE : on autorise l’accès si user onboardé
+    function hasAccess(){
+      try{
+        if (localStorage.getItem("is_registered") === "1") return true;
+        if (localStorage.getItem("fv_onboarding_done") === "1") return true;
+        if (localStorage.getItem(`fv_registered_${RESTO}`) === "1") return true;
+      }catch(e){}
+      return false;
+    }
 
+    // ✅ Si accès OK -> on ne redirige jamais vers indexnfc
+    if (hasAccess() || hasEmail()) return;
+
+    // ❗ Sinon seulement -> indexnfc
     setTimeout(() => {
-      if (!hasEmail()) window.goLocal("indexnfc.html");
+      if (!(hasAccess() || hasEmail())) window.goLocal("indexnfc.html");
     }, 450);
+
   })();
   </script>
 
