@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Coupon du Mois – Fidelavis</title>
 
-  <!-- ✅ PROGRESSIER : chemin relatif dans chaque dossier resto -->
+  <!-- ✅ Manifest RELATIF dans chaque dossier resto -->
   <link rel="manifest" href="progressier.json"/>
   <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
 
@@ -23,7 +23,6 @@
       --shadow:0 18px 50px rgba(0,0,0,.08);
       --r:22px;
     }
-
     *{ box-sizing:border-box; }
     body{
       margin:0;
@@ -35,7 +34,6 @@
       padding:24px 14px 30px;
       text-align:center;
     }
-
     .wrap{ max-width:520px; margin:0 auto; }
 
     .badge{
@@ -206,27 +204,24 @@
     }
   </style>
 
-  <!-- ✅ Gate d’accès: si pas inscrit -> indexnfc -->
+  <!-- ✅ Gate d’accès : si pas onboardé => indexnfc -->
   <script>
     (function(){
-      function hasAccessLocal(resto){
+      const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+
+      function hasAccess(){
         try{
           if ((localStorage.getItem("user_email") || "").trim()) return true;
           if (localStorage.getItem("is_registered") === "1") return true;
           if (localStorage.getItem("fv_onboarding_done") === "1") return true;
-          if (localStorage.getItem(`fv_registered_${resto}`) === "1") return true;
+          if (localStorage.getItem(`fv_registered_${RESTO}`) === "1") return true;
         }catch(e){}
         return false;
       }
 
-      try{
-        const resto = (window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1");
-        if (!hasAccessLocal(resto)){
-          setTimeout(()=> {
-            if (!hasAccessLocal(resto)) window.Fidelavis?.go?.("indexnfc.html");
-          }, 300);
-        }
-      }catch(e){}
+      if (!hasAccess()){
+        setTimeout(()=>{ if (!hasAccess()) window.Fidelavis?.go?.("indexnfc.html"); }, 250);
+      }
     })();
   </script>
 </head>
@@ -266,7 +261,7 @@
 </div>
 
 <script>
-/* PIN UX */
+/* ✅ PIN UX */
 (function pinUX(){
   const grid = document.getElementById("pinGrid");
   if (!grid) return;
@@ -302,8 +297,7 @@
       for (let i = 0; i < digits.length && (start + i) < boxes.length; i++){
         boxes[start + i].value = digits[i];
       }
-      const nextIndex = Math.min(start + digits.length, boxes.length - 1);
-      boxes[nextIndex].focus();
+      boxes[Math.min(start + digits.length, boxes.length - 1)].focus();
     });
   });
 
@@ -314,21 +308,13 @@
 </script>
 
 <script>
-/* ============================
-   APP LOGIC (tracking unifié via core.js)
-============================ */
-
+/* ✅ APP LOGIC (tracking unifié via core.js) */
 const RESTO = window.Fidelavis?.getRestoSlug?.() || "resto1";
 window.Fidelavis?.rememberLastResto?.();
 
-function track(eventName, extra){
-  return window.Fidelavis?.track?.(eventName, extra || {});
-}
-
-// Optionnel: page_view 1x/session
+// page view 1x/session
 window.Fidelavis?.trackOnce?.("coupon_view", `coupon_view_${RESTO}`, {});
 
-/* Charge config (nom/couleurs) */
 (async function(){
   try{ await window.Fidelavis?.loadConfig?.(); }catch(e){}
 })();
@@ -346,16 +332,14 @@ const MONTH = now.getMonth();
 const YEAR = now.getFullYear();
 document.getElementById("txtOffer").textContent = offers[MONTH];
 
-// reset 1er du mois
 const COUPON_KEY = `coupon_${RESTO}_${YEAR}_${MONTH}`;
 if (now.getDate() === 1) localStorage.removeItem(COUPON_KEY);
 
-// avis anti-spam
 const REVIEW_KEY = `review_${RESTO}_${YEAR}_${MONTH}`;
 
 function allerAvis(){
   localStorage.setItem(REVIEW_KEY, "done");
-  track("review_click");
+  window.Fidelavis?.track?.("review_click");
   setTimeout(()=> window.Fidelavis?.go?.("avis.html"), 120);
 }
 function fermerAvis(){
@@ -363,7 +347,7 @@ function fermerAvis(){
   document.getElementById("reviewPrompt")?.remove();
 }
 
-/* PIN */
+/* PIN (synchro admin) */
 const SECRET_KEY = "OFFLINE123";
 function simpleHash(str) {
   let h = 0;
@@ -395,7 +379,8 @@ function soumettrePin() {
     localStorage.setItem(COUPON_KEY, "used");
     res.innerHTML = `<div class="ok-box success">✅ Coupon validé</div>`;
     document.getElementById("audioOK").play().catch(()=>{});
-    track("coupon_validate");
+
+    window.Fidelavis?.track?.("coupon_validate");
 
     setTimeout(() => {
       if (localStorage.getItem(REVIEW_KEY)) return;
@@ -426,16 +411,16 @@ function partager() {
   };
 
   if (navigator.share) navigator.share(data).catch(()=>{});
-  else if (navigator.clipboard?.writeText) navigator.clipboard.writeText(shareUrl).then(()=>alert("Lien copié 👍")).catch(()=>alert("Copiez ce lien : " + shareUrl));
+  else if (navigator.clipboard?.writeText) navigator.clipboard.writeText(shareUrl)
+    .then(()=>alert("Lien copié 👍"))
+    .catch(()=>alert("Copiez ce lien : " + shareUrl));
   else alert("Copiez ce lien : " + shareUrl);
 }
 
-/* Affiche l’état si déjà utilisé */
 if (localStorage.getItem(COUPON_KEY) === "used") {
   document.getElementById("result").innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
 }
 </script>
 
-<!-- ❌ PAS de SW register manuel (Progressier gère) -->
 </body>
 </html>
