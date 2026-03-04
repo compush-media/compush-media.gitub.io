@@ -1,40 +1,22 @@
 {
-  "short_name": "resto1",
-  "name": "resto1",
-  "dir": "auto",
-  "background_color": "#ffffff",
-  "theme_color": "#B8924F",
-  "display": "standalone",
-
-  "start_url": "/resto1/index.html?source=pwa",
+  "name": "Restaurant",
+  "short_name": "Restaurant",
+  "start_url": "/resto1/index.html",
   "scope": "/resto1/",
-
-  "prefer_related_applications": false,
-  "related_applications": [],
-
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#B8924F",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "/resto1/icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
     },
     {
-      "src": "/resto1/icons/icon-maskable-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-
-  "protocol_handlers": [
-    {
-      "protocol": "web+pwa",
-      "url": "/resto1/index.html?launchedfrom=homescreen&pwaprotocolredirect=%s"
-    },
-    {
-      "protocol": "web+resto",
-      "url": "/resto1/index.html?launchedfrom=homescreen&pwaprotocolredirect=%s"
+      "type": "image/png"
     }
   ]
 }
