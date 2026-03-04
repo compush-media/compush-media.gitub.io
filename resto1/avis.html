@@ -5,6 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Avis Google – Fidelavis</title>
 
+  <script>
+(function(){
+
+  function getRestoSlug(){
+    return (location.pathname.replace(/^\/+|\/+$/g,"").split("/")[0] || "resto1").toLowerCase();
+  }
+
+  const RESTO = getRestoSlug();
+
+  /* mémorise le dernier restaurant utilisé */
+  try{
+    localStorage.setItem("fv_last_resto", RESTO);
+  }catch(e){}
+
+})();
+</script>
+
   <style>
     :root{
       --brand:#B48C4A;
