@@ -4,6 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Activer -10% — Fidelavis</title>
+  
+  <script>
+(function(){
+
+  function getRestoSlug(){
+    return (location.pathname.replace(/^\/+|\/+$/g,"").split("/")[0] || "resto1").toLowerCase();
+  }
+
+  const RESTO = getRestoSlug();
+
+  /* mémorise le dernier restaurant utilisé */
+  try{
+    localStorage.setItem("fv_last_resto", RESTO);
+  }catch(e){}
+
+})();
+</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
