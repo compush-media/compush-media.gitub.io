@@ -5,22 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Avis Google – Fidelavis</title>
 
-  <script>
-(function(){
-
-  function getRestoSlug(){
-    return (location.pathname.replace(/^\/+|\/+$/g,"").split("/")[0] || "resto1").toLowerCase();
-  }
-
-  const RESTO = getRestoSlug();
-
-  /* mémorise le dernier restaurant utilisé */
-  try{
-    localStorage.setItem("fv_last_resto", RESTO);
-  }catch(e){}
-
-})();
-</script>
+  <!-- ✅ Core commun (resto, cookies, tracking, go()) -->
+  <script src="../assets/core.js"></script>
 
   <style>
     :root{
@@ -252,7 +238,6 @@
       <p class="stepText">Cliquez pour ouvrir Google, puis laissez votre avis ⭐</p>
     </div>
 
-    <!-- bouton (on gère le click en JS pour tracker avant redirection) -->
     <a id="googleReviewBtn" class="btn btnPrimary" href="#" rel="noopener">
       ⭐ Laisser un avis sur Google
     </a>
@@ -275,126 +260,68 @@
 </div>
 
 <script>
-/* ===============================
-   SPA ROUTING
-=============================== */
-const redirected = sessionStorage.redirect;
-if (redirected) {
-  sessionStorage.removeItem("redirect");
-  history.replaceState(null, "", redirected);
-}
+(function(){
+  const RESTO = window.Fidelavis?.getRestoSlug?.() || "resto1";
+  window.Fidelavis?.rememberLastResto?.();
 
-/* ===============================
-   RESTAURANT PAR PATH
-=============================== */
-function getRestoSlug() {
-  const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
-  return path.split("/")[0] || "voltaire";
-}
-const RESTO = getRestoSlug();
+  // ✅ Retour : on renvoie au coupon (index.html chez toi)
+  document.getElementById("couponLink").addEventListener("click", (e)=>{
+    e.preventDefault();
+    if (window.Fidelavis?.go) window.Fidelavis.go("index.html");
+    else location.href = "./index.html";
+  });
 
-/* ============================
-   API TRACKING (GLOBAL SHEET)
-============================ */
-const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
+  // ✅ Back topbar : pareil = coupon
+  const back = document.getElementById("backLink");
+  back.href = "#";
+  back.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if (window.Fidelavis?.go) window.Fidelavis.go("index.html");
+    else location.href = "./index.html";
+  });
 
-/* ============================
-   TIME
-============================ */
-const now = new Date();
-const MONTH = now.getMonth();
-const YEAR = now.getFullYear();
-
-/* ============================
-   TRACK HELPER (PATCH ✅ sendBeacon + keepalive)
-============================ */
-function track(eventName, extra = {}) {
-  const payload = {
-    resto: RESTO,
-    event: eventName,
-    mois: MONTH + 1,
-    annee: YEAR,
-    user: (localStorage.getItem("user_email") || ""),
-    userAgent: navigator.userAgent,
-    pageURL: location.href,
-    ...extra
+  /* ===============================
+     DONNÉES RESTAURANTS
+     - Ajoute tes restos ici
+  =============================== */
+  const restoData = {
+    voltaire: {
+      title: "⭐ Votre avis nous aide ⭐",
+      message: "Merci de partager votre expérience en un clic 🌿",
+      link: "https://search.google.com/local/writereview?placeid=ChIJ6-iH2gBl5kcR_8dVpV-kiCE",
+      qr: "https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/68b43a06ba67b31819ae53c9.png"
+    }
   };
+  const data = restoData[RESTO] || restoData.voltaire;
 
-  const body = JSON.stringify(payload);
+  document.getElementById("messageTitre").innerText = data.title || "⭐ Votre avis nous aide ⭐";
+  document.getElementById("messageTexte").innerText = data.message || "Merci 🙏 Un avis aide énormément le restaurant.";
+  document.getElementById("qrImg").src = data.qr || "";
 
-  if (navigator.sendBeacon) {
-    try {
-      const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
-      navigator.sendBeacon(API_TRACK, blob);
-      return;
-    } catch(e) {}
-  }
+  // ✅ Tracking page view (1x/session)
+  window.Fidelavis?.trackOnce?.("review_page_view", `review_page_view_${RESTO}`, {});
+  if (data.qr) window.Fidelavis?.trackOnce?.("review_qr_view", `review_qr_view_${RESTO}`, {});
 
-  fetch(API_TRACK, {
-    method: "POST",
-    mode: "no-cors",
-    keepalive: true,
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body
-  }).catch(()=>{});
-}
+  const btn = document.getElementById("googleReviewBtn");
+  btn.href = data.link || "https://www.google.com/";
 
-/* ===============================
-   LIENS RETOUR (index + coupon)
-=============================== */
-document.getElementById("backLink").href = `/${RESTO}`;
-(function setCouponLink(){
-  const base = window.location.pathname.slice(0, window.location.pathname.lastIndexOf("/") + 1);
-  document.getElementById("couponLink").href = base + "coupon.html";
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    window.Fidelavis?.track?.("review_open", { target: "google" });
+
+    const ok = document.getElementById("ok");
+    ok.style.display = "block";
+
+    // petit délai pour laisser partir le tracking
+    setTimeout(() => { window.location.href = btn.href; }, 150);
+  });
+
+  // Optionnel: harmonise le brand depuis config.json
+  (async function(){
+    try{ await window.Fidelavis?.loadConfig?.(); }catch(e){}
+  })();
 })();
-
-/* ===============================
-   DONNÉES RESTAURANTS
-   - Ajoute tes restos ici
-=============================== */
-const restoData = {
-  voltaire: {
-    title: "⭐ Votre avis nous aide ⭐",
-    message: "Merci de partager votre expérience en un clic 🌿",
-    link: "https://search.google.com/local/writereview?placeid=ChIJ6-iH2gBl5kcR_8dVpV-kiCE",
-    qr: "https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/68b43a06ba67b31819ae53c9.png"
-  }
-};
-
-const data = restoData[RESTO] || restoData.voltaire;
-
-document.getElementById("messageTitre").innerText = data.title || "⭐ Votre avis nous aide ⭐";
-document.getElementById("messageTexte").innerText = data.message || "Merci 🙏 Un avis aide énormément le restaurant.";
-document.getElementById("qrImg").src = data.qr || "";
-
-/* ===============================
-   TRACKING + OUVERTURE GOOGLE
-   Events:
-   - review_page_view (vue page)
-   - review_open (clic bouton google)
-   - review_qr_view (si qr présent)
-=============================== */
-track("review_page_view");
-
-if (data.qr) track("review_qr_view");
-
-const btn = document.getElementById("googleReviewBtn");
-btn.href = data.link || "https://www.google.com/";
-
-btn.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  // ✅ event visible dans state
-  track("review_open", { target: "google" });
-
-  const ok = document.getElementById("ok");
-  ok.style.display = "block";
-
-  // mini délai pour laisser le beacon partir
-  setTimeout(() => {
-    window.location.href = btn.href;
-  }, 150);
-});
 </script>
 
 </body>
