@@ -22,10 +22,16 @@
   <script>
     (function () {
       function getRestoSlug(){
-        const p = location.pathname.replace(/^\/+|\/+$/g, "");
-        return (p.split("/")[0] || "resto1").toLowerCase();
-      }
-      const RESTO = getRestoSlug();
+  return (location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] || "resto1").toLowerCase();
+}
+const RESTO = getRestoSlug();
+
+/* ✅ mémorise le dernier restaurant visité
+   utile si quelqu’un arrive sur https://app.cartefidelavis.com/
+*/
+try{
+  localStorage.setItem("fv_last_resto", RESTO);
+}catch(e){}
 
       function getCookie(name){
         try{
