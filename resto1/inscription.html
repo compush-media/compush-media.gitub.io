@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Activer -10% — Fidelavis</title>
 
-  <!-- ✅ Core commun (mémorise fv_last_resto, restore email, tracking, etc.) -->
+  <!-- ✅ Core commun (resto, email, tracking, go, etc.) -->
   <script src="../assets/core.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,25 +103,22 @@
     }
   </style>
 
-  <!-- ✅ Patch: si GHL renvoie ?submitted=1 sur cette page -->
+  <!-- ✅ Patch submitted=1 (GHL redirect) -->
   <script>
     (function(){
-      // assure le resto en mémoire (utile si quelqu’un arrive via racine plus tard)
-      try { if (window.Fidelavis?.rememberLastResto) Fidelavis.rememberLastResto(); } catch(e){}
-
       const params = new URLSearchParams(location.search);
       if (params.get("submitted") !== "1") return;
 
-      const RESTO = (window.Fidelavis?.getRestoSlug ? Fidelavis.getRestoSlug() : "resto1");
+      const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
 
-      // ✅ Flags anti-boucle (index -> indexnfc)
+      // Flags anti-boucle
       try{
         localStorage.setItem("is_registered", "1");
         localStorage.setItem("fv_onboarding_done", "1");
         localStorage.setItem(`fv_registered_${RESTO}`, "1");
       }catch(e){}
 
-      // ✅ Anti-doublon 24h
+      // Dédup 24h
       const dedupKey = `signup_submit_${RESTO}`;
       const last = Number(localStorage.getItem(dedupKey) || "0");
       const now = Date.now();
@@ -131,15 +128,13 @@
         try { window.Fidelavis?.track?.("signup_submit", { source: "ghl_redirect_inscription" }); } catch(e){}
       }
 
-      // ✅ Nettoie URL (enlève submitted + autres params tracking)
+      // Nettoie URL
       params.delete("submitted");
       const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
       try { history.replaceState({}, document.title, clean); } catch(e){}
 
-      // ✅ Va vers page install
-      setTimeout(() => {
-        window.location.replace("redit.html");
-      }, 220);
+      // Redirect install
+      setTimeout(() => window.location.replace("redit.html"), 220);
     })();
   </script>
 </head>
@@ -167,9 +162,10 @@
 
 <script>
 (function(){
-  // ✅ Tracking entrée inscription (1 fois / session)
+  const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+
+  // Tracking entrée inscription (1 fois / session / jour)
   try{
-    const RESTO = (window.Fidelavis?.getRestoSlug ? Fidelavis.getRestoSlug() : "resto1");
     const key = `scan_to_signup_${RESTO}_${new Date().toISOString().slice(0,10)}`;
     if (!sessionStorage.getItem(key)) {
       sessionStorage.setItem(key, "1");
