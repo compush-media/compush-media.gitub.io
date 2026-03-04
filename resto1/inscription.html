@@ -4,23 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Activer -10% — Fidelavis</title>
-  
-  <script>
-(function(){
 
-  function getRestoSlug(){
-    return (location.pathname.replace(/^\/+|\/+$/g,"").split("/")[0] || "resto1").toLowerCase();
-  }
-
-  const RESTO = getRestoSlug();
-
-  /* mémorise le dernier restaurant utilisé */
-  try{
-    localStorage.setItem("fv_last_resto", RESTO);
-  }catch(e){}
-
-})();
-</script>
+  <!-- ✅ Core commun (mémorise fv_last_resto, restore email, tracking, etc.) -->
+  <script src="../assets/core.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -116,12 +102,52 @@
       box-shadow:0 10px 22px rgba(0,0,0,.06);
     }
   </style>
+
+  <!-- ✅ Patch: si GHL renvoie ?submitted=1 sur cette page -->
+  <script>
+    (function(){
+      // assure le resto en mémoire (utile si quelqu’un arrive via racine plus tard)
+      try { if (window.Fidelavis?.rememberLastResto) Fidelavis.rememberLastResto(); } catch(e){}
+
+      const params = new URLSearchParams(location.search);
+      if (params.get("submitted") !== "1") return;
+
+      const RESTO = (window.Fidelavis?.getRestoSlug ? Fidelavis.getRestoSlug() : "resto1");
+
+      // ✅ Flags anti-boucle (index -> indexnfc)
+      try{
+        localStorage.setItem("is_registered", "1");
+        localStorage.setItem("fv_onboarding_done", "1");
+        localStorage.setItem(`fv_registered_${RESTO}`, "1");
+      }catch(e){}
+
+      // ✅ Anti-doublon 24h
+      const dedupKey = `signup_submit_${RESTO}`;
+      const last = Number(localStorage.getItem(dedupKey) || "0");
+      const now = Date.now();
+
+      if (!last || (now - last) > 86400000) {
+        try { localStorage.setItem(dedupKey, String(now)); } catch(e){}
+        try { window.Fidelavis?.track?.("signup_submit", { source: "ghl_redirect_inscription" }); } catch(e){}
+      }
+
+      // ✅ Nettoie URL (enlève submitted + autres params tracking)
+      params.delete("submitted");
+      const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
+      try { history.replaceState({}, document.title, clean); } catch(e){}
+
+      // ✅ Va vers page install
+      setTimeout(() => {
+        window.location.replace("redit.html");
+      }, 220);
+    })();
+  </script>
 </head>
 
 <body>
   <div class="wrap">
     <div class="badge"><span class="dot"></span>Dernière étape</div>
-    <h1>🎁Où devons-nous envoyer votre -10% ?</h1>
+    <h1>🎁 Où devons-nous envoyer votre -10% ?</h1>
     <p class="micro">⚡ 10 secondes • 🎁 Gratuit • 🔒 Anti-spam</p>
 
     <div class="card" id="card">
@@ -134,19 +160,29 @@
 
   <div class="sticky">
     <div class="stickyInner">
-      <a class="btnLink" id="ppBtn" href="/privacy.html">🔐Confidentialité</a>
+      <a class="btnLink" id="ppBtn" href="/privacy.html">🔐 Confidentialité</a>
       <a class="btnLink" id="cguBtn" href="/cgu.html">📄 CGU</a>
     </div>
   </div>
 
 <script>
 (function(){
-  // Liens retour corrects (restoX)
+  // ✅ Tracking entrée inscription (1 fois / session)
+  try{
+    const RESTO = (window.Fidelavis?.getRestoSlug ? Fidelavis.getRestoSlug() : "resto1");
+    const key = `scan_to_signup_${RESTO}_${new Date().toISOString().slice(0,10)}`;
+    if (!sessionStorage.getItem(key)) {
+      sessionStorage.setItem(key, "1");
+      window.Fidelavis?.track?.("scan_to_signup");
+    }
+  }catch(e){}
+
+  // Liens privacy / cgu
   const from = encodeURIComponent(location.pathname);
   document.getElementById("ppBtn").href  = "/privacy.html?from=" + from;
   document.getElementById("cguBtn").href = "/cgu.html?from=" + from;
 
-  // Hauteur iframe = hauteur écran - (header + marges + footer sticky)
+  // Hauteur iframe
   function setFrameHeight(){
     const frame = document.getElementById("ghlFrame");
     const card  = document.getElementById("card");
@@ -165,82 +201,6 @@
   window.addEventListener("orientationchange", setFrameHeight);
   setTimeout(setFrameHeight, 60);
   setTimeout(setFrameHeight, 240);
-})();
-</script>
-
-<!-- ✅ TRACKING + REDIRECT PROPRE -->
-<script>
-function getRestoSlug() {
-  return location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] || "voltaire";
-}
-const RESTO = getRestoSlug();
-
-const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
-
-function track(eventName, extra = {}) {
-  const now = new Date();
-  const payload = {
-    resto: RESTO,
-    event: eventName,
-    mois: now.getMonth() + 1,
-    annee: now.getFullYear(),
-    user: (localStorage.getItem("user_email") || ""),
-    userAgent: navigator.userAgent,
-    pageURL: location.href,
-    ...extra
-  };
-
-  fetch(API_TRACK, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  }).catch(()=>{});
-}
-
-/* 1) scan_to_signup (1x / session / jour) */
-(function(){
-  const key = `scan_to_signup_${RESTO}_${new Date().toISOString().slice(0,10)}`;
-  if (!sessionStorage.getItem(key)) {
-    sessionStorage.setItem(key, "1");
-    track("scan_to_signup");
-  }
-})();
-
-/* 2) signup_submit + redirect → redit.html */
-(function(){
-  const params = new URLSearchParams(location.search);
-  const submitted = params.get("submitted");
-
-  if (submitted !== "1") return;
-
-  // ✅ Flag d’accès : évite les boucles index → indexnfc
-  try{
-    localStorage.setItem("is_registered", "1");
-    localStorage.setItem("fv_onboarding_done", "1");
-    localStorage.setItem(`fv_registered_${RESTO}`, "1");
-  }catch(e){}
-
-  // Anti-doublon 24h
-  const dedupKey = `signup_submit_${RESTO}`;
-  const last = Number(localStorage.getItem(dedupKey) || "0");
-  const now = Date.now();
-
-  if (!last || (now - last) > (24 * 60 * 60 * 1000)) {
-    localStorage.setItem(dedupKey, String(now));
-    track("signup_submit", { source: "ghl_redirect" });
-  }
-
-  // Nettoie l’URL (enlève ?submitted=1)
-  try{
-    const cleanUrl = window.location.pathname;
-    history.replaceState({}, document.title, cleanUrl);
-  }catch(e){}
-
-  // ✅ Redirection vers installation PWA
-  setTimeout(() => {
-    window.location.replace("redit.html");
-  }, 250);
 })();
 </script>
 
