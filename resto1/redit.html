@@ -4,27 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Installer l’app</title>
-<script>
-(function(){
 
-  function getRestoSlug(){
-    return (location.pathname.replace(/^\/+|\/+$/g,"").split("/")[0] || "resto1").toLowerCase();
-  }
-
-  const RESTO = getRestoSlug();
-
-  /* mémorise le dernier restaurant utilisé */
-  try{
-    localStorage.setItem("fv_last_resto", RESTO);
-  }catch(e){}
-
-})();
-</script>
 <!-- ✅ INSTALLATION PROGRESSIER (COMME AVANT) -->
 <link rel="manifest" href="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/progressier.json"/>
 <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
 
-<!-- Core commun -->
+<!-- ✅ Core commun -->
 <script src="../assets/core.js"></script>
 
 <style>
@@ -159,50 +144,34 @@ h1{
 
 <script>
 /* ============================
-   TRACKING INSTALL (simple)
+   TRACKING + REDIRECT (via core.js)
 ============================ */
 
-function getRestoSlug() {
-  const path = location.pathname.replace(/^\/+|\/+$/g, "");
-  return path.split("/")[0] || "resto1";
-}
-const RESTO = getRestoSlug();
-
-const API_TRACK = "https://script.google.com/macros/s/AKfycbysXX-RuPkLVVy5w3ceXbIC3BLrAjw9KLnWxwApgKw76HCa3ouKNzjnF0Cr-7RuAaf9/exec";
-
-function track(eventName) {
-  const now = new Date();
-  const payload = {
-    resto: RESTO,
-    event: eventName,
-    mois: now.getMonth() + 1,
-    annee: now.getFullYear(),
-    user: (localStorage.getItem("user_email") || ""),
-    userAgent: navigator.userAgent,
-    pageURL: location.href
-  };
-
-  fetch(API_TRACK, {
-    method:"POST",
-    mode:"no-cors",
-    headers:{ "Content-Type":"text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  }).catch(()=>{});
-}
-
-/* Arrivée sur page install */
-track("install_attempt");
-
-/* Si déjà installée → redirection coupon */
 function isStandalone(){
   return window.matchMedia("(display-mode: standalone)").matches ||
          window.navigator.standalone === true;
 }
 
-if (isStandalone()){
-  track("install");
-  window.location.href = "index.html";
-}
+(function(){
+  // ✅ mémorise le resto (au cas où) + tracking 1x/session
+  try{
+    const RESTO = window.Fidelavis?.rememberLastResto?.() || "resto1";
+
+    // install_attempt (1 fois par session)
+    const k = `install_attempt_${RESTO}`;
+    if (!sessionStorage.getItem(k)){
+      sessionStorage.setItem(k, "1");
+      window.Fidelavis?.track?.("install_attempt");
+    }
+
+    // Si déjà installée → on track install + on va au coupon
+    if (isStandalone()){
+      window.Fidelavis?.track?.("install");
+      setTimeout(()=> window.location.replace("index.html"), 150);
+      return;
+    }
+  }catch(e){}
+})();
 
 /* Charge config resto */
 (async function(){
