@@ -52,6 +52,7 @@
 
   /* ---------------------------
      Cookies (fallback iOS)
+     ✅ FIX: regex robuste (^|;\s*) au lieu de (^| )
   --------------------------- */
   function setCookie(name, value, days) {
     const maxAge = (days || 365) * 24 * 60 * 60;
@@ -59,7 +60,7 @@
   }
   function getCookie(name) {
     try {
-      const m = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+      const m = document.cookie.match(new RegExp("(^|;\\s*)" + name + "=([^;]+)"));
       return m ? decodeURIComponent(m[2]) : "";
     } catch (e) {
       return "";
@@ -115,6 +116,11 @@
         setOnboardFlags();
         return c;
       }
+
+      // ✅ fallback: si cookie is_registered=1 sans email
+      if ((getCookie("is_registered") || "").trim() === "1") {
+        setOnboardFlags();
+      }
     } catch (e) {}
     return "";
   }
@@ -130,6 +136,7 @@
   --------------------------- */
   function hasAccess(){
     const resto = rememberLastResto();
+
     const email = (safeGet("user_email") || "").trim();
     if (email) return true;
 
@@ -137,6 +144,10 @@
     if (safeGet("fv_onboarding_done") === "1") return true;
     if (safeGet(`fv_registered_${resto}`) === "1") return true;
     if ((getCookie("is_registered") || "").trim() === "1") return true;
+
+    // cookie email (au cas où)
+    const emailC = (getCookie("user_email") || "").trim();
+    if (emailC && isValidEmail(emailC)) return true;
 
     return false;
   }
@@ -179,12 +190,14 @@
   }
 
   /* ---------------------------
-     Tracking
+     Tracking (GET endpoint)
+     ✅ FIX: sendBeacon + fallback fetch(keepalive)
   --------------------------- */
   async function track(event, extra) {
     try {
       const resto = rememberLastResto();
       const email = getUserEmail();
+
       const payload = {
         resto,
         event,
@@ -198,11 +211,22 @@
       Object.entries(payload).forEach(([k, v]) => qs.set(k, String(v ?? "")));
       const url = `${API_TRACK}?${qs.toString()}`;
 
+      // Beacon: parfois limité, mais on tente
       if (navigator.sendBeacon) {
-        const ok = navigator.sendBeacon(url);
-        if (ok) return true;
+        try {
+          const ok = navigator.sendBeacon(url, "");
+          if (ok) return true;
+        } catch (e) {}
       }
-      await fetch(url, { method: "GET", cache: "no-store", mode: "no-cors" });
+
+      // Fallback
+      await fetch(url, {
+        method: "GET",
+        cache: "no-store",
+        mode: "no-cors",
+        keepalive: true
+      });
+
       return true;
     } catch (e) {
       return false;
@@ -220,8 +244,23 @@
     return true;
   }
 
+  // ✅ Variante utile : 1 fois par JOUR (ex: scan)
+  function trackOnceDaily(event, keyPrefix, extra) {
+    const resto = rememberLastResto();
+    const d = new Date();
+    const day = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    const k = `${keyPrefix || `fv_daily_${event}`}_${resto}_${day}`;
+    try {
+      if (sessionStorage.getItem(k) === "1") return false;
+      sessionStorage.setItem(k, "1");
+    } catch (e) {}
+    track(event, extra);
+    return true;
+  }
+
   /* ---------------------------
      Config
+     ✅ FIX: met aussi --brand (tes pages l'utilisent)
   --------------------------- */
   async function loadConfig() {
     const res = await fetch("config.json", { cache: "no-store" });
@@ -230,16 +269,17 @@
 
     window.RESTO = cfg;
 
-    if (cfg.color) document.documentElement.style.setProperty("--gold", cfg.color);
+    if (cfg.color) {
+      document.documentElement.style.setProperty("--gold", cfg.color);
+      document.documentElement.style.setProperty("--brand", cfg.color);
+    }
     if (cfg.color2) document.documentElement.style.setProperty("--gold2", cfg.color2);
 
     document.querySelectorAll("[data-resto-name]").forEach((el) => {
       el.textContent = cfg.name || "Restaurant";
     });
 
-    // ✅ mémorise le resto à partir du dossier
     rememberLastResto();
-
     return cfg;
   }
 
@@ -261,6 +301,7 @@
     go,
     track,
     trackOnce,
+    trackOnceDaily,
     getUserEmail,
     patchManifestHref,
     safeSet,
