@@ -5,160 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Coupon du Mois – Fidelavis</title>
 
-  <!-- ✅ PROGRESSIER (PROD) — 1 PWA par restaurant (scope dossier) -->
-  <link rel="manifest" href="/resto1/progressier.json"/>
+  <!-- ✅ PROGRESSIER : mets TOUJOURS un chemin relatif dans chaque dossier resto -->
+  <link rel="manifest" href="progressier.json"/>
   <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
 
-  <!-- 🔐 BOOTSTRAP + PATCH GHL ?submitted=1 + anti-boucle index -> indexnfc -->
-  <script>
-  (function () {
-
-    function getRestoSlug(){
-  return (location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] || "resto1").toLowerCase();
-}
-const RESTO = getRestoSlug();
-
-/* ✅ mémorise le dernier restaurant visité
-   utile si quelqu’un arrive sur https://app.cartefidelavis.com/
-*/
-try{
-  localStorage.setItem("fv_last_resto", RESTO);
-}catch(e){}
-
-    function currentFolderBase(){
-      const p = window.location.pathname;
-      return p.slice(0, p.lastIndexOf("/") + 1);
-    }
-
-    window.goLocal = function(page){
-      const base = currentFolderBase();
-      const url = new URL(base + page, window.location.origin);
-
-      const params = new URLSearchParams(window.location.search);
-      params.delete("email");
-      params.delete("submitted");
-      params.forEach((v,k)=>url.searchParams.set(k,v));
-
-      window.location.href = url.toString();
-    };
-
-    function setCookie(name, value, days){
-      const maxAge = days * 24 * 60 * 60;
-      document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; SameSite=Lax`;
-    }
-    function getCookie(name){
-      try{
-        const m = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-        return m ? decodeURIComponent(m[2]) : "";
-      }catch(e){ return ""; }
-    }
-
-    function setOnboardFlags(){
-      try{
-        localStorage.setItem("is_registered","1");
-        localStorage.setItem("fv_onboarding_done","1");
-        localStorage.setItem(`fv_registered_${RESTO}`,"1");
-      }catch(e){}
-    }
-
-    function hasAccess(){
-      try{
-        if (localStorage.getItem("is_registered")==="1") return true;
-        if (localStorage.getItem("fv_onboarding_done")==="1") return true;
-        if (localStorage.getItem(`fv_registered_${RESTO}`)==="1") return true;
-        if ((localStorage.getItem("user_email")||"").trim()) return true;
-      }catch(e){}
-      return false;
-    }
-
-    /* =========================================================
-       ✅ 1) PATCH GHL: index.html?submitted=1
-       -> set flags, track, clean URL, go regit.html
-    ==========================================================*/
-    const params = new URLSearchParams(location.search);
-    if (params.get("submitted")==="1") {
-
-      setOnboardFlags();
-      setCookie("is_registered","1",365);
-
-      // Anti-doublon tracking 24h
-      const dedupKey = `signup_submit_${RESTO}`;
-      const last = Number(localStorage.getItem(dedupKey)||"0");
-      const now = Date.now();
-
-      if (!last || (now-last) > 86400000){
-        localStorage.setItem(dedupKey,String(now));
-        if (typeof track === "function") {
-          track("signup_submit",{source:"ghl_redirect_to_index"});
-        }
-      }
-
-      // Nettoyage URL
-      params.delete("submitted");
-      const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
-      try{ history.replaceState({}, document.title, clean); }catch(e){}
-
-      // Aller vers install
-      setTimeout(()=>{ window.location.replace("./regit.html"); }, 300);
-      return;
-    }
-
-    /* =========================================================
-       ✅ 2) Capture email depuis URL ?email= (si un jour tu l’utilises)
-    ==========================================================*/
-    (function captureEmailFromUrl(){
-      try{
-        const p = new URLSearchParams(location.search);
-        const emailRaw = p.get("email") || "";
-        if (!emailRaw) return;
-
-        let email = "";
-        try{ email = decodeURIComponent(emailRaw).trim().toLowerCase(); }
-        catch(e){ email = (emailRaw||"").trim().toLowerCase(); }
-
-        const emailOk = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email);
-        if (!emailOk) return;
-
-        localStorage.setItem("user_email", email);
-        setOnboardFlags();
-
-        setCookie("user_email", email, 365);
-        setCookie("is_registered", "1", 365);
-
-        p.delete("email");
-        const clean = location.pathname + (p.toString() ? "?" + p.toString() : "");
-        try{ history.replaceState({}, document.title, clean); }catch(e){}
-        setTimeout(()=>{ try{ history.replaceState({}, document.title, clean); }catch(e){} }, 250);
-      }catch(e){}
-    })();
-
-    /* =========================================================
-       ✅ 3) Hydrate depuis cookies (fallback)
-    ==========================================================*/
-    (function hydrateFromCookies(){
-      try{
-        const cReg = (getCookie("is_registered")||"").trim();
-        if (cReg==="1") setOnboardFlags();
-
-        const cEmail = (getCookie("user_email")||"").trim().toLowerCase();
-        if (cEmail && !localStorage.getItem("user_email")){
-          localStorage.setItem("user_email", cEmail);
-          setOnboardFlags();
-        }
-      }catch(e){}
-    })();
-
-    /* =========================================================
-       ✅ 4) Redirection index -> indexnfc UNIQUEMENT si non inscrit
-    ==========================================================*/
-    if (!hasAccess()){
-      setTimeout(()=>{
-        if (!hasAccess()) window.goLocal("indexnfc.html");
-      }, 600);
-    }
-
-  })();
-  </script>
+  <!-- ✅ Core commun -->
+  <script src="../assets/core.js"></script>
 
   <style>
     :root{
@@ -353,6 +205,23 @@ try{
       to{opacity:1; transform:translateY(0);}
     }
   </style>
+
+  <!-- ✅ Gate d’accès: si pas inscrit -> indexnfc -->
+  <script>
+    (function(){
+      // assure fv_last_resto
+      if (window.Fidelavis && Fidelavis.rememberLastResto) Fidelavis.rememberLastResto();
+
+      const ok = (window.Fidelavis && Fidelavis.hasAccess) ? Fidelavis.hasAccess() : false;
+      if (!ok) {
+        setTimeout(()=> {
+          if (window.Fidelavis && Fidelavis.hasAccess && !Fidelavis.hasAccess()){
+            Fidelavis.go("indexnfc.html");
+          }
+        }, 300);
+      }
+    })();
+  </script>
 </head>
 
 <body>
@@ -392,9 +261,7 @@ try{
 </div>
 
 <script>
-/* ============================
-   PIN UX (auto-avance, backspace, collage)
-============================ */
+/* PIN UX */
 (function pinUX(){
   const grid = document.getElementById("pinGrid");
   if (!grid) return;
@@ -442,22 +309,38 @@ try{
 </script>
 
 <script>
-/* ============================
-   CONTEXTE RESTAURANT
-============================ */
-function getRestoSlug() {
-  return location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] || "voltaire";
+/* CONTEXTE RESTO */
+const RESTO = (window.Fidelavis && Fidelavis.getRestoSlug) ? Fidelavis.getRestoSlug() : "resto1";
+
+/* Tracking URL */
+const API_TRACK = (window.Fidelavis && Fidelavis.API_TRACK) ? Fidelavis.API_TRACK :
+  "https://script.google.com/macros/s/AKfycbysXX-RuPkLVVy5w3ceXbIC3BLrAjw9KLnWxwApgKw76HCa3ouKNzjnF0Cr-7RuAaf9/exec";
+
+function track(eventName, extra = {}) {
+  if (window.Fidelavis && Fidelavis.track) return Fidelavis.track(eventName, extra);
+
+  const now = new Date();
+  const payload = {
+    resto: RESTO,
+    event: eventName,
+    mois: now.getMonth() + 1,
+    annee: now.getFullYear(),
+    user: (localStorage.getItem("user_email") || ""),
+    userAgent: navigator.userAgent,
+    pageURL: location.href,
+    ...extra
+  };
+
+  fetch(API_TRACK, {
+    method: "POST",
+    mode: "no-cors",
+    keepalive: true,
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).catch(()=>{});
 }
-const RESTO = getRestoSlug();
 
-/* ============================
-   ✅ API TRACKING (GLOBAL SHEET)
-============================ */
-const API_TRACK = "https://script.google.com/macros/s/AKfycbysXX-RuPkLVVy5w3ceXbIC3BLrAjw9KLnWxwApgKw76HCa3ouKNzjnF0Cr-7RuAaf9/exec";
-
-/* ============================
-   OFFRE MENSUELLE
-============================ */
+/* OFFRE MENSUELLE */
 const offers = [
   "🎁 Janvier : -10% menu","🎁 Février : Dessert offert","🎁 Mars : Café offert",
   "🎁 Avril : -15% végétarien","🎁 Mai : Apéritif offert","🎁 Juin : Entrée offerte",
@@ -470,69 +353,23 @@ const MONTH = now.getMonth();
 const YEAR = now.getFullYear();
 document.getElementById("txtOffer").textContent = offers[MONTH];
 
-// 1er du mois => reset
 const COUPON_KEY = `coupon_${RESTO}_${YEAR}_${MONTH}`;
 if (now.getDate() === 1) localStorage.removeItem(COUPON_KEY);
 
-// ✅ Avis: anti-spam (par resto + par mois)
 const REVIEW_KEY = `review_${RESTO}_${YEAR}_${MONTH}`;
 
-/* ============================
-   TRACK HELPER (sendBeacon + keepalive)
-============================ */
-function track(eventName, extra = {}) {
-  const payload = {
-    resto: RESTO,
-    event: eventName,
-    mois: MONTH + 1,
-    annee: YEAR,
-    user: (localStorage.getItem("user_email") || ""),
-    userAgent: navigator.userAgent,
-    pageURL: location.href,
-    ...extra
-  };
-
-  const body = JSON.stringify(payload);
-
-  if (navigator.sendBeacon) {
-    try {
-      const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
-      navigator.sendBeacon(API_TRACK, blob);
-      return;
-    } catch(e) {}
-  }
-
-  fetch(API_TRACK, {
-    method: "POST",
-    mode: "no-cors",
-    keepalive: true,
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body
-  }).catch(()=>{});
-}
-
-/* ============================
-   Aller vers la page avis (même dossier)
-============================ */
 function allerAvis(){
   localStorage.setItem(REVIEW_KEY, "done");
   track("review_click");
-
-  setTimeout(() => {
-    if (typeof window.goLocal === "function") window.goLocal("avis.html");
-    else window.location.href = "avis.html";
-  }, 120);
+  setTimeout(() => (window.Fidelavis ? Fidelavis.go("avis.html") : (location.href="avis.html")), 120);
 }
-
 function fermerAvis(){
   localStorage.setItem(REVIEW_KEY, "later");
   const el = document.getElementById("reviewPrompt");
   if (el) el.remove();
 }
 
-/* ============================
-   🔐 PIN SYNCHRONISÉ ADMIN
-============================ */
+/* PIN */
 const SECRET_KEY = "OFFLINE123";
 function simpleHash(str) {
   let h = 0;
@@ -545,9 +382,6 @@ function generatePin(offset = 0) {
 }
 function verifierPin(pin) { return [-2, -1, 0, 1, 2].some(o => generatePin(o) === pin); }
 
-/* ============================
-   VALIDATION COUPON
-============================ */
 function soumettrePin() {
   const res = document.getElementById("result");
   const code = (window.getPinCode ? window.getPinCode() : "").trim();
@@ -559,7 +393,6 @@ function soumettrePin() {
     res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
     return;
   }
-
   if (!/^\d{4}$/.test(code)) {
     res.innerHTML = `<div class="ok-box warn">⚠️ Code invalide</div>`;
     return;
@@ -569,7 +402,6 @@ function soumettrePin() {
     localStorage.setItem(COUPON_KEY, "used");
     res.innerHTML = `<div class="ok-box success">✅ Coupon validé</div>`;
     document.getElementById("audioOK").play().catch(()=>{});
-
     track("coupon_validate");
 
     setTimeout(() => {
@@ -592,9 +424,6 @@ function soumettrePin() {
   }
 }
 
-/* ============================
-   🔗 PARTAGE PWA
-============================ */
 function partager() {
   const shareUrl = "https://bit.ly/4psvq0G";
   const data = {
@@ -603,13 +432,9 @@ function partager() {
     url: shareUrl
   };
 
-  if (navigator.share) {
-    navigator.share(data).catch(() => {});
-  } else if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(shareUrl).then(() => alert("Lien copié 👍")).catch(()=>alert("Copiez ce lien : " + shareUrl));
-  } else {
-    alert("Copiez ce lien : " + shareUrl);
-  }
+  if (navigator.share) navigator.share(data).catch(()=>{});
+  else if (navigator.clipboard?.writeText) navigator.clipboard.writeText(shareUrl).then(()=>alert("Lien copié 👍")).catch(()=>alert("Copiez ce lien : " + shareUrl));
+  else alert("Copiez ce lien : " + shareUrl);
 }
 
 if (localStorage.getItem(COUPON_KEY) === "used") {
@@ -617,12 +442,7 @@ if (localStorage.getItem(COUPON_KEY) === "used") {
     `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
 }
 </script>
-</script>
 
-<!-- ❌ SUPPRIMÉ : SW register manuel (conflit avec Progressier) -->
-
+<!-- ❌ PAS de SW register manuel (Progressier gère) -->
 </body>
 </html>
-
-
-
