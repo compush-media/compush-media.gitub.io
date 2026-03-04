@@ -16,31 +16,38 @@
   <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
 
-  <!-- ✅ Anti-boucle acquisition/app : si déjà onboardé => index.html -->
+  <!-- ✅ Anti-boucle : si déjà onboardé => index.html -->
   <script>
     (function () {
+      function getCookie(name){
+        try{
+          const m = document.cookie.match(new RegExp("(^|;\\s*)" + name + "=([^;]+)"));
+          return m ? decodeURIComponent(m[2]) : "";
+        }catch(e){ return ""; }
+      }
+
       function hasAccessLocal(resto){
         try{
-          const emailLS = (localStorage.getItem("user_email") || "").trim();
-          if (emailLS) return true;
+          // email LS
+          if ((localStorage.getItem("user_email") || "").trim()) return true;
 
+          // flags
           if (localStorage.getItem("is_registered") === "1") return true;
           if (localStorage.getItem("fv_onboarding_done") === "1") return true;
           if (localStorage.getItem(`fv_registered_${resto}`) === "1") return true;
 
-          // cookie fallback (si iOS a perdu localStorage)
-          const emailC = (document.cookie.match(/(?:^|;\s*)user_email=([^;]+)/)?.[1] || "");
-          const regC  = (document.cookie.match(/(?:^|;\s*)is_registered=([^;]+)/)?.[1] || "");
-          if (emailC || regC === "1") return true;
+          // cookie fallback
+          const emailC = (getCookie("user_email") || "").trim();
+          const regC   = (getCookie("is_registered") || "").trim();
+          if (emailC) return true;
+          if (regC === "1") return true;
         }catch(e){}
         return false;
       }
 
       try{
         const resto = (window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1");
-        if (hasAccessLocal(resto)) {
-          window.location.replace("./index.html");
-        }
+        if (hasAccessLocal(resto)) window.location.replace("./index.html");
       }catch(e){}
     })();
   </script>
@@ -324,17 +331,10 @@
   </div>
 
 <script>
-  const RESTO = window.Fidelavis?.getRestoSlug?.() || "resto1";
-  window.Fidelavis?.rememberLastResto?.();
+  const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
 
-  /* scan: 1 fois / session / jour */
-  (function trackScanOnce(){
-    const d = new Date();
-    const key = `scan_${RESTO}_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-    if (sessionStorage.getItem(key)) return;
-    sessionStorage.setItem(key, "1");
-    window.Fidelavis?.track?.("scan");
-  })();
+  // ✅ Tracking scan (1x / session) via core.js
+  window.Fidelavis?.trackOnce?.("scan", `scan_${RESTO}_${new Date().toISOString().slice(0,10)}`, {});
 </script>
 
 <script>
@@ -377,6 +377,7 @@
   }
 
   (async function init(){
+    // ✅ charge config (nom/couleurs)
     let cfg = null;
     try { cfg = await window.Fidelavis?.loadConfig?.(); } catch(e){}
 
