@@ -205,25 +205,27 @@
   </style>
 
   <!-- ✅ Gate d’accès : si pas onboardé => indexnfc -->
-  <script>
-    (function(){
-      const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+ <script>
+(function(){
+  // assure fv_last_resto
+  try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
 
-      function hasAccess(){
-        try{
-          if ((localStorage.getItem("user_email") || "").trim()) return true;
-          if (localStorage.getItem("is_registered") === "1") return true;
-          if (localStorage.getItem("fv_onboarding_done") === "1") return true;
-          if (localStorage.getItem(`fv_registered_${RESTO}`) === "1") return true;
-        }catch(e){}
-        return false;
-      }
+  function hasAccessSafe(){
+    try{
+      // ✅ utilise core.js (localStorage + cookie fallback)
+      return window.Fidelavis?.hasAccess?.() === true;
+    }catch(e){ return false; }
+  }
 
-      if (!hasAccess()){
-        setTimeout(()=>{ if (!hasAccess()) window.Fidelavis?.go?.("indexnfc.html"); }, 250);
+  if (!hasAccessSafe()){
+    setTimeout(() => {
+      if (!hasAccessSafe()){
+        window.Fidelavis?.go?.("indexnfc.html");
       }
-    })();
-  </script>
+    }, 350);
+  }
+})();
+</script>
 </head>
 
 <body>
