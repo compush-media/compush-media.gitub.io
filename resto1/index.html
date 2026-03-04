@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Coupon du Mois – Fidelavis</title>
 
-  <!-- ✅ PROGRESSIER : mets TOUJOURS un chemin relatif dans chaque dossier resto -->
+  <!-- ✅ PROGRESSIER : chemin relatif dans chaque dossier resto -->
   <link rel="manifest" href="progressier.json"/>
   <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
 
@@ -209,24 +209,30 @@
   <!-- ✅ Gate d’accès: si pas inscrit -> indexnfc -->
   <script>
     (function(){
-      // assure fv_last_resto
-      if (window.Fidelavis && Fidelavis.rememberLastResto) Fidelavis.rememberLastResto();
-
-      const ok = (window.Fidelavis && Fidelavis.hasAccess) ? Fidelavis.hasAccess() : false;
-      if (!ok) {
-        setTimeout(()=> {
-          if (window.Fidelavis && Fidelavis.hasAccess && !Fidelavis.hasAccess()){
-            Fidelavis.go("indexnfc.html");
-          }
-        }, 300);
+      function hasAccessLocal(resto){
+        try{
+          if ((localStorage.getItem("user_email") || "").trim()) return true;
+          if (localStorage.getItem("is_registered") === "1") return true;
+          if (localStorage.getItem("fv_onboarding_done") === "1") return true;
+          if (localStorage.getItem(`fv_registered_${resto}`) === "1") return true;
+        }catch(e){}
+        return false;
       }
+
+      try{
+        const resto = (window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1");
+        if (!hasAccessLocal(resto)){
+          setTimeout(()=> {
+            if (!hasAccessLocal(resto)) window.Fidelavis?.go?.("indexnfc.html");
+          }, 300);
+        }
+      }catch(e){}
     })();
   </script>
 </head>
 
 <body>
 <div class="wrap">
-
   <div class="badge"><span class="dot"></span>Accès client activé</div>
   <h1>Coupon du mois</h1>
   <p class="sub">Présentez ce coupon en caisse. Entrez le code PIN affiché par le restaurant.</p>
@@ -257,7 +263,6 @@
   <audio id="audioOK">
     <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-reward-952.mp3">
   </audio>
-
 </div>
 
 <script>
@@ -309,36 +314,24 @@
 </script>
 
 <script>
-/* CONTEXTE RESTO */
-const RESTO = (window.Fidelavis && Fidelavis.getRestoSlug) ? Fidelavis.getRestoSlug() : "resto1";
+/* ============================
+   APP LOGIC (tracking unifié via core.js)
+============================ */
 
-/* Tracking URL */
-const API_TRACK = (window.Fidelavis && Fidelavis.API_TRACK) ? Fidelavis.API_TRACK :
-  "https://script.google.com/macros/s/AKfycbysXX-RuPkLVVy5w3ceXbIC3BLrAjw9KLnWxwApgKw76HCa3ouKNzjnF0Cr-7RuAaf9/exec";
+const RESTO = window.Fidelavis?.getRestoSlug?.() || "resto1";
+window.Fidelavis?.rememberLastResto?.();
 
-function track(eventName, extra = {}) {
-  if (window.Fidelavis && Fidelavis.track) return Fidelavis.track(eventName, extra);
-
-  const now = new Date();
-  const payload = {
-    resto: RESTO,
-    event: eventName,
-    mois: now.getMonth() + 1,
-    annee: now.getFullYear(),
-    user: (localStorage.getItem("user_email") || ""),
-    userAgent: navigator.userAgent,
-    pageURL: location.href,
-    ...extra
-  };
-
-  fetch(API_TRACK, {
-    method: "POST",
-    mode: "no-cors",
-    keepalive: true,
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  }).catch(()=>{});
+function track(eventName, extra){
+  return window.Fidelavis?.track?.(eventName, extra || {});
 }
+
+// Optionnel: page_view 1x/session
+window.Fidelavis?.trackOnce?.("coupon_view", `coupon_view_${RESTO}`, {});
+
+/* Charge config (nom/couleurs) */
+(async function(){
+  try{ await window.Fidelavis?.loadConfig?.(); }catch(e){}
+})();
 
 /* OFFRE MENSUELLE */
 const offers = [
@@ -353,20 +346,21 @@ const MONTH = now.getMonth();
 const YEAR = now.getFullYear();
 document.getElementById("txtOffer").textContent = offers[MONTH];
 
+// reset 1er du mois
 const COUPON_KEY = `coupon_${RESTO}_${YEAR}_${MONTH}`;
 if (now.getDate() === 1) localStorage.removeItem(COUPON_KEY);
 
+// avis anti-spam
 const REVIEW_KEY = `review_${RESTO}_${YEAR}_${MONTH}`;
 
 function allerAvis(){
   localStorage.setItem(REVIEW_KEY, "done");
   track("review_click");
-  setTimeout(() => (window.Fidelavis ? Fidelavis.go("avis.html") : (location.href="avis.html")), 120);
+  setTimeout(()=> window.Fidelavis?.go?.("avis.html"), 120);
 }
 function fermerAvis(){
   localStorage.setItem(REVIEW_KEY, "later");
-  const el = document.getElementById("reviewPrompt");
-  if (el) el.remove();
+  document.getElementById("reviewPrompt")?.remove();
 }
 
 /* PIN */
@@ -386,8 +380,7 @@ function soumettrePin() {
   const res = document.getElementById("result");
   const code = (window.getPinCode ? window.getPinCode() : "").trim();
 
-  const old = document.getElementById("reviewPrompt");
-  if (old) old.remove();
+  document.getElementById("reviewPrompt")?.remove();
 
   if (localStorage.getItem(COUPON_KEY) === "used") {
     res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
@@ -437,9 +430,9 @@ function partager() {
   else alert("Copiez ce lien : " + shareUrl);
 }
 
+/* Affiche l’état si déjà utilisé */
 if (localStorage.getItem(COUPON_KEY) === "used") {
-  document.getElementById("result").innerHTML =
-    `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
+  document.getElementById("result").innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
 }
 </script>
 
