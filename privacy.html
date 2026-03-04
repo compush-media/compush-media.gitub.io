@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Politique de confidentialité — Fidelavis</title>
 
+  <!-- ✅ Core commun -->
+  <script src="./assets/core.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -19,8 +22,6 @@
       --line:rgba(0,0,0,.08);
       --shadow:0 18px 40px rgba(0,0,0,.12);
       --radius:22px;
-      --danger:#b6152b;
-      --ok:#1f8a4c;
     }
     *{box-sizing:border-box}
     body{
@@ -114,8 +115,6 @@
       border:1px solid rgba(184,146,79,0.20);
       color:#3b3b3b;font-weight:900;font-size:12.5px;
     }
-    .ok{ background:rgba(31,138,76,.07); border:1px solid rgba(31,138,76,.14); }
-    .danger{ background:rgba(182,21,43,.07); border:1px solid rgba(182,21,43,.14); }
     .footer{
       margin-top:14px;
       color:var(--muted);
@@ -181,7 +180,7 @@
           </div>
         </div>
 
-        <div class="box ok">
+        <div class="box">
           <h2>2) Finalités</h2>
           <ul>
             <li>Fournir le service : envoi du coupon, accès au programme.</li>
@@ -198,7 +197,7 @@
           </p>
         </div>
 
-        <div class="box danger">
+        <div class="box">
           <h2>4) Conservation</h2>
           <p>
             Nous conservons les données pendant une durée limitée, nécessaire au fonctionnement du programme
@@ -228,7 +227,7 @@
 
       </div>
 
-      <a href="#" id="backResto" class="back">⬅ Retour au restaurant</a>
+      <a href="#" id="backResto" class="back">⬅ Retour</a>
 
       <div class="footer">
         <p style="margin:12px 0 0;">
@@ -240,27 +239,30 @@
 
 <script>
 (function(){
-  const btn = document.getElementById("backResto");
   const params = new URLSearchParams(location.search);
   const from = params.get("from");
 
-  // Priorité 1 : paramètre from
-  if(from && from.startsWith("/")){
-    btn.href = from;
+  const back = document.getElementById("backResto");
+  const cgu  = document.getElementById("cguLink");
+
+  // ✅ 1) Retour exact si "from" est fourni
+  if (from && from.startsWith("/")) {
+    back.href = from;
   } else {
-    // Priorité 2 : referer
-    const ref = document.referrer || "";
-    if(ref.includes("app.cartefidelavis.com/")) btn.href = ref;
-    else btn.href = "https://app.cartefidelavis.com/";
+    // ✅ 2) sinon, retour “resto courant” via core.js
+    back.href = "#";
+    back.addEventListener("click", (e)=>{
+      e.preventDefault();
+      if (window.Fidelavis?.go) window.Fidelavis.go("index.html");
+      else location.href = "/";
+    });
   }
 
-  // Pour garder le retour cohérent si on clique vers CGU depuis Privacy
-  const cgu = document.getElementById("cguLink");
-  if(cgu){
-    const fallbackFrom = from && from.startsWith("/") ? from : (btn.href.includes("app.cartefidelavis.com") ? new URL(btn.href).pathname : "");
-    if(fallbackFrom) cgu.href = "/cgu.html?from=" + encodeURIComponent(fallbackFrom);
-  }
+  // ✅ propage "from" vers CGU si on l'a
+  const effectiveFrom = (from && from.startsWith("/")) ? from : "";
+  if (effectiveFrom) cgu.href = "/cgu.html?from=" + encodeURIComponent(effectiveFrom);
 })();
 </script>
+
 </body>
 </html>
