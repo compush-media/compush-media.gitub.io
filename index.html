@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Fidelavis</title>
+  <script>
+    (function () {
+      // 1) si on a déjà un resto en mémoire
+      const lastResto = localStorage.getItem("fv_last_resto") || "resto1";
+
+      // 2) si l'URL contient ?resto=restoX, ça prime
+      const p = new URLSearchParams(location.search);
+      const r = (p.get("resto") || lastResto).toLowerCase();
+
+      // redirection sûre vers le dossier
+      location.replace("/" + r + "/indexnfc.html");
+    })();
+  </script>
+</head>
+<body></body>
+</html>
