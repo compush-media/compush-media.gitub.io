@@ -9,72 +9,39 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- ✅ PWA (PROD) — resto1 -->
-  <link rel="manifest" href="/resto1/progressier.json">
+  <!-- ✅ PWA : TOUJOURS relatif dans chaque dossier resto -->
+  <link rel="manifest" href="progressier.json">
   <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
 
-  <!-- Core (commun) -->
+  <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
 
-  <!-- ✅ Patch anti-boucle acquisition/app (ULTRA ROBUSTE)
-       Si déjà onboardé (email OU flags OU cookies) => index.html
-       (tôt dans le head pour éviter le flash UI) -->
+  <!-- ✅ Anti-boucle acquisition/app : si déjà onboardé => index.html -->
   <script>
     (function () {
-      function getRestoSlug(){
-  return (location.pathname.replace(/^\/+|\/+$/g, "").split("/")[0] || "resto1").toLowerCase();
-}
-const RESTO = getRestoSlug();
-
-/* ✅ mémorise le dernier restaurant visité
-   utile si quelqu’un arrive sur https://app.cartefidelavis.com/
-*/
-try{
-  localStorage.setItem("fv_last_resto", RESTO);
-}catch(e){}
-
-      function getCookie(name){
-        try{
-          const m = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-          return m ? decodeURIComponent(m[2]) : "";
-        }catch(e){ return ""; }
-      }
-
-      function hasAccess(){
+      function hasAccessLocal(resto){
         try{
           const emailLS = (localStorage.getItem("user_email") || "").trim();
           if (emailLS) return true;
 
-          // flags
           if (localStorage.getItem("is_registered") === "1") return true;
           if (localStorage.getItem("fv_onboarding_done") === "1") return true;
-          if (localStorage.getItem(`fv_registered_${RESTO}`) === "1") return true;
+          if (localStorage.getItem(`fv_registered_${resto}`) === "1") return true;
 
-          // cookie fallback
-          const emailC = (getCookie("user_email") || "").trim();
-          if (emailC) {
-            localStorage.setItem("user_email", emailC);
-            localStorage.setItem("is_registered", "1");
-            localStorage.setItem("fv_onboarding_done", "1");
-            localStorage.setItem(`fv_registered_${RESTO}`, "1");
-            return true;
-          }
-          if ((getCookie("is_registered") || "").trim() === "1") {
-            localStorage.setItem("is_registered", "1");
-            localStorage.setItem("fv_onboarding_done", "1");
-            localStorage.setItem(`fv_registered_${RESTO}`, "1");
-            return true;
-          }
+          // cookie fallback (si iOS a perdu localStorage)
+          const emailC = (document.cookie.match(/(?:^|;\s*)user_email=([^;]+)/)?.[1] || "");
+          const regC  = (document.cookie.match(/(?:^|;\s*)is_registered=([^;]+)/)?.[1] || "");
+          if (emailC || regC === "1") return true;
         }catch(e){}
         return false;
       }
 
-      // marqueur (debug / anti-boucle)
-      try{ localStorage.setItem("fv_seen_indexnfc", "1"); }catch(e){}
-
-      if (hasAccess()) {
-        window.location.replace("./index.html");
-      }
+      try{
+        const resto = (window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1");
+        if (hasAccessLocal(resto)) {
+          window.location.replace("./index.html");
+        }
+      }catch(e){}
     })();
   </script>
 
@@ -295,7 +262,7 @@ try{
       font-weight:950;
     }
 
-    /* ✅ Cache le bouton/widget flottant Progressier (icone ronde à droite) */
+    /* ✅ Cache le bouton/widget flottant Progressier */
     progressier-install-button,
     pwa-install,
     #progressier-install-button,
@@ -357,48 +324,16 @@ try{
   </div>
 
 <script>
-  /* ============================
-     TRACKING (GLOBAL SHEET)
-     - scan: 1 fois / session
-     - signup_open: clic CTA vers inscription
-  ============================ */
-  const API_TRACK = "https://script.google.com/macros/s/AKfycbysXX-RuPkLVVy5w3ceXbIC3BLrAjw9KLnWxwApgKw76HCa3ouKNzjnF0Cr-7RuAaf9/exec";
+  const RESTO = window.Fidelavis?.getRestoSlug?.() || "resto1";
+  window.Fidelavis?.rememberLastResto?.();
 
-  function getRestoSlug() {
-    const p = location.pathname.replace(/^\/+|\/+$/g, "");
-    return (p.split("/")[0] || "resto1").toLowerCase();
-  }
-  const RESTO = getRestoSlug();
-
-  const now = new Date();
-  const MONTH = now.getMonth() + 1;
-  const YEAR = now.getFullYear();
-
-  function track(eventName, extra = {}) {
-    const payload = {
-      resto: RESTO,
-      event: eventName,
-      mois: MONTH,
-      annee: YEAR,
-      user: (localStorage.getItem("user_email") || ""),
-      userAgent: navigator.userAgent,
-      pageURL: location.href,
-      ...extra
-    };
-
-    fetch(API_TRACK, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload)
-    }).catch(()=>{});
-  }
-
+  /* scan: 1 fois / session / jour */
   (function trackScanOnce(){
-    const key = `scan_${RESTO}_${YEAR}_${MONTH}_${now.getDate()}`;
+    const d = new Date();
+    const key = `scan_${RESTO}_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
     if (sessionStorage.getItem(key)) return;
     sessionStorage.setItem(key, "1");
-    track("scan");
+    window.Fidelavis?.track?.("scan");
   })();
 </script>
 
@@ -415,7 +350,7 @@ try{
 
   function startCountdown(){
     const out = document.getElementById("countdown");
-    const startKey = "fidelavis_offer_start";
+    const startKey = `fv_offer_start_${RESTO}`; // ✅ par resto
     let start = Number(localStorage.getItem(startKey));
     const now = Date.now();
 
@@ -436,32 +371,25 @@ try{
   }
 
   function goToInscription(){
-    // tracking + navigation robuste (même si core.js ne charge pas)
-    try{ track("signup_open"); }catch(e){}
-    if (window.Fidelavis && typeof Fidelavis.go === "function") {
-      Fidelavis.go("inscription.html");
-    } else {
-      window.location.href = "./inscription.html";
-    }
+    window.Fidelavis?.track?.("signup_open");
+    if (window.Fidelavis?.go) window.Fidelavis.go("inscription.html");
+    else window.location.href = "./inscription.html";
   }
 
   (async function init(){
     let cfg = null;
-    try { cfg = await Fidelavis.loadConfig(); } catch(e){}
+    try { cfg = await window.Fidelavis?.loadConfig?.(); } catch(e){}
 
     document.getElementById("socialCount").textContent =
-      String(stableDailyRandom(18, 38, (cfg && cfg.name) ? cfg.name : "resto"));
+      String(stableDailyRandom(18, 38, (cfg && cfg.name) ? cfg.name : RESTO));
 
     document.getElementById("ctaBtn").addEventListener("click", goToInscription);
-
     startCountdown();
   })();
 </script>
 
-
-
-<!-- ✅ Force suppression widget Progressier flottant -->
 <script>
+/* ✅ Force suppression widget Progressier flottant */
 (function removeProgressierFloating(){
   function kill(){
     const selectors = [
