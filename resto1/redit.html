@@ -1,170 +1,170 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Installer l’app</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Installer l’app</title>
 
-<!-- ✅ INSTALLATION PROGRESSIER (COMME AVANT) -->
-<link rel="manifest" href="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/progressier.json"/>
-<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+  <!-- ✅ Manifest RELATIF (recommandé) -->
+  <link rel="manifest" href="progressier.json"/>
 
-<!-- ✅ Core commun -->
-<script src="../assets/core.js"></script>
+  <!-- ✅ Progressier -->
+  <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
 
-<style>
-:root{
-  --gold:#B8924F;
-  --bg:#f6efe5;
-  --card:#ffffff;
-  --ink:#1d1d1d;
-  --muted:#6b6b6b;
-  --line:rgba(0,0,0,0.08);
-  --shadow:0 18px 40px rgba(0,0,0,0.12);
-  --radius:22px;
-}
-*{ box-sizing:border-box; }
+  <!-- ✅ Core commun -->
+  <script src="../assets/core.js"></script>
 
-body{
-  margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background:
-    radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
-    linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
-  color:var(--ink);
-  padding:22px 14px 120px;
-  text-align:center;
-}
-.wrap{ max-width:520px; margin:0 auto; }
+  <style>
+    :root{
+      --gold:#B8924F;
+      --bg:#f6efe5;
+      --card:#ffffff;
+      --ink:#1d1d1d;
+      --muted:#6b6b6b;
+      --line:rgba(0,0,0,0.08);
+      --shadow:0 18px 40px rgba(0,0,0,0.12);
+      --radius:22px;
+    }
+    *{ box-sizing:border-box; }
 
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 12px;
-  border-radius:999px;
-  background:rgba(255,255,255,0.75);
-  border:1px solid var(--line);
-  box-shadow:0 10px 18px rgba(0,0,0,0.05);
-  font-weight:950;
-  font-size:13px;
-  color:#3b3b3b;
-}
-.dot{
-  width:8px;height:8px;border-radius:99px;
-  background:#1f8a4c;
-  box-shadow:0 0 0 6px rgba(31,138,76,0.12);
-}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
+        linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
+      color:var(--ink);
+      padding:22px 14px 120px;
+      text-align:center;
+    }
+    .wrap{ max-width:520px; margin:0 auto; }
 
-h1{
-  margin:14px 0 6px;
-  font-size:30px;
-  font-weight:950;
-  letter-spacing:-0.4px;
-}
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.75);
+      border:1px solid var(--line);
+      box-shadow:0 10px 18px rgba(0,0,0,0.05);
+      font-weight:950;
+      font-size:13px;
+      color:#3b3b3b;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:99px;
+      background:#1f8a4c;
+      box-shadow:0 0 0 6px rgba(31,138,76,0.12);
+    }
 
-.sub{
-  margin:0 0 16px;
-  font-size:14px;
-  color:var(--muted);
-  line-height:1.35;
-}
+    h1{
+      margin:14px 0 6px;
+      font-size:30px;
+      font-weight:950;
+      letter-spacing:-0.4px;
+    }
 
-.card{
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:18px 16px;
-  box-shadow:0 20px 55px rgba(0,0,0,.10);
-  border:1px solid var(--line);
-  text-align:left;
-}
+    .sub{
+      margin:0 0 16px;
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.35;
+    }
 
-.big{
-  font-weight:950;
-  font-size:16px;
-  margin:0 0 10px;
-}
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:18px 16px;
+      box-shadow:0 20px 55px rgba(0,0,0,.10);
+      border:1px solid var(--line);
+      text-align:left;
+    }
 
-.soft{
-  margin-top:10px;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:10px 12px;
-  border-radius:14px;
-  background:rgba(184,146,79,0.12);
-  border:1px solid rgba(184,146,79,0.22);
-  color:#4a3a18;
-  font-weight:850;
-  font-size:13px;
-}
+    .big{
+      font-weight:950;
+      font-size:16px;
+      margin:0 0 10px;
+    }
 
-.steps{
-  margin-top:14px;
-  padding-top:14px;
-  border-top:1px dashed rgba(0,0,0,0.12);
-}
-.step{
-  display:flex;
-  gap:10px;
-  margin:10px 0 0;
-  font-size:13.5px;
-  line-height:1.35;
-}
-.num{
-  width:28px;height:28px;
-  border-radius:10px;
-  background:rgba(184,146,79,0.18);
-  color:#6f5522;
-  display:grid;
-  place-items:center;
-  font-weight:950;
-  flex:0 0 auto;
-}
-</style>
+    .soft{
+      margin-top:10px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(184,146,79,0.12);
+      border:1px solid rgba(184,146,79,0.22);
+      color:#4a3a18;
+      font-weight:850;
+      font-size:13px;
+    }
+
+    .steps{
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px dashed rgba(0,0,0,0.12);
+    }
+    .step{
+      display:flex;
+      gap:10px;
+      margin:10px 0 0;
+      font-size:13.5px;
+      line-height:1.35;
+    }
+    .num{
+      width:28px;height:28px;
+      border-radius:10px;
+      background:rgba(184,146,79,0.18);
+      color:#6f5522;
+      display:grid;
+      place-items:center;
+      font-weight:950;
+      flex:0 0 auto;
+    }
+  </style>
 </head>
 
 <body>
-<div class="wrap">
-  <div class="badge"><span class="dot"></span>🎉 Votre -10% est prêt</div>
+  <div class="wrap">
+    <div class="badge"><span class="dot"></span>🎉 Votre -10% est prêt</div>
 
-  <h1>📲 Ajouter l’app — <span data-resto-name>Restaurant</span></h1>
-  <p class="sub">Ajoutez-la à votre écran d’accueil pour présenter votre réduction en caisse.</p>
+    <h1>📲 Ajouter l’app — <span data-resto-name>Restaurant</span></h1>
+    <p class="sub">Ajoutez-la à votre écran d’accueil pour présenter votre réduction en caisse.</p>
 
-  <div class="card">
-    <p class="big">🎁 Votre -10% sur votre prochaine <b>addition</b> est prêt.</p>
-    <div class="soft">✨ Cela prend 5 secondes (1 seule fois).</div>
+    <div class="card">
+      <p class="big">🎁 Votre -10% sur votre prochaine <b>addition</b> est prêt.</p>
+      <div class="soft">✨ Cela prend 5 secondes (1 seule fois).</div>
 
-    <div class="steps">
-      <div class="step"><div class="num">1</div><div>Appuyez sur le bouton d’installation qui apparaît.</div></div>
-      <div class="step"><div class="num">2</div><div>Confirmez. L’app sera ajoutée à votre écran d’accueil.</div></div>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><div>Appuyez sur le bouton d’installation qui apparaît.</div></div>
+        <div class="step"><div class="num">2</div><div>Confirmez. L’app sera ajoutée à votre écran d’accueil.</div></div>
+      </div>
     </div>
   </div>
-</div>
 
 <script>
 /* ============================
    TRACKING + REDIRECT (via core.js)
 ============================ */
-
 function isStandalone(){
   return window.matchMedia("(display-mode: standalone)").matches ||
          window.navigator.standalone === true;
 }
 
 (function(){
-  // ✅ mémorise le resto (au cas où) + tracking 1x/session
   try{
     const RESTO = window.Fidelavis?.rememberLastResto?.() || "resto1";
 
-    // install_attempt (1 fois par session)
+    // install_attempt 1x/session/RESTO
     const k = `install_attempt_${RESTO}`;
     if (!sessionStorage.getItem(k)){
       sessionStorage.setItem(k, "1");
       window.Fidelavis?.track?.("install_attempt");
     }
 
-    // Si déjà installée → on track install + on va au coupon
+    // Si déjà installée => install + redirect coupon
     if (isStandalone()){
       window.Fidelavis?.track?.("install");
       setTimeout(()=> window.location.replace("index.html"), 150);
@@ -173,13 +173,9 @@ function isStandalone(){
   }catch(e){}
 })();
 
-/* Charge config resto */
+/* Charge config resto (nom, couleurs…) */
 (async function(){
-  try {
-    if (window.Fidelavis && typeof Fidelavis.loadConfig === "function") {
-      await Fidelavis.loadConfig();
-    }
-  } catch(e) {}
+  try { await window.Fidelavis?.loadConfig?.(); } catch(e){}
 })();
 </script>
 
