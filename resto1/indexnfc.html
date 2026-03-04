@@ -16,39 +16,24 @@
   <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
 
-  <!-- ✅ Anti-boucle : si déjà onboardé => index.html -->
+  <!-- ✅ Anti-boucle (ULTRA ROBUSTE) : si déjà onboardé => index.html -->
   <script>
     (function () {
-      function getCookie(name){
-        try{
-          const m = document.cookie.match(new RegExp("(^|;\\s*)" + name + "=([^;]+)"));
-          return m ? decodeURIComponent(m[2]) : "";
-        }catch(e){ return ""; }
+      try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
+
+      function hasAccessSafe(){
+        try { return window.Fidelavis?.hasAccess?.() === true; }
+        catch(e){ return false; }
       }
 
-      function hasAccessLocal(resto){
-        try{
-          // email LS
-          if ((localStorage.getItem("user_email") || "").trim()) return true;
-
-          // flags
-          if (localStorage.getItem("is_registered") === "1") return true;
-          if (localStorage.getItem("fv_onboarding_done") === "1") return true;
-          if (localStorage.getItem(`fv_registered_${resto}`) === "1") return true;
-
-          // cookie fallback
-          const emailC = (getCookie("user_email") || "").trim();
-          const regC   = (getCookie("is_registered") || "").trim();
-          if (emailC) return true;
-          if (regC === "1") return true;
-        }catch(e){}
-        return false;
+      // iOS/PWA: parfois localStorage est "retardé" au boot → on check 2 fois
+      if (hasAccessSafe()){
+        window.location.replace("./index.html");
+        return;
       }
-
-      try{
-        const resto = (window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1");
-        if (hasAccessLocal(resto)) window.location.replace("./index.html");
-      }catch(e){}
+      setTimeout(() => {
+        if (hasAccessSafe()) window.location.replace("./index.html");
+      }, 220);
     })();
   </script>
 
@@ -350,7 +335,7 @@
 
   function startCountdown(){
     const out = document.getElementById("countdown");
-    const startKey = `fv_offer_start_${RESTO}`; // ✅ par resto
+    const startKey = `fv_offer_start_${RESTO}`;
     let start = Number(localStorage.getItem(startKey));
     const now = Date.now();
 
@@ -377,7 +362,6 @@
   }
 
   (async function init(){
-    // ✅ charge config (nom/couleurs)
     let cfg = null;
     try { cfg = await window.Fidelavis?.loadConfig?.(); } catch(e){}
 
