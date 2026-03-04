@@ -452,13 +452,7 @@
   })();
 </script>
 
-<!-- ✅ SW register (scope limité au dossier /resto1/) -->
-<script>
-  (function () {
-    if (!("serviceWorker" in navigator)) return;
-    navigator.serviceWorker.register("/resto1/sw.js", { scope: "/resto1/" }).catch(()=>{});
-  })();
-</script>
+
 
 <!-- ✅ Force suppression widget Progressier flottant -->
 <script>
