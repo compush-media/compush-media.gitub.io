@@ -165,11 +165,45 @@ function isStandalone(){
     }
 
     // Si déjà installée => install + redirect coupon
+   <script>
+function isStandalone(){
+  return window.matchMedia("(display-mode: standalone)").matches ||
+         window.navigator.standalone === true;
+}
+
+(function(){
+  try{
+    const RESTO = window.Fidelavis?.rememberLastResto?.() || "resto1";
+
+    // install_attempt 1x/session/RESTO
+    const k = `install_attempt_${RESTO}`;
+    if (!sessionStorage.getItem(k)){
+      sessionStorage.setItem(k, "1");
+      window.Fidelavis?.track?.("install_attempt");
+    }
+
+    // ✅ Si on est dans la PWA, on ne redirige vers index QUE si l'accès est déjà OK
     if (isStandalone()){
-      window.Fidelavis?.track?.("install");
-      setTimeout(()=> window.location.replace("index.html"), 150);
+      // 1) track ouverture PWA (optionnel)
+      window.Fidelavis?.track?.("install_open");
+
+      // 2) attend un poil que iOS restaure cookies/LS, puis teste hasAccess()
+      setTimeout(() => {
+        if (window.Fidelavis?.hasAccess?.()){
+          window.Fidelavis?.track?.("install");
+          window.location.replace("index.html");
+        } else {
+          // sinon on reste sur redit.html (et l'utilisateur peut ré-ouvrir via le lien email)
+          // optionnel: afficher un mini message
+          window.Fidelavis?.track?.("install_no_access");
+        }
+      }, 350);
+
       return;
     }
+  }catch(e){}
+})();
+</script>
   }catch(e){}
 })();
 
