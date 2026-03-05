@@ -214,7 +214,6 @@
       catch(e){ return false; }
     }
 
-    // ✅ iOS/PWA: laisse un petit délai pour que cookies/LS soient restaurés
     if (!hasAccessSafe()){
       setTimeout(() => {
         if (!hasAccessSafe()) window.Fidelavis?.go?.("indexnfc.html");
@@ -245,7 +244,7 @@
       <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 4">
     </div>
 
-    <button class="btn btnPrimary" type="button" onclick="soumettrePin()">Valider le coupon</button>
+    <button class="btn btnPrimary" id="btnValidate" type="button" onclick="soumettrePin()">Valider le coupon</button>
     <button class="btn btnSecondary" type="button" onclick="partager()">Partager ce restaurant</button>
 
     <div id="result" class="result"></div>
@@ -306,65 +305,103 @@
 </script>
 
 <script>
-/* ✅ APP LOGIC */
+/* ===========================
+   APP LOGIC (mois suivant)
+=========================== */
 const RESTO = window.Fidelavis?.getRestoSlug?.() || "resto1";
 window.Fidelavis?.rememberLastResto?.();
-
 window.Fidelavis?.trackOnce?.("coupon_view", `coupon_view_${RESTO}`, {});
 
-(async function(){
+const offers = [
+  "🎁 Janvier : -10% menu","🎁 Février : Dessert offert","🎁 Mars : Café offert",
+  "🎁 Avril : -15% végétarien","🎁 Mai : Apéritif offert","🎁 Juin : Entrée offerte",
+  "🎁 Juillet : Glace enfant","🎁 Août : Boisson gratuite","🎁 Septembre : -20% étudiants",
+  "🎁 Octobre : Café gourmand","🎁 Novembre : Menu duo","🎁 Décembre : Chocolat chaud"
+];
+
+let ACTIVE_YEAR = new Date().getFullYear();
+let ACTIVE_MONTH = new Date().getMonth(); // 0-11
+let IS_LOCKED = false;
+
+(async function init(){
   try{ await window.Fidelavis?.loadConfig?.(); }catch(e){}
 
-  // ✅ Si coupon pas dispo (mois suivant inscription) => message + bouton grisé
+  const offerEl = document.getElementById("txtOffer");
+  const subEl = document.querySelector(".sub");
+  const btn = document.getElementById("btnValidate");
+
+  // ✅ Coupon pas dispo => afficher coupon du mois prochain + verrou
   try{
     if (window.Fidelavis?.isCouponAvailable && !window.Fidelavis.isCouponAvailable()){
+      IS_LOCKED = true;
+
       const cd = window.Fidelavis.getCouponCountdown();
-      const d = cd.unlock;
-      const mois = d.toLocaleDateString("fr-FR", { month:"long", year:"numeric" });
+      const unlock = cd.unlock;
 
-      document.getElementById("txtOffer").textContent = `⏳ Votre coupon sera disponible en ${mois}.`;
+      ACTIVE_YEAR = unlock.getFullYear();
+      ACTIVE_MONTH = unlock.getMonth();
 
-      const btn = document.querySelector(".btnPrimary");
+      const unlockLabel = unlock.toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" });
+
+      offerEl.textContent = `${offers[ACTIVE_MONTH]} — 🔒 disponible le ${unlockLabel}`;
+
+      if (subEl){
+        subEl.innerHTML = `✅ Inscription confirmée.<br><b>Revenez le mois prochain</b> pour profiter de votre coupon.`;
+      }
+
       if (btn){
         btn.disabled = true;
         btn.style.opacity = "0.55";
         btn.style.cursor = "not-allowed";
+        btn.textContent = "⏳ Disponible le mois prochain";
       }
 
-      window.Fidelavis?.trackOnce?.("coupon_locked_view", `coupon_locked_${RESTO}_${d.toISOString().slice(0,10)}`, {});
-      return; // IMPORTANT: on ne remplace pas le texte par l'offre du mois
+      window.Fidelavis?.trackOnce?.("coupon_locked_view", `coupon_locked_${RESTO}_${unlock.toISOString().slice(0,10)}`, {});
+      syncCouponState();
+      return;
     }
   }catch(e){}
 
-  // ✅ OFFRE MENSUELLE (normal)
-  const offers = [
-    "🎁 Janvier : -10% menu","🎁 Février : Dessert offert","🎁 Mars : Café offert",
-    "🎁 Avril : -15% végétarien","🎁 Mai : Apéritif offert","🎁 Juin : Entrée offerte",
-    "🎁 Juillet : Glace enfant","🎁 Août : Boisson gratuite","🎁 Septembre : -20% étudiants",
-    "🎁 Octobre : Café gourmand","🎁 Novembre : Menu duo","🎁 Décembre : Chocolat chaud"
-  ];
+  // ✅ Coupon dispo => mois courant
+  IS_LOCKED = false;
+  ACTIVE_YEAR = new Date().getFullYear();
+  ACTIVE_MONTH = new Date().getMonth();
+  offerEl.textContent = offers[ACTIVE_MONTH];
 
-  const now = new Date();
-  const MONTH = now.getMonth();
-  document.getElementById("txtOffer").textContent = offers[MONTH];
+  if (btn){
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.style.cursor = "pointer";
+    btn.textContent = "Valider le coupon";
+  }
+
+  syncCouponState();
 })();
 
-const now = new Date();
-const MONTH = now.getMonth();
-const YEAR = now.getFullYear();
+function couponKey(){
+  return `coupon_${RESTO}_${ACTIVE_YEAR}_${ACTIVE_MONTH}`;
+}
 
-const COUPON_KEY = `coupon_${RESTO}_${YEAR}_${MONTH}`;
-if (now.getDate() === 1) localStorage.removeItem(COUPON_KEY);
+function reviewKey(){
+  return `review_${RESTO}_${ACTIVE_YEAR}_${ACTIVE_MONTH}`;
+}
 
-const REVIEW_KEY = `review_${RESTO}_${YEAR}_${MONTH}`;
+function syncCouponState(){
+  const res = document.getElementById("result");
+  if (!res) return;
+
+  if (localStorage.getItem(couponKey()) === "used") {
+    res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
+  }
+}
 
 function allerAvis(){
-  localStorage.setItem(REVIEW_KEY, "done");
+  localStorage.setItem(reviewKey(), "done");
   window.Fidelavis?.track?.("review_click");
   setTimeout(()=> window.Fidelavis?.go?.("avis.html"), 120);
 }
 function fermerAvis(){
-  localStorage.setItem(REVIEW_KEY, "later");
+  localStorage.setItem(reviewKey(), "later");
   document.getElementById("reviewPrompt")?.remove();
 }
 
@@ -385,21 +422,23 @@ function soumettrePin() {
   const res = document.getElementById("result");
 
   // ✅ Blocage si coupon pas encore disponible (mois suivant inscription)
-  try{
-    if (window.Fidelavis?.isCouponAvailable && !window.Fidelavis.isCouponAvailable()){
+  if (IS_LOCKED){
+    try{
       const cd = window.Fidelavis.getCouponCountdown();
-      const d = cd.unlock;
-      const mois = d.toLocaleDateString("fr-FR", { month:"long", year:"numeric" });
-      res.innerHTML = `<div class="ok-box warn">⏳ Coupon disponible en ${mois}. Revenez à ce moment-là ✅</div>`;
+      const unlockLabel = cd.unlock.toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" });
+      res.innerHTML = `<div class="ok-box warn">⏳ Coupon disponible le ${unlockLabel}. Revenez à ce moment-là ✅</div>`;
       window.Fidelavis?.track?.("coupon_locked_try");
       return;
+    }catch(e){
+      res.innerHTML = `<div class="ok-box warn">⏳ Coupon disponible le mois prochain ✅</div>`;
+      return;
     }
-  }catch(e){}
+  }
 
   const code = (window.getPinCode ? window.getPinCode() : "").trim();
   document.getElementById("reviewPrompt")?.remove();
 
-  if (localStorage.getItem(COUPON_KEY) === "used") {
+  if (localStorage.getItem(couponKey()) === "used") {
     res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
     return;
   }
@@ -409,14 +448,14 @@ function soumettrePin() {
   }
 
   if (verifierPin(code)) {
-    localStorage.setItem(COUPON_KEY, "used");
+    localStorage.setItem(couponKey(), "used");
     res.innerHTML = `<div class="ok-box success">✅ Coupon validé</div>`;
     document.getElementById("audioOK").play().catch(()=>{});
 
     window.Fidelavis?.track?.("coupon_validate");
 
     setTimeout(() => {
-      if (localStorage.getItem(REVIEW_KEY)) return;
+      if (localStorage.getItem(reviewKey())) return;
 
       const box = document.createElement("div");
       box.className = "reviewBox";
@@ -448,10 +487,6 @@ function partager() {
     .then(()=>alert("Lien copié 👍"))
     .catch(()=>alert("Copiez ce lien : " + shareUrl));
   else alert("Copiez ce lien : " + shareUrl);
-}
-
-if (localStorage.getItem(COUPON_KEY) === "used") {
-  document.getElementById("result").innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
 }
 </script>
 
