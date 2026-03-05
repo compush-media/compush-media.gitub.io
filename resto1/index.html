@@ -11,6 +11,26 @@
 
   <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
+  ...
+<script src="../assets/core.js"></script>
+
+<!-- tes scripts existants -->
+
+<script>
+(function(){
+  const p = new URLSearchParams(location.search);
+  if (p.get("from") !== "nfc") return;
+
+  const msg = document.createElement("div");
+  msg.style.cssText="max-width:520px;margin:0 auto 12px;padding:12px;border-radius:16px;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.85);font-weight:900;color:#2b2b2b;text-align:center;";
+  msg.innerHTML="📲 Astuce iPhone : pour ouvrir l’app, utilisez l’icône <b>Fidelavis</b> sur votre écran d’accueil.";
+
+  document.querySelector(".wrap")?.prepend(msg);
+})();
+</script>
+
+</body>
+</html>
 
   <!-- ✅ PATCH PWA iOS : évite retour indexnfc quand l'app démarre -->
   <script>
