@@ -45,8 +45,6 @@
   function currentFolderBase() {
     const p = location.pathname;
     const idx = p.lastIndexOf("/");
-    // ex: "/resto1/index.html" -> "/resto1/"
-    // ex: "/" -> "/"
     return idx >= 0 ? p.slice(0, idx + 1) : "/";
   }
 
@@ -74,11 +72,82 @@
     return /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(String(s || "").trim());
   }
 
+  /* ---------------------------
+     ✅ NOUVEAU : Coupon "mois suivant"
+     Règle: l'accès coupon est dispo au 1er du mois suivant l'inscription.
+  --------------------------- */
+  function couponUnlockKey(resto){
+    return `fv_coupon_unlock_${(resto || rememberLastResto()).toLowerCase()}`;
+  }
+
+  function computeNextMonthFirstDate(fromDate){
+    const d = fromDate instanceof Date ? fromDate : new Date();
+    // 1er du mois suivant à 00:00 local
+    return new Date(d.getFullYear(), d.getMonth() + 1, 1, 0, 0, 0, 0);
+  }
+
+  function ensureCouponUnlockDate(){
+    const resto = rememberLastResto();
+    const k = couponUnlockKey(resto);
+
+    // déjà défini
+    const existing = safeGet(k);
+    if (existing) return existing;
+
+    // sinon: set maintenant -> 1er du mois prochain
+    const next = computeNextMonthFirstDate(new Date());
+    const iso = next.toISOString();
+    safeSet(k, iso);
+    return iso;
+  }
+
+  function getNextCouponDate(){
+    const resto = rememberLastResto();
+    const k = couponUnlockKey(resto);
+
+    let iso = safeGet(k);
+    if (!iso) iso = ensureCouponUnlockDate();
+
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) {
+      // corruption -> reset
+      safeRemove(k);
+      const iso2 = ensureCouponUnlockDate();
+      return new Date(iso2);
+    }
+    return d;
+  }
+
+  function isCouponAvailable(nowDate){
+    const now = nowDate instanceof Date ? nowDate : new Date();
+    const unlock = getNextCouponDate();
+    return now.getTime() >= unlock.getTime();
+  }
+
+  function getCouponCountdown(nowDate){
+    const now = nowDate instanceof Date ? nowDate : new Date();
+    const unlock = getNextCouponDate();
+    const ms = Math.max(0, unlock.getTime() - now.getTime());
+    const totalSec = Math.ceil(ms / 1000);
+
+    const days = Math.floor(totalSec / 86400);
+    const hours = Math.floor((totalSec % 86400) / 3600);
+    const mins = Math.floor((totalSec % 3600) / 60);
+
+    return { ms, totalSec, days, hours, mins, unlock };
+  }
+
+  /* ---------------------------
+     Onboarding flags
+  --------------------------- */
   function setOnboardFlags(){
     const resto = rememberLastResto();
     safeSet("is_registered", "1");
     safeSet("fv_onboarding_done", "1");
     safeSet(`fv_registered_${resto}`, "1");
+
+    // ✅ fixe la date de déblocage coupon (mois suivant)
+    ensureCouponUnlockDate();
   }
 
   function persistEmailFromUrl() {
@@ -145,7 +214,6 @@
     if (safeGet(`fv_registered_${resto}`) === "1") return true;
     if ((getCookie("is_registered") || "").trim() === "1") return true;
 
-    // cookie email (au cas où)
     const emailC = (getCookie("user_email") || "").trim();
     if (emailC && isValidEmail(emailC)) return true;
 
@@ -173,7 +241,6 @@
 
   /* ---------------------------
      Patch manifest (optionnel)
-     🔥 Reco: dans chaque /restoX/ mets href="progressier.json"
   --------------------------- */
   function patchManifestHref() {
     try {
@@ -211,7 +278,6 @@
       Object.entries(payload).forEach(([k, v]) => qs.set(k, String(v ?? "")));
       const url = `${API_TRACK}?${qs.toString()}`;
 
-      // Beacon: parfois limité, mais on tente
       if (navigator.sendBeacon) {
         try {
           const ok = navigator.sendBeacon(url, "");
@@ -219,7 +285,6 @@
         } catch (e) {}
       }
 
-      // Fallback
       await fetch(url, {
         method: "GET",
         cache: "no-store",
@@ -244,7 +309,6 @@
     return true;
   }
 
-  // ✅ Variante utile : 1 fois par JOUR (ex: scan)
   function trackOnceDaily(event, keyPrefix, extra) {
     const resto = rememberLastResto();
     const d = new Date();
@@ -260,7 +324,6 @@
 
   /* ---------------------------
      Config
-     ✅ FIX: met aussi --brand (tes pages l'utilisent)
   --------------------------- */
   async function loadConfig() {
     const res = await fetch("config.json", { cache: "no-store" });
@@ -306,6 +369,11 @@
     patchManifestHref,
     safeSet,
     safeGet,
-    safeRemove
+    safeRemove,
+
+    // ✅ NOUVEAU exports
+    getNextCouponDate,
+    isCouponAvailable,
+    getCouponCountdown
   };
 })();
