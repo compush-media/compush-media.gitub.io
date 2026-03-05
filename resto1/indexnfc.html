@@ -17,26 +17,60 @@
   <script src="../assets/core.js"></script>
 
   <!-- ✅ Anti-boucle (ULTRA ROBUSTE) : si déjà onboardé => index.html -->
-  <script>
-    (function () {
-      try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
+  <!-- ✅ NFC SMART ROUTING :
+     - si déjà inscrit => tente d’ouvrir la PWA (Android) / fallback index.html (iOS)
+     - sinon => laisse la page vivre (CTA inscription)
+-->
+<script>
+(function () {
+  // 1) Resto slug stable
+  try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
+  const RESTO = (window.Fidelavis?.getRestoSlug?.() || "resto1");
 
-      function hasAccessSafe(){
-        try { return window.Fidelavis?.hasAccess?.() === true; }
-        catch(e){ return false; }
-      }
+  function hasAccessSafe(){
+    try { return window.Fidelavis?.hasAccess?.() === true; }
+    catch(e){ return false; }
+  }
 
-      // iOS/PWA: parfois localStorage est "retardé" au boot → on check 2 fois
-      if (hasAccessSafe()){
-        window.location.replace("./index.html");
-        return;
-      }
-      setTimeout(() => {
-        if (hasAccessSafe()) window.location.replace("./index.html");
-      }, 220);
-    })();
-  </script>
+  function isIOS(){
+    return /iphone|ipad|ipod/i.test(navigator.userAgent);
+  }
 
+  // Android Chrome: tentative d’ouverture "app installée"
+  function openAndroidPWA(){
+    const webUrl = `https://app.cartefidelavis.com/${RESTO}/index.html?from=nfc`;
+    const intent = `intent://${RESTO}/index.html?from=nfc#Intent;scheme=https;package=com.android.chrome;end`;
+
+    // tente d’ouvrir la PWA (si installée)
+    window.location.href = intent;
+
+    // fallback web
+    setTimeout(() => { window.location.href = webUrl; }, 650);
+  }
+
+  // 2) Double check (iOS restore LS/cookies parfois retardé)
+  function routeIfReturning(){
+    if (!hasAccessSafe()) return false;
+
+    // tracking optionnel
+    try { window.Fidelavis?.track?.("nfc_returning"); } catch(e){}
+
+    if (!isIOS()){
+      openAndroidPWA();
+    } else {
+      // iOS ne peut pas forcer l’ouverture en standalone
+      window.location.replace(`/${RESTO}/index.html?from=nfc`);
+    }
+    return true;
+  }
+
+  // First try
+  if (routeIfReturning()) return;
+
+  // Second try (petit délai)
+  setTimeout(() => { routeIfReturning(); }, 250);
+})();
+</script>
   <style>
     :root{
       --gold:#B8924F;
