@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
@@ -9,49 +9,7 @@
   <link rel="manifest" href="progressier.json"/>
   <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
 
-  <!-- ✅ Core commun -->
-  <script src="../assets/core.js"></script>
-  ...
-<script src="../assets/core.js"></script>
-
-<!-- tes scripts existants -->
-
-<script>
-(function(){
-  const p = new URLSearchParams(location.search);
-  if (p.get("from") !== "nfc") return;
-
-  const msg = document.createElement("div");
-  msg.style.cssText="max-width:520px;margin:0 auto 12px;padding:12px;border-radius:16px;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.85);font-weight:900;color:#2b2b2b;text-align:center;";
-  msg.innerHTML="📲 Astuce iPhone : pour ouvrir l’app, utilisez l’icône <b>Fidelavis</b> sur votre écran d’accueil.";
-
-  document.querySelector(".wrap")?.prepend(msg);
-})();
-</script>
-
-</body>
-</html>
-
-  <!-- ✅ PATCH PWA iOS : évite retour indexnfc quand l'app démarre -->
-  <script>
-  (function(){
-    function isStandalone(){
-      return window.matchMedia("(display-mode: standalone)").matches ||
-             window.navigator.standalone === true;
-    }
-    try{
-      // Si on est dans la PWA et que l'accès est déjà validé
-      // on laisse la page coupon vivre sans redirection
-      if (isStandalone() && window.Fidelavis?.hasAccess?.()) return;
-    }catch(e){}
-  })();
-  </script>
-
-  <!-- ✅ Manifest RELATIF dans chaque dossier resto -->
-  <link rel="manifest" href="progressier.json"/>
-  <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
-
-  <!-- ✅ Core commun -->
+  <!-- ✅ Core commun (1 seule fois) -->
   <script src="../assets/core.js"></script>
 
   <style>
@@ -247,27 +205,23 @@
   </style>
 
   <!-- ✅ Gate d’accès : si pas onboardé => indexnfc -->
- <script>
-(function(){
-  // assure fv_last_resto
-  try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
+  <script>
+  (function(){
+    try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
 
-  function hasAccessSafe(){
-    try{
-      // ✅ utilise core.js (localStorage + cookie fallback)
-      return window.Fidelavis?.hasAccess?.() === true;
-    }catch(e){ return false; }
-  }
+    function hasAccessSafe(){
+      try{ return window.Fidelavis?.hasAccess?.() === true; }
+      catch(e){ return false; }
+    }
 
-  if (!hasAccessSafe()){
-    setTimeout(() => {
-      if (!hasAccessSafe()){
-        window.Fidelavis?.go?.("indexnfc.html");
-      }
-    }, 350);
-  }
-})();
-</script>
+    // ✅ iOS/PWA: laisse un petit délai pour que cookies/LS soient restaurés
+    if (!hasAccessSafe()){
+      setTimeout(() => {
+        if (!hasAccessSafe()) window.Fidelavis?.go?.("indexnfc.html");
+      }, 350);
+    }
+  })();
+  </script>
 </head>
 
 <body>
@@ -352,29 +306,52 @@
 </script>
 
 <script>
-/* ✅ APP LOGIC (tracking unifié via core.js) */
+/* ✅ APP LOGIC */
 const RESTO = window.Fidelavis?.getRestoSlug?.() || "resto1";
 window.Fidelavis?.rememberLastResto?.();
 
-// page view 1x/session
 window.Fidelavis?.trackOnce?.("coupon_view", `coupon_view_${RESTO}`, {});
 
 (async function(){
   try{ await window.Fidelavis?.loadConfig?.(); }catch(e){}
-})();
 
-/* OFFRE MENSUELLE */
-const offers = [
-  "🎁 Janvier : -10% menu","🎁 Février : Dessert offert","🎁 Mars : Café offert",
-  "🎁 Avril : -15% végétarien","🎁 Mai : Apéritif offert","🎁 Juin : Entrée offerte",
-  "🎁 Juillet : Glace enfant","🎁 Août : Boisson gratuite","🎁 Septembre : -20% étudiants",
-  "🎁 Octobre : Café gourmand","🎁 Novembre : Menu duo","🎁 Décembre : Chocolat chaud"
-];
+  // ✅ Si coupon pas dispo (mois suivant inscription) => message + bouton grisé
+  try{
+    if (window.Fidelavis?.isCouponAvailable && !window.Fidelavis.isCouponAvailable()){
+      const cd = window.Fidelavis.getCouponCountdown();
+      const d = cd.unlock;
+      const mois = d.toLocaleDateString("fr-FR", { month:"long", year:"numeric" });
+
+      document.getElementById("txtOffer").textContent = `⏳ Votre coupon sera disponible en ${mois}.`;
+
+      const btn = document.querySelector(".btnPrimary");
+      if (btn){
+        btn.disabled = true;
+        btn.style.opacity = "0.55";
+        btn.style.cursor = "not-allowed";
+      }
+
+      window.Fidelavis?.trackOnce?.("coupon_locked_view", `coupon_locked_${RESTO}_${d.toISOString().slice(0,10)}`, {});
+      return; // IMPORTANT: on ne remplace pas le texte par l'offre du mois
+    }
+  }catch(e){}
+
+  // ✅ OFFRE MENSUELLE (normal)
+  const offers = [
+    "🎁 Janvier : -10% menu","🎁 Février : Dessert offert","🎁 Mars : Café offert",
+    "🎁 Avril : -15% végétarien","🎁 Mai : Apéritif offert","🎁 Juin : Entrée offerte",
+    "🎁 Juillet : Glace enfant","🎁 Août : Boisson gratuite","🎁 Septembre : -20% étudiants",
+    "🎁 Octobre : Café gourmand","🎁 Novembre : Menu duo","🎁 Décembre : Chocolat chaud"
+  ];
+
+  const now = new Date();
+  const MONTH = now.getMonth();
+  document.getElementById("txtOffer").textContent = offers[MONTH];
+})();
 
 const now = new Date();
 const MONTH = now.getMonth();
 const YEAR = now.getFullYear();
-document.getElementById("txtOffer").textContent = offers[MONTH];
 
 const COUPON_KEY = `coupon_${RESTO}_${YEAR}_${MONTH}`;
 if (now.getDate() === 1) localStorage.removeItem(COUPON_KEY);
@@ -406,8 +383,20 @@ function verifierPin(pin) { return [-2, -1, 0, 1, 2].some(o => generatePin(o) ==
 
 function soumettrePin() {
   const res = document.getElementById("result");
-  const code = (window.getPinCode ? window.getPinCode() : "").trim();
 
+  // ✅ Blocage si coupon pas encore disponible (mois suivant inscription)
+  try{
+    if (window.Fidelavis?.isCouponAvailable && !window.Fidelavis.isCouponAvailable()){
+      const cd = window.Fidelavis.getCouponCountdown();
+      const d = cd.unlock;
+      const mois = d.toLocaleDateString("fr-FR", { month:"long", year:"numeric" });
+      res.innerHTML = `<div class="ok-box warn">⏳ Coupon disponible en ${mois}. Revenez à ce moment-là ✅</div>`;
+      window.Fidelavis?.track?.("coupon_locked_try");
+      return;
+    }
+  }catch(e){}
+
+  const code = (window.getPinCode ? window.getPinCode() : "").trim();
   document.getElementById("reviewPrompt")?.remove();
 
   if (localStorage.getItem(COUPON_KEY) === "used") {
@@ -465,65 +454,6 @@ if (localStorage.getItem(COUPON_KEY) === "used") {
   document.getElementById("result").innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
 }
 </script>
-<script>
-(function(){
 
-  const params = new URLSearchParams(location.search);
-  if (params.get("from") !== "nfc") return;
-
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-
-  if (!isIOS) return;
-
-  const bar = document.createElement("div");
-
-  bar.style.cssText = `
-  max-width:520px;
-  margin:0 auto 14px;
-  padding:14px;
-  border-radius:18px;
-  border:1px solid rgba(0,0,0,.08);
-  background:#ffffff;
-  box-shadow:0 12px 30px rgba(0,0,0,.08);
-  text-align:center;
-  font-weight:900;
-  `;
-
-  bar.innerHTML = `
-  📲 Vous avez déjà l’app Fidelavis<br><br>
-
-  <button id="openAppBtn" style="
-  background:#B8924F;
-  color:white;
-  border:none;
-  padding:12px 18px;
-  border-radius:14px;
-  font-weight:900;
-  font-size:15px;
-  cursor:pointer;
-  ">
-  Ouvrir l’app
-  </button>
-
-  <div style="
-  margin-top:8px;
-  font-size:12px;
-  color:#666;
-  font-weight:700;
-  ">
-  Si l’app est installée sur votre écran d’accueil
-  </div>
-  `;
-
-  document.querySelector(".wrap")?.prepend(bar);
-
-  document.getElementById("openAppBtn").onclick = function(){
-
-    window.location.href = window.location.origin + window.location.pathname;
-
-  };
-
-})();
-</script>
 </body>
 </html>
