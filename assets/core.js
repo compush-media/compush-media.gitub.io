@@ -74,7 +74,9 @@
 
   /* ---------------------------
      ✅ NOUVEAU : Coupon "mois suivant"
-     Règle: l'accès coupon est dispo au 1er du mois suivant l'inscription.
+     Règle: coupon dispo au 1er du mois suivant l'inscription.
+     - Stocké par resto : fv_coupon_unlock_<resto>
+     - Initialisé 1 seule fois au moment du 1er onboarding
   --------------------------- */
   function couponUnlockKey(resto){
     return `fv_coupon_unlock_${(resto || rememberLastResto()).toLowerCase()}`;
@@ -139,6 +141,7 @@
 
   /* ---------------------------
      Onboarding flags
+     ✅ + initialise la date de déblocage coupon (mois suivant)
   --------------------------- */
   function setOnboardFlags(){
     const resto = rememberLastResto();
@@ -146,7 +149,7 @@
     safeSet("fv_onboarding_done", "1");
     safeSet(`fv_registered_${resto}`, "1");
 
-    // ✅ fixe la date de déblocage coupon (mois suivant)
+    // ✅ fixe la date de déblocage coupon (mois suivant) UNE FOIS
     ensureCouponUnlockDate();
   }
 
@@ -371,7 +374,7 @@
     safeGet,
     safeRemove,
 
-    // ✅ NOUVEAU exports
+    // ✅ coupon gating exports
     getNextCouponDate,
     isCouponAvailable,
     getCouponCountdown
