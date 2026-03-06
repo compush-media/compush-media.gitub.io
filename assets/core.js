@@ -2,9 +2,9 @@
 (function () {
   "use strict";
 
-  // ✅ Ton endpoint Google Script
+  // ✅ Endpoint Google Apps Script
   const API_TRACK =
-    "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
+    "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
 
   /* ---------------------------
      Utils: safe localStorage
@@ -21,13 +21,11 @@
 
   /* ---------------------------
      Utils: resto slug / base path
-     ✅ PATCH: gère "/" et "/index.html"
   --------------------------- */
   function getRestoSlug() {
     const parts = location.pathname.split("/").filter(Boolean);
     const first = (parts[0] || "").toLowerCase();
 
-    // Racine "/" ou "/index.html" ou "/404.html" => on reprend le dernier resto
     if (!first || first.endsWith(".html")) {
       const last = (safeGet("fv_last_resto") || "").toLowerCase();
       return last || "resto1";
@@ -49,13 +47,13 @@
   }
 
   /* ---------------------------
-     Cookies (fallback iOS)
-     ✅ FIX: regex robuste (^|;\s*) au lieu de (^| )
+     Cookies fallback
   --------------------------- */
   function setCookie(name, value, days) {
     const maxAge = (days || 365) * 24 * 60 * 60;
     document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; SameSite=Lax`;
   }
+
   function getCookie(name) {
     try {
       const m = document.cookie.match(new RegExp("(^|;\\s*)" + name + "=([^;]+)"));
@@ -66,17 +64,14 @@
   }
 
   /* ---------------------------
-     Email capture/restore
+     Email
   --------------------------- */
   function isValidEmail(s) {
     return /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(String(s || "").trim());
   }
 
   /* ---------------------------
-     ✅ NOUVEAU : Coupon "mois suivant"
-     Règle: coupon dispo au 1er du mois suivant l'inscription.
-     - Stocké par resto : fv_coupon_unlock_<resto>
-     - Initialisé 1 seule fois au moment du 1er onboarding
+     Coupon mois suivant
   --------------------------- */
   function couponUnlockKey(resto){
     return `fv_coupon_unlock_${(resto || rememberLastResto()).toLowerCase()}`;
@@ -84,7 +79,6 @@
 
   function computeNextMonthFirstDate(fromDate){
     const d = fromDate instanceof Date ? fromDate : new Date();
-    // 1er du mois suivant à 00:00 local
     return new Date(d.getFullYear(), d.getMonth() + 1, 1, 0, 0, 0, 0);
   }
 
@@ -92,11 +86,9 @@
     const resto = rememberLastResto();
     const k = couponUnlockKey(resto);
 
-    // déjà défini
     const existing = safeGet(k);
     if (existing) return existing;
 
-    // sinon: set maintenant -> 1er du mois prochain
     const next = computeNextMonthFirstDate(new Date());
     const iso = next.toISOString();
     safeSet(k, iso);
@@ -112,7 +104,6 @@
 
     const d = new Date(iso);
     if (isNaN(d.getTime())) {
-      // corruption -> reset
       safeRemove(k);
       const iso2 = ensureCouponUnlockDate();
       return new Date(iso2);
@@ -141,7 +132,6 @@
 
   /* ---------------------------
      Onboarding flags
-     ✅ + initialise la date de déblocage coupon (mois suivant)
   --------------------------- */
   function setOnboardFlags(){
     const resto = rememberLastResto();
@@ -149,7 +139,6 @@
     safeSet("fv_onboarding_done", "1");
     safeSet(`fv_registered_${resto}`, "1");
 
-    // ✅ fixe la date de déblocage coupon (mois suivant) UNE FOIS
     ensureCouponUnlockDate();
   }
 
@@ -170,7 +159,6 @@
       setCookie("user_email", email, 365);
       setCookie("is_registered", "1", 365);
 
-      // Nettoie URL
       params.delete("email");
       const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
       try { history.replaceState({}, document.title, clean); } catch (e) {}
@@ -189,7 +177,6 @@
         return c;
       }
 
-      // ✅ fallback: si cookie is_registered=1 sans email
       if ((getCookie("is_registered") || "").trim() === "1") {
         setOnboardFlags();
       }
@@ -204,7 +191,7 @@
   }
 
   /* ---------------------------
-     Accès / Onboarding
+     Accès / onboarding
   --------------------------- */
   function hasAccess(){
     const resto = rememberLastResto();
@@ -224,8 +211,7 @@
   }
 
   /* ---------------------------
-     Navigation: conserve params utiles (jamais email/submitted)
-     ✅ PATCH: si base = "/" => on force "/<resto>/"
+     Navigation
   --------------------------- */
   function go(page) {
     const resto = rememberLastResto();
@@ -243,7 +229,7 @@
   }
 
   /* ---------------------------
-     Patch manifest (optionnel)
+     Patch manifest
   --------------------------- */
   function patchManifestHref() {
     try {
@@ -260,38 +246,68 @@
   }
 
   /* ---------------------------
-     Tracking (GET endpoint)
-     ✅ FIX: sendBeacon + fallback fetch(keepalive)
+     Session / device IDs
+  --------------------------- */
+  function getOrCreateDeviceId() {
+    let id = safeGet("fv_device_id");
+    if (!id) {
+      id = "dev_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+      safeSet("fv_device_id", id);
+    }
+    return id;
+  }
+
+  function getOrCreateSessionId() {
+    let id = sessionStorage.getItem("fv_session_id");
+    if (!id) {
+      id = "sess_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+      sessionStorage.setItem("fv_session_id", id);
+    }
+    return id;
+  }
+
+  /* ---------------------------
+     Source
+  --------------------------- */
+  function getSource() {
+    const params = new URLSearchParams(location.search);
+    return (
+      params.get("src") ||
+      params.get("utm_source") ||
+      document.referrer ||
+      "direct"
+    );
+  }
+
+  /* ---------------------------
+     Tracking
+     ✅ VERSION POST JSON
   --------------------------- */
   async function track(event, extra) {
     try {
       const resto = rememberLastResto();
       const email = getUserEmail();
+      const now = new Date();
 
       const payload = {
         resto,
         event,
+        mois: now.getMonth() + 1,
+        annee: now.getFullYear(),
         user: email || "",
-        pageURL: location.href,
-        userAgent: navigator.userAgent,
-        ...((extra && typeof extra === "object") ? extra : {}),
+        userAgent: navigator.userAgent || "",
+        pageURL: location.href || "",
+        demo: 0,
+        deviceId: getOrCreateDeviceId(),
+        sessionId: getOrCreateSessionId(),
+        src: getSource(),
+        ...((extra && typeof extra === "object") ? extra : {})
       };
 
-      const qs = new URLSearchParams();
-      Object.entries(payload).forEach(([k, v]) => qs.set(k, String(v ?? "")));
-      const url = `${API_TRACK}?${qs.toString()}`;
-
-      if (navigator.sendBeacon) {
-        try {
-          const ok = navigator.sendBeacon(url, "");
-          if (ok) return true;
-        } catch (e) {}
-      }
-
-      await fetch(url, {
-        method: "GET",
-        cache: "no-store",
-        mode: "no-cors",
+      await fetch(API_TRACK, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
         keepalive: true
       });
 
@@ -350,7 +366,7 @@
   }
 
   /* ---------------------------
-     Boot minimal commun
+     Boot
   --------------------------- */
   rememberLastResto();
   persistEmailFromUrl();
@@ -373,10 +389,10 @@
     safeSet,
     safeGet,
     safeRemove,
-
-    // ✅ coupon gating exports
     getNextCouponDate,
     isCouponAvailable,
-    getCouponCountdown
+    getCouponCountdown,
+    getOrCreateDeviceId,
+    getOrCreateSessionId
   };
 })();
