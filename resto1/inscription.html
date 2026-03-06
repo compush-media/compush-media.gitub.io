@@ -7,59 +7,60 @@
 
   <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
+
+  <!-- ✅ Tracking Apps Script Fidelavis -->
   <script>
-(function(){
-  const STATS_URL = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
+  (function(){
+    const STATS_URL = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
 
-  window.trackEventFidelavis = function(eventName, restoName, extra = {}) {
-    try {
-      let iframe = document.getElementById("stats_iframe");
-      if (!iframe) {
-        iframe = document.createElement("iframe");
-        iframe.name = "stats_iframe";
-        iframe.id = "stats_iframe";
-        iframe.style.display = "none";
-        document.body.appendChild(iframe);
+    window.trackEventFidelavis = function(eventName, restoName, extra = {}) {
+      try {
+        let iframe = document.getElementById("stats_iframe");
+        if (!iframe) {
+          iframe = document.createElement("iframe");
+          iframe.name = "stats_iframe";
+          iframe.id = "stats_iframe";
+          iframe.style.display = "none";
+          document.body.appendChild(iframe);
+        }
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = STATS_URL;
+        form.target = "stats_iframe";
+        form.style.display = "none";
+
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "data";
+        input.value = JSON.stringify({
+          resto: restoName || "resto1",
+          event: eventName || "",
+          mois: new Date().getMonth() + 1,
+          annee: new Date().getFullYear(),
+          user: localStorage.getItem("user_email") || "",
+          userAgent: navigator.userAgent,
+          pageURL: location.href,
+          demo: extra.demo ?? "",
+          deviceId: extra.deviceId ?? localStorage.getItem("device_id") || "",
+          sessionId: extra.sessionId ?? sessionStorage.getItem("fv_session_id") || "",
+          src: extra.src ?? ""
+        });
+
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+
+        setTimeout(() => {
+          try { form.remove(); } catch(e){}
+        }, 1200);
+
+      } catch(e) {
+        console.warn("trackEventFidelavis error", e);
       }
-
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = STATS_URL;
-      form.target = "stats_iframe";
-      form.style.display = "none";
-
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = "data";
-
-      input.value = JSON.stringify({
-        resto: restoName || "resto1",
-        event: eventName || "",
-        mois: new Date().getMonth() + 1,
-        annee: new Date().getFullYear(),
-        user: localStorage.getItem("user_email") || "",
-        userAgent: navigator.userAgent,
-        pageURL: location.href,
-        demo: extra.demo ?? "",
-        deviceId: extra.deviceId ?? localStorage.getItem("device_id") || "",
-        sessionId: extra.sessionId ?? sessionStorage.getItem("session_id") || "",
-        src: extra.src ?? ""
-      });
-
-      form.appendChild(input);
-      document.body.appendChild(form);
-      form.submit();
-
-      setTimeout(() => {
-        try { form.remove(); } catch(e){}
-      }, 1200);
-
-    } catch(e) {
-      console.warn("trackEventFidelavis error", e);
-    }
-  };
-})();
-</script>
+    };
+  })();
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -158,45 +159,48 @@
 
   <!-- ✅ Détection retour GHL après soumission -->
   <script>
-    (function(){
-      const params = new URLSearchParams(location.search);
-      if (params.get("submitted") !== "1") return;
+  (function(){
+    const params = new URLSearchParams(location.search);
+    if (params.get("submitted") !== "1") return;
 
-      const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
-      const now = Date.now();
+    const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+    const now = Date.now();
 
-      // Flags d’accès
-      try{
-        localStorage.setItem("is_registered", "1");
-        localStorage.setItem("fv_onboarding_done", "1");
-        localStorage.setItem(`fv_registered_${RESTO}`, "1");
-        localStorage.setItem(`fv_registered_at_${RESTO}`, String(now));
-      }catch(e){}
+    try{
+      localStorage.setItem("is_registered", "1");
+      localStorage.setItem("fv_onboarding_done", "1");
+      localStorage.setItem(`fv_registered_${RESTO}`, "1");
+      localStorage.setItem(`fv_registered_at_${RESTO}`, String(now));
+    }catch(e){}
 
-      // Dédup signup sur 24h
-      const dedupKey = `signup_${RESTO}`;
-      const last = Number(localStorage.getItem(dedupKey) || "0");
+    const dedupKey = `signup_${RESTO}`;
+    const last = Number(localStorage.getItem(dedupKey) || "0");
 
-      if (!last || (now - last) > 86400000) {
-        try { localStorage.setItem(dedupKey, String(now)); } catch(e){}
+    if (!last || (now - last) > 86400000) {
+      try { localStorage.setItem(dedupKey, String(now)); } catch(e){}
 
-        try {
-          window.Fidelavis?.track?.("signup", {
-            src: "ghl_redirect_inscription",
-            page: "inscription",
-            resto: RESTO
-          });
-        } catch(e){}
-      }
+      try {
+        window.Fidelavis?.track?.("signup", {
+          src: "ghl_redirect_inscription",
+          page: "inscription",
+          resto: RESTO
+        });
+      } catch(e){}
 
-      // Nettoyage URL
-      params.delete("submitted");
-      const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
-      try { history.replaceState({}, document.title, clean); } catch(e){}
+      try {
+        window.trackEventFidelavis?.("form_submit", RESTO, {
+          src: "ghl_redirect_inscription",
+          demo: location.pathname.includes("/demo/") ? "1" : "0"
+        });
+      } catch(e){}
+    }
 
-      // Redirection vers la page d’installation
-      setTimeout(() => window.location.replace("redit.html"), 220);
-    })();
+    params.delete("submitted");
+    const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
+    try { history.replaceState({}, document.title, clean); } catch(e){}
+
+    setTimeout(() => window.location.replace("redit.html"), 220);
+  })();
   </script>
 </head>
 
@@ -221,49 +225,64 @@
     </div>
   </div>
 
-<script>
-(function(){
-  const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+  <script>
+  (function(){
+    const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
 
-  // ✅ Tracking arrivée page inscription : 1 fois / session / jour
-  try{
-    const key = `scan_to_signup_${RESTO}_${new Date().toISOString().slice(0,10)}`;
-    if (!sessionStorage.getItem(key)) {
-      sessionStorage.setItem(key, "1");
-      window.Fidelavis?.track?.("scan_to_signup", {
-        src: "inscription",
-        page: "inscription",
-        resto: RESTO
-      });
+    try {
+      if (!sessionStorage.getItem("fv_session_id")) {
+        sessionStorage.setItem("fv_session_id", "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2,8));
+      }
+    } catch(e){}
+
+    try {
+      if (!localStorage.getItem("device_id")) {
+        localStorage.setItem("device_id", "dev_" + Math.random().toString(36).slice(2,10));
+      }
+    } catch(e){}
+
+    try{
+      const key = `scan_to_signup_${RESTO}_${new Date().toISOString().slice(0,10)}`;
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
+
+        window.Fidelavis?.track?.("scan_to_signup", {
+          src: "inscription",
+          page: "inscription",
+          resto: RESTO
+        });
+
+        window.trackEventFidelavis?.("scan_to_signup", RESTO, {
+          src: "inscription",
+          demo: location.pathname.includes("/demo/") ? "1" : "0"
+        });
+      }
+    }catch(e){}
+
+    const from = encodeURIComponent(location.pathname);
+    document.getElementById("ppBtn").href  = "/privacy.html?from=" + from;
+    document.getElementById("cguBtn").href = "/cgu.html?from=" + from;
+
+    function setFrameHeight(){
+      const frame = document.getElementById("ghlFrame");
+      const card  = document.getElementById("card");
+      const sticky = document.querySelector(".sticky");
+
+      const vh = window.innerHeight;
+      const top = card.getBoundingClientRect().top;
+      const stickyH = sticky.getBoundingClientRect().height;
+
+      const safety = 8;
+      const available = Math.max(420, Math.floor(vh - top - stickyH - safety));
+      frame.style.height = available + "px";
     }
-  }catch(e){}
 
-  // ✅ Liens footer
-  const from = encodeURIComponent(location.pathname);
-  document.getElementById("ppBtn").href  = "/privacy.html?from=" + from;
-  document.getElementById("cguBtn").href = "/cgu.html?from=" + from;
-
-  // ✅ Hauteur iframe adaptive
-  function setFrameHeight(){
-    const frame = document.getElementById("ghlFrame");
-    const card  = document.getElementById("card");
-    const sticky = document.querySelector(".sticky");
-
-    const vh = window.innerHeight;
-    const top = card.getBoundingClientRect().top;
-    const stickyH = sticky.getBoundingClientRect().height;
-
-    const safety = 8;
-    const available = Math.max(420, Math.floor(vh - top - stickyH - safety));
-    frame.style.height = available + "px";
-  }
-
-  window.addEventListener("resize", setFrameHeight);
-  window.addEventListener("orientationchange", setFrameHeight);
-  setTimeout(setFrameHeight, 60);
-  setTimeout(setFrameHeight, 240);
-})();
-</script>
+    window.addEventListener("resize", setFrameHeight);
+    window.addEventListener("orientationchange", setFrameHeight);
+    setTimeout(setFrameHeight, 60);
+    setTimeout(setFrameHeight, 240);
+  })();
+  </script>
 
 </body>
 </html>
