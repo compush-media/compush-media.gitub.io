@@ -21,14 +21,19 @@
       --shadow:0 10px 24px rgba(0,0,0,.08);
     }
     *{ box-sizing:border-box; }
+
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background:var(--bg);
       color:var(--ink);
       padding:14px;
     }
-    .wrap{ max-width:1100px; margin:0 auto; }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+    }
 
     .top{
       display:flex;
@@ -38,8 +43,19 @@
       flex-wrap:wrap;
       margin-bottom:12px;
     }
-    h1{ margin:0; font-size:20px; }
-    .sub{ color:var(--muted); font-size:12.5px; margin-top:4px; }
+
+    h1{
+      margin:0;
+      font-size:20px;
+      line-height:1.2;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:12.5px;
+      margin-top:4px;
+      font-weight:700;
+    }
 
     .controls{
       display:flex;
@@ -52,6 +68,7 @@
       padding:10px;
       box-shadow:var(--shadow);
     }
+
     select{
       padding:10px 12px;
       border-radius:12px;
@@ -64,10 +81,11 @@
 
     .grid{
       display:grid;
-      grid-template-columns: repeat(12, 1fr);
+      grid-template-columns:repeat(12, 1fr);
       gap:12px;
       margin-top:12px;
     }
+
     .card{
       background:var(--card);
       border:1px solid var(--line);
@@ -75,34 +93,71 @@
       box-shadow:var(--shadow);
       padding:12px;
     }
-    .kpi{ grid-column: span 3; }
-    .chart{ grid-column: span 12; }
-    .half{ grid-column: span 6; }
+
+    .kpi{ grid-column:span 3; }
+    .chart{ grid-column:span 12; }
+    .half{ grid-column:span 6; }
 
     @media (max-width: 980px){
-      .kpi{ grid-column: span 6; }
-      .half{ grid-column: span 12; }
+      .kpi{ grid-column:span 6; }
+      .half{ grid-column:span 12; }
     }
+
     @media (max-width: 520px){
-      .kpi{ grid-column: span 12; }
+      .kpi{ grid-column:span 12; }
     }
 
-    .kpiLabel{ color:var(--muted); font-size:12px; font-weight:800; }
-    .kpiValue{ font-size:26px; font-weight:950; margin-top:6px; color:var(--brand); }
-    .kpiHint{ margin-top:6px; font-size:12px; color:var(--muted); font-weight:800; }
+    .kpiLabel{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+    }
 
-    .chartDiv{ width:100%; height:320px; }
+    .kpiValue{
+      font-size:26px;
+      font-weight:950;
+      margin-top:6px;
+      color:var(--brand);
+    }
 
-    table{ width:100%; border-collapse:collapse; }
+    .kpiHint{
+      margin-top:6px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .chartDiv{
+      width:100%;
+      height:320px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+
     th, td{
       padding:10px 8px;
       border-bottom:1px solid rgba(0,0,0,.06);
       font-size:13px;
       text-align:left;
     }
-    th{ color:#333; font-weight:950; }
-    td{ color:#222; font-weight:700; }
-    .muted{ color:var(--muted); font-weight:700; }
+
+    th{
+      color:#333;
+      font-weight:950;
+    }
+
+    td{
+      color:#222;
+      font-weight:700;
+    }
+
+    .muted{
+      color:var(--muted);
+      font-weight:700;
+    }
 
     .err{
       margin-top:12px;
@@ -121,6 +176,16 @@
       border:1px solid rgba(31,138,76,.18);
       background:rgba(31,138,76,.07);
       color:#1f6a42;
+      font-weight:800;
+    }
+
+    .loading{
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(184,146,79,.22);
+      background:rgba(184,146,79,.08);
+      color:#6f5522;
       font-weight:800;
     }
   </style>
@@ -237,6 +302,17 @@
 <script>
   const API_STATS = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
 
+  let lastDrawCounts = {};
+
+  function escapeHtml(str){
+    return String(str || "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
   function getRestoFromUrl(){
     const p = new URLSearchParams(location.search);
     const qResto = (p.get("resto") || "").trim().toLowerCase();
@@ -244,6 +320,7 @@
   }
 
   const RESTO = getRestoFromUrl();
+
   document.getElementById("title").textContent = `📊 Dashboard — ${RESTO}`;
   document.getElementById("subtitle").textContent = `Statistiques du restaurant : ${RESTO}`;
 
@@ -257,7 +334,7 @@
   function groupByDay(rows){
     const map = {};
     rows.forEach(r => {
-      const day = String(r.day || "");
+      const day = String(r.day || "").trim();
       if (!day) return;
       map[day] = (map[day] || 0) + 1;
     });
@@ -295,7 +372,7 @@
     body.innerHTML = "";
 
     const entries = Object.entries(countsByDay)
-      .sort((a,b) => b[1] - a[1])
+      .sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0]))
       .slice(0, 10);
 
     if (!entries.length){
@@ -305,12 +382,14 @@
 
     entries.forEach(([day, count]) => {
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${day}</td><td>${count}</td>`;
+      tr.innerHTML = `<td>${escapeHtml(day)}</td><td>${count}</td>`;
       body.appendChild(tr);
     });
   }
 
   function drawLine(countsByDay){
+    lastDrawCounts = countsByDay || {};
+
     const rows = [["Date", "Volume"]];
     const keys = Object.keys(countsByDay).sort();
 
@@ -328,24 +407,29 @@
       legend: { position:"none" },
       curveType: "function",
       colors: ["#b6152b"],
-      chartArea: { left:50, right:20, top:50, bottom:50 },
+      backgroundColor: "transparent",
+      chartArea: { left:50, right:20, top:50, bottom:50, width:"100%", height:"70%" },
       hAxis: { textStyle:{ fontSize:11 } },
       vAxis: { minValue:0, textStyle:{ fontSize:11 } }
     });
   }
 
-  async function refresh(){
+  function setMessage(type, text){
     const msgBox = document.getElementById("msgBox");
-    msgBox.innerHTML = "";
+    msgBox.innerHTML = `<div class="${type}">${escapeHtml(text)}</div>`;
+  }
 
+  async function refresh(){
     const days = Number(document.getElementById("daysSelect").value || 30);
     const eventFilter = document.getElementById("eventSelect").value || "";
+
+    setMessage("loading", "Chargement des statistiques...");
 
     try{
       const data = await fetchStats(RESTO, days);
 
-      if (!data.ok){
-        msgBox.innerHTML = `<div class="err">Erreur API : ${data.message || "inconnue"}</div>`;
+      if (!data || data.ok !== true){
+        setMessage("err", `Erreur API : ${data?.message || "inconnue"}`);
         return;
       }
 
@@ -363,9 +447,9 @@
       drawLine(byDay);
       fillTopDays(byDay);
 
-      msgBox.innerHTML = `<div class="ok">✅ Données chargées : ${rows.length} événement(s)</div>`;
+      setMessage("ok", `Données chargées : ${rows.length} événement(s) • filtre : ${eventFilter || "tous"}`);
     } catch(e){
-      msgBox.innerHTML = `<div class="err">Erreur de chargement : ${String(e.message || e)}</div>`;
+      setMessage("err", `Erreur de chargement : ${String(e.message || e)}`);
     }
   }
 
@@ -373,6 +457,13 @@
   google.charts.setOnLoadCallback(() => {
     document.getElementById("daysSelect").addEventListener("change", refresh);
     document.getElementById("eventSelect").addEventListener("change", refresh);
+
+    window.addEventListener("resize", () => {
+      if (lastDrawCounts && Object.keys(lastDrawCounts).length >= 0) {
+        drawLine(lastDrawCounts);
+      }
+    });
+
     refresh();
   });
 </script>
