@@ -9,68 +9,58 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- ✅ PWA : TOUJOURS relatif dans chaque dossier resto -->
   <link rel="manifest" href="progressier.json">
   <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
 
-  <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
 
-  <!-- ✅ Anti-boucle (ULTRA ROBUSTE) : si déjà onboardé => index.html -->
-  <!-- ✅ NFC SMART ROUTING :
-     - si déjà inscrit => tente d’ouvrir la PWA (Android) / fallback index.html (iOS)
-     - sinon => laisse la page vivre (CTA inscription)
--->
-<script>
-(function () {
-  // 1) Resto slug stable
-  try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
-  const RESTO = (window.Fidelavis?.getRestoSlug?.() || "resto1");
+  <script>
+  (function () {
+    try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
 
-  function hasAccessSafe(){
-    try { return window.Fidelavis?.hasAccess?.() === true; }
-    catch(e){ return false; }
-  }
+    const RESTO = (window.Fidelavis?.getRestoSlug?.() || "resto1");
 
-  function isIOS(){
-    return /iphone|ipad|ipod/i.test(navigator.userAgent);
-  }
-
-  // Android Chrome: tentative d’ouverture "app installée"
-  function openAndroidPWA(){
-    const webUrl = `https://app.cartefidelavis.com/${RESTO}/index.html?from=nfc`;
-    const intent = `intent://${RESTO}/index.html?from=nfc#Intent;scheme=https;package=com.android.chrome;end`;
-
-    // tente d’ouvrir la PWA (si installée)
-    window.location.href = intent;
-
-    // fallback web
-    setTimeout(() => { window.location.href = webUrl; }, 650);
-  }
-
-  // 2) Double check (iOS restore LS/cookies parfois retardé)
-  function routeIfReturning(){
-    if (!hasAccessSafe()) return false;
-
-    // tracking optionnel
-    try { window.Fidelavis?.track?.("nfc_returning"); } catch(e){}
-
-    if (!isIOS()){
-      openAndroidPWA();
-    } else {
-      // iOS ne peut pas forcer l’ouverture en standalone
-      window.location.replace(`/${RESTO}/index.html?from=nfc`);
+    function hasAccessSafe(){
+      try { return window.Fidelavis?.hasAccess?.() === true; }
+      catch(e){ return false; }
     }
-    return true;
-  }
 
-  // First try
-  if (routeIfReturning()) return;
+    function isIOS(){
+      return /iphone|ipad|ipod/i.test(navigator.userAgent);
+    }
 
-  // Second try (petit délai)
-  setTimeout(() => { routeIfReturning(); }, 250);
-})();
-</script>
+    function openAndroidPWA(){
+      const webUrl = `https://app.cartefidelavis.com/${RESTO}/index.html?from=nfc`;
+      const intent = `intent://${RESTO}/index.html?from=nfc#Intent;scheme=https;package=com.android.chrome;end`;
+
+      window.location.href = intent;
+      setTimeout(() => { window.location.href = webUrl; }, 650);
+    }
+
+    function routeIfReturning(){
+      if (!hasAccessSafe()) return false;
+
+      try {
+        window.Fidelavis?.trackOnce?.(
+          "nfc_returning",
+          `nfc_returning_${RESTO}_${new Date().toISOString().slice(0,10)}`,
+          { src: "indexnfc" }
+        );
+      } catch(e){}
+
+      if (!isIOS()){
+        openAndroidPWA();
+      } else {
+        window.location.replace(`/${RESTO}/index.html?from=nfc`);
+      }
+      return true;
+    }
+
+    if (routeIfReturning()) return;
+    setTimeout(() => { routeIfReturning(); }, 250);
+  })();
+  </script>
+
   <style>
     :root{
       --gold:#B8924F;
@@ -288,7 +278,6 @@
       font-weight:950;
     }
 
-    /* ✅ Cache le bouton/widget flottant Progressier */
     progressier-install-button,
     pwa-install,
     #progressier-install-button,
@@ -352,8 +341,25 @@
 <script>
   const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
 
-  // ✅ Tracking scan (1x / session) via core.js
-  window.Fidelavis?.trackOnce?.("scan", `scan_${RESTO}_${new Date().toISOString().slice(0,10)}`, {});
+  function trackScanEntry(){
+    try{
+      window.Fidelavis?.trackOnce?.(
+        "scan",
+        `scan_${RESTO}_${new Date().toISOString().slice(0,10)}_${sessionStorage.getItem("fv_scan_session") || "default"}`,
+        {
+          src: "indexnfc",
+          page: "indexnfc"
+        }
+      );
+    }catch(e){}
+  }
+
+  (function initScanSession(){
+    if (!sessionStorage.getItem("fv_scan_session")) {
+      sessionStorage.setItem("fv_scan_session", Math.random().toString(36).slice(2, 10));
+    }
+    trackScanEntry();
+  })();
 </script>
 
 <script>
@@ -390,9 +396,19 @@
   }
 
   function goToInscription(){
-    window.Fidelavis?.track?.("signup_open");
-    if (window.Fidelavis?.go) window.Fidelavis.go("inscription.html");
-    else window.location.href = "./inscription.html";
+    try {
+      window.Fidelavis?.track?.("signup_open", {
+        src: "indexnfc",
+        page: "indexnfc",
+        resto: RESTO
+      });
+    } catch(e){}
+
+    if (window.Fidelavis?.go) {
+      window.Fidelavis.go("inscription.html");
+    } else {
+      window.location.href = "./inscription.html";
+    }
   }
 
   (async function init(){
@@ -408,7 +424,6 @@
 </script>
 
 <script>
-/* ✅ Force suppression widget Progressier flottant */
 (function removeProgressierFloating(){
   function kill(){
     const selectors = [
