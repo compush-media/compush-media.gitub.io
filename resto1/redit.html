@@ -1,292 +1,298 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Installer l’app</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Merci — Fidelavis</title>
 
-  <!-- ✅ Manifest RELATIF -->
-  <link rel="manifest" href="progressier.json"/>
-
-  <!-- ✅ Progressier -->
-  <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
-
-  <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
+
+  <script>
+  (function(){
+    const STATS_URL = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
+
+    window.trackEventFidelavis = function(eventName, restoName, extra = {}) {
+      try {
+        let iframe = document.getElementById("stats_iframe");
+        if (!iframe) {
+          iframe = document.createElement("iframe");
+          iframe.name = "stats_iframe";
+          iframe.id = "stats_iframe";
+          iframe.style.display = "none";
+          document.body.appendChild(iframe);
+        }
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = STATS_URL;
+        form.target = "stats_iframe";
+        form.style.display = "none";
+
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "data";
+        input.value = JSON.stringify({
+          resto: restoName || "resto1",
+          event: eventName || "",
+          mois: new Date().getMonth() + 1,
+          annee: new Date().getFullYear(),
+          user: localStorage.getItem("user_email") || "",
+          userAgent: navigator.userAgent,
+          pageURL: location.href,
+          demo: extra.demo ?? "",
+          deviceId: extra.deviceId ?? localStorage.getItem("device_id") || "",
+          sessionId: extra.sessionId ?? sessionStorage.getItem("fv_session_id") || "",
+          src: extra.src ?? ""
+        });
+
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+
+        setTimeout(() => {
+          try { form.remove(); } catch(e){}
+        }, 1200);
+      } catch(e) {
+        console.warn("trackEventFidelavis error", e);
+      }
+    };
+  })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root{
       --gold:#B8924F;
-      --bg:#f6efe5;
-      --card:#ffffff;
+      --gold2:#9E7A3E;
+      --bg:#f7f0e8;
+      --card:#fff;
       --ink:#1d1d1d;
-      --muted:#6b6b6b;
-      --line:rgba(0,0,0,0.08);
-      --shadow:0 18px 40px rgba(0,0,0,0.12);
+      --muted:#5d5d5d;
+      --line:rgba(0,0,0,.08);
+      --shadow:0 18px 40px rgba(0,0,0,.10);
       --radius:22px;
     }
-    *{ box-sizing:border-box; }
-
+    *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background:
-        radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
-        linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
+      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#f7f0e8 0%, #f4eadf 100%);
       color:var(--ink);
-      padding:22px 14px 120px;
       text-align:center;
+      padding:18px 14px 32px;
     }
-    .wrap{ max-width:520px; margin:0 auto; }
-
+    .wrap{max-width:460px;margin:0 auto}
     .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
+      display:inline-block;
+      padding:7px 12px;
       border-radius:999px;
-      background:rgba(255,255,255,0.75);
       border:1px solid var(--line);
-      box-shadow:0 10px 18px rgba(0,0,0,0.05);
-      font-weight:950;
-      font-size:13px;
-      color:#3b3b3b;
+      background:#fff;
+      font-weight:900;
+      font-size:12px;
+      margin-bottom:10px;
     }
-    .dot{
-      width:8px;height:8px;border-radius:99px;
-      background:#1f8a4c;
-      box-shadow:0 0 0 6px rgba(31,138,76,0.12);
-    }
-
     h1{
-      margin:14px 0 6px;
-      font-size:30px;
-      font-weight:950;
-      letter-spacing:-0.4px;
+      margin:0 0 8px;
+      font-size:28px;
+      line-height:1.08;
+      font-weight:900;
+      letter-spacing:-.4px;
     }
-
     .sub{
-      margin:0 0 16px;
-      font-size:14px;
+      margin:0 auto 16px;
+      max-width:380px;
       color:var(--muted);
-      line-height:1.35;
+      font-size:14px;
+      font-weight:700;
+      line-height:1.45;
     }
-
     .card{
       background:var(--card);
-      border-radius:var(--radius);
-      padding:18px 16px;
-      box-shadow:0 20px 55px rgba(0,0,0,.10);
       border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px 16px;
       text-align:left;
     }
-
-    .big{
-      font-weight:950;
-      font-size:16px;
-      margin:0 0 10px;
+    .gift{
+      font-size:42px;
+      line-height:1;
+      text-align:center;
+      margin-bottom:8px;
     }
-
-    .soft{
-      margin-top:10px;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius:14px;
-      background:rgba(184,146,79,0.12);
-      border:1px solid rgba(184,146,79,0.22);
-      color:#4a3a18;
-      font-weight:850;
-      font-size:13px;
+    .title{
+      text-align:center;
+      font-size:20px;
+      font-weight:900;
+      margin:0 0 6px;
     }
-
+    .desc{
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+      margin:0 0 16px;
+      font-weight:700;
+    }
     .steps{
-      margin-top:14px;
-      padding-top:14px;
-      border-top:1px dashed rgba(0,0,0,0.12);
+      display:grid;
+      gap:10px;
+      margin:0 0 16px;
     }
     .step{
       display:flex;
       gap:10px;
-      margin:10px 0 0;
-      font-size:13.5px;
-      line-height:1.35;
+      align-items:flex-start;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fcfbf9;
     }
     .num{
-      width:28px;height:28px;
-      border-radius:10px;
-      background:rgba(184,146,79,0.18);
-      color:#6f5522;
-      display:grid;
-      place-items:center;
-      font-weight:950;
-      flex:0 0 auto;
+      width:28px;height:28px;flex:0 0 28px;
+      border-radius:999px;
+      background:linear-gradient(180deg,var(--gold) 0%, var(--gold2) 100%);
+      color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      font-size:13px;font-weight:900;
+      margin-top:1px;
+    }
+    .step b{
+      display:block;
+      font-size:14px;
+      margin-bottom:3px;
+    }
+    .step span{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.35;
+      font-weight:700;
+    }
+    .cta{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      min-height:56px;
+      border:none;
+      border-radius:16px;
+      background:linear-gradient(180deg,var(--gold) 0%, var(--gold2) 100%);
+      color:#fff;
+      font-size:16px;
+      font-weight:900;
+      text-decoration:none;
+      box-shadow:0 14px 28px rgba(184,146,79,.28);
+      cursor:pointer;
+    }
+    .note{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      text-align:center;
     }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="badge"><span class="dot"></span>🎉 Votre -10% est prêt</div>
-
-    <h1>📲 Ajouter l’app — <span data-resto-name>Restaurant</span></h1>
-    <p class="sub">Ajoutez-la à votre écran d’accueil pour présenter votre réduction en caisse.</p>
+    <div class="badge">✅ Inscription confirmée</div>
+    <h1>Merci 🎉</h1>
+    <p class="sub">
+      Votre réduction est prête. Il vous reste une dernière action pour recevoir ensuite vos avantages plus rapidement.
+    </p>
 
     <div class="card">
-      <p class="big">🎁 Votre -10% sur votre prochaine <b>addition</b> est prêt.</p>
-      <div class="soft">✨ Cela prend 5 secondes (1 seule fois).</div>
+      <div class="gift">🎁</div>
+      <div class="title">Ajoutez Fidelavis à votre écran</div>
+      <p class="desc">
+        Cela vous permettra de retrouver votre offre du mois en 1 clic, sans refaire le scan.
+      </p>
 
       <div class="steps">
-        <div class="step"><div class="num">1</div><div>Appuyez sur le bouton d’installation qui apparaît.</div></div>
-        <div class="step"><div class="num">2</div><div>Confirmez. L’app sera ajoutée à votre écran d’accueil.</div></div>
+        <div class="step">
+          <div class="num">1</div>
+          <div>
+            <b>Ouvrez le menu de votre navigateur</b>
+            <span>Sur iPhone : bouton partager. Sur Android : menu du navigateur.</span>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="num">2</div>
+          <div>
+            <b>Choisissez “Sur l’écran d’accueil”</b>
+            <span>Ou “Installer l’application” selon votre téléphone.</span>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="num">3</div>
+          <div>
+            <b>Retrouvez vos offres plus vite</b>
+            <span>Votre accès sera disponible directement depuis votre téléphone.</span>
+          </div>
+        </div>
       </div>
+
+      <button class="cta" id="installBtn">📲 J’ai compris</button>
+      <div class="note">Vous pourrez installer Fidelavis juste après.</div>
     </div>
   </div>
 
-<script>
-function isStandalone(){
-  return window.matchMedia("(display-mode: standalone)").matches ||
-         window.navigator.standalone === true;
-}
+  <script>
+  (function(){
+    const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+    const isDemo = location.pathname.includes("/demo/") ? "1" : "0";
 
-function ensureHelperUI(){
-  if (document.getElementById("accessHelp")) return;
-
-  const wrap = document.querySelector(".wrap");
-  const card = document.querySelector(".card");
-  if (!wrap || !card) return;
-
-  const box = document.createElement("div");
-  box.id = "accessHelp";
-  box.style.marginTop = "14px";
-  box.style.padding = "14px";
-  box.style.borderRadius = "16px";
-  box.style.border = "1px solid rgba(0,0,0,0.08)";
-  box.style.background = "rgba(255,255,255,0.82)";
-  box.style.boxShadow = "0 12px 26px rgba(0,0,0,0.08)";
-  box.style.textAlign = "left";
-
-  box.innerHTML = `
-    <div style="font-weight:950; font-size:14px; margin-bottom:6px;">⏳ Synchronisation en cours…</div>
-    <div style="color:#6b6b6b; font-weight:700; font-size:13px; line-height:1.35;">
-      Sur iPhone, il faut parfois <b>1 à 2 secondes</b> après l’installation pour récupérer l’accès.
-      <br>Ne fermez pas : nous vérifions automatiquement.
-    </div>
-
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
-      <button id="btnRetry" type="button"
-        style="flex:1; min-width:140px; padding:12px 14px; border-radius:14px; border:2px solid rgba(184,146,79,.35); background:#fff; font-weight:950; cursor:pointer;">
-        🔄 Rafraîchir
-      </button>
-
-      <button id="btnCoupon" type="button"
-        style="flex:1; min-width:140px; padding:12px 14px; border-radius:14px; border:none; background:linear-gradient(180deg, #B8924F 0%, #9E7A3E 100%); color:#fff; font-weight:950; cursor:pointer;">
-        🎟️ Aller au coupon
-      </button>
-    </div>
-
-    <div id="accessState"
-      style="margin-top:10px; font-size:12.5px; font-weight:800; color:#7a1120; background:rgba(182,21,43,.06); border:1px solid rgba(182,21,43,.14); padding:10px 12px; border-radius:14px;">
-      Vérification…
-    </div>
-  `;
-
-  card.appendChild(box);
-
-  document.getElementById("btnRetry").addEventListener("click", () => {
-    location.reload();
-  });
-
-  document.getElementById("btnCoupon").addEventListener("click", () => {
-    try{
-      if (window.Fidelavis?.hasAccess?.()){
-        window.location.replace("index.html");
-      } else {
-        const s = document.getElementById("accessState");
-        if (s) s.textContent = "⚠️ Accès pas encore prêt. Patientez 1 seconde puis réessayez.";
+    try {
+      if (!sessionStorage.getItem("fv_session_id")) {
+        sessionStorage.setItem("fv_session_id", "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2,8));
       }
-    }catch(e){}
-  });
-}
+    } catch(e){}
 
-(async function(){
-  try {
-    await window.Fidelavis?.loadConfig?.();
-  } catch(e){}
+    try {
+      const key = `thankyou_view_${RESTO}_${new Date().toISOString().slice(0,10)}`;
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
 
-  const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+        window.Fidelavis?.track?.("thankyou_view", {
+          src: "redit",
+          page: "redit",
+          resto: RESTO
+        });
 
-  // ✅ tentative d'installation : 1 fois par session
-  try{
-    const k = `install_attempt_${RESTO}`;
-    if (!sessionStorage.getItem(k)){
-      sessionStorage.setItem(k, "1");
-      window.Fidelavis?.track?.("install_attempt", {
-        page: "redit",
-        resto: RESTO
-      });
-    }
-  }catch(e){}
-
-  // ✅ si la PWA est ouverte en standalone
-  if (isStandalone()){
-    ensureHelperUI();
-
-    const triesMax = 8;
-    let tries = 0;
-    let confirmedTracked = false;
-
-    const tick = () => {
-      tries++;
-
-      const hasAccess = (window.Fidelavis?.hasAccess?.() === true);
-      const s = document.getElementById("accessState");
-
-      if (s){
-        s.textContent = hasAccess
-          ? "✅ Accès confirmé. Ouverture du coupon…"
-          : `⏳ Vérification (${tries}/${triesMax})…`;
+        window.trackEventFidelavis?.("thankyou_view", RESTO, {
+          src: "redit",
+          demo: isDemo
+        });
       }
+    } catch(e){}
 
-      if (hasAccess){
-        if (!confirmedTracked){
-          confirmedTracked = true;
-          try{
-            window.Fidelavis?.track?.("install_confirmed", {
-              page: "redit",
-              resto: RESTO,
-              standalone: 1
-            });
-          }catch(e){}
-        }
+    document.getElementById("installBtn").addEventListener("click", function(){
+      try {
+        window.Fidelavis?.track?.("install_cta_click", {
+          src: "redit",
+          page: "redit",
+          resto: RESTO
+        });
+      } catch(e){}
 
-        setTimeout(() => {
-          window.location.replace("index.html");
-        }, 220);
-        return;
-      }
+      try {
+        window.trackEventFidelavis?.("install_cta_click", RESTO, {
+          src: "redit",
+          demo: isDemo
+        });
+      } catch(e){}
 
-      if (tries < triesMax){
-        setTimeout(tick, 350);
-      } else {
-        try{
-          window.Fidelavis?.track?.("install_no_access", {
-            page: "redit",
-            resto: RESTO
-          });
-        }catch(e){}
-
-        if (s){
-          s.textContent = "⚠️ Accès non confirmé. Cliquez sur “Rafraîchir” ou réouvrez via le lien email.";
-        }
-      }
-    };
-
-    setTimeout(tick, 350);
-  }
-})();
-</script>
-
+      window.location.href = "index.html";
+    });
+  })();
+  </script>
 </body>
 </html>
