@@ -24,7 +24,7 @@
     body{
       margin:0;
       padding:14px;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:var(--bg);
       color:var(--ink);
     }
@@ -47,7 +47,7 @@
       margin:0;
       font-size:22px;
       color:var(--brand);
-      font-weight:900;
+      font-weight:950;
     }
 
     .sub{
@@ -102,7 +102,7 @@
 
     .grid{
       display:grid;
-      grid-template-columns:repeat(12, 1fr);
+      grid-template-columns:repeat(12,1fr);
       gap:12px;
       margin-top:12px;
     }
@@ -274,21 +274,20 @@
   <div id="msgBox"></div>
 
   <div class="grid">
-
     <div class="card kpi">
       <div class="kpi-label">Scans NFC</div>
       <div class="kpi-value" id="kScan">—</div>
-      <div class="kpi-hint">Événement : scan</div>
+      <div class="kpi-hint">scan</div>
     </div>
 
     <div class="card kpi">
       <div class="kpi-label">Clients captés</div>
       <div class="kpi-value" id="kSignup">—</div>
-      <div class="kpi-hint">Événement : signup</div>
+      <div class="kpi-hint">signup</div>
     </div>
 
     <div class="card kpi">
-      <div class="kpi-label">Tentatives d’installation</div>
+      <div class="kpi-label">Tentatives installation</div>
       <div class="kpi-value" id="kInstallAttempt">—</div>
       <div class="kpi-hint">install_attempt</div>
     </div>
@@ -318,7 +317,7 @@
     </div>
 
     <div class="card kpi">
-      <div class="kpi-label">Taux install réel</div>
+      <div class="kpi-label">Taux installation réel</div>
       <div class="kpi-value" id="kConvInstall">—</div>
       <div class="kpi-hint">install_confirmed / install_attempt</div>
     </div>
@@ -347,7 +346,6 @@
         <tbody id="recapBody"></tbody>
       </table>
     </div>
-
   </div>
 
   <div class="footer-note" id="footerNote">
@@ -356,16 +354,7 @@
 </div>
 
 <script>
-  // ==============================
-  // CONFIG
-  // ==============================
-
-  const API_TRACK = "https://script.google.com/macros/s/AKfycbw3ruAdta-NzkcazlKhmlYbmHgQtGebyu_uvHU1tg0/exec";
-  // ⚠️ remplace si besoin par TON lien /exec final
-
-  // ==============================
-  // HELPERS
-  // ==============================
+  const API_TRACK = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
 
   function qs(id){
     return document.getElementById(id);
@@ -416,29 +405,29 @@
       box.innerHTML = "";
       return;
     }
-    const className = type === "error"
-      ? "err-box"
-      : type === "ok"
-      ? "ok-box"
-      : "info-box";
-
+    const className = type === "error" ? "err-box" : type === "ok" ? "ok-box" : "info-box";
     box.innerHTML = `<div class="${className}">${text}</div>`;
   }
 
-  // ==============================
-  // API
-  // ==============================
-
   async function fetchStats(resto, days){
     const url = `${API_TRACK}?resto=${encodeURIComponent(resto)}&days=${encodeURIComponent(days)}`;
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, { cache:"no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     return await res.json();
   }
 
-  // ==============================
-  // UI
-  // ==============================
+  function fillRecap(data){
+    qs("recapBody").innerHTML = `
+      <tr><td class="muted">Scans NFC</td><td>${data.scans}</td></tr>
+      <tr><td class="muted">Clients captés</td><td>${data.signups}</td></tr>
+      <tr><td class="muted">Tentatives installation</td><td>${data.installAttempt}</td></tr>
+      <tr><td class="muted">Installations confirmées</td><td>${data.installConfirmed}</td></tr>
+      <tr><td class="muted">Coupons validés</td><td>${data.coupons}</td></tr>
+      <tr><td class="muted">Clics avis</td><td>${data.reviews}</td></tr>
+      <tr><td class="muted">Taux captation</td><td>${pct(data.signups, data.scans)}</td></tr>
+      <tr><td class="muted">Taux installation réel</td><td>${pct(data.installConfirmed, data.installAttempt)}</td></tr>
+    `;
+  }
 
   function fillKpis(rows){
     const scans = countEvent(rows, "scan");
@@ -467,19 +456,6 @@
     });
   }
 
-  function fillRecap(data){
-    qs("recapBody").innerHTML = `
-      <tr><td class="muted">Scans NFC</td><td>${data.scans}</td></tr>
-      <tr><td class="muted">Clients captés</td><td>${data.signups}</td></tr>
-      <tr><td class="muted">Tentatives d’installation</td><td>${data.installAttempt}</td></tr>
-      <tr><td class="muted">Installations confirmées</td><td>${data.installConfirmed}</td></tr>
-      <tr><td class="muted">Coupons validés</td><td>${data.coupons}</td></tr>
-      <tr><td class="muted">Clics avis</td><td>${data.reviews}</td></tr>
-      <tr><td class="muted">Taux captation</td><td>${pct(data.signups, data.scans)}</td></tr>
-      <tr><td class="muted">Taux install réel</td><td>${pct(data.installConfirmed, data.installAttempt)}</td></tr>
-    `;
-  }
-
   function fillTopDays(byDay){
     const body = qs("topDaysBody");
     body.innerHTML = "";
@@ -488,7 +464,7 @@
       .sort((a,b) => b[1] - a[1])
       .slice(0, 10);
 
-    if (!entries.length) {
+    if (!entries.length){
       body.innerHTML = `<tr><td class="muted">Aucune donnée</td><td class="muted">0</td></tr>`;
       return;
     }
@@ -502,11 +478,11 @@
 
   function drawDailyChart(byDay){
     const keys = Object.keys(byDay).sort();
-    const arr = [["Date", "Volume"]];
+    const arr = [["Date","Volume"]];
 
     keys.forEach(k => arr.push([k, byDay[k]]));
 
-    if (arr.length === 1) {
+    if (arr.length === 1){
       const today = new Date().toISOString().slice(0,10);
       arr.push([today, 0]);
     }
@@ -515,18 +491,14 @@
     const chart = new google.visualization.LineChart(qs("dailyChart"));
 
     chart.draw(data, {
-      legend: { position: "none" },
-      curveType: "function",
-      colors: ["#b6152b"],
-      chartArea: { left: 48, right: 16, top: 20, bottom: 45 },
-      hAxis: { textStyle: { fontSize: 11 } },
-      vAxis: { minValue: 0, textStyle: { fontSize: 11 } }
+      legend:{ position:"none" },
+      curveType:"function",
+      colors:["#b6152b"],
+      chartArea:{ left:48, right:16, top:20, bottom:45 },
+      hAxis:{ textStyle:{ fontSize:11 } },
+      vAxis:{ minValue:0, textStyle:{ fontSize:11 } }
     });
   }
-
-  // ==============================
-  // MAIN
-  // ==============================
 
   async function refresh(){
     setMessage("", "");
@@ -536,8 +508,8 @@
     const eventFilter = qs("eventSelect").value || "";
     const demoFilter = qs("demoSelect").value;
 
-    if (!resto) {
-      setMessage("error", "Aucun restaurant détecté dans l’URL. Exemple attendu : <b>?resto=voltaire</b>");
+    if (!resto){
+      setMessage("error", "Aucun restaurant détecté dans l’URL. Exemple : <b>?resto=resto1</b>");
       return;
     }
 
@@ -549,17 +521,15 @@
     try{
       data = await fetchStats(resto, days);
     }catch(err){
-      setMessage("error", `Erreur de lecture API : ${String(err.message || err)}`);
+      setMessage("error", `Erreur API : ${String(err.message || err)}`);
       return;
     }
 
     let rows = safeRows(data);
 
-    // sécurité resto
     rows = rows.filter(r => String(r.resto || "").toLowerCase() === resto);
 
-    // filtre demo/prod
-    if (demoFilter !== "") {
+    if (demoFilter !== ""){
       const wanted = Number(demoFilter);
       rows = rows.filter(r => toDemo01(r.demo) === wanted);
     }
@@ -574,10 +544,10 @@
     fillTopDays(byDay);
     drawDailyChart(byDay);
 
-    setMessage("ok", `Dashboard chargé avec succès pour <b>${resto}</b>. Nombre de lignes analysées : <b>${rows.length}</b>.`);
+    setMessage("ok", `Dashboard chargé pour <b>${resto}</b>. Lignes analysées : <b>${rows.length}</b>.`);
   }
 
-  google.charts.load("current", { packages: ["corechart"] });
+  google.charts.load("current", { packages:["corechart"] });
   google.charts.setOnLoadCallback(() => {
     qs("refreshBtn").addEventListener("click", refresh);
     qs("daysSelect").addEventListener("change", refresh);
