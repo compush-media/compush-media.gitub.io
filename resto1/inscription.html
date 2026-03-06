@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Activer -10% — Fidelavis</title>
 
-  <!-- ✅ Core commun (resto, email, tracking, go, etc.) -->
+  <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,37 +103,45 @@
     }
   </style>
 
-  <!-- ✅ Patch submitted=1 (GHL redirect) -->
+  <!-- ✅ Détection retour GHL après soumission -->
   <script>
     (function(){
       const params = new URLSearchParams(location.search);
       if (params.get("submitted") !== "1") return;
 
       const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+      const now = Date.now();
 
-      // Flags anti-boucle
+      // Flags d’accès
       try{
         localStorage.setItem("is_registered", "1");
         localStorage.setItem("fv_onboarding_done", "1");
         localStorage.setItem(`fv_registered_${RESTO}`, "1");
+        localStorage.setItem(`fv_registered_at_${RESTO}`, String(now));
       }catch(e){}
 
-      // Dédup 24h
-      const dedupKey = `signup_submit_${RESTO}`;
+      // Dédup signup sur 24h
+      const dedupKey = `signup_${RESTO}`;
       const last = Number(localStorage.getItem(dedupKey) || "0");
-      const now = Date.now();
 
       if (!last || (now - last) > 86400000) {
         try { localStorage.setItem(dedupKey, String(now)); } catch(e){}
-        try { window.Fidelavis?.track?.("signup_submit", { source: "ghl_redirect_inscription" }); } catch(e){}
+
+        try {
+          window.Fidelavis?.track?.("signup", {
+            src: "ghl_redirect_inscription",
+            page: "inscription",
+            resto: RESTO
+          });
+        } catch(e){}
       }
 
-      // Nettoie URL
+      // Nettoyage URL
       params.delete("submitted");
       const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
       try { history.replaceState({}, document.title, clean); } catch(e){}
 
-      // Redirect install
+      // Redirection vers la page d’installation
       setTimeout(() => window.location.replace("redit.html"), 220);
     })();
   </script>
@@ -164,21 +172,25 @@
 (function(){
   const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
 
-  // Tracking entrée inscription (1 fois / session / jour)
+  // ✅ Tracking arrivée page inscription : 1 fois / session / jour
   try{
     const key = `scan_to_signup_${RESTO}_${new Date().toISOString().slice(0,10)}`;
     if (!sessionStorage.getItem(key)) {
       sessionStorage.setItem(key, "1");
-      window.Fidelavis?.track?.("scan_to_signup");
+      window.Fidelavis?.track?.("scan_to_signup", {
+        src: "inscription",
+        page: "inscription",
+        resto: RESTO
+      });
     }
   }catch(e){}
 
-  // Liens privacy / cgu
+  // ✅ Liens footer
   const from = encodeURIComponent(location.pathname);
   document.getElementById("ppBtn").href  = "/privacy.html?from=" + from;
   document.getElementById("cguBtn").href = "/cgu.html?from=" + from;
 
-  // Hauteur iframe
+  // ✅ Hauteur iframe adaptive
   function setFrameHeight(){
     const frame = document.getElementById("ghlFrame");
     const card  = document.getElementById("card");
