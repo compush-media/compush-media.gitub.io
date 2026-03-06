@@ -21,7 +21,7 @@
     *{ box-sizing:border-box; }
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
       background:var(--bg);
       color:var(--ink);
       padding:14px;
@@ -59,7 +59,7 @@
 
     .grid{
       display:grid;
-      grid-template-columns: repeat(12, 1fr);
+      grid-template-columns:repeat(12, 1fr);
       gap:12px;
       margin-top:12px;
     }
@@ -70,16 +70,16 @@
       box-shadow:var(--shadow);
       padding:12px;
     }
-    .kpi{ grid-column: span 3; }
-    .chart{ grid-column: span 12; }
-    .half{ grid-column: span 6; }
+    .kpi{ grid-column:span 3; }
+    .chart{ grid-column:span 12; }
+    .half{ grid-column:span 6; }
 
     @media (max-width: 980px){
-      .kpi{ grid-column: span 6; }
-      .half{ grid-column: span 12; }
+      .kpi{ grid-column:span 6; }
+      .half{ grid-column:span 12; }
     }
     @media (max-width: 520px){
-      .kpi{ grid-column: span 12; }
+      .kpi{ grid-column:span 12; }
     }
 
     .kpiLabel{ color:var(--muted); font-size:12px; font-weight:800; }
@@ -165,19 +165,19 @@
     <div class="card kpi">
       <div class="kpiLabel">Clients captés</div>
       <div class="kpiValue" id="kSignup">—</div>
-      <div class="kpiHint">Inscrits / activations (signup)</div>
+      <div class="kpiHint">signup</div>
     </div>
 
     <div class="card kpi">
-      <div class="kpiLabel">Installs (tentatives)</div>
+      <div class="kpiLabel">Intentions d’installation</div>
       <div class="kpiValue" id="kInstallAttempt">—</div>
       <div class="kpiHint">install_attempt</div>
     </div>
 
     <div class="card kpi">
-      <div class="kpiLabel">Installs (confirmées)</div>
+      <div class="kpiLabel">Installations réelles</div>
       <div class="kpiValue" id="kInstallConfirmed">—</div>
-      <div class="kpiHint">install_confirmed (standalone)</div>
+      <div class="kpiHint">install_confirmed</div>
     </div>
 
     <div class="card kpi">
@@ -202,6 +202,12 @@
       <div class="kpiLabel">Taux install réel</div>
       <div class="kpiValue" id="kInstallRate">—</div>
       <div class="kpiHint">install_confirmed / install_attempt</div>
+    </div>
+
+    <div class="card kpi">
+      <div class="kpiLabel">CA estimé</div>
+      <div class="kpiValue" id="kRevenue">—</div>
+      <div class="kpiHint">Coupons validés × panier moyen</div>
     </div>
 
     <div class="card chart">
@@ -233,40 +239,34 @@
 
 <script>
   const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
+  const AVG_BASKET = 26;
 
   function getRestoFromUrl(){
     const p = new URLSearchParams(location.search);
     return (p.get("resto") || "").trim().toLowerCase() || "resto1";
   }
+
   const RESTO = getRestoFromUrl();
   document.getElementById("title").textContent = `📊 Dashboard — ${RESTO}`;
-  document.getElementById("subtitle").textContent = `KPIs & courbes — Restaurant: ${RESTO}`;
+  document.getElementById("subtitle").textContent = `KPIs & courbes — Restaurant : ${RESTO}`;
 
   function toDemo01(v){
-    // si absent => PROD (0)
     const n = Number(v);
     return (n === 1) ? 1 : 0;
-  }
-
-  function groupByDay(rows){
-    const map = {};
-    rows.forEach(r=>{
-      const d = new Date(r.ts);
-      if (!isFinite(d.getTime())) return;
-      const key = d.toISOString().slice(0,10);
-      map[key] = (map[key] || 0) + 1;
-    });
-    return map;
   }
 
   function countEvent(rows, name){
     return rows.filter(r => r.event === name).length;
   }
 
-  function pct(a,b){
+  function pct(a, b){
     if (!b) return "—";
     const p = (a / b) * 100;
     return (Math.round(p * 10) / 10).toFixed(1) + "%";
+  }
+
+  function money(n){
+    return `${Number(n || 0)} €`;
   }
 
   async function fetchData(resto, days){
@@ -274,6 +274,25 @@
     const res = await fetch(url, { cache:"no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     return await res.json();
+  }
+
+  function groupByDay(rows){
+    const map = {};
+    rows.forEach(r => {
+      let key = "";
+
+      // futur-proof : si Apps Script renvoie un champ day, on le prend en priorité
+      if (r.day) {
+        key = String(r.day).slice(0, 10);
+      } else {
+        const d = new Date(r.ts);
+        if (!isFinite(d.getTime())) return;
+        key = d.toISOString().slice(0, 10);
+      }
+
+      map[key] = (map[key] || 0) + 1;
+    });
+    return map;
   }
 
   function drawLine(countsByDay){
@@ -304,7 +323,7 @@
     body.innerHTML = "";
 
     const entries = Object.entries(countsByDay)
-      .sort((a,b)=>b[1]-a[1])
+      .sort((a,b) => b[1] - a[1])
       .slice(0, 10);
 
     if (!entries.length){
@@ -312,25 +331,37 @@
       return;
     }
 
-    entries.forEach(([day,count])=>{
+    entries.forEach(([day, count]) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `<td>${day}</td><td>${count}</td>`;
       body.appendChild(tr);
     });
   }
 
-  function fillRecap(scans, signups, ia, ic, coupons, reviews){
+  function fillRecap(scans, signups, ia, ic, coupons, reviews, revenue){
     const recap = document.getElementById("recapBody");
     recap.innerHTML = `
       <tr><td class="muted">Scans</td><td>${scans}</td></tr>
       <tr><td class="muted">Clients captés (signup)</td><td>${signups}</td></tr>
-      <tr><td class="muted">Installs (tentatives)</td><td>${ia}</td></tr>
-      <tr><td class="muted">Installs (confirmées)</td><td>${ic}</td></tr>
+      <tr><td class="muted">Intentions d’installation</td><td>${ia}</td></tr>
+      <tr><td class="muted">Installations réelles</td><td>${ic}</td></tr>
       <tr><td class="muted">Coupons validés</td><td>${coupons}</td></tr>
       <tr><td class="muted">Clic avis</td><td>${reviews}</td></tr>
       <tr><td class="muted">Conversion (signup/scan)</td><td>${pct(signups, scans)}</td></tr>
-      <tr><td class="muted">Taux install réel (confirmed/attempt)</td><td>${pct(ic, ia)}</td></tr>
+      <tr><td class="muted">Taux install réel</td><td>${pct(ic, ia)}</td></tr>
+      <tr><td class="muted">CA estimé</td><td>${money(revenue)}</td></tr>
     `;
+  }
+
+  function getStatsFromRows(rows){
+    return {
+      scan: countEvent(rows, "scan"),
+      signup: countEvent(rows, "signup"),
+      install_attempt: countEvent(rows, "install_attempt"),
+      install_confirmed: countEvent(rows, "install_confirmed"),
+      coupon_validate: countEvent(rows, "coupon_validate"),
+      review_click: countEvent(rows, "review_click")
+    };
   }
 
   async function refresh(){
@@ -339,11 +370,15 @@
 
     const days = Number(document.getElementById("daysSelect").value || 30);
     const ev = document.getElementById("eventSelect").value || "";
-    const demoSel = document.getElementById("demoSelect").value; // "", "0", "1"
+    const demoSel = document.getElementById("demoSelect").value;
 
     let data;
     try{
       data = await fetchData(RESTO, days);
+
+      if (data && data.ok === false) {
+        throw new Error(data.message || "Réponse API invalide");
+      }
     }catch(e){
       errBox.innerHTML = `<div class="err">Erreur fetch : ${String(e.message || e)}</div>`;
       return;
@@ -351,44 +386,51 @@
 
     let rows = Array.isArray(data.rows) ? data.rows : [];
 
-    // Filtre resto (sécurité)
-    rows = rows.filter(r => String(r.resto||"").toLowerCase() === RESTO);
+    rows = rows.filter(r => String(r.resto || "").toLowerCase() === RESTO);
 
-    // Filtre demo (prod/demo)
     if (demoSel !== ""){
       const wanted = Number(demoSel);
       rows = rows.filter(r => toDemo01(r.demo) === wanted);
     }
 
-    // KPIs globaux (sur rows filtrées prod/demo)
-    const scans   = countEvent(rows, "scan");
-    const signups = countEvent(rows, "signup");
-    const ia      = countEvent(rows, "install_attempt");
-    const ic      = countEvent(rows, "install_confirmed");
-    const coupons = countEvent(rows, "coupon_validate");
-    const reviews = countEvent(rows, "review_click");
+    // Si l’API renvoie stats, on les prend seulement quand il n’y a pas de filtre demo local.
+    // Sinon on recalcule depuis rows pour rester cohérent avec l’affichage courant.
+    let stats = null;
+    if (data.stats && demoSel === "") {
+      stats = data.stats;
+    } else {
+      stats = getStatsFromRows(rows);
+    }
 
-    document.getElementById("kScan").textContent            = scans;
-    document.getElementById("kSignup").textContent          = signups;
-    document.getElementById("kInstallAttempt").textContent  = ia;
-    document.getElementById("kInstallConfirmed").textContent= ic;
-    document.getElementById("kCoupon").textContent          = coupons;
-    document.getElementById("kReview").textContent          = reviews;
-    document.getElementById("kConv").textContent            = pct(signups, scans);
-    document.getElementById("kInstallRate").textContent     = pct(ic, ia);
+    const scans = Number(stats.scan || 0);
+    const signups = Number(stats.signup || 0);
+    const ia = Number(stats.install_attempt || 0);
+    const ic = Number(stats.install_confirmed || 0);
+    const coupons = Number(stats.coupon_validate || 0);
+    const reviews = Number(stats.review_click || 0);
+    const revenue = coupons * AVG_BASKET;
 
-    // Graphe / topDays sur filtre event optionnel
+    document.getElementById("kScan").textContent = scans;
+    document.getElementById("kSignup").textContent = signups;
+    document.getElementById("kInstallAttempt").textContent = ia;
+    document.getElementById("kInstallConfirmed").textContent = ic;
+    document.getElementById("kCoupon").textContent = coupons;
+    document.getElementById("kReview").textContent = reviews;
+    document.getElementById("kConv").textContent = pct(signups, scans);
+    document.getElementById("kInstallRate").textContent = pct(ic, ia);
+    document.getElementById("kRevenue").textContent = money(revenue);
+
     const filteredRows = ev ? rows.filter(r => r.event === ev) : rows;
     const byDay = groupByDay(filteredRows);
+
     drawLine(byDay);
     fillTopDays(byDay);
-
-    fillRecap(scans, signups, ia, ic, coupons, reviews);
+    fillRecap(scans, signups, ia, ic, coupons, reviews, revenue);
   }
 
   google.charts.load("current", { packages:["corechart"] });
   google.charts.setOnLoadCallback(() => {
-    ["daysSelect","eventSelect","demoSelect"].forEach(id=>{
+    ["daysSelect","eventSelect","demoSelect"].forEach(id => {
       document.getElementById(id).addEventListener("change", refresh);
     });
     refresh();
