@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Installer l’app</title>
 
-  <!-- ✅ Manifest RELATIF (recommandé) -->
+  <!-- ✅ Manifest RELATIF -->
   <link rel="manifest" href="progressier.json"/>
 
   <!-- ✅ Progressier -->
@@ -145,9 +145,6 @@
   </div>
 
 <script>
-/* ============================
-   TRACKING + REDIRECT (via core.js)
-============================ */
 function isStandalone(){
   return window.matchMedia("(display-mode: standalone)").matches ||
          window.navigator.standalone === true;
@@ -173,7 +170,7 @@ function ensureHelperUI(){
   box.innerHTML = `
     <div style="font-weight:950; font-size:14px; margin-bottom:6px;">⏳ Synchronisation en cours…</div>
     <div style="color:#6b6b6b; font-weight:700; font-size:13px; line-height:1.35;">
-      Sur iPhone, il faut parfois <b>1 seconde</b> après l’installation pour récupérer l’accès.
+      Sur iPhone, il faut parfois <b>1 à 2 secondes</b> après l’installation pour récupérer l’accès.
       <br>Ne fermez pas : nous vérifions automatiquement.
     </div>
 
@@ -198,11 +195,10 @@ function ensureHelperUI(){
   card.appendChild(box);
 
   document.getElementById("btnRetry").addEventListener("click", () => {
-    try { location.reload(); } catch(e){}
+    location.reload();
   });
 
   document.getElementById("btnCoupon").addEventListener("click", () => {
-    // Si accès ok -> index.html, sinon on ne fait rien
     try{
       if (window.Fidelavis?.hasAccess?.()){
         window.location.replace("index.html");
@@ -214,63 +210,81 @@ function ensureHelperUI(){
   });
 }
 
-(function(){
-  try{
-    const RESTO = window.Fidelavis?.rememberLastResto?.() || "resto1";
+(async function(){
+  try {
+    await window.Fidelavis?.loadConfig?.();
+  } catch(e){}
 
-    // install_attempt 1x/session/RESTO
+  const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+
+  // ✅ tentative d'installation : 1 fois par session
+  try{
     const k = `install_attempt_${RESTO}`;
     if (!sessionStorage.getItem(k)){
       sessionStorage.setItem(k, "1");
-      window.Fidelavis?.track?.("install_attempt");
-    }
-
-    // Si PWA ouverte
-    if (isStandalone()){
-      window.Fidelavis?.track?.("install_open");
-
-      // On affiche une UI d'aide (au cas où)
-      ensureHelperUI();
-
-      // On retente plusieurs fois (iOS restore LS/cookies)
-      const triesMax = 6;        // ~ 6 * 350ms = 2.1s
-      let tries = 0;
-
-      const tick = () => {
-        tries++;
-        const ok = (window.Fidelavis?.hasAccess?.() === true);
-
-        const s = document.getElementById("accessState");
-        if (s){
-          s.textContent = ok
-            ? "✅ Accès confirmé. Ouverture du coupon…"
-            : `⏳ Vérification (${tries}/${triesMax})…`;
-        }
-
-        if (ok){
-          window.Fidelavis?.track?.("install");
-          setTimeout(()=> window.location.replace("index.html"), 220);
-          return;
-        }
-
-        if (tries < triesMax){
-          setTimeout(tick, 350);
-        } else {
-          // Après plusieurs essais, on garde la page + message clair
-          window.Fidelavis?.track?.("install_no_access");
-          if (s) s.textContent = "⚠️ Accès non confirmé. Cliquez sur “Rafraîchir” ou réouvrez via le lien email.";
-        }
-      };
-
-      setTimeout(tick, 350);
-      return;
+      window.Fidelavis?.track?.("install_attempt", {
+        page: "redit",
+        resto: RESTO
+      });
     }
   }catch(e){}
-})();
 
-/* Charge config resto (nom, couleurs…) */
-(async function(){
-  try { await window.Fidelavis?.loadConfig?.(); } catch(e){}
+  // ✅ si la PWA est ouverte en standalone
+  if (isStandalone()){
+    ensureHelperUI();
+
+    const triesMax = 8;
+    let tries = 0;
+    let confirmedTracked = false;
+
+    const tick = () => {
+      tries++;
+
+      const hasAccess = (window.Fidelavis?.hasAccess?.() === true);
+      const s = document.getElementById("accessState");
+
+      if (s){
+        s.textContent = hasAccess
+          ? "✅ Accès confirmé. Ouverture du coupon…"
+          : `⏳ Vérification (${tries}/${triesMax})…`;
+      }
+
+      if (hasAccess){
+        if (!confirmedTracked){
+          confirmedTracked = true;
+          try{
+            window.Fidelavis?.track?.("install_confirmed", {
+              page: "redit",
+              resto: RESTO,
+              standalone: 1
+            });
+          }catch(e){}
+        }
+
+        setTimeout(() => {
+          window.location.replace("index.html");
+        }, 220);
+        return;
+      }
+
+      if (tries < triesMax){
+        setTimeout(tick, 350);
+      } else {
+        try{
+          window.Fidelavis?.track?.("install_no_access", {
+            page: "redit",
+            resto: RESTO
+          });
+        }catch(e){}
+
+        if (s){
+          s.textContent = "⚠️ Accès non confirmé. Cliquez sur “Rafraîchir” ou réouvrez via le lien email.";
+        }
+      }
+    };
+
+    setTimeout(tick, 350);
+  }
 })();
 </script>
 
