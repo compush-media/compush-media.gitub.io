@@ -3,338 +3,436 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Offre Fidelavis</title>
+  <title>Fidelavis — Activer -10%</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- ✅ PWA : TOUJOURS relatif dans chaque dossier resto -->
+  <link rel="manifest" href="progressier.json">
+  <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+
+  <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
 
-  <script>
-  (function(){
-    const STATS_URL = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
+  <!-- ✅ Anti-boucle (ULTRA ROBUSTE) : si déjà onboardé => index.html -->
+  <!-- ✅ NFC SMART ROUTING :
+     - si déjà inscrit => tente d’ouvrir la PWA (Android) / fallback index.html (iOS)
+     - sinon => laisse la page vivre (CTA inscription)
+-->
+<script>
+(function () {
+  // 1) Resto slug stable
+  try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
+  const RESTO = (window.Fidelavis?.getRestoSlug?.() || "resto1");
 
-    window.trackEventFidelavis = function(eventName, restoName, extra = {}) {
-      try {
-        let iframe = document.getElementById("stats_iframe");
-        if (!iframe) {
-          iframe = document.createElement("iframe");
-          iframe.name = "stats_iframe";
-          iframe.id = "stats_iframe";
-          iframe.style.display = "none";
-          document.body.appendChild(iframe);
-        }
+  function hasAccessSafe(){
+    try { return window.Fidelavis?.hasAccess?.() === true; }
+    catch(e){ return false; }
+  }
 
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = STATS_URL;
-        form.target = "stats_iframe";
-        form.style.display = "none";
+  function isIOS(){
+    return /iphone|ipad|ipod/i.test(navigator.userAgent);
+  }
 
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "data";
-        input.value = JSON.stringify({
-          resto: restoName || "resto1",
-          event: eventName || "",
-          mois: new Date().getMonth() + 1,
-          annee: new Date().getFullYear(),
-          user: localStorage.getItem("user_email") || "",
-          userAgent: navigator.userAgent,
-          pageURL: location.href,
-          demo: extra.demo ?? "",
-          deviceId: extra.deviceId ?? localStorage.getItem("device_id") || "",
-          sessionId: extra.sessionId ?? sessionStorage.getItem("fv_session_id") || "",
-          src: extra.src ?? ""
-        });
+  // Android Chrome: tentative d’ouverture "app installée"
+  function openAndroidPWA(){
+    const webUrl = `https://app.cartefidelavis.com/${RESTO}/index.html?from=nfc`;
+    const intent = `intent://${RESTO}/index.html?from=nfc#Intent;scheme=https;package=com.android.chrome;end`;
 
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
+    // tente d’ouvrir la PWA (si installée)
+    window.location.href = intent;
 
-        setTimeout(() => {
-          try { form.remove(); } catch(e){}
-        }, 1200);
+    // fallback web
+    setTimeout(() => { window.location.href = webUrl; }, 650);
+  }
 
-      } catch(e) {
-        console.warn("trackEventFidelavis error", e);
-      }
-    };
-  })();
-  </script>
+  // 2) Double check (iOS restore LS/cookies parfois retardé)
+  function routeIfReturning(){
+    if (!hasAccessSafe()) return false;
 
+    // tracking optionnel
+    try { window.Fidelavis?.track?.("nfc_returning"); } catch(e){}
+
+    if (!isIOS()){
+      openAndroidPWA();
+    } else {
+      // iOS ne peut pas forcer l’ouverture en standalone
+      window.location.replace(`/${RESTO}/index.html?from=nfc`);
+    }
+    return true;
+  }
+
+  // First try
+  if (routeIfReturning()) return;
+
+  // Second try (petit délai)
+  setTimeout(() => { routeIfReturning(); }, 250);
+})();
+</script>
   <style>
     :root{
       --gold:#B8924F;
       --gold2:#9E7A3E;
-      --bg:#f7f0e8;
-      --card:#ffffff;
+      --bg:#f6efe5;
       --ink:#1d1d1d;
-      --muted:#6a6a6a;
-      --line:rgba(0,0,0,.08);
-      --shadow:0 18px 40px rgba(0,0,0,.10);
+      --muted:#6b6b6b;
+      --line:rgba(0,0,0,0.08);
+      --shadow:0 18px 40px rgba(0,0,0,0.12);
       --radius:22px;
+      --danger:#b6152b;
+      --ok:#1f8a4c;
     }
     *{ box-sizing:border-box; }
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:
-        radial-gradient(1000px 420px at 50% -140px, rgba(184,146,79,.16), transparent 60%),
-        linear-gradient(180deg, #f8f1e8 0%, #f4eadf 100%);
+        radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
+        linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
       color:var(--ink);
+      padding:22px 14px 150px;
       text-align:center;
-      padding:22px 14px 30px;
     }
-    .wrap{
-      max-width:480px;
-      margin:0 auto;
+    .wrap{ max-width:520px; margin:0 auto; }
+
+    .resto{
+      font-size:40px;
+      line-height:1.05;
+      margin:10px 0 0;
+      font-weight:900;
+      color:#7a5b26;
+      letter-spacing:-0.8px;
     }
     .badge{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding:8px 14px;
+      padding:8px 12px;
       border-radius:999px;
-      background:#fff;
+      background:rgba(255,255,255,0.72);
       border:1px solid var(--line);
-      box-shadow:0 10px 24px rgba(0,0,0,.05);
-      font-size:12px;
       font-weight:900;
-      color:#303030;
-      margin-bottom:12px;
+      color:#3b3b3b;
+      font-size:13px;
+      box-shadow:0 10px 18px rgba(0,0,0,0.05);
+      margin-top:10px;
     }
     .dot{
-      width:8px;
-      height:8px;
-      border-radius:999px;
-      background:#1f8a4c;
+      width:8px;height:8px;border-radius:99px;
+      background:var(--ok);
+      box-shadow:0 0 0 6px rgba(31,138,76,0.12);
     }
-    h1{
-      margin:0 0 8px;
-      font-size:29px;
-      line-height:1.08;
-      letter-spacing:-.5px;
+
+    .hero{
+      margin:18px 0 12px;
+      padding:0 10px;
+    }
+    .hero h2{
+      margin:0;
+      font-size:20px;
       font-weight:950;
-      color:#1a1a1a;
+      color:#2b2b2b;
+      letter-spacing:-0.2px;
     }
-    .sub{
-      max-width:390px;
-      margin:0 auto 18px;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.4;
-    }
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:18px 16px;
-    }
-    .gift{
-      font-size:46px;
-      line-height:1;
-      margin-bottom:8px;
-    }
-    .title{
-      margin:0 0 8px;
-      font-size:22px;
-      font-weight:950;
-      line-height:1.15;
-      color:#1c1c1c;
-    }
-    .desc{
-      margin:0 auto 16px;
-      max-width:360px;
-      font-size:14px;
-      color:var(--muted);
-      line-height:1.45;
-    }
-    .benefits{
-      display:grid;
-      gap:10px;
-      margin:0 0 16px;
-      text-align:left;
-    }
-    .benefit{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      padding:12px;
-      border-radius:16px;
-      border:1px solid var(--line);
-      background:#fcfbf8;
-    }
-    .benefit i{
-      font-style:normal;
-      width:26px;
-      height:26px;
-      border-radius:999px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(184,146,79,.14);
-      flex:0 0 26px;
-      margin-top:1px;
-    }
-    .benefit b{
-      display:block;
-      font-size:14px;
-      margin-bottom:2px;
-    }
-    .benefit span{
-      display:block;
-      font-size:13px;
-      color:var(--muted);
-      line-height:1.35;
-    }
-    .cta{
+    .expire{
       display:inline-flex;
       align-items:center;
       justify-content:center;
       gap:8px;
-      width:100%;
-      min-height:56px;
-      padding:14px 18px;
-      border:none;
+      margin-top:12px;
+      padding:10px 14px;
       border-radius:16px;
-      background:linear-gradient(180deg, var(--gold) 0%, var(--gold2) 100%);
-      color:#fff;
-      text-decoration:none;
-      font-size:16px;
+      background:rgba(182,21,43,0.08);
+      border:1px solid rgba(182,21,43,0.18);
+      color:#7a1120;
       font-weight:950;
-      box-shadow:0 16px 32px rgba(184,146,79,.24);
-      cursor:pointer;
+      font-size:13.5px;
     }
-    .mini{
-      margin-top:10px;
-      font-size:12px;
-      color:#8a8a8a;
+
+    .card{
+      margin:14px auto 12px;
+      background:linear-gradient(180deg, rgba(184,146,79,0.96) 0%, rgba(158,122,62,0.96) 100%);
+      border-radius:var(--radius);
+      padding:18px 16px 16px;
+      box-shadow:var(--shadow);
+      text-align:left;
+    }
+    .card h3{
+      margin:0 0 10px;
+      color:#fff;
+      font-size:40px;
+      line-height:1.02;
+      font-weight:950;
+      letter-spacing:-0.9px;
+    }
+    .sub{
+      color:rgba(255,255,255,0.95);
+      font-size:15.5px;
       line-height:1.35;
+      margin:0 0 12px;
+      font-weight:700;
+    }
+    .miniLine{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.22);
+      border:1px solid rgba(255,255,255,0.22);
+      color:#fff;
+      font-weight:900;
+      font-size:13px;
+      backdrop-filter: blur(8px);
+    }
+    .social{
+      margin-top:12px;
+      padding:12px 12px;
+      border-radius:16px;
+      background:rgba(255,255,255,0.18);
+      border:1px solid rgba(255,255,255,0.22);
+      color:#fff;
+      font-weight:950;
+      font-size:14px;
+    }
+
+    .trust{
+      margin:12px auto 0;
+      max-width:520px;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+      color:#4a4a4a;
+      font-size:12.5px;
+      font-weight:900;
+    }
+    .trust span{
+      background:rgba(255,255,255,0.72);
+      border:1px solid var(--line);
+      padding:10px 12px;
+      border-radius:999px;
+      box-shadow:0 10px 18px rgba(0,0,0,0.04);
+    }
+
+    .sticky{
+      position:fixed;
+      left:0; right:0;
+      bottom:0;
+      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+      background:linear-gradient(180deg, rgba(246,239,229,0.0) 0%, rgba(246,239,229,0.92) 28%, rgba(246,239,229,0.98) 100%);
+      backdrop-filter: blur(10px);
+      z-index:50;
+    }
+    .ctaWrap{
+      max-width:520px;
+      margin:0 auto;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:10px;
+      box-shadow:0 16px 30px rgba(0,0,0,0.10);
+    }
+    .cta{
+      width:100%;
+      border:0;
+      cursor:pointer;
+      border-radius:16px;
+      padding:16px 14px;
+      font-family:inherit;
+      font-weight:950;
+      font-size:16px;
+      letter-spacing:-0.2px;
+      color:#1c1c1c;
+      background:linear-gradient(180deg, #ffffff 0%, #fbf7f1 100%);
+      border:2px solid rgba(184,146,79,0.45);
+      box-shadow:0 14px 26px rgba(184,146,79,0.25);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+    .pulse{
+      width:10px;height:10px;border-radius:99px;
+      background:var(--danger);
+      box-shadow:0 0 0 0 rgba(182,21,43,0.35);
+      animation:pulse 1.15s infinite;
+    }
+    @keyframes pulse{
+      0%{ box-shadow:0 0 0 0 rgba(182,21,43,0.35); }
+      70%{ box-shadow:0 0 0 12px rgba(182,21,43,0.00); }
+      100%{ box-shadow:0 0 0 0 rgba(182,21,43,0.00); }
+    }
+    .below{
+      margin-top:8px;
+      font-size:12.5px;
+      color:#5a5a5a;
+      font-weight:900;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .timer{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:rgba(182,21,43,0.08);
+      border:1px solid rgba(182,21,43,0.18);
+      color:#7a1120;
+      font-weight:950;
+    }
+
+    /* ✅ Cache le bouton/widget flottant Progressier */
+    progressier-install-button,
+    pwa-install,
+    #progressier-install-button,
+    .progressier-install-button,
+    #progressier-widget,
+    .progressier-widget,
+    [id*="progressier"][style*="position: fixed"],
+    [class*="progressier"][style*="position: fixed"]{
+      display:none !important;
+      visibility:hidden !important;
+      opacity:0 !important;
+      pointer-events:none !important;
     }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="badge"><span class="dot"></span>Offre réservée aux clients du restaurant</div>
+    <div class="resto"><span data-resto-name>Restaurant</span></div>
+    <div class="badge"><span class="dot"></span>Client invité aujourd’hui</div>
 
-    <h1>Un cadeau vous attend 🎁</h1>
-    <p class="sub">
-      Activez votre accès Fidelavis pour recevoir votre avantage immédiat et vos prochaines offres du mois.
-    </p>
+    <div class="hero">
+      <h2>🎁 Votre -10% est prêt pour cette table</h2>
+      <div class="expire">Valable pendant votre présence aujourd'hui</div>
+    </div>
 
     <div class="card">
-      <div class="gift">✨</div>
-      <p class="title">Activez votre remise maintenant</p>
-      <p class="desc">
-        En quelques secondes, vous débloquez votre avantage du jour et l’accès à vos futurs coupons.
-      </p>
+      <h3>-10% OFFERT</h3>
+      <p class="sub">💎 Sur votre prochaine <b>addition</b><br>📩 Reçu par email en 10 secondes</p>
 
-      <div class="benefits">
-        <div class="benefit">
-          <i>🎁</i>
-          <div>
-            <b>Un avantage immédiat</b>
-            <span>Recevez votre offre en cours directement après l’activation.</span>
-          </div>
-        </div>
-
-        <div class="benefit">
-          <i>⚡</i>
-          <div>
-            <b>Accès rapide</b>
-            <span>Retrouvez vos avantages plus facilement lors de vos prochaines visites.</span>
-          </div>
-        </div>
-
-        <div class="benefit">
-          <i>🔒</i>
-          <div>
-            <b>Simple et sécurisé</b>
-            <span>Quelques secondes suffisent pour activer votre accès.</span>
-          </div>
-        </div>
+      <div class="miniLine">
+        <div class="pill">🔒 Sans spam</div>
+        <div class="pill">✅ Sans engagement</div>
+        <div class="pill">🗑 Désinscription 1 clic</div>
       </div>
 
-      <button class="cta" id="btnStart" type="button">
-        🎁 Activer mon avantage
+      <div class="social">🔥 <span id="socialCount">27</span> clients ont activé aujourd’hui</div>
+    </div>
+
+    <div class="trust">
+      <span>📍 Sur place</span>
+      <span>🎁 Gratuit</span>
+      <span>✅ 1 clic</span>
+    </div>
+  </div>
+
+  <div class="sticky">
+    <div class="ctaWrap">
+      <button class="cta" id="ctaBtn" type="button">
+        <span class="pulse" aria-hidden="true"></span>
+        🎁 Recevoir mon -10% maintenant
       </button>
 
-      <div class="mini">
-        En continuant, vous accédez à l’offre du restaurant et au programme Fidelavis.
+      <div class="below">
+        <div>📲 Ajout rapide à votre écran (5 secondes, 1 seule fois)</div>
+        <div class="timer">⏳ Offre : <span id="countdown">05:00</span></div>
       </div>
     </div>
   </div>
 
-  <script>
-  (function(){
-    const RESTO =
-      window.Fidelavis?.rememberLastResto?.() ||
-      window.Fidelavis?.getRestoSlug?.() ||
-      "resto1";
+<script>
+  const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
 
-    try {
-      if (!sessionStorage.getItem("fv_session_id")) {
-        sessionStorage.setItem(
-          "fv_session_id",
-          "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2,8)
-        );
-      }
-    } catch(e){}
+  // ✅ Tracking scan (1x / session) via core.js
+  window.Fidelavis?.trackOnce?.("scan", `scan_${RESTO}_${new Date().toISOString().slice(0,10)}`, {});
+</script>
 
-    try {
-      if (!localStorage.getItem("device_id")) {
-        localStorage.setItem(
-          "device_id",
-          "dev_" + Math.random().toString(36).slice(2,10)
-        );
-      }
-    } catch(e){}
+<script>
+  const COUNTDOWN_SECONDS = 5 * 60;
 
-    try {
-      window.Fidelavis?.rememberLastResto?.();
-    } catch(e){}
+  function stableDailyRandom(min, max, seed){
+    const d = new Date();
+    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}-${seed || location.pathname}`;
+    let hash = 0;
+    for (let i=0;i<key.length;i++) hash = (hash*31 + key.charCodeAt(i)) >>> 0;
+    return (hash % (max - min + 1)) + min;
+  }
 
-    try {
-      const dayKey = `scan_nfc_${RESTO}_${new Date().toISOString().slice(0,10)}`;
-      if (!sessionStorage.getItem(dayKey)) {
-        sessionStorage.setItem(dayKey, "1");
+  function startCountdown(){
+    const out = document.getElementById("countdown");
+    const startKey = `fv_offer_start_${RESTO}`;
+    let start = Number(localStorage.getItem(startKey));
+    const now = Date.now();
 
-        window.Fidelavis?.track?.("scan_nfc", {
-          src: "indexnfc",
-          page: "indexnfc",
-          resto: RESTO
-        });
+    if (!start || (now - start) > (COUNTDOWN_SECONDS * 1000)) {
+      start = now;
+      localStorage.setItem(startKey, String(start));
+    }
 
-        window.trackEventFidelavis?.("scan_nfc", RESTO, {
-          src: "indexnfc",
-          demo: location.pathname.includes("/demo/") ? "1" : "0"
-        });
-      }
-    } catch(e){}
+    function tick(){
+      const elapsed = Math.floor((Date.now() - start) / 1000);
+      const left = Math.max(0, COUNTDOWN_SECONDS - elapsed);
+      const mm = String(Math.floor(left/60)).padStart(2,"0");
+      const ss = String(left%60).padStart(2,"0");
+      out.textContent = `${mm}:${ss}`;
+    }
+    tick();
+    setInterval(tick, 250);
+  }
 
-    document.getElementById("btnStart").addEventListener("click", function(){
-      try {
-        window.Fidelavis?.track?.("scan_cta_click", {
-          src: "indexnfc",
-          page: "indexnfc",
-          resto: RESTO
-        });
-      } catch(e){}
+  function goToInscription(){
+    window.Fidelavis?.track?.("signup_open");
+    if (window.Fidelavis?.go) window.Fidelavis.go("inscription.html");
+    else window.location.href = "./inscription.html";
+  }
 
-      try {
-        window.trackEventFidelavis?.("scan_cta_click", RESTO, {
-          src: "indexnfc",
-          demo: location.pathname.includes("/demo/") ? "1" : "0"
-        });
-      } catch(e){}
+  (async function init(){
+    let cfg = null;
+    try { cfg = await window.Fidelavis?.loadConfig?.(); } catch(e){}
 
-      try {
-        window.Fidelavis?.go?.("inscription.html");
-        return;
-      } catch(e){}
+    document.getElementById("socialCount").textContent =
+      String(stableDailyRandom(18, 38, (cfg && cfg.name) ? cfg.name : RESTO));
 
-      window.location.href = "inscription.html";
-    });
+    document.getElementById("ctaBtn").addEventListener("click", goToInscription);
+    startCountdown();
   })();
-  </script>
+</script>
+
+<script>
+/* ✅ Force suppression widget Progressier flottant */
+(function removeProgressierFloating(){
+  function kill(){
+    const selectors = [
+      "progressier-install-button",
+      "pwa-install",
+      "#progressier-install-button",
+      ".progressier-install-button",
+      "#progressier-widget",
+      ".progressier-widget"
+    ];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => el.remove());
+    });
+
+    document.querySelectorAll("[id*='progressier'],[class*='progressier']").forEach(el=>{
+      const style = getComputedStyle(el);
+      if(style.position === "fixed") el.remove();
+    });
+  }
+  kill();
+  setTimeout(kill, 300);
+  setTimeout(kill, 1200);
+})();
+</script>
+
 </body>
 </html>
