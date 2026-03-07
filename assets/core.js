@@ -1,39 +1,183 @@
-function trackEvent(eventName, restoName, extra = {}) {
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
-  form.target = "stats_iframe";
-  form.style.display = "none";
+/* =====================================================
+   Fidelavis — core.js
+   Bibliotheque commune : tracking + helpers
+   ===================================================== */
+(function () {
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
 
-  let iframe = document.getElementById("stats_iframe");
-  if (!iframe) {
-    iframe = document.createElement("iframe");
-    iframe.name = "stats_iframe";
-    iframe.id = "stats_iframe";
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
+  /* --------------------------------------------------
+     getRestoSlug() — extrait le slug depuis l'URL
+     ex : /resto1/indexnfc.html  =>  "resto1"
+  -------------------------------------------------- */
+  function getRestoSlug() {
+    var p = new URLSearchParams(location.search);
+    var fromQuery = (p.get("resto") || "").trim().toLowerCase();
+    if (fromQuery) return fromQuery;
+
+    var match = location.pathname.match(/^\/([^/]+)\//);
+    if (match && match[1] !== "assets" && match[1] !== "data") {
+      return match[1].toLowerCase();
+    }
+
+    return localStorage.getItem("fv_last_resto") || "resto1";
   }
 
-  const input = document.createElement("input");
-  input.type = "hidden";
-  input.name = "data";
-  input.value = JSON.stringify({
-    resto: restoName,
-    event: eventName,
-    mois: new Date().getMonth() + 1,
-    annee: new Date().getFullYear(),
-    user: localStorage.getItem("user_email") || "",
-    userAgent: navigator.userAgent,
-    pageURL: location.href,
-    demo: extra.demo ?? "",
-    deviceId: extra.deviceId ?? localStorage.getItem("device_id") || "",
-    sessionId: extra.sessionId ?? sessionStorage.getItem("session_id") || "",
-    src: extra.src ?? ""
-  });
+  /* --------------------------------------------------
+     rememberLastResto() — memorise + retourne le slug
+  -------------------------------------------------- */
+  function rememberLastResto() {
+    var slug = getRestoSlug();
+    try { localStorage.setItem("fv_last_resto", slug); } catch (e) {}
+    return slug;
+  }
 
-  form.appendChild(input);
-  document.body.appendChild(form);
-  form.submit();
+  /* --------------------------------------------------
+     hasAccess() — l'utilisateur est-il inscrit ?
+  -------------------------------------------------- */
+  function hasAccess() {
+    var slug = getRestoSlug();
+    return (
+      localStorage.getItem("fv_registered_" + slug) === "1" ||
+      localStorage.getItem("fv_onboarding_done") === "1"    ||
+      localStorage.getItem("is_registered")       === "1"
+    );
+  }
 
-  setTimeout(() => form.remove(), 1000);
-}
+  /* --------------------------------------------------
+     loadConfig() — charge /restoX/config.json
+  -------------------------------------------------- */
+  function loadConfig() {
+    var slug = getRestoSlug();
+    return fetch("/" + slug + "/config.json", { cache: "no-store" })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .catch(function () { return null; });
+  }
+
+  /* --------------------------------------------------
+     go(page) — navigation dans le dossier resto courant
+  -------------------------------------------------- */
+  function go(page) {
+    var slug = getRestoSlug();
+    window.location.href = "/" + slug + "/" + page;
+  }
+
+  /* --------------------------------------------------
+     _sendEvent() — moteur d'envoi (form hidden + iframe)
+     Format : application/x-www-form-urlencoded
+     Cote Apps Script : e.parameter.data contient le JSON
+  -------------------------------------------------- */
+  function _sendEvent(eventName, restoName, extra) {
+    extra = extra || {};
+    try {
+      var iframe = document.getElementById("stats_iframe");
+      if (!iframe) {
+        iframe = document.createElement("iframe");
+        iframe.name = "stats_iframe";
+        iframe.id   = "stats_iframe";
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+      }
+
+      var form = document.createElement("form");
+      form.method = "POST";
+      form.action = SCRIPT_URL;
+      form.target = "stats_iframe";
+      form.style.display = "none";
+
+      var input = document.createElement("input");
+      input.type  = "hidden";
+      input.name  = "data";
+      input.value = JSON.stringify({
+        resto:     restoName || getRestoSlug(),
+        event:     eventName || "",
+        jour:      new Date().toISOString().slice(0, 10),
+        mois:      new Date().getMonth() + 1,
+        annee:     new Date().getFullYear(),
+        user:      localStorage.getItem("user_email") || "",
+        userAgent: navigator.userAgent,
+        pageURL:   location.href,
+        demo:      extra.demo      != null ? extra.demo      : "",
+        deviceId:  extra.deviceId  != null ? extra.deviceId  : (localStorage.getItem("device_id") || ""),
+        sessionId: extra.sessionId != null ? extra.sessionId : (sessionStorage.getItem("fv_session_id") || ""),
+        src:       extra.src       != null ? extra.src       : ""
+      });
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+
+      setTimeout(function () { try { form.remove(); } catch (e) {} }, 1500);
+
+    } catch (e) {
+      console.warn("[Fidelavis] _sendEvent error", e);
+    }
+  }
+
+  /* --------------------------------------------------
+     track(eventName, extra?) — envoie un evenement
+  -------------------------------------------------- */
+  function track(eventName, extra) {
+    var slug = getRestoSlug();
+    _sendEvent(eventName, slug, extra || {});
+  }
+
+  /* --------------------------------------------------
+     trackOnce(eventName, dedupKey, extra?)
+     — envoie 1 seule fois par session (sessionStorage)
+  -------------------------------------------------- */
+  function trackOnce(eventName, dedupKey, extra) {
+    var key = dedupKey || ("fv_once_" + eventName);
+    if (sessionStorage.getItem(key)) return;
+    try { sessionStorage.setItem(key, "1"); } catch (e) {}
+    track(eventName, extra || {});
+  }
+
+  /* --------------------------------------------------
+     isCouponAvailable() — verrou mensuel coupon
+  -------------------------------------------------- */
+  function isCouponAvailable() {
+    var slug = getRestoSlug();
+    var now  = new Date();
+    var key  = "coupon_" + slug + "_" + now.getFullYear() + "_" + now.getMonth();
+    return localStorage.getItem(key) !== "used";
+  }
+
+  /* --------------------------------------------------
+     getCouponCountdown() — duree avant prochain coupon
+  -------------------------------------------------- */
+  function getCouponCountdown() {
+    var now    = new Date();
+    var unlock = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    var msLeft = unlock - now;
+    return {
+      unlock:  unlock,
+      msLeft:  msLeft,
+      days:    Math.floor(msLeft / 86400000),
+      hours:   Math.floor((msLeft % 86400000) / 3600000),
+      minutes: Math.floor((msLeft % 3600000)  / 60000)
+    };
+  }
+
+  /* --------------------------------------------------
+     window.Fidelavis — API publique
+  -------------------------------------------------- */
+  window.Fidelavis = {
+    track:             track,
+    trackOnce:         trackOnce,
+    go:                go,
+    hasAccess:         hasAccess,
+    loadConfig:        loadConfig,
+    getRestoSlug:      getRestoSlug,
+    rememberLastResto: rememberLastResto,
+    isCouponAvailable: isCouponAvailable,
+    getCouponCountdown:getCouponCountdown
+  };
+
+  /* --------------------------------------------------
+     Retrocompatibilite : fonctions globales legacy
+     (utilisees en fallback dans inscription.html, index.html coupon)
+  -------------------------------------------------- */
+  window.trackEvent          = _sendEvent;
+  window.trackEventFidelavis = _sendEvent;
+
+})();
