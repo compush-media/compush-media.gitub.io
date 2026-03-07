@@ -250,6 +250,38 @@
     const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
     const isDemo = location.pathname.includes("/demo/") ? "1" : "0";
 
+    // ✅ 1. Capture email depuis l'URL GoHighLevel (?email=...)
+    // GHL redirige directement ici avec l'email dans l'URL
+    try {
+      const urlEmail = new URLSearchParams(location.search).get("email");
+      if (urlEmail && urlEmail.includes("@") && urlEmail.length < 300) {
+        localStorage.setItem("user_email", urlEmail);
+      }
+    } catch(e){}
+
+    // ✅ 2. Marquer l'utilisateur comme inscrit + tracker signup
+    // (GHL saute inscription.html?submitted=1 et atterrit ici directement)
+    try {
+      const now = Date.now();
+      const dedupKey = "signup_" + RESTO; // meme cle que inscription.html
+      const last = Number(localStorage.getItem(dedupKey) || "0");
+
+      if (!last || (now - last) > 86400000) {
+        localStorage.setItem(dedupKey, String(now));
+        localStorage.setItem("is_registered",           "1");
+        localStorage.setItem("fv_onboarding_done",      "1");
+        localStorage.setItem("fv_registered_" + RESTO,  "1");
+        localStorage.setItem("fv_registered_at_" + RESTO, String(now));
+
+        if (window.Fidelavis && window.Fidelavis.track) {
+          window.Fidelavis.track("signup", { src: "ghl_redit" });
+        }
+        if (window.trackEventFidelavis) {
+          window.trackEventFidelavis("signup", RESTO, { src: "ghl_redit", demo: isDemo });
+        }
+      }
+    } catch(e){}
+
     try {
       if (!sessionStorage.getItem("fv_session_id")) {
         sessionStorage.setItem("fv_session_id", "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2,8));
@@ -257,7 +289,7 @@
     } catch(e){}
 
     try {
-      const key = `thankyou_view_${RESTO}_${new Date().toISOString().slice(0,10)}`;
+      const key = "thankyou_view_" + RESTO + "_" + new Date().toISOString().slice(0,10);
       if (!sessionStorage.getItem(key)) {
         sessionStorage.setItem(key, "1");
 
