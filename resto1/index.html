@@ -229,9 +229,10 @@
       setTimeout(() => {
         if (!hasAccessSafe()){
           if (isStandalone()){
-            // Mode PWA icone : rediriger vers inscription directe
-            // (indexnfc.html n’est pas accessible sans scan NFC physique)
-            window.Fidelavis?.go?.("inscription.html");
+            // Mode PWA standalone sans session : renvoyer vers indexnfc.html
+            // avec ?from=pwa pour que indexnfc.html gère le routage (retour → index,
+            // non-inscrit → inscription) SANS déclencher un event scan NFC.
+            window.Fidelavis?.go?.("indexnfc.html?from=pwa");
           } else {
             // Mode navigateur normal : flux NFC standard
             window.Fidelavis?.go?.("indexnfc.html");
@@ -330,6 +331,11 @@
 =========================== */
 const RESTO = window.Fidelavis?.getRestoSlug?.() || "resto1";
 window.Fidelavis?.rememberLastResto?.();
+
+// ✅ Installation confirmée (Android Chrome — iOS ne déclenche pas cet event)
+window.addEventListener("appinstalled", function() {
+  window.Fidelavis?.track?.("install", { src: "pwa_appinstalled", page: "index" });
+});
 
 try {
   if (!sessionStorage.getItem("fv_session_id")) {

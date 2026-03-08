@@ -32,15 +32,55 @@
   }
 
   /* --------------------------------------------------
+     _getCookie(name) — lit un cookie par son nom
+  -------------------------------------------------- */
+  function _getCookie(name) {
+    try {
+      var escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      var m = document.cookie.match("(?:^|;)\\s*" + escaped + "\\s*=\\s*([^;]+)");
+      return m ? decodeURIComponent(m[1]) : null;
+    } catch (e) { return null; }
+  }
+
+  /* --------------------------------------------------
+     setAuthCookie() — persiste l'etat d'inscription
+     cross-contexte : PWA standalone iOS <-> Safari
+     (localStorage isole sur iOS < 16.4, cookie partage)
+  -------------------------------------------------- */
+  function setAuthCookie() {
+    try {
+      document.cookie = "fv_onboarding_done=1; path=/; max-age=31536000; SameSite=Lax";
+    } catch (e) {}
+  }
+
+  /* --------------------------------------------------
      hasAccess() — l'utilisateur est-il inscrit ?
+     Verifie localStorage EN PREMIER, puis cookie en
+     fallback pour PWA iOS standalone (localStorage isole).
+     Si cookie trouve, restaure localStorage pour la suite.
   -------------------------------------------------- */
   function hasAccess() {
     var slug = getRestoSlug();
-    return (
+
+    // 1) Vérification localStorage (contexte normal)
+    if (
       localStorage.getItem("fv_registered_" + slug) === "1" ||
       localStorage.getItem("fv_onboarding_done") === "1"    ||
       localStorage.getItem("is_registered")       === "1"
-    );
+    ) return true;
+
+    // 2) Fallback cookie (PWA standalone iOS : localStorage vide)
+    if (_getCookie("fv_onboarding_done") === "1") {
+      // Restaure localStorage pour les prochains appels (performance + cohérence)
+      try {
+        localStorage.setItem("fv_onboarding_done", "1");
+        localStorage.setItem("fv_registered_" + slug, "1");
+        localStorage.setItem("is_registered", "1");
+      } catch (e) {}
+      return true;
+    }
+
+    return false;
   }
 
   /* --------------------------------------------------
@@ -178,7 +218,8 @@
     getRestoSlug:      getRestoSlug,
     rememberLastResto: rememberLastResto,
     isCouponAvailable: isCouponAvailable,
-    getCouponCountdown:getCouponCountdown
+    getCouponCountdown:getCouponCountdown,
+    setAuthCookie:     setAuthCookie
   };
 
   /* --------------------------------------------------

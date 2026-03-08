@@ -387,11 +387,20 @@ document.getElementById("doneBtn").addEventListener("click", () => {
     }
   } catch(e){}
 
+  // ✅ Cookie de persistance pour PWA standalone iOS (localStorage isolé de Safari)
+  window.Fidelavis?.setAuthCookie?.();
+
+  // ✅ Installation confirmée (Android Chrome uniquement — iOS ne déclenche pas appinstalled)
+  window.addEventListener("appinstalled", function() {
+    window.Fidelavis?.track?.("install", { src: "pwa_appinstalled", page: "redit" });
+  });
+
   // 4. Tracking install_click (s'ajoute au listener existant)
   try {
     document.getElementById("installBtn").addEventListener("click", function(){
+      // ✅ "install_attempt" = nom attendu par le Dashboard (KPI "Installs tentatives")
       if (window.Fidelavis && window.Fidelavis.track) {
-        window.Fidelavis.track("install_cta_click", { src: "redit", resto: RESTO });
+        window.Fidelavis.track("install_attempt", { src: "redit", resto: RESTO });
       }
     });
   } catch(e){}

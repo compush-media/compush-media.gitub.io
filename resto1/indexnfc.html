@@ -352,17 +352,19 @@
 <script>
   const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
 
-  // ✅ Tracking scan (1x / session) — robuste : fonctionne meme avant que Fidelavis soit pret
-  var scanDedupKey = "scan_" + RESTO + "_" + new Date().toISOString().slice(0,10);
-  if (!sessionStorage.getItem(scanDedupKey)) {
-    sessionStorage.setItem(scanDedupKey, "1");
-    // Via window.Fidelavis (defini dans core.js)
-    if (window.Fidelavis && window.Fidelavis.track) {
-      window.Fidelavis.track("scan", { src: "nfc" });
-    }
-    // Fallback global (retrocompat core.js)
-    else if (window.trackEventFidelavis) {
-      window.trackEventFidelavis("scan", RESTO, { src: "nfc" });
+  // ✅ Tracking scan (1x / session) — uniquement si scan NFC réel.
+  // Si from=pwa : ouverture depuis l'icône PWA (renvoyé par la gate index.html)
+  // → pas de faux événement scan (ne pas gonfler les stats NFC).
+  var fromPWA = new URLSearchParams(location.search).get("from") === "pwa";
+  if (!fromPWA) {
+    var scanDedupKey = "scan_" + RESTO + "_" + new Date().toISOString().slice(0,10);
+    if (!sessionStorage.getItem(scanDedupKey)) {
+      sessionStorage.setItem(scanDedupKey, "1");
+      if (window.Fidelavis && window.Fidelavis.track) {
+        window.Fidelavis.track("scan", { src: "nfc" });
+      } else if (window.trackEventFidelavis) {
+        window.trackEventFidelavis("scan", RESTO, { src: "nfc" });
+      }
     }
   }
 </script>
