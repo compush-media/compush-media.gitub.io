@@ -66,22 +66,26 @@
      Format : application/x-www-form-urlencoded
      Cote Apps Script : e.parameter.data contient le JSON
   -------------------------------------------------- */
+  var _iframeCounter = 0;
+
   function _sendEvent(eventName, restoName, extra) {
     extra = extra || {};
     try {
-      var iframe = document.getElementById("stats_iframe");
-      if (!iframe) {
-        iframe = document.createElement("iframe");
-        iframe.name = "stats_iframe";
-        iframe.id   = "stats_iframe";
-        iframe.style.display = "none";
-        document.body.appendChild(iframe);
-      }
+      // Chaque appel cree son propre iframe pour eviter
+      // qu'un second form.submit() annule le precedent.
+      _iframeCounter++;
+      var uid = "fv_frame_" + _iframeCounter + "_" + Date.now();
+
+      var iframe = document.createElement("iframe");
+      iframe.name  = uid;
+      iframe.id    = uid;
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
 
       var form = document.createElement("form");
       form.method = "POST";
       form.action = SCRIPT_URL;
-      form.target = "stats_iframe";
+      form.target = uid;
       form.style.display = "none";
 
       var input = document.createElement("input");
@@ -106,7 +110,11 @@
       document.body.appendChild(form);
       form.submit();
 
-      setTimeout(function () { try { form.remove(); } catch (e) {} }, 1500);
+      // Nettoyage : supprime form + iframe apres que le POST est parti
+      setTimeout(function () {
+        try { form.remove(); } catch (e) {}
+        try { iframe.remove(); } catch (e) {}
+      }, 3000);
 
     } catch (e) {
       console.warn("[Fidelavis] _sendEvent error", e);

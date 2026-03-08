@@ -7,58 +7,6 @@
 
   <script src="../assets/core.js"></script>
 
-  <script>
-  (function(){
-    const STATS_URL = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
-
-    window.trackEventFidelavis = function(eventName, restoName, extra = {}) {
-      try {
-        let iframe = document.getElementById("stats_iframe");
-        if (!iframe) {
-          iframe = document.createElement("iframe");
-          iframe.name = "stats_iframe";
-          iframe.id = "stats_iframe";
-          iframe.style.display = "none";
-          document.body.appendChild(iframe);
-        }
-
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = STATS_URL;
-        form.target = "stats_iframe";
-        form.style.display = "none";
-
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "data";
-        input.value = JSON.stringify({
-          resto: restoName || "resto1",
-          event: eventName || "",
-          mois: new Date().getMonth() + 1,
-          annee: new Date().getFullYear(),
-          user: localStorage.getItem("user_email") || "",
-          userAgent: navigator.userAgent,
-          pageURL: location.href,
-          demo: extra.demo ?? "",
-          deviceId: extra.deviceId ?? localStorage.getItem("device_id") || "",
-          sessionId: extra.sessionId ?? sessionStorage.getItem("fv_session_id") || "",
-          src: extra.src ?? ""
-        });
-
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-
-        setTimeout(() => {
-          try { form.remove(); } catch(e){}
-        }, 1200);
-      } catch(e) {
-        console.warn("trackEventFidelavis error", e);
-      }
-    };
-  })();
-  </script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
@@ -273,11 +221,9 @@
         localStorage.setItem("fv_registered_" + RESTO,  "1");
         localStorage.setItem("fv_registered_at_" + RESTO, String(now));
 
+        // Un seul appel par evenement — core.js gere un iframe unique par envoi
         if (window.Fidelavis && window.Fidelavis.track) {
           window.Fidelavis.track("signup", { src: "ghl_redit" });
-        }
-        if (window.trackEventFidelavis) {
-          window.trackEventFidelavis("signup", RESTO, { src: "ghl_redit", demo: isDemo });
         }
       }
     } catch(e){}
@@ -298,11 +244,6 @@
           page: "redit",
           resto: RESTO
         });
-
-        window.trackEventFidelavis?.("thankyou_view", RESTO, {
-          src: "redit",
-          demo: isDemo
-        });
       }
     } catch(e){}
 
@@ -312,13 +253,6 @@
           src: "redit",
           page: "redit",
           resto: RESTO
-        });
-      } catch(e){}
-
-      try {
-        window.trackEventFidelavis?.("install_cta_click", RESTO, {
-          src: "redit",
-          demo: isDemo
         });
       } catch(e){}
 
