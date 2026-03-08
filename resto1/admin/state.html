@@ -214,6 +214,7 @@
           <option value="">Tous</option>
           <option value="scan">scan</option>
           <option value="signup">signup</option>
+          <option value="install_cta_click">install_cta_click</option>
           <option value="install_attempt">install_attempt</option>
           <option value="install_confirmed">install_confirmed</option>
           <option value="coupon_validate">coupon_validate</option>
@@ -384,9 +385,11 @@
 
     const scan   = c["scan"]||0;
     const signup = (c["signup"]||0) + (c["form_submit"]||0);
-    const instA  = c["install_attempt"]||0;
+    // install_cta_click = clic "J'ai compris" sur redit.html (bouton installation PWA)
+    // install_attempt / install_confirmed = evenements Progressier (si activés)
+    const instA  = (c["install_cta_click"]||0) + (c["install_attempt"]||0);
     const instC  = c["install_confirmed"]||0;
-    const coupon = c["coupon_validate_success"] || c["coupon_validate"] || 0;
+    const coupon = (c["coupon_validate_success"]||0) + (c["coupon_validate"]||0);
     const review = c["review_click"]||0;
 
     const todayStr = toDay(new Date());

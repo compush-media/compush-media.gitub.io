@@ -12,59 +12,7 @@
   <!-- ✅ Core commun (1 seule fois) -->
   <script src="../assets/core.js"></script>
 
-  <!-- ✅ Tracking Apps Script Fidelavis -->
-  <script>
-  (function(){
-    const STATS_URL = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
-
-    window.trackEventFidelavis = function(eventName, restoName, extra = {}) {
-      try {
-        let iframe = document.getElementById("stats_iframe");
-        if (!iframe) {
-          iframe = document.createElement("iframe");
-          iframe.name = "stats_iframe";
-          iframe.id = "stats_iframe";
-          iframe.style.display = "none";
-          document.body.appendChild(iframe);
-        }
-
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = STATS_URL;
-        form.target = "stats_iframe";
-        form.style.display = "none";
-
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "data";
-        input.value = JSON.stringify({
-          resto: restoName || "resto1",
-          event: eventName || "",
-          mois: new Date().getMonth() + 1,
-          annee: new Date().getFullYear(),
-          user: localStorage.getItem("user_email") || "",
-          userAgent: navigator.userAgent,
-          pageURL: location.href,
-          demo: extra.demo ?? "",
-          deviceId: extra.deviceId ?? localStorage.getItem("device_id") || "",
-          sessionId: extra.sessionId ?? sessionStorage.getItem("fv_session_id") || "",
-          src: extra.src ?? ""
-        });
-
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-
-        setTimeout(() => {
-          try { form.remove(); } catch(e){}
-        }, 1200);
-
-      } catch(e) {
-        console.warn("trackEventFidelavis error", e);
-      }
-    };
-  })();
-  </script>
+  <!-- window.trackEventFidelavis est defini par core.js avec iframe unique par envoi -->
 
   <style>
     :root{
@@ -258,7 +206,7 @@
     }
   </style>
 
-  <!-- ✅ Gate d’accès : si pas onboardé => indexnfc -->
+  <!-- ✅ Gate d’accès : si pas onboardé => redirige selon le contexte -->
   <script>
   (function(){
     try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
@@ -268,9 +216,27 @@
       catch(e){ return false; }
     }
 
+    // Detecte si l’app est ouverte depuis l’icone ecran d’accueil (PWA standalone)
+    // Sur iOS, le localStorage de la PWA standalone est ISOLE de Safari :
+    // l’utilisateur peut avoir une session valide dans Safari mais
+    // un localStorage vide dans le contexte standalone.
+    function isStandalone(){
+      return window.navigator.standalone === true ||
+             window.matchMedia("(display-mode: standalone)").matches;
+    }
+
     if (!hasAccessSafe()){
       setTimeout(() => {
-        if (!hasAccessSafe()) window.Fidelavis?.go?.("indexnfc.html");
+        if (!hasAccessSafe()){
+          if (isStandalone()){
+            // Mode PWA icone : rediriger vers inscription directe
+            // (indexnfc.html n’est pas accessible sans scan NFC physique)
+            window.Fidelavis?.go?.("inscription.html");
+          } else {
+            // Mode navigateur normal : flux NFC standard
+            window.Fidelavis?.go?.("indexnfc.html");
+          }
+        }
       }, 350);
     }
   })();
@@ -377,18 +343,7 @@ try {
   }
 } catch(e){}
 
-window.Fidelavis?.trackOnce?.("coupon_view", `coupon_view_${RESTO}`, {});
-
-try{
-  const pageKey = `coupon_view_stats_${RESTO}_${new Date().toISOString().slice(0,10)}`;
-  if (!sessionStorage.getItem(pageKey)) {
-    sessionStorage.setItem(pageKey, "1");
-    window.trackEventFidelavis?.("coupon_view", RESTO, {
-      src: "coupon_page",
-      demo: location.pathname.includes("/demo/") ? "1" : "0"
-    });
-  }
-}catch(e){}
+window.Fidelavis?.trackOnce?.("coupon_view", `coupon_view_${RESTO}`, { src: "coupon_page" });
 
 const offers = [
   "🎁 Janvier : -10% menu","🎁 Février : Dessert offert","🎁 Mars : Café offert",
@@ -433,13 +388,7 @@ let IS_LOCKED = false;
         btn.textContent = "⏳ Disponible le mois prochain";
       }
 
-      window.Fidelavis?.trackOnce?.("coupon_locked_view", `coupon_locked_${RESTO}_${unlock.toISOString().slice(0,10)}`, {});
-      try {
-        window.trackEventFidelavis?.("coupon_locked_view", RESTO, {
-          src: "coupon_page",
-          demo: location.pathname.includes("/demo/") ? "1" : "0"
-        });
-      } catch(e){}
+      window.Fidelavis?.trackOnce?.("coupon_locked_view", `coupon_locked_${RESTO}_${unlock.toISOString().slice(0,10)}`, { src: "coupon_page" });
 
       syncCouponState();
       return;
@@ -480,24 +429,13 @@ function syncCouponState(){
 
 function allerAvis(){
   localStorage.setItem(reviewKey(), "done");
-  window.Fidelavis?.track?.("review_click");
-  try {
-    window.trackEventFidelavis?.("review_click", RESTO, {
-      src: "coupon_review_prompt",
-      demo: location.pathname.includes("/demo/") ? "1" : "0"
-    });
-  } catch(e){}
+  window.Fidelavis?.track?.("review_click", { src: "coupon_review_prompt" });
   setTimeout(()=> window.Fidelavis?.go?.("avis.html"), 120);
 }
 
 function fermerAvis(){
   localStorage.setItem(reviewKey(), "later");
-  try {
-    window.trackEventFidelavis?.("review_later", RESTO, {
-      src: "coupon_review_prompt",
-      demo: location.pathname.includes("/demo/") ? "1" : "0"
-    });
-  } catch(e){}
+  window.Fidelavis?.track?.("review_later", { src: "coupon_review_prompt" });
   document.getElementById("reviewPrompt")?.remove();
 }
 
@@ -522,13 +460,7 @@ function soumettrePin() {
       const cd = window.Fidelavis.getCouponCountdown();
       const unlockLabel = cd.unlock.toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" });
       res.innerHTML = `<div class="ok-box warn">⏳ Coupon disponible le ${unlockLabel}. Revenez à ce moment-là ✅</div>`;
-      window.Fidelavis?.track?.("coupon_locked_try");
-      try {
-        window.trackEventFidelavis?.("coupon_locked_try", RESTO, {
-          src: "coupon_validate",
-          demo: location.pathname.includes("/demo/") ? "1" : "0"
-        });
-      } catch(e){}
+      window.Fidelavis?.track?.("coupon_locked_try", { src: "coupon_validate" });
       return;
     }catch(e){
       res.innerHTML = `<div class="ok-box warn">⏳ Coupon disponible le mois prochain ✅</div>`;
@@ -541,46 +473,24 @@ function soumettrePin() {
 
   if (localStorage.getItem(couponKey()) === "used") {
     res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
-    try {
-      window.trackEventFidelavis?.("coupon_already_used", RESTO, {
-        src: "coupon_validate",
-        demo: location.pathname.includes("/demo/") ? "1" : "0"
-      });
-    } catch(e){}
+    window.Fidelavis?.track?.("coupon_already_used", { src: "coupon_validate" });
     return;
   }
 
   if (!/^\d{4}$/.test(code)) {
     res.innerHTML = `<div class="ok-box warn">⚠️ Code invalide</div>`;
-    try {
-      window.trackEventFidelavis?.("coupon_pin_invalid", RESTO, {
-        src: "coupon_validate",
-        demo: location.pathname.includes("/demo/") ? "1" : "0"
-      });
-    } catch(e){}
+    window.Fidelavis?.track?.("coupon_pin_invalid", { src: "coupon_validate" });
     return;
   }
 
-  try {
-    window.trackEventFidelavis?.("coupon_validate_attempt", RESTO, {
-      src: "coupon_validate",
-      demo: location.pathname.includes("/demo/") ? "1" : "0"
-    });
-  } catch(e){}
+  window.Fidelavis?.track?.("coupon_validate_attempt", { src: "coupon_validate" });
 
   if (verifierPin(code)) {
     localStorage.setItem(couponKey(), "used");
     res.innerHTML = `<div class="ok-box success">✅ Coupon validé</div>`;
     document.getElementById("audioOK").play().catch(()=>{});
 
-    window.Fidelavis?.track?.("coupon_validate");
-
-    try {
-      window.trackEventFidelavis?.("coupon_validate_success", RESTO, {
-        src: "coupon_validate",
-        demo: location.pathname.includes("/demo/") ? "1" : "0"
-      });
-    } catch(e){}
+    window.Fidelavis?.track?.("coupon_validate", { src: "coupon_validate" });
 
     setTimeout(() => {
       if (localStorage.getItem(reviewKey())) return;
@@ -599,24 +509,13 @@ function soumettrePin() {
 
   } else {
     res.innerHTML = `<div class="ok-box error">❌ Code incorrect</div>`;
-    try {
-      window.trackEventFidelavis?.("coupon_validate_fail", RESTO, {
-        src: "coupon_validate",
-        demo: location.pathname.includes("/demo/") ? "1" : "0"
-      });
-    } catch(e){}
+    window.Fidelavis?.track?.("coupon_validate_fail", { src: "coupon_validate" });
   }
 }
 
 function partager() {
   const shareUrl = "https://bit.ly/4psvq0G";
-
-  try {
-    window.trackEventFidelavis?.("share_click", RESTO, {
-      src: "coupon_share",
-      demo: location.pathname.includes("/demo/") ? "1" : "0"
-    });
-  } catch(e){}
+  window.Fidelavis?.track?.("share_click", { src: "coupon_share" });
 
   const data = {
     title: "Découvre ce restaurant",
