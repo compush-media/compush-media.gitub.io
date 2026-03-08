@@ -214,7 +214,6 @@
           <option value="">Tous</option>
           <option value="scan">scan</option>
           <option value="signup">signup</option>
-          <option value="install_cta_click">install_cta_click</option>
           <option value="install_attempt">install_attempt</option>
           <option value="install_confirmed">install_confirmed</option>
           <option value="coupon_validate">coupon_validate</option>
@@ -325,101 +324,50 @@
   document.getElementById("title").textContent = `📊 Dashboard — ${RESTO}`;
   document.getElementById("subtitle").textContent = `Statistiques du restaurant : ${RESTO}`;
 
-  /* ✅ Parse un timestamp (ISO, Date object, ou DD/MM/YYYY français) */
-  function parseTs(raw){
-    if (!raw) return null;
-    if (raw instanceof Date) return isNaN(raw.getTime()) ? null : raw;
-    const s = String(raw).trim();
-    const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})/);
-    if (m) return new Date(+m[3], +m[2]-1, +m[1], +m[4], +m[5], +m[6]);
-    const d = new Date(s);
-    return isNaN(d.getTime()) ? null : d;
-  }
-  function toDay(d){
-    return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-  }
-
   async function fetchStats(resto, days){
     const url = `${API_STATS}?resto=${encodeURIComponent(resto)}&days=${encodeURIComponent(days)}`;
     const res = await fetch(url, { cache:"no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
-    const raw = await res.json();
-    if (!raw || !raw.ok) throw new Error(raw?.message || "Erreur API");
-
-    // ✅ Si l'API retourne le format stats (futur doGet amélioré) → direct
-    if (raw.stats) return raw;
-
-    // ✅ Sinon, parser les données brutes (format actuel : array of arrays)
-    const allRows = raw.rows || [];
-    if (allRows.length < 2) return { ok:true, stats:{}, rows:[], today:0, thisMonth:0 };
-
-    const headers = allRows[0].map(h => String(h).trim().toLowerCase());
-    let idxTs = headers.indexOf("ts");
-    if (idxTs < 0) idxTs = headers.indexOf("timestamp");
-    const idxResto = headers.indexOf("resto");
-    const idxEvent = headers.indexOf("event");
-
-    if (idxTs < 0 || idxResto < 0 || idxEvent < 0)
-      throw new Error("Colonnes introuvables : " + headers.join(", "));
-
-    const cutoff = new Date();
-    cutoff.setHours(0,0,0,0);
-    cutoff.setDate(cutoff.getDate() - days);
-
-    const parsed = [];
-    for (let i = 1; i < allRows.length; i++){
-      const r = allRows[i];
-      const ts = parseTs(r[idxTs]);
-      if (!ts || ts < cutoff) continue;
-
-      const rResto = String(r[idxResto]||"").toLowerCase().trim();
-      if (resto && rResto !== resto) continue;
-
-      const evt = String(r[idxEvent]||"").trim();
-      if (!evt) continue;
-      parsed.push({ event: evt, day: toDay(ts) });
-    }
-
-    const c = {};
-    parsed.forEach(r => { c[r.event] = (c[r.event]||0) + 1; });
-
-    const scan   = c["scan"]||0;
-    const signup = (c["signup"]||0) + (c["form_submit"]||0);
-    // install_cta_click = clic "J'ai compris" sur redit.html (bouton installation PWA)
-    // install_attempt / install_confirmed = evenements Progressier (si activés)
-    const instA  = (c["install_cta_click"]||0) + (c["install_attempt"]||0);
-    const instC  = c["install_confirmed"]||0;
-    const coupon = (c["coupon_validate_success"]||0) + (c["coupon_validate"]||0);
-    const review = c["review_click"]||0;
-
-    const todayStr = toDay(new Date());
-    const monthStr = todayStr.slice(0,7);
-
-    return {
-      ok: true,
-      stats: {
-        scan, signup,
-        install_attempt: instA,
-        install_confirmed: instC,
-        coupon_validate: coupon,
-        review_click: review,
-        signup_rate:  scan  ? Math.round(signup/scan*100)  : 0,
-        install_rate: instA ? Math.round(instC/instA*100) : 0
-      },
-      rows: parsed,
-      today:     parsed.filter(r => r.event==="coupon_validate_success" && r.day===todayStr).length,
-      thisMonth: parsed.filter(r => r.event==="coupon_validate_success" && r.day.slice(0,7)===monthStr).length
-    };
+    return await res.json();
   }
 
   function groupByDay(rows){
     const map = {};
     rows.forEach(r => {
-      const day = String(r.day || "").trim();
+      // Supporte 'day', 'jour' (envoyé par core.js) ou les 10 premiers chars de 'ts'
+      const day = String(r.day || r.jour || r.ts || "").slice(0, 10).trim();
       if (!day) return;
       map[day] = (map[day] || 0) + 1;
     });
     return map;
+  }
+
+  /* Calcule les stats côté client à partir des lignes normalisées */
+  function computeStats(rows){
+    const s = {
+      scan:0, signup:0, install_attempt:0,
+      install_confirmed:0, coupon_validate:0, review_click:0
+    };
+    rows.forEach(r => {
+      const ev = String(r.event || "");
+      if (Object.prototype.hasOwnProperty.call(s, ev)) s[ev]++;
+    });
+    s.signup_rate  = s.scan            > 0 ? Math.round(s.signup             / s.scan             * 100) : 0;
+    s.install_rate = s.install_attempt > 0 ? Math.round(s.install_confirmed  / s.install_attempt  * 100) : 0;
+    return s;
+  }
+
+  /* Convertit un tableau de tableaux (format Apps Script) en tableau d'objets */
+  function normalizeRows(rawRows){
+    if (!rawRows.length || !Array.isArray(rawRows[0])) return rawRows; // déjà des objets
+    const headers = rawRows[0];
+    return rawRows.slice(1).map(arr => {
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = arr[i]; });
+      // Dérive 'day' depuis 'jour' ou les 10 premiers chars de 'ts' si absent
+      if (!obj.day) obj.day = String(obj.jour || obj.ts || "").slice(0, 10);
+      return obj;
+    });
   }
 
   function fillKPIs(stats){
@@ -514,11 +462,30 @@
         return;
       }
 
-      const stats = data.stats || {};
-      const rows = Array.isArray(data.rows) ? data.rows : [];
+      // Normalise : tableau de tableaux → tableau d'objets (format Apps Script)
+      const rows = normalizeRows(Array.isArray(data.rows) ? data.rows : []);
+
+      // Calcul des stats côté client si l'API ne les retourne pas
+      const stats = (data.stats && typeof data.stats === "object") ? data.stats : computeStats(rows);
+
+      // Calcul today / thisMonth côté client si absents de la réponse API
+      let today = data.today;
+      let thisMonth = data.thisMonth;
+      if (today == null || thisMonth == null) {
+        const todayStr  = new Date().toISOString().slice(0, 10);
+        const nowMonth  = new Date().getMonth() + 1;
+        const nowYear   = new Date().getFullYear();
+        today = 0; thisMonth = 0;
+        rows.forEach(r => {
+          if (String(r.event || "") !== "coupon_validate") return;
+          const d = String(r.jour || r.ts || r.day || "");
+          if (d.slice(0, 10) === todayStr) today++;
+          if (Number(r.mois) === nowMonth && Number(r.annee) === nowYear) thisMonth++;
+        });
+      }
 
       fillKPIs(stats);
-      fillRecap(stats, data.today, data.thisMonth);
+      fillRecap(stats, today, thisMonth);
 
       const filteredRows = eventFilter
         ? rows.filter(r => String(r.event || "") === eventFilter)
