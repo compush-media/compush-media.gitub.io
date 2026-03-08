@@ -214,10 +214,11 @@
           <option value="">Tous</option>
           <option value="scan">scan</option>
           <option value="signup">signup</option>
-          <option value="install_attempt">install_attempt</option>
+          <option value="install_cta_click">install_cta_click</option>
           <option value="install_confirmed">install_confirmed</option>
           <option value="coupon_validate">coupon_validate</option>
-          <option value="review_click">review_click</option>
+          <option value="review_page_view">review_page_view</option>
+          <option value="review_qr_view">review_qr_view</option>
         </select>
       </label>
     </div>
@@ -239,7 +240,7 @@
     <div class="card kpi">
       <div class="kpiLabel">Tentatives d’installation</div>
       <div class="kpiValue" id="kInstallAttempt">—</div>
-      <div class="kpiHint">install_attempt</div>
+      <div class="kpiHint">install_cta_click</div>
     </div>
 
     <div class="card kpi">
@@ -257,7 +258,7 @@
     <div class="card kpi">
       <div class="kpiLabel">Clics avis</div>
       <div class="kpiValue" id="kReview">—</div>
-      <div class="kpiHint">review_click</div>
+      <div class="kpiHint">review_page_view + review_qr_view</div>
     </div>
 
     <div class="card kpi">
@@ -345,15 +346,17 @@
   /* Calcule les stats côté client à partir des lignes normalisées */
   function computeStats(rows){
     const s = {
-      scan:0, signup:0, install_attempt:0,
-      install_confirmed:0, coupon_validate:0, review_click:0
+      scan:0, signup:0, install_cta_click:0,
+      install_confirmed:0, coupon_validate:0,
+      review_page_view:0, review_qr_view:0
     };
     rows.forEach(r => {
       const ev = String(r.event || "");
       if (Object.prototype.hasOwnProperty.call(s, ev)) s[ev]++;
     });
-    s.signup_rate  = s.scan            > 0 ? Math.round(s.signup             / s.scan             * 100) : 0;
-    s.install_rate = s.install_attempt > 0 ? Math.round(s.install_confirmed  / s.install_attempt  * 100) : 0;
+    s.review_total = s.review_page_view + s.review_qr_view;
+    s.signup_rate  = s.scan                > 0 ? Math.round(s.signup            / s.scan              * 100) : 0;
+    s.install_rate = s.install_cta_click   > 0 ? Math.min(100, Math.round(s.install_confirmed / s.install_cta_click * 100)) : 0;
     return s;
   }
 
@@ -373,10 +376,10 @@
   function fillKPIs(stats){
     document.getElementById("kScan").textContent = stats.scan ?? 0;
     document.getElementById("kSignup").textContent = stats.signup ?? 0;
-    document.getElementById("kInstallAttempt").textContent = stats.install_attempt ?? 0;
+    document.getElementById("kInstallAttempt").textContent = stats.install_cta_click ?? 0;
     document.getElementById("kInstallConfirmed").textContent = stats.install_confirmed ?? 0;
     document.getElementById("kCoupon").textContent = stats.coupon_validate ?? 0;
-    document.getElementById("kReview").textContent = stats.review_click ?? 0;
+    document.getElementById("kReview").textContent = stats.review_total ?? ((stats.review_page_view ?? 0) + (stats.review_qr_view ?? 0));
     document.getElementById("kSignupRate").textContent = (stats.signup_rate ?? 0) + "%";
     document.getElementById("kInstallRate").textContent = (stats.install_rate ?? 0) + "%";
   }
@@ -386,11 +389,12 @@
     body.innerHTML = `
       <tr><td class="muted">Scans</td><td>${stats.scan ?? 0}</td></tr>
       <tr><td class="muted">Signups</td><td>${stats.signup ?? 0}</td></tr>
-      <tr><td class="muted">Install attempts</td><td>${stats.install_attempt ?? 0}</td></tr>
+      <tr><td class="muted">CTA install (install_cta_click)</td><td>${stats.install_cta_click ?? 0}</td></tr>
       <tr><td class="muted">Install confirmed</td><td>${stats.install_confirmed ?? 0}</td></tr>
       <tr><td class="muted">Coupons validés aujourd’hui</td><td>${today ?? 0}</td></tr>
       <tr><td class="muted">Coupons validés ce mois</td><td>${thisMonth ?? 0}</td></tr>
-      <tr><td class="muted">Clic avis</td><td>${stats.review_click ?? 0}</td></tr>
+      <tr><td class="muted">Avis — page vue</td><td>${stats.review_page_view ?? 0}</td></tr>
+      <tr><td class="muted">Avis — QR vu</td><td>${stats.review_qr_view ?? 0}</td></tr>
       <tr><td class="muted">Taux signup</td><td>${stats.signup_rate ?? 0}%</td></tr>
       <tr><td class="muted">Taux install</td><td>${stats.install_rate ?? 0}%</td></tr>
     `;
