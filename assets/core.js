@@ -3,22 +3,21 @@
    Bibliotheque commune : tracking + helpers
    ===================================================== */
 (function () {
+
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
 
   /* --------------------------------------------------
      getRestoSlug() — extrait le slug depuis l'URL
-     ex : /resto1/indexnfc.html  =>  "resto1"
+     ex : /resto1/indexnfc.html => "resto1"
   -------------------------------------------------- */
   function getRestoSlug() {
     var p = new URLSearchParams(location.search);
     var fromQuery = (p.get("resto") || "").trim().toLowerCase();
     if (fromQuery) return fromQuery;
-
     var match = location.pathname.match(/^\/([^/]+)\//);
     if (match && match[1] !== "assets" && match[1] !== "data") {
       return match[1].toLowerCase();
     }
-
     return localStorage.getItem("fv_last_resto") || "resto1";
   }
 
@@ -61,25 +60,22 @@
   -------------------------------------------------- */
   function hasAccess() {
     var slug = getRestoSlug();
-
     // 1) Vérification localStorage (contexte normal)
     if (
       localStorage.getItem("fv_registered_" + slug) === "1" ||
-      localStorage.getItem("fv_onboarding_done") === "1"    ||
-      localStorage.getItem("is_registered")       === "1"
+      localStorage.getItem("fv_onboarding_done")    === "1" ||
+      localStorage.getItem("is_registered")          === "1"
     ) return true;
-
     // 2) Fallback cookie (PWA standalone iOS : localStorage vide)
     if (_getCookie("fv_onboarding_done") === "1") {
       // Restaure localStorage pour les prochains appels (performance + cohérence)
       try {
-        localStorage.setItem("fv_onboarding_done", "1");
+        localStorage.setItem("fv_onboarding_done",    "1");
         localStorage.setItem("fv_registered_" + slug, "1");
-        localStorage.setItem("is_registered", "1");
+        localStorage.setItem("is_registered",          "1");
       } catch (e) {}
       return true;
     }
-
     return false;
   }
 
@@ -107,7 +103,6 @@
      Cote Apps Script : e.parameter.data contient le JSON
   -------------------------------------------------- */
   var _iframeCounter = 0;
-
   function _sendEvent(eventName, restoName, extra) {
     extra = extra || {};
     try {
@@ -117,8 +112,8 @@
       var uid = "fv_frame_" + _iframeCounter + "_" + Date.now();
 
       var iframe = document.createElement("iframe");
-      iframe.name  = uid;
-      iframe.id    = uid;
+      iframe.name = uid;
+      iframe.id   = uid;
       iframe.style.display = "none";
       document.body.appendChild(iframe);
 
@@ -152,7 +147,7 @@
 
       // Nettoyage : supprime form + iframe apres que le POST est parti
       setTimeout(function () {
-        try { form.remove(); } catch (e) {}
+        try { form.remove();   } catch (e) {}
         try { iframe.remove(); } catch (e) {}
       }, 3000);
 
@@ -210,16 +205,16 @@
      window.Fidelavis — API publique
   -------------------------------------------------- */
   window.Fidelavis = {
-    track:             track,
-    trackOnce:         trackOnce,
-    go:                go,
-    hasAccess:         hasAccess,
-    loadConfig:        loadConfig,
-    getRestoSlug:      getRestoSlug,
-    rememberLastResto: rememberLastResto,
-    isCouponAvailable: isCouponAvailable,
-    getCouponCountdown:getCouponCountdown,
-    setAuthCookie:     setAuthCookie
+    track:              track,
+    trackOnce:          trackOnce,
+    go:                 go,
+    hasAccess:          hasAccess,
+    loadConfig:         loadConfig,
+    getRestoSlug:       getRestoSlug,
+    rememberLastResto:  rememberLastResto,
+    isCouponAvailable:  isCouponAvailable,
+    getCouponCountdown: getCouponCountdown,
+    setAuthCookie:      setAuthCookie
   };
 
   /* --------------------------------------------------
@@ -228,5 +223,47 @@
   -------------------------------------------------- */
   window.trackEvent          = _sendEvent;
   window.trackEventFidelavis = _sendEvent;
+
+})();
+
+/* =====================================================
+   Tracking installation PWA — iOS + Android
+   Déclenche install_confirmed à la première ouverture
+   depuis l'écran d'accueil (standalone).
+   Dédup localStorage (1 seule fois par appareil/resto).
+   ===================================================== */
+(function () {
+
+  function isPWAStandalone() {
+    return (
+      navigator.standalone === true ||
+      window.matchMedia("(display-mode: standalone)").matches ||
+      new URLSearchParams(location.search).get("launchedfrom") === "homescreen"
+    );
+  }
+
+  function onInstallConfirmed(src) {
+    var slug = localStorage.getItem("fv_last_resto") || "resto1";
+    var key  = "pwa_install_tracked_" + slug;
+    if (localStorage.getItem(key)) return;           // déjà tracké → stop
+    localStorage.setItem(key, "1");                  // marque 1 seule fois
+    if (window.Fidelavis && typeof window.Fidelavis.track === "function") {
+      window.Fidelavis.track("install_confirmed", { src: src });
+    }
+  }
+
+  // iOS + Android : détection au chargement
+  // DOMContentLoaded obligatoire : core.js tourne en <head>,
+  // document.body n'existe pas encore à ce stade.
+  document.addEventListener("DOMContentLoaded", function () {
+    if (isPWAStandalone()) {
+      onInstallConfirmed("standalone_open");
+    }
+  });
+
+  // Android Chrome : événement natif en complément
+  window.addEventListener("appinstalled", function () {
+    onInstallConfirmed("appinstalled");
+  });
 
 })();
