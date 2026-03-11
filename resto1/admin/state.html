@@ -434,6 +434,8 @@
 <script>
 // ── Config ──────────────────────────────────────────────────
 const API = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
+const AVG_TICKET   = 24.5;
+const MONTHLY_COST = 95;
 
 const RESTO = (() => {
   const p = new URLSearchParams(location.search);
@@ -446,6 +448,72 @@ const RESTO = (() => {
 })();
 
 let chartInst = null;
+
+// ── Backward compat: compute stats/daily/recent/top from rows ─
+function normalizeRows(raw) {
+  if (!raw || !raw.length) return [];
+  if (!Array.isArray(raw[0])) return raw; // already objects
+  const headers = raw[0];
+  return raw.slice(1).map(arr => {
+    const o = {};
+    headers.forEach((h, i) => { o[String(h).toLowerCase()] = arr[i]; });
+    if (!o.day) o.day = String(o.jour || o.ts || "").slice(0, 10);
+    return o;
+  });
+}
+
+function computeStats(rows) {
+  const c = {};
+  rows.forEach(r => { c[r.event] = (c[r.event] || 0) + 1; });
+  const scan   = c.scan    || 0;
+  const signup = c.signup  || 0;
+  const instC  = c.install_confirmed || 0;
+  const instA  = (c.install_cta_click || 0) + (c.install_attempt || 0);
+  const coupon = c.coupon_validate || 0;
+  const review = (c.review_page_view||0) + (c.review_qr_view||0) + (c.review_click||0);
+  return {
+    scan, signup,
+    install_attempt:   instA,
+    install_confirmed: instC,
+    coupon_validate:   coupon,
+    review_total:      review,
+    conversion_rate:   scan > 0 ? Math.round(signup / scan * 100) : 0,
+    revenue_estimated: Math.round(coupon * AVG_TICKET)
+  };
+}
+
+function computeDaily(rows) {
+  const map = {};
+  rows.forEach(r => {
+    const d = r.day || String(r.jour || r.ts || "").slice(0, 10);
+    if (!d) return;
+    if (!map[d]) map[d] = { day:d, scan:0, signup:0, coupon:0, install:0, review:0, total:0 };
+    map[d].total++;
+    const ev = r.event;
+    if (ev==="scan")              map[d].scan++;
+    if (ev==="signup")            map[d].signup++;
+    if (ev==="coupon_validate")   map[d].coupon++;
+    if (ev==="install_confirmed") map[d].install++;
+    if (ev==="review_page_view"||ev==="review_qr_view"||ev==="review_click") map[d].review++;
+  });
+  return Object.values(map).sort((a, b) => a.day.localeCompare(b.day));
+}
+
+function computeTop(daily, stats) {
+  let bestDay = "—", bestCount = 0;
+  (daily || []).forEach(d => { if (d.total > bestCount) { bestCount = d.total; bestDay = d.day; } });
+  if (bestDay !== "—") {
+    const dt = new Date(bestDay + "T12:00:00");
+    const j  = ["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
+    bestDay   = j[dt.getDay()] + " " + dt.getDate();
+  }
+  const rev = stats.revenue_estimated || 0;
+  return {
+    best_day:    bestDay,
+    best_offer:  "Dessert Gratuit",
+    roi:         MONTHLY_COST > 0 ? Math.round(rev / MONTHLY_COST * 10) / 10 : 0
+  };
+}
 
 // ── Helpers ─────────────────────────────────────────────────
 function esc(s) {
@@ -615,19 +683,43 @@ async function refresh() {
   setStatus("loading", "⏳ Chargement des données…");
 
   try {
-    const url = `${API}?action=stats&resto=${encodeURIComponent(RESTO)}&days=${days}`;
+    // Appel sans action= pour compatibilité avec l'ancien et le nouveau Code.gs
+    const url = `${API}?resto=${encodeURIComponent(RESTO)}&days=${days}`;
     const res  = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
 
     const data = await res.json();
     if (!data || data.ok !== true) throw new Error(data?.message || "Erreur API");
 
-    const s = data.stats || {};
-    renderKPIs(s);
-    renderChart(data.daily || []);
-    renderActivity(data.recent || []);
-    renderTop(data.top);
+    // ── Nouveau format (Code.gs mis à jour) ──────────────────
+    let stats  = data.stats;
+    let daily  = data.daily;
+    let recent = data.recent;
+    let top    = data.top;
 
+    // ── Fallback ancien format : data.rows[] ─────────────────
+    if (!stats) {
+      const rows = normalizeRows(Array.isArray(data.rows) ? data.rows : []);
+      // Filtre resto côté client (sécurité)
+      const filtered = rows.filter(r =>
+        !RESTO || String(r.resto || r.restaurant || "").toLowerCase() === RESTO
+      );
+      stats  = computeStats(filtered);
+      daily  = computeDaily(filtered);
+      recent = filtered.slice(-20).reverse().map(r => ({
+        ts:    String(r.ts || r.jour || ""),
+        event: String(r.event || ""),
+        user:  String(r.user  || "")
+      }));
+      top = computeTop(daily, stats);
+    }
+
+    renderKPIs(stats);
+    renderChart(daily  || []);
+    renderActivity(recent || []);
+    renderTop(top);
+
+    const s = stats || {};
     setStatus("ok",
       `✅ Actualisé — ${s.scan??0} scans · ${s.signup??0} inscrits · ${s.coupon_validate??0} coupons · ${s.revenue_estimated??0} € estimés`
     );
