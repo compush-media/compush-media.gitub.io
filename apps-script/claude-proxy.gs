@@ -61,8 +61,24 @@ function doPost(e) {
   }
 }
 
-// ─── Point d'entrée GET (test de santé) ─────────────────────
+// ─── Point d'entrée GET ──────────────────────────────────────
 function doGet(e) {
+  if (e.parameter && e.parameter.payload) {
+    try {
+      var body = JSON.parse(e.parameter.payload);
+      var action = body.action || "generate_response";
+      var result;
+      switch (action) {
+        case "generate_response":  result = generateReviewResponse(body); break;
+        case "analyze_reviews":    result = analyzeReviews(body);         break;
+        case "compute_score":      result = computeReputationScore(body); break;
+        default: result = { error: "Action inconnue : " + action };
+      }
+      return buildResponse(result);
+    } catch (err) {
+      return buildResponse({ error: "Erreur proxy : " + err.message });
+    }
+  }
   return buildResponse({ status: "ok", proxy: "Fidelavis Claude Proxy", version: "1.0" });
 }
 

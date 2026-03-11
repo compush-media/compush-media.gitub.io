@@ -159,7 +159,12 @@
 
 <div class="config-bar">
   <div class="cf-group">
-    <label>🔗 URL Proxy Google Apps Script</label>
+    <label>🔑 Clé API Claude <small style="color:#e67e22;font-weight:600">(recommandé)</small></label>
+    <input type="password" id="apiKey" placeholder="sk-ant-api03-…" autocomplete="off" />
+    <small style="color:#888;font-size:11px">Stockée localement, jamais envoyée ailleurs</small>
+  </div>
+  <div class="cf-group">
+    <label>🔗 URL Proxy GAS <small style="color:#888">(fallback)</small></label>
     <input type="text" id="proxyUrl" placeholder="https://script.google.com/macros/s/AKfycb…/exec" />
   </div>
   <div class="cf-group">
@@ -488,11 +493,13 @@
 <div class="toast" id="toast"></div>
 
 <script>
-var CLAUDE_PROXY_URL = localStorage.getItem("fv_proxy_url") || "";
+var CLAUDE_PROXY_URL = localStorage.getItem("fv_proxy_url") || "https://script.google.com/macros/s/AKfycbxiZSHloUbi5zxx-jYanNiY6TnOO7u5GUzCVaVzHz5iuqU-PFxLg_-eDpepJCP4LXmATA/exec";
 var RESTO_NAME       = localStorage.getItem("fv_resto_name") || "Le Voltaire";
 var PWA_LINK         = localStorage.getItem("fv_pwa_link")   || "";
+var CLAUDE_API_KEY   = localStorage.getItem("fv_api_key")    || "";
 
 (function init() {
+  document.getElementById("apiKey").value    = CLAUDE_API_KEY;
   document.getElementById("proxyUrl").value  = CLAUDE_PROXY_URL;
   document.getElementById("restoName").value = RESTO_NAME;
   document.getElementById("pwaLink").value   = PWA_LINK;
@@ -505,9 +512,11 @@ var PWA_LINK         = localStorage.getItem("fv_pwa_link")   || "";
 })();
 
 function saveConfig() {
+  CLAUDE_API_KEY   = document.getElementById("apiKey").value.trim();
   CLAUDE_PROXY_URL = document.getElementById("proxyUrl").value.trim();
   RESTO_NAME       = document.getElementById("restoName").value.trim();
   PWA_LINK         = document.getElementById("pwaLink").value.trim();
+  localStorage.setItem("fv_api_key",    CLAUDE_API_KEY);
   localStorage.setItem("fv_proxy_url",  CLAUDE_PROXY_URL);
   localStorage.setItem("fv_resto_name", RESTO_NAME);
   localStorage.setItem("fv_pwa_link",   PWA_LINK);
@@ -536,17 +545,99 @@ function copyText(id) {
 }
 
 async function callProxy(payload) {
+  var apiKey = document.getElementById("apiKey").value.trim() || CLAUDE_API_KEY;
+  if (apiKey) return await callAnthropicDirect(apiKey, payload);
+
   var url = document.getElementById("proxyUrl").value.trim() || CLAUDE_PROXY_URL;
-  if (!url) throw new Error("URL du proxy non configurée. Renseignez l'URL Google Apps Script en haut de page.");
-  var res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
+  if (!url) throw new Error("Renseignez votre clé API Claude (🔑) ou l'URL du proxy GAS en haut de page.");
+  var fullUrl = url + "?payload=" + encodeURIComponent(JSON.stringify(payload));
+  var res = await fetch(fullUrl);
   if (!res.ok) throw new Error("Erreur HTTP " + res.status);
   var json = await res.json();
   if (json.error) throw new Error(json.error);
   return json;
+}
+
+async function callAnthropicDirect(apiKey, payload) {
+  var action = payload.action || "generate_response";
+  if (action === "compute_score") {
+    return _scoreObj(payload.avgRating, payload.totalReviews, payload.recentTrend, payload.responseRate, payload.sentiment);
+  }
+  var restoName = payload.restoName || "le restaurant";
+  var system = [
+    "Tu es l'assistant IA de réputation pour " + restoName + ", un restaurant.",
+    "Tu aides le restaurateur à gérer ses avis clients de manière professionnelle, humaine et efficace.",
+    "",
+    "Règles absolues :",
+    "- Réponds TOUJOURS en JSON valide, sans markdown, sans blocs de code.",
+    "- Ne commence jamais par ``` ou par des balises.",
+    "- Sois authentique, naturel, jamais robotique.",
+    "- Adapte ton ton à la note et à la plateforme.",
+    "- Ne mens jamais sur les faits mentionnés dans l'avis.",
+    "- Pour les avis négatifs, reste professionnel et constructif.",
+    "- La langue de la réponse doit correspondre à la langue de l'avis."
+  ].join("\n");
+
+  var user;
+  if (action === "generate_response") {
+    var r = payload, rating = parseInt(r.rating, 10) || 3;
+    var style = r.platform === "tripadvisor"
+      ? "réponse élaborée, ton hospitalier et chaleureux, 3-5 phrases"
+      : "réponse courte, humaine, locale, authentique, 2-3 phrases maximum";
+    var tone = rating >= 5 ? "Remerciement très chaleureux, valorisation de l'expérience vécue, enthousiasme sincère."
+             : rating === 4 ? "Remerciement sincère, encouragement à revenir."
+             : rating === 3 ? "Reconnaissance de la remarque, empathie, invitation à revenir."
+             : "Apaisement immédiat, reconnaissance du problème, excuses sincères.";
+    var pwa = (r.pwaLink && rating >= 4)
+      ? '\n\nIMPORTANT : Terminer par : "Pour profiter de nos avantages fidélité lors de votre prochaine visite, installez notre carte fidélité digitale ici : ' + r.pwaLink + '"'
+      : "";
+    user = ["Restaurant : " + restoName, "Plateforme : " + (r.platform||"google").toUpperCase(),
+      "Note : " + rating + "/5", "Avis client :", "---", r.review||"", "---", "",
+      "Style : " + style, "Ton : " + tone, pwa, "",
+      'Réponds en JSON : { "analyse": { "plateforme":"...","type_avis":"...","niveau_risque":"...","intention_client":"..." }, "reponse_publique":"...", "version_diplomatique":"...", "conseil_interne":"..." }'
+    ].join("\n");
+  } else {
+    var reviews = (payload.reviews||[]).map(function(rv, i) {
+      return (i+1) + ". [" + (rv.rating||"?")+"/5 – "+(rv.platform||"?")+"] "+(rv.text||"");
+    }).join("\n");
+    user = ["Analyse les avis suivants pour " + restoName + " :", "", reviews, "",
+      'Réponds en JSON : { "points_forts":[],"points_faibles":[],"problemes_recurrents":[],"sentiment_global":"...","note_moyenne_ressentie":0,"resume":"...","recommandations":[] }'
+    ].join("\n");
+  }
+
+  var res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({ model: "claude-opus-4-6", max_tokens: 1500, system: system, messages: [{ role: "user", content: user }] })
+  });
+  if (!res.ok) {
+    var e = await res.json().catch(function(){return{};});
+    throw new Error("Erreur API Claude (" + res.status + ") : " + ((e.error && e.error.message) || res.statusText));
+  }
+  var data = await res.json();
+  var raw = data.content && data.content[0] ? data.content[0].text : "";
+  var clean = raw.replace(/^```(?:json)?\s*/i,"").replace(/\s*```$/i,"").trim();
+  try { return JSON.parse(clean); } catch(e) { return { raw_response: raw }; }
+}
+
+function _scoreObj(avg, total, trend, respRate, sentiment) {
+  var sR = ((avg-1)/4)*35, sV = Math.min(total/200,1)*20;
+  var sT = trend==="hausse"?20:trend==="stable"?12:0;
+  var sRp=(respRate/100)*15, sS=sentiment==="positif"?10:sentiment==="neutre"?5:0;
+  var tot=Math.max(0,Math.min(100,Math.round(sR+sV+sT+sRp+sS)));
+  return {
+    score:tot,
+    niveau: tot>=80?"Excellent":tot>=60?"Bon":tot>=40?"Moyen":"Faible",
+    risque: tot>=70?"Faible":tot>=50?"Moyen":"Élevé",
+    tendance: trend==="hausse"?"📈 En progression":trend==="baisse"?"📉 En recul":"➡️ Stable",
+    details:{note:Math.round(sR),volume:Math.round(sV),trend:Math.round(sT),reponse:Math.round(sRp),sentiment:Math.round(sS)}
+  };
+}
 }
 
 /* === FONCTION 1 : RÉPONSE IA === */
