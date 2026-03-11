@@ -650,6 +650,14 @@ async function generateResponse() {
 
   if (!reviewText) { showToast("Veuillez coller un avis avant de générer"); return; }
 
+  var apiKey = document.getElementById("apiKey").value.trim() || CLAUDE_API_KEY;
+  var proxyUrl = document.getElementById("proxyUrl").value.trim() || CLAUDE_PROXY_URL;
+  if (!apiKey && !proxyUrl) {
+    showToast("⚠️ Renseignez votre clé API Claude en haut de page");
+    document.getElementById("apiKey").focus();
+    return;
+  }
+
   var btn = document.getElementById("generateBtn");
   var spinner = document.getElementById("generateSpinner");
   btn.disabled = true; spinner.style.display = "inline-block";
@@ -684,6 +692,8 @@ async function generateResponse() {
     errEl.style.display = "block";
     errEl.textContent = "Erreur : " + err.message;
     document.getElementById("replyEmpty").style.display = "block";
+    showToast("❌ " + err.message);
+    errEl.scrollIntoView({ behavior: "smooth", block: "center" });
   } finally {
     btn.disabled = false; spinner.style.display = "none";
   }
