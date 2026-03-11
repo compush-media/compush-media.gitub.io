@@ -9,14 +9,17 @@
 
   <style>
     :root {
-      --brand: #b6152b;
-      --bg:    #f0f2f5;
-      --card:  #fff;
-      --ink:   #1a1a2e;
-      --muted: #64748b;
-      --line:  rgba(0,0,0,.07);
-      --r:     18px;
-      --sh:    0 4px 24px rgba(0,0,0,.07);
+      --bg:     #f4f6f9;
+      --white:  #ffffff;
+      --ink:    #1c1c2e;
+      --muted:  #6b7280;
+      --line:   #e5e7eb;
+      --c-b:    #1976d2;   /* blue KPIs */
+      --c-or:   #e8620a;   /* orange */
+      --c-tl:   #0e8c7a;   /* teal */
+      --c-dk:   #1a2535;   /* dark navy */
+      --r:      14px;
+      --sh:     0 2px 16px rgba(0,0,0,.09);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -24,217 +27,237 @@
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
       background: var(--bg);
       color: var(--ink);
-      padding: 16px;
-      min-height: 100vh;
+      padding: 24px 20px;
     }
 
-    .wrap { max-width: 1160px; margin: 0 auto; }
+    .wrap { max-width: 1200px; margin: 0 auto; }
 
-    /* ── Header ─────────────────────────────── */
-    .header {
+    /* ── Header ─────────────────────────────────── */
+    .page-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
       margin-bottom: 16px;
     }
 
-    .header h1 {
-      font-size: 22px;
+    .page-header h1 {
+      font-size: 24px;
       font-weight: 800;
       color: var(--ink);
-      letter-spacing: -.3px;
     }
-    .header h1 .period-lbl {
-      color: var(--muted);
-      font-weight: 600;
-    }
-    .header-sub {
-      margin-top: 5px;
-      font-size: 13px;
-      color: var(--muted);
+    .page-header h1 .light {
+      font-weight: 400;
+      color: var(--ink);
     }
 
     .controls {
       display: flex;
-      gap: 8px;
       align-items: center;
+      gap: 8px;
       flex-wrap: wrap;
     }
-
     select {
-      padding: 9px 14px;
-      border-radius: 12px;
+      padding: 8px 14px;
+      border-radius: 10px;
       border: 1.5px solid var(--line);
-      background: var(--card);
+      background: var(--white);
       font-size: 13px;
       font-weight: 700;
       color: var(--ink);
       outline: none;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,.04);
     }
-
     .btn-refresh {
-      padding: 9px 18px;
-      border-radius: 12px;
+      padding: 8px 16px;
+      border-radius: 10px;
       border: none;
-      background: var(--brand);
+      background: #1976d2;
       color: #fff;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(182,21,43,.25);
-      transition: opacity .15s;
     }
-    .btn-refresh:hover { opacity: .88; }
+    .btn-refresh:hover { opacity: .9; }
 
-    /* ── Status bar ─────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1.5px solid var(--line);
+      margin-bottom: 24px;
+    }
+
+    /* ── Status ─────────────────────────────────── */
     .status-bar {
       font-size: 12.5px;
       font-weight: 700;
-      padding: 9px 14px;
-      border-radius: 10px;
-      margin-bottom: 16px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      margin-bottom: 20px;
     }
     .status-bar.loading { background:#fef3c7; color:#92400e; border:1px solid #fde68a; }
     .status-bar.ok      { background:#d1fae5; color:#065f46; border:1px solid #a7f3d0; }
     .status-bar.err     { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
 
-    /* ── KPI Grid ───────────────────────────── */
+    /* ── KPI Grid ───────────────────────────────── */
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
-      gap: 10px;
-      margin-bottom: 16px;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
     }
+    @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 680px)  { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
 
     .kpi-card {
       border-radius: var(--r);
       padding: 16px 14px 14px;
-      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 110px;
+      box-shadow: var(--sh);
       position: relative;
       overflow: hidden;
-      box-shadow: var(--sh);
     }
-    .kpi-card.c-b1  { background: linear-gradient(135deg,#2563eb,#1d4ed8); }
-    .kpi-card.c-b2  { background: linear-gradient(135deg,#3b82f6,#2563eb); }
-    .kpi-card.c-b3  { background: linear-gradient(135deg,#1d4ed8,#1e40af); }
-    .kpi-card.c-or  { background: linear-gradient(135deg,#f97316,#ea580c); }
-    .kpi-card.c-tl  { background: linear-gradient(135deg,#14b8a6,#0d9488); }
-    .kpi-card.c-dk  { background: linear-gradient(135deg,#334155,#1e293b); }
-    .kpi-card.c-lt  {
-      background: var(--card);
+    /* Colored cards */
+    .kpi-card.cb  { background: var(--c-b);  color: #fff; }
+    .kpi-card.cor { background: var(--c-or); color: #fff; }
+    .kpi-card.ctl { background: var(--c-tl); color: #fff; }
+    .kpi-card.cdk { background: var(--c-dk); color: #fff; }
+    /* White card */
+    .kpi-card.cwh {
+      background: var(--white);
       color: var(--ink);
       border: 1.5px solid var(--line);
     }
 
-    .kpi-icon { font-size: 20px; margin-bottom: 8px; opacity:.85; }
-
+    /* Top row inside card: icon + value side by side */
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .kpi-icon {
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+      opacity: .9;
+    }
     .kpi-value {
-      font-size: 28px;
-      font-weight: 950;
-      letter-spacing: -1px;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -1.5px;
       line-height: 1;
     }
-    .kpi-card.c-lt .kpi-value { color: var(--ink); }
+    .kpi-card.cwh .kpi-value { color: var(--ink); }
 
+    /* Label at bottom */
     .kpi-label {
-      margin-top: 6px;
       font-size: 11px;
       font-weight: 700;
-      opacity: .75;
+      letter-spacing: .3px;
       text-transform: uppercase;
-      letter-spacing: .5px;
+      opacity: .8;
+      margin-top: 10px;
     }
-    .kpi-card.c-lt .kpi-label { color: var(--muted); opacity: 1; }
+    .kpi-card.cwh .kpi-label { color: var(--muted); opacity: 1; }
 
-    .kpi-arrow {
-      position: absolute;
-      right: 12px;
-      bottom: 10px;
-      font-size: 20px;
-      opacity: .2;
+    /* Special: Taux de Conversion */
+    .kpi-card.cdk .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .kpi-card.cdk .kpi-header-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      line-height: 1.3;
+      opacity: .85;
+    }
+    .kpi-card.cdk .kpi-header-icon {
+      font-size: 22px;
+      opacity: .7;
+    }
+    .kpi-card.cdk .kpi-value {
+      font-size: 36px;
+      margin-top: 6px;
     }
 
-    /* ── Card ───────────────────────────────── */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
+    /* ── Chart section ──────────────────────────── */
+    .section {
+      background: var(--white);
       border-radius: var(--r);
+      padding: 20px 20px 16px;
       box-shadow: var(--sh);
-      padding: 18px;
+      margin-bottom: 20px;
     }
 
-    .card-title {
-      font-size: 14px;
+    .section-title {
+      font-size: 17px;
       font-weight: 800;
       color: var(--ink);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
-    /* ── Chart ──────────────────────────────── */
     .chart-wrap {
       position: relative;
-      height: 240px;
+      height: 260px;
     }
-    .chart-card { margin-bottom: 16px; }
 
-    /* ── Bottom row ─────────────────────────── */
-    .bottom-grid {
+    /* ── Bottom row ─────────────────────────────── */
+    .bottom-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      align-items: start;
+      gap: 20px;
     }
-    @media (max-width: 680px) { .bottom-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 680px) { .bottom-row { grid-template-columns: 1fr; } }
 
-    /* ── Activity list ──────────────────────── */
+    /* ── Activity list ──────────────────────────── */
     .activity-list { list-style: none; }
 
-    .activity-item {
+    .act-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 9px 0;
+      padding: 11px 0;
       border-bottom: 1px solid var(--line);
     }
-    .activity-item:last-child { border-bottom: none; }
+    .act-item:last-child { border-bottom: none; }
 
-    .act-icon {
-      width: 38px;
-      height: 38px;
+    .act-bubble {
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
+      font-size: 16px;
       flex-shrink: 0;
     }
-    .ai-review  { background:#fef3c7; }
-    .ai-coupon  { background:#dbeafe; }
-    .ai-install { background:#e0e7ff; }
-    .ai-signup  { background:#dcfce7; }
-    .ai-scan    { background:#f1f5f9; }
+    .ab-yellow { background: #fef3c7; }
+    .ab-blue   { background: #dbeafe; }
+    .ab-dblue  { background: #e0e7ff; }
+    .ab-green  { background: #dcfce7; }
 
-    .act-body { flex: 1; min-width: 0; }
-
-    .act-title {
-      font-size: 13px;
-      font-weight: 700;
+    .act-text  { flex: 1; min-width: 0; }
+    .act-label {
+      font-size: 13.5px;
+      font-weight: 600;
       color: var(--ink);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .act-time {
-      font-size: 11.5px;
+      font-size: 12px;
       color: var(--muted);
-      margin-top: 2px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
-    /* ── Top list ───────────────────────────── */
+    /* ── Top du Mois ────────────────────────────── */
     .top-list { list-style: none; }
 
     .top-item {
@@ -246,47 +269,39 @@
     }
     .top-item:last-child { border-bottom: none; }
 
-    .top-icon {
+    .top-bubble {
       width: 44px;
       height: 44px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 19px;
+      font-size: 18px;
       flex-shrink: 0;
     }
-    .ti-cal   { background: #e0e7ff; }
-    .ti-offer { background: #dcfce7; }
-    .ti-roi   { background: #fef3c7; }
+    .tb-blue   { background: #dbeafe; }
+    .tb-green  { background: #dcfce7; }
+    .tb-yellow { background: #fef3c7; }
 
-    .top-lbl {
-      font-size: 11px;
-      color: var(--muted);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .4px;
-    }
-    .top-val {
-      font-size: 15px;
-      font-weight: 800;
+    .top-text {
+      font-size: 14px;
+      font-weight: 600;
       color: var(--ink);
-      margin-top: 3px;
     }
+    .top-text strong { font-weight: 800; }
 
-    /* ── Skeleton loading ───────────────────── */
+    /* ── Skeleton ───────────────────────────────── */
     @keyframes shimmer {
       0%   { background-position: -200% 0; }
       100% { background-position:  200% 0; }
     }
     .skel {
-      background: linear-gradient(90deg,#e2e8f0 25%,#f8fafc 50%,#e2e8f0 75%);
+      background: linear-gradient(90deg,#e9ecef 25%,#f8f9fa 50%,#e9ecef 75%);
       background-size: 200% 100%;
       animation: shimmer 1.4s infinite;
-      border-radius: 6px;
-      height: 1em;
+      border-radius: 5px;
+      height: .9em;
       display: inline-block;
-      width: 60%;
     }
   </style>
 </head>
@@ -294,12 +309,9 @@
 <body>
 <div class="wrap">
 
-  <!-- ── Header ─────────────────────────────────── -->
-  <div class="header">
-    <div>
-      <h1>Vue d'ensemble <span class="period-lbl" id="periodLbl">ce mois-ci</span></h1>
-      <div class="header-sub" id="restoLbl">Chargement…</div>
-    </div>
+  <!-- ── Header ────────────────────────────────────── -->
+  <div class="page-header">
+    <h1>Vue d'ensemble <span class="light" id="periodLbl">ce mois-ci</span></h1>
     <div class="controls">
       <select id="periodSelect">
         <option value="30" selected>Ce mois (30j)</option>
@@ -310,107 +322,119 @@
       <button class="btn-refresh" id="refreshBtn">↻ Actualiser</button>
     </div>
   </div>
+  <hr class="divider" />
 
-  <!-- ── Status ─────────────────────────────────── -->
-  <div class="status-bar loading" id="statusBar">⏳ Chargement des données…</div>
+  <!-- ── Status ────────────────────────────────────── -->
+  <div class="status-bar loading" id="statusBar">⏳ Chargement…</div>
 
-  <!-- ── KPIs ───────────────────────────────────── -->
+  <!-- ── KPIs ──────────────────────────────────────── -->
   <div class="kpi-grid">
-    <div class="kpi-card c-b1">
-      <div class="kpi-icon">📡</div>
-      <div class="kpi-value" id="kScan">—</div>
+
+    <div class="kpi-card cb">
+      <div class="kpi-top">
+        <span class="kpi-icon">🖥️</span>
+        <span class="kpi-value" id="kScan">—</span>
+      </div>
       <div class="kpi-label">Scans</div>
     </div>
-    <div class="kpi-card c-b2">
-      <div class="kpi-icon">👥</div>
-      <div class="kpi-value" id="kSignup">—</div>
+
+    <div class="kpi-card cb">
+      <div class="kpi-top">
+        <span class="kpi-icon">👥</span>
+        <span class="kpi-value" id="kSignup">—</span>
+      </div>
       <div class="kpi-label">Inscrits</div>
     </div>
-    <div class="kpi-card c-b3">
-      <div class="kpi-icon">📲</div>
-      <div class="kpi-value" id="kInstall">—</div>
+
+    <div class="kpi-card cb">
+      <div class="kpi-top">
+        <span class="kpi-icon">📱</span>
+        <span class="kpi-value" id="kInstall">—</span>
+      </div>
       <div class="kpi-label">Installations</div>
     </div>
-    <div class="kpi-card c-or">
-      <div class="kpi-icon">🎟️</div>
-      <div class="kpi-value" id="kCoupon">—</div>
+
+    <div class="kpi-card cor">
+      <div class="kpi-top">
+        <span class="kpi-icon">🎟️</span>
+        <span class="kpi-value" id="kCoupon">—</span>
+      </div>
       <div class="kpi-label">Coupons Utilisés</div>
     </div>
-    <div class="kpi-card c-tl">
-      <div class="kpi-icon">⭐</div>
-      <div class="kpi-value" id="kReview">—</div>
+
+    <div class="kpi-card ctl">
+      <div class="kpi-top">
+        <span class="kpi-icon">⭐</span>
+        <span class="kpi-value" id="kReview">—</span>
+      </div>
       <div class="kpi-label">Avis Obtenus</div>
     </div>
-    <div class="kpi-card c-lt">
-      <div class="kpi-icon">💶</div>
-      <div class="kpi-value" id="kRevenue">—</div>
+
+    <div class="kpi-card cwh">
+      <div class="kpi-top">
+        <span class="kpi-icon" style="color:#374151;">€</span>
+        <span class="kpi-value" id="kRevenue">—</span>
+      </div>
       <div class="kpi-label">Revenus Estimés</div>
     </div>
-    <div class="kpi-card c-dk">
-      <div class="kpi-icon">📈</div>
-      <div class="kpi-value" id="kConv">—</div>
-      <div class="kpi-label">Taux de Conversion</div>
-      <div class="kpi-arrow">↗</div>
-    </div>
-  </div>
 
-  <!-- ── Chart ──────────────────────────────────── -->
-  <div class="card chart-card">
-    <div class="card-title">📊 Activité des <span id="chartDaysLbl">30</span> derniers jours</div>
+    <div class="kpi-card cdk">
+      <div class="kpi-header">
+        <div class="kpi-header-label">Taux de<br>Conversion</div>
+        <span class="kpi-header-icon">📈</span>
+      </div>
+      <div class="kpi-value" id="kConv">—</div>
+    </div>
+
+  </div><!-- /kpi-grid -->
+
+  <!-- ── Chart ─────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-title">Activité des <span id="chartDaysLbl">30</span> derniers jours</div>
     <div class="chart-wrap">
       <canvas id="activityChart"></canvas>
     </div>
   </div>
 
-  <!-- ── Bottom row ─────────────────────────────── -->
-  <div class="bottom-grid">
+  <!-- ── Bottom row ────────────────────────────────── -->
+  <div class="bottom-row">
 
-    <!-- Recent activity -->
-    <div class="card">
-      <div class="card-title">⚡ Dernières Activités</div>
+    <!-- Dernières Activités -->
+    <div class="section" style="margin-bottom:0">
+      <div class="section-title">Dernières Activités</div>
       <ul class="activity-list" id="activityList">
-        <li class="activity-item"><span class="skel"></span></li>
-        <li class="activity-item"><span class="skel" style="width:45%"></span></li>
-        <li class="activity-item"><span class="skel" style="width:70%"></span></li>
+        <li class="act-item"><span class="skel" style="width:80%"></span></li>
+        <li class="act-item"><span class="skel" style="width:60%"></span></li>
+        <li class="act-item"><span class="skel" style="width:70%"></span></li>
       </ul>
     </div>
 
-    <!-- Top du mois -->
-    <div class="card">
-      <div class="card-title">🏆 Top du Mois</div>
+    <!-- Top du Mois -->
+    <div class="section" style="margin-bottom:0">
+      <div class="section-title">Top du Mois</div>
       <ul class="top-list">
         <li class="top-item">
-          <div class="top-icon ti-cal">📅</div>
-          <div>
-            <div class="top-lbl">Meilleur Jour</div>
-            <div class="top-val" id="topBestDay">—</div>
-          </div>
+          <div class="top-bubble tb-blue">🗓️</div>
+          <div class="top-text">Meilleur Jour: <strong id="topBestDay">—</strong></div>
         </li>
         <li class="top-item">
-          <div class="top-icon ti-offer">🎟️</div>
-          <div>
-            <div class="top-lbl">Meilleure Offre</div>
-            <div class="top-val" id="topOffer">—</div>
-          </div>
+          <div class="top-bubble tb-green">🎟️</div>
+          <div class="top-text">Meilleure Offre: <strong id="topOffer">—</strong></div>
         </li>
         <li class="top-item">
-          <div class="top-icon ti-roi">💶</div>
-          <div>
-            <div class="top-lbl">ROI Estimé</div>
-            <div class="top-val" id="topRoi">—</div>
-          </div>
+          <div class="top-bubble tb-yellow">€</div>
+          <div class="top-text">ROI Estimé: <strong id="topRoi">—</strong></div>
         </li>
       </ul>
     </div>
 
-  </div><!-- /bottom-grid -->
+  </div><!-- /bottom-row -->
 </div><!-- /wrap -->
 
 <script>
-// ── Config ─────────────────────────────────────────────────
+// ── Config ──────────────────────────────────────────────────
 const API = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
 
-// ── Detect RESTO ────────────────────────────────────────────
 const RESTO = (() => {
   const p = new URLSearchParams(location.search);
   const q = (p.get("resto") || "").trim().toLowerCase();
@@ -421,29 +445,11 @@ const RESTO = (() => {
   return localStorage.getItem("fv_last_resto") || "resto1";
 })();
 
-document.getElementById("restoLbl").textContent = `Restaurant : ${RESTO}`;
-
 let chartInst = null;
 
 // ── Helpers ─────────────────────────────────────────────────
-function esc(str) {
-  return String(str || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-function relTime(isoStr) {
-  const diff = Date.now() - new Date(isoStr).getTime();
-  const m = Math.floor(diff / 60000);
-  if (m < 1)  return "À l'instant";
-  if (m < 60) return `Il y a ${m} min`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `Il y a ${h}h`;
-  const d = Math.floor(h / 24);
-  return `Il y a ${d} jour${d > 1 ? "s" : ""}`;
+function esc(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
 function setStatus(type, text) {
@@ -452,16 +458,37 @@ function setStatus(type, text) {
   el.textContent = text;
 }
 
-const EVENT_META = {
-  scan:              { icon: "📡", cls: "ai-scan",    label: "Nouveau scan NFC / QR" },
-  signup:            { icon: "👤", cls: "ai-signup",  label: "Nouveau client inscrit" },
-  install_confirmed: { icon: "📲", cls: "ai-install", label: "Installation PWA confirmée" },
-  install_cta_click: { icon: "📱", cls: "ai-install", label: "Tentative d'installation" },
-  install_attempt:   { icon: "📱", cls: "ai-install", label: "Tentative d'installation" },
-  coupon_validate:   { icon: "🎟️", cls: "ai-coupon",  label: "Coupon utilisé" },
-  review_page_view:  { icon: "⭐", cls: "ai-review",  label: "Nouvel avis ajouté" },
-  review_qr_view:    { icon: "⭐", cls: "ai-review",  label: "QR avis scanné" },
-  review_click:      { icon: "⭐", cls: "ai-review",  label: "Clic sur avis" },
+function relTime(iso) {
+  const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  if (m < 1)  return "À l'instant";
+  if (m < 60) return `Il y a ${m} min`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `Il y a ${h} heure${h>1?"s":""}`;
+  return `Il y a ${Math.floor(h/24)} jour${Math.floor(h/24)>1?"s":""}`;
+}
+
+// Convert ISO date → "J-N" or "Aujourd'hui"
+function toRelLabel(dateStr) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dt    = new Date(dateStr + "T00:00:00");
+  const diff  = Math.round((dt - today) / 86400000);
+  if (diff === 0)  return "Aujourd'hui";
+  if (diff === -1) return "Hier";
+  if (diff < 0)    return `J${diff}`;
+  return `J+${diff}`;
+}
+
+// ── Event metadata ───────────────────────────────────────────
+const EV_META = {
+  scan:              { icon:"🖥️", bg:"ab-blue",   label:"Nouveau scan NFC / QR" },
+  signup:            { icon:"👤", bg:"ab-green",  label:"Nouveau client inscrit" },
+  install_confirmed: { icon:"📱", bg:"ab-dblue",  label:"Installation PWA confirmée" },
+  install_cta_click: { icon:"📱", bg:"ab-dblue",  label:"Tentative d'installation" },
+  install_attempt:   { icon:"📱", bg:"ab-dblue",  label:"Tentative d'installation" },
+  coupon_validate:   { icon:"🎟️", bg:"ab-blue",   label:"Coupon utilisé" },
+  review_page_view:  { icon:"⭐", bg:"ab-yellow", label:"Nouvel avis ajouté" },
+  review_qr_view:    { icon:"⭐", bg:"ab-yellow", label:"QR avis scanné" },
+  review_click:      { icon:"⭐", bg:"ab-yellow", label:"Clic sur avis" },
 };
 
 // ── Render KPIs ─────────────────────────────────────────────
@@ -478,12 +505,18 @@ function renderKPIs(s) {
 // ── Render Chart ────────────────────────────────────────────
 function renderChart(daily) {
   const data = daily || [];
-  const labels   = data.map(d => {
-    const dt = new Date(d.day + "T12:00:00Z");
-    return dt.toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
+
+  // Only show a label every ~5 days to avoid clutter
+  const labels = data.map((d, i) => {
+    const lbl = toRelLabel(d.day);
+    // Always show first, last, and multiples of 5
+    const showTick = lbl === "Aujourd'hui" || lbl === "Hier" || i === 0 ||
+                     (data.length - 1 - i) % 5 === 0;
+    return showTick ? lbl : "";
   });
-  const signups  = data.map(d => d.signup || 0);
-  const scans    = data.map(d => d.scan   || 0);
+
+  const signups = data.map(d => d.signup || 0);
+  const scans   = data.map(d => d.scan   || 0);
 
   const ctx = document.getElementById("activityChart").getContext("2d");
   if (chartInst) { chartInst.destroy(); chartInst = null; }
@@ -496,8 +529,8 @@ function renderChart(daily) {
           type: "bar",
           label: "Inscrits",
           data: signups,
-          backgroundColor: "rgba(59,130,246,.65)",
-          borderRadius: 5,
+          backgroundColor: "rgba(25,118,210,.65)",
+          borderRadius: 4,
           order: 2
         },
         {
@@ -527,7 +560,7 @@ function renderChart(daily) {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { maxTicksLimit: 10, font: { size: 11 } }
+          ticks: { font: { size: 11 }, maxRotation: 0 }
         },
         y: {
           beginAtZero: true,
@@ -539,30 +572,27 @@ function renderChart(daily) {
   });
 }
 
-// ── Render Recent Activity ───────────────────────────────────
-function renderRecent(recent) {
+// ── Render Activity ─────────────────────────────────────────
+function renderActivity(recent) {
   const list  = document.getElementById("activityList");
   const items = (recent || []).slice(0, 8);
 
   if (!items.length) {
-    list.innerHTML = `<li class="activity-item" style="color:var(--muted);font-size:13px;">Aucune activité récente.</li>`;
+    list.innerHTML = `<li class="act-item" style="color:var(--muted);font-size:13px">Aucune activité récente.</li>`;
     return;
   }
 
   list.innerHTML = items.map(r => {
-    const meta  = EVENT_META[r.event] || { icon: "🔔", cls: "ai-scan", label: r.event };
-    const first = r.user ? r.user.split("@")[0].split(".")[0] : "";
-    const name  = first ? (first.charAt(0).toUpperCase() + first.slice(1)) : "";
+    const meta  = EV_META[r.event] || { icon:"🔔", bg:"ab-blue", label: r.event };
+    const first = (r.user||"").split("@")[0].split(".")[0];
+    const name  = first ? first.charAt(0).toUpperCase() + first.slice(1) : "";
     const label = name ? `${meta.label} par ${name}` : meta.label;
     const time  = r.ts ? relTime(r.ts) : "";
-
     return `
-      <li class="activity-item">
-        <div class="act-icon ${meta.cls}">${meta.icon}</div>
-        <div class="act-body">
-          <div class="act-title">${esc(label)}</div>
-          ${time ? `<div class="act-time">${time}</div>` : ""}
-        </div>
+      <li class="act-item">
+        <div class="act-bubble ${meta.bg}">${meta.icon}</div>
+        <div class="act-text"><div class="act-label">${esc(label)}</div></div>
+        ${time ? `<div class="act-time">${time}</div>` : ""}
       </li>`;
   }).join("");
 }
@@ -572,15 +602,15 @@ function renderTop(top) {
   const t = top || {};
   document.getElementById("topBestDay").textContent = t.best_day   || "—";
   document.getElementById("topOffer").textContent   = t.best_offer || "—";
-  document.getElementById("topRoi").textContent     = t.roi        ? `x${Number(t.roi).toFixed(1).replace(".", ",")}` : "—";
+  document.getElementById("topRoi").textContent     = t.roi != null ? `x${Number(t.roi).toFixed(1).replace(".",",")}` : "—";
 }
 
-// ── Fetch & Refresh ──────────────────────────────────────────
+// ── Fetch ────────────────────────────────────────────────────
 async function refresh() {
   const days = Number(document.getElementById("periodSelect").value || 30);
-  const lblMap = { 7: "7 derniers jours", 30: "ce mois-ci", 90: "ces 3 mois", 365: "ces 12 mois" };
-  document.getElementById("periodLbl").textContent      = lblMap[days] || `${days} derniers jours`;
-  document.getElementById("chartDaysLbl").textContent   = days;
+  const lbls = { 7:"7 derniers jours", 30:"ce mois-ci", 90:"ces 3 mois", 365:"ces 12 mois" };
+  document.getElementById("periodLbl").textContent    = lbls[days] || `${days} derniers jours`;
+  document.getElementById("chartDaysLbl").textContent = days;
 
   setStatus("loading", "⏳ Chargement des données…");
 
@@ -595,15 +625,14 @@ async function refresh() {
     const s = data.stats || {};
     renderKPIs(s);
     renderChart(data.daily || []);
-    renderRecent(data.recent || []);
+    renderActivity(data.recent || []);
     renderTop(data.top);
 
-    setStatus(
-      "ok",
-      `✅ Actualisé — ${s.scan ?? 0} scans · ${s.signup ?? 0} inscrits · ${s.coupon_validate ?? 0} coupons · ${s.revenue_estimated ?? 0} € estimés`
+    setStatus("ok",
+      `✅ Actualisé — ${s.scan??0} scans · ${s.signup??0} inscrits · ${s.coupon_validate??0} coupons · ${s.revenue_estimated??0} € estimés`
     );
   } catch(e) {
-    setStatus("err", `❌ Erreur : ${e.message || String(e)}`);
+    setStatus("err", `❌ ${e.message || String(e)}`);
   }
 }
 
