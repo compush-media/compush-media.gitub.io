@@ -540,7 +540,7 @@ async function callProxy(payload) {
   if (!url) throw new Error("URL du proxy non configurée. Renseignez l'URL Google Apps Script en haut de page.");
   var res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "text/plain" },
     body: JSON.stringify(payload)
   });
   if (!res.ok) throw new Error("Erreur HTTP " + res.status);
