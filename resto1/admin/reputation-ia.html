@@ -538,11 +538,8 @@ function copyText(id) {
 async function callProxy(payload) {
   var url = document.getElementById("proxyUrl").value.trim() || CLAUDE_PROXY_URL;
   if (!url) throw new Error("URL du proxy non configurée. Renseignez l'URL Google Apps Script en haut de page.");
-  var res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain" },
-    body: JSON.stringify(payload)
-  });
+  var fullUrl = url + "?payload=" + encodeURIComponent(JSON.stringify(payload));
+  var res = await fetch(fullUrl);
   if (!res.ok) throw new Error("Erreur HTTP " + res.status);
   var json = await res.json();
   if (json.error) throw new Error(json.error);
