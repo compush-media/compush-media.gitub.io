@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Assistant Réputation IA – Fidelavis</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --brand:#B48C4A; --brand2:#a97f37; --bg:#fbfaf8; --card:#fff;
+      --ink:#191919; --muted:#6f6f6f; --line:rgba(0,0,0,.08);
+      --shadow:0 18px 50px rgba(0,0,0,.08); --r:18px;
+      --green:#1a9e5c; --red:#d93025; --orange:#e67e22; --blue:#2563eb;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:linear-gradient(180deg,#fbfaf8 0%,#f6f2ec 100%);color:var(--ink);min-height:100vh;}
+    .header{background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);padding:16px 20px;position:sticky;top:0;z-index:100;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+    .header-left{display:flex;align-items:center;gap:12px;}
+    .logo-badge{background:linear-gradient(135deg,var(--brand) 0%,var(--brand2) 100%);
+      color:#fff;font-weight:950;font-size:13px;padding:6px 12px;border-radius:999px;}
+    .header h1{margin:0;font-size:17px;font-weight:950;color:#1a1a1a;}
+    .header-sub{font-size:12px;color:var(--muted);margin:2px 0 0;}
+    .config-bar{background:rgba(180,140,74,.08);border:1px solid rgba(180,140,74,.22);
+      border-radius:12px;margin:14px 16px 0;padding:10px 14px;
+      display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;}
+    .config-bar label{font-size:11px;font-weight:900;color:#4a3a18;display:block;margin-bottom:3px;}
+    .config-bar input,.config-bar select{border:1px solid var(--line);background:#fff;
+      padding:7px 10px;border-radius:10px;font-size:13px;color:#2a2a2a;outline:none;font-weight:700;min-width:200px;}
+    .cf-group{flex:1;min-width:180px;}
+    .tabs-nav{display:flex;gap:6px;padding:14px 16px 0;flex-wrap:wrap;
+      border-bottom:2px solid var(--line);}
+    .tab-btn{padding:9px 14px;border-radius:10px 10px 0 0;border:1px solid transparent;
+      background:transparent;cursor:pointer;font-weight:900;font-size:13px;color:var(--muted);transition:.15s;}
+    .tab-btn:hover{background:rgba(180,140,74,.08);color:var(--brand);}
+    .tab-btn.active{background:var(--card);color:var(--brand);
+      border-color:var(--line) var(--line) #fff var(--line);border-bottom-color:var(--card);margin-bottom:-2px;z-index:1;}
+    .tab-panel{display:none;padding:16px;}
+    .tab-panel.active{display:block;}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;max-width:1200px;margin:0 auto;}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;}
+    .col-12{grid-column:span 12;}.col-8{grid-column:span 8;}.col-6{grid-column:span 6;}
+    .col-4{grid-column:span 4;}.col-3{grid-column:span 3;}
+    @media(max-width:960px){.col-8,.col-6{grid-column:span 12;}.col-4,.col-3{grid-column:span 6;}}
+    @media(max-width:520px){.col-3,.col-4,.col-6,.col-8{grid-column:span 12;}}
+    .form-group{margin-bottom:14px;}
+    .form-group label{display:block;font-size:12px;font-weight:900;color:#4a3a18;margin-bottom:5px;
+      text-transform:uppercase;letter-spacing:.4px;}
+    textarea,input[type="text"],input[type="number"],select.form-ctrl{width:100%;
+      border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:14px;
+      color:var(--ink);background:#fafaf8;outline:none;font-family:inherit;resize:vertical;transition:border .15s;}
+    textarea:focus,input[type="text"]:focus,input[type="number"]:focus,select.form-ctrl:focus{
+      border-color:var(--brand);background:#fff;}
+    .star-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+    .star-opt input[type="radio"]{display:none;}
+    .star-opt label{font-size:28px;cursor:pointer;opacity:.35;transition:.15s;
+      padding:2px 4px;border-radius:8px;display:block;}
+    .star-opt input[type="radio"]:checked~label,.star-opt label:hover{opacity:1;}
+    .platform-row{display:flex;gap:8px;flex-wrap:wrap;}
+    .platform-opt input[type="radio"]{display:none;}
+    .platform-opt label{padding:8px 14px;border-radius:999px;border:2px solid var(--line);
+      font-weight:900;font-size:13px;cursor:pointer;transition:.15s;
+      display:flex;align-items:center;gap:6px;color:var(--muted);}
+    .platform-opt input[type="radio"]:checked+label{border-color:var(--brand);
+      background:rgba(180,140,74,.1);color:var(--brand);}
+    .btn{border:none;cursor:pointer;border-radius:12px;padding:12px 20px;font-weight:950;
+      font-size:14px;display:inline-flex;align-items:center;gap:8px;transition:.15s;}
+    .btn-primary{background:linear-gradient(180deg,var(--brand) 0%,var(--brand2) 100%);
+      color:#fff;box-shadow:0 12px 20px rgba(180,140,74,.22);}
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 16px 28px rgba(180,140,74,.28);}
+    .btn-secondary{background:#fff;color:var(--brand);border:2px solid rgba(180,140,74,.4);}
+    .btn-ghost{background:rgba(180,140,74,.08);color:#4a3a18;border:1px solid rgba(180,140,74,.2);}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;}
+    .result-box{margin-top:18px;border-radius:14px;border:1px solid var(--line);background:#fafaf8;overflow:hidden;}
+    .result-section{padding:14px 16px;border-bottom:1px solid var(--line);}
+    .result-section:last-child{border-bottom:none;}
+    .result-label{font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.5px;
+      color:var(--muted);margin-bottom:8px;}
+    .result-text{font-size:14px;line-height:1.6;color:var(--ink);white-space:pre-wrap;word-break:break-word;}
+    .result-text.response{font-size:15px;font-weight:600;color:#1a1a1a;}
+    .analyse-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+    .chip{padding:5px 12px;border-radius:999px;font-size:12px;font-weight:900;
+      display:inline-flex;align-items:center;gap:5px;}
+    .chip-green{background:rgba(26,158,92,.1);color:#0f6b3d;border:1px solid rgba(26,158,92,.2);}
+    .chip-red{background:rgba(217,48,37,.1);color:#a01010;border:1px solid rgba(217,48,37,.2);}
+    .chip-orange{background:rgba(230,126,34,.1);color:#944d00;border:1px solid rgba(230,126,34,.2);}
+    .chip-blue{background:rgba(37,99,235,.1);color:#1240a0;border:1px solid rgba(37,99,235,.2);}
+    .chip-gray{background:rgba(0,0,0,.06);color:#4a4a4a;border:1px solid rgba(0,0,0,.1);}
+    .kpi-val{font-size:36px;font-weight:950;letter-spacing:-1px;margin:8px 0 4px;}
+    .score-bar-wrap{height:10px;background:#eee;border-radius:999px;margin:14px 0 6px;overflow:hidden;}
+    .score-bar{height:100%;border-radius:999px;transition:width .8s cubic-bezier(.16,1,.3,1);}
+    .score-detail-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .score-detail-label{font-size:12px;font-weight:800;color:#4a3a18;min-width:120px;}
+    .score-detail-bar-wrap{flex:1;height:8px;background:#eee;border-radius:999px;overflow:hidden;}
+    .score-detail-bar{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand),var(--brand2));}
+    .score-detail-pts{font-size:12px;font-weight:950;color:var(--brand);min-width:36px;text-align:right;}
+    .sim-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
+    .sim-row label{font-size:13px;font-weight:800;color:#4a3a18;min-width:200px;}
+    .sim-row input{width:90px;}
+    .sim-result{background:linear-gradient(135deg,rgba(180,140,74,.12),rgba(180,140,74,.06));
+      border:1px solid rgba(180,140,74,.25);border-radius:14px;padding:18px;margin-top:14px;text-align:center;}
+    .sim-note{font-size:42px;font-weight:950;letter-spacing:-1.5px;color:var(--brand);}
+    .sim-note-label{font-size:13px;color:var(--muted);margin-bottom:4px;}
+    .radar-wrap{position:relative;max-width:420px;margin:0 auto;}
+    .review-card{border:1px solid var(--line);border-radius:14px;padding:14px;
+      margin-bottom:10px;background:#fafaf8;}
+    .review-card-header{display:flex;gap:10px;align-items:flex-start;
+      justify-content:space-between;margin-bottom:8px;}
+    .review-stars{color:#f59e0b;font-size:16px;}
+    .review-remove{background:none;border:none;color:var(--muted);cursor:pointer;
+      font-size:18px;padding:2px 6px;border-radius:6px;}
+    .review-remove:hover{background:rgba(217,48,37,.1);color:var(--red);}
+    .impact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px;}
+    @media(max-width:600px){.impact-grid{grid-template-columns:1fr;}}
+    .impact-card{background:linear-gradient(135deg,rgba(180,140,74,.1),rgba(180,140,74,.04));
+      border:1px solid rgba(180,140,74,.2);border-radius:14px;padding:16px;text-align:center;}
+    .impact-icon{font-size:28px;margin-bottom:6px;}
+    .impact-val{font-size:26px;font-weight:950;color:var(--brand);letter-spacing:-1px;}
+    .impact-label{font-size:12px;color:var(--muted);font-weight:800;margin-top:4px;}
+    .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);
+      border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);
+      background:#1a1a1a;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;
+      font-weight:700;z-index:9999;transition:transform .3s ease;max-width:340px;text-align:center;}
+    .toast.show{transform:translateX(-50%) translateY(0);}
+    .section-title{font-size:15px;font-weight:950;color:#2a2a2a;margin:0 0 14px;
+      display:flex;align-items:center;gap:8px;}
+    .section-sub{font-size:13px;color:var(--muted);margin:-10px 0 14px;}
+    .conseil-box{background:rgba(37,99,235,.06);border:1px solid rgba(37,99,235,.15);
+      border-radius:12px;padding:12px 14px;margin-top:12px;}
+    .copy-btn{font-size:12px;padding:6px 12px;border-radius:8px;
+      background:rgba(180,140,74,.1);border:1px solid rgba(180,140,74,.2);
+      color:var(--brand);cursor:pointer;font-weight:900;float:right;margin-left:8px;}
+    .copy-btn:hover{background:rgba(180,140,74,.2);}
+    .analyse-list{list-style:none;padding:0;margin:0;}
+    .analyse-list li{padding:8px 12px;background:#fafaf8;border-radius:10px;
+      margin-bottom:6px;font-size:14px;border-left:3px solid var(--brand);}
+    .analyse-list li.weak{border-left-color:var(--red);}
+    .analyse-list li.issue{border-left-color:var(--orange);}
+    .empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+    .empty-state .icon{font-size:42px;display:block;margin-bottom:10px;}
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <span class="logo-badge">Fidelavis</span>
+    <div>
+      <h1>🤖 Assistant Réputation IA</h1>
+      <div class="header-sub">Gérez votre e-réputation avec l'intelligence artificielle Claude</div>
+    </div>
+  </div>
+  <a href="./espace-admin.html" style="font-size:13px;color:var(--muted);font-weight:800;text-decoration:none;">← Dashboard</a>
+</header>
+
+<div class="config-bar">
+  <div class="cf-group">
+    <label>🔗 URL Proxy Google Apps Script</label>
+    <input type="text" id="proxyUrl" placeholder="https://script.google.com/macros/s/AKfycb…/exec" />
+  </div>
+  <div class="cf-group">
+    <label>🏪 Nom du restaurant</label>
+    <input type="text" id="restoName" placeholder="Ex : Le Voltaire" value="Le Voltaire" />
+  </div>
+  <div class="cf-group">
+    <label>📱 Lien PWA fidélité</label>
+    <input type="text" id="pwaLink" placeholder="https://voltaire.fidelavis.com/voltaire/" />
+  </div>
+  <div class="cf-group" style="display:flex;align-items:flex-end;">
+    <button class="btn btn-ghost" onclick="saveConfig()">💾 Sauvegarder</button>
+  </div>
+</div>
+
+<nav class="tabs-nav">
+  <button class="tab-btn active" data-tab="reply">🤖 Réponse IA</button>
+  <button class="tab-btn" data-tab="analyse">📊 Analyse des avis</button>
+  <button class="tab-btn" data-tab="radar">🎯 Radar Concurrents</button>
+  <button class="tab-btn" data-tab="score">⭐ Score Réputation</button>
+  <button class="tab-btn" data-tab="simulator">📈 Simulateur</button>
+</nav>
+
+<!-- TAB 1 — RÉPONSE IA -->
+<div class="tab-panel active" id="tab-reply">
+  <div class="grid">
+    <div class="card col-6">
+      <div class="section-title">✍️ Générateur de réponse</div>
+      <p class="section-sub">Collez un avis client et obtenez une réponse personnalisée par Claude IA</p>
+      <div class="form-group">
+        <label>Plateforme</label>
+        <div class="platform-row">
+          <div class="platform-opt">
+            <input type="radio" name="platform" id="p-google" value="google" checked>
+            <label for="p-google">🔵 Google Reviews</label>
+          </div>
+          <div class="platform-opt">
+            <input type="radio" name="platform" id="p-tripadvisor" value="tripadvisor">
+            <label for="p-tripadvisor">🟢 TripAdvisor</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Note client</label>
+        <div class="star-row">
+          <div class="star-opt"><input type="radio" name="rating" id="r1" value="1"><label for="r1">⭐</label></div>
+          <div class="star-opt"><input type="radio" name="rating" id="r2" value="2"><label for="r2">⭐⭐</label></div>
+          <div class="star-opt"><input type="radio" name="rating" id="r3" value="3"><label for="r3">⭐⭐⭐</label></div>
+          <div class="star-opt"><input type="radio" name="rating" id="r4" value="4"><label for="r4">⭐⭐⭐⭐</label></div>
+          <div class="star-opt"><input type="radio" name="rating" id="r5" value="5" checked><label for="r5">⭐⭐⭐⭐⭐</label></div>
+          <span id="ratingDisplay" style="font-size:14px;font-weight:900;color:var(--brand);margin-left:4px;">5/5</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Texte de l'avis</label>
+        <textarea id="reviewText" rows="5" placeholder="Collez ici l'avis Google ou TripAdvisor du client…"></textarea>
+      </div>
+      <button class="btn btn-primary" id="generateBtn" onclick="generateResponse()">
+        <span id="generateSpinner" style="display:none" class="spinner"></span>
+        🤖 Générer la réponse IA
+      </button>
+    </div>
+
+    <div class="card col-6">
+      <div class="section-title">💬 Réponse générée</div>
+      <div id="replyEmpty" class="empty-state">
+        <span class="icon">🤖</span>
+        Remplissez le formulaire et cliquez sur<br><strong>Générer la réponse IA</strong>
+      </div>
+      <div id="replyResult" style="display:none">
+        <div id="analyseChips" class="analyse-chips"></div>
+        <div class="result-box">
+          <div class="result-section">
+            <div class="result-label">
+              Réponse publique conseillée
+              <button class="copy-btn" onclick="copyText('publicResponse')">📋 Copier</button>
+            </div>
+            <div class="result-text response" id="publicResponse"></div>
+          </div>
+          <div class="result-section">
+            <div class="result-label">
+              Version diplomatique alternative
+              <button class="copy-btn" onclick="copyText('diplomaticResponse')">📋 Copier</button>
+            </div>
+            <div class="result-text" id="diplomaticResponse"></div>
+          </div>
+        </div>
+        <div class="conseil-box">
+          <div class="result-label" style="color:#1240a0;">🔒 Conseil interne (non publié)</div>
+          <div class="result-text" id="internalAdvice" style="font-size:13px;color:#2a3a6a;"></div>
+        </div>
+      </div>
+      <div id="replyError" style="display:none;color:var(--red);padding:14px;font-size:14px;
+        border-radius:12px;background:rgba(217,48,37,.06);border:1px solid rgba(217,48,37,.15);margin-top:12px;"></div>
+    </div>
+
+    <div class="card col-12">
+      <div class="section-title">📖 Guide des réponses par note</div>
+      <div class="grid" style="margin:0;">
+        <div class="card col-3" style="background:rgba(26,158,92,.04);border-color:rgba(26,158,92,.15);">
+          <div style="font-size:20px;margin-bottom:6px;">⭐⭐⭐⭐⭐</div>
+          <div style="font-size:13px;font-weight:900;color:#0f6b3d;margin-bottom:4px;">5 étoiles</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Remerciement chaleureux · Valorisation de l'expérience · Invitation à revenir + lien PWA fidélité</div>
+        </div>
+        <div class="card col-3" style="background:rgba(26,158,92,.04);border-color:rgba(26,158,92,.15);">
+          <div style="font-size:20px;margin-bottom:6px;">⭐⭐⭐⭐</div>
+          <div style="font-size:13px;font-weight:900;color:#0f6b3d;margin-bottom:4px;">4 étoiles</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Remerciement sincère · Encouragement · Note la remarque positive + lien PWA fidélité</div>
+        </div>
+        <div class="card col-3" style="background:rgba(230,126,34,.04);border-color:rgba(230,126,34,.15);">
+          <div style="font-size:20px;margin-bottom:6px;">⭐⭐⭐</div>
+          <div style="font-size:13px;font-weight:900;color:#944d00;margin-bottom:4px;">3 étoiles</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Reconnaissance de la remarque · Empathie · Invitation à revenir</div>
+        </div>
+        <div class="card col-3" style="background:rgba(217,48,37,.04);border-color:rgba(217,48,37,.15);">
+          <div style="font-size:20px;margin-bottom:6px;">⭐⭐</div>
+          <div style="font-size:13px;font-weight:900;color:#a01010;margin-bottom:4px;">1–2 étoiles</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5;">Apaisement · Excuses sincères · Proposition d'échange · Pas de lien PWA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2 — ANALYSE DES AVIS -->
+<div class="tab-panel" id="tab-analyse">
+  <div class="grid">
+    <div class="card col-6">
+      <div class="section-title">📝 Ajouter des avis à analyser</div>
+      <p class="section-sub">Entrez plusieurs avis pour une analyse globale par Claude IA</p>
+      <div class="form-group">
+        <label>Texte de l'avis</label>
+        <textarea id="newReviewText" rows="4" placeholder="Collez un avis client ici…"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="form-group" style="flex:1;margin:0;">
+          <label>Note</label>
+          <select class="form-ctrl" id="newReviewRating">
+            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+            <option value="4">⭐⭐⭐⭐ (4/5)</option>
+            <option value="3">⭐⭐⭐ (3/5)</option>
+            <option value="2">⭐⭐ (2/5)</option>
+            <option value="1">⭐ (1/5)</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex:1;margin:0;">
+          <label>Plateforme</label>
+          <select class="form-ctrl" id="newReviewPlatform">
+            <option value="google">Google Reviews</option>
+            <option value="tripadvisor">TripAdvisor</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-secondary" onclick="addReview()" style="margin-top:8px;">➕ Ajouter l'avis</button>
+    </div>
+    <div class="card col-6">
+      <div class="section-title">📋 Avis en attente <span id="reviewCount" style="font-size:13px;color:var(--muted);font-weight:800;">(0)</span></div>
+      <div id="reviewList">
+        <div class="empty-state" style="padding:20px;"><span class="icon">📝</span>Ajoutez des avis pour les analyser</div>
+      </div>
+      <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeReviews()" style="margin-top:14px;width:100%;" disabled>
+        <span id="analyzeSpinner" style="display:none" class="spinner"></span>
+        📊 Analyser avec Claude IA
+      </button>
+    </div>
+    <div class="card col-12" id="analyseResultCard" style="display:none;">
+      <div class="section-title">🔍 Résultats de l'analyse IA</div>
+      <div class="grid" style="margin:0;">
+        <div class="card col-4" style="background:rgba(26,158,92,.04);">
+          <div class="section-title" style="font-size:13px;color:#0f6b3d;">✅ Points forts</div>
+          <ul class="analyse-list" id="pointsForts"></ul>
+        </div>
+        <div class="card col-4" style="background:rgba(217,48,37,.04);">
+          <div class="section-title" style="font-size:13px;color:#a01010;">⚠️ Points faibles</div>
+          <ul class="analyse-list" id="pointsFaibles"></ul>
+        </div>
+        <div class="card col-4" style="background:rgba(230,126,34,.04);">
+          <div class="section-title" style="font-size:13px;color:#944d00;">🔁 Problèmes récurrents</div>
+          <ul class="analyse-list" id="problemesRecurrents"></ul>
+        </div>
+        <div class="card col-12">
+          <div class="section-title">📌 Résumé & Recommandations</div>
+          <div id="analyseResume" style="font-size:14px;line-height:1.7;color:#2a2a2a;margin-bottom:14px;"></div>
+          <div id="recommandations"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3 — RADAR CONCURRENTS -->
+<div class="tab-panel" id="tab-radar">
+  <div class="grid">
+    <div class="card col-6">
+      <div class="section-title">🎯 Configuration du radar</div>
+      <p class="section-sub">Évaluez votre restaurant face à vos concurrents locaux</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div>
+          <div style="font-size:13px;font-weight:900;color:#4a3a18;margin-bottom:10px;">📍 Votre restaurant</div>
+          <div class="form-group"><label>🍽️ Cuisine (1-10)</label><input type="number" id="myCuisine" min="1" max="10" value="8" /></div>
+          <div class="form-group"><label>🙋 Service (1-10)</label><input type="number" id="myService" min="1" max="10" value="7" /></div>
+          <div class="form-group"><label>✨ Ambiance (1-10)</label><input type="number" id="myAmbiance" min="1" max="10" value="8" /></div>
+          <div class="form-group"><label>💰 Qualité/Prix (1-10)</label><input type="number" id="myPrix" min="1" max="10" value="7" /></div>
+          <div class="form-group"><label>⏱️ Attente (1-10)</label><input type="number" id="myAttente" min="1" max="10" value="6" /></div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:900;color:var(--muted);margin-bottom:10px;">🏢 Concurrent moyen zone</div>
+          <div class="form-group"><label>🍽️ Cuisine (1-10)</label><input type="number" id="compCuisine" min="1" max="10" value="7" /></div>
+          <div class="form-group"><label>🙋 Service (1-10)</label><input type="number" id="compService" min="1" max="10" value="7" /></div>
+          <div class="form-group"><label>✨ Ambiance (1-10)</label><input type="number" id="compAmbiance" min="1" max="10" value="6" /></div>
+          <div class="form-group"><label>💰 Qualité/Prix (1-10)</label><input type="number" id="compPrix" min="1" max="10" value="8" /></div>
+          <div class="form-group"><label>⏱️ Attente (1-10)</label><input type="number" id="compAttente" min="1" max="10" value="7" /></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="updateRadar()" style="width:100%;">🎯 Mettre à jour le radar</button>
+    </div>
+    <div class="card col-6">
+      <div class="section-title">📊 Radar de performance</div>
+      <div class="radar-wrap"><canvas id="radarChart" height="350"></canvas></div>
+      <div id="radarInsights" style="margin-top:14px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4 — SCORE RÉPUTATION -->
+<div class="tab-panel" id="tab-score">
+  <div class="grid">
+    <div class="card col-6">
+      <div class="section-title">⚙️ Paramètres de votre réputation</div>
+      <div class="form-group"><label>Note moyenne actuelle (/5)</label><input type="number" id="avgRating" min="1" max="5" step="0.1" value="4.2" /></div>
+      <div class="form-group"><label>Nombre total d'avis</label><input type="number" id="totalReviews" min="0" value="87" /></div>
+      <div class="form-group">
+        <label>Tendance récente</label>
+        <select class="form-ctrl" id="recentTrend">
+          <option value="hausse">📈 En hausse</option>
+          <option value="stable" selected>➡️ Stable</option>
+          <option value="baisse">📉 En baisse</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Taux de réponse aux avis (%)</label><input type="number" id="responseRate" min="0" max="100" value="65" /></div>
+      <div class="form-group">
+        <label>Sentiment global perçu</label>
+        <select class="form-ctrl" id="sentimentGlobal">
+          <option value="positif" selected>😊 Positif</option>
+          <option value="neutre">😐 Neutre</option>
+          <option value="negatif">😞 Négatif</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="computeScore()" style="width:100%;">⭐ Calculer le score</button>
+    </div>
+    <div class="card col-6">
+      <div class="section-title">🏆 Score de Réputation IA</div>
+      <div id="scoreEmpty" class="empty-state"><span class="icon">⭐</span>Configurez et calculez votre score</div>
+      <div id="scoreResult" style="display:none;">
+        <div style="text-align:center;padding:14px 0 20px;">
+          <div style="font-size:13px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Score Global</div>
+          <div id="scoreValue" class="kpi-val" style="font-size:64px;color:var(--brand);">—</div>
+          <div style="font-size:15px;color:#2a2a2a;font-weight:900;">/100</div>
+          <div id="scoreNiveau" class="chip chip-green" style="margin:10px auto 0;display:inline-flex;">—</div>
+        </div>
+        <div class="score-bar-wrap"><div class="score-bar" id="scoreBarFill" style="width:0%;background:linear-gradient(90deg,var(--brand),var(--brand2));"></div></div>
+        <div style="display:flex;gap:12px;margin:14px 0;justify-content:center;flex-wrap:wrap;">
+          <div class="chip chip-gray" id="scoreTendance">—</div>
+          <div class="chip" id="scoreRisque">—</div>
+        </div>
+        <div style="margin-top:14px;">
+          <div style="font-size:12px;font-weight:950;color:#4a3a18;margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px;">Détail des points</div>
+          <div class="score-detail-row"><span class="score-detail-label">⭐ Note moyenne</span><div class="score-detail-bar-wrap"><div class="score-detail-bar" id="detailNote" style="width:0%;"></div></div><span class="score-detail-pts" id="ptsNote">0/35</span></div>
+          <div class="score-detail-row"><span class="score-detail-label">📊 Volume d'avis</span><div class="score-detail-bar-wrap"><div class="score-detail-bar" id="detailVolume" style="width:0%;"></div></div><span class="score-detail-pts" id="ptsVolume">0/20</span></div>
+          <div class="score-detail-row"><span class="score-detail-label">📈 Tendance</span><div class="score-detail-bar-wrap"><div class="score-detail-bar" id="detailTrend" style="width:0%;"></div></div><span class="score-detail-pts" id="ptsTrend">0/20</span></div>
+          <div class="score-detail-row"><span class="score-detail-label">💬 Réponse aux avis</span><div class="score-detail-bar-wrap"><div class="score-detail-bar" id="detailResp" style="width:0%;"></div></div><span class="score-detail-pts" id="ptsResp">0/15</span></div>
+          <div class="score-detail-row"><span class="score-detail-label">😊 Sentiment</span><div class="score-detail-bar-wrap"><div class="score-detail-bar" id="detailSentiment" style="width:0%;"></div></div><span class="score-detail-pts" id="ptsSentiment">0/10</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 5 — SIMULATEUR -->
+<div class="tab-panel" id="tab-simulator">
+  <div class="grid">
+    <div class="card col-6">
+      <div class="section-title">📈 Simulateur de note Google</div>
+      <p class="section-sub">Calculez l'impact de nouveaux avis sur votre note</p>
+      <div class="sim-row"><label>Note actuelle (/5)</label><input type="number" id="simCurrentRating" min="1" max="5" step="0.1" value="4.2" /></div>
+      <div class="sim-row"><label>Nombre d'avis actuels</label><input type="number" id="simCurrentCount" min="1" value="87" /></div>
+      <div class="sim-row"><label>Nouveaux avis 5⭐ à simuler</label><input type="number" id="simNew5" min="0" value="20" /></div>
+      <div class="sim-row"><label>Nouveaux avis 4⭐ à simuler</label><input type="number" id="simNew4" min="0" value="10" /></div>
+      <div class="sim-row"><label>Nouveaux avis 3⭐ à simuler</label><input type="number" id="simNew3" min="0" value="0" /></div>
+      <div class="sim-row"><label>Nouveaux avis 1–2⭐ à simuler</label><input type="number" id="simNewNeg" min="0" value="0" /></div>
+      <button class="btn btn-primary" onclick="runSimulator()" style="margin-top:14px;width:100%;">📊 Simuler l'impact</button>
+      <div id="simResult" style="display:none;">
+        <div class="sim-result">
+          <div class="sim-note-label">Note actuelle</div>
+          <div class="sim-note" id="simBefore">4.20 ⭐</div>
+          <div style="font-size:28px;margin:8px 0;">↓</div>
+          <div class="sim-note-label">Nouvelle note estimée</div>
+          <div class="sim-note" id="simAfter" style="color:var(--green);">4.48 ⭐</div>
+          <div style="margin-top:10px;font-size:14px;color:var(--muted);">
+            <span id="simDelta" style="font-weight:950;"></span> sur <span id="simTotal"></span> avis au total
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card col-6">
+      <div class="section-title">💰 Impact sur votre activité</div>
+      <p class="section-sub">Projetez le gain business d'une amélioration de note</p>
+      <div class="sim-row"><label>Clients actuels / mois</label><input type="number" id="impactClients" min="1" value="300" /></div>
+      <div class="sim-row"><label>Panier moyen (€)</label><input type="number" id="impactPanier" min="1" value="28" /></div>
+      <div class="sim-row"><label>Note objectif (/5)</label><input type="number" id="impactTargetRating" min="1" max="5" step="0.1" value="4.5" /></div>
+      <button class="btn btn-secondary" onclick="runImpact()" style="margin-top:14px;width:100%;">💡 Calculer l'impact</button>
+      <div id="impactResult" style="display:none;">
+        <div class="impact-grid">
+          <div class="impact-card"><div class="impact-icon">⭐</div><div class="impact-val" id="impactRatingGain">—</div><div class="impact-label">Gain de note</div></div>
+          <div class="impact-card"><div class="impact-icon">👥</div><div class="impact-val" id="impactClientsGain">—</div><div class="impact-label">Clients supplémentaires / mois</div></div>
+          <div class="impact-card"><div class="impact-icon">💶</div><div class="impact-val" id="impactCAGain">—</div><div class="impact-label">CA supplémentaire / mois</div></div>
+        </div>
+        <div style="margin-top:14px;padding:12px 14px;background:rgba(37,99,235,.06);border-radius:12px;font-size:13px;color:#1240a0;border:1px solid rgba(37,99,235,.15);line-height:1.6;">
+          💡 <strong>Comment y arriver ?</strong> Activez le pilotage automatique Fidelavis : scan NFC → détection satisfaction → invitation avis Google → réponse IA automatique.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var CLAUDE_PROXY_URL = localStorage.getItem("fv_proxy_url") || "";
+var RESTO_NAME       = localStorage.getItem("fv_resto_name") || "Le Voltaire";
+var PWA_LINK         = localStorage.getItem("fv_pwa_link")   || "";
+
+(function init() {
+  document.getElementById("proxyUrl").value  = CLAUDE_PROXY_URL;
+  document.getElementById("restoName").value = RESTO_NAME;
+  document.getElementById("pwaLink").value   = PWA_LINK;
+  setTimeout(function() { updateRadar(); localComputeScore(4.2, 87, "stable", 65, "positif"); }, 400);
+  document.querySelectorAll('input[name="rating"]').forEach(function(r) {
+    r.addEventListener("change", function() {
+      document.getElementById("ratingDisplay").textContent = r.value + "/5";
+    });
+  });
+})();
+
+function saveConfig() {
+  CLAUDE_PROXY_URL = document.getElementById("proxyUrl").value.trim();
+  RESTO_NAME       = document.getElementById("restoName").value.trim();
+  PWA_LINK         = document.getElementById("pwaLink").value.trim();
+  localStorage.setItem("fv_proxy_url",  CLAUDE_PROXY_URL);
+  localStorage.setItem("fv_resto_name", RESTO_NAME);
+  localStorage.setItem("fv_pwa_link",   PWA_LINK);
+  showToast("Configuration sauvegardée");
+}
+
+document.querySelectorAll(".tab-btn").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    document.querySelectorAll(".tab-btn").forEach(function(b) { b.classList.remove("active"); });
+    document.querySelectorAll(".tab-panel").forEach(function(p) { p.classList.remove("active"); });
+    btn.classList.add("active");
+    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+    if (btn.dataset.tab === "radar") setTimeout(updateRadar, 100);
+  });
+});
+
+function showToast(msg) {
+  var t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(function() { t.classList.remove("show"); }, 3000);
+}
+
+function copyText(id) {
+  var txt = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(txt).then(function() { showToast("Copié dans le presse-papier !"); });
+}
+
+async function callProxy(payload) {
+  var url = document.getElementById("proxyUrl").value.trim() || CLAUDE_PROXY_URL;
+  if (!url) throw new Error("URL du proxy non configurée. Renseignez l'URL Google Apps Script en haut de page.");
+  var res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error("Erreur HTTP " + res.status);
+  var json = await res.json();
+  if (json.error) throw new Error(json.error);
+  return json;
+}
+
+/* === FONCTION 1 : RÉPONSE IA === */
+async function generateResponse() {
+  var platform   = (document.querySelector('input[name="platform"]:checked') || {}).value || "google";
+  var rating     = parseInt((document.querySelector('input[name="rating"]:checked') || {}).value || "5");
+  var reviewText = document.getElementById("reviewText").value.trim();
+  var restoName  = document.getElementById("restoName").value.trim() || RESTO_NAME;
+  var pwaLink    = document.getElementById("pwaLink").value.trim() || PWA_LINK;
+
+  if (!reviewText) { showToast("Veuillez coller un avis avant de générer"); return; }
+
+  var btn = document.getElementById("generateBtn");
+  var spinner = document.getElementById("generateSpinner");
+  btn.disabled = true; spinner.style.display = "inline-block";
+  document.getElementById("replyEmpty").style.display = "none";
+  document.getElementById("replyResult").style.display = "none";
+  document.getElementById("replyError").style.display = "none";
+
+  try {
+    var data = await callProxy({ action:"generate_response", review:reviewText, platform, rating, restoName, pwaLink });
+
+    var analyse = data.analyse || {};
+    var chips = document.getElementById("analyseChips");
+    chips.innerHTML = "";
+    if (analyse.plateforme) chips.innerHTML += '<span class="chip chip-blue">🔵 ' + analyse.plateforme + '</span>';
+    if (analyse.type_avis) {
+      var cc = analyse.type_avis === "positif" ? "chip-green" : analyse.type_avis === "négatif" ? "chip-red" : "chip-orange";
+      chips.innerHTML += '<span class="chip ' + cc + '">' + analyse.type_avis + '</span>';
+    }
+    if (analyse.niveau_risque) {
+      var cr = analyse.niveau_risque === "faible" ? "chip-green" : analyse.niveau_risque === "élevé" ? "chip-red" : "chip-orange";
+      chips.innerHTML += '<span class="chip ' + cr + '">Risque ' + analyse.niveau_risque + '</span>';
+    }
+    if (analyse.intention_client) chips.innerHTML += '<span class="chip chip-gray">💭 ' + escHtml(analyse.intention_client) + '</span>';
+
+    document.getElementById("publicResponse").textContent     = data.reponse_publique     || data.raw_response || "—";
+    document.getElementById("diplomaticResponse").textContent = data.version_diplomatique  || "—";
+    document.getElementById("internalAdvice").textContent     = data.conseil_interne       || "—";
+    document.getElementById("replyResult").style.display = "block";
+
+  } catch (err) {
+    var errEl = document.getElementById("replyError");
+    errEl.style.display = "block";
+    errEl.textContent = "Erreur : " + err.message;
+    document.getElementById("replyEmpty").style.display = "block";
+  } finally {
+    btn.disabled = false; spinner.style.display = "none";
+  }
+}
+
+/* === FONCTION 4 : ANALYSE DES AVIS === */
+var reviewQueue = [];
+
+function addReview() {
+  var text     = document.getElementById("newReviewText").value.trim();
+  var rating   = parseInt(document.getElementById("newReviewRating").value);
+  var platform = document.getElementById("newReviewPlatform").value;
+  if (!text) { showToast("Saisissez un texte d'avis"); return; }
+  reviewQueue.push({ text, rating, platform });
+  document.getElementById("newReviewText").value = "";
+  renderReviewList();
+}
+
+function removeReview(idx) { reviewQueue.splice(idx, 1); renderReviewList(); }
+
+function renderReviewList() {
+  var list = document.getElementById("reviewList");
+  var count = document.getElementById("reviewCount");
+  var btn = document.getElementById("analyzeBtn");
+  count.textContent = "(" + reviewQueue.length + ")";
+  btn.disabled = reviewQueue.length === 0;
+  if (!reviewQueue.length) {
+    list.innerHTML = '<div class="empty-state" style="padding:20px;"><span class="icon">📝</span>Ajoutez des avis pour les analyser</div>';
+    return;
+  }
+  list.innerHTML = reviewQueue.map(function(r, i) {
+    return '<div class="review-card"><div class="review-card-header"><div><div class="review-stars">' +
+      "⭐".repeat(Math.max(1,Math.min(5,r.rating))) + ' <span style="font-size:12px;font-weight:900;color:var(--muted);">' +
+      r.rating + '/5 · ' + r.platform + '</span></div></div>' +
+      '<button class="review-remove" onclick="removeReview(' + i + ')">×</button></div>' +
+      '<div style="font-size:14px;color:#333;line-height:1.4;">' + escHtml(r.text.substring(0,120)) + (r.text.length > 120 ? '…' : '') + '</div></div>';
+  }).join("");
+}
+
+async function analyzeReviews() {
+  if (!reviewQueue.length) return;
+  var btn = document.getElementById("analyzeBtn");
+  var spinner = document.getElementById("analyzeSpinner");
+  btn.disabled = true; spinner.style.display = "inline-block";
+  try {
+    var restoName = document.getElementById("restoName").value.trim() || RESTO_NAME;
+    var data = await callProxy({ action:"analyze_reviews", reviews:reviewQueue, restoName });
+    renderList("pointsForts",        data.points_forts         || [], "");
+    renderList("pointsFaibles",      data.points_faibles       || [], "weak");
+    renderList("problemesRecurrents",data.problemes_recurrents || [], "issue");
+    document.getElementById("analyseResume").textContent = data.resume || "—";
+    var reco = document.getElementById("recommandations");
+    reco.innerHTML = (data.recommandations || []).map(function(r) {
+      return '<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;"><span style="color:var(--brand);font-size:16px;">→</span><span style="font-size:14px;line-height:1.5;">' + escHtml(r) + '</span></div>';
+    }).join("");
+    document.getElementById("analyseResultCard").style.display = "block";
+    showToast("Analyse terminée !");
+  } catch (err) {
+    showToast("Erreur : " + err.message);
+  } finally {
+    btn.disabled = false; spinner.style.display = "none";
+  }
+}
+
+function renderList(id, items, cls) {
+  document.getElementById(id).innerHTML = items.length
+    ? items.map(function(i) { return '<li class="' + cls + '">' + escHtml(i) + '</li>'; }).join("")
+    : '<li class="' + cls + '" style="color:var(--muted);">—</li>';
+}
+
+/* === FONCTION 5 : SCORE RÉPUTATION === */
+async function computeScore() {
+  var avgRating    = parseFloat(document.getElementById("avgRating").value)    || 4.0;
+  var totalReviews = parseInt(document.getElementById("totalReviews").value)   || 0;
+  var recentTrend  = document.getElementById("recentTrend").value;
+  var responseRate = parseFloat(document.getElementById("responseRate").value) || 0;
+  var sentiment    = document.getElementById("sentimentGlobal").value;
+  try {
+    var data = await callProxy({ action:"compute_score", avgRating, totalReviews, recentTrend, responseRate, sentiment });
+    applyScore(data);
+  } catch (err) {
+    localComputeScore(avgRating, totalReviews, recentTrend, responseRate, sentiment);
+  }
+}
+
+function applyScore(data) {
+  var score = data.score || 0;
+  document.getElementById("scoreValue").textContent   = score;
+  document.getElementById("scoreBarFill").style.width = score + "%";
+  var niv = document.getElementById("scoreNiveau");
+  niv.textContent = data.niveau || "—";
+  niv.className = "chip " + (score >= 80 ? "chip-green" : score >= 60 ? "chip-blue" : score >= 40 ? "chip-orange" : "chip-red");
+  document.getElementById("scoreTendance").textContent = data.tendance || "—";
+  var risq = document.getElementById("scoreRisque");
+  risq.textContent = "Risque " + (data.risque || "—");
+  risq.className = "chip " + (data.risque === "Faible" ? "chip-green" : data.risque === "Moyen" ? "chip-orange" : "chip-red");
+  var d = data.details || {};
+  setDetail("Note",     d.note     || 0, 35);
+  setDetail("Volume",   d.volume   || 0, 20);
+  setDetail("Trend",    d.trend    || 0, 20);
+  setDetail("Resp",     d.reponse  || 0, 15);
+  setDetail("Sentiment",d.sentiment|| 0, 10);
+  document.getElementById("scoreEmpty").style.display  = "none";
+  document.getElementById("scoreResult").style.display = "block";
+}
+
+function setDetail(name, pts, max) {
+  document.getElementById("detail" + name).style.width = (pts / max * 100) + "%";
+  document.getElementById("pts"    + name).textContent = pts + "/" + max;
+}
+
+function localComputeScore(avg, total, trend, respRate, sentiment) {
+  var sR = ((avg - 1) / 4) * 35;
+  var sV = Math.min(total / 200, 1) * 20;
+  var sT = trend === "hausse" ? 20 : trend === "stable" ? 12 : 0;
+  var sRp= (respRate / 100) * 15;
+  var sS = sentiment === "positif" ? 10 : sentiment === "neutre" ? 5 : 0;
+  var tot= Math.round(Math.max(0, Math.min(100, sR + sV + sT + sRp + sS)));
+  var niveau  = tot >= 80 ? "Excellent" : tot >= 60 ? "Bon" : tot >= 40 ? "Moyen" : "Faible";
+  var risque  = tot >= 70 ? "Faible"    : tot >= 50 ? "Moyen"   : "Élevé";
+  var tendance= trend === "hausse" ? "📈 En progression" : trend === "baisse" ? "📉 En recul" : "➡️ Stable";
+  applyScore({
+    score:tot, niveau, risque, tendance,
+    details:{ note:Math.round(sR), volume:Math.round(sV), trend:Math.round(sT), reponse:Math.round(sRp), sentiment:Math.round(sS) }
+  });
+}
+
+/* === FONCTION 6 : RADAR === */
+var radarChart = null;
+
+function updateRadar() {
+  var my  = ["myCuisine","myService","myAmbiance","myPrix","myAttente"].map(function(id) {
+    return parseFloat(document.getElementById(id).value) || 5;
+  });
+  var comp = ["compCuisine","compService","compAmbiance","compPrix","compAttente"].map(function(id) {
+    return parseFloat(document.getElementById(id).value) || 5;
+  });
+  var labels   = ["🍽️ Cuisine","🙋 Service","✨ Ambiance","💰 Prix","⏱️ Attente"];
+  var restoName = document.getElementById("restoName").value.trim() || "Mon restaurant";
+  var ctx = document.getElementById("radarChart").getContext("2d");
+  if (radarChart) radarChart.destroy();
+  radarChart = new Chart(ctx, {
+    type:"radar",
+    data:{
+      labels,
+      datasets:[
+        { label:restoName, data:my, backgroundColor:"rgba(180,140,74,.2)", borderColor:"#B48C4A",
+          borderWidth:2.5, pointBackgroundColor:"#B48C4A", pointRadius:5 },
+        { label:"Concurrents", data:comp, backgroundColor:"rgba(100,100,100,.1)", borderColor:"#999",
+          borderWidth:2, borderDash:[5,4], pointBackgroundColor:"#999", pointRadius:4 }
+      ]
+    },
+    options:{
+      responsive:true,
+      scales:{ r:{ min:0, max:10, ticks:{ stepSize:2, font:{size:10} },
+        grid:{ color:"rgba(0,0,0,.07)" }, pointLabels:{ font:{size:12,weight:"900"} } } },
+      plugins:{ legend:{ position:"bottom", labels:{ font:{size:12} } } }
+    }
+  });
+  var insights = [];
+  var names = ["Cuisine","Service","Ambiance","Prix","Attente"];
+  my.forEach(function(v, i) {
+    var diff = v - comp[i];
+    if (diff >= 1.5) insights.push('<span class="chip chip-green">✅ ' + names[i] + ' : +' + diff.toFixed(1) + ' vs concurrents</span>');
+    else if (diff <= -1.5) insights.push('<span class="chip chip-red">⚠️ ' + names[i] + ' : ' + diff.toFixed(1) + ' vs concurrents</span>');
+  });
+  document.getElementById("radarInsights").innerHTML = insights.length
+    ? '<div style="display:flex;gap:8px;flex-wrap:wrap;">' + insights.join("") + '</div>'
+    : '<div class="chip chip-gray">Performances proches des concurrents</div>';
+}
+
+/* === FONCTION 7 : SIMULATEUR NOTE === */
+function runSimulator() {
+  var cur  = parseFloat(document.getElementById("simCurrentRating").value) || 4.2;
+  var cnt  = parseInt(document.getElementById("simCurrentCount").value)    || 100;
+  var n5   = parseInt(document.getElementById("simNew5").value)   || 0;
+  var n4   = parseInt(document.getElementById("simNew4").value)   || 0;
+  var n3   = parseInt(document.getElementById("simNew3").value)   || 0;
+  var nNeg = parseInt(document.getElementById("simNewNeg").value) || 0;
+  var newPts  = n5 * 5 + n4 * 4 + n3 * 3 + nNeg * 1.5;
+  var newCnt  = n5 + n4 + n3 + nNeg;
+  var totPts  = cur * cnt + newPts;
+  var totCnt  = cnt + newCnt;
+  var newRat  = Math.min(5, totPts / totCnt);
+  var delta   = newRat - cur;
+  document.getElementById("simBefore").textContent = cur.toFixed(2) + " ⭐";
+  document.getElementById("simAfter").textContent  = newRat.toFixed(2) + " ⭐";
+  document.getElementById("simAfter").style.color  = delta >= 0 ? "var(--green)" : "var(--red)";
+  document.getElementById("simDelta").textContent  = (delta >= 0 ? "+" : "") + delta.toFixed(2) + " ⭐";
+  document.getElementById("simTotal").textContent  = totCnt + " avis";
+  document.getElementById("simResult").style.display = "block";
+}
+
+/* === FONCTION 8 : IMPACT CLIENTS === */
+function runImpact() {
+  var curRat = parseFloat(document.getElementById("simCurrentRating").value)  || 4.2;
+  var curCli = parseInt(document.getElementById("impactClients").value)        || 300;
+  var panier = parseFloat(document.getElementById("impactPanier").value)       || 28;
+  var target = parseFloat(document.getElementById("impactTargetRating").value) || 4.5;
+  var gain   = Math.max(0, target - curRat);
+  var boost  = gain * 0.12;
+  var cliGain= Math.round(curCli * boost);
+  var caGain = Math.round(cliGain * panier);
+  document.getElementById("impactRatingGain").textContent  = "+" + gain.toFixed(1) + " ⭐";
+  document.getElementById("impactClientsGain").textContent = "+" + cliGain;
+  document.getElementById("impactCAGain").textContent      = "+" + caGain + " €";
+  document.getElementById("impactResult").style.display    = "block";
+}
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, function(m) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+  });
+}
+</script>
+</body>
+</html>
