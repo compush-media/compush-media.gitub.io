@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Réputation Google</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ═══ VARIABLES ═══ */
+    :root {
+      --gold:       #B8924F;
+      --gold-dark:  #9E7A3E;
+      --gold-light: #F0E2C8;
+      --gold-pale:  #FAF6EF;
+      --bg:         #F0EAE1;
+      --white:      #FFFFFF;
+      --text:       #1A1A1A;
+      --muted:      #888888;
+      --border:     #E3D8CA;
+      --success:    #2A9B68;
+      --warning:    #C47C1A;
+      --danger:     #D03030;
+      --sidebar-w:  210px;
+      --header-h:   54px;
+      --radius:     12px;
+      --shadow:     0 1px 6px rgba(0,0,0,.07);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ═══ HEADER FULL WIDTH ═══ */
+    .app-header {
+      height: var(--header-h);
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: var(--shadow);
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: var(--gold);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: .3px;
+    }
+
+    .header-page-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-sync {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-sync:hover { border-color: var(--gold); color: var(--gold-dark); }
+
+    .user-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      color: var(--gold-dark);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--gold);
+    }
+
+    /* ═══ APP BODY ═══ */
+    .app-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ═══ SIDEBAR ═══ */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+      overflow-y: auto;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      font-family: 'Inter', sans-serif;
+      transition: background .15s, color .15s;
+      position: relative;
+    }
+
+    .nav-item:hover { background: var(--gold-pale); color: var(--text); }
+
+    .nav-item.active { color: var(--gold-dark); font-weight: 700; }
+
+    .nav-emoji { font-size: 17px; flex-shrink: 0; }
+
+    .nav-count {
+      margin-left: auto;
+      background: #E53935;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 1px 7px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* ═══ MAIN CONTENT ═══ */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 26px 28px;
+    }
+
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    /* ═══ SECTION TITLE ═══ */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+
+    .section-title .s-icon { font-size: 22px; }
+
+    /* ═══ CONNECT CARD ═══ */
+    .connect-card {
+      background: var(--gold-pale);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 24px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .connect-card h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .connect-card .connect-sub {
+      font-size: 13.5px;
+      color: var(--muted);
+      max-width: 500px;
+      margin: 0 auto 22px;
+      line-height: 1.6;
+    }
+
+    .connect-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .btn-google {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      padding: 11px 22px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: border-color .15s;
+    }
+    .btn-google:hover { border-color: var(--gold); }
+
+    .google-g {
+      width: 20px; height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 900;
+      color: #4285F4;
+    }
+
+    .connect-guide {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      color: var(--gold-dark);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .connect-guide:hover { text-decoration: underline; }
+
+    .connect-separator {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 20px auto;
+      max-width: 600px;
+    }
+
+    .connect-demo-hint {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .btn-demo {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-demo:hover { border-color: var(--gold); color: var(--gold-dark); }
+
+    /* ═══ STATUS BAR ═══ */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 16px;
+      padding: 10px 16px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 12.5px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+    }
+
+    .s-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .s-red    { background: var(--danger); }
+    .s-green  { background: var(--success); }
+    .s-orange { background: var(--warning); }
+    .s-gray   { background: #ccc; }
+
+    .stat-item-right { margin-left: auto; display: flex; align-items: center; gap: 5px; }
+
+    /* ═══ KPI GRID ═══ */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 13px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 18px 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-lbl {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .kpi-val {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .kpi-sub { font-size: 11.5px; color: var(--muted); }
+
+    /* ═══ CARD ═══ */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 22px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14.5px;
+      font-weight: 700;
+    }
+
+    .card-icon { font-size: 17px; }
+
+    /* ═══ AVIS LIST ═══ */
+    .avis-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .avis-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold-light);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 14px;
+      align-items: start;
+      box-shadow: var(--shadow);
+      transition: border-left-color .15s;
+    }
+
+    .avis-card:hover { border-left-color: var(--gold); }
+
+    .avis-avatar {
+      width: 42px; height: 42px;
+      background: #EBEBEB;
+      color: #555;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .avis-author { font-size: 14.5px; font-weight: 700; margin-bottom: 3px; }
+
+    .avis-stars { color: #F59E0B; font-size: 13px; }
+
+    .avis-meta { font-size: 11.5px; color: var(--muted); margin: 3px 0 8px; }
+
+    .avis-body { font-size: 13.5px; color: #444; line-height: 1.55; }
+
+    .avis-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    .avis-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* ═══ FILTER BAR ═══ */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .fpill {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all .15s;
+    }
+
+    .fpill:hover { border-color: var(--gold); color: var(--gold-dark); }
+
+    .fpill.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #fff;
+    }
+
+    .search-wrap {
+      margin-left: auto;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      padding: 7px 12px 7px 32px;
+      border-radius: 9px;
+      border: 1.5px solid var(--border);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      width: 200px;
+      background: var(--white);
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .search-input:focus { border-color: var(--gold); }
+
+    /* ═══ BADGES ═══ */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-pending  { color: #C47C1A; background: #FEF3C7; }
+    .badge-responded{ color: #065F46; background: #D1FAE5; }
+    .badge-ignored  { color: #6B7280; background: #F3F4F6; }
+    .badge-main     { color: var(--gold-dark); background: var(--gold-light); }
+
+    /* ═══ BUTTONS ═══ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+
+    .btn-primary { background: var(--gold); color: #fff; }
+    .btn-primary:hover { background: var(--gold-dark); }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold-dark); }
+
+    .btn-ghost { background: transparent; color: var(--muted); }
+    .btn-ghost:hover { color: var(--text); }
+
+    .btn-sm { padding: 6px 12px; font-size: 12.5px; }
+
+    /* ═══ PARAMS GRID ═══ */
+    .params-top-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+      align-items: start;
+    }
+
+    .params-bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ═══ FORMS ═══ */
+    .form-group { margin-bottom: 14px; }
+    .form-group:last-child { margin-bottom: 0; }
+
+    .form-label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      font-size: 13.5px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); }
+    .form-textarea { resize: vertical; min-height: 70px; }
+
+    .btn-save-full {
+      width: 100%;
+      padding: 11px;
+      background: var(--gold);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background .15s;
+    }
+    .btn-save-full:hover { background: var(--gold-dark); }
+
+    /* ═══ TOGGLE ═══ */
+    .toggle-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .toggle-info .toggle-label { font-size: 14px; font-weight: 600; }
+    .toggle-info .toggle-sub { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
+    .toggle {
+      position: relative;
+      width: 44px; height: 24px;
+      flex-shrink: 0;
+    }
+
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: #D1D5DB;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background .25s;
+    }
+
+    .toggle-track::before {
+      content: '';
+      position: absolute;
+      left: 3px; top: 3px;
+      width: 18px; height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform .25s;
+      box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    }
+
+    .toggle input:checked + .toggle-track { background: var(--gold); }
+    .toggle input:checked + .toggle-track::before { transform: translateX(20px); }
+
+    /* ═══ AUTO REPLY RULES ═══ */
+    .rules-section { margin-top: 14px; }
+
+    .rules-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--muted);
+      margin-bottom: 9px;
+    }
+
+    .rule-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .rule-stars { font-size: 12.5px; font-weight: 600; min-width: 72px; }
+
+    .rule-select {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 7px;
+      border: 1.5px solid var(--border);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      outline: none;
+    }
+    .rule-select:focus { border-color: var(--gold); }
+
+    /* ═══ FICHE ITEM ═══ */
+    .fiche-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 12px;
+      background: var(--gold-pale);
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      margin-bottom: 9px;
+    }
+
+    .fiche-pin { font-size: 20px; flex-shrink: 0; }
+    .fiche-name { font-weight: 700; font-size: 13.5px; display: flex; align-items: center; gap: 8px; }
+    .fiche-addr { font-size: 11.5px; color: var(--muted); }
+
+    /* ═══ HISTORY TABLE ═══ */
+    .table-wrap {
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    table { width: 100%; border-collapse: collapse; background: var(--white); }
+
+    thead tr { background: var(--gold-pale); }
+
+    th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--muted);
+    }
+
+    td { padding: 11px 16px; border-top: 1px solid var(--border); font-size: 13.5px; }
+
+    tr:hover td { background: var(--gold-pale); }
+
+    .hist-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .hist-icon {
+      width: 26px; height: 26px;
+      border-radius: 6px;
+      background: var(--gold-light);
+      color: var(--gold-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ═══ EMPTY STATE ═══ */
+    .empty-state {
+      text-align: center;
+      padding: 36px 20px;
+      color: var(--muted);
+    }
+
+    .empty-icon { font-size: 36px; display: block; margin-bottom: 8px; }
+
+    /* ═══ TOAST ═══ */
+    .toast {
+      position: fixed;
+      bottom: 22px; right: 22px;
+      background: var(--text);
+      color: #fff;
+      padding: 11px 18px;
+      border-radius: 9px;
+      font-size: 13.5px;
+      font-weight: 500;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity .25s, transform .25s;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ═══ SECTION HEADER ═══ */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 960px) {
+      .params-top-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      :root { --sidebar-w: 52px; }
+      .nav-emoji { margin: 0 auto; }
+      .nav-item span:not(.nav-emoji):not(.nav-count) { display: none; }
+      .nav-count { position: absolute; top: 4px; right: 4px; font-size: 9px; padding: 1px 4px; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .params-top-grid { grid-template-columns: 1fr; }
+      .params-bottom-grid { grid-template-columns: 1fr; }
+      .main { padding: 14px; }
+      .avis-card { grid-template-columns: 42px 1fr; }
+      .avis-right { display: none; }
+      .search-wrap { margin-left: 0; width: 100%; }
+      .search-input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="app-header">
+  <div class="header-left">
+    <span class="brand-badge">Fidelavis</span>
+    <span class="header-page-title" id="headerTitle">Réputation Google</span>
+  </div>
+  <div class="header-right">
+    <button class="btn-sync" onclick="App.sync()">↻ Synchroniser</button>
+    <div class="user-avatar" id="userAvatar">A</div>
+  </div>
+</header>
+
+<!-- ═══ BODY ═══ -->
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <button class="nav-item active" data-tab="dashboard">
+      <span class="nav-emoji">📊</span>
+      <span>Dashboard</span>
+    </button>
+    <button class="nav-item" data-tab="avis">
+      <span class="nav-emoji">⭐</span>
+      <span>Avis</span>
+      <span class="nav-count" id="pendingBadge" style="display:none">0</span>
+    </button>
+    <button class="nav-item" data-tab="parametres">
+      <span class="nav-emoji">⚙️</span>
+      <span>Paramètres</span>
+    </button>
+    <button class="nav-item" data-tab="historique">
+      <span class="nav-emoji">📋</span>
+      <span>Historique</span>
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ══════════ DASHBOARD ══════════ -->
+    <section id="tab-dashboard" class="tab-section active">
+
+      <!-- Connexion -->
+      <div id="connectBlock" class="connect-card">
+        <h2>Connectez votre fiche Google</h2>
+        <p class="connect-sub">
+          Reliez votre Google Business Profile pour importer vos avis et activer les réponses IA automatiques.
+        </p>
+        <div class="connect-btns">
+          <button class="btn-google" onclick="App.connectGoogle()">
+            <span class="google-g">G</span>
+            Connecter ma fiche Google
+          </button>
+          <a href="#" class="connect-guide">📖 Voir le guide de configuration →</a>
+        </div>
+        <hr class="connect-separator">
+        <p class="connect-demo-hint">
+          Pas encore de fiche Google ? Testez toutes les fonctionnalités avec des données fictives :
+        </p>
+        <button class="btn-demo" onclick="App.loadDemo()">
+          🔄 Charger des données de démo
+        </button>
+      </div>
+
+      <!-- Status bar -->
+      <div class="status-bar">
+        <div class="stat-item">
+          <span class="s-dot" id="dotGoogle"></span>
+          <span id="txtGoogle">Google non connecté</span>
+        </div>
+        <div class="stat-item">
+          <span class="s-dot" id="dotSync"></span>
+          <span id="txtSync">Sync : Jamais</span>
+        </div>
+        <div class="stat-item">
+          <span class="s-dot" id="dotAuto"></span>
+          <span id="txtAuto">Auto-réponse : Manuelle</span>
+        </div>
+        <div class="stat-item stat-item-right">
+          <span>📍</span>
+          <span id="txtEtab">—</span>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-lbl">Note moyenne</div>
+          <div class="kpi-val" id="kpiNote" style="color:var(--warning)">—</div>
+          <div class="kpi-sub" id="kpiSub">/ 5 étoiles</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-lbl">Total avis</div>
+          <div class="kpi-val" id="kpiTotal">—</div>
+          <div class="kpi-sub">importés</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-lbl">En attente</div>
+          <div class="kpi-val" id="kpiPending" style="color:var(--warning)">—</div>
+          <div class="kpi-sub">sans réponse</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-lbl">Répondus</div>
+          <div class="kpi-val" id="kpiResponded" style="color:var(--success)">—</div>
+          <div class="kpi-sub">réponses publiées</div>
+        </div>
+      </div>
+
+      <!-- Derniers avis -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-icon">🏆</span>
+            Derniers avis reçus
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="App.goTab('avis')">Voir tous →</button>
+        </div>
+        <div class="avis-list" id="lastAvisList">
+          <div class="empty-state">
+            <span class="empty-icon">💬</span>
+            Aucun avis disponible
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ══════════ AVIS ══════════ -->
+    <section id="tab-avis" class="tab-section">
+
+      <div class="section-title"><span class="s-icon">⭐</span> Avis Google</div>
+
+      <div class="filter-bar">
+        <button class="fpill active" data-filter="all"       onclick="App.setFilter(this)">Tous</button>
+        <button class="fpill"        data-filter="pending"   onclick="App.setFilter(this)">⏳ En attente</button>
+        <button class="fpill"        data-filter="responded" onclick="App.setFilter(this)">✅ Répondus</button>
+        <button class="fpill"        data-filter="5"         onclick="App.setFilter(this)">⭐⭐⭐⭐⭐</button>
+        <button class="fpill"        data-filter="critical"  onclick="App.setFilter(this)">⭐ Critiques</button>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="searchInput" placeholder="Rechercher..." oninput="App.renderAvis()">
+        </div>
+      </div>
+
+      <div class="avis-list" id="avisListFull">
+        <div class="empty-state">
+          <span class="empty-icon">💬</span>
+          Aucun avis disponible
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ══════════ PARAMÈTRES ══════════ -->
+    <section id="tab-parametres" class="tab-section">
+
+      <div class="section-title"><span class="s-icon">⚙️</span> Paramètres</div>
+
+      <!-- TOP ROW : 3 colonnes -->
+      <div class="params-top-grid">
+
+        <!-- Établissement -->
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title" style="margin-bottom:16px">
+            <span class="card-icon">🏠</span> Votre établissement
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nom du restaurant / commerce</label>
+            <input type="text" class="form-input" id="cfgRestaurant" placeholder="Ex : Le Voltaire">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Votre prénom / nom (gérant)</label>
+            <input type="text" class="form-input" id="cfgManager" placeholder="Ex : Jean Dupont">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Signature de réponse</label>
+            <input type="text" class="form-input" id="cfgSignature" placeholder="Ex : Jean et toute l'équipe">
+          </div>
+        </div>
+
+        <!-- Personnalisation IA -->
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title" style="margin-bottom:16px">
+            <span class="card-icon">🤖</span> Personnalisation IA
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ton de réponse</label>
+            <select class="form-select" id="cfgTone">
+              <option value="chaleureux">😊 Chaleureux (recommandé pour les restaurants)</option>
+              <option value="professionnel">👔 Professionnel et formel</option>
+              <option value="decontracte">😎 Décontracté et amical</option>
+              <option value="elegant">✨ Élégant et raffiné</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phrase d'invitation à revenir</label>
+            <input type="text" class="form-input" id="cfgInviteBack" placeholder="Au plaisir de vous revoir !">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phrase de contact (avis négatifs)</label>
+            <input type="text" class="form-input" id="cfgNegContact" placeholder="N'hésitez pas à nous contacter au…">
+          </div>
+          <button class="btn-save-full" onclick="App.saveSettings()">
+            🤖 Enregistrer
+          </button>
+        </div>
+
+        <!-- Auto-réponse -->
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title" style="margin-bottom:16px">
+            <span class="card-icon">⚡</span> Auto-réponse
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-label">Activer l'auto-réponse</div>
+              <div class="toggle-sub">Traitement automatique selon les règles ci-dessous</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="cfgAutoReply" onchange="App.toggleAutoReply()">
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="rules-section">
+            <div class="rules-label">Règles par note</div>
+            <div class="rule-row">
+              <div class="rule-stars">⭐⭐⭐⭐⭐ 5★</div>
+              <select class="rule-select" id="rule5">
+                <option value="auto">Publication automatique</option>
+                <option value="validate">À valider</option>
+                <option value="manual">Validation obligatoire</option>
+              </select>
+            </div>
+            <div class="rule-row">
+              <div class="rule-stars">⭐⭐⭐⭐ 4★</div>
+              <select class="rule-select" id="rule4">
+                <option value="validate">À valider</option>
+                <option value="auto">Publication automatique</option>
+                <option value="manual">Validation obligatoire</option>
+              </select>
+            </div>
+            <div class="rule-row">
+              <div class="rule-stars">⭐⭐⭐ 3★</div>
+              <select class="rule-select" id="rule3">
+                <option value="validate">À valider</option>
+                <option value="auto">Publication automatique</option>
+                <option value="manual">Validation obligatoire</option>
+              </select>
+            </div>
+            <div class="rule-row">
+              <div class="rule-stars">⭐⭐ 2★</div>
+              <select class="rule-select" id="rule2">
+                <option value="manual">Validation obligatoire</option>
+                <option value="validate">À valider</option>
+                <option value="auto">Publication automatique</option>
+              </select>
+            </div>
+            <div class="rule-row">
+              <div class="rule-stars">⭐ 1★</div>
+              <select class="rule-select" id="rule1">
+                <option value="manual">Validation obligatoire</option>
+                <option value="validate">À valider</option>
+                <option value="auto">Publication automatique</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- BOTTOM ROW : 2 colonnes -->
+      <div class="params-bottom-grid" style="margin-top:16px">
+
+        <!-- Clés API -->
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title" style="margin-bottom:16px">
+            <span class="card-icon">🔑</span> Clés API
+          </div>
+          <div class="form-group">
+            <label class="form-label">Google Client ID (console.cloud.google.com)</label>
+            <input type="text" class="form-input" id="cfgGoogleClientId" placeholder="xxxxxxxxxx.apps.googleusercontent.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Google API Key</label>
+            <input type="password" class="form-input" id="cfgGoogleApiKey" placeholder="AIzaSy…">
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="App.saveApiKeys()">Sauvegarder les clés</button>
+        </div>
+
+        <!-- Fiches connectées -->
+        <div class="card" style="margin-bottom:0">
+          <div class="card-title" style="margin-bottom:16px">
+            <span class="card-icon">📍</span> Fiches Google connectées
+          </div>
+          <div id="fichesList"></div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="App.connectGoogle()">
+            + Ajouter une fiche
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ══════════ HISTORIQUE ══════════ -->
+    <section id="tab-historique" class="tab-section">
+
+      <div class="section-header">
+        <div class="section-title" style="margin-bottom:0">
+          <span class="s-icon">📋</span> Historique des actions
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="App.clearHistory()">🗑 Vider</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Entité</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr><td colspan="3"><div class="empty-state">Aucune action enregistrée</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+  </main>
+</div><!-- /app-body -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   DONNÉES DE DÉMO — Remplacer par vraie API Google
+══════════════════════════════════════════════════ */
+const DEMO_DATA = {
+  stats: {
+    avgRating:       3.6,
+    totalReviews:    8,
+    pending:         6,
+    responded:       2,
+    lastSync:        '11/03/2026 22:24',
+    autoReplyActive: false
+  },
+  avis: [
+    {
+      id: 1,
+      author: 'Sophie Martin', initials: 'S', rating: 5,
+      date: '11/03/2026 22:24', etablissement: 'Établissement principal',
+      text: "Excellente expérience ! Le service était impeccable et les plats délicieux. Je recommande vivement cet établissement à tous mes amis. On reviendra très bientôt !",
+      status: 'pending'
+    },
+    {
+      id: 2,
+      author: 'Jean-Pierre Dubois', initials: 'J', rating: 4,
+      date: '09/03/2026 22:24', etablissement: 'Établissement principal',
+      text: "Très bon restaurant, cuisine savoureuse et cadre agréable. Le service était rapide. Petit bémol sur le bruit ambiant mais rien de rédhibitoire.",
+      status: 'pending'
+    },
+    {
+      id: 3,
+      author: 'Marie Leclerc', initials: 'M', rating: 2,
+      date: '07/03/2026 22:24', etablissement: 'Établissement principal',
+      text: "Déçue par ma visite. L'attente était trop longue (45 min) et mon plat est arrivé froid. Pour le prix, on s'attend à mieux.",
+      status: 'pending'
+    },
+    {
+      id: 4,
+      author: 'Pierre Durand', initials: 'P', rating: 5,
+      date: '05/03/2026', etablissement: 'Établissement principal',
+      text: 'Une expérience parfaite du début à la fin. La carte des vins est exceptionnelle.',
+      status: 'responded'
+    },
+    {
+      id: 5,
+      author: 'Camille Roux', initials: 'C', rating: 1,
+      date: '03/03/2026', etablissement: 'Établissement principal',
+      text: "Catastrophique. Erreur dans la commande et personnel désagréable. Je n'y retournerai pas.",
+      status: 'pending'
+    },
+    {
+      id: 6,
+      author: 'Nicolas F.', initials: 'N', rating: 5,
+      date: '01/03/2026', etablissement: 'Établissement principal',
+      text: "Superbe ! Idéal pour un dîner romantique. Très professionnel.",
+      status: 'responded'
+    }
+  ],
+  historique: [
+    { action: 'Connexion',               entite: 'admin',                  date: '12/03/2026 14:32', icon: '👤' },
+    { action: 'Synchronisation terminée', entite: 'Google My Business',    date: '12/03/2026 11:32', icon: '🔄' },
+    { action: 'Réponse IA générée',       entite: 'Avis #4 – Pierre D.',   date: '10/03/2026 09:15', icon: '🤖' },
+    { action: 'Réponse publiée',          entite: 'Avis #4 – Pierre D.',   date: '10/03/2026 09:18', icon: '📤' },
+    { action: 'Paramètres modifiés',      entite: 'IA – Ton de réponse',   date: '08/03/2026 16:22', icon: '⚙️' },
+    { action: 'Auto-réponse désactivée',  entite: 'Paramètres',            date: '07/03/2026 10:05', icon: '🔕' }
+  ]
+};
+
+/* ══════════════════════════════════════════════════
+   PERSISTANCE — isolée par slug de restaurant
+══════════════════════════════════════════════════ */
+const SLUG = (() => {
+  const p = window.location.pathname.split('/');
+  return p[1] || 'resto1';
+})();
+
+const LS = {
+  key: k => `rep_${SLUG}_${k}`,
+  get: (k, def = null) => {
+    try { const v = localStorage.getItem(LS.key(k)); return v !== null ? JSON.parse(v) : def; }
+    catch { return def; }
+  },
+  set: (k, v) => { try { localStorage.setItem(LS.key(k), JSON.stringify(v)); } catch {} },
+  del: k => { try { localStorage.removeItem(LS.key(k)); } catch {} }
+};
+
+/* ══════════════════════════════════════════════════
+   ÉTAT
+══════════════════════════════════════════════════ */
+const STATE = {
+  demoMode:     false,
+  activeFilter: 'all',
+  settings:     null,
+  avis:         []
+};
+
+/* ══════════════════════════════════════════════════
+   APP
+══════════════════════════════════════════════════ */
+const App = {
+
+  init() {
+    STATE.settings = LS.get('settings', {
+      restaurant:     'Resto 1',
+      manager:        '',
+      signature:      "L'équipe",
+      tone:           'chaleureux',
+      inviteBack:     'Au plaisir de vous revoir très prochainement !',
+      negContact:     '',
+      autoReply:      false,
+      rules:          { 1: 'manual', 2: 'manual', 3: 'validate', 4: 'validate', 5: 'auto' },
+      googleClientId: '',
+      googleApiKey:   ''
+    });
+
+    STATE.demoMode = LS.get('demoMode', false);
+    STATE.avis     = LS.get('avis', null);
+
+    // Avatar initiale
+    const name = STATE.settings.restaurant || SLUG;
+    document.getElementById('userAvatar').textContent = name[0].toUpperCase();
+
+    // Formulaire paramètres
+    this._loadSettingsForm();
+
+    // Rendu initial
+    this._renderDashboard();
+    this._renderAvisTab();
+    this._renderHistory();
+    this._renderFiches();
+    this._updatePendingBadge();
+
+    // Navigation
+    document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => this.goTab(btn.dataset.tab));
+    });
+
+    // Log
+    this._addHistory('Connexion', 'admin', '👤');
+  },
+
+  /* ── Navigation ── */
+  goTab(tab) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelector(`.nav-item[data-tab="${tab}"]`)?.classList.add('active');
+    document.getElementById(`tab-${tab}`)?.classList.add('active');
+  },
+
+  /* ── Dashboard ── */
+  _renderDashboard() {
+    const on = STATE.demoMode;
+    const s  = on ? DEMO_DATA.stats : null;
+
+    document.getElementById('connectBlock').style.display = on ? 'none' : '';
+
+    // Statuts
+    const dotG = document.getElementById('dotGoogle');
+    const dotS = document.getElementById('dotSync');
+    const dotA = document.getElementById('dotAuto');
+
+    dotG.className = 's-dot ' + (on ? 's-green' : 's-red');
+    document.getElementById('txtGoogle').textContent = on ? 'Google connecté' : 'Google non connecté';
+
+    dotS.className = 's-dot s-green';
+    document.getElementById('txtSync').textContent = 'Sync : ' + (s ? s.lastSync : 'Jamais');
+
+    const autoOn = STATE.settings.autoReply || false;
+    dotA.className = 's-dot ' + (autoOn ? 's-green' : 's-orange');
+    document.getElementById('txtAuto').textContent = 'Auto-réponse : ' + (autoOn ? 'Active' : 'Manuelle');
+
+    document.getElementById('txtEtab').textContent = STATE.settings.restaurant || SLUG;
+
+    // KPI
+    if (s) {
+      document.getElementById('kpiNote').textContent      = s.avgRating.toFixed(1);
+      document.getElementById('kpiTotal').textContent     = s.totalReviews;
+      document.getElementById('kpiPending').textContent   = s.pending;
+      document.getElementById('kpiResponded').textContent = s.responded;
+    } else {
+      ['kpiNote','kpiTotal','kpiPending','kpiResponded'].forEach(id => {
+        document.getElementById(id).textContent = '—';
+      });
+    }
+
+    // Derniers avis
+    const avis = this._getAvis();
+    const c    = document.getElementById('lastAvisList');
+    if (!avis.length) {
+      c.innerHTML = `<div class="empty-state"><span class="empty-icon">💬</span>Aucun avis disponible</div>`;
+    } else {
+      c.innerHTML = avis.slice(0, 3).map(a => this._avisCardHTML(a, true)).join('');
+    }
+  },
+
+  /* ── Avis ── */
+  _getAvis() {
+    if (STATE.demoMode) return DEMO_DATA.avis;
+    return STATE.avis || [];
+  },
+
+  _renderAvisTab() {
+    const filter = STATE.activeFilter;
+    const q      = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+
+    let list = this._getAvis().filter(a => {
+      if (filter === 'pending')   return a.status === 'pending';
+      if (filter === 'responded') return a.status === 'responded';
+      if (filter === '5')         return a.rating === 5;
+      if (filter === 'critical')  return a.rating <= 2;
+      return true;
+    });
+
+    if (q) list = list.filter(a =>
+      a.author.toLowerCase().includes(q) || a.text.toLowerCase().includes(q)
+    );
+
+    const c = document.getElementById('avisListFull');
+    if (!list.length) {
+      c.innerHTML = `<div class="empty-state"><span class="empty-icon">💬</span>Aucun avis pour ce filtre</div>`;
+    } else {
+      c.innerHTML = list.map(a => this._avisCardHTML(a, false)).join('');
+    }
+  },
+
+  renderAvis() { this._renderAvisTab(); },
+
+  setFilter(btn) {
+    document.querySelectorAll('.fpill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    STATE.activeFilter = btn.dataset.filter;
+    this._renderAvisTab();
+  },
+
+  _stars(n) { return '★'.repeat(n) + '☆'.repeat(5 - n); },
+
+  _badge(status) {
+    return {
+      pending:   '<span class="badge badge-pending">En attente</span>',
+      responded: '<span class="badge badge-responded">Répondu</span>',
+      ignored:   '<span class="badge badge-ignored">Ignoré</span>'
+    }[status] || '';
+  },
+
+  _avisCardHTML(a, compact) {
+    const actions = compact ? '' : `
+      <div class="avis-actions">
+        <button class="btn btn-primary btn-sm" onclick="App.generateAI(${a.id})">
+          🤖 Générer réponse IA
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="App.ignoreAvis(${a.id})">Ignorer</button>
+      </div>`;
+
+    return `
+      <div class="avis-card" id="avis-${a.id}">
+        <div class="avis-avatar">${this._esc(a.initials)}</div>
+        <div>
+          <div class="avis-author">${this._esc(a.author)}</div>
+          <div class="avis-stars">${this._stars(a.rating)}</div>
+          <div class="avis-meta">${a.rating}/5 · ${a.date} · ${this._esc(a.etablissement)}</div>
+          <div class="avis-body">${this._esc(a.text)}</div>
+          ${actions}
+        </div>
+        <div class="avis-right">${this._badge(a.status)}</div>
+      </div>`;
+  },
+
+  _updatePendingBadge() {
+    const count = this._getAvis().filter(a => a.status === 'pending').length;
+    const el    = document.getElementById('pendingBadge');
+    if (count > 0) {
+      el.textContent    = count;
+      el.style.display  = '';
+    } else {
+      el.style.display  = 'none';
+    }
+  },
+
+  /* ── Actions avis ── */
+  generateAI(id) {
+    const a = this._getAvis().find(x => x.id === id);
+    if (!a) return;
+    this._addHistory('Réponse IA générée', `Avis #${id} – ${a.author}`, '🤖');
+    this.toast(`✓ Réponse IA générée pour ${a.author}`);
+    // Hook : window.generateGoogleReply(a, STATE.settings)
+  },
+
+  ignoreAvis(id) {
+    const list = this._getAvis();
+    const a    = list.find(x => x.id === id);
+    if (!a) return;
+    a.status = 'ignored';
+    if (!STATE.demoMode) LS.set('avis', STATE.avis);
+    this._renderAvisTab();
+    this._renderDashboard();
+    this._updatePendingBadge();
+    this.toast('Avis marqué comme ignoré');
+  },
+
+  /* ── Sync ── */
+  sync() {
+    const now  = new Date();
+    const date = now.toLocaleDateString('fr-FR') + ' ' +
+      now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+    if (STATE.demoMode) DEMO_DATA.stats.lastSync = date;
+    this._addHistory('Synchronisation terminée', 'Google My Business', '🔄');
+    this._renderDashboard();
+    this.toast('✓ Synchronisation effectuée');
+    // Hook : window.syncGoogleReviews()
+  },
+
+  /* ── Connexion Google ── */
+  connectGoogle() {
+    this.toast('Connexion Google en cours de configuration…');
+    // Hook : window.initGoogleAuth(STATE.settings.googleClientId)
+  },
+
+  /* ── Mode démo ── */
+  loadDemo() {
+    STATE.demoMode = true;
+    LS.set('demoMode', true);
+    this._addHistory('Mode démo activé', 'Système', '🔄');
+    this._renderDashboard();
+    this._renderAvisTab();
+    this._updatePendingBadge();
+    this.toast('✓ Données de démo chargées');
+  },
+
+  /* ── Paramètres ── */
+  _loadSettingsForm() {
+    const s = STATE.settings;
+    document.getElementById('cfgRestaurant').value      = s.restaurant    || '';
+    document.getElementById('cfgManager').value         = s.manager       || '';
+    document.getElementById('cfgSignature').value       = s.signature     || '';
+    document.getElementById('cfgTone').value            = s.tone          || 'chaleureux';
+    document.getElementById('cfgInviteBack').value      = s.inviteBack    || '';
+    document.getElementById('cfgNegContact').value      = s.negContact    || '';
+    document.getElementById('cfgAutoReply').checked     = s.autoReply     || false;
+    document.getElementById('cfgGoogleClientId').value  = s.googleClientId || '';
+    document.getElementById('cfgGoogleApiKey').value    = s.googleApiKey  || '';
+    const rules = s.rules || {};
+    for (let i = 1; i <= 5; i++) {
+      const el = document.getElementById(`rule${i}`);
+      if (el && rules[i]) el.value = rules[i];
+    }
+  },
+
+  saveSettings() {
+    const rules = {};
+    for (let i = 1; i <= 5; i++) {
+      rules[i] = document.getElementById(`rule${i}`)?.value || 'manual';
+    }
+    Object.assign(STATE.settings, {
+      restaurant:  document.getElementById('cfgRestaurant').value,
+      manager:     document.getElementById('cfgManager').value,
+      signature:   document.getElementById('cfgSignature').value,
+      tone:        document.getElementById('cfgTone').value,
+      inviteBack:  document.getElementById('cfgInviteBack').value,
+      negContact:  document.getElementById('cfgNegContact').value,
+      autoReply:   document.getElementById('cfgAutoReply').checked,
+      rules
+    });
+    LS.set('settings', STATE.settings);
+    document.getElementById('userAvatar').textContent = (STATE.settings.restaurant || SLUG)[0].toUpperCase();
+    this._addHistory('Paramètres modifiés', 'Configuration générale', '⚙️');
+    this._renderDashboard();
+    this.toast('✓ Paramètres enregistrés');
+  },
+
+  saveApiKeys() {
+    STATE.settings.googleClientId = document.getElementById('cfgGoogleClientId').value;
+    STATE.settings.googleApiKey   = document.getElementById('cfgGoogleApiKey').value;
+    LS.set('settings', STATE.settings);
+    this._addHistory('Clés API mises à jour', 'Google API', '🔑');
+    this.toast('✓ Clés API sauvegardées');
+  },
+
+  toggleAutoReply() {
+    const on = document.getElementById('cfgAutoReply').checked;
+    STATE.settings.autoReply = on;
+    LS.set('settings', STATE.settings);
+    this._addHistory(on ? 'Auto-réponse activée' : 'Auto-réponse désactivée', 'Paramètres', on ? '✅' : '🔕');
+    this._renderDashboard();
+    this.toast(on ? '✓ Auto-réponse activée' : 'Auto-réponse désactivée');
+  },
+
+  /* ── Fiches ── */
+  _renderFiches() {
+    const fiches = LS.get('fiches', []);
+    const c      = document.getElementById('fichesList');
+    if (!fiches.length) {
+      c.innerHTML = `<div class="empty-state" style="padding:16px 0"><span>Aucune fiche connectée</span></div>`;
+    } else {
+      c.innerHTML = fiches.map((f, i) => `
+        <div class="fiche-item">
+          <span class="fiche-pin">📍</span>
+          <div>
+            <div class="fiche-name">
+              ${this._esc(f.name)}
+              ${i === 0 ? '<span class="badge badge-main">Principale</span>' : ''}
+            </div>
+            <div class="fiche-addr">${this._esc(f.address)}</div>
+          </div>
+        </div>`).join('');
+    }
+  },
+
+  /* ── Historique ── */
+  _addHistory(action, entite, icon) {
+    const now    = new Date();
+    const date   = now.toLocaleDateString('fr-FR') + ' ' +
+      now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const history = LS.get('history', []);
+    history.unshift({ action, entite, date, icon: icon || 'ℹ️' });
+    if (history.length > 100) history.pop();
+    LS.set('history', history);
+    this._renderHistory();
+  },
+
+  _renderHistory() {
+    const history = LS.get('history', DEMO_DATA.historique);
+    const tbody   = document.getElementById('historyBody');
+
+    if (!history || !history.length) {
+      tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">Aucune action enregistrée</div></td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = history.map(h => `
+      <tr>
+        <td>
+          <div class="hist-row">
+            <div class="hist-icon">${h.icon || 'ℹ️'}</div>
+            ${this._esc(h.action)}
+          </div>
+        </td>
+        <td style="color:var(--muted)">${this._esc(h.entite)}</td>
+        <td style="color:var(--muted);font-size:12.5px">${h.date}</td>
+      </tr>`).join('');
+  },
+
+  clearHistory() {
+    if (!confirm("Vider l'historique ?")) return;
+    LS.del('history');
+    this._renderHistory();
+    this.toast('Historique vidé');
+  },
+
+  /* ── Toast ── */
+  toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), 3000);
+  },
+
+  /* ── Utilitaires ── */
+  _esc(s) {
+    return String(s || '')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+};
+
+document.addEventListener('DOMContentLoaded', () => App.init());
+</script>
+</body>
+</html>
