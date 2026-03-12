@@ -1086,6 +1086,14 @@
             <label class="form-label">Google API Key</label>
             <input type="password" class="form-input" id="cfgGoogleApiKey" placeholder="AIzaSy…">
           </div>
+          <div class="form-group">
+            <label class="form-label">
+              Clé API Claude (Anthropic)
+              <a href="https://console.anthropic.com/settings/keys" target="_blank" style="font-weight:400;color:var(--gold);margin-left:6px;font-size:11px">→ Obtenir une clé</a>
+            </label>
+            <input type="password" class="form-input" id="cfgClaudeApiKey" placeholder="sk-ant-…">
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">Utilisée pour générer les réponses IA aux avis.</div>
+          </div>
           <button class="btn btn-outline btn-sm" onclick="App.saveApiKeys()">Sauvegarder les clés</button>
         </div>
 
@@ -1477,6 +1485,7 @@ const App = {
     document.getElementById('cfgAutoReply').checked     = s.autoReply     || false;
     document.getElementById('cfgGoogleClientId').value  = s.googleClientId || '';
     document.getElementById('cfgGoogleApiKey').value    = s.googleApiKey  || '';
+    document.getElementById('cfgClaudeApiKey').value    = s.claudeApiKey  || '';
     const rules = s.rules || {};
     for (let i = 1; i <= 5; i++) {
       const el = document.getElementById(`rule${i}`);
@@ -1509,8 +1518,9 @@ const App = {
   saveApiKeys() {
     STATE.settings.googleClientId = document.getElementById('cfgGoogleClientId').value;
     STATE.settings.googleApiKey   = document.getElementById('cfgGoogleApiKey').value;
+    STATE.settings.claudeApiKey   = document.getElementById('cfgClaudeApiKey').value;
     LS.set('settings', STATE.settings);
-    this._addHistory('Clés API mises à jour', 'Google API', '🔑');
+    this._addHistory('Clés API mises à jour', 'Google + Claude', '🔑');
     this.toast('✓ Clés API sauvegardées');
   },
 
