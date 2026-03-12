@@ -58,45 +58,51 @@
   <a class="back-link" href="/fidelavis-admin/">← Retour au dashboard</a>
 </div>
 
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000/api'
-  : 'https://api.fidelavis.com/api';
-
-const ERRORS = {
-  oauth_denied:   'Vous avez refusé la connexion Google. Réessayez et cliquez sur "Autoriser".',
-  no_gbp_account: 'Aucun compte Google Business Profile trouvé avec cet email Google.',
-  invalid_state:  'Session de connexion expirée (>10 min). Veuillez réessayer.',
-  callback_error: 'Une erreur s\'est produite lors de la connexion. Réessayez.'
-};
-
 (function init() {
-  const token = localStorage.getItem('fv_token');
-  if (!token) return window.location.href = '/fidelavis-admin/login.html';
-
-  const p = new URLSearchParams(location.search);
-  const err = p.get('error');
-  if (err) {
-    const el = document.getElementById('errorBanner');
-    el.textContent = ERRORS[err] || `Erreur : ${err}`;
-    el.style.display = 'block';
-    history.replaceState({}, '', location.pathname);
-  }
+  if (!localStorage.getItem('fv_token')) return (window.location.href = '/fidelavis-admin/login.html');
 })();
 
-async function connectGoogle() {
-  const token = localStorage.getItem('fv_token');
-  try {
-    const resp = await fetch(`${API_BASE}/auth/google`, {
-      headers: { 'Authorization': `Bearer ${token}` }
+function connectGoogle() {
+  const settings  = JSON.parse(localStorage.getItem('fv_settings') || '{}');
+  const clientId  = settings.google_client_id;
+  const errorEl   = document.getElementById('errorBanner');
+
+  if (!clientId) {
+    errorEl.textContent = 'Clé Google Client ID manquante. Allez dans Paramètres → Clés API pour la saisir.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const redirect = window.location.origin + '/fidelavis-admin/';
+  const scope    = 'https://www.googleapis.com/auth/business.manage';
+
+  // Try Google Identity Services popup first
+  if (typeof google !== 'undefined' && google.accounts) {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope,
+      callback: (resp) => {
+        if (resp.error) {
+          errorEl.textContent = 'Connexion annulée : ' + resp.error;
+          errorEl.style.display = 'block';
+          return;
+        }
+        localStorage.setItem('fv_google_token', resp.access_token);
+        localStorage.setItem('fv_google_token_expiry', String(Date.now() + (resp.expires_in - 60) * 1000));
+        window.location.href = '/fidelavis-admin/?connected=1';
+      }
     });
-    const data = await resp.json();
-    if (!resp.ok) throw new Error(data.error || 'Erreur');
-    window.location.href = data.authUrl;
-  } catch (e) {
-    const el = document.getElementById('errorBanner');
-    el.textContent = 'Erreur : ' + e.message;
-    el.style.display = 'block';
+    client.requestAccessToken();
+  } else {
+    // Fallback: redirect flow with implicit grant
+    const url = `https://accounts.google.com/o/oauth2/v2/auth`
+      + `?client_id=${encodeURIComponent(clientId)}`
+      + `&redirect_uri=${encodeURIComponent(redirect)}`
+      + `&response_type=token`
+      + `&scope=${encodeURIComponent(scope)}`;
+    window.location.href = url;
   }
 }
 </script>
