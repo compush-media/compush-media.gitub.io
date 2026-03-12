@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Fidelavis – Dashboard Réputation</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root {
       --brand:   #B48C4A;
@@ -663,6 +664,23 @@
           </div>
         </div>
 
+        <!-- Clés API -->
+        <div class="settings-card">
+          <h3>🔑 Clés API</h3>
+          <div class="form-row">
+            <label>Google Client ID <span style="font-size:11px;color:var(--muted)">(console.cloud.google.com)</span></label>
+            <input type="text" id="set_google_client_id" placeholder="123456789.apps.googleusercontent.com" />
+          </div>
+          <div class="form-row">
+            <label>Clé API Claude <span style="font-size:11px;color:var(--muted)">(optionnel – génération IA)</span></label>
+            <input type="password" id="set_claude_api_key" placeholder="sk-ant-..." />
+          </div>
+          <button class="btn-primary" style="width:100%" onclick="saveSettings()">💾 Enregistrer</button>
+          <div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.5">
+            Ces clés sont stockées uniquement dans votre navigateur.
+          </div>
+        </div>
+
         <!-- Fiches connectées -->
         <div class="settings-card">
           <h3>📍 Fiches Google connectées</h3>
@@ -702,181 +720,283 @@
 
 <script>
 // ============================================================
-//  CONFIG – à adapter à votre déploiement
-// ============================================================
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000/api'
-  : 'https://api.fidelavis.com/api'; // ← votre URL de prod
-
-// ============================================================
 //  STATE
 // ============================================================
-let authToken    = localStorage.getItem('fv_token') || null;
-let merchantData = null;
-let currentFilter = { status: '', rating: '', search: '' };
-let currentPage  = 1;
-let reviewsCache = {};
+let authToken     = localStorage.getItem('fv_token') || null;
+let merchantData  = null;
+let googleToken   = null;
+let currentAccount  = null;
+let currentLocation = null;
+let currentFilter = { status: '', rating: '', search: '', isRating: false };
+let currentPage   = 1;
 
 // ============================================================
-//  AUTH CHECK
+//  INIT
 // ============================================================
 async function initApp() {
-  // Vérifier si on revient du callback OAuth
+  // Handle OAuth implicit flow callback (hash fragment)
+  const hash = new URLSearchParams(location.hash.substring(1));
+  if (hash.get('access_token')) {
+    const token = hash.get('access_token');
+    const expiresIn = parseInt(hash.get('expires_in') || '3600');
+    localStorage.setItem('fv_google_token', token);
+    localStorage.setItem('fv_google_token_expiry', String(Date.now() + (expiresIn - 60) * 1000));
+    history.replaceState({}, '', location.pathname);
+    googleToken = token;
+    toast('✅ Connecté à Google !', 'success');
+    addLog('google.connected', 'google', 'oauth');
+    await fetchGBPAccounts();
+  }
+
   const urlParams = new URLSearchParams(location.search);
-  if (urlParams.get('connected')) {
-    toast('✅ Fiche Google connectée avec succès !', 'success');
-    history.replaceState({}, '', location.pathname);
-  }
-  if (urlParams.get('error')) {
-    const errMap = {
-      oauth_denied:   'Connexion Google annulée.',
-      no_gbp_account: 'Aucun compte Google Business Profile trouvé.',
-      invalid_state:  'Session OAuth expirée. Réessayez.',
-      callback_error: 'Erreur lors de la connexion Google.'
-    };
-    toast(errMap[urlParams.get('error')] || 'Erreur de connexion', 'error');
-    history.replaceState({}, '', location.pathname);
-  }
+  if (urlParams.get('connected')) { toast('✅ Fiche Google connectée !', 'success'); history.replaceState({}, '', location.pathname); }
+  if (urlParams.get('error'))     { toast('Erreur de connexion Google.', 'error');   history.replaceState({}, '', location.pathname); }
 
-  if (!authToken) {
-    return window.location.href = '/fidelavis-admin/login.html';
-  }
+  if (!authToken) return (window.location.href = '/fidelavis-admin/login.html');
 
-  // Mode démo : utiliser les données locales sans appel API
+  initGoogleAuth();
+
   const savedMerchant = JSON.parse(localStorage.getItem('fv_merchant') || '{"name":"Admin"}');
   merchantData = savedMerchant;
-  document.getElementById('merchantAvatar').textContent =
-    (merchantData.name || 'A')[0].toUpperCase();
+  el('merchantAvatar').textContent = (merchantData.name || 'A')[0].toUpperCase();
   document.title = `Fidelavis – ${merchantData.name}`;
 
+  populateSettings();
   loadDashboard();
-  populateSettings({}, []);
+  addLog('merchant.login', 'merchant', merchantData.name);
 }
 
 // ============================================================
-//  API HELPER
+//  GOOGLE AUTH STATE
 // ============================================================
-async function api(method, path, body) {
-  const opts = {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {})
-    }
-  };
-  if (body) opts.body = JSON.stringify(body);
-
-  const resp = await fetch(API_BASE + path, opts);
-  const data = await resp.json().catch(() => ({}));
-
-  if (!resp.ok) {
-    const err = new Error(data.error || `HTTP ${resp.status}`);
-    err.status = resp.status;
-    throw err;
+function initGoogleAuth() {
+  const stored = localStorage.getItem('fv_google_token');
+  const expiry  = parseInt(localStorage.getItem('fv_google_token_expiry') || '0');
+  if (stored && Date.now() < expiry) {
+    googleToken = stored;
+  } else {
+    googleToken = null;
+    localStorage.removeItem('fv_google_token');
+    localStorage.removeItem('fv_google_token_expiry');
   }
-  return data;
+  currentAccount  = localStorage.getItem('fv_selected_account');
+  currentLocation = localStorage.getItem('fv_selected_location');
+}
+
+async function connectGoogle() {
+  const settings = getSettings();
+  const clientId = settings.google_client_id;
+  if (!clientId) {
+    toast('Saisissez d\'abord votre Google Client ID dans Paramètres → Clés API', 'error');
+    showSection('settings', document.querySelector('[data-section=settings]'));
+    return;
+  }
+  if (typeof google !== 'undefined' && google.accounts) {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: 'https://www.googleapis.com/auth/business.manage',
+      callback: async (resp) => {
+        if (resp.error) { toast('Connexion annulée : ' + resp.error, 'error'); return; }
+        localStorage.setItem('fv_google_token', resp.access_token);
+        localStorage.setItem('fv_google_token_expiry', String(Date.now() + (resp.expires_in - 60) * 1000));
+        googleToken = resp.access_token;
+        addLog('google.connected', 'google', 'oauth');
+        toast('✅ Connecté à Google !', 'success');
+        await fetchGBPAccounts();
+        loadDashboard();
+        refreshLocationsList();
+      }
+    });
+    client.requestAccessToken();
+  } else {
+    // Fallback: redirect OAuth flow
+    const redirect = encodeURIComponent(window.location.origin + '/fidelavis-admin/');
+    const scope    = encodeURIComponent('https://www.googleapis.com/auth/business.manage');
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirect}&response_type=token&scope=${scope}`;
+  }
+}
+
+// ============================================================
+//  GOOGLE BUSINESS PROFILE API
+// ============================================================
+async function gbpGet(url) {
+  if (!googleToken) throw new Error('Non connecté à Google');
+  const resp = await fetch(url, { headers: { 'Authorization': `Bearer ${googleToken}` } });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error?.message || `Google API ${resp.status}`);
+  }
+  return resp.json();
+}
+
+async function gbpPut(url, body) {
+  if (!googleToken) throw new Error('Non connecté à Google');
+  const resp = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Authorization': `Bearer ${googleToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error?.message || `Google API ${resp.status}`);
+  }
+  return resp.json().catch(() => ({}));
+}
+
+async function fetchGBPAccounts() {
+  try {
+    const data = await gbpGet('https://mybusinessaccountmanagement.googleapis.com/v1/accounts');
+    const accounts = data.accounts || [];
+    if (accounts.length === 0) { toast('Aucun compte Google Business Profile trouvé.', 'error'); return; }
+    const account = accounts[0];
+    localStorage.setItem('fv_selected_account', account.name);
+    currentAccount = account.name;
+    await fetchGBPLocations(account.name);
+  } catch (e) {
+    toast('Erreur Google : ' + e.message, 'error');
+  }
+}
+
+async function fetchGBPLocations(accountName) {
+  try {
+    const data = await gbpGet(
+      `https://mybusinessinformation.googleapis.com/v1/${accountName}/locations?readMask=name,title,storefrontAddress`
+    );
+    const locations = (data.locations || []).map(l => ({
+      name: l.name,
+      title: l.title || l.name.split('/').pop(),
+      address: l.storefrontAddress
+        ? [l.storefrontAddress.addressLines?.[0], l.storefrontAddress.locality].filter(Boolean).join(', ')
+        : ''
+    }));
+    localStorage.setItem('fv_locations', JSON.stringify(locations));
+    if (locations.length > 0 && !localStorage.getItem('fv_selected_location')) {
+      localStorage.setItem('fv_selected_location', locations[0].name);
+      currentLocation = locations[0].name;
+    }
+    refreshLocationsList();
+  } catch (e) {
+    console.error('fetchGBPLocations', e);
+  }
+}
+
+async function fetchGBPReviews() {
+  if (!googleToken || !currentLocation) return [];
+  try {
+    const data = await gbpGet(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews?pageSize=50`);
+    const ratingMap = { ONE: 1, TWO: 2, THREE: 3, FOUR: 4, FIVE: 5 };
+    const reviews = (data.reviews || []).map(r => ({
+      id: r.reviewId,
+      reviewer_name: r.reviewer?.displayName || 'Anonyme',
+      reviewer_photo: r.reviewer?.profilePhotoUrl || null,
+      rating: ratingMap[r.starRating] || 0,
+      comment: r.comment || '',
+      published_at: r.createTime,
+      reply_text: r.reviewReply?.comment || null,
+      status: r.reviewReply ? 'replied' : 'pending',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: currentLocation.split('/').pop()
+    }));
+    localStorage.setItem('fv_reviews', JSON.stringify(reviews));
+    localStorage.setItem('fv_last_sync', new Date().toISOString());
+    reviews.forEach(r => addLog('review.new', 'review', r.id));
+    return reviews;
+  } catch (e) {
+    console.error('fetchGBPReviews', e);
+    return [];
+  }
 }
 
 // ============================================================
 //  NAVIGATION
 // ============================================================
-function showSection(name, el) {
+function showSection(name, navEl) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('section-' + name)?.classList.add('active');
-  if (el) el.classList.add('active');
-
-  if (name === 'reviews')  loadReviews();
-  if (name === 'logs')     loadLogs();
+  el('section-' + name)?.classList.add('active');
+  if (navEl) navEl.classList.add('active');
+  if (name === 'reviews') loadReviews();
+  if (name === 'logs')    loadLogs();
 }
 
 // ============================================================
 //  DASHBOARD
 // ============================================================
-async function loadDashboard() {
-  try {
-    const data = await api('GET', '/reviews/stats');
-    const s    = data.stats;
+function loadDashboard() {
+  const reviews  = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+  const lastSync = localStorage.getItem('fv_last_sync');
+  const s        = getSettings();
 
-    // Statut bande
-    const dotG = document.getElementById('dotGoogle');
-    const dotS = document.getElementById('dotSync');
-    const dotA = document.getElementById('dotAuto');
-
-    if (data.googleConnected) {
-      dotG.className = 'dot green';
-      document.getElementById('statusGoogle').textContent = 'Google connecté';
-      document.getElementById('connectBanner').style.display = 'none';
-    } else {
-      dotG.className = 'dot red';
-      document.getElementById('statusGoogle').textContent = 'Google non connecté';
-      document.getElementById('connectBanner').style.display = 'block';
-    }
-
-    if (data.lastSync) {
-      dotS.className = 'dot green';
-      document.getElementById('statusSync').textContent = 'Sync : ' + formatDate(data.lastSync);
-    } else {
-      dotS.className = 'dot orange';
-      document.getElementById('statusSync').textContent = 'Jamais synchronisé';
-    }
-
-    if (data.autoReplyEnabled) {
-      dotA.className = 'dot green';
-      document.getElementById('statusAuto').textContent = 'Auto-réponse : ✓ Active';
-    } else {
-      dotA.className = 'dot orange';
-      document.getElementById('statusAuto').textContent = 'Auto-réponse : Manuelle';
-    }
-
-    if (data.location) {
-      document.getElementById('locationLabel').textContent = '📍 ' + data.location.location_name;
-    }
-
-    // Stats
-    document.getElementById('statAvg').textContent     = s.avgRating || '–';
-    document.getElementById('statTotal').textContent   = s.total;
-    document.getElementById('statPending').textContent = s.pending;
-    document.getElementById('statReplied').textContent = s.replied;
-
-    // Badge nav
-    if (s.newReviews > 0) {
-      const badge = document.getElementById('newBadge');
-      badge.textContent = s.newReviews;
-      badge.classList.add('show');
-    }
-
-    // Derniers avis
-    renderReviewCards(data.recentReviews, 'recentReviewsList', true);
-
-  } catch (e) {
-    console.error('loadDashboard', e);
-    toast('Erreur chargement dashboard : ' + e.message, 'error');
+  // Status dots
+  if (googleToken) {
+    el('dotGoogle').className = 'dot green';
+    el('statusGoogle').textContent = 'Google connecté';
+    el('connectBanner').style.display = 'none';
+  } else {
+    el('dotGoogle').className = 'dot red';
+    el('statusGoogle').textContent = 'Google non connecté';
+    el('connectBanner').style.display = 'block';
   }
+
+  if (lastSync) {
+    el('dotSync').className = 'dot green';
+    el('statusSync').textContent = 'Sync : ' + formatDate(lastSync);
+  } else {
+    el('dotSync').className = 'dot orange';
+    el('statusSync').textContent = 'Jamais synchronisé';
+  }
+
+  el('dotAuto').className  = s.auto_reply_enabled ? 'dot green' : 'dot orange';
+  el('statusAuto').textContent = s.auto_reply_enabled ? 'Auto-réponse : ✓ Active' : 'Auto-réponse : Manuelle';
+
+  const locs   = JSON.parse(localStorage.getItem('fv_locations') || '[]');
+  const selLoc = localStorage.getItem('fv_selected_location');
+  const loc    = locs.find(l => l.name === selLoc);
+  if (loc) el('locationLabel').textContent = '📍 ' + (loc.title || loc.name.split('/').pop());
+
+  const active  = reviews.filter(r => r.status !== 'ignored');
+  const replied = active.filter(r => r.status === 'replied');
+  const pending = active.filter(r => r.status === 'pending');
+  const avg     = active.length
+    ? (active.reduce((sum, r) => sum + r.rating, 0) / active.length).toFixed(1)
+    : '–';
+
+  el('statAvg').textContent     = avg;
+  el('statTotal').textContent   = active.length;
+  el('statPending').textContent = pending.length;
+  el('statReplied').textContent = replied.length;
+
+  const badge = el('newBadge');
+  if (pending.length > 0) { badge.textContent = pending.length; badge.classList.add('show'); }
+  else badge.classList.remove('show');
+
+  renderReviewCards(active.slice(0, 5), 'recentReviewsList', true);
 }
 
 // ============================================================
 //  AVIS
 // ============================================================
-async function loadReviews(page = 1) {
+function loadReviews(page = 1) {
   currentPage = page;
-  const list = document.getElementById('reviewsList');
-  list.innerHTML = '<div class="loading">Chargement...</div>';
+  let reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]')
+    .filter(r => r.status !== 'ignored');
 
-  try {
-    const params = new URLSearchParams({ page, limit: 15 });
-    if (currentFilter.status && !currentFilter.isRating) params.set('status', currentFilter.status);
-    if (currentFilter.isRating) params.set('rating', currentFilter.status);
-    if (currentFilter.search)   params.set('search', currentFilter.search);
-
-    const data = await api('GET', '/reviews?' + params);
-
-    renderReviewCards(data.reviews, 'reviewsList', false);
-    renderPagination(data.pagination);
-
-  } catch (e) {
-    list.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>${e.message}</p></div>`;
+  if (currentFilter.status && !currentFilter.isRating) reviews = reviews.filter(r => r.status === currentFilter.status);
+  if (currentFilter.isRating) reviews = reviews.filter(r => String(r.rating) === currentFilter.status);
+  if (currentFilter.search) {
+    const q = currentFilter.search.toLowerCase();
+    reviews = reviews.filter(r =>
+      (r.reviewer_name || '').toLowerCase().includes(q) ||
+      (r.comment || '').toLowerCase().includes(q)
+    );
   }
+
+  const limit = 15;
+  const pages = Math.ceil(reviews.length / limit) || 1;
+  renderReviewCards(reviews.slice((page - 1) * limit, page * limit), 'reviewsList', false);
+  renderPagination({ page, pages });
 }
 
 function filterReviews(value, el, isRating = false) {
@@ -893,9 +1013,8 @@ function searchReviews(q) {
 }
 
 function renderPagination(pag) {
-  const el = document.getElementById('reviewPagination');
-  if (!el || pag.pages <= 1) { if (el) el.innerHTML = ''; return; }
-
+  const pEl = el('reviewPagination');
+  if (!pEl || pag.pages <= 1) { if (pEl) pEl.innerHTML = ''; return; }
   let html = `<button class="page-btn" onclick="loadReviews(${pag.page - 1})" ${pag.page <= 1 ? 'disabled' : ''}>‹</button>`;
   for (let i = 1; i <= pag.pages; i++) {
     if (Math.abs(i - pag.page) <= 2 || i === 1 || i === pag.pages) {
@@ -905,14 +1024,14 @@ function renderPagination(pag) {
     }
   }
   html += `<button class="page-btn" onclick="loadReviews(${pag.page + 1})" ${pag.page >= pag.pages ? 'disabled' : ''}>›</button>`;
-  el.innerHTML = html;
+  pEl.innerHTML = html;
 }
 
 // ============================================================
 //  RENDER REVIEW CARDS
 // ============================================================
 function renderReviewCards(reviews, containerId, compact) {
-  const container = document.getElementById(containerId);
+  const container = el(containerId);
   if (!container) return;
 
   if (!reviews || reviews.length === 0) {
@@ -992,274 +1111,288 @@ function buildActionButtons(r) {
 }
 
 // ============================================================
+//  GÉNÉRATION IA
+// ============================================================
+function generateTemplateResponse(review) {
+  const s            = getSettings();
+  const tone         = s.response_tone || 'warm';
+  const businessName = s.restaurant_name || 'notre établissement';
+  const signature    = s.signature || s.owner_name || 'L\'équipe';
+  const returnPhrase = s.return_phrase || 'Au plaisir de vous revoir très prochainement !';
+  const contactPhrase= s.contact_phrase || 'N\'hésitez pas à nous contacter directement.';
+  const reviewerName = review.reviewer_name !== 'Anonyme' ? review.reviewer_name : null;
+
+  const greeting = reviewerName
+    ? (tone === 'formal' ? `Madame, Monsieur ${reviewerName},` : `Bonjour ${reviewerName},`)
+    : (tone === 'formal' ? 'Madame, Monsieur,' : 'Bonjour,');
+
+  let body;
+  const r = review.rating;
+  if (r === 5)      body = `Merci infiniment pour votre magnifique avis 5 étoiles ! Nous sommes vraiment touchés par votre enthousiasme et ravis que votre expérience chez ${businessName} vous ait pleinement satisfait. ${returnPhrase}`;
+  else if (r === 4) body = `Merci beaucoup pour votre avis positif ! Votre retour nous encourage à continuer nos efforts pour vous offrir la meilleure expérience possible chez ${businessName}. ${returnPhrase}`;
+  else if (r === 3) body = `Merci pour votre avis et pour avoir pris le temps de nous faire part de votre expérience. Nous prenons note de vos remarques et travaillons chaque jour à améliorer nos services chez ${businessName}. ${returnPhrase}`;
+  else if (r === 2) body = `Merci pour votre retour, nous sommes sincèrement désolés que votre expérience n'ait pas été à la hauteur de vos attentes. Vos remarques sont précieuses pour nous améliorer. ${contactPhrase}`;
+  else              body = `Merci d'avoir pris le temps de partager votre avis. Nous sommes vraiment désolés pour cette expérience décevante chez ${businessName}. ${contactPhrase}`;
+
+  return `${greeting}\n\n${body}\n\n${signature}`;
+}
+
+async function generateWithClaude(review, apiKey) {
+  const s = getSettings();
+  const prompt = `Tu es le gérant de "${s.restaurant_name || 'mon commerce'}". Génère une réponse ${s.response_tone === 'formal' ? 'formelle' : 'chaleureuse'} pour cet avis Google ${review.rating}/5 étoiles.
+Avis de ${review.reviewer_name}: "${review.comment || '(sans commentaire)'}"
+Consignes: signe avec "${s.signature || s.owner_name || "L'équipe"}", ${review.rating >= 4 ? `invite à revenir: "${s.return_phrase || ''}"` : `phrase de contact: "${s.contact_phrase || ''}"`}. Maximum 4 phrases, naturel, en français.`;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 300,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  if (!resp.ok) throw new Error(`Claude API ${resp.status}`);
+  const data = await resp.json();
+  return data.content[0].text;
+}
+
+// ============================================================
 //  ACTIONS AVIS
 // ============================================================
 async function generateAndShow(reviewId) {
+  const btn = document.querySelector(`#card-${reviewId} .btn-primary`);
+  if (btn) { btn.disabled = true; btn.textContent = '🤖 Génération...'; }
+
   try {
-    const btn = document.querySelector(`#card-${reviewId} .btn-primary`);
-    if (btn) { btn.disabled = true; btn.textContent = '🤖 Génération...'; }
+    const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+    const review  = reviews.find(r => r.id === reviewId);
+    if (!review) throw new Error('Avis non trouvé');
 
-    const data = await api('POST', `/responses/generate/${reviewId}`);
+    const s = getSettings();
+    let responseText;
+    if (s.claude_api_key) {
+      try { responseText = await generateWithClaude(review, s.claude_api_key); }
+      catch (e) { console.warn('Claude API failed, using template:', e); }
+    }
+    if (!responseText) responseText = generateTemplateResponse(review);
 
-    // Insérer la zone de draft
-    const card = document.getElementById(`card-${reviewId}`);
+    // Save draft
+    review.ai_draft = responseText;
+    const idx = reviews.findIndex(r => r.id === reviewId);
+    if (idx >= 0) { reviews[idx] = review; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
+
+    const card       = el(`card-${reviewId}`);
     const actionsDiv = card.querySelector('.review-actions');
-
-    let draftEl = document.getElementById(`draft-${reviewId}`);
+    let draftEl      = el(`draft-${reviewId}`);
     if (!draftEl) {
       draftEl = document.createElement('div');
       draftEl.className = 'ia-draft';
       draftEl.id = `draft-${reviewId}`;
       card.insertBefore(draftEl, actionsDiv);
     }
-    draftEl.innerHTML = `
-      <div class="ia-draft-label">🤖 Réponse IA (${data.generationMs}ms)</div>
-      <textarea id="draftText-${reviewId}" rows="5">${escHtml(data.responseText)}</textarea>`;
-
-    // Remplacer le bouton
-    actionsDiv.innerHTML = buildActionButtonsAfterGen(reviewId, data.aiResponseId);
+    draftEl.innerHTML = `<div class="ia-draft-label">🤖 Réponse IA proposée</div>
+      <textarea id="draftText-${reviewId}" rows="5">${escHtml(responseText)}</textarea>`;
+    actionsDiv.innerHTML = `
+      <button class="btn-primary" onclick="publishDraft('${reviewId}')">📤 Publier</button>
+      <button class="btn-outline" style="font-size:12px" onclick="generateAndShow('${reviewId}')">↻ Régénérer</button>
+      <button class="btn-outline" style="font-size:12px;color:var(--muted)" onclick="ignoreReview('${reviewId}')">Ignorer</button>`;
+    addLog('response.generated', 'review', reviewId);
     toast('Réponse générée !', 'success');
 
   } catch (e) {
-    toast('Erreur génération : ' + e.message, 'error');
-    const btn = document.querySelector(`#card-${reviewId} .btn-primary`);
+    toast('Erreur : ' + e.message, 'error');
     if (btn) { btn.disabled = false; btn.textContent = '🤖 Générer réponse IA'; }
   }
 }
 
-function buildActionButtonsAfterGen(reviewId, aiResponseId) {
-  return `
-    <button class="btn-primary" onclick="publishAiResponse('${reviewId}', '${aiResponseId}')">📤 Publier</button>
-    <button class="btn-outline" style="font-size:12px" onclick="generateAndShow('${reviewId}')">↻ Régénérer</button>
-    <button class="btn-outline" style="font-size:12px;color:var(--muted)" onclick="ignoreReview('${reviewId}')">Ignorer</button>`;
-}
-
 async function publishDraft(reviewId) {
-  // Cas où on a un ai_draft déjà chargé (depuis le listing initial)
-  const textEl = document.getElementById(`draftText-${reviewId}`);
-  const text   = textEl?.value?.trim();
-  if (!text) { toast('Réponse vide, veuillez générer d\'abord.', 'error'); return; }
+  const text = el(`draftText-${reviewId}`)?.value?.trim();
+  if (!text) { toast('Réponse vide.', 'error'); return; }
 
-  // Appel publish-direct (génère + publie) en passant le texte modifié
-  // Alternative : on peut appeler /publish directement si on a l'aiResponseId
-  await publishDirectWithText(reviewId, text);
-}
+  const btn = document.querySelector(`#card-${reviewId} .btn-primary`);
+  if (btn) { btn.disabled = true; btn.textContent = '📤 Publication...'; }
 
-async function publishAiResponse(reviewId, aiResponseId) {
   try {
-    const textEl = document.getElementById(`draftText-${reviewId}`);
-    const editedText = textEl?.value?.trim();
-
-    // Sauvegarder l'édition si modifiée
-    if (editedText) {
-      await api('PUT', `/responses/${aiResponseId}/edit`, { editedText });
+    if (googleToken && currentLocation) {
+      await gbpPut(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews/${reviewId}/reply`, { comment: text });
+      toast('Réponse publiée sur Google !', 'success');
+    } else {
+      toast('Réponse sauvegardée (connectez Google pour publier).', 'info');
     }
 
-    const btn = document.querySelector(`#card-${reviewId} .btn-primary`);
-    if (btn) { btn.disabled = true; btn.textContent = '📤 Publication...'; }
+    const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+    const idx = reviews.findIndex(r => r.id === reviewId);
+    if (idx >= 0) { reviews[idx].status = 'replied'; reviews[idx].reply_text = text; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
 
-    await api('POST', `/responses/${aiResponseId}/publish`);
-
-    // Mettre à jour la carte
-    document.getElementById(`card-${reviewId}`)?.classList.remove('new');
-    const card = document.getElementById(`card-${reviewId}`);
-    if (card) {
-      card.querySelector('.review-actions').innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
-    }
-
-    toast('Réponse publiée sur Google !', 'success');
+    el(`card-${reviewId}`)?.querySelector('.review-actions').innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
+    addLog('response.published', 'review', reviewId);
     loadDashboard();
 
   } catch (e) {
     toast('Erreur publication : ' + e.message, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
   }
 }
 
-async function publishDirectWithText(reviewId, text) {
-  // Génère une nouvelle réponse IA puis publie directement
-  try {
-    const btn = document.querySelector(`#card-${reviewId} .btn-primary`);
-    if (btn) { btn.disabled = true; btn.textContent = '📤 Publication...'; }
-
-    await api('POST', `/responses/publish-direct/${reviewId}`);
-
-    const card = document.getElementById(`card-${reviewId}`);
-    if (card) {
-      card.querySelector('.review-actions').innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
-    }
-
-    toast('Réponse publiée sur Google !', 'success');
-    loadDashboard();
-
-  } catch (e) {
-    toast('Erreur : ' + e.message, 'error');
-  }
-}
-
-async function regenerate(reviewId) {
-  await generateAndShow(reviewId);
-}
-
-async function ignoreReview(reviewId) {
-  if (!confirm('Ignorer cet avis ? Il ne sera plus traité automatiquement.')) return;
-  try {
-    await api('POST', `/reviews/${reviewId}/ignore`);
-    document.getElementById(`card-${reviewId}`)?.remove();
-    toast('Avis ignoré.', 'info');
-  } catch (e) {
-    toast('Erreur : ' + e.message, 'error');
-  }
+function ignoreReview(reviewId) {
+  if (!confirm('Ignorer cet avis ?')) return;
+  const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+  const idx = reviews.findIndex(r => r.id === reviewId);
+  if (idx >= 0) { reviews[idx].status = 'ignored'; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
+  el(`card-${reviewId}`)?.remove();
+  addLog('review.ignored', 'review', reviewId);
+  toast('Avis ignoré.', 'info');
 }
 
 // ============================================================
 //  SYNC
 // ============================================================
 async function triggerSync() {
-  const btn = document.getElementById('syncBtn');
-  btn.disabled = true;
-  btn.textContent = '↻ Sync...';
+  const btn = el('syncBtn');
+  btn.disabled = true; btn.textContent = '↻ Sync...';
   try {
-    const data = await api('POST', '/reviews/sync');
-    toast('Synchronisation terminée !', 'success');
+    if (!googleToken) { toast('Connectez d\'abord votre fiche Google.', 'error'); return; }
+    if (!currentLocation) await fetchGBPAccounts();
+    const reviews = await fetchGBPReviews();
+    addLog('sync.completed', 'sync', String(reviews.length));
+    toast(`Synchronisation terminée ! ${reviews.length} avis importés.`, 'success');
     loadDashboard();
-    if (document.getElementById('section-reviews').classList.contains('active')) {
-      loadReviews();
-    }
+    if (el('section-reviews').classList.contains('active')) loadReviews();
   } catch (e) {
     toast('Erreur sync : ' + e.message, 'error');
   } finally {
-    btn.disabled = false;
-    btn.textContent = '↻ Synchroniser';
-  }
-}
-
-// ============================================================
-//  GOOGLE OAUTH
-// ============================================================
-async function connectGoogle() {
-  try {
-    const data = await api('GET', '/auth/google');
-    window.location.href = data.authUrl;
-  } catch (e) {
-    toast('Erreur : ' + e.message, 'error');
+    btn.disabled = false; btn.textContent = '↻ Synchroniser';
   }
 }
 
 // ============================================================
 //  PARAMÈTRES
 // ============================================================
-function populateSettings(settings, locations) {
-  if (!settings) return;
-  const f = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
-
-  f('set_restaurant_name', settings.restaurant_name);
-  f('set_owner_name',      settings.owner_name);
-  f('set_signature',       settings.signature);
-  f('set_response_tone',   settings.response_tone);
-  f('set_return_phrase',   settings.return_phrase);
-  f('set_contact_phrase',  settings.contact_phrase);
-  f('set_rule_5',          settings.auto_reply_rule_5);
-  f('set_rule_4',          settings.auto_reply_rule_4);
-  f('set_rule_3',          settings.auto_reply_rule_3);
-  f('set_rule_2',          settings.auto_reply_rule_2);
-  f('set_rule_1',          settings.auto_reply_rule_1);
-
-  const autoEl = document.getElementById('set_auto_reply_enabled');
-  if (autoEl) autoEl.checked = !!settings.auto_reply_enabled;
-
-  // Fiches connectées
-  if (locations) {
-    const locList = document.getElementById('locationsList');
-    if (locList) {
-      if (locations.length === 0) {
-        locList.innerHTML = '<p style="color:var(--muted)">Aucune fiche connectée</p>';
-      } else {
-        locList.innerHTML = locations.map(l => `
-          <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
-            <span style="font-size:20px">${l.is_primary ? '📍' : '🏪'}</span>
-            <div style="flex:1">
-              <div style="font-weight:700;font-size:14px">${escHtml(l.location_name)}</div>
-              ${l.address ? `<div style="font-size:12px;color:var(--muted)">${escHtml(l.address)}</div>` : ''}
-              ${l.synced_at ? `<div style="font-size:11px;color:var(--green)">Dernière sync : ${formatDate(l.synced_at)}</div>` : ''}
-            </div>
-            ${!l.is_primary ? `<button class="btn-outline" style="font-size:11px;padding:4px 8px" onclick="selectLocation('${l.id}')">Sélectionner</button>` : '<span style="font-size:11px;font-weight:700;color:var(--brand)">Principale</span>'}
-          </div>`).join('');
-      }
-    }
-  }
+function getSettings() {
+  return JSON.parse(localStorage.getItem('fv_settings') || '{}');
 }
 
-async function saveSettings() {
+function saveSettings() {
   const body = {
-    restaurant_name:     document.getElementById('set_restaurant_name')?.value?.trim(),
-    owner_name:          document.getElementById('set_owner_name')?.value?.trim(),
-    signature:           document.getElementById('set_signature')?.value?.trim(),
-    response_tone:       document.getElementById('set_response_tone')?.value,
-    return_phrase:       document.getElementById('set_return_phrase')?.value?.trim(),
-    contact_phrase:      document.getElementById('set_contact_phrase')?.value?.trim(),
-    auto_reply_enabled:  document.getElementById('set_auto_reply_enabled')?.checked,
-    auto_reply_rule_5:   document.getElementById('set_rule_5')?.value,
-    auto_reply_rule_4:   document.getElementById('set_rule_4')?.value,
-    auto_reply_rule_3:   document.getElementById('set_rule_3')?.value,
-    auto_reply_rule_2:   document.getElementById('set_rule_2')?.value,
-    auto_reply_rule_1:   document.getElementById('set_rule_1')?.value
+    restaurant_name:    el('set_restaurant_name')?.value?.trim(),
+    owner_name:         el('set_owner_name')?.value?.trim(),
+    signature:          el('set_signature')?.value?.trim(),
+    response_tone:      el('set_response_tone')?.value,
+    return_phrase:      el('set_return_phrase')?.value?.trim(),
+    contact_phrase:     el('set_contact_phrase')?.value?.trim(),
+    auto_reply_enabled: el('set_auto_reply_enabled')?.checked,
+    auto_reply_rule_5:  el('set_rule_5')?.value,
+    auto_reply_rule_4:  el('set_rule_4')?.value,
+    auto_reply_rule_3:  el('set_rule_3')?.value,
+    auto_reply_rule_2:  el('set_rule_2')?.value,
+    auto_reply_rule_1:  el('set_rule_1')?.value,
+    google_client_id:   el('set_google_client_id')?.value?.trim(),
+    claude_api_key:     el('set_claude_api_key')?.value?.trim()
   };
-
-  // Supprimer les undefined/null
   Object.keys(body).forEach(k => { if (body[k] == null || body[k] === '') delete body[k]; });
+  localStorage.setItem('fv_settings', JSON.stringify(body));
 
-  try {
-    await api('PUT', '/settings', body);
-    toast('Paramètres enregistrés !', 'success');
-  } catch (e) {
-    toast('Erreur : ' + e.message, 'error');
+  if (body.restaurant_name) {
+    const merchant = JSON.parse(localStorage.getItem('fv_merchant') || '{}');
+    merchant.name = body.restaurant_name;
+    localStorage.setItem('fv_merchant', JSON.stringify(merchant));
+    el('merchantAvatar').textContent = merchant.name[0].toUpperCase();
+    document.title = `Fidelavis – ${merchant.name}`;
+  }
+  addLog('settings.updated', 'settings', 'fv_settings');
+  toast('Paramètres enregistrés !', 'success');
+}
+
+function populateSettings() {
+  const s = getSettings();
+  const f = (id, val) => { const e = el(id); if (e && val != null) e.value = val; };
+  f('set_restaurant_name', s.restaurant_name);
+  f('set_owner_name',      s.owner_name);
+  f('set_signature',       s.signature);
+  f('set_response_tone',   s.response_tone);
+  f('set_return_phrase',   s.return_phrase);
+  f('set_contact_phrase',  s.contact_phrase);
+  f('set_rule_5',          s.auto_reply_rule_5);
+  f('set_rule_4',          s.auto_reply_rule_4);
+  f('set_rule_3',          s.auto_reply_rule_3);
+  f('set_rule_2',          s.auto_reply_rule_2);
+  f('set_rule_1',          s.auto_reply_rule_1);
+  f('set_google_client_id', s.google_client_id);
+  f('set_claude_api_key',   s.claude_api_key);
+  const autoEl = el('set_auto_reply_enabled');
+  if (autoEl) autoEl.checked = !!s.auto_reply_enabled;
+  refreshLocationsList();
+}
+
+function refreshLocationsList() {
+  const locList = el('locationsList');
+  if (!locList) return;
+  const locations = JSON.parse(localStorage.getItem('fv_locations') || '[]');
+  const selLoc    = localStorage.getItem('fv_selected_location');
+  if (locations.length === 0) {
+    locList.innerHTML = '<p style="color:var(--muted)">Aucune fiche connectée</p>';
+  } else {
+    locList.innerHTML = locations.map(l => {
+      const isPrimary = l.name === selLoc;
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
+        <span style="font-size:20px">${isPrimary ? '📍' : '🏪'}</span>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:14px">${escHtml(l.title || l.name.split('/').pop())}</div>
+          ${l.address ? `<div style="font-size:12px;color:var(--muted)">${escHtml(l.address)}</div>` : ''}
+        </div>
+        ${!isPrimary
+          ? `<button class="btn-outline" style="font-size:11px;padding:4px 8px" onclick="selectLocation('${escHtml(l.name)}')">Sélectionner</button>`
+          : '<span style="font-size:11px;font-weight:700;color:var(--brand)">Principale</span>'}
+      </div>`;
+    }).join('');
   }
 }
 
-async function selectLocation(locationId) {
-  try {
-    await api('POST', `/auth/google/locations/${locationId}/select`);
-    toast('Fiche principale mise à jour !', 'success');
-    const me = await api('GET', '/auth/me');
-    populateSettings(me.settings, me.locations);
-  } catch (e) {
-    toast('Erreur : ' + e.message, 'error');
-  }
+function selectLocation(locationName) {
+  localStorage.setItem('fv_selected_location', locationName);
+  currentLocation = locationName;
+  refreshLocationsList();
+  toast('Fiche principale mise à jour !', 'success');
+  loadDashboard();
 }
 
 // ============================================================
 //  HISTORIQUE
 // ============================================================
-async function loadLogs() {
-  const tbody = document.getElementById('logsTableBody');
-  tbody.innerHTML = '<tr><td colspan="3" style="padding:24px;text-align:center;color:var(--muted)">Chargement...</td></tr>';
+function addLog(action, entityType, entityId) {
+  const logs = JSON.parse(localStorage.getItem('fv_logs') || '[]');
+  logs.unshift({ action, entity_type: entityType, entity_id: String(entityId), created_at: new Date().toISOString() });
+  if (logs.length > 100) logs.pop();
+  localStorage.setItem('fv_logs', JSON.stringify(logs));
+}
 
-  try {
-    const data = await api('GET', '/settings/logs?limit=50');
-    const actionLabels = {
-      'review.new':          '⭐ Nouvel avis importé',
-      'review.ignored':      '🙈 Avis ignoré',
-      'response.generated':  '🤖 Réponse IA générée',
-      'response.published':  '📤 Réponse publiée',
-      'response.publish_failed': '❌ Échec publication',
-      'sync.completed':      '🔄 Synchronisation terminée',
-      'google.connected':    '🔗 Google connecté',
-      'google.disconnected': '🔓 Google déconnecté',
-      'settings.updated':    '⚙️ Paramètres modifiés',
-      'merchant.login':      '👤 Connexion',
-      'merchant.registered': '🎉 Inscription'
-    };
-
-    tbody.innerHTML = (data.logs || []).map(l => `
+function loadLogs() {
+  const tbody = el('logsTableBody');
+  const logs  = JSON.parse(localStorage.getItem('fv_logs') || '[]');
+  const labels = {
+    'review.new':         '⭐ Nouvel avis importé',
+    'review.ignored':     '🙈 Avis ignoré',
+    'response.generated': '🤖 Réponse IA générée',
+    'response.published': '📤 Réponse publiée',
+    'sync.completed':     '🔄 Synchronisation terminée',
+    'google.connected':   '🔗 Google connecté',
+    'settings.updated':   '⚙️ Paramètres modifiés',
+    'merchant.login':     '👤 Connexion'
+  };
+  tbody.innerHTML = logs.length === 0
+    ? '<tr><td colspan="3" style="padding:32px;text-align:center;color:var(--muted)">Aucune action enregistrée</td></tr>'
+    : logs.map(l => `
       <tr style="border-bottom:1px solid var(--line)">
-        <td style="padding:11px 16px">${actionLabels[l.action] || l.action}</td>
-        <td style="padding:11px 16px;color:var(--muted);font-size:12px">${l.entity_type || ''} ${l.entity_id ? l.entity_id.slice(0,8)+'…' : ''}</td>
+        <td style="padding:11px 16px">${labels[l.action] || l.action}</td>
+        <td style="padding:11px 16px;color:var(--muted);font-size:12px">${l.entity_type || ''} ${l.entity_id ? String(l.entity_id).slice(0,8)+'…' : ''}</td>
         <td style="padding:11px 16px;color:var(--muted);font-size:12px">${formatDate(l.created_at)}</td>
-      </tr>`).join('') || '<tr><td colspan="3" style="padding:24px;text-align:center;color:var(--muted)">Aucune action enregistrée</td></tr>';
-
-  } catch (e) {
-    tbody.innerHTML = `<tr><td colspan="3" style="padding:24px;text-align:center;color:var(--red)">${e.message}</td></tr>`;
-  }
+      </tr>`).join('');
 }
 
 // ============================================================
@@ -1274,8 +1407,13 @@ function logout() {
 // ============================================================
 //  UTILS
 // ============================================================
+function el(id) { return document.getElementById(id); }
+
+// ============================================================
+//  UTILS
+// ============================================================
 function toast(msg, type = 'info') {
-  const c = document.getElementById('toastContainer');
+  const c = el('toastContainer');
   const t = document.createElement('div');
   t.className = `toast ${type}`;
   t.textContent = msg;
