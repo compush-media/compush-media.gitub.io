@@ -613,7 +613,7 @@ async function callAnthropicDirect(apiKey, payload) {
       "anthropic-dangerous-direct-browser-access": "true",
       "content-type": "application/json"
     },
-    body: JSON.stringify({ model: "claude-opus-4-6", max_tokens: 1500, system: system, messages: [{ role: "user", content: user }] })
+    body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 1500, system: system, messages: [{ role: "user", content: user }] })
   });
   if (!res.ok) {
     var e = await res.json().catch(function(){return{};});
