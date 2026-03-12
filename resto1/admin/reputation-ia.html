@@ -638,7 +638,6 @@ function _scoreObj(avg, total, trend, respRate, sentiment) {
     details:{note:Math.round(sR),volume:Math.round(sV),trend:Math.round(sT),reponse:Math.round(sRp),sentiment:Math.round(sS)}
   };
 }
-}
 
 /* === FONCTION 1 : RÉPONSE IA === */
 async function generateResponse() {
@@ -649,6 +648,14 @@ async function generateResponse() {
   var pwaLink    = document.getElementById("pwaLink").value.trim() || PWA_LINK;
 
   if (!reviewText) { showToast("Veuillez coller un avis avant de générer"); return; }
+
+  var apiKey = document.getElementById("apiKey").value.trim() || CLAUDE_API_KEY;
+  var proxyUrl = document.getElementById("proxyUrl").value.trim() || CLAUDE_PROXY_URL;
+  if (!apiKey && !proxyUrl) {
+    showToast("⚠️ Renseignez votre clé API Claude en haut de page");
+    document.getElementById("apiKey").focus();
+    return;
+  }
 
   var btn = document.getElementById("generateBtn");
   var spinner = document.getElementById("generateSpinner");
@@ -684,6 +691,8 @@ async function generateResponse() {
     errEl.style.display = "block";
     errEl.textContent = "Erreur : " + err.message;
     document.getElementById("replyEmpty").style.display = "block";
+    showToast("❌ " + err.message);
+    errEl.scrollIntoView({ behavior: "smooth", block: "center" });
   } finally {
     btn.disabled = false; spinner.style.display = "none";
   }
