@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fidelavis – Connexion</title>
+  <style>
+    :root {
+      --brand: #B48C4A; --brand2: #a97f37;
+      --bg: #fbfaf8; --card: #fff;
+      --ink: #191919; --muted: #6f6f6f;
+      --line: rgba(0,0,0,.08); --r: 16px;
+      --red: #d93025; --green: #1a9e5c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(160deg, #fbfaf8 0%, #f0ebe0 100%);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.08);
+    }
+    .logo-area { text-align: center; margin-bottom: 28px; }
+    .logo {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color: #fff;
+      font-weight: 900;
+      font-size: 15px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .logo-area h1 { font-size: 22px; font-weight: 900; color: var(--ink); }
+    .logo-area p  { font-size: 14px; color: var(--muted); margin-top: 4px; }
+    .tabs { display: flex; gap: 0; margin-bottom: 24px; border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .tab {
+      flex: 1; padding: 10px; text-align: center;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; background: var(--bg); color: var(--muted);
+      transition: background .15s, color .15s;
+      border: none;
+    }
+    .tab.active { background: var(--brand); color: #fff; }
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+    .form-row { margin-bottom: 16px; }
+    .form-row label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
+    .form-row input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 10px; font-size: 14px;
+      font-family: inherit; color: var(--ink);
+      background: var(--bg);
+      transition: border-color .15s;
+    }
+    .form-row input:focus { outline: none; border-color: var(--brand); background: var(--card); }
+    .btn-submit {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color: #fff; border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 800;
+      cursor: pointer; margin-top: 4px;
+      transition: opacity .15s;
+    }
+    .btn-submit:hover { opacity: .88; }
+    .btn-submit:disabled { opacity: .5; cursor: default; }
+    .error-msg { color: var(--red); font-size: 13px; font-weight: 600; margin-top: 12px; text-align: center; display: none; }
+    .success-msg { color: var(--green); font-size: 13px; font-weight: 600; margin-top: 12px; text-align: center; display: none; }
+    .footer-note { text-align: center; font-size: 12px; color: var(--muted); margin-top: 20px; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo-area">
+    <div class="logo">Fidelavis</div>
+    <h1>Gestion des avis Google</h1>
+    <p>Connectez-vous à votre espace commerçant</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('login')">Connexion</button>
+    <button class="tab" onclick="switchTab('register')">Créer un compte</button>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="form-panel active" id="panel-login">
+    <div class="form-row">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="vous@email.com" autocomplete="email" />
+    </div>
+    <div class="form-row">
+      <label>Mot de passe</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <button class="btn-submit" id="loginBtn" onclick="doLogin()">Se connecter</button>
+    <div class="error-msg" id="loginError"></div>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="form-panel" id="panel-register">
+    <div class="form-row">
+      <label>Nom de votre commerce</label>
+      <input type="text" id="regName" placeholder="Le Bistrot Marcel" />
+    </div>
+    <div class="form-row">
+      <label>Email</label>
+      <input type="email" id="regEmail" placeholder="vous@email.com" autocomplete="email" />
+    </div>
+    <div class="form-row">
+      <label>Mot de passe (min. 8 caractères)</label>
+      <input type="password" id="regPassword" placeholder="Choisissez un mot de passe sécurisé" autocomplete="new-password" />
+    </div>
+    <button class="btn-submit" id="regBtn" onclick="doRegister()">Créer mon compte</button>
+    <div class="error-msg" id="regError"></div>
+    <div class="success-msg" id="regSuccess"></div>
+  </div>
+
+  <div class="footer-note">Vos données sont sécurisées et ne sont jamais partagées.</div>
+</div>
+
+<script>
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000/api'
+  : 'https://api.fidelavis.com/api';
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register')));
+  document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+  document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+}
+
+async function doLogin() {
+  const email    = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl    = document.getElementById('loginError');
+  const btn      = document.getElementById('loginBtn');
+  errEl.style.display = 'none';
+
+  if (!email || !password) {
+    errEl.textContent = 'Veuillez remplir tous les champs.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Connexion...';
+
+  try {
+    const resp = await fetch(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await resp.json();
+
+    if (!resp.ok) throw new Error(data.error || 'Erreur connexion');
+
+    localStorage.setItem('fv_token', data.token);
+    window.location.href = '/fidelavis-admin/';
+
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Se connecter';
+  }
+}
+
+async function doRegister() {
+  const name     = document.getElementById('regName').value.trim();
+  const email    = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const errEl    = document.getElementById('regError');
+  const sucEl    = document.getElementById('regSuccess');
+  const btn      = document.getElementById('regBtn');
+  errEl.style.display = 'none';
+  sucEl.style.display = 'none';
+
+  if (!name || !email || !password) {
+    errEl.textContent = 'Veuillez remplir tous les champs.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (password.length < 8) {
+    errEl.textContent = 'Mot de passe minimum 8 caractères.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Création...';
+
+  try {
+    const resp = await fetch(`${API_BASE}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await resp.json();
+
+    if (!resp.ok) throw new Error(data.error || 'Erreur inscription');
+
+    localStorage.setItem('fv_token', data.token);
+    sucEl.textContent = '✅ Compte créé ! Redirection...';
+    sucEl.style.display = 'block';
+    setTimeout(() => window.location.href = '/fidelavis-admin/', 1000);
+
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Créer mon compte';
+  }
+}
+
+// Enter key support
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  if (document.getElementById('panel-login').classList.contains('active')) doLogin();
+  else doRegister();
+});
+</script>
+</body>
+</html>

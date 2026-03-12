@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fidelavis – Connecter Google Business Profile</title>
+  <style>
+    :root { --brand:#B48C4A; --brand2:#a97f37; --bg:#fbfaf8; --card:#fff; --ink:#191919; --muted:#6f6f6f; --line:rgba(0,0,0,.08); --red:#d93025; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif; background:linear-gradient(160deg,#fbfaf8 0%,#f0ebe0 100%); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:24px; padding:40px; width:100%; max-width:480px; box-shadow:0 20px 60px rgba(0,0,0,.08); text-align:center; }
+    .logo { display:inline-block; background:linear-gradient(135deg,var(--brand),var(--brand2)); color:#fff; font-weight:900; font-size:14px; padding:7px 16px; border-radius:999px; margin-bottom:20px; }
+    h1 { font-size:22px; font-weight:900; margin-bottom:10px; }
+    .subtitle { color:var(--muted); font-size:14px; line-height:1.6; margin-bottom:30px; }
+    .step-list { text-align:left; margin:24px 0; }
+    .step { display:flex; gap:14px; padding:12px 0; border-bottom:1px solid var(--line); align-items:flex-start; }
+    .step:last-child { border-bottom:none; }
+    .step-num { width:28px; height:28px; min-width:28px; border-radius:50%; background:linear-gradient(135deg,var(--brand),var(--brand2)); color:#fff; font-weight:900; font-size:13px; display:flex; align-items:center; justify-content:center; }
+    .step-text { font-size:14px; color:var(--ink); line-height:1.5; }
+    .step-text strong { font-weight:700; }
+    .btn-google { display:inline-flex; align-items:center; gap:12px; padding:14px 28px; background:#fff; border:2px solid var(--line); border-radius:12px; font-size:16px; font-weight:700; cursor:pointer; transition:box-shadow .15s,border-color .15s; color:var(--ink); width:100%; justify-content:center; }
+    .btn-google:hover { box-shadow:0 4px 20px rgba(0,0,0,.12); border-color:#aaa; }
+    .back-link { display:inline-block; margin-top:18px; font-size:13px; color:var(--muted); text-decoration:none; }
+    .back-link:hover { color:var(--brand); }
+    .error-banner { background:#fdf0ef; border:1.5px solid #f5c6c2; border-radius:10px; padding:12px 16px; color:var(--red); font-size:13px; font-weight:600; margin-bottom:20px; display:none; }
+    .scope-list { background:rgba(180,140,74,.06); border:1px solid rgba(180,140,74,.2); border-radius:10px; padding:14px; text-align:left; font-size:13px; margin:20px 0; }
+    .scope-list .scope-title { font-weight:700; margin-bottom:8px; font-size:12px; color:var(--muted); text-transform:uppercase; }
+    .scope-item { display:flex; gap:8px; padding:4px 0; }
+    .scope-item::before { content:'✓'; color:var(--brand); font-weight:700; flex-shrink:0; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Fidelavis</div>
+  <h1>Connecter Google Business Profile</h1>
+  <p class="subtitle">Autorisez Fidelavis à accéder à vos avis Google pour les importer et y répondre automatiquement.</p>
+
+  <div class="error-banner" id="errorBanner"></div>
+
+  <div class="scope-list">
+    <div class="scope-title">Fidelavis accédera à :</div>
+    <div class="scope-item">Lecture de vos avis Google Business Profile</div>
+    <div class="scope-item">Publication de réponses en votre nom</div>
+    <div class="scope-item">Informations de votre établissement</div>
+  </div>
+
+  <div class="step-list">
+    <div class="step"><div class="step-num">1</div><div class="step-text">Vous êtes redirigé vers <strong>Google</strong> pour vous connecter avec votre compte propriétaire de la fiche.</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">Google vous demande d'autoriser <strong>Fidelavis</strong> à accéder à votre Google Business Profile.</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Vous revenez automatiquement sur Fidelavis avec vos avis <strong>déjà importés</strong>.</div></div>
+  </div>
+
+  <button class="btn-google" onclick="connectGoogle()">
+    <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+    Connecter ma fiche Google
+  </button>
+
+  <a class="back-link" href="/fidelavis-admin/">← Retour au dashboard</a>
+</div>
+
+<script>
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000/api'
+  : 'https://api.fidelavis.com/api';
+
+const ERRORS = {
+  oauth_denied:   'Vous avez refusé la connexion Google. Réessayez et cliquez sur "Autoriser".',
+  no_gbp_account: 'Aucun compte Google Business Profile trouvé avec cet email Google.',
+  invalid_state:  'Session de connexion expirée (>10 min). Veuillez réessayer.',
+  callback_error: 'Une erreur s\'est produite lors de la connexion. Réessayez.'
+};
+
+(function init() {
+  const token = localStorage.getItem('fv_token');
+  if (!token) return window.location.href = '/fidelavis-admin/login.html';
+
+  const p = new URLSearchParams(location.search);
+  const err = p.get('error');
+  if (err) {
+    const el = document.getElementById('errorBanner');
+    el.textContent = ERRORS[err] || `Erreur : ${err}`;
+    el.style.display = 'block';
+    history.replaceState({}, '', location.pathname);
+  }
+})();
+
+async function connectGoogle() {
+  const token = localStorage.getItem('fv_token');
+  try {
+    const resp = await fetch(`${API_BASE}/auth/google`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || 'Erreur');
+    window.location.href = data.authUrl;
+  } catch (e) {
+    const el = document.getElementById('errorBanner');
+    el.textContent = 'Erreur : ' + e.message;
+    el.style.display = 'block';
+  }
+}
+</script>
+</body>
+</html>
