@@ -453,21 +453,21 @@
 
   <!-- NAVIGATION -->
   <nav class="nav">
-    <a class="nav-item active" data-section="dashboard" onclick="showSection('dashboard',this)">
+    <a class="nav-item active" href="javascript:void(0)" data-section="dashboard" onclick="showSection('dashboard',this)">
       <span class="nav-icon">📊</span> Dashboard
     </a>
-    <a class="nav-item" data-section="reviews" onclick="showSection('reviews',this)">
+    <a class="nav-item" href="javascript:void(0)" data-section="reviews" onclick="showSection('reviews',this)">
       <span class="nav-icon">⭐</span> Avis
       <span class="nav-badge" id="newBadge">0</span>
     </a>
-    <a class="nav-item" data-section="settings" onclick="showSection('settings',this)">
+    <a class="nav-item" href="javascript:void(0)" data-section="settings" onclick="showSection('settings',this)">
       <span class="nav-icon">⚙️</span> Paramètres
     </a>
-    <a class="nav-item" data-section="logs" onclick="showSection('logs',this)">
+    <a class="nav-item" href="javascript:void(0)" data-section="logs" onclick="showSection('logs',this)">
       <span class="nav-icon">📋</span> Historique
     </a>
     <div style="margin-top:auto;padding-top:20px;">
-      <a class="nav-item" onclick="logout()" style="color:var(--red)">
+      <a class="nav-item" href="javascript:void(0)" onclick="logout()" style="color:var(--red)">
         <span class="nav-icon">🚪</span> Déconnexion
       </a>
     </div>
@@ -489,6 +489,12 @@
           Connecter ma fiche Google
         </button>
         <a href="/fidelavis-admin/setup-google.html" target="_blank" style="display:inline-block;margin-top:12px;font-size:13px;color:var(--brand);font-weight:600;text-decoration:none">📖 Voir le guide de configuration →</a>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(180,140,74,.2)">
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Pas encore de fiche Google ? Testez toutes les fonctionnalités avec des données fictives :</p>
+          <button class="btn-outline" onclick="loadDemoData()" style="font-size:13px;padding:8px 18px">
+            🎭 Charger des données de démo
+          </button>
+        </div>
       </div>
 
       <!-- Bande de statut -->
@@ -1004,7 +1010,7 @@ function loadReviews(page = 1) {
 function filterReviews(value, el, isRating = false) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  currentFilter = { status: value, isRating };
+  currentFilter = { ...currentFilter, status: value, isRating };
   loadReviews(1);
 }
 
@@ -1213,6 +1219,10 @@ async function generateAndShow(reviewId) {
   }
 }
 
+async function regenerate(reviewId) {
+  await generateAndShow(reviewId);
+}
+
 async function publishDraft(reviewId) {
   const text = el(`draftText-${reviewId}`)?.value?.trim();
   if (!text) { toast('Réponse vide.', 'error'); return; }
@@ -1232,7 +1242,8 @@ async function publishDraft(reviewId) {
     const idx = reviews.findIndex(r => r.id === reviewId);
     if (idx >= 0) { reviews[idx].status = 'replied'; reviews[idx].reply_text = text; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
 
-    el(`card-${reviewId}`)?.querySelector('.review-actions').innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
+    const publishedCard = el(`card-${reviewId}`);
+    if (publishedCard) publishedCard.querySelector('.review-actions').innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
     addLog('response.published', 'review', reviewId);
     loadDashboard();
 
@@ -1429,6 +1440,178 @@ function formatDate(iso) {
     const d = new Date(iso);
     return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   } catch { return iso; }
+}
+
+// ============================================================
+//  MODE DÉMO
+// ============================================================
+function loadDemoData() {
+  const now = new Date();
+  const daysAgo = n => new Date(now - n * 86400000).toISOString();
+
+  const DEMO_REVIEWS = [
+    {
+      id: 'demo-1',
+      reviewer_name: 'Sophie Martin',
+      reviewer_photo: null,
+      rating: 5,
+      comment: 'Excellente expérience ! Le service était impeccable et les plats délicieux. Je recommande vivement cet établissement à tous mes amis. On reviendra très bientôt !',
+      published_at: daysAgo(1),
+      reply_text: null,
+      status: 'pending',
+      is_new: true,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-2',
+      reviewer_name: 'Jean-Pierre Dubois',
+      reviewer_photo: null,
+      rating: 4,
+      comment: 'Très bon restaurant, cuisine savoureuse et cadre agréable. Le service était rapide. Petit bémol sur le bruit ambiant mais rien de rédhibitoire.',
+      published_at: daysAgo(3),
+      reply_text: null,
+      status: 'pending',
+      is_new: true,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-3',
+      reviewer_name: 'Marie Leclerc',
+      reviewer_photo: null,
+      rating: 2,
+      comment: 'Déçue par ma visite. L\'attente était trop longue (45 min) et mon plat est arrivé froid. Pour le prix, on s\'attend à mieux.',
+      published_at: daysAgo(5),
+      reply_text: null,
+      status: 'pending',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-4',
+      reviewer_name: 'Thomas Bernard',
+      reviewer_photo: null,
+      rating: 5,
+      comment: 'Incroyable ! La meilleure table de la ville sans hésitation. Chef talentueux, service aux petits soins. Le dessert maison était un pur régal.',
+      published_at: daysAgo(7),
+      reply_text: 'Bonjour Thomas,\n\nMerci pour ce bel avis qui nous touche vraiment ! Ravie que vous ayez apprécié notre cuisine. Au plaisir de vous revoir !\n\nL\'équipe',
+      status: 'replied',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-5',
+      reviewer_name: 'Claire Fontaine',
+      reviewer_photo: null,
+      rating: 3,
+      comment: 'Endroit correct sans être exceptionnel. La carte manque un peu de variété et les portions sont petites pour le prix. L\'accueil était chaleureux.',
+      published_at: daysAgo(10),
+      reply_text: null,
+      status: 'pending',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-6',
+      reviewer_name: 'Alexandre Petit',
+      reviewer_photo: null,
+      rating: 1,
+      comment: 'Très mauvaise expérience. Personnel désagréable, plat immangeable. Je ne remettrai pas les pieds ici.',
+      published_at: daysAgo(14),
+      reply_text: null,
+      status: 'pending',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-7',
+      reviewer_name: 'Isabelle Moreau',
+      reviewer_photo: null,
+      rating: 5,
+      comment: 'On y fête nos anniversaires chaque année ! Toujours aussi bien. Merci à toute l\'équipe pour leur gentillesse.',
+      published_at: daysAgo(18),
+      reply_text: 'Bonjour Isabelle,\n\nQuelle belle fidélité ! Merci du fond du cœur. C\'est un honneur de partager ces moments avec vous. À très bientôt !\n\nL\'équipe',
+      status: 'replied',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-8',
+      reviewer_name: 'Nicolas Leroy',
+      reviewer_photo: null,
+      rating: 4,
+      comment: 'Belle découverte ! Rapport qualité-prix honnête, plats généreux. Je recommande le menu du midi, excellent.',
+      published_at: daysAgo(22),
+      reply_text: null,
+      status: 'pending',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    }
+  ];
+
+  // Paramètres démo
+  const demoSettings = {
+    restaurant_name:    'Le Bistrot Marcel',
+    owner_name:         'Marcel Dupont',
+    signature:          'Marcel et toute l\'équipe du Bistrot',
+    response_tone:      'warm',
+    return_phrase:      'Au plaisir de vous revoir très prochainement !',
+    contact_phrase:     'N\'hésitez pas à nous contacter directement au 01 23 45 67 89.',
+    auto_reply_rule_5:  'validate',
+    auto_reply_rule_4:  'auto',
+    auto_reply_rule_3:  'validate',
+    auto_reply_rule_2:  'disabled',
+    auto_reply_rule_1:  'disabled',
+    auto_reply_enabled: false
+  };
+
+  // Ne pas écraser les clés API si déjà saisies
+  const existing = getSettings();
+  if (existing.google_client_id) demoSettings.google_client_id = existing.google_client_id;
+  if (existing.claude_api_key)   demoSettings.claude_api_key   = existing.claude_api_key;
+
+  localStorage.setItem('fv_reviews',  JSON.stringify(DEMO_REVIEWS));
+  localStorage.setItem('fv_settings', JSON.stringify(demoSettings));
+  localStorage.setItem('fv_last_sync', daysAgo(1));
+  localStorage.setItem('fv_locations', JSON.stringify([{
+    name: 'accounts/demo/locations/demo-location',
+    title: 'Le Bistrot Marcel',
+    address: '12 Rue de la Paix, Paris'
+  }]));
+  localStorage.setItem('fv_selected_location', 'accounts/demo/locations/demo-location');
+
+  const merchant = JSON.parse(localStorage.getItem('fv_merchant') || '{}');
+  merchant.name = 'Le Bistrot Marcel';
+  localStorage.setItem('fv_merchant', JSON.stringify(merchant));
+  el('merchantAvatar').textContent = 'L';
+  document.title = 'Fidelavis – Le Bistrot Marcel';
+
+  addLog('sync.completed', 'demo', '8');
+  populateSettings();
+  toast('🎭 Données de démo chargées ! 8 avis fictifs ajoutés.', 'success');
+  loadDashboard();
+}
+
+function clearDemoData() {
+  if (!confirm('Supprimer toutes les données de démo ?')) return;
+  ['fv_reviews','fv_last_sync','fv_locations','fv_selected_location','fv_selected_account'].forEach(k => localStorage.removeItem(k));
+  loadDashboard();
+  toast('Données de démo supprimées.', 'info');
 }
 
 function escHtml(str) {
