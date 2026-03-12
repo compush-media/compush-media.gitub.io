@@ -742,22 +742,15 @@ async function initApp() {
     return window.location.href = '/fidelavis-admin/login.html';
   }
 
-  try {
-    const me = await api('GET', '/auth/me');
-    merchantData = me.merchant;
-    document.getElementById('merchantAvatar').textContent =
-      (merchantData.name || 'U')[0].toUpperCase();
-    document.title = `Fidelavis – ${merchantData.name}`;
+  // Mode démo : utiliser les données locales sans appel API
+  const savedMerchant = JSON.parse(localStorage.getItem('fv_merchant') || '{"name":"Admin"}');
+  merchantData = savedMerchant;
+  document.getElementById('merchantAvatar').textContent =
+    (merchantData.name || 'A')[0].toUpperCase();
+  document.title = `Fidelavis – ${merchantData.name}`;
 
-    loadDashboard();
-    populateSettings(me.settings, me.locations);
-
-  } catch (e) {
-    if (e.status === 401) {
-      localStorage.removeItem('fv_token');
-      window.location.href = '/fidelavis-admin/login.html';
-    }
-  }
+  loadDashboard();
+  populateSettings({}, []);
 }
 
 // ============================================================
@@ -1274,6 +1267,7 @@ async function loadLogs() {
 // ============================================================
 function logout() {
   localStorage.removeItem('fv_token');
+  localStorage.removeItem('fv_merchant');
   window.location.href = '/fidelavis-admin/login.html';
 }
 

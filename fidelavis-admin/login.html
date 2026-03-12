@@ -155,25 +155,10 @@ async function doLogin() {
   btn.disabled = true;
   btn.textContent = 'Connexion...';
 
-  try {
-    const resp = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await resp.json();
-
-    if (!resp.ok) throw new Error(data.error || 'Erreur connexion');
-
-    localStorage.setItem('fv_token', data.token);
-    window.location.href = '/fidelavis-admin/';
-
-  } catch (e) {
-    errEl.textContent = e.message;
-    errEl.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'Se connecter';
-  }
+  // Mode démo : accès direct sans backend
+  localStorage.setItem('fv_token', 'demo');
+  localStorage.setItem('fv_merchant', JSON.stringify({ name: email.split('@')[0] || 'Admin' }));
+  window.location.href = '/fidelavis-admin/';
 }
 
 async function doRegister() {
@@ -200,27 +185,12 @@ async function doRegister() {
   btn.disabled = true;
   btn.textContent = 'Création...';
 
-  try {
-    const resp = await fetch(`${API_BASE}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password })
-    });
-    const data = await resp.json();
-
-    if (!resp.ok) throw new Error(data.error || 'Erreur inscription');
-
-    localStorage.setItem('fv_token', data.token);
-    sucEl.textContent = '✅ Compte créé ! Redirection...';
-    sucEl.style.display = 'block';
-    setTimeout(() => window.location.href = '/fidelavis-admin/', 1000);
-
-  } catch (e) {
-    errEl.textContent = e.message;
-    errEl.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'Créer mon compte';
-  }
+  // Mode démo : création directe sans backend
+  localStorage.setItem('fv_token', 'demo');
+  localStorage.setItem('fv_merchant', JSON.stringify({ name }));
+  sucEl.textContent = '✅ Compte créé ! Redirection...';
+  sucEl.style.display = 'block';
+  setTimeout(() => window.location.href = '/fidelavis-admin/', 1000);
 }
 
 // Enter key support
