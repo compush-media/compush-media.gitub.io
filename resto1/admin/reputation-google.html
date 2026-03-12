@@ -752,6 +752,15 @@
 
     .empty-icon { font-size: 36px; display: block; margin-bottom: 8px; }
 
+    /* ═══ GUIDE STEP LINK ═══ */
+    .guide-step-link {
+      font-size: 12px;
+      color: var(--gold-dark);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .guide-step-link:hover { text-decoration: underline; }
+
     /* ═══ TOAST ═══ */
     .toast {
       position: fixed;
@@ -1075,9 +1084,72 @@
 
         <!-- Clés API -->
         <div class="card" style="margin-bottom:0">
-          <div class="card-title" style="margin-bottom:16px">
+          <div class="card-title" style="margin-bottom:4px">
             <span class="card-icon">🔑</span> Clés API
+            <button class="btn btn-ghost btn-sm" style="margin-left:auto;font-size:12px" onclick="App.toggleGuide()">
+              <span id="guideToggleIcon">📖</span> <span id="guideToggleLabel">Voir le guide</span>
+            </button>
           </div>
+
+          <!-- GUIDE CONFIGURATION GOOGLE -->
+          <div id="googleGuide" style="display:none; margin-bottom:18px">
+            <div style="background:var(--gold-pale);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-top:12px">
+              <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text)">
+                🛠️ Guide — Configurer Google Business Profile API
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:12px">
+
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+                  <div>
+                    <div style="font-size:13px;font-weight:600;margin-bottom:3px">Créer un projet Google Cloud</div>
+                    <div style="font-size:12px;color:var(--muted);margin-bottom:5px">Allez sur Google Cloud Console et créez un nouveau projet.</div>
+                    <a href="https://console.cloud.google.com/" target="_blank" class="guide-step-link">→ console.cloud.google.com</a>
+                  </div>
+                </div>
+
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+                  <div>
+                    <div style="font-size:13px;font-weight:600;margin-bottom:3px">Activer les APIs Google Business</div>
+                    <div style="font-size:12px;color:var(--muted);margin-bottom:5px">Activez ces deux APIs dans votre projet :</div>
+                    <a href="https://console.cloud.google.com/apis/library/mybusinessaccountmanagement.googleapis.com" target="_blank" class="guide-step-link">→ Business Account Management API</a>
+                    <br style="margin:3px 0">
+                    <a href="https://console.cloud.google.com/apis/library/mybusinessbusinessinformation.googleapis.com" target="_blank" class="guide-step-link">→ Business Information API</a>
+                  </div>
+                </div>
+
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+                  <div>
+                    <div style="font-size:13px;font-weight:600;margin-bottom:3px">Créer un ID Client OAuth 2.0</div>
+                    <div style="font-size:12px;color:var(--muted);margin-bottom:5px">Identifiants → Créer des identifiants → <strong>ID client OAuth 2.0</strong> → Application Web.</div>
+                    <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="guide-step-link">→ Identifiants Google Cloud</a>
+                  </div>
+                </div>
+
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <div style="width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</div>
+                  <div>
+                    <div style="font-size:13px;font-weight:600;margin-bottom:3px">Créer une API Key</div>
+                    <div style="font-size:12px;color:var(--muted);margin-bottom:5px">Identifiants → Créer des identifiants → <strong>Clé API</strong>. Copiez la clé générée.</div>
+                    <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="guide-step-link">→ Identifiants Google Cloud</a>
+                  </div>
+                </div>
+
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <div style="width:24px;height:24px;border-radius:50%;background:var(--success);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">5</div>
+                  <div>
+                    <div style="font-size:13px;font-weight:600;margin-bottom:3px">Coller les clés ci-dessous</div>
+                    <div style="font-size:12px;color:var(--muted)">Renseignez le <strong>Client ID</strong> et l'<strong>API Key</strong> dans les champs ci-dessous puis sauvegardez.</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
           <div class="form-group">
             <label class="form-label">Google Client ID (console.cloud.google.com)</label>
             <input type="text" class="form-input" id="cfgGoogleClientId" placeholder="xxxxxxxxxx.apps.googleusercontent.com">
@@ -1586,6 +1658,16 @@ const App = {
         <td style="color:var(--muted)">${this._esc(h.entite)}</td>
         <td style="color:var(--muted);font-size:12.5px">${h.date}</td>
       </tr>`).join('');
+  },
+
+  toggleGuide() {
+    const guide  = document.getElementById('googleGuide');
+    const icon   = document.getElementById('guideToggleIcon');
+    const label  = document.getElementById('guideToggleLabel');
+    const open   = guide.style.display === 'none';
+    guide.style.display = open ? '' : 'none';
+    icon.textContent    = open ? '✕' : '📖';
+    label.textContent   = open ? 'Fermer' : 'Voir le guide';
   },
 
   clearHistory() {
