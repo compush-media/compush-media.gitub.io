@@ -1219,6 +1219,10 @@ async function generateAndShow(reviewId) {
   }
 }
 
+async function regenerate(reviewId) {
+  await generateAndShow(reviewId);
+}
+
 async function publishDraft(reviewId) {
   const text = el(`draftText-${reviewId}`)?.value?.trim();
   if (!text) { toast('Réponse vide.', 'error'); return; }
