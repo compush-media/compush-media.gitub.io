@@ -744,7 +744,51 @@ function initGoogleAuth() {
   }
   currentAccount  = localStorage.getItem('fv_selected_account');
   currentLocation = localStorage.getItem('fv_selected_location');
+  // Auto-refresh : vérifie toutes les minutes si le token expire bientôt
+  setInterval(autoRefreshToken, 60 * 1000);
 }
+
+// ── Refresh silencieux (sans popup) ─────────────────────────
+async function refreshAccessToken() {
+  const settings = getSettings();
+  const clientId = settings.google_client_id;
+  if (!clientId || typeof google === 'undefined' || !google.accounts) return false;
+  return new Promise((resolve) => {
+    try {
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: 'https://www.googleapis.com/auth/business.manage',
+        prompt: '',   // chaîne vide = tentative silencieuse
+        callback: (resp) => {
+          if (resp.error || !resp.access_token) { resolve(false); return; }
+          localStorage.setItem('fv_google_token', resp.access_token);
+          localStorage.setItem('fv_google_token_expiry',
+            String(Date.now() + (resp.expires_in - 60) * 1000));
+          googleToken = resp.access_token;
+          addLog('google.token_refresh', 'google', 'auto');
+          resolve(true);
+        }
+      });
+      client.requestAccessToken({ prompt: '' });
+    } catch(e) { resolve(false); }
+  });
+}
+
+// ── Déclenché toutes les minutes ────────────────────────────
+async function autoRefreshToken() {
+  const expiry = parseInt(localStorage.getItem('fv_google_token_expiry') || '0');
+  // Refresh si le token expire dans moins de 5 minutes
+  if (googleToken && expiry && Date.now() > expiry - 5 * 60 * 1000) {
+    const ok = await refreshAccessToken();
+    if (!ok) {
+      // Refresh silencieux échoué → invalider le token
+      googleToken = null;
+      localStorage.removeItem('fv_google_token');
+      localStorage.removeItem('fv_google_token_expiry');
+    }
+  }
+}
+
 async function connectGoogle() {
   const settings = getSettings();
   const clientId = settings.google_client_id;
@@ -782,7 +826,12 @@ async function connectGoogle() {
 // ============================================================
 async function gbpGet(url) {
   if (!googleToken) throw new Error('Non connecté à Google');
-  const resp = await fetch(url, { headers: { 'Authorization': `Bearer ${googleToken}` } });
+  let resp = await fetch(url, { headers: { 'Authorization': `Bearer ${googleToken}` } });
+  // Token expiré : tentative de refresh silencieux puis 1 retry
+  if (resp.status === 401) {
+    const ok = await refreshAccessToken();
+    if (ok) resp = await fetch(url, { headers: { 'Authorization': `Bearer ${googleToken}` } });
+  }
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}));
     throw new Error(err.error?.message || `Google API ${resp.status}`);
