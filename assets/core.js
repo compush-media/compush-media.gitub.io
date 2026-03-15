@@ -4,7 +4,7 @@
    ===================================================== */
 (function () {
 
-  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
 
   /* --------------------------------------------------
      getRestoSlug() — extrait le slug depuis l'URL
