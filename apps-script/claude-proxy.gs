@@ -22,7 +22,6 @@
  *  - Rate limiting optionnel (voir config ci-dessous)
  * ============================================================
  */
-
 // ─── Configuration ──────────────────────────────────────────
 var CONFIG = {
   MODEL: "claude-opus-4-6",          // Modèle Claude à utiliser
@@ -32,13 +31,11 @@ var CONFIG = {
   ALLOWED_ORIGINS: [],                // Laisser vide = tous autorisés
                                       // Ex: ["https://voltaire.fidelavis.com"]
 };
-
 // ─── Point d'entrée POST ─────────────────────────────────────
 function doPost(e) {
   try {
     var body = JSON.parse(e.postData.contents);
     var action = body.action || "generate_response";
-
     var result;
     switch (action) {
       case "generate_response":
@@ -53,14 +50,11 @@ function doPost(e) {
       default:
         result = { error: "Action inconnue : " + action };
     }
-
     return buildResponse(result);
-
   } catch (err) {
     return buildResponse({ error: "Erreur proxy : " + err.message });
   }
 }
-
 // ─── Point d'entrée GET ──────────────────────────────────────
 function doGet(e) {
   if (e.parameter && e.parameter.payload) {
@@ -81,7 +75,6 @@ function doGet(e) {
   }
   return buildResponse({ status: "ok", proxy: "Fidelavis Claude Proxy", version: "1.0" });
 }
-
 // ─── Action 1 : Générer une réponse à un avis ───────────────
 function generateReviewResponse(params) {
   var review     = params.review     || "";
@@ -89,17 +82,12 @@ function generateReviewResponse(params) {
   var rating     = parseInt(params.rating, 10) || 3;
   var restoName  = params.restoName  || "le restaurant";
   var pwaLink    = params.pwaLink    || "";
-
   if (!review.trim()) {
     return { error: "Le texte de l'avis est vide." };
   }
-
-  // Contexte de style selon la plateforme
   var platformStyle = platform === "tripadvisor"
     ? "réponse élaborée, ton hospitalier et chaleureux, style hôtellerie-restauration professionnelle, 3-5 phrases"
     : "réponse courte, humaine, locale, authentique, 2-3 phrases maximum";
-
-  // Instruction selon la note
   var toneInstruction;
   if (rating >= 5) {
     toneInstruction = "Remerciement très chaleureux, valorisation de l'expérience vécue, enthousiasme sincère.";
@@ -110,15 +98,11 @@ function generateReviewResponse(params) {
   } else {
     toneInstruction = "Apaisement immédiat, reconnaissance du problème, proposition d'échange direct, formuler des excuses sincères.";
   }
-
-  // Ajout du lien PWA si avis positif
   var pwaInstruction = "";
   if (pwaLink && rating >= 4) {
     pwaInstruction = '\n\nIMPORTANT : À la fin de la réponse publique, ajouter exactement cette phrase (remplacer {{PWA_LINK}} par le lien fourni) : "Pour profiter de nos avantages fidélité lors de votre prochaine visite, installez notre carte fidélité digitale ici : ' + pwaLink + '"';
   }
-
   var systemPrompt = buildSystemPrompt(restoName);
-
   var userPrompt = [
     "Restaurant : " + restoName,
     "Plateforme : " + platform.toUpperCase(),
@@ -145,26 +129,20 @@ function generateReviewResponse(params) {
     '  "conseil_interne": "..."',
     "}"
   ].join("\n");
-
   var raw = callClaude(systemPrompt, userPrompt);
   return parseJsonResponse(raw);
 }
-
 // ─── Action 2 : Analyser un lot d'avis ──────────────────────
 function analyzeReviews(params) {
   var reviews   = params.reviews   || [];
   var restoName = params.restoName || "le restaurant";
-
   if (!reviews.length) {
     return { error: "Aucun avis fourni." };
   }
-
   var reviewText = reviews.map(function(r, i) {
     return (i + 1) + ". [" + (r.rating || "?") + "/5 – " + (r.platform || "?") + "] " + (r.text || "");
   }).join("\n");
-
   var systemPrompt = buildSystemPrompt(restoName);
-
   var userPrompt = [
     "Analyse les avis suivants pour " + restoName + " :",
     "",
@@ -181,33 +159,26 @@ function analyzeReviews(params) {
     '  "recommandations": ["...", "..."]',
     "}"
   ].join("\n");
-
   var raw = callClaude(systemPrompt, userPrompt);
   return parseJsonResponse(raw);
 }
-
 // ─── Action 3 : Calculer le score de réputation ──────────────
 function computeReputationScore(params) {
   var avgRating     = parseFloat(params.avgRating)     || 4.0;
   var totalReviews  = parseInt(params.totalReviews)    || 0;
-  var recentTrend   = params.recentTrend               || "stable";   // "hausse"|"baisse"|"stable"
-  var responseRate  = parseFloat(params.responseRate)  || 0;          // 0-100 %
-  var sentiment     = params.sentiment                 || "positif";  // "positif"|"neutre"|"négatif"
-
-  // Calcul pondéré du score (sur 100)
-  var scoreRating   = ((avgRating - 1) / 4) * 35;            // 35 pts
-  var scoreVolume   = Math.min(totalReviews / 200, 1) * 20;  // 20 pts (plafonné à 200 avis)
-  var scoreTrend    = recentTrend === "hausse" ? 20 : recentTrend === "stable" ? 12 : 0;  // 20 pts
-  var scoreResp     = (responseRate / 100) * 15;              // 15 pts
-  var scoreSentiment = sentiment === "positif" ? 10 : sentiment === "neutre" ? 5 : 0;     // 10 pts
-
+  var recentTrend   = params.recentTrend               || "stable";
+  var responseRate  = parseFloat(params.responseRate)  || 0;
+  var sentiment     = params.sentiment                 || "positif";
+  var scoreRating   = ((avgRating - 1) / 4) * 35;
+  var scoreVolume   = Math.min(totalReviews / 200, 1) * 20;
+  var scoreTrend    = recentTrend === "hausse" ? 20 : recentTrend === "stable" ? 12 : 0;
+  var scoreResp     = (responseRate / 100) * 15;
+  var scoreSentiment = sentiment === "positif" ? 10 : sentiment === "neutre" ? 5 : 0;
   var total = Math.round(scoreRating + scoreVolume + scoreTrend + scoreResp + scoreSentiment);
   total = Math.max(0, Math.min(100, total));
-
   var niveau  = total >= 80 ? "Excellent" : total >= 60 ? "Bon" : total >= 40 ? "Moyen" : "Faible";
   var risque  = total >= 70 ? "Faible" : total >= 50 ? "Moyen" : "Élevé";
   var tendance = recentTrend === "hausse" ? "📈 En progression" : recentTrend === "baisse" ? "📉 En recul" : "➡️ Stable";
-
   return {
     score:    total,
     niveau:   niveau,
@@ -222,14 +193,12 @@ function computeReputationScore(params) {
     }
   };
 }
-
 // ─── Appel API Claude ────────────────────────────────────────
 function callClaude(systemPrompt, userPrompt) {
   var apiKey = PropertiesService.getScriptProperties().getProperty("CLAUDE_API_KEY");
   if (!apiKey) {
     throw new Error("Clé API Claude non configurée. Allez dans Extensions > Propriétés du script > Ajouter CLAUDE_API_KEY.");
   }
-
   var payload = {
     model: CONFIG.MODEL,
     max_tokens: CONFIG.MAX_TOKENS,
@@ -238,7 +207,6 @@ function callClaude(systemPrompt, userPrompt) {
       { role: "user", content: userPrompt }
     ]
   };
-
   var options = {
     method: "post",
     contentType: "application/json",
@@ -249,19 +217,15 @@ function callClaude(systemPrompt, userPrompt) {
     payload: JSON.stringify(payload),
     muteHttpExceptions: true
   };
-
   var response = UrlFetchApp.fetch("https://api.anthropic.com/v1/messages", options);
   var code     = response.getResponseCode();
   var content  = response.getContentText();
-
   if (code !== 200) {
     throw new Error("Erreur API Claude (" + code + ") : " + content.substring(0, 200));
   }
-
   var json = JSON.parse(content);
   return json.content && json.content[0] ? json.content[0].text : "";
 }
-
 // ─── Prompt système commun ───────────────────────────────────
 function buildSystemPrompt(restoName) {
   return [
@@ -278,20 +242,16 @@ function buildSystemPrompt(restoName) {
     "- La langue de la réponse doit correspondre à la langue de l'avis.",
   ].join("\n");
 }
-
 // ─── Parser JSON robuste ─────────────────────────────────────
 function parseJsonResponse(raw) {
   if (!raw) return { error: "Réponse vide de Claude." };
   try {
-    // Extraire le JSON si entouré de markdown
     var clean = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
     return JSON.parse(clean);
   } catch (err) {
-    // Retourner le texte brut si pas de JSON valide
     return { raw_response: raw, parse_error: err.message };
   }
 }
-
 // ─── Constructeur de réponse HTTP ────────────────────────────
 function buildResponse(data) {
   return ContentService
