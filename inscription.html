@@ -166,40 +166,57 @@
     const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
     const now = Date.now();
 
-    try{
+    // Persiste l'inscription
+    try {
       localStorage.setItem("is_registered", "1");
       localStorage.setItem("fv_onboarding_done", "1");
       localStorage.setItem(`fv_registered_${RESTO}`, "1");
       localStorage.setItem(`fv_registered_at_${RESTO}`, String(now));
-    }catch(e){}
+    } catch(e){}
 
+    // Nettoie l'URL
+    params.delete("submitted");
+    const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
+    try { history.replaceState({}, document.title, clean); } catch(e){}
+
+    // Tracking signup — sendBeacon survit à la navigation, pas besoin de document.body
     const dedupKey = `signup_${RESTO}`;
     const last = Number(localStorage.getItem(dedupKey) || "0");
 
     if (!last || (now - last) > 86400000) {
       try { localStorage.setItem(dedupKey, String(now)); } catch(e){}
 
-      try {
-        window.Fidelavis?.track?.("signup", {
-          src: "ghl_redirect_inscription",
-          page: "inscription",
-          resto: RESTO
-        });
-      } catch(e){}
+      const STATS_URL = "https://script.google.com/macros/s/AKfycbxiZSHloUbi5zxx-jYanNiY6TnOO7u5GUzCVaVzHz5iuqU-PFxLg_-eDpepJCP4LXmATA/exec";
+      const payload = JSON.stringify({
+        resto:     RESTO,
+        event:     "signup",
+        jour:      new Date().toISOString().slice(0, 10),
+        mois:      new Date().getMonth() + 1,
+        annee:     new Date().getFullYear(),
+        user:      localStorage.getItem("user_email") || "",
+        userAgent: navigator.userAgent,
+        pageURL:   location.href,
+        deviceId:  localStorage.getItem("device_id") || "",
+        sessionId: sessionStorage.getItem("fv_session_id") || "",
+        src:       "ghl_redirect_inscription",
+        demo:      location.pathname.includes("/demo/") ? "1" : "0"
+      });
 
       try {
-        window.trackEventFidelavis?.("form_submit", RESTO, {
-          src: "ghl_redirect_inscription",
-          demo: location.pathname.includes("/demo/") ? "1" : "0"
+        // sendBeacon : fire-and-forget, survit à window.location.replace
+        const fd = new FormData();
+        fd.append("data", payload);
+        navigator.sendBeacon(STATS_URL, fd);
+      } catch(e) {
+        // Fallback si sendBeacon indisponible : track via core.js (nécessite body)
+        document.addEventListener("DOMContentLoaded", function() {
+          try { window.Fidelavis?.track?.("signup", { src: "ghl_redirect_inscription" }); } catch(e2){}
         });
-      } catch(e){}
+      }
     }
 
-    params.delete("submitted");
-    const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
-    try { history.replaceState({}, document.title, clean); } catch(e){}
-
-    setTimeout(() => window.location.replace("redit.html"), 220);
+    // Redirection après un court délai
+    setTimeout(() => window.location.replace("redit.html"), 400);
   })();
   </script>
 </head>
