@@ -749,41 +749,47 @@ async function loadDashboard() {
   document.getElementById('summaryAvis').textContent = pending > 0 ? `${pending} en attente` : 'À jour ✓';
   document.getElementById('dotAvis').className = 'summary-dot ' + (pending > 0 ? 'orange' : 'green');
 
-  // KPIs depuis API
-  try {
-    const s = await fetchStats(30);
-    document.getElementById('kpiScans').textContent    = s.scan             ?? '—';
-    document.getElementById('kpiSignups').textContent  = s.signup           ?? '—';
-    document.getElementById('kpiInstalls').textContent = s.install_confirmed ?? '—';
+  // KPIs depuis API — 3 tentatives automatiques (cold start Google Apps Script)
+  let lastErr = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      if (attempt > 0) await new Promise(r => setTimeout(r, attempt * 2000));
+      const s = await fetchStats(30);
+      document.getElementById('kpiScans').textContent    = s.scan             ?? '—';
+      document.getElementById('kpiSignups').textContent  = s.signup           ?? '—';
+      document.getElementById('kpiInstalls').textContent = s.install_confirmed ?? '—';
 
-    const installs = parseInt(s.install_confirmed) || 0;
-    document.getElementById('summaryInstalls').textContent = installs;
-    document.getElementById('dotInstallsSummary').className = 'summary-dot ' + (installs > 0 ? 'green' : 'orange');
+      const installs = parseInt(s.install_confirmed) || 0;
+      document.getElementById('summaryInstalls').textContent = installs;
+      document.getElementById('dotInstallsSummary').className = 'summary-dot ' + (installs > 0 ? 'green' : 'orange');
 
-    // Masquer l'alerte d'erreur si elle était visible
-    const errBanner = document.getElementById('dashboardError');
-    if (errBanner) errBanner.style.display = 'none';
+      const errBanner = document.getElementById('dashboardError');
+      if (errBanner) errBanner.style.display = 'none';
 
-    kpisLoaded = true;
-  } catch(err) {
-    const isTimeout = err?.name === 'AbortError';
-    ['kpiScans','kpiSignups','kpiInstalls'].forEach(id => {
-      document.getElementById(id).textContent = '—';
-    });
-    document.getElementById('summaryInstalls').textContent = '—';
-
-    // Afficher une bannière d'erreur avec bouton Réessayer
-    let errBanner = document.getElementById('dashboardError');
-    if (!errBanner) {
-      errBanner = document.createElement('div');
-      errBanner.id = 'dashboardError';
-      errBanner.style.cssText = 'background:#fee2e2;color:#dc2626;border-radius:10px;padding:14px 18px;font-size:13px;font-weight:600;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;';
-      document.getElementById('dashboard').insertBefore(errBanner, document.querySelector('.kpi-grid'));
+      kpisLoaded = true;
+      return;
+    } catch(err) {
+      lastErr = err;
     }
-    errBanner.innerHTML = `<span>${isTimeout ? '⏱ Délai dépassé — serveur trop lent.' : '⚠️ Impossible de charger les données.'} Vérifiez votre connexion.</span>`
-      + `<button onclick="kpisLoaded=false;loadDashboard();" style="background:#dc2626;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">↻ Réessayer</button>`;
-    errBanner.style.display = 'flex';
   }
+
+  // Échec après 3 tentatives
+  ['kpiScans','kpiSignups','kpiInstalls'].forEach(id => {
+    document.getElementById(id).textContent = '—';
+  });
+  document.getElementById('summaryInstalls').textContent = '—';
+
+  let errBanner = document.getElementById('dashboardError');
+  if (!errBanner) {
+    errBanner = document.createElement('div');
+    errBanner.id = 'dashboardError';
+    errBanner.style.cssText = 'background:#fee2e2;color:#dc2626;border-radius:10px;padding:14px 18px;font-size:13px;font-weight:600;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;';
+    document.getElementById('dashboard').insertBefore(errBanner, document.querySelector('.kpi-grid'));
+  }
+  const isTimeout = lastErr?.name === 'AbortError';
+  errBanner.innerHTML = `<span>${isTimeout ? '⏱ Délai dépassé — serveur trop lent.' : '⚠️ Impossible de charger les données.'} Vérifiez votre connexion.</span>`
+    + `<button onclick="kpisLoaded=false;loadDashboard();" style="background:#dc2626;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">↻ Réessayer</button>`;
+  errBanner.style.display = 'flex';
 }
 
 function updateCouponSummary() {
