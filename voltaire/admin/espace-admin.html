@@ -700,6 +700,8 @@ function initFromHash() {
   }
 }
 
+let kpisLoaded = false;
+
 window.addEventListener('popstate', initFromHash);
 initFromHash();
 
@@ -717,8 +719,8 @@ async function fetchStats(days) {
     clearTimeout(timer);
     if (!res.ok) throw new Error('API error');
     const data = await res.json();
-    if (!data || data.ok !== true) throw new Error('Bad response');
-    return data.stats || {};
+    if (!data || data.status !== 'ok') throw new Error('Bad response');
+    return data.stats || data || {};
   } catch(e) {
     clearTimeout(timer);
     throw e;
@@ -728,8 +730,6 @@ async function fetchStats(days) {
 // ═══════════════════════════════════════════════════════════════
 //  DASHBOARD
 // ═══════════════════════════════════════════════════════════════
-
-let kpisLoaded = false;
 
 async function loadDashboard() {
   if (kpisLoaded) return;
