@@ -203,10 +203,11 @@
       });
 
       try {
-        // sendBeacon : fire-and-forget, survit à window.location.replace
-        const fd = new FormData();
-        fd.append("data", payload);
-        navigator.sendBeacon(STATS_URL, fd);
+        // sendBeacon avec URLSearchParams → application/x-www-form-urlencoded
+        // (FormData enverrait multipart/form-data non lisible par e.parameter.data)
+        const sp = new URLSearchParams();
+        sp.append("data", payload);
+        navigator.sendBeacon(STATS_URL, sp);
       } catch(e) {
         // Fallback si sendBeacon indisponible : track via core.js (nécessite body)
         document.addEventListener("DOMContentLoaded", function() {
@@ -279,6 +280,70 @@
     const from = encodeURIComponent(location.pathname);
     document.getElementById("ppBtn").href  = "/privacy.html?from=" + from;
     document.getElementById("cguBtn").href = "/cgu.html?from=" + from;
+
+    // ─── Détection soumission GHL via postMessage ────────────
+    // GHL redirige l'iframe après submit → le parent ne voit pas ?submitted=1
+    // On écoute les messages de l'iframe pour déclencher le tracking quoi qu'il arrive.
+    let _ghlTracked = false;
+    window.addEventListener("message", function(ev) {
+      if (_ghlTracked) return;
+
+      // GHL envoie différents formats selon la version
+      var d = ev.data;
+      if (!d) return;
+
+      // Détecter un événement de soumission GHL
+      var isSubmit = false;
+      if (typeof d === "string") {
+        try { d = JSON.parse(d); } catch(_) { return; }
+      }
+      if (typeof d === "object") {
+        // formats connus : {event:"form_submitted"}, {type:"form_submit"}, {submitted:true}
+        var ev2 = (d.event || d.type || "").toLowerCase();
+        isSubmit = ev2.includes("submit") || ev2.includes("form_submit") || ev2.includes("submitted") || !!d.submitted;
+      }
+      if (!isSubmit) return;
+
+      _ghlTracked = true;
+
+      // Même logique que la détection par ?submitted=1
+      const STATS_URL2 = "https://script.google.com/macros/s/AKfycbxiZSHloUbi5zxx-jYanNiY6TnOO7u5GUzCVaVzHz5iuqU-PFxLg_-eDpepJCP4LXmATA/exec";
+      const RESTO2 = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+      const now2 = Date.now();
+
+      try {
+        localStorage.setItem("is_registered", "1");
+        localStorage.setItem("fv_onboarding_done", "1");
+        localStorage.setItem("fv_registered_" + RESTO2, "1");
+        localStorage.setItem("fv_registered_at_" + RESTO2, String(now2));
+      } catch(_) {}
+
+      const dedupKey2 = "signup_pm_" + RESTO2;
+      const last2 = Number(localStorage.getItem(dedupKey2) || "0");
+      if (!last2 || (now2 - last2) > 86400000) {
+        try { localStorage.setItem(dedupKey2, String(now2)); } catch(_) {}
+        try {
+          const sp2 = new URLSearchParams();
+          sp2.append("data", JSON.stringify({
+            resto: RESTO2, event: "signup",
+            jour: new Date().toISOString().slice(0, 10),
+            mois: new Date().getMonth() + 1,
+            annee: new Date().getFullYear(),
+            user: localStorage.getItem("user_email") || "",
+            userAgent: navigator.userAgent,
+            pageURL: location.href,
+            deviceId: localStorage.getItem("device_id") || "",
+            sessionId: sessionStorage.getItem("fv_session_id") || "",
+            src: "ghl_postmessage",
+            demo: location.pathname.includes("/demo/") ? "1" : "0"
+          }));
+          navigator.sendBeacon(STATS_URL2, sp2);
+        } catch(_) {}
+      }
+
+      setTimeout(() => window.location.replace("redit.html"), 400);
+    });
+    // ────────────────────────────────────────────────────────
 
     function setFrameHeight(){
       const frame = document.getElementById("ghlFrame");

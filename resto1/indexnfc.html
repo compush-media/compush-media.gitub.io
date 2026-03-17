@@ -52,8 +52,27 @@
   function routeIfReturning(){
     if (!hasAccessSafe()) return false;
 
-    // tracking optionnel
-    try { window.Fidelavis?.track?.("nfc_returning"); } catch(e){}
+    // ✅ Track scan NFC AVANT la redirection via sendBeacon
+    // (navigator.sendBeacon survit à la navigation, contrairement au form/iframe
+    //  qui est annulé dès que window.location change)
+    try {
+      var scanDedupKey = "scan_" + RESTO + "_" + new Date().toISOString().slice(0, 10);
+      if (!sessionStorage.getItem(scanDedupKey)) {
+        sessionStorage.setItem(scanDedupKey, "1");
+        var TRACK_URL = "https://script.google.com/macros/s/AKfycbxiZSHloUbi5zxx-jYanNiY6TnOO7u5GUzCVaVzHz5iuqU-PFxLg_-eDpepJCP4LXmATA/exec";
+        var payload = JSON.stringify({
+          resto:     RESTO,
+          event:     "scan",
+          jour:      new Date().toISOString().slice(0, 10),
+          mois:      new Date().getMonth() + 1,
+          annee:     new Date().getFullYear(),
+          user:      "",
+          src:       "nfc"
+        });
+        var blob = new Blob(["data=" + encodeURIComponent(payload)], { type: "application/x-www-form-urlencoded" });
+        navigator.sendBeacon(TRACK_URL, blob);
+      }
+    } catch(e) {}
 
     if (!isIOS()){
       openAndroidPWA();
