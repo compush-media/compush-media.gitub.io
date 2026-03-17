@@ -938,6 +938,7 @@ async function sendNotification() {
 
     const res  = await fetch(proxyUrl, { cache: 'no-store' });
     const data = await res.json();
+    console.log('[NOTIF DEBUG]', JSON.stringify(data));
 
     if (data?.ok) {
       showNotifFeedback('✅ Notification envoyée avec succès !', 'success');
