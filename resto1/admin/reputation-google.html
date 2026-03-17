@@ -693,7 +693,8 @@
 // ============================================================
 //  STATE
 // ============================================================
-let authToken     = localStorage.getItem('fv_token') || null;
+const _adminSite  = location.pathname.split('/')[1] || 'resto1';
+let authToken     = localStorage.getItem('fv_token') || localStorage.getItem('admin_' + _adminSite) || null;
 let merchantData  = null;
 let googleToken   = null;
 let currentAccount  = null;
