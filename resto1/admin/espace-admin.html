@@ -948,11 +948,8 @@ async function sendNotification() {
     } else {
       throw new Error(data?.error || 'Erreur API');
     }
-  } catch {
-    showNotifFeedback(
-      '⚠️ Envoi non disponible pour l\'instant. Contactez Fidelavis ou utilisez le dashboard Progressier.',
-      'error'
-    );
+  } catch (err) {
+    showNotifFeedback('⚠️ ' + (err?.message || 'Erreur inconnue'), 'error');
   }
 
   btn.disabled    = false;
