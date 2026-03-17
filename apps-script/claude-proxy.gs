@@ -7,9 +7,9 @@
  *  INSTALLATION :
  *  1. Créer un nouveau projet sur script.google.com
  *  2. Coller ce code
- *  3. Stocker votre clé Claude : PropertiesService.getScriptProperties()
- *     → Menu Extensions > Propriétés du script > Ajouter
- *     → Clé : CLAUDE_API_KEY  Valeur : sk-ant-api03-xxxxx
+ *  3. Stocker vos clés : Extensions > Propriétés du script > Ajouter
+ *     → Clé : CLAUDE_API_KEY       Valeur : sk-ant-api03-xxxxx
+ *     → Clé : PROGRESSIER_API_KEY  Valeur : (clé dans Progressier > Settings > API Key)
  *  4. Déployer > Nouveau déploiement > Application Web
  *     → Exécuter en tant que : Moi
  *     → Accès : Tout le monde (anonyme)
@@ -47,6 +47,9 @@ function doPost(e) {
       case "compute_score":
         result = computeReputationScore(body);
         break;
+      case "push_notification":
+        result = pushNotification(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -57,7 +60,26 @@ function doPost(e) {
 }
 // ─── Point d'entrée GET ──────────────────────────────────────
 function doGet(e) {
-  if (e.parameter && e.parameter.payload) {
+  if (!e.parameter) {
+    return buildResponse({ status: "ok", proxy: "Fidelavis Claude Proxy", version: "1.0" });
+  }
+
+  // Paramètres directs dans l'URL (ex: ?action=push_notification&title=...&body=...)
+  if (e.parameter.action) {
+    try {
+      var result;
+      switch (e.parameter.action) {
+        case "push_notification": result = pushNotification(e.parameter); break;
+        default: result = { error: "Action GET inconnue : " + e.parameter.action };
+      }
+      return buildResponse(result);
+    } catch (err) {
+      return buildResponse({ error: "Erreur proxy : " + err.message });
+    }
+  }
+
+  // Payload JSON encodé (legacy)
+  if (e.parameter.payload) {
     try {
       var body = JSON.parse(e.parameter.payload);
       var action = body.action || "generate_response";
@@ -66,6 +88,7 @@ function doGet(e) {
         case "generate_response":  result = generateReviewResponse(body); break;
         case "analyze_reviews":    result = analyzeReviews(body);         break;
         case "compute_score":      result = computeReputationScore(body); break;
+        case "push_notification":  result = pushNotification(body);       break;
         default: result = { error: "Action inconnue : " + action };
       }
       return buildResponse(result);
@@ -73,6 +96,7 @@ function doGet(e) {
       return buildResponse({ error: "Erreur proxy : " + err.message });
     }
   }
+
   return buildResponse({ status: "ok", proxy: "Fidelavis Claude Proxy", version: "1.0" });
 }
 // ─── Action 1 : Générer une réponse à un avis ───────────────
@@ -252,6 +276,46 @@ function parseJsonResponse(raw) {
     return { raw_response: raw, parse_error: err.message };
   }
 }
+// ─── Action 4 : Envoyer une notification push (Progressier) ──
+function pushNotification(params) {
+  var title = (params.title || "").trim();
+  var body  = (params.body  || "").trim();
+  var url   = (params.url   || "").trim();
+
+  if (!title) return { error: "Le titre est obligatoire." };
+  if (!body)  return { error: "Le message est obligatoire." };
+
+  var apiKey = PropertiesService.getScriptProperties().getProperty("PROGRESSIER_API_KEY");
+  if (!apiKey) {
+    return { error: "Clé API Progressier non configurée. Ajoutez PROGRESSIER_API_KEY dans Extensions > Propriétés du script." };
+  }
+
+  var payload = {
+    title:      title,
+    body:       body,
+    recipients: { users: "all" }
+  };
+  if (url) payload.url = url;
+
+  var options = {
+    method:          "post",
+    contentType:     "application/json",
+    headers:         { "authorization": apiKey },
+    payload:         JSON.stringify(payload),
+    muteHttpExceptions: true
+  };
+
+  var response = UrlFetchApp.fetch("https://progressier.app/api/v1/send", options);
+  var code     = response.getResponseCode();
+  var content  = response.getContentText();
+
+  if (code !== 200 && code !== 201) {
+    return { error: "Erreur Progressier (" + code + ") : " + content.substring(0, 300) };
+  }
+
+  return { ok: true };
+}
+
 // ─── Constructeur de réponse HTTP ────────────────────────────
 function buildResponse(data) {
   return ContentService
