@@ -11,7 +11,7 @@
   <!-- ✅ Tracking Apps Script Fidelavis -->
   <script>
   (function(){
-    const STATS_URL = "https://script.google.com/macros/s/AKfycbxiZSHloUbi5zxx-jYanNiY6TnOO7u5GUzCVaVzHz5iuqU-PFxLg_-eDpepJCP4LXmATA/exec";
+    const STATS_URL = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
 
     window.trackEventFidelavis = function(eventName, restoName, extra = {}) {
       try {
@@ -186,7 +186,7 @@
     if (!last || (now - last) > 86400000) {
       try { localStorage.setItem(dedupKey, String(now)); } catch(e){}
 
-      const STATS_URL = "https://script.google.com/macros/s/AKfycbxiZSHloUbi5zxx-jYanNiY6TnOO7u5GUzCVaVzHz5iuqU-PFxLg_-eDpepJCP4LXmATA/exec";
+      const STATS_URL = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
       const payload = JSON.stringify({
         resto:     RESTO,
         event:     "signup",
@@ -307,7 +307,7 @@
       _ghlTracked = true;
 
       // Même logique que la détection par ?submitted=1
-      const STATS_URL2 = "https://script.google.com/macros/s/AKfycbxiZSHloUbi5zxx-jYanNiY6TnOO7u5GUzCVaVzHz5iuqU-PFxLg_-eDpepJCP4LXmATA/exec";
+      const STATS_URL2 = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
       const RESTO2 = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
       const now2 = Date.now();
 
