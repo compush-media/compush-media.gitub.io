@@ -340,12 +340,12 @@ function pushNotification(params) {
   var options = {
     method:          "post",
     contentType:     "application/json",
-    headers:         { "authorization": apiKey },
+    headers:         { "authorization": "Bearer " + apiKey },
     payload:         JSON.stringify(payload),
     muteHttpExceptions: true
   };
 
-  var response = UrlFetchApp.fetch("https://progressier.app/api/v1/send", options);
+  var response = UrlFetchApp.fetch("https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/send", options);
   var code     = response.getResponseCode();
   var content  = response.getContentText();
 
