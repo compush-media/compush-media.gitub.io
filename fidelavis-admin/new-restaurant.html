@@ -225,14 +225,43 @@ const BASE_URL  = 'https://app.cartefidelavis.com';
 
 // ─── Token ─────────────────────────────────────────────────────────────────
 function getToken() { return localStorage.getItem('fv_gh_token') || ''; }
-function saveToken() {
+
+async function saveToken() {
   const v = document.getElementById('tokenInput').value.trim();
   if (!v) return;
   localStorage.setItem('fv_gh_token', v);
   document.getElementById('tokenInputWrap').classList.remove('show');
   document.getElementById('tokenHelp').style.display = 'none';
-  updateTokenBanner(true);
+  await verifyToken();
 }
+
+async function verifyToken() {
+  const b = document.getElementById('tokenBanner');
+  b.className = 'token-banner';
+  b.querySelector('span').innerHTML = '<b>Token GitHub</b> — vérification…';
+  b.querySelector('.token-actions').innerHTML =
+    '<span style="font-size:12px;color:var(--muted)">↻</span>';
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`,
+      { headers: {
+          'Authorization': `Bearer ${getToken()}`,
+          'Accept': 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28'
+      }}
+    );
+    if (res.status === 401) throw new Error('token_invalid');
+    if (res.status === 403) throw new Error('token_forbidden');
+    if (res.status === 404) throw new Error('token_norepo');
+    const data = await res.json();
+    const canPush = data.permissions?.push || data.permissions?.admin;
+    if (!canPush) throw new Error('token_readonly');
+    updateTokenBanner('ok', `Accès vérifié — ${data.full_name}`);
+  } catch(e) {
+    updateTokenBanner('error', e.message);
+  }
+}
+
 function showTokenInput() {
   document.getElementById('tokenInputWrap').classList.toggle('show');
   document.getElementById('tokenHelp').style.display =
@@ -240,14 +269,68 @@ function showTokenInput() {
   if (document.getElementById('tokenInputWrap').classList.contains('show'))
     document.getElementById('tokenInput').focus();
 }
-function updateTokenBanner(ok) {
+
+function updateTokenBanner(state, detail) {
   const b = document.getElementById('tokenBanner');
-  b.className = 'token-banner ' + (ok ? 'ok' : '');
-  b.querySelector('span').innerHTML = ok
-    ? '<b>Token GitHub</b> — configuré ✓'
-    : '<b>Token GitHub</b> — requis pour créer des fichiers';
+  const msgs = {
+    ok:             `<b>Token GitHub</b> — ${detail || 'configuré ✓'}`,
+    error:          tokenErrorMsg(detail),
+    token_invalid:  '<b>Token invalide</b> — vérifiez la valeur (commence par <code>ghp_</code> ou <code>github_pat_</code>)',
+    token_forbidden:'<b>Accès refusé</b> — voir les instructions ci-dessous',
+    token_norepo:   '<b>Repo introuvable</b> — le token n\'a pas accès à ce repo',
+    token_readonly: '<b>Token en lecture seule</b> — activez la permission Contents: write',
+  };
+  b.className = 'token-banner ' + (state === 'ok' ? 'ok' : 'error');
+  b.querySelector('span').innerHTML = msgs[state] || msgs.error || `<b>Token GitHub</b> — ${detail}`;
+  b.querySelector('.token-actions').innerHTML =
+    `<button class="token-btn" onclick="showTokenInput()">Modifier</button>
+     <button class="token-btn" onclick="verifyToken()">Tester</button>`;
+  // Show help on error
+  const help = document.getElementById('tokenHelp');
+  if (state !== 'ok') {
+    help.style.display = 'block';
+    help.innerHTML = tokenHelpHtml(state);
+  } else {
+    help.style.display = 'none';
+  }
 }
-if (getToken()) updateTokenBanner(true);
+
+function tokenErrorMsg(code) {
+  const map = {
+    token_invalid:  '<b>Token invalide</b> — vérifiez la valeur',
+    token_forbidden:'<b>Accès refusé (403)</b> — token sans permission d\'écriture',
+    token_norepo:   '<b>Repo introuvable</b> — le token n\'a pas accès à ce repo',
+    token_readonly: '<b>Token en lecture seule</b> — ajoutez Contents: write',
+  };
+  return map[code] || `<b>Erreur token</b> — ${code}`;
+}
+
+function tokenHelpHtml(code) {
+  if (code === 'token_forbidden' || code === 'token_readonly' || code === 'error') {
+    return `<b>Comment corriger l'erreur 403 :</b><br><br>
+    <b>Option A — Token classique (recommandé)</b><br>
+    1. Allez sur <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a><br>
+    2. Cochez le scope <code>repo</code> (accès complet)<br>
+    3. Si l'org <code>compush-media</code> utilise le SSO : cliquez <b>Configure SSO → Authorize</b><br><br>
+    <b>Option B — Fine-grained token</b><br>
+    1. Allez sur <a href="https://github.com/settings/tokens?type=beta" target="_blank">github.com/settings/tokens</a><br>
+    2. Créez/modifiez le token, dans <b>Repository access</b> sélectionnez <code>compush-media.gitub.io</code><br>
+    3. Dans <b>Permissions → Contents</b> → choisissez <b>Read and write</b>`;
+  }
+  if (code === 'token_invalid') {
+    return `Le token doit commencer par <code>ghp_</code> (classic) ou <code>github_pat_</code> (fine-grained).<br>
+    Créez-en un sur <a href="https://github.com/settings/tokens/new?scopes=repo" target="_blank">github.com/settings/tokens/new</a>`;
+  }
+  return `Créez un token sur <a href="https://github.com/settings/tokens/new?scopes=repo&description=Fidelavis+Admin" target="_blank">github.com/settings/tokens</a>
+  avec le scope <code>repo</code>.`;
+}
+
+// Init token check
+if (getToken()) verifyToken();
+else {
+  document.getElementById('tokenBanner').querySelector('.token-actions').innerHTML =
+    `<button class="token-btn" onclick="showTokenInput()">Configurer</button>`;
+}
 
 // ─── Slug ──────────────────────────────────────────────────────────────────
 function slug(v) {
@@ -309,7 +392,14 @@ async function ghApi(path, method='GET', body=null) {
   const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}${path}`, opts);
   if (!res.ok) {
     const err = await res.json().catch(()=>({}));
-    throw new Error(`GitHub API ${res.status}: ${err.message || res.statusText}`);
+    const msg = err.message || res.statusText;
+    if (res.status === 403) {
+      throw new Error(
+        `403 — Accès refusé. Votre token n'a pas la permission d'écrire sur ce repo.\n` +
+        `→ Consultez le bandeau "Token GitHub" en haut de la page pour les instructions.`
+      );
+    }
+    throw new Error(`GitHub API ${res.status}: ${msg}`);
   }
   if (res.status === 204) return null;
   return res.json();
@@ -371,6 +461,23 @@ async function createRestaurant() {
   if (!getToken()) {
     showTokenInput();
     document.getElementById('tokenInput').focus();
+    return;
+  }
+
+  // Pre-flight: verify write access
+  const permRes = await fetch(
+    `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`,
+    { headers: {
+        'Authorization': `Bearer ${getToken()}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+    }}
+  );
+  if (!permRes.ok || !(await permRes.json().then(d => d.permissions?.push || d.permissions?.admin).catch(()=>false))) {
+    updateTokenBanner('token_forbidden');
+    document.getElementById('tokenHelp').style.display = 'block';
+    document.getElementById('tokenHelp').innerHTML = tokenHelpHtml('token_forbidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
 
