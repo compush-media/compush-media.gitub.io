@@ -460,6 +460,9 @@
       <span class="nav-icon">⭐</span> Avis
       <span class="nav-badge" id="newBadge">0</span>
     </a>
+    <a class="nav-item" href="javascript:void(0)" data-section="restaurants" onclick="showSection('restaurants',this)">
+      <span class="nav-icon">🍽️</span> Restaurants
+    </a>
     <a class="nav-item" href="javascript:void(0)" data-section="settings" onclick="showSection('settings',this)">
       <span class="nav-icon">⚙️</span> Paramètres
     </a>
@@ -697,6 +700,60 @@
             <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
             Ajouter / Reconnecter Google
           </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── RESTAURANTS ── -->
+    <section class="section" id="section-restaurants">
+      <div class="section-title">🍽️ Restaurants
+        <span id="restoCount" style="font-size:13px;font-weight:600;color:var(--muted);margin-left:8px"></span>
+      </div>
+
+      <!-- Grille restaurants -->
+      <div id="restoGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:28px">
+        <div class="loading">Chargement des restaurants…</div>
+      </div>
+
+      <!-- Commande CLI pour créer un restaurant -->
+      <div class="stat-card" style="margin-top:8px">
+        <div style="font-weight:900;font-size:15px;margin-bottom:16px">➕ Créer un nouveau restaurant</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div>
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Slug (URL)</label>
+            <input id="newSlug" type="text" placeholder="bistro-paris" style="width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Nom du restaurant</label>
+            <input id="newName" type="text" placeholder="Le Bistro de Paris" style="width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Couleur principale</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input id="newColor" type="color" value="#B8924F" style="width:40px;height:36px;border:1.5px solid var(--line);border-radius:6px;padding:2px;cursor:pointer">
+              <input id="newColorHex" type="text" value="#B8924F" placeholder="#B8924F" style="flex:1;padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:monospace">
+            </div>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Téléphone (optionnel)</label>
+            <input id="newPhone" type="text" placeholder="01 23 45 67 89" style="width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit">
+          </div>
+          <div style="grid-column:1/-1">
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Adresse (optionnel)</label>
+            <input id="newAddress" type="text" placeholder="12 rue de Rivoli, Paris" style="width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit">
+          </div>
+          <div style="grid-column:1/-1">
+            <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Lien avis Google (optionnel)</label>
+            <input id="newGoogleReview" type="text" placeholder="https://g.page/r/XXX/review" style="width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit">
+          </div>
+        </div>
+        <button class="btn-primary" style="margin-bottom:14px" onclick="generateRestoCmd()">Générer la commande</button>
+        <div id="cmdOutput" style="display:none">
+          <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">Copier et coller dans votre terminal :</div>
+          <div style="position:relative">
+            <pre id="cmdText" style="background:#1a1a1a;color:#f0f0f0;padding:14px 16px;border-radius:10px;font-size:12px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;margin:0"></pre>
+            <button onclick="copyCmd()" style="position:absolute;top:8px;right:8px;padding:4px 10px;background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">Copier</button>
+          </div>
         </div>
       </div>
     </section>
@@ -1622,6 +1679,93 @@ function escHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
+
+// ============================================================
+//  RESTAURANTS (SaaS)
+// ============================================================
+const BASE = 'https://app.cartefidelavis.com';
+
+async function loadRestoSection() {
+  const grid = document.getElementById('restoGrid');
+  const count = document.getElementById('restoCount');
+  if (!grid) return;
+
+  let data;
+  try {
+    const res = await fetch('/data/restaurants.json', { cache: 'no-store' });
+    data = res.ok ? await res.json() : null;
+  } catch (e) { data = null; }
+
+  if (!data || !Object.keys(data).length) {
+    grid.innerHTML = '<div class="loading">Aucun restaurant enregistré.</div>';
+    return;
+  }
+
+  const slugs = Object.keys(data);
+  count.textContent = `(${slugs.length} restaurant${slugs.length > 1 ? 's' : ''})`;
+
+  grid.innerHTML = slugs.map(slug => {
+    const r = data[slug];
+    const color = r.brandColor || '#B8924F';
+    const color2 = r.brandColor2 || '#9E7A3E';
+    return `
+      <div class="stat-card" style="border-top:4px solid ${color}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,${color},${color2});flex-shrink:0"></div>
+          <div>
+            <div style="font-weight:900;font-size:15px">${esc(r.name || slug)}</div>
+            <div style="font-size:12px;color:var(--muted);font-family:monospace">/${slug}/</div>
+          </div>
+        </div>
+        ${r.address ? `<div style="font-size:12px;color:var(--muted);margin-bottom:4px">📍 ${esc(r.address)}</div>` : ''}
+        ${r.phone   ? `<div style="font-size:12px;color:var(--muted);margin-bottom:10px">📞 ${esc(r.phone)}</div>` : ''}
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <a href="${BASE}/${slug}/index.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">🏠 Site</a>
+          <a href="${BASE}/${slug}/admin/login.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">⚙️ Admin</a>
+          <a href="${BASE}/${slug}/admin/state.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">📊 Stats</a>
+          <a href="${BASE}/${slug}/admin/reputation-google.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">⭐ Réputation</a>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function generateRestoCmd() {
+  const slug    = document.getElementById('newSlug').value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
+  const name    = document.getElementById('newName').value.trim();
+  const color   = document.getElementById('newColorHex').value.trim() || document.getElementById('newColor').value;
+  const phone   = document.getElementById('newPhone').value.trim();
+  const address = document.getElementById('newAddress').value.trim();
+  const gr      = document.getElementById('newGoogleReview').value.trim();
+
+  if (!slug || !name) { toast('Slug et nom sont requis', 'error'); return; }
+
+  const q = s => s ? ` "${s.replace(/"/g, '\\"')}"` : '';
+  let cmd = `./new-restaurant.sh "${slug}" "${name.replace(/"/g, '\\"')}" "${color}"${q(phone)}${q(address)}${q(gr)} --push`;
+
+  document.getElementById('cmdText').textContent = cmd;
+  document.getElementById('cmdOutput').style.display = 'block';
+}
+
+function copyCmd() {
+  const txt = document.getElementById('cmdText').textContent;
+  navigator.clipboard.writeText(txt).then(() => toast('Commande copiée !', 'success'));
+}
+
+// Sync color picker ↔ hex input
+document.addEventListener('DOMContentLoaded', () => {
+  const picker = document.getElementById('newColor');
+  const hex    = document.getElementById('newColorHex');
+  if (picker && hex) {
+    picker.addEventListener('input', () => { hex.value = picker.value; });
+    hex.addEventListener('input',   () => { if (/^#[0-9a-fA-F]{6}$/.test(hex.value)) picker.value = hex.value; });
+  }
+});
+
+// Load restaurants when section becomes active
+const _origShowSection = typeof showSection === 'function' ? showSection : null;
+document.querySelectorAll('[data-section="restaurants"]').forEach(el => {
+  el.addEventListener('click', loadRestoSection);
+});
 
 // ============================================================
 //  START
