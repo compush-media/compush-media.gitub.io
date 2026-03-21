@@ -200,6 +200,18 @@
         <label for="fGoogleReview">Lien avis Google</label>
         <input id="fGoogleReview" type="url" placeholder="https://g.page/r/XXXXXXXXXX/review" />
       </div>
+
+      <div class="card-title full" style="margin-top:8px">Accès admin</div>
+      <div class="field">
+        <label for="fAdminPass">Mot de passe admin *</label>
+        <input id="fAdminPass" type="text" placeholder="ex: bistro2025" autocomplete="off" />
+        <span class="hint">Identifiant : <code>admin</code></span>
+      </div>
+      <div class="field">
+        <label for="fEmployePass">Mot de passe employé</label>
+        <input id="fEmployePass" type="text" placeholder="ex: employe123" autocomplete="off" />
+        <span class="hint">Identifiant : <code>employe</code></span>
+      </div>
     </div>
     <button class="btn-primary" id="createBtn" onclick="createRestaurant()">
       Créer le restaurant
@@ -441,17 +453,19 @@ function stepFail(id, detail='') {
 
 // ─── Main creation ─────────────────────────────────────────────────────────
 async function createRestaurant() {
-  const name   = document.getElementById('fName').value.trim();
-  const sl     = slug(document.getElementById('fSlug').value);
-  const color  = document.getElementById('fColor').value.trim()  || '#B8924F';
-  const color2 = document.getElementById('fColor2').value.trim() || '#9E7A3E';
-  const phone  = document.getElementById('fPhone').value.trim();
-  const addr   = document.getElementById('fAddress').value.trim();
-  const gr     = document.getElementById('fGoogleReview').value.trim();
+  const name       = document.getElementById('fName').value.trim();
+  const sl         = slug(document.getElementById('fSlug').value);
+  const color      = document.getElementById('fColor').value.trim()  || '#B8924F';
+  const color2     = document.getElementById('fColor2').value.trim() || '#9E7A3E';
+  const phone      = document.getElementById('fPhone').value.trim();
+  const addr       = document.getElementById('fAddress').value.trim();
+  const gr         = document.getElementById('fGoogleReview').value.trim();
+  const adminPass  = document.getElementById('fAdminPass').value.trim();
+  const employePass= document.getElementById('fEmployePass').value.trim() || 'employe123';
 
   // Validate
   let ok = true;
-  [['fSlug', sl], ['fName', name]].forEach(([id, val]) => {
+  [['fSlug', sl], ['fName', name], ['fAdminPass', adminPass]].forEach(([id, val]) => {
     const el = document.getElementById(id);
     if (!val) { el.classList.add('error'); ok = false; }
     else       { el.classList.remove('error'); }
@@ -553,18 +567,39 @@ async function createRestaurant() {
     const newTreeItems = [];
 
     // Template files (reuse blob SHAs directly — no re-upload needed)
+    // Files we'll generate ourselves (skip blob copy for these)
+    const overridePaths = new Set([
+      `${sl}/config.json`, `${sl}/progressier.json`, `${sl}/admin/login.html`
+    ]);
+
     for (const f of templateFiles) {
       const newPath = sl + '/' + f.path.slice(TEMPLATE.length + 1);
-      // Skip files we'll override
-      if (newPath === `${sl}/config.json` || newPath === `${sl}/progressier.json`) continue;
+      if (overridePaths.has(newPath)) continue;
       newTreeItems.push({ path: newPath, mode: f.mode, type: 'blob', sha: f.sha });
     }
 
+    // Fetch template login.html and patch credentials
+    const loginTemplateItem = templateFiles.find(f => f.path === `${TEMPLATE}/admin/login.html`);
+    if (!loginTemplateItem) throw new Error('login.html introuvable dans le template');
+    const loginBlob = await ghApi(`/git/blobs/${loginTemplateItem.sha}`);
+    let loginContent = new TextDecoder().decode(
+      Uint8Array.from(atob(loginBlob.content.replace(/\s/g,'')), c => c.charCodeAt(0))
+    );
+    // Replace hardcoded credentials with the new ones
+    loginContent = loginContent.replace(
+      /(\{ user: "admin",\s*pass: ")[^"]*(")/,
+      `$1${adminPass}$2`
+    ).replace(
+      /(\{ user: "employe",\s*pass: ")[^"]*(")/,
+      `$1${employePass}$2`
+    );
+
     // Upload new blobs for generated files
     const toUpload = [
-      { path: `${sl}/config.json`,       content: JSON.stringify(cfg, null, 2) + '\n' },
-      { path: `${sl}/progressier.json`,  content: JSON.stringify(manifest, null, 2) + '\n' },
-      { path: 'data/restaurants.json',   content: JSON.stringify(restaurantsData, null, 2) + '\n' },
+      { path: `${sl}/config.json`,        content: JSON.stringify(cfg, null, 2) + '\n' },
+      { path: `${sl}/progressier.json`,   content: JSON.stringify(manifest, null, 2) + '\n' },
+      { path: `${sl}/admin/login.html`,   content: loginContent },
+      { path: 'data/restaurants.json',    content: JSON.stringify(restaurantsData, null, 2) + '\n' },
     ];
     for (const item of toUpload) {
       const blob = await ghApi('/git/blobs', 'POST', { content: item.content, encoding: 'utf-8' });
