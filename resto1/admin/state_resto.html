@@ -222,13 +222,22 @@
 <script>
   const API = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
 
-  function getRestoFromUrl(){
-    const p = new URLSearchParams(location.search);
-    return (p.get("resto") || "").trim().toLowerCase() || "resto1";
-  }
-  const RESTO = getRestoFromUrl();
-  document.getElementById("title").textContent = `📊 Dashboard — ${RESTO}`;
-  document.getElementById("subtitle").textContent = `KPIs & courbes — Restaurant: ${RESTO}`;
+  // Extrait le slug depuis le chemin URL : /bistro-paris/admin/state.html → "bistro-paris"
+  const SLUG = (function(){
+    var m = location.pathname.match(/^\/([^/]+)\//);
+    return m ? m[1].toLowerCase() : "resto1";
+  })();
+
+  let RESTO = SLUG; // sera remplacé par le nom config dès que le fetch répond
+
+  fetch("/" + SLUG + "/config.json", { cache: "no-store" })
+    .then(r => r.ok ? r.json() : null)
+    .then(cfg => {
+      if (cfg && cfg.name) RESTO = cfg.name;
+      document.getElementById("title").textContent    = `📊 Dashboard — ${RESTO}`;
+      document.getElementById("subtitle").textContent = `KPIs & courbes — Restaurant\u00a0: ${RESTO}`;
+    })
+    .catch(() => {});
 
   // Mapping event select → champ dans data.daily
   const EVENT_FIELD = {
