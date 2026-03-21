@@ -86,6 +86,12 @@
     var slug = getRestoSlug();
     return fetch("/" + slug + "/config.json", { cache: "no-store" })
       .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (cfg) {
+        if (cfg && cfg.name) {
+          try { localStorage.setItem("fv_resto_name_" + slug, cfg.name); } catch (e) {}
+        }
+        return cfg;
+      })
       .catch(function () { return null; });
   }
 
@@ -161,7 +167,8 @@
   -------------------------------------------------- */
   function track(eventName, extra) {
     var slug = getRestoSlug();
-    _sendEvent(eventName, slug, extra || {});
+    var name = localStorage.getItem("fv_resto_name_" + slug) || slug;
+    _sendEvent(eventName, name, extra || {});
   }
 
   /* --------------------------------------------------
