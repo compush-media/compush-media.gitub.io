@@ -6,279 +6,113 @@
   <title>Nouveau restaurant — Fidelavis</title>
   <style>
     :root {
-      --brand:  #B48C4A;
-      --brand2: #a97f37;
-      --brand-bg: rgba(180,140,74,.09);
-      --brand-border: rgba(180,140,74,.25);
-      --bg:   #fbfaf8;
-      --bg2:  #f5f1eb;
-      --card: #ffffff;
-      --ink:  #191919;
-      --muted:#6f6f6f;
-      --line: rgba(0,0,0,.08);
-      --shadow: 0 4px 28px rgba(0,0,0,.08);
-      --r: 14px;
-      --green: #1a9e5c;
+      --brand:#B48C4A; --brand2:#a97f37; --brand-bg:rgba(180,140,74,.09);
+      --brand-border:rgba(180,140,74,.28);
+      --bg:#fbfaf8; --bg2:#f5f1eb; --card:#ffffff;
+      --ink:#191919; --muted:#6f6f6f; --line:rgba(0,0,0,.08);
+      --shadow:0 4px 28px rgba(0,0,0,.08); --r:14px;
+      --green:#1a9e5c; --red:#d93025; --blue:#1a73e8;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
 
-    /* ── HEADER ── */
-    .header {
-      background: rgba(255,255,255,.94);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
-      padding: 0 24px;
-      height: 58px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .logo {
-      background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 100%);
-      color: #fff;
-      font-weight: 900;
-      font-size: 13px;
-      padding: 5px 11px;
-      border-radius: 999px;
-    }
-    .header-title { font-size: 16px; font-weight: 800; }
-    .header a {
-      margin-left: auto;
-      font-size: 13px;
-      color: var(--muted);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .header a:hover { color: var(--brand); }
+    /* HEADER */
+    .header{background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:0 24px;height:58px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+    .logo{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-weight:900;font-size:13px;padding:5px 11px;border-radius:999px}
+    .header-title{font-size:16px;font-weight:800}
+    .header a{margin-left:auto;font-size:13px;color:var(--muted);text-decoration:none;font-weight:600}
+    .header a:hover{color:var(--brand)}
 
-    /* ── BODY ── */
-    .page {
-      max-width: 680px;
-      margin: 40px auto;
-      padding: 0 20px 60px;
-    }
+    /* PAGE */
+    .page{max-width:680px;margin:36px auto;padding:0 20px 60px}
+    .hero{text-align:center;margin-bottom:28px}
+    .hero-icon{font-size:44px;margin-bottom:12px}
+    .hero h1{font-size:24px;font-weight:900;margin-bottom:7px}
+    .hero p{color:var(--muted);font-size:14px}
 
-    .hero {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    .hero-icon {
-      font-size: 48px;
-      margin-bottom: 14px;
-    }
-    .hero h1 { font-size: 26px; font-weight: 900; margin-bottom: 8px; }
-    .hero p  { color: var(--muted); font-size: 15px; }
+    /* TOKEN BANNER */
+    .token-banner{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--r);border:1.5px solid var(--brand-border);background:var(--brand-bg);margin-bottom:20px;font-size:13px}
+    .token-banner.ok{border-color:rgba(26,158,92,.3);background:rgba(26,158,92,.07)}
+    .token-banner.error{border-color:rgba(217,48,37,.3);background:rgba(217,48,37,.06)}
+    .token-dot{width:9px;height:9px;border-radius:50%;background:var(--brand);flex-shrink:0}
+    .token-banner.ok  .token-dot{background:var(--green)}
+    .token-banner.error .token-dot{background:var(--red)}
+    .token-banner b{font-weight:800}
+    .token-banner .token-actions{margin-left:auto;display:flex;gap:8px}
+    .token-btn{font-size:12px;font-weight:700;padding:5px 10px;border-radius:7px;border:none;cursor:pointer;background:rgba(0,0,0,.07);color:var(--ink)}
+    .token-btn:hover{background:rgba(0,0,0,.12)}
+    .token-input-wrap{display:none;margin-bottom:16px;gap:8px}
+    .token-input-wrap.show{display:flex}
+    .token-input-wrap input{flex:1;padding:10px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:13px;font-family:monospace;background:var(--bg)}
+    .token-input-wrap input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-bg)}
+    .token-save{padding:10px 18px;background:var(--brand);color:#fff;border:none;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer}
+    .token-help{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}
+    .token-help a{color:var(--blue)}
 
-    /* ── FORM CARD ── */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      padding: 28px;
-      box-shadow: var(--shadow);
-      margin-bottom: 20px;
-    }
-    .card-title {
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      margin-bottom: 18px;
-    }
+    /* PREVIEW */
+    .preview-band{display:flex;align-items:center;gap:14px;padding:13px 16px;border:1.5px solid var(--brand-border);border-radius:var(--r);background:var(--brand-bg);margin-bottom:20px}
+    .preview-dot{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#B48C4A,#a97f37);flex-shrink:0}
+    .preview-name{font-weight:900;font-size:15px}
+    .preview-slug{font-size:12px;color:var(--muted);font-family:monospace}
+    .preview-links{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.7}
 
-    .field-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    .field { display: flex; flex-direction: column; gap: 5px; }
-    .field.full { grid-column: 1 / -1; }
-    label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--muted);
-    }
-    input[type="text"],
-    input[type="url"],
-    input[type="tel"] {
-      padding: 10px 12px;
-      border: 1.5px solid var(--line);
-      border-radius: 9px;
-      font-size: 14px;
-      font-family: inherit;
-      background: var(--bg);
-      color: var(--ink);
-      transition: border-color .15s, box-shadow .15s;
-      width: 100%;
-    }
-    input:focus {
-      outline: none;
-      border-color: var(--brand);
-      box-shadow: 0 0 0 3px var(--brand-bg);
-    }
-    input.error { border-color: #d93025; }
+    /* CARD / FORM */
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--shadow);margin-bottom:20px}
+    .card-title{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px}
+    .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+    .field{display:flex;flex-direction:column;gap:5px}
+    .field.full{grid-column:1/-1}
+    label{font-size:12px;font-weight:700;color:var(--muted)}
+    input[type="text"],input[type="url"],input[type="tel"]{padding:10px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--bg);color:var(--ink);transition:border-color .15s,box-shadow .15s;width:100%}
+    input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-bg)}
+    input.error{border-color:var(--red)}
+    .color-row{display:flex;gap:8px;align-items:center}
+    input[type="color"]{width:44px;height:44px;border:1.5px solid var(--line);border-radius:9px;padding:3px;cursor:pointer;background:var(--bg);flex-shrink:0}
+    .hint{font-size:11px;color:var(--muted)}
 
-    .color-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    input[type="color"] {
-      width: 44px;
-      height: 44px;
-      border: 1.5px solid var(--line);
-      border-radius: 9px;
-      padding: 3px;
-      cursor: pointer;
-      background: var(--bg);
-      flex-shrink: 0;
-    }
+    /* BUTTON */
+    .btn-primary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;transition:opacity .15s,transform .1s;margin-top:22px}
+    .btn-primary:hover{opacity:.88}
+    .btn-primary:active{transform:scale(.98)}
+    .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
-    /* ── PREVIEW ── */
-    .preview-band {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
-      border: 1.5px solid var(--brand-border);
-      border-radius: var(--r);
-      background: var(--brand-bg);
-      margin-bottom: 20px;
-    }
-    .preview-dot {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #B48C4A, #a97f37);
-      flex-shrink: 0;
-    }
-    .preview-name { font-weight: 900; font-size: 15px; }
-    .preview-slug { font-size: 12px; color: var(--muted); font-family: monospace; }
-    .preview-links { margin-left: auto; font-size: 12px; color: var(--muted); text-align: right; }
+    /* PROGRESS */
+    .progress-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--shadow);display:none}
+    .progress-card.show{display:block}
+    .progress-title{font-size:16px;font-weight:900;margin-bottom:16px}
+    .step{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+    .step:last-child{border-bottom:none}
+    .step-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:1px}
+    .step-icon.wait{background:var(--bg2);color:var(--muted)}
+    .step-icon.spin{background:rgba(180,140,74,.15);color:var(--brand);animation:spin .8s linear infinite}
+    .step-icon.done{background:rgba(26,158,92,.12);color:var(--green)}
+    .step-icon.fail{background:rgba(217,48,37,.1);color:var(--red)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .step-text{flex:1}
+    .step-label{font-weight:700}
+    .step-detail{font-size:12px;color:var(--muted);margin-top:2px}
 
-    /* ── BTN ── */
-    .btn-primary {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: opacity .15s, transform .1s;
-    }
-    .btn-primary:hover  { opacity: .88; }
-    .btn-primary:active { transform: scale(.98); }
+    /* SUCCESS */
+    .success-banner{display:flex;align-items:center;gap:14px;padding:18px;background:rgba(26,158,92,.07);border:1.5px solid rgba(26,158,92,.25);border-radius:var(--r);margin-top:20px}
+    .success-icon{font-size:32px}
+    .success-name{font-size:18px;font-weight:900}
+    .success-sub{font-size:12px;color:var(--muted);margin-top:3px}
+    .link-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+    .link-card{display:flex;flex-direction:column;align-items:center;gap:6px;padding:13px 8px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--ink);font-size:11px;font-weight:700;text-align:center;transition:background .12s,border-color .12s}
+    .link-card:hover{background:var(--brand-bg);border-color:var(--brand-border)}
+    .link-card .ic{font-size:20px}
 
-    /* ── CMD OUTPUT ── */
-    .cmd-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      display: none;
-    }
-    .cmd-card.show { display: block; }
-    .cmd-card h2 {
-      font-size: 16px;
-      font-weight: 900;
-      margin-bottom: 6px;
-    }
-    .cmd-card p {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-    .cmd-wrap {
-      position: relative;
-    }
-    pre#cmdText {
-      background: #1a1a1a;
-      color: #f0f0f0;
-      padding: 16px 52px 16px 16px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-family: 'Fira Code', 'Cascadia Code', monospace;
-      overflow-x: auto;
-      white-space: pre-wrap;
-      word-break: break-all;
-      line-height: 1.6;
-    }
-    .copy-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      padding: 5px 12px;
-      background: rgba(255,255,255,.14);
-      color: #fff;
-      border: none;
-      border-radius: 7px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background .15s;
-    }
-    .copy-btn:hover { background: rgba(255,255,255,.22); }
-    .copy-btn.copied { background: var(--green); }
+    /* ERROR BOX */
+    .error-box{background:rgba(217,48,37,.06);border:1.5px solid rgba(217,48,37,.25);border-radius:10px;padding:14px 16px;font-size:13px;color:#b52819;margin-top:14px;line-height:1.6}
 
-    .steps {
-      margin-top: 20px;
-      padding: 16px;
-      background: var(--bg2);
-      border-radius: 10px;
-      font-size: 13px;
-      line-height: 1.8;
-      color: var(--muted);
-    }
-    .steps strong { color: var(--ink); }
+    /* NEW BTN */
+    .btn-new{display:block;width:100%;padding:12px;text-align:center;border:1.5px dashed var(--brand-border);border-radius:10px;font-size:14px;font-weight:700;color:var(--brand);background:none;cursor:pointer;margin-top:16px}
+    .btn-new:hover{background:var(--brand-bg)}
 
-    /* ── LINKS ── */
-    .link-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .link-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      padding: 14px 10px;
-      background: var(--bg2);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      text-decoration: none;
-      color: var(--ink);
-      font-size: 12px;
-      font-weight: 700;
-      text-align: center;
-      transition: background .12s, border-color .12s;
-    }
-    .link-card:hover { background: var(--brand-bg); border-color: var(--brand-border); }
-    .link-card .icon { font-size: 22px; }
-
-    @media (max-width: 520px) {
-      .field-grid { grid-template-columns: 1fr; }
-      .field.full { grid-column: 1; }
-      .hero h1 { font-size: 22px; }
+    @media(max-width:520px){
+      .field-grid{grid-template-columns:1fr}
+      .field.full{grid-column:1}
+      .link-grid{grid-template-columns:repeat(2,1fr)}
     }
   </style>
 </head>
@@ -287,19 +121,36 @@
 <header class="header">
   <span class="logo">FV</span>
   <span class="header-title">Fidelavis</span>
-  <a href="index.html">← Retour au dashboard</a>
+  <a href="index.html">← Dashboard</a>
 </header>
 
 <div class="page">
-
   <div class="hero">
     <div class="hero-icon">🍽️</div>
     <h1>Nouveau restaurant</h1>
-    <p>Remplissez le formulaire pour générer la commande de création automatique.</p>
+    <p>Création directe depuis le navigateur — aucun terminal requis.</p>
+  </div>
+
+  <!-- TOKEN -->
+  <div class="token-banner" id="tokenBanner">
+    <div class="token-dot"></div>
+    <span><b>Token GitHub</b> — requis pour créer des fichiers</span>
+    <div class="token-actions">
+      <button class="token-btn" onclick="showTokenInput()">Configurer</button>
+    </div>
+  </div>
+  <div class="token-input-wrap" id="tokenInputWrap">
+    <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+    <button class="token-save" onclick="saveToken()">Enregistrer</button>
+  </div>
+  <div class="token-help" id="tokenHelp" style="display:none">
+    Créez un token sur <a href="https://github.com/settings/tokens/new?scopes=repo&description=Fidelavis+Admin" target="_blank">github.com/settings/tokens</a>
+    avec le scope <code>repo</code> (ou <code>contents: write</code> pour fine-grained).<br>
+    Le token est stocké uniquement dans votre navigateur (localStorage).
   </div>
 
   <!-- PREVIEW -->
-  <div class="preview-band" id="previewBand">
+  <div class="preview-band">
     <div class="preview-dot" id="previewDot"></div>
     <div>
       <div class="preview-name" id="previewName">Nom du restaurant</div>
@@ -313,13 +164,13 @@
     <div class="card-title">Informations principales</div>
     <div class="field-grid">
       <div class="field">
-        <label for="fSlug">Slug URL *</label>
-        <input id="fSlug" type="text" placeholder="bistro-paris" autocomplete="off" spellcheck="false" />
-        <span style="font-size:11px;color:var(--muted)">Minuscules, tirets uniquement</span>
-      </div>
-      <div class="field">
         <label for="fName">Nom du restaurant *</label>
         <input id="fName" type="text" placeholder="Le Bistro de Paris" />
+      </div>
+      <div class="field">
+        <label for="fSlug">Slug URL *</label>
+        <input id="fSlug" type="text" placeholder="bistro-paris" autocomplete="off" spellcheck="false" />
+        <span class="hint">Minuscules, tirets uniquement</span>
       </div>
       <div class="field">
         <label for="fColor">Couleur principale *</label>
@@ -335,10 +186,8 @@
           <input id="fColor2" type="text" value="#9E7A3E" placeholder="#9E7A3E" style="font-family:monospace" />
         </div>
       </div>
-    </div>
 
-    <div class="card-title" style="margin-top:24px">Informations complémentaires</div>
-    <div class="field-grid">
+      <div class="card-title full" style="margin-top:8px">Informations complémentaires</div>
       <div class="field">
         <label for="fPhone">Téléphone</label>
         <input id="fPhone" type="tel" placeholder="01 23 45 67 89" />
@@ -352,158 +201,343 @@
         <input id="fGoogleReview" type="url" placeholder="https://g.page/r/XXXXXXXXXX/review" />
       </div>
     </div>
-
-    <button class="btn-primary" style="margin-top:24px" onclick="generate()">
-      Générer la commande
+    <button class="btn-primary" id="createBtn" onclick="createRestaurant()">
+      Créer le restaurant
     </button>
   </form>
 
-  <!-- OUTPUT -->
-  <div class="cmd-card" id="cmdCard">
-    <h2>Commande générée</h2>
-    <p>Collez cette commande dans votre terminal à la racine du projet :</p>
-    <div class="cmd-wrap">
-      <pre id="cmdText"></pre>
-      <button class="copy-btn" id="copyBtn" onclick="copyCmd()">Copier</button>
-    </div>
-
-    <div class="steps">
-      <strong>Ce que la commande va faire :</strong><br>
-      1. Copier le template <code>resto1/</code> dans <code>/<span id="stepSlug"></span>/</code><br>
-      2. Générer <code>config.json</code> + <code>progressier.json</code> (PWA) avec vos données<br>
-      3. Mettre à jour <code>data/restaurants.json</code><br>
-      4. Commit + push automatique (flag <code>--push</code>)
-    </div>
-
-    <div class="link-grid" id="linkGrid" style="display:none">
-      <a class="link-card" id="lSite"   target="_blank" href="#">
-        <span class="icon">🏠</span>Site client
-      </a>
-      <a class="link-card" id="lAdmin"  target="_blank" href="#">
-        <span class="icon">⚙️</span>Admin
-      </a>
-      <a class="link-card" id="lStats"  target="_blank" href="#">
-        <span class="icon">📊</span>Stats
-      </a>
-      <a class="link-card" id="lReputation" target="_blank" href="#">
-        <span class="icon">⭐</span>Réputation
-      </a>
-    </div>
+  <!-- PROGRESS -->
+  <div class="progress-card" id="progressCard">
+    <div class="progress-title">Création en cours…</div>
+    <div id="stepsList"></div>
+    <div class="error-box" id="errorBox" style="display:none"></div>
   </div>
 
 </div>
 
 <script>
-const BASE = 'https://app.cartefidelavis.com';
+// ─── Config ────────────────────────────────────────────────────────────────
+const GH_OWNER  = 'compush-media';
+const GH_REPO   = 'compush-media.gitub.io';
+const GH_BRANCH = 'main';
+const TEMPLATE  = 'resto1';
+const BASE_URL  = 'https://app.cartefidelavis.com';
 
-// ── Sanitize slug ──────────────────────────────────────────
-function sanitizeSlug(v) {
+// ─── Token ─────────────────────────────────────────────────────────────────
+function getToken() { return localStorage.getItem('fv_gh_token') || ''; }
+function saveToken() {
+  const v = document.getElementById('tokenInput').value.trim();
+  if (!v) return;
+  localStorage.setItem('fv_gh_token', v);
+  document.getElementById('tokenInputWrap').classList.remove('show');
+  document.getElementById('tokenHelp').style.display = 'none';
+  updateTokenBanner(true);
+}
+function showTokenInput() {
+  document.getElementById('tokenInputWrap').classList.toggle('show');
+  document.getElementById('tokenHelp').style.display =
+    document.getElementById('tokenInputWrap').classList.contains('show') ? 'block' : 'none';
+  if (document.getElementById('tokenInputWrap').classList.contains('show'))
+    document.getElementById('tokenInput').focus();
+}
+function updateTokenBanner(ok) {
+  const b = document.getElementById('tokenBanner');
+  b.className = 'token-banner ' + (ok ? 'ok' : '');
+  b.querySelector('span').innerHTML = ok
+    ? '<b>Token GitHub</b> — configuré ✓'
+    : '<b>Token GitHub</b> — requis pour créer des fichiers';
+}
+if (getToken()) updateTokenBanner(true);
+
+// ─── Slug ──────────────────────────────────────────────────────────────────
+function slug(v) {
   return v.trim().toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9-]/g, '-')
-    .replace(/-{2,}/g, '-')
-    .replace(/^-|-$/g, '');
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9-]/g,'-').replace(/-{2,}/g,'-').replace(/^-|-$/g,'');
 }
 
-// ── Live preview ───────────────────────────────────────────
+// ─── Preview ───────────────────────────────────────────────────────────────
 function updatePreview() {
-  const slug  = sanitizeSlug(document.getElementById('fSlug').value);
-  const name  = document.getElementById('fName').value.trim() || 'Nom du restaurant';
-  const color = document.getElementById('fColor').value || '#B8924F';
-  const color2= document.getElementById('fColor2').value || '#9E7A3E';
-
-  document.getElementById('previewDot').style.background =
-    `linear-gradient(135deg, ${color}, ${color2})`;
-  document.getElementById('previewName').textContent = name;
-  document.getElementById('previewSlug').textContent = slug ? `/${slug}/` : '/slug/';
-  document.getElementById('previewLinks').textContent = slug
-    ? `app.cartefidelavis.com/${slug}/`
+  const s  = slug(document.getElementById('fSlug').value);
+  const n  = document.getElementById('fName').value.trim() || 'Nom du restaurant';
+  const c1 = document.getElementById('fColor').value  || '#B8924F';
+  const c2 = document.getElementById('fColor2').value || '#9E7A3E';
+  document.getElementById('previewDot').style.background = `linear-gradient(135deg,${c1},${c2})`;
+  document.getElementById('previewName').textContent = n;
+  document.getElementById('previewSlug').textContent = s ? `/${s}/` : '/slug/';
+  document.getElementById('previewLinks').innerHTML  = s
+    ? `app.cartefidelavis.com/${s}/<br><span style="opacity:.6">cartefidelavis.com/${s}/admin/</span>`
     : 'app.cartefidelavis.com/…';
 }
 
-// ── Color sync ─────────────────────────────────────────────
-function syncColor(pickerId, hexId) {
-  const picker = document.getElementById(pickerId);
-  const hex    = document.getElementById(hexId);
-  picker.addEventListener('input', () => { hex.value = picker.value; updatePreview(); });
-  hex.addEventListener('input', () => {
-    if (/^#[0-9a-fA-F]{6}$/.test(hex.value)) { picker.value = hex.value; updatePreview(); }
-  });
+function syncColor(pid,hid){
+  const p=document.getElementById(pid), h=document.getElementById(hid);
+  p.addEventListener('input',()=>{h.value=p.value;updatePreview()});
+  h.addEventListener('input',()=>{if(/^#[0-9a-fA-F]{6}$/.test(h.value)){p.value=h.value;updatePreview()}});
 }
-syncColor('fColorPicker',  'fColor');
-syncColor('fColor2Picker', 'fColor2');
+syncColor('fColorPicker','fColor');
+syncColor('fColor2Picker','fColor2');
 
-['fSlug','fName','fPhone','fAddress','fGoogleReview'].forEach(id => {
+document.getElementById('fName').addEventListener('input', function(){
+  const sf = document.getElementById('fSlug');
+  if (!sf._manual) sf.value = slug(this.value);
+  updatePreview();
+});
+document.getElementById('fSlug').addEventListener('input', function(){
+  this._manual = true; updatePreview();
+});
+['fPhone','fAddress','fGoogleReview'].forEach(id => {
   const el = document.getElementById(id);
-  if (el) el.addEventListener('input', updatePreview);
+  if(el) el.addEventListener('input', updatePreview);
 });
+updatePreview();
 
-// Auto-slugify name → slug
-document.getElementById('fName').addEventListener('input', function() {
-  const slugField = document.getElementById('fSlug');
-  if (!slugField._manual) {
-    slugField.value = sanitizeSlug(this.value);
+// ─── GitHub API helper ─────────────────────────────────────────────────────
+async function ghApi(path, method='GET', body=null) {
+  const token = getToken();
+  if (!token) throw new Error('Token GitHub manquant. Configurez-le en haut de la page.');
+  const opts = {
+    method,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'Content-Type': 'application/json',
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}${path}`, opts);
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw new Error(`GitHub API ${res.status}: ${err.message || res.statusText}`);
   }
-  updatePreview();
-});
-document.getElementById('fSlug').addEventListener('input', function() {
-  this._manual = true;
-  updatePreview();
-});
+  if (res.status === 204) return null;
+  return res.json();
+}
 
-// ── Generate ───────────────────────────────────────────────
-function generate() {
-  const slug  = sanitizeSlug(document.getElementById('fSlug').value);
-  const name  = document.getElementById('fName').value.trim();
-  const color = document.getElementById('fColor').value.trim() || '#B8924F';
-  const color2= document.getElementById('fColor2').value.trim() || '#9E7A3E';
-  const phone = document.getElementById('fPhone').value.trim();
-  const addr  = document.getElementById('fAddress').value.trim();
-  const gr    = document.getElementById('fGoogleReview').value.trim();
+// ─── Steps UI ──────────────────────────────────────────────────────────────
+const STEPS_DEF = [
+  { id:'s1', label:'Lecture du template', detail:'Récupération de la liste des fichiers de /resto1/' },
+  { id:'s2', label:'Génération des fichiers', detail:'config.json, progressier.json' },
+  { id:'s3', label:'Mise à jour du registre', detail:'data/restaurants.json' },
+  { id:'s4', label:'Création du commit', detail:'Assemblage de l\'arbre Git' },
+  { id:'s5', label:'Déploiement', detail:'Push sur GitHub Pages (branche main)' },
+];
+function renderSteps() {
+  document.getElementById('stepsList').innerHTML = STEPS_DEF.map(s =>
+    `<div class="step" id="${s.id}">
+      <div class="step-icon wait" id="${s.id}Icon">○</div>
+      <div class="step-text">
+        <div class="step-label">${s.label}</div>
+        <div class="step-detail" id="${s.id}Detail">${s.detail}</div>
+      </div>
+    </div>`
+  ).join('');
+}
+function stepStart(id) {
+  document.getElementById(id+'Icon').className = 'step-icon spin';
+  document.getElementById(id+'Icon').textContent = '↻';
+}
+function stepDone(id, detail='') {
+  document.getElementById(id+'Icon').className = 'step-icon done';
+  document.getElementById(id+'Icon').textContent = '✓';
+  if (detail) document.getElementById(id+'Detail').textContent = detail;
+}
+function stepFail(id, detail='') {
+  document.getElementById(id+'Icon').className = 'step-icon fail';
+  document.getElementById(id+'Icon').textContent = '✕';
+  if (detail) document.getElementById(id+'Detail').textContent = detail;
+}
 
-  // Validation
+// ─── Main creation ─────────────────────────────────────────────────────────
+async function createRestaurant() {
+  const name   = document.getElementById('fName').value.trim();
+  const sl     = slug(document.getElementById('fSlug').value);
+  const color  = document.getElementById('fColor').value.trim()  || '#B8924F';
+  const color2 = document.getElementById('fColor2').value.trim() || '#9E7A3E';
+  const phone  = document.getElementById('fPhone').value.trim();
+  const addr   = document.getElementById('fAddress').value.trim();
+  const gr     = document.getElementById('fGoogleReview').value.trim();
+
+  // Validate
   let ok = true;
-  [['fSlug', slug], ['fName', name]].forEach(([id, val]) => {
+  [['fSlug', sl], ['fName', name]].forEach(([id, val]) => {
     const el = document.getElementById(id);
     if (!val) { el.classList.add('error'); ok = false; }
     else       { el.classList.remove('error'); }
   });
   if (!ok) return;
 
-  const q = s => s ? ` \\\n  "${s.replace(/\\/g,'\\\\').replace(/"/g,'\\"')}"` : '';
+  if (!getToken()) {
+    showTokenInput();
+    document.getElementById('tokenInput').focus();
+    return;
+  }
 
-  const cmd =
-    `./new-restaurant.sh "${slug}" "${name.replace(/\\/g,'\\\\').replace(/"/g,'\\"')}" "${color}" "${color2}"` +
-    q(phone) + q(addr) + q(gr) +
-    ` \\\n  --push`;
+  // Show progress
+  document.getElementById('createBtn').disabled = true;
+  const pc = document.getElementById('progressCard');
+  pc.querySelector('.progress-title').textContent = `Création de « ${name} »…`;
+  renderSteps();
+  pc.classList.add('show');
+  pc.scrollIntoView({ behavior:'smooth', block:'start' });
+  document.getElementById('errorBox').style.display = 'none';
 
-  document.getElementById('cmdText').textContent = cmd;
-  document.getElementById('stepSlug').textContent = slug;
+  try {
+    // ── STEP 1 : fetch template tree ──────────────────────────────
+    stepStart('s1');
+    const refData  = await ghApi(`/git/ref/heads/${GH_BRANCH}`);
+    const commitSha= refData.object.sha;
+    const commitData = await ghApi(`/git/commits/${commitSha}`);
+    const treeSha  = commitData.tree.sha;
 
-  // Links
-  const links = { lSite: `/${slug}/index.html`, lAdmin: `/${slug}/admin/login.html`, lStats: `/${slug}/admin/state.html`, lReputation: `/${slug}/admin/reputation-google.html` };
-  Object.entries(links).forEach(([id, path]) => {
-    document.getElementById(id).href = BASE + path;
-  });
-  document.getElementById('linkGrid').style.display = 'grid';
+    // Get full recursive tree
+    const treeData = await ghApi(`/git/trees/${treeSha}?recursive=1`);
+    const allItems = treeData.tree;
 
-  const card = document.getElementById('cmdCard');
-  card.classList.add('show');
-  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Filter template files (blobs only)
+    const templateFiles = allItems.filter(f =>
+      f.type === 'blob' && f.path.startsWith(TEMPLATE + '/')
+    );
+    if (!templateFiles.length) throw new Error(`Aucun fichier trouvé dans /${TEMPLATE}/`);
+    stepDone('s1', `${templateFiles.length} fichiers trouvés dans /${TEMPLATE}/`);
+
+    // ── STEP 2 : generate config & progressier ────────────────────
+    stepStart('s2');
+    const cfg = { name, color, color2 };
+    if (phone) cfg.phone = phone;
+    if (addr)  cfg.address = addr;
+    if (gr)    cfg.googleReview = gr;
+
+    const manifest = {
+      name, short_name: name,
+      start_url: `/${sl}/index.html`,
+      scope: `/${sl}/`,
+      display: 'standalone',
+      background_color: '#f6efe5',
+      theme_color: color,
+      orientation: 'portrait',
+      icons: [
+        { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+        { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
+      ]
+    };
+    stepDone('s2', 'config.json + progressier.json générés');
+
+    // ── STEP 3 : update data/restaurants.json ─────────────────────
+    stepStart('s3');
+    let restaurantsData = {};
+    const restaurantsItem = allItems.find(f => f.path === 'data/restaurants.json');
+    if (restaurantsItem) {
+      const blobData = await ghApi(`/git/blobs/${restaurantsItem.sha}`);
+      const decoded  = atob(blobData.content.replace(/\s/g,''));
+      restaurantsData = JSON.parse(decoded);
+    }
+    restaurantsData[sl] = { name, brandColor: color, brandColor2: color2 };
+    if (phone) restaurantsData[sl].phone       = phone;
+    if (addr)  restaurantsData[sl].address     = addr;
+    if (gr)    restaurantsData[sl].googleReview= gr;
+    stepDone('s3', `${sl} ajouté au registre`);
+
+    // ── STEP 4 : build new tree ───────────────────────────────────
+    stepStart('s4');
+
+    // Build tree items: copy template blobs → new slug paths
+    const newTreeItems = [];
+
+    // Template files (reuse blob SHAs directly — no re-upload needed)
+    for (const f of templateFiles) {
+      const newPath = sl + '/' + f.path.slice(TEMPLATE.length + 1);
+      // Skip files we'll override
+      if (newPath === `${sl}/config.json` || newPath === `${sl}/progressier.json`) continue;
+      newTreeItems.push({ path: newPath, mode: f.mode, type: 'blob', sha: f.sha });
+    }
+
+    // Upload new blobs for generated files
+    const toUpload = [
+      { path: `${sl}/config.json`,       content: JSON.stringify(cfg, null, 2) + '\n' },
+      { path: `${sl}/progressier.json`,  content: JSON.stringify(manifest, null, 2) + '\n' },
+      { path: 'data/restaurants.json',   content: JSON.stringify(restaurantsData, null, 2) + '\n' },
+    ];
+    for (const item of toUpload) {
+      const blob = await ghApi('/git/blobs', 'POST', { content: item.content, encoding: 'utf-8' });
+      newTreeItems.push({ path: item.path, mode: '100644', type: 'blob', sha: blob.sha });
+    }
+
+    // Create new tree (base = current tree)
+    const newTree = await ghApi('/git/trees', 'POST', {
+      base_tree: treeSha,
+      tree: newTreeItems
+    });
+    stepDone('s4', `${templateFiles.length + toUpload.length} fichiers dans l'arbre`);
+
+    // ── STEP 5 : commit + push ────────────────────────────────────
+    stepStart('s5');
+    const newCommit = await ghApi('/git/commits', 'POST', {
+      message: `feat: nouveau restaurant ${sl} — ${name}`,
+      tree: newTree.sha,
+      parents: [commitSha]
+    });
+    await ghApi(`/git/refs/heads/${GH_BRANCH}`, 'PATCH', {
+      sha: newCommit.sha,
+      force: false
+    });
+    stepDone('s5', 'Déployé sur GitHub Pages ✓');
+
+    // ── SUCCESS ────────────────────────────────────────────────────
+    pc.querySelector('.progress-title').textContent = 'Restaurant créé !';
+
+    const links = [
+      { id:'lSite',  ic:'🏠', label:'Site client',   path:`/${sl}/index.html` },
+      { id:'lAdmin', ic:'⚙️',  label:'Admin',         path:`/${sl}/admin/login.html` },
+      { id:'lStats', ic:'📊', label:'Stats',          path:`/${sl}/admin/state.html` },
+      { id:'lRep',   ic:'⭐', label:'Réputation',     path:`/${sl}/admin/reputation-google.html` },
+    ];
+
+    pc.insertAdjacentHTML('beforeend', `
+      <div class="success-banner">
+        <span class="success-icon">🎉</span>
+        <div>
+          <div class="success-name">${name}</div>
+          <div class="success-sub">/${sl}/ — déployé sur app.cartefidelavis.com</div>
+        </div>
+      </div>
+      <div class="link-grid" style="margin-top:16px">
+        ${links.map(l=>`<a class="link-card" href="${BASE_URL}${l.path}" target="_blank">
+          <span class="ic">${l.ic}</span>${l.label}</a>`).join('')}
+      </div>
+      <button class="btn-new" onclick="resetForm()">+ Créer un autre restaurant</button>
+    `);
+
+  } catch(err) {
+    const failStep = STEPS_DEF.find(s =>
+      document.getElementById(s.id+'Icon').classList.contains('spin')
+    );
+    if (failStep) stepFail(failStep.id, err.message);
+    document.getElementById('errorBox').style.display = 'block';
+    document.getElementById('errorBox').textContent = '⚠️ ' + err.message;
+    document.getElementById('createBtn').disabled = false;
+  }
 }
 
-// ── Copy ───────────────────────────────────────────────────
-function copyCmd() {
-  const txt = document.getElementById('cmdText').textContent;
-  navigator.clipboard.writeText(txt).then(() => {
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = '✓ Copié !';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'Copier'; btn.classList.remove('copied'); }, 2000);
+// ─── Reset ─────────────────────────────────────────────────────────────────
+function resetForm() {
+  ['fName','fSlug','fPhone','fAddress','fGoogleReview'].forEach(id => {
+    document.getElementById(id).value = '';
+    document.getElementById(id).classList.remove('error');
   });
+  document.getElementById('fSlug')._manual = false;
+  document.getElementById('fColor').value  = '#B8924F';
+  document.getElementById('fColor2').value = '#9E7A3E';
+  document.getElementById('fColorPicker').value  = '#B8924F';
+  document.getElementById('fColor2Picker').value = '#9E7A3E';
+  const pc = document.getElementById('progressCard');
+  pc.classList.remove('show');
+  pc.innerHTML = '<div class="progress-title">Création en cours…</div><div id="stepsList"></div><div class="error-box" id="errorBox" style="display:none"></div>';
+  document.getElementById('createBtn').disabled = false;
+  updatePreview();
+  window.scrollTo({ top: 0, behavior:'smooth' });
 }
-
-updatePreview();
 </script>
 </body>
 </html>
