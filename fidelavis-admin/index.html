@@ -747,7 +747,12 @@
             <input id="newGoogleReview" type="text" placeholder="https://g.page/r/XXX/review" style="width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit">
           </div>
         </div>
-        <button class="btn-primary" style="margin-bottom:14px" onclick="generateRestoCmd()">Générer la commande</button>
+        <div style="display:flex;gap:10px;margin-bottom:14px">
+          <a href="new-restaurant.html" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-radius:10px;font-size:14px;font-weight:800;text-decoration:none">
+            ✨ Créer depuis le navigateur
+          </a>
+          <button class="btn-primary" style="flex:1;margin:0" onclick="generateRestoCmd()">Terminal (commande)</button>
+        </div>
         <div id="cmdOutput" style="display:none">
           <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">Copier et coller dans votre terminal :</div>
           <div style="position:relative">
@@ -755,6 +760,20 @@
             <button onclick="copyCmd()" style="position:absolute;top:8px;right:8px;padding:4px 10px;background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">Copier</button>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ── MOT DE PASSE ── -->
+    <section class="section">
+      <div class="section-title">🔑 Accès admin</div>
+      <div class="stat-card" style="display:flex;align-items:center;gap:16px">
+        <div style="flex:1">
+          <div style="font-weight:900;font-size:15px;margin-bottom:4px">Réinitialiser un mot de passe</div>
+          <div style="font-size:13px;color:var(--muted)">Un restaurateur a perdu son accès ? Définissez un nouveau mot de passe en un clic, sans terminal.</div>
+        </div>
+        <a href="reset-password.html" style="flex-shrink:0;padding:11px 20px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-radius:10px;font-size:14px;font-weight:800;text-decoration:none;white-space:nowrap">
+          🔑 Réinitialiser
+        </a>
       </div>
     </section>
 
