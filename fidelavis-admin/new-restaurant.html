@@ -212,6 +212,21 @@
         <input id="fEmployePass" type="text" placeholder="ex: employe123" autocomplete="off" />
         <span class="hint">Identifiant : <code>employe</code></span>
       </div>
+
+      <div class="card-title full" style="margin-top:8px">Email &amp; Brevo</div>
+      <div class="field full">
+        <label for="fEmail">Email du restaurateur</label>
+        <input id="fEmail" type="text" placeholder="contact@restaurant.com" />
+        <span class="hint">Expéditeur dans les emails Brevo (ex&nbsp;: contact@bistro-paris.fr)</span>
+      </div>
+      <div class="field full">
+        <label for="fBrevoGasUrl">URL du script Brevo (Google Apps Script)</label>
+        <input id="fBrevoGasUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec" />
+        <span class="hint">
+          Optionnel — laissez vide pour créer le restaurant sans Brevo.<br>
+          Obtenez cette URL en déployant <code>apps-script/brevo/brevo-setup.gs</code>.
+        </span>
+      </div>
     </div>
     <button class="btn-primary" id="createBtn" onclick="createRestaurant()">
       Créer le restaurant
@@ -419,11 +434,12 @@ async function ghApi(path, method='GET', body=null) {
 
 // ─── Steps UI ──────────────────────────────────────────────────────────────
 const STEPS_DEF = [
-  { id:'s1', label:'Lecture du template', detail:'Récupération de la liste des fichiers de /resto1/' },
-  { id:'s2', label:'Génération des fichiers', detail:'config.json, progressier.json' },
-  { id:'s3', label:'Mise à jour du registre', detail:'data/restaurants.json' },
-  { id:'s4', label:'Création du commit', detail:'Assemblage de l\'arbre Git' },
-  { id:'s5', label:'Déploiement', detail:'Push sur GitHub Pages (branche main)' },
+  { id:'s1',     label:'Lecture du template',    detail:'Récupération de la liste des fichiers de /resto1/' },
+  { id:'s2',     label:'Génération des fichiers', detail:'config.json, progressier.json' },
+  { id:'sBrevo', label:'Configuration Brevo',     detail:'Création liste contacts + 12 templates email + workflow automation' },
+  { id:'s3',     label:'Mise à jour du registre', detail:'data/restaurants.json' },
+  { id:'s4',     label:'Création du commit',      detail:'Assemblage de l\'arbre Git' },
+  { id:'s5',     label:'Déploiement',             detail:'Push sur GitHub Pages (branche main)' },
 ];
 function renderSteps() {
   document.getElementById('stepsList').innerHTML = STEPS_DEF.map(s =>
@@ -462,6 +478,8 @@ async function createRestaurant() {
   const gr         = document.getElementById('fGoogleReview').value.trim();
   const adminPass  = document.getElementById('fAdminPass').value.trim();
   const employePass= document.getElementById('fEmployePass').value.trim() || 'employe123';
+  const email      = document.getElementById('fEmail').value.trim();
+  const brevoGasUrl= document.getElementById('fBrevoGasUrl').value.trim();
 
   // Validate
   let ok = true;
@@ -545,6 +563,40 @@ async function createRestaurant() {
     };
     stepDone('s2', 'config.json + progressier.json générés');
 
+    // ── STEP BREVO : setup liste + templates + workflow ───────────
+    stepStart('sBrevo');
+    let brevoListId = 0, brevoWorkflowId = null;
+    if (brevoGasUrl) {
+      try {
+        // Content-Type: text/plain évite le preflight CORS sur Google Apps Script
+        const brevoRes = await fetch(brevoGasUrl, {
+          method:  'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            action:          'setup',
+            restaurantName:  name,
+            restaurantEmail: email || ('noreply@' + sl + '.fr'),
+            restaurantId:    sl
+          })
+        });
+        if (!brevoRes.ok) throw new Error('HTTP ' + brevoRes.status);
+        const brevoData = await brevoRes.json();
+        if (!brevoData.success) throw new Error(brevoData.error || 'Erreur Brevo');
+        brevoListId   = brevoData.listId     || 0;
+        brevoWorkflowId = brevoData.workflowId || null;
+        // Injecter les infos Brevo dans config.json
+        if (brevoListId) cfg.brevoListId = brevoListId;
+        cfg.brevoGasUrl = brevoGasUrl;
+        const wfMsg = brevoWorkflowId ? ` · workflow #${brevoWorkflowId}` : ' · templates créés (workflow à activer dans Brevo)';
+        stepDone('sBrevo', `Liste Brevo #${brevoListId} créée${wfMsg}`);
+      } catch(brevoErr) {
+        // Brevo non bloquant : le restaurant est quand même créé
+        stepFail('sBrevo', 'Brevo : ' + brevoErr.message + ' — restaurant créé sans Brevo');
+      }
+    } else {
+      stepDone('sBrevo', 'Ignoré (aucune URL Brevo renseignée)');
+    }
+
     // ── STEP 3 : update data/restaurants.json ─────────────────────
     stepStart('s3');
     let restaurantsData = {};
@@ -555,9 +607,11 @@ async function createRestaurant() {
       restaurantsData = JSON.parse(decoded);
     }
     restaurantsData[sl] = { name, brandColor: color, brandColor2: color2 };
-    if (phone) restaurantsData[sl].phone       = phone;
-    if (addr)  restaurantsData[sl].address     = addr;
-    if (gr)    restaurantsData[sl].googleReview= gr;
+    if (phone)        restaurantsData[sl].phone        = phone;
+    if (addr)         restaurantsData[sl].address      = addr;
+    if (gr)           restaurantsData[sl].googleReview = gr;
+    if (email)        restaurantsData[sl].email        = email;
+    if (brevoListId)  restaurantsData[sl].brevoListId  = brevoListId;
     stepDone('s3', `${sl} ajouté au registre`);
 
     // ── STEP 4 : build new tree ───────────────────────────────────
@@ -636,6 +690,16 @@ async function createRestaurant() {
       { id:'lRep',   ic:'⭐', label:'Réputation',     path:`/${sl}/admin/reputation-google.html` },
     ];
 
+    const brevoInfo = brevoListId
+      ? `<div style="margin-top:12px;padding:10px 14px;background:rgba(26,158,92,.07);
+           border:1px solid rgba(26,158,92,.25);border-radius:10px;font-size:12px;color:#1a7a45;font-weight:700;">
+           ✅ Brevo configuré — Liste #${brevoListId}${brevoWorkflowId ? ' · Workflow #' + brevoWorkflowId : ' · Activez le workflow dans Brevo > Automations'}
+         </div>`
+      : (brevoGasUrl ? `<div style="margin-top:12px;padding:10px 14px;background:rgba(217,48,37,.06);
+           border:1px solid rgba(217,48,37,.2);border-radius:10px;font-size:12px;color:#b52819;font-weight:700;">
+           ⚠️ Brevo non configuré — vérifiez les logs du script GAS
+         </div>` : '');
+
     pc.insertAdjacentHTML('beforeend', `
       <div class="success-banner">
         <span class="success-icon">🎉</span>
@@ -644,6 +708,7 @@ async function createRestaurant() {
           <div class="success-sub">/${sl}/ — déployé sur app.cartefidelavis.com</div>
         </div>
       </div>
+      ${brevoInfo}
       <div class="link-grid" style="margin-top:16px">
         ${links.map(l=>`<a class="link-card" href="${BASE_URL}${l.path}" target="_blank">
           <span class="ic">${l.ic}</span>${l.label}</a>`).join('')}
