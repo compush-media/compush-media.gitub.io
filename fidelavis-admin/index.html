@@ -685,9 +685,14 @@
             <label>Clé API Claude <span style="font-size:11px;color:var(--muted)">(optionnel – génération IA)</span></label>
             <input type="password" id="set_claude_api_key" placeholder="sk-ant-..." />
           </div>
-          <button class="btn-primary" style="width:100%" onclick="saveSettings()">💾 Enregistrer</button>
-          <div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.5">
-            Ces clés sont stockées uniquement dans votre navigateur.
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <button class="btn-primary" style="flex:1" onclick="saveSettings()">💾 Local</button>
+            <button id="btnSaveShared" class="btn-primary" style="flex:1;background:linear-gradient(135deg,#1a73e8,#1557b0)" onclick="saveSharedConfig()">☁️ Sauvegarder (partagé)</button>
+          </div>
+          <div id="sharedConfigBadge" style="font-size:11px;color:var(--muted);margin-bottom:8px">☁️ Vérification config partagée…</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5">
+            <b>Local</b> = sauvegarde dans ce navigateur uniquement.<br>
+            <b>Partagé</b> = sauvegarde sur GitHub → tous les appareils partagent les mêmes clés.
             <a href="/fidelavis-admin/setup-google.html" target="_blank" style="color:var(--brand);font-weight:700;text-decoration:none;display:inline-block;margin-top:6px">📖 Guide de configuration Google →</a>
           </div>
         </div>
@@ -847,6 +852,7 @@ async function initApp() {
 
   populateSettings();
   loadDashboard();
+  loadSharedConfig();
   addLog('merchant.login', 'merchant', merchantData.name);
 }
 
@@ -1785,6 +1791,95 @@ const _origShowSection = typeof showSection === 'function' ? showSection : null;
 document.querySelectorAll('[data-section="restaurants"]').forEach(el => {
   el.addEventListener('click', loadRestoSection);
 });
+
+// ============================================================
+//  SHARED CONFIG (data/fidelavis-config.json on GitHub)
+// ============================================================
+const GH_OWNER_IDX  = 'compush-media';
+const GH_REPO_IDX   = 'compush-media.gitub.io';
+const GH_BRANCH_IDX = 'main';
+const SHARED_CONFIG_PATH = 'data/fidelavis-config.json';
+
+function ghTokenIndex() { return localStorage.getItem('fv_gh_token') || ''; }
+
+async function ghApiIndex(path, method='GET', body=null) {
+  const token = ghTokenIndex();
+  if (!token) throw new Error('Token GitHub manquant');
+  const opts = {
+    method,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'Content-Type': 'application/json',
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`https://api.github.com/repos/${GH_OWNER_IDX}/${GH_REPO_IDX}${path}`, opts);
+  if (res.status === 204) return null;
+  const data = await res.json();
+  if (!res.ok) throw new Error(`GitHub ${res.status}: ${data.message || res.statusText}`);
+  return data;
+}
+
+async function loadSharedConfig() {
+  if (!ghTokenIndex()) return;
+  try {
+    const data = await ghApiIndex(`/contents/${SHARED_CONFIG_PATH}`);
+    const cfg = JSON.parse(atob(data.content.replace(/\s/g,'')));
+    const s = getSettings();
+    let changed = false;
+    if (cfg.google_client_id && !s.google_client_id) { s.google_client_id = cfg.google_client_id; changed = true; }
+    if (cfg.claude_api_key   && !s.claude_api_key)   { s.claude_api_key   = cfg.claude_api_key;   changed = true; }
+    if (changed) {
+      localStorage.setItem('fv_settings', JSON.stringify(s));
+      populateSettings();
+    }
+    const badge = document.getElementById('sharedConfigBadge');
+    if (badge) {
+      const hasCfg = !!(cfg.google_client_id || cfg.claude_api_key);
+      badge.textContent  = hasCfg ? '✅ Config partagée chargée' : '☁️ Aucune config partagée';
+      badge.style.color  = hasCfg ? 'var(--green)' : 'var(--muted)';
+    }
+  } catch(e) {
+    const badge = document.getElementById('sharedConfigBadge');
+    if (badge) { badge.textContent = '⚠️ Impossible de charger la config partagée'; badge.style.color='var(--muted)'; }
+  }
+}
+
+async function saveSharedConfig() {
+  const btn = document.getElementById('btnSaveShared');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sauvegarde…'; }
+  try {
+    const clientId  = el('set_google_client_id')?.value?.trim() || '';
+    const claudeKey = el('set_claude_api_key')?.value?.trim()   || '';
+    const cfg = { google_client_id: clientId, claude_api_key: claudeKey };
+
+    // Get current file SHA (needed for update)
+    let sha = undefined;
+    try {
+      const existing = await ghApiIndex(`/contents/${SHARED_CONFIG_PATH}`);
+      sha = existing.sha;
+    } catch(e) {}
+
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(cfg, null, 2) + '\n')));
+    const body = {
+      message: 'config: mise à jour clés API partagées (fidelavis-admin)',
+      content,
+      branch: GH_BRANCH_IDX
+    };
+    if (sha) body.sha = sha;
+    await ghApiIndex(`/contents/${SHARED_CONFIG_PATH}`, 'PUT', body);
+
+    toast('✅ Config partagée sauvegardée sur GitHub !', 'success');
+    const badge = document.getElementById('sharedConfigBadge');
+    if (badge) { badge.textContent = '✅ Config partagée à jour'; badge.style.color = 'var(--green)'; }
+  } catch(e) {
+    toast('Erreur : ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '☁️ Sauvegarder (partagé)'; }
+  }
+}
 
 // ============================================================
 //  START
