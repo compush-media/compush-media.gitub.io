@@ -705,6 +705,21 @@ let currentPage   = 1;
 //  INIT
 // ============================================================
 async function initApp() {
+  // ── Charger le google_client_id partagé (fidelavis-config.json) ──
+  try {
+    const res = await fetch('/data/fidelavis-config.json');
+    if (res.ok) {
+      const cfg = await res.json();
+      if (cfg.google_client_id) {
+        const s = JSON.parse(localStorage.getItem('fv_settings') || '{}');
+        if (!s.google_client_id) {
+          s.google_client_id = cfg.google_client_id;
+          localStorage.setItem('fv_settings', JSON.stringify(s));
+        }
+      }
+    }
+  } catch(e) {}
+
   // Handle OAuth implicit flow callback (hash fragment)
   const hash = new URLSearchParams(location.hash.substring(1));
   if (hash.get('access_token')) {
