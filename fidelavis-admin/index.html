@@ -1830,14 +1830,13 @@ async function loadSharedConfig() {
     const s = getSettings();
     let changed = false;
     if (cfg.google_client_id && !s.google_client_id) { s.google_client_id = cfg.google_client_id; changed = true; }
-    if (cfg.claude_api_key   && !s.claude_api_key)   { s.claude_api_key   = cfg.claude_api_key;   changed = true; }
     if (changed) {
       localStorage.setItem('fv_settings', JSON.stringify(s));
       populateSettings();
     }
     const badge = document.getElementById('sharedConfigBadge');
     if (badge) {
-      const hasCfg = !!(cfg.google_client_id || cfg.claude_api_key);
+      const hasCfg = !!cfg.google_client_id;
       badge.textContent  = hasCfg ? '✅ Config partagée chargée' : '☁️ Aucune config partagée';
       badge.style.color  = hasCfg ? 'var(--green)' : 'var(--muted)';
     }
@@ -1852,8 +1851,8 @@ async function saveSharedConfig() {
   if (btn) { btn.disabled = true; btn.textContent = 'Sauvegarde…'; }
   try {
     const clientId  = el('set_google_client_id')?.value?.trim() || '';
-    const claudeKey = el('set_claude_api_key')?.value?.trim()   || '';
-    const cfg = { google_client_id: clientId, claude_api_key: claudeKey };
+    // Note: claude_api_key is NOT saved here — fichier public lu par les restaurateurs
+    const cfg = { google_client_id: clientId };
 
     // Get current file SHA (needed for update)
     let sha = undefined;
