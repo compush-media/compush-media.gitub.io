@@ -14,12 +14,18 @@ COLOR2="#9E7A3E"
 PHONE=""
 ADDRESS=""
 GOOGLE_REVIEW=""
+EMAIL=""
+BREVO_GAS_URL=""
+BREVO_LIST_ID=""
 AUTO_PUSH=false
 
 # -- Parse args -----------------------------------------------
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --push) AUTO_PUSH=true; shift ;;
+    --push)             AUTO_PUSH=true;     shift ;;
+    --email)            EMAIL="$2";         shift 2 ;;
+    --brevo-gas-url)    BREVO_GAS_URL="$2"; shift 2 ;;
+    --brevo-list-id)    BREVO_LIST_ID="$2"; shift 2 ;;
     *)
       if   [ -z "$SLUG" ];         then SLUG="$1"
       elif [ "$NAME" = "Nouveau Restaurant" ]; then NAME="$1"
@@ -64,9 +70,12 @@ echo "=========================================="
 echo "  Slug    : ${SLUG}"
 echo "  Nom     : ${NAME}"
 echo "  Couleur : ${COLOR} / ${COLOR2}"
-[ -n "$PHONE"        ] && echo "  Tél     : ${PHONE}"
-[ -n "$ADDRESS"      ] && echo "  Adresse : ${ADDRESS}"
-[ -n "$GOOGLE_REVIEW"] && echo "  Avis    : ${GOOGLE_REVIEW}"
+[ -n "$PHONE"         ] && echo "  Tél     : ${PHONE}"
+[ -n "$ADDRESS"       ] && echo "  Adresse : ${ADDRESS}"
+[ -n "$GOOGLE_REVIEW" ] && echo "  Avis    : ${GOOGLE_REVIEW}"
+[ -n "$EMAIL"         ] && echo "  Email   : ${EMAIL}"
+[ -n "$BREVO_GAS_URL" ] && echo "  Brevo   : ${BREVO_GAS_URL}"
+[ -n "$BREVO_LIST_ID" ] && echo "  Liste   : #${BREVO_LIST_ID}"
 echo ""
 
 # -- Copie du template ----------------------------------------
@@ -86,9 +95,12 @@ cfg = {
     "color": "${COLOR}",
     "color2": "${COLOR2}"
 }
-if "${PHONE}":    cfg["phone"]         = """${PHONE}"""
-if "${ADDRESS}":  cfg["address"]       = """${ADDRESS}"""
-if "${GOOGLE_REVIEW}": cfg["googleReview"] = "${GOOGLE_REVIEW}"
+if "${PHONE}":          cfg["phone"]        = """${PHONE}"""
+if "${ADDRESS}":        cfg["address"]      = """${ADDRESS}"""
+if "${GOOGLE_REVIEW}":  cfg["googleReview"] = "${GOOGLE_REVIEW}"
+if "${EMAIL}":          cfg["email"]        = """${EMAIL}"""
+if "${BREVO_GAS_URL}":  cfg["brevoGasUrl"]  = "${BREVO_GAS_URL}"
+if "${BREVO_LIST_ID}":  cfg["brevoListId"]  = int("${BREVO_LIST_ID}")
 with open("${TARGET}/config.json", "w", encoding="utf-8") as f:
     json.dump(cfg, f, ensure_ascii=False, indent=2)
     f.write("\n")
@@ -139,6 +151,8 @@ data["${SLUG}"] = {
 if "${PHONE}":         data["${SLUG}"]["phone"]        = """${PHONE}"""
 if "${ADDRESS}":       data["${SLUG}"]["address"]      = """${ADDRESS}"""
 if "${GOOGLE_REVIEW}": data["${SLUG}"]["googleReview"] = "${GOOGLE_REVIEW}"
+if "${EMAIL}":         data["${SLUG}"]["email"]        = """${EMAIL}"""
+if "${BREVO_LIST_ID}": data["${SLUG}"]["brevoListId"]  = int("${BREVO_LIST_ID}")
 
 with open(path, "w", encoding="utf-8") as f:
     json.dump(data, f, ensure_ascii=False, indent=2)
@@ -171,5 +185,11 @@ else
   echo ""
   echo "   Ou relancer avec --push pour automatiser :"
   echo "   ./new-restaurant.sh ${SLUG} \"${NAME}\" \"${COLOR}\" \"${COLOR2}\" --push"
+  echo ""
+  echo "💡 Pour configurer Brevo en même temps :"
+  echo "   ./new-restaurant.sh ${SLUG} \"${NAME}\" \"${COLOR}\" \\"
+  echo "     --email \"contact@${SLUG}.fr\" \\"
+  echo "     --brevo-gas-url \"https://script.google.com/macros/s/.../exec\" \\"
+  echo "     --brevo-list-id 42 --push"
 fi
 echo ""
