@@ -11,5 +11,34 @@
     "phone": "01 43 33 22 01",
     "address": "5 rue des Morand, Neuilly-Plaisance",
     "googleReview": "https://g.page/r/XXXX/review"
+  },
+  "le-voltaire": {
+    "name": "Le voltaire",
+    "brandColor": "#9E7A3E",
+    "brandColor2": "#9E7A3E",
+    "phone": "01 47 69 01 01",
+    "address": "23 Rue Sartoris, 92250 La Garenne-Colombes",
+    "googleReview": "https://search.google.com/local/writereview?placeid=ChIJXUDaNbtl5kcRM6sMziJZKDg"
+  },
+  "restotest": {
+    "name": "restotest",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "address": "resto",
+    "email": "tirakountech@gmail.fr"
+  },
+  "test3": {
+    "name": "test3",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "address": "3 AllÃ©e de rivoli 56567",
+    "email": "tirakountech@gmail.com"
+  },
+  "test4": {
+    "name": "test4",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "email": "contact@fidelavis.com",
+    "brevoListId": 5
   }
 }
