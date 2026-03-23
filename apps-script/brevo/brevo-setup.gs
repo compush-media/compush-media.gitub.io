@@ -160,6 +160,16 @@ function setupRestaurant(body) {
   // 4. Tenter la création du workflow automation
   var workflowId = createAutomationWorkflow(name, listId, welcomeId, monthlyIds);
 
+  // 5. Stocker l'ID du template de bienvenue + expéditeur dans les propriétés du script
+  //    → utilisé par subscribeContact pour envoyer l'email automatiquement
+  if (id) {
+    var props = PropertiesService.getScriptProperties();
+    props.setProperty('WELCOME_TEMPLATE_' + id, String(welcomeId));
+    props.setProperty('SENDER_NAME_'      + id, sender.name);
+    props.setProperty('SENDER_EMAIL_'     + id, sender.email);
+    Logger.log('[Brevo] Propriétés stockées pour ' + id + ' : templateId=' + welcomeId);
+  }
+
   var formUrl = 'https://app.cartefidelavis.com/' + (id || 'restaurant') + '/inscription.html';
 
   Logger.log('[Brevo] ═══ Setup terminé : listId=' + listId + ' workflowId=' + workflowId + ' ═══');
@@ -309,7 +319,33 @@ function subscribeContact(body) {
   if (resto)     contactData.attributes.RESTO  = resto;
 
   brevoFetch('POST', '/contacts', contactData);
-
   Logger.log('[Brevo] Contact inscrit : ' + email);
+
+  // ── Envoi automatique de l'email de bienvenue ──────────────
+  // Récupère le templateId stocké lors du setup du restaurant
+  if (resto) {
+    var props      = PropertiesService.getScriptProperties();
+    var templateId = parseInt(props.getProperty('WELCOME_TEMPLATE_' + resto) || '0', 10);
+    var senderName = props.getProperty('SENDER_NAME_'  + resto) || '';
+    var senderEmail= props.getProperty('SENDER_EMAIL_' + resto) || '';
+
+    if (templateId && senderEmail) {
+      try {
+        var emailPayload = {
+          to:         [{ email: email, name: firstName || email }],
+          templateId: templateId,
+          sender:     { name: senderName, email: senderEmail },
+          params:     { PRENOM: firstName, NOM: lastName, RESTO: resto }
+        };
+        brevoFetch('POST', '/smtp/email', emailPayload);
+        Logger.log('[Brevo] Email de bienvenue envoyé à ' + email + ' (template #' + templateId + ')');
+      } catch(err) {
+        Logger.log('[Brevo] Erreur envoi email bienvenue : ' + err.message);
+      }
+    } else {
+      Logger.log('[Brevo] Pas de template stocké pour "' + resto + '" — email non envoyé');
+    }
+  }
+
   return { success: true };
 }
