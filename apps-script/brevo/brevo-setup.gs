@@ -115,16 +115,20 @@ function brevoFetch(method, path, body) {
 
 function setupRestaurant(body) {
   var name  = (body.restaurantName  || 'Restaurant').trim();
-  var email = (body.restaurantEmail || 'noreply@fidelavis.com').trim();
+  var email = (body.restaurantEmail || '').trim();
   var id    = (body.restaurantId    || '').trim();
 
   Logger.log('[Brevo] ═══ Setup : ' + name + ' (' + id + ') ═══');
+
+  // 0. Récupérer l'expéditeur vérifié du compte (évite "Sender is invalid")
+  var sender = getVerifiedSender(name, email);
+  Logger.log('[Brevo] Expéditeur utilisé : ' + sender.email);
 
   // 1. Créer la liste contacts
   var listId = createContactList(name);
 
   // 2. Créer le template d'email de bienvenue (J+0)
-  var welcomeId = createTemplate(name, email, 0, {
+  var welcomeId = createTemplate(name, sender, 0, {
     subject: 'Bienvenue chez ' + name + ' ! 🎁',
     headline: 'Votre -10% est activé !',
     body:     'Merci d\'avoir rejoint le programme de fidélité Fidelavis de ' + name +
@@ -146,7 +150,7 @@ function setupRestaurant(body) {
     { m:11, subject:'Un an ensemble bientôt', headline:'Merci pour cette année',    body:'Presque un an ensemble — quelle aventure ! Nous vous réservons une belle surprise pour marquer l\'occasion.' }
   ];
   var monthlyIds = monthlyData.map(function(d) {
-    return createTemplate(name, email, d.m, {
+    return createTemplate(name, sender, d.m, {
       subject:  '[' + name + '] ' + d.subject,
       headline: d.headline,
       body:     d.body
@@ -170,6 +174,35 @@ function setupRestaurant(body) {
   };
 }
 
+// ── Récupérer un expéditeur vérifié dans le compte Brevo ────
+// Si restaurantEmail est fourni et vérifié → on l'utilise
+// Sinon → on prend le premier expéditeur vérifié du compte
+function getVerifiedSender(restaurantName, restaurantEmail) {
+  try {
+    var senders = brevoFetch('GET', '/senders');
+    var list = senders.senders || [];
+    // Chercher d'abord l'email du restaurateur s'il est vérifié
+    if (restaurantEmail) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].email === restaurantEmail && list[i].active) {
+          return { name: restaurantName, email: list[i].email };
+        }
+      }
+    }
+    // Sinon prendre le premier expéditeur actif du compte
+    for (var j = 0; j < list.length; j++) {
+      if (list[j].active) {
+        Logger.log('[Brevo] Expéditeur par défaut du compte : ' + list[j].email);
+        return { name: restaurantName, email: list[j].email };
+      }
+    }
+  } catch(err) {
+    Logger.log('[Brevo] Impossible de récupérer les expéditeurs : ' + err.message);
+  }
+  // Dernier recours : utiliser l'email fourni tel quel (plantera si non vérifié)
+  return { name: restaurantName, email: restaurantEmail || 'noreply@fidelavis.com' };
+}
+
 // ── Créer la liste contacts ──────────────────────────────────
 function createContactList(restaurantName) {
   Logger.log('[Brevo] Création liste : Clients - ' + restaurantName);
@@ -182,7 +215,9 @@ function createContactList(restaurantName) {
 }
 
 // ── Créer un template email ──────────────────────────────────
-function createTemplate(restaurantName, senderEmail, monthIndex, content) {
+// sender = { name, email } (objet retourné par getVerifiedSender)
+function createTemplate(restaurantName, sender, monthIndex, content) {
+  var senderEmail = sender.email;
   var label = monthIndex === 0
     ? '[' + restaurantName + '] Bienvenue'
     : '[' + restaurantName + '] Mois ' + monthIndex;
@@ -211,7 +246,7 @@ function createTemplate(restaurantName, senderEmail, monthIndex, content) {
     templateName: label,
     subject:      content.subject,
     htmlContent:  htmlContent,
-    sender:       { name: restaurantName, email: senderEmail },
+    sender:       { name: sender.name, email: senderEmail },
     isActive:     true
   });
   Logger.log('[Brevo] Template créé : ' + label + ' id=' + result.id);
