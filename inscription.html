@@ -250,7 +250,7 @@
     }
 
     // Redirection après un court délai
-    setTimeout(() => window.location.replace("merci.html"), 400);
+    setTimeout(() => window.location.replace("redit.html"), 400);
   })();
   </script>
 </head>
@@ -295,6 +295,7 @@
   </div>
 
   <script>
+  var _brevoConfig = null; // accessible par submitBrevoForm (hors IIFE)
   (function(){
     const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
 
@@ -334,7 +335,6 @@
 
     // ─── Formulaire Brevo ─────────────────────────────────────
     // La page racine n'est liée à aucun restaurant — on charge le config par défaut
-    var _brevoConfig = null;
     (async function initBrevoForm() {
       try {
         const res = await fetch("/resto1/config.json", { cache: "no-store" });
@@ -422,7 +422,7 @@
     }
 
     // ── Redirection ──
-    setTimeout(() => window.location.replace("merci.html"), 400);
+    setTimeout(() => window.location.replace("redit.html"), 400);
   }
   </script>
 
