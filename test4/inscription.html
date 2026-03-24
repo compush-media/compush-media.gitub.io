@@ -228,6 +228,7 @@
   </div>
 
   <script>
+  var _brevoConfig = null; // accessible par submitBrevoForm (hors IIFE)
   (function(){
     const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
 
@@ -261,8 +262,7 @@
     document.getElementById("cguBtn").href = "/cgu.html?from=" + from;
 
     // ─── Formulaire Brevo ────────────────────────────────────
-    var _brevoConfig = null;
-
+    // _brevoConfig déclaré globalement avant l'IIFE
     // Charge config.json pour lire brevoListId et brevoGasUrl
     (async function initBrevoForm() {
       try {

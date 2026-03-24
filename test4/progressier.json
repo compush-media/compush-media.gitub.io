@@ -1,6 +1,6 @@
 {
-  "name": "test4",
-  "short_name": "test4",
+  "name": "TEST4",
+  "short_name": "TEST4",
   "start_url": "/test4/index.html",
   "scope": "/test4/",
   "display": "standalone",

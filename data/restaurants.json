@@ -31,15 +31,14 @@
     "name": "test3",
     "brandColor": "#B8924F",
     "brandColor2": "#9E7A3E",
-    "address": "3 AllÃÂ©e de rivoli 56567",
+    "address": "3 AllÃÂÃÂ©e de rivoli 56567",
     "email": "tirakountech@gmail.com"
   },
   "test4": {
-    "name": "test4",
+    "name": "TEST4",
     "brandColor": "#B8924F",
     "brandColor2": "#9E7A3E",
-    "email": "contact@fidelavis.com",
-    "brevoListId": 5
+    "email": "axou.v@hotmail.fr"
   },
   "lavie": {
     "name": "lavie",
