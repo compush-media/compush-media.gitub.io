@@ -346,6 +346,7 @@ function subscribeContact(body) {
           to:         [{ email: email, name: firstName || email }],
           templateId: templateId,
           sender:     { name: senderName, email: senderEmail },
+          replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
           params:     { PRENOM: firstName, NOM: lastName, RESTO: resto }
         });
         Logger.log('[Brevo] Email de bienvenue envoyé à ' + email + ' (template #' + templateId + ')');
@@ -491,6 +492,7 @@ function sendDailyCampaign() {
             to:         [{ email: email, name: firstName || email }],
             templateId: templates[nextIndex],
             sender:     { name: senderName, email: senderEmail },
+            replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
             params:     { PRENOM: firstName, NOM: lastName, RESTO: restoId }
           });
           // Mettre à jour le compteur emails_envoyes (colonne 5, index 4)
