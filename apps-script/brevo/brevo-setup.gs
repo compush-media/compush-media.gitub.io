@@ -160,6 +160,27 @@ function setupRestaurant(body) {
   // 4. Tenter la création du workflow automation
   var workflowId = createAutomationWorkflow(name, listId, welcomeId, monthlyIds);
 
+  // 5. Stocker les 12 IDs de templates + expéditeur dans les propriétés du script
+  //    → utilisé par subscribeContact et sendDailyCampaign
+  if (id) {
+    var props = PropertiesService.getScriptProperties();
+    var allTemplateIds = [welcomeId].concat(monthlyIds);
+    props.setProperty('TEMPLATES_'    + id, JSON.stringify(allTemplateIds));
+    props.setProperty('SENDER_NAME_'  + id, sender.name);
+    props.setProperty('SENDER_EMAIL_' + id, sender.email);
+    props.setProperty('LIST_ID_'      + id, String(listId));
+    Logger.log('[Brevo] Propriétés stockées pour ' + id + ' : ' + allTemplateIds.length + ' templates');
+  }
+
+  // 6. Créer l'onglet dans la Google Sheet centrale
+  if (id) {
+    try {
+      createRestaurantSheet(id, name);
+    } catch(err) {
+      Logger.log('[Sheet] Onglet non créé : ' + err.message);
+    }
+  }
+
   var formUrl = 'https://app.cartefidelavis.com/' + (id || 'restaurant') + '/inscription.html';
 
   Logger.log('[Brevo] ═══ Setup terminé : listId=' + listId + ' workflowId=' + workflowId + ' ═══');
@@ -309,7 +330,178 @@ function subscribeContact(body) {
   if (resto)     contactData.attributes.RESTO  = resto;
 
   brevoFetch('POST', '/contacts', contactData);
-
   Logger.log('[Brevo] Contact inscrit : ' + email);
+
+  // ── Envoi automatique de l'email de bienvenue (J+0) ───────
+  if (resto) {
+    var props       = PropertiesService.getScriptProperties();
+    var templates   = JSON.parse(props.getProperty('TEMPLATES_'   + resto) || '[]');
+    var senderName  = props.getProperty('SENDER_NAME_'  + resto) || '';
+    var senderEmail = props.getProperty('SENDER_EMAIL_' + resto) || '';
+    var templateId  = templates[0] || 0;
+
+    if (templateId && senderEmail) {
+      try {
+        brevoFetch('POST', '/smtp/email', {
+          to:         [{ email: email, name: firstName || email }],
+          templateId: templateId,
+          sender:     { name: senderName, email: senderEmail },
+          params:     { PRENOM: firstName, NOM: lastName, RESTO: resto }
+        });
+        Logger.log('[Brevo] Email de bienvenue envoyé à ' + email + ' (template #' + templateId + ')');
+      } catch(err) {
+        Logger.log('[Brevo] Erreur envoi email bienvenue : ' + err.message);
+      }
+    }
+
+    // ── Enregistrer l'inscrit dans la Google Sheet ──────────
+    try {
+      addSubscriberToSheet(resto, email, firstName, lastName);
+    } catch(err) {
+      Logger.log('[Sheet] Impossible d\'enregistrer l\'inscrit : ' + err.message);
+    }
+  }
+
   return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  GOOGLE SHEET — base de données des inscrits par restaurant
+// ═══════════════════════════════════════════════════════════════
+//
+//  Dans Script Properties, ajouter :
+//    SHEET_ID  →  l'ID de votre Google Sheet centrale
+//                 (visible dans l'URL : .../spreadsheets/d/SHEET_ID/...)
+//
+//  Structure de la Sheet :
+//    Un onglet par restaurant (nom = restaurantId)
+//    Colonnes : email | prenom | nom | date_inscription | emails_envoyés
+// ───────────────────────────────────────────────────────────────
+
+function getSheet() {
+  var id = PropertiesService.getScriptProperties().getProperty('SHEET_ID');
+  if (!id) throw new Error('SHEET_ID non configuré dans les propriétés du script');
+  return SpreadsheetApp.openById(id);
+}
+
+// Créer l'onglet du restaurant (appelé au setup)
+function createRestaurantSheet(restoId, restoName) {
+  var ss = getSheet();
+  var existing = ss.getSheetByName(restoId);
+  if (existing) {
+    Logger.log('[Sheet] Onglet "' + restoId + '" existe déjà');
+    return existing;
+  }
+  var sheet = ss.insertSheet(restoId);
+  sheet.appendRow(['email', 'prenom', 'nom', 'date_inscription', 'emails_envoyes']);
+  sheet.getRange(1, 1, 1, 5).setFontWeight('bold').setBackground('#B8924F').setFontColor('#ffffff');
+  sheet.setFrozenRows(1);
+  Logger.log('[Sheet] Onglet créé pour ' + restoName + ' (' + restoId + ')');
+  return sheet;
+}
+
+// Ajouter un inscrit dans l'onglet de son restaurant (appelé au subscribe)
+function addSubscriberToSheet(restoId, email, firstName, lastName) {
+  var ss    = getSheet();
+  var sheet = ss.getSheetByName(restoId);
+  if (!sheet) {
+    Logger.log('[Sheet] Onglet "' + restoId + '" introuvable — inscrit non enregistré');
+    return;
+  }
+  // Vérifier si l'email existe déjà (évite les doublons)
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === email) {
+      Logger.log('[Sheet] Inscrit déjà présent : ' + email);
+      return;
+    }
+  }
+  sheet.appendRow([email, firstName || '', lastName || '', new Date(), 0]);
+  Logger.log('[Sheet] Inscrit ajouté : ' + email + ' → ' + restoId);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TRIGGER QUOTIDIEN — campagne drip 12 mois tous restaurants
+// ═══════════════════════════════════════════════════════════════
+
+// À appeler UNE FOIS manuellement pour activer le trigger quotidien.
+// Ensuite GAS exécutera sendDailyCampaign() chaque jour automatiquement.
+function setupDailyTrigger() {
+  // Supprimer les triggers existants pour éviter les doublons
+  ScriptApp.getProjectTriggers().forEach(function(t) {
+    if (t.getHandlerFunction() === 'sendDailyCampaign') {
+      ScriptApp.deleteTrigger(t);
+    }
+  });
+  ScriptApp.newTrigger('sendDailyCampaign')
+    .timeBased()
+    .everyDays(1)
+    .atHour(9)
+    .create();
+  Logger.log('[Trigger] Trigger quotidien activé → sendDailyCampaign() à 9h');
+}
+
+// Parcourt TOUS les restaurants et envoie les emails du jour
+function sendDailyCampaign() {
+  Logger.log('[Drip] ═══ sendDailyCampaign démarré ═══');
+  var ss    = getSheet();
+  var props = PropertiesService.getScriptProperties();
+  var today = new Date();
+  var sheets = ss.getSheets();
+  var DELAYS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]; // jours
+
+  sheets.forEach(function(sheet) {
+    var restoId = sheet.getName();
+    if (restoId === 'Accueil' || restoId === 'Sheet1') return; // ignorer les onglets système
+
+    var templates   = JSON.parse(props.getProperty('TEMPLATES_'   + restoId) || '[]');
+    var senderName  = props.getProperty('SENDER_NAME_'  + restoId) || '';
+    var senderEmail = props.getProperty('SENDER_EMAIL_' + restoId) || '';
+
+    if (!templates.length || !senderEmail) {
+      Logger.log('[Drip] Config manquante pour "' + restoId + '" — ignoré');
+      return;
+    }
+
+    var data  = sheet.getDataRange().getValues();
+    var header = data[0]; // ['email','prenom','nom','date_inscription','emails_envoyes']
+
+    for (var i = 1; i < data.length; i++) {
+      var row           = data[i];
+      var email         = row[0];
+      var firstName     = row[1] || '';
+      var lastName      = row[2] || '';
+      var signupDate    = new Date(row[3]);
+      var emailsSent    = parseInt(row[4], 10) || 0;
+
+      if (!email || isNaN(signupDate.getTime())) continue;
+      if (emailsSent >= templates.length) continue; // tous les emails envoyés
+
+      var daysSince = Math.floor((today - signupDate) / (1000 * 60 * 60 * 24));
+      var nextIndex = emailsSent; // index du prochain template à envoyer (0=bienvenue déjà envoyé)
+      // Le template 0 (bienvenue) est envoyé directement au subscribe → on part de l'index 1
+      if (nextIndex === 0) nextIndex = 1;
+
+      var dueDay = DELAYS[nextIndex];
+      if (dueDay === undefined) continue;
+
+      if (daysSince >= dueDay) {
+        try {
+          brevoFetch('POST', '/smtp/email', {
+            to:         [{ email: email, name: firstName || email }],
+            templateId: templates[nextIndex],
+            sender:     { name: senderName, email: senderEmail },
+            params:     { PRENOM: firstName, NOM: lastName, RESTO: restoId }
+          });
+          // Mettre à jour le compteur emails_envoyes (colonne 5, index 4)
+          sheet.getRange(i + 1, 5).setValue(nextIndex + 1);
+          Logger.log('[Drip] Email envoyé → ' + email + ' (' + restoId + ') template #' + nextIndex + ' J+' + dueDay);
+        } catch(err) {
+          Logger.log('[Drip] Erreur envoi → ' + email + ' : ' + err.message);
+        }
+      }
+    }
+  });
+
+  Logger.log('[Drip] ═══ sendDailyCampaign terminé ═══');
 }
