@@ -31,7 +31,7 @@
     "name": "test3",
     "brandColor": "#B8924F",
     "brandColor2": "#9E7A3E",
-    "address": "3 AllÃÂÃÂÃÂÃÂ©e de rivoli 56567",
+    "address": "3 AllÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ©e de rivoli 56567",
     "email": "tirakountech@gmail.com"
   },
   "test4": {
@@ -50,6 +50,12 @@
   },
   "test5": {
     "name": "test5",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "email": "axou.v@hotmail.fr"
+  },
+  "test6": {
+    "name": "test6",
     "brandColor": "#B8924F",
     "brandColor2": "#9E7A3E",
     "email": "axou.v@hotmail.fr"
