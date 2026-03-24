@@ -34,6 +34,7 @@
  */
 
 var BREVO_BASE = 'https://api.brevo.com/v3';
+var SENDER_EMAIL = 'contact@fidelavis.com';
 
 // ─── Point d'entrée POST ─────────────────────────────────────
 function doPost(e) {
@@ -267,7 +268,7 @@ function createTemplate(restaurantName, sender, monthIndex, content) {
     templateName: label,
     subject:      content.subject,
     htmlContent:  htmlContent,
-    sender:       { name: sender.name, email: senderEmail },
+    sender:       { name: sender.name, email: SENDER_EMAIL },
     isActive:     true
   });
   Logger.log('[Brevo] Template créé : ' + label + ' id=' + result.id);
@@ -345,7 +346,7 @@ function subscribeContact(body) {
         brevoFetch('POST', '/smtp/email', {
           to:         [{ email: email, name: firstName || email }],
           templateId: templateId,
-          sender:     { name: senderName, email: senderEmail },
+          sender:     { name: senderName, email: SENDER_EMAIL },
           replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
           params:     { PRENOM: firstName, NOM: lastName, RESTO: resto }
         });
@@ -491,7 +492,7 @@ function sendDailyCampaign() {
           brevoFetch('POST', '/smtp/email', {
             to:         [{ email: email, name: firstName || email }],
             templateId: templates[nextIndex],
-            sender:     { name: senderName, email: senderEmail },
+            sender:     { name: senderName, email: SENDER_EMAIL },
             replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
             params:     { PRENOM: firstName, NOM: lastName, RESTO: restoId }
           });
