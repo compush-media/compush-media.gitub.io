@@ -255,20 +255,37 @@ function createTemplate(restaurantName, sender, monthIndex, content) {
     'Fidelavis × ' + restaurantName + '</span></div>' +
     '<h1 style="font-size:22px;font-weight:900;margin:0 0 12px;color:#1d1d1d;">' +
     content.headline + '</h1>' +
+    '<p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 12px;">' +
+    'Bonjour {{params.PRENOM}},</p>' +
     '<p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 20px;">' +
     content.body + '</p>' +
+    '<p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 20px;">' +
+    'Merci de votre confiance et à très bientôt chez ' + restaurantName + ' !</p>' +
     '<div style="border-top:1px solid rgba(0,0,0,.08);margin-top:28px;padding-top:16px;' +
     'font-size:12px;color:#888;text-align:center;">' +
     '© ' + restaurantName + ' · Programme de fidélité Fidelavis<br>' +
-    'Vous recevez cet email car vous êtes membre du programme de fidélité.<br>' +
+    'Vous recevez cet email car vous êtes membre du programme de fidélité ' + restaurantName + '.<br>' +
+    'Cet email a été envoyé à {{contact.EMAIL}}.<br>' +
     '<a href="{{unsubscribeUrl}}" style="color:#B8924F;">Se désabonner</a></div>' +
     '</div></body></html>';
+
+  var textContent =
+    content.headline + '\r\n\r\n' +
+    'Bonjour {{params.PRENOM}},\r\n\r\n' +
+    content.body + '\r\n\r\n' +
+    'Merci de votre confiance et à très bientôt chez ' + restaurantName + ' !\r\n\r\n' +
+    '---\r\n' +
+    '© ' + restaurantName + ' · Programme de fidélité Fidelavis\r\n' +
+    'Vous recevez cet email car vous êtes membre du programme de fidélité.\r\n' +
+    'Se désabonner : {{unsubscribeUrl}}';
 
   var result = brevoFetch('POST', '/smtp/templates', {
     templateName: label,
     subject:      content.subject,
     htmlContent:  htmlContent,
+    textContent:  textContent,
     sender:       { name: sender.name, email: SENDER_EMAIL },
+    replyTo:      { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
     isActive:     true
   });
   Logger.log('[Brevo] Template créé : ' + label + ' id=' + result.id);
@@ -348,7 +365,8 @@ function subscribeContact(body) {
           templateId: templateId,
           sender:     { name: senderName, email: SENDER_EMAIL },
           replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
-          params:     { PRENOM: firstName, NOM: lastName, RESTO: resto }
+          params:     { PRENOM: firstName, NOM: lastName, RESTO: resto },
+          tags:       ['fidelavis', 'bienvenue']
         });
         Logger.log('[Brevo] Email de bienvenue envoyé à ' + email + ' (template #' + templateId + ')');
       } catch(err) {
@@ -494,7 +512,8 @@ function sendDailyCampaign() {
             templateId: templates[nextIndex],
             sender:     { name: senderName, email: SENDER_EMAIL },
             replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
-            params:     { PRENOM: firstName, NOM: lastName, RESTO: restoId }
+            params:     { PRENOM: firstName, NOM: lastName, RESTO: restoId },
+            tags:       ['fidelavis', 'drip']
           });
           // Mettre à jour le compteur emails_envoyes (colonne 5, index 4)
           sheet.getRange(i + 1, 5).setValue(nextIndex + 1);
