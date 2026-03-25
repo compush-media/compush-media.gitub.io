@@ -36,6 +36,41 @@
 var BREVO_BASE = 'https://api.brevo.com/v3';
 var SENDER_EMAIL = 'contact@fidelavis.com';
 
+// ─── Point d'entrée GET (désabonnement par clic sur lien) ────
+function doGet(e) {
+  var email  = (e.parameter.email  || '').trim();
+  var listId = parseInt(e.parameter.listId, 10);
+
+  if (!email || !listId) {
+    return HtmlService.createHtmlOutput(
+      '<h2>Lien invalide</h2><p>Ce lien de désabonnement est incorrect.</p>'
+    );
+  }
+
+  try {
+    brevoFetch('POST', '/contacts/' + encodeURIComponent(email) + '/lists/unsubscribe', {
+      ids: [listId]
+    });
+    Logger.log('[Unsub] ' + email + ' retiré de la liste #' + listId);
+    return HtmlService.createHtmlOutput(
+      '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+      '<title>Désabonnement confirmé</title>' +
+      '<style>body{font-family:Arial,sans-serif;max-width:500px;margin:80px auto;padding:0 20px;text-align:center;color:#333}' +
+      'h1{color:#B8924F}p{line-height:1.6;color:#666}</style></head>' +
+      '<body><h1>Désabonnement confirmé</h1>' +
+      '<p>Votre adresse <strong>' + email + '</strong> a bien été retirée de la liste.</p>' +
+      '<p>Vous ne recevrez plus d\'emails de ce programme de fidélité.</p>' +
+      '</body></html>'
+    );
+  } catch(err) {
+    Logger.log('[Unsub] Erreur : ' + err.message);
+    return HtmlService.createHtmlOutput(
+      '<h2>Erreur</h2><p>Une erreur est survenue. Veuillez réessayer ou contacter contact@fidelavis.com</p>'
+    );
+  }
+}
+
 // ─── Point d'entrée POST ─────────────────────────────────────
 function doPost(e) {
   var output = ContentService.createTextOutput();
@@ -290,7 +325,7 @@ function createTemplate(restaurantName, sender, monthIndex, content) {
     '<strong>' + restaurantName + '</strong> via Fidelavis.<br>' +
     'Adresse enregistrée&nbsp;: {{contact.EMAIL}}</p>' +
     '<p style="margin:0;">' +
-    '<a href="{{unsubscribeUrl}}" style="color:#B8924F;text-decoration:underline;font-weight:600;">' +
+    '<a href="{{params.UNSUBSCRIBE_URL}}" style="color:#B8924F;text-decoration:underline;font-weight:600;">' +
     'Me désabonner de cette liste</a>' +
     '&nbsp;&nbsp;|&nbsp;&nbsp;' +
     '© ' + new Date().getFullYear() + ' ' + restaurantName + ' · Fidelavis' +
@@ -314,7 +349,7 @@ function createTemplate(restaurantName, sender, monthIndex, content) {
     '---\r\n' +
     'Vous recevez cet email car vous êtes inscrit au programme de fidélité ' + restaurantName + ' via Fidelavis.\r\n' +
     'Adresse enregistrée : {{contact.EMAIL}}\r\n' +
-    'Se désabonner : {{unsubscribeUrl}}\r\n' +
+    'Se désabonner : {{params.UNSUBSCRIBE_URL}}\r\n' +
     '© ' + new Date().getFullYear() + ' ' + restaurantName + ' · Fidelavis';
 
   var result = brevoFetch('POST', '/smtp/templates', {
@@ -398,12 +433,14 @@ function subscribeContact(body) {
 
     if (templateId && senderEmail) {
       try {
+        var gasUrl       = ScriptApp.getService().getUrl();
+        var unsubUrl     = gasUrl + '?email=' + encodeURIComponent(email) + '&listId=' + listId;
         brevoFetch('POST', '/smtp/email', {
           to:         [{ email: email, name: firstName || email }],
           templateId: templateId,
           sender:     { name: senderName, email: SENDER_EMAIL },
           replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
-          params:     { PRENOM: firstName, NOM: lastName, RESTO: resto },
+          params:     { PRENOM: firstName, NOM: lastName, RESTO: resto, UNSUBSCRIBE_URL: unsubUrl },
           tags:       ['fidelavis', 'bienvenue']
         });
         Logger.log('[Brevo] Email de bienvenue envoyé à ' + email + ' (template #' + templateId + ')');
@@ -545,12 +582,15 @@ function sendDailyCampaign() {
 
       if (daysSince >= dueDay) {
         try {
+          var gasUrl      = ScriptApp.getService().getUrl();
+          var listIdDrip  = parseInt(props.getProperty('LIST_ID_' + restoId), 10) || 0;
+          var unsubUrlDrip = gasUrl + '?email=' + encodeURIComponent(email) + '&listId=' + listIdDrip;
           brevoFetch('POST', '/smtp/email', {
             to:         [{ email: email, name: firstName || email }],
             templateId: templates[nextIndex],
             sender:     { name: senderName, email: SENDER_EMAIL },
             replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
-            params:     { PRENOM: firstName, NOM: lastName, RESTO: restoId },
+            params:     { PRENOM: firstName, NOM: lastName, RESTO: restoId, UNSUBSCRIBE_URL: unsubUrlDrip },
             tags:       ['fidelavis', 'drip']
           });
           // Mettre à jour le compteur emails_envoyes (colonne 5, index 4)
