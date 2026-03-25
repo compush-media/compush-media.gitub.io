@@ -245,39 +245,77 @@ function createTemplate(restaurantName, sender, monthIndex, content) {
     : '[' + restaurantName + '] Mois ' + monthIndex;
 
   var htmlContent =
-    '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"></head>' +
+    '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<title>' + content.subject + '</title></head>' +
     '<body style="font-family:\'Helvetica Neue\',Arial,sans-serif;max-width:600px;' +
-    'margin:0 auto;padding:32px 24px;background:#f7f0e8;color:#1d1d1d;">' +
-    '<div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 4px 24px rgba(0,0,0,.07);">' +
-    '<div style="text-align:center;margin-bottom:24px;">' +
+    'margin:0 auto;padding:24px 16px;background:#f7f0e8;color:#1d1d1d;">' +
+
+    // En-tête
+    '<div style="text-align:center;padding:16px 0 8px;">' +
     '<span style="display:inline-block;background:linear-gradient(135deg,#B8924F,#9E7A3E);' +
-    'color:#fff;font-weight:900;font-size:13px;padding:5px 14px;border-radius:999px;">' +
-    'Fidelavis × ' + restaurantName + '</span></div>' +
-    '<h1 style="font-size:22px;font-weight:900;margin:0 0 12px;color:#1d1d1d;">' +
+    'color:#fff;font-weight:900;font-size:12px;letter-spacing:.5px;padding:5px 16px;border-radius:999px;">' +
+    'Fidelavis × ' + restaurantName + '</span>' +
+    '</div>' +
+
+    // Carte principale
+    '<div style="background:#fff;border-radius:16px;padding:32px 28px;margin-top:16px;' +
+    'box-shadow:0 4px 24px rgba(0,0,0,.07);">' +
+
+    '<p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 16px;">' +
+    'Bonjour <strong>{{params.PRENOM}}</strong>,</p>' +
+
+    '<h1 style="font-size:22px;font-weight:900;margin:0 0 16px;color:#1d1d1d;line-height:1.3;">' +
     content.headline + '</h1>' +
-    '<p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 12px;">' +
-    'Bonjour {{params.PRENOM}},</p>' +
-    '<p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 20px;">' +
+
+    '<p style="font-size:15px;line-height:1.7;color:#444;margin:0 0 16px;">' +
     content.body + '</p>' +
-    '<p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 20px;">' +
-    'Merci de votre confiance et à très bientôt chez ' + restaurantName + ' !</p>' +
-    '<div style="border-top:1px solid rgba(0,0,0,.08);margin-top:28px;padding-top:16px;' +
-    'font-size:12px;color:#888;text-align:center;">' +
-    '© ' + restaurantName + ' · Programme de fidélité Fidelavis<br>' +
-    'Vous recevez cet email car vous êtes membre du programme de fidélité ' + restaurantName + '.<br>' +
-    'Cet email a été envoyé à {{contact.EMAIL}}.<br>' +
-    '<a href="{{unsubscribeUrl}}" style="color:#B8924F;">Se désabonner</a></div>' +
-    '</div></body></html>';
+
+    '<p style="font-size:15px;line-height:1.7;color:#444;margin:0 0 24px;">' +
+    'Nous sommes ravis de vous compter parmi les membres fidèles de ' + restaurantName +
+    '. Votre fidélité est notre plus belle récompense et nous mettons tout en œuvre ' +
+    'pour vous offrir une expérience exceptionnelle à chaque visite.</p>' +
+
+    '<p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 8px;">' +
+    'À très bientôt chez ' + restaurantName + ' !</p>' +
+
+    '<p style="font-size:14px;color:#888;margin:0 0 24px;">L\'équipe ' + restaurantName + '</p>' +
+
+    // Séparateur
+    '<hr style="border:none;border-top:1px solid #eee;margin:24px 0;">' +
+
+    // Pied de page légal & désabonnement
+    '<div style="font-size:11px;color:#aaa;text-align:center;line-height:1.8;">' +
+    '<p style="margin:0 0 6px;">Vous recevez cet email car vous êtes inscrit au programme de fidélité ' +
+    '<strong>' + restaurantName + '</strong> via Fidelavis.<br>' +
+    'Adresse enregistrée&nbsp;: {{contact.EMAIL}}</p>' +
+    '<p style="margin:0;">' +
+    '<a href="{{unsubscribeUrl}}" style="color:#B8924F;text-decoration:underline;font-weight:600;">' +
+    'Me désabonner de cette liste</a>' +
+    '&nbsp;&nbsp;|&nbsp;&nbsp;' +
+    '© ' + new Date().getFullYear() + ' ' + restaurantName + ' · Fidelavis' +
+    '</p>' +
+    '</div>' +
+
+    '</div>' + // fin carte
+    '</body></html>';
 
   var textContent =
+    content.subject + '\r\n' +
+    '='.repeat(content.subject.length) + '\r\n\r\n' +
+    'Bonjour ' + '{{params.PRENOM}}' + ',\r\n\r\n' +
     content.headline + '\r\n\r\n' +
-    'Bonjour {{params.PRENOM}},\r\n\r\n' +
     content.body + '\r\n\r\n' +
-    'Merci de votre confiance et à très bientôt chez ' + restaurantName + ' !\r\n\r\n' +
+    'Nous sommes ravis de vous compter parmi les membres fidèles de ' + restaurantName + '. ' +
+    'Votre fidélité est notre plus belle récompense et nous mettons tout en œuvre ' +
+    'pour vous offrir une expérience exceptionnelle à chaque visite.\r\n\r\n' +
+    'À très bientôt chez ' + restaurantName + ' !\r\n' +
+    'L\'équipe ' + restaurantName + '\r\n\r\n' +
     '---\r\n' +
-    '© ' + restaurantName + ' · Programme de fidélité Fidelavis\r\n' +
-    'Vous recevez cet email car vous êtes membre du programme de fidélité.\r\n' +
-    'Se désabonner : {{unsubscribeUrl}}';
+    'Vous recevez cet email car vous êtes inscrit au programme de fidélité ' + restaurantName + ' via Fidelavis.\r\n' +
+    'Adresse enregistrée : {{contact.EMAIL}}\r\n' +
+    'Se désabonner : {{unsubscribeUrl}}\r\n' +
+    '© ' + new Date().getFullYear() + ' ' + restaurantName + ' · Fidelavis';
 
   var result = brevoFetch('POST', '/smtp/templates', {
     templateName: label,
