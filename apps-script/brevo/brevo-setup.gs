@@ -47,26 +47,19 @@ function doGet(e) {
     );
   }
 
+  var baseUrl = 'https://app.cartefidelavis.com/desinscription.html';
   try {
     brevoFetch('POST', '/contacts/lists/' + listId + '/contacts/remove', {
       emails: [email]
     });
     Logger.log('[Unsub] ' + email + ' retiré de la liste #' + listId);
     return HtmlService.createHtmlOutput(
-      '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">' +
-      '<meta name="viewport" content="width=device-width,initial-scale=1">' +
-      '<title>Désabonnement confirmé</title>' +
-      '<style>body{font-family:Arial,sans-serif;max-width:500px;margin:80px auto;padding:0 20px;text-align:center;color:#333}' +
-      'h1{color:#B8924F}p{line-height:1.6;color:#666}</style></head>' +
-      '<body><h1>Désabonnement confirmé</h1>' +
-      '<p>Votre adresse <strong>' + email + '</strong> a bien été retirée de la liste.</p>' +
-      '<p>Vous ne recevrez plus d\'emails de ce programme de fidélité.</p>' +
-      '</body></html>'
+      '<script>location.replace("' + baseUrl + '?email=' + encodeURIComponent(email) + '");<\/script>'
     );
   } catch(err) {
     Logger.log('[Unsub] Erreur : ' + err.message);
     return HtmlService.createHtmlOutput(
-      '<h2>Erreur</h2><p>Une erreur est survenue. Veuillez réessayer ou contacter contact@fidelavis.com</p>'
+      '<script>location.replace("' + baseUrl + '?error=1");<\/script>'
     );
   }
 }
