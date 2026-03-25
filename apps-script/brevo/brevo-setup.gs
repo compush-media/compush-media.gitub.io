@@ -48,8 +48,8 @@ function doGet(e) {
   }
 
   try {
-    brevoFetch('POST', '/contacts/' + encodeURIComponent(email) + '/lists/unsubscribe', {
-      ids: [listId]
+    brevoFetch('POST', '/contacts/lists/' + listId + '/contacts/remove', {
+      emails: [email]
     });
     Logger.log('[Unsub] ' + email + ' retiré de la liste #' + listId);
     return HtmlService.createHtmlOutput(
