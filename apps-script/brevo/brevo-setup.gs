@@ -285,7 +285,7 @@ function createTemplate(restaurantName, sender, monthIndex, content) {
     htmlContent:  htmlContent,
     textContent:  textContent,
     sender:       { name: sender.name, email: SENDER_EMAIL },
-    replyTo:      { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
+    replyTo:      'noreply@fidelavis.com',
     isActive:     true
   });
   Logger.log('[Brevo] Template créé : ' + label + ' id=' + result.id);
