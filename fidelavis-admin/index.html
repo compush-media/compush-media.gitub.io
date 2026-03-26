@@ -1858,38 +1858,42 @@ async function confirmDelete() {
     }
     document.getElementById('deleteStep1').textContent = '✅ Brevo nettoyé';
 
-    // ── Étape 2 : Supprimer les fichiers GitHub ───────────────
+    // ── Étape 2 : Supprimer les fichiers GitHub (1 seul commit) ─
     document.getElementById('deleteStep2').style.display = 'block';
     document.getElementById('deleteStep2').textContent = '⏳ Suppression fichiers GitHub…';
-    let files = [];
-    try {
-      const tree = await ghApiD(`/git/trees/${GH_BRANCH_D}?recursive=1`);
-      files = (tree.tree || []).filter(f => f.type === 'blob' && f.path.startsWith(slug + '/'));
-    } catch(e) { throw new Error('Impossible de lister les fichiers : ' + e.message); }
 
-    for (const f of files) {
-      await ghApiD(`/contents/${f.path}`, 'DELETE', {
-        message: `chore: supprimer restaurant ${slug} — ${f.path}`,
-        sha: f.sha,
-        branch: GH_BRANCH_D
-      });
-    }
-    document.getElementById('deleteStep2').textContent = `✅ ${files.length} fichier(s) supprimé(s)`;
+    // Récupérer le SHA de la branche et le tree courant
+    const branchInfo  = await ghApiD(`/branches/${GH_BRANCH_D}`);
+    const baseTreeSha = branchInfo.commit.commit.tree.sha;
+    const baseSha     = branchInfo.commit.sha;
+    const fullTree    = await ghApiD(`/git/trees/${baseTreeSha}?recursive=1`);
+    const filesToDelete = (fullTree.tree || []).filter(f =>
+      f.type === 'blob' && f.path.startsWith(slug + '/')
+    );
 
-    // ── Étape 3 : Mettre à jour restaurants.json ─────────────
-    document.getElementById('deleteStep3').style.display = 'block';
-    document.getElementById('deleteStep3').textContent = '⏳ Mise à jour registre…';
-    const regFile = await ghApiD('/contents/data/restaurants.json');
-    // Utiliser download_url pour éviter les problèmes de décodage base64/UTF-8
-    const rawRes  = await fetch(regFile.download_url, { cache: 'no-store' });
-    const regData = await rawRes.json();
+    // Récupérer restaurants.json en même temps
+    const regFileInfo = await ghApiD('/contents/data/restaurants.json');
+    const rawRes      = await fetch(regFileInfo.download_url, { cache: 'no-store' });
+    const regData     = await rawRes.json();
     delete regData[slug];
-    await ghApiD('/contents/data/restaurants.json', 'PUT', {
-      message: `chore: retirer ${slug} du registre`,
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(regData, null, 2) + '\n'))),
-      sha: regFile.sha,
-      branch: GH_BRANCH_D
+    const regContent  = btoa(unescape(encodeURIComponent(JSON.stringify(regData, null, 2) + '\n')));
+
+    // Construire le nouveau tree : supprimer dossier slug + mettre à jour restaurants.json
+    const newTreeItems = filesToDelete.map(f => ({ path: f.path, mode: f.mode, type: 'blob', sha: null }));
+    newTreeItems.push({ path: 'data/restaurants.json', mode: '100644', type: 'blob', content: JSON.stringify(regData, null, 2) + '\n' });
+
+    const newTree   = await ghApiD('/git/trees', 'POST', { base_tree: baseTreeSha, tree: newTreeItems });
+    const newCommit = await ghApiD('/git/commits', 'POST', {
+      message: `chore: supprimer restaurant ${slug}`,
+      tree:    newTree.sha,
+      parents: [baseSha]
     });
+    await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: newCommit.sha });
+
+    document.getElementById('deleteStep2').textContent = `✅ ${filesToDelete.length} fichier(s) supprimé(s)`;
+
+    // ── Étape 3 : déjà inclus dans le commit ci-dessus ───────
+    document.getElementById('deleteStep3').style.display = 'block';
     document.getElementById('deleteStep3').textContent = '✅ Registre mis à jour';
 
     // ── Terminé ───────────────────────────────────────────────
