@@ -1030,8 +1030,9 @@ function showSection(name, navEl) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el('section-' + name)?.classList.add('active');
   if (navEl) navEl.classList.add('active');
-  if (name === 'reviews') loadReviews();
-  if (name === 'logs')    loadLogs();
+  if (name === 'reviews')     loadReviews();
+  if (name === 'logs')        loadLogs();
+  if (name === 'restaurants') loadRestoSection();
 }
 
 // ============================================================
