@@ -72,6 +72,8 @@ function doPost(e) {
       brevoFetch('POST', '/contacts/lists/' + uListId + '/contacts/remove', { emails: [uEmail] });
       Logger.log('[Unsub] ' + uEmail + ' retiré de la liste #' + uListId);
       output.setContent(JSON.stringify({ success: true }));
+    } else if (action === 'deleteRestaurant') {
+      output.setContent(JSON.stringify(deleteRestaurant(body)));
     } else {
       output.setContent(JSON.stringify({ success: false, error: 'Action inconnue : ' + action }));
     }
@@ -135,6 +137,64 @@ function brevoFetch(method, path, body) {
 // ═══════════════════════════════════════════════════════════════
 //  ACTION : SETUP (appelé une fois par restaurant)
 // ═══════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════
+//  ACTION : DELETE RESTAURANT
+// ═══════════════════════════════════════════════════════════════
+function deleteRestaurant(body) {
+  var id = (body.restaurantId || '').trim();
+  if (!id) throw new Error('restaurantId requis');
+
+  Logger.log('[Delete] ═══ Suppression restaurant : ' + id + ' ═══');
+  var props = PropertiesService.getScriptProperties();
+  var errors = [];
+
+  // 1. Supprimer les templates Brevo
+  var templates = JSON.parse(props.getProperty('TEMPLATES_' + id) || '[]');
+  templates.forEach(function(tid) {
+    if (!tid) return;
+    try {
+      brevoFetch('DELETE', '/smtp/templates/' + tid);
+      Logger.log('[Delete] Template #' + tid + ' supprimé');
+    } catch(e) {
+      Logger.log('[Delete] Template #' + tid + ' — ' + e.message);
+    }
+  });
+
+  // 2. Supprimer la liste Brevo
+  var listId = parseInt(props.getProperty('LIST_ID_' + id), 10);
+  if (listId) {
+    try {
+      brevoFetch('DELETE', '/contacts/lists/' + listId);
+      Logger.log('[Delete] Liste Brevo #' + listId + ' supprimée');
+    } catch(e) {
+      errors.push('Liste Brevo : ' + e.message);
+      Logger.log('[Delete] Liste #' + listId + ' — ' + e.message);
+    }
+  }
+
+  // 3. Supprimer l'onglet Google Sheet
+  try {
+    var ss = getSheet();
+    var sheet = ss.getSheetByName(id);
+    if (sheet) {
+      ss.deleteSheet(sheet);
+      Logger.log('[Delete] Onglet Sheet "' + id + '" supprimé');
+    }
+  } catch(e) {
+    Logger.log('[Delete] Sheet — ' + e.message);
+  }
+
+  // 4. Supprimer les propriétés du script
+  props.deleteProperty('TEMPLATES_'   + id);
+  props.deleteProperty('SENDER_NAME_' + id);
+  props.deleteProperty('SENDER_EMAIL_'+ id);
+  props.deleteProperty('LIST_ID_'     + id);
+  Logger.log('[Delete] Propriétés supprimées pour ' + id);
+
+  Logger.log('[Delete] ═══ Suppression terminée : ' + id + ' ═══');
+  return { success: true, errors: errors };
+}
 
 function setupRestaurant(body) {
   var name  = (body.restaurantName  || 'Restaurant').trim();
