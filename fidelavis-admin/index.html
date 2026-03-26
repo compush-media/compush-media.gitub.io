@@ -709,6 +709,29 @@
       </div>
     </section>
 
+    <!-- ── MODAL SUPPRESSION RESTAURANT ── -->
+    <div id="deleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;padding:16px">
+      <div style="background:#fff;border-radius:16px;padding:28px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+        <h3 style="font-size:18px;font-weight:900;margin-bottom:8px">⚠️ Supprimer ce restaurant ?</h3>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:6px">Vous allez supprimer :</p>
+        <div id="deleteModalName" style="font-size:15px;font-weight:800;margin-bottom:16px;padding:10px 14px;background:var(--red-bg);border:1px solid rgba(217,48,37,.2);border-radius:10px;color:var(--red)"></div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">
+          Cette action supprimera les fichiers GitHub, la liste Brevo, les 12 templates email et l'onglet Google Sheet.<br>
+          <strong>Irréversible.</strong>
+        </p>
+        <div id="deleteProgress" style="display:none;font-size:13px;color:var(--muted);margin-bottom:16px;line-height:2">
+          <div id="deleteStep1">⏳ Nettoyage Brevo…</div>
+          <div id="deleteStep2" style="display:none">⏳ Suppression fichiers GitHub…</div>
+          <div id="deleteStep3" style="display:none">⏳ Mise à jour registre…</div>
+        </div>
+        <div id="deleteError" style="display:none;padding:10px 12px;background:var(--red-bg);border:1px solid rgba(217,48,37,.2);border-radius:8px;font-size:13px;color:var(--red);margin-bottom:16px"></div>
+        <div style="display:flex;gap:10px">
+          <button onclick="closeDeleteModal()" id="deleteCancelBtn" style="flex:1;padding:11px;border:1.5px solid var(--line);border-radius:10px;background:transparent;font-size:14px;font-weight:700;cursor:pointer">Annuler</button>
+          <button onclick="confirmDelete()" id="deleteConfirmBtn" style="flex:1;padding:11px;background:var(--red);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer">🗑 Supprimer</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ── RESTAURANTS ── -->
     <section class="section" id="section-restaurants">
       <div class="section-title">🍽️ Restaurants
@@ -1749,9 +1772,132 @@ async function loadRestoSection() {
           <a href="${BASE}/${slug}/admin/login.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">⚙️ Admin</a>
           <a href="${BASE}/${slug}/admin/state.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">📊 Stats</a>
           <a href="${BASE}/${slug}/admin/reputation-google.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">⭐ Réputation</a>
+          <button onclick="openDeleteModal('${slug}','${esc(r.name || slug)}')" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--red-bg);border:1px solid rgba(217,48,37,.25);border-radius:7px;color:var(--red);cursor:pointer">🗑 Supprimer</button>
         </div>
       </div>`;
   }).join('');
+}
+
+// ── Suppression restaurant ────────────────────────────────────
+let _deleteSlug = '';
+const GH_OWNER_D  = 'compush-media';
+const GH_REPO_D   = 'compush-media.gitub.io';
+const GH_BRANCH_D = 'main';
+
+function openDeleteModal(slug, name) {
+  _deleteSlug = slug;
+  document.getElementById('deleteModalName').textContent = name + '  (' + slug + ')';
+  document.getElementById('deleteProgress').style.display = 'none';
+  document.getElementById('deleteError').style.display    = 'none';
+  document.getElementById('deleteStep1').textContent = '⏳ Nettoyage Brevo…';
+  document.getElementById('deleteStep2').style.display = 'none';
+  document.getElementById('deleteStep3').style.display = 'none';
+  document.getElementById('deleteConfirmBtn').disabled = false;
+  document.getElementById('deleteCancelBtn').disabled  = false;
+  document.getElementById('deleteModal').style.display = 'flex';
+}
+function closeDeleteModal() {
+  document.getElementById('deleteModal').style.display = 'none';
+}
+
+async function ghApiD(path, method='GET', body=null) {
+  const token = localStorage.getItem('fv_gh_token') || '';
+  if (!token) throw new Error('Token GitHub manquant');
+  const opts = {
+    method,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'Content-Type': 'application/json',
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`https://api.github.com/repos/${GH_OWNER_D}/${GH_REPO_D}${path}`, opts);
+  if (res.status === 204) return null;
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`GitHub ${res.status}: ${json.message || res.statusText}`);
+  return json;
+}
+
+async function confirmDelete() {
+  const slug = _deleteSlug;
+  document.getElementById('deleteConfirmBtn').disabled = true;
+  document.getElementById('deleteCancelBtn').disabled  = true;
+  document.getElementById('deleteProgress').style.display = 'block';
+  document.getElementById('deleteError').style.display    = 'none';
+
+  try {
+    // ── Étape 1 : Brevo cleanup via GAS ──────────────────────
+    document.getElementById('deleteStep1').textContent = '⏳ Nettoyage Brevo…';
+    let gasUrl = '';
+    try {
+      const cfgRes = await fetch(`/data/restaurants.json`, { cache: 'no-store' });
+      if (cfgRes.ok) {
+        const allData = await cfgRes.json();
+        const r = allData[slug] || {};
+        gasUrl = r.brevoGasUrl || '';
+      }
+    } catch(e) {}
+    // Essayer aussi depuis config.json du restaurant
+    if (!gasUrl) {
+      try {
+        const cfgR = await fetch(`/${slug}/config.json`, { cache: 'no-store' });
+        if (cfgR.ok) { const c = await cfgR.json(); gasUrl = c.brevoGasUrl || ''; }
+      } catch(e) {}
+    }
+    if (gasUrl) {
+      try {
+        await fetch(gasUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'deleteRestaurant', restaurantId: slug })
+        });
+      } catch(e) { /* non bloquant */ }
+    }
+    document.getElementById('deleteStep1').textContent = '✅ Brevo nettoyé';
+
+    // ── Étape 2 : Supprimer les fichiers GitHub ───────────────
+    document.getElementById('deleteStep2').style.display = 'block';
+    document.getElementById('deleteStep2').textContent = '⏳ Suppression fichiers GitHub…';
+    let files = [];
+    try {
+      const tree = await ghApiD(`/git/trees/${GH_BRANCH_D}?recursive=1`);
+      files = (tree.tree || []).filter(f => f.type === 'blob' && f.path.startsWith(slug + '/'));
+    } catch(e) { throw new Error('Impossible de lister les fichiers : ' + e.message); }
+
+    for (const f of files) {
+      await ghApiD(`/contents/${f.path}`, 'DELETE', {
+        message: `chore: supprimer restaurant ${slug} — ${f.path}`,
+        sha: f.sha,
+        branch: GH_BRANCH_D
+      });
+    }
+    document.getElementById('deleteStep2').textContent = `✅ ${files.length} fichier(s) supprimé(s)`;
+
+    // ── Étape 3 : Mettre à jour restaurants.json ─────────────
+    document.getElementById('deleteStep3').style.display = 'block';
+    document.getElementById('deleteStep3').textContent = '⏳ Mise à jour registre…';
+    const regFile = await ghApiD('/contents/data/restaurants.json');
+    const regData = JSON.parse(atob(regFile.content.replace(/\n/g, '')));
+    delete regData[slug];
+    await ghApiD('/contents/data/restaurants.json', 'PUT', {
+      message: `chore: retirer ${slug} du registre`,
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(regData, null, 2) + '\n'))),
+      sha: regFile.sha,
+      branch: GH_BRANCH_D
+    });
+    document.getElementById('deleteStep3').textContent = '✅ Registre mis à jour';
+
+    // ── Terminé ───────────────────────────────────────────────
+    setTimeout(() => { closeDeleteModal(); loadRestoSection(); }, 1200);
+
+  } catch(err) {
+    document.getElementById('deleteError').style.display = 'block';
+    document.getElementById('deleteError').textContent   = '❌ ' + err.message;
+    document.getElementById('deleteConfirmBtn').disabled = false;
+    document.getElementById('deleteCancelBtn').disabled  = false;
+  }
 }
 
 function generateRestoCmd() {
