@@ -57,7 +57,9 @@ function doGet(e) {
     return HtmlService.createHtmlOutput(
       '<!DOCTYPE html><html><head>' +
       '<meta http-equiv="refresh" content="0;url=' + dest + '">' +
-      '</head><body></body></html>'
+      '</head><body>' +
+      '<script>try{window.top.location.replace("' + dest + '");}catch(e){window.location.replace("' + dest + '");}<\/script>' +
+      '</body></html>'
     );
   } catch(err) {
     Logger.log('[Unsub] Erreur : ' + err.message);
@@ -65,7 +67,9 @@ function doGet(e) {
     return HtmlService.createHtmlOutput(
       '<!DOCTYPE html><html><head>' +
       '<meta http-equiv="refresh" content="0;url=' + destErr + '">' +
-      '</head><body></body></html>'
+      '</head><body>' +
+      '<script>try{window.top.location.replace("' + destErr + '");}catch(e){window.location.replace("' + destErr + '");}<\/script>' +
+      '</body></html>'
     );
   }
 }
