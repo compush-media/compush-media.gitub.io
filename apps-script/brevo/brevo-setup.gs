@@ -35,6 +35,16 @@
 
 var BREVO_BASE = 'https://api.brevo.com/v3';
 var SENDER_EMAIL = 'contact@fidelavis.com';
+var GAS_BASE_URL = 'https://script.google.com/macros/s/'; // sera surchargé par getGasUrl()
+
+function getGasUrl() {
+  try {
+    var url = ScriptApp.getService().getUrl();
+    return url || PropertiesService.getScriptProperties().getProperty('GAS_URL') || '';
+  } catch(e) {
+    return PropertiesService.getScriptProperties().getProperty('GAS_URL') || '';
+  }
+}
 
 // ─── Point d'entrée GET (désabonnement par clic sur lien) ────
 function doGet(e) {
@@ -436,8 +446,8 @@ function subscribeContact(body) {
 
     if (templateId && senderEmail) {
       try {
-        var gasUrl       = ScriptApp.getService().getUrl();
-        var unsubUrl     = gasUrl + '?email=' + encodeURIComponent(email) + '&listId=' + listId;
+        var gasUrl       = getGasUrl();
+        var unsubUrl     = gasUrl ? gasUrl + '?email=' + encodeURIComponent(email) + '&listId=' + listId : '';
         brevoFetch('POST', '/smtp/email', {
           to:         [{ email: email, name: firstName || email }],
           templateId: templateId,
@@ -585,9 +595,9 @@ function sendDailyCampaign() {
 
       if (daysSince >= dueDay) {
         try {
-          var gasUrl      = ScriptApp.getService().getUrl();
+          var gasUrl      = getGasUrl();
           var listIdDrip  = parseInt(props.getProperty('LIST_ID_' + restoId), 10) || 0;
-          var unsubUrlDrip = gasUrl + '?email=' + encodeURIComponent(email) + '&listId=' + listIdDrip;
+          var unsubUrlDrip = gasUrl ? gasUrl + '?email=' + encodeURIComponent(email) + '&listId=' + listIdDrip : '';
           brevoFetch('POST', '/smtp/email', {
             to:         [{ email: email, name: firstName || email }],
             templateId: templates[nextIndex],
