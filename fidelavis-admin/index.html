@@ -1880,7 +1880,9 @@ async function confirmDelete() {
     document.getElementById('deleteStep3').style.display = 'block';
     document.getElementById('deleteStep3').textContent = '⏳ Mise à jour registre…';
     const regFile = await ghApiD('/contents/data/restaurants.json');
-    const regData = JSON.parse(decodeURIComponent(escape(atob(regFile.content.replace(/\n/g, '')))));
+    // Utiliser download_url pour éviter les problèmes de décodage base64/UTF-8
+    const rawRes  = await fetch(regFile.download_url, { cache: 'no-store' });
+    const regData = await rawRes.json();
     delete regData[slug];
     await ghApiD('/contents/data/restaurants.json', 'PUT', {
       message: `chore: retirer ${slug} du registre`,
