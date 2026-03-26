@@ -95,12 +95,24 @@ h1{
   <p class="powered">Fidelavis · Fidélité sans carte</p>
 </div>
 <script>
-  const p = new URLSearchParams(location.search);
-  const email = p.get('email');
+  const p     = new URLSearchParams(location.search);
+  const email  = p.get('email')  || '';
+  const listId = p.get('listId') || '';
+  const gasUrl = p.get('gas')    || '';
+
   if (email) {
     document.getElementById('msg').innerHTML =
       'L\'adresse <span class="email">' + email + '</span> a bien été retirée de la liste.<br>' +
       'Vous ne recevrez plus d\'emails de ce programme de fidélité.';
+  }
+
+  // Appeler le GAS en arrière-plan pour supprimer le contact de la liste Brevo
+  if (email && listId && gasUrl) {
+    fetch(gasUrl, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify({ action: 'unsubscribe', email: email, listId: parseInt(listId, 10) })
+    }).catch(function() {}); // silencieux — la suppression peut avoir déjà été faite par doGet
   }
 </script>
 </body>

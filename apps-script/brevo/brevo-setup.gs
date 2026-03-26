@@ -46,42 +46,9 @@ function getGasUrl() {
   }
 }
 
-// ─── Point d'entrée GET (désabonnement par clic sur lien) ────
+// ─── Point d'entrée GET ──────────────────────────────────────
 function doGet(e) {
-  var email  = (e.parameter.email  || '').trim();
-  var listId = parseInt(e.parameter.listId, 10);
-
-  if (!email || !listId) {
-    return HtmlService.createHtmlOutput(
-      '<h2>Lien invalide</h2><p>Ce lien de désabonnement est incorrect.</p>'
-    );
-  }
-
-  var baseUrl = 'https://app.cartefidelavis.com/desinscription.html';
-  try {
-    brevoFetch('POST', '/contacts/lists/' + listId + '/contacts/remove', {
-      emails: [email]
-    });
-    Logger.log('[Unsub] ' + email + ' retiré de la liste #' + listId);
-    var dest = baseUrl + '?email=' + encodeURIComponent(email);
-    return HtmlService.createHtmlOutput(
-      '<!DOCTYPE html><html><head>' +
-      '<meta http-equiv="refresh" content="0;url=' + dest + '">' +
-      '</head><body>' +
-      '<script>try{window.top.location.replace("' + dest + '");}catch(e){window.location.replace("' + dest + '");}<\/script>' +
-      '</body></html>'
-    );
-  } catch(err) {
-    Logger.log('[Unsub] Erreur : ' + err.message);
-    var destErr = baseUrl + '?error=1';
-    return HtmlService.createHtmlOutput(
-      '<!DOCTYPE html><html><head>' +
-      '<meta http-equiv="refresh" content="0;url=' + destErr + '">' +
-      '</head><body>' +
-      '<script>try{window.top.location.replace("' + destErr + '");}catch(e){window.location.replace("' + destErr + '");}<\/script>' +
-      '</body></html>'
-    );
-  }
+  return HtmlService.createHtmlOutput('<p>Fidelavis API</p>');
 }
 
 // ─── Point d'entrée POST ─────────────────────────────────────
@@ -98,6 +65,13 @@ function doPost(e) {
       output.setContent(JSON.stringify(setupRestaurant(body)));
     } else if (action === 'subscribe') {
       output.setContent(JSON.stringify(subscribeContact(body)));
+    } else if (action === 'unsubscribe') {
+      var uEmail  = (body.email  || '').trim();
+      var uListId = parseInt(body.listId, 10);
+      if (!uEmail || !uListId) throw new Error('email et listId requis');
+      brevoFetch('POST', '/contacts/lists/' + uListId + '/contacts/remove', { emails: [uEmail] });
+      Logger.log('[Unsub] ' + uEmail + ' retiré de la liste #' + uListId);
+      output.setContent(JSON.stringify({ success: true }));
     } else {
       output.setContent(JSON.stringify({ success: false, error: 'Action inconnue : ' + action }));
     }
@@ -447,7 +421,7 @@ function subscribeContact(body) {
     if (templateId && senderEmail) {
       try {
         var gasUrl       = getGasUrl();
-        var unsubUrl     = gasUrl ? gasUrl + '?email=' + encodeURIComponent(email) + '&listId=' + listId : '';
+        var unsubUrl     = 'https://app.cartefidelavis.com/desinscription.html?email=' + encodeURIComponent(email) + '&listId=' + listId + '&gas=' + encodeURIComponent(gasUrl);
         brevoFetch('POST', '/smtp/email', {
           to:         [{ email: email, name: firstName || email }],
           templateId: templateId,
@@ -597,7 +571,7 @@ function sendDailyCampaign() {
         try {
           var gasUrl      = getGasUrl();
           var listIdDrip  = parseInt(props.getProperty('LIST_ID_' + restoId), 10) || 0;
-          var unsubUrlDrip = gasUrl ? gasUrl + '?email=' + encodeURIComponent(email) + '&listId=' + listIdDrip : '';
+          var unsubUrlDrip = 'https://app.cartefidelavis.com/desinscription.html?email=' + encodeURIComponent(email) + '&listId=' + listIdDrip + '&gas=' + encodeURIComponent(gasUrl);
           brevoFetch('POST', '/smtp/email', {
             to:         [{ email: email, name: firstName || email }],
             templateId: templates[nextIndex],
