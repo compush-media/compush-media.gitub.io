@@ -53,13 +53,19 @@ function doGet(e) {
       emails: [email]
     });
     Logger.log('[Unsub] ' + email + ' retiré de la liste #' + listId);
+    var dest = baseUrl + '?email=' + encodeURIComponent(email);
     return HtmlService.createHtmlOutput(
-      '<script>location.replace("' + baseUrl + '?email=' + encodeURIComponent(email) + '");<\/script>'
+      '<!DOCTYPE html><html><head>' +
+      '<meta http-equiv="refresh" content="0;url=' + dest + '">' +
+      '</head><body></body></html>'
     );
   } catch(err) {
     Logger.log('[Unsub] Erreur : ' + err.message);
+    var destErr = baseUrl + '?error=1';
     return HtmlService.createHtmlOutput(
-      '<script>location.replace("' + baseUrl + '?error=1");<\/script>'
+      '<!DOCTYPE html><html><head>' +
+      '<meta http-equiv="refresh" content="0;url=' + destErr + '">' +
+      '</head><body></body></html>'
     );
   }
 }
