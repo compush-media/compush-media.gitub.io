@@ -1861,25 +1861,37 @@ async function confirmDelete() {
     document.getElementById('deleteStep2').style.display = 'block';
     document.getElementById('deleteStep2').textContent = '⏳ Suppression fichiers GitHub…';
 
-    // Récupérer le SHA de la branche et le tree courant
-    const branchInfo  = await ghApiD(`/branches/${GH_BRANCH_D}`);
+    // Récupérer branche + dossier slug + restaurants.json en parallèle (évite l'arbre complet)
+    const [branchInfo, slugTopLevel, regFileInfo] = await Promise.all([
+      ghApiD(`/branches/${GH_BRANCH_D}`),
+      ghApiD(`/contents/${slug}`),
+      ghApiD('/contents/data/restaurants.json')
+    ]);
     const baseTreeSha = branchInfo.commit.commit.tree.sha;
     const baseSha     = branchInfo.commit.sha;
-    const fullTree    = await ghApiD(`/git/trees/${baseTreeSha}?recursive=1`);
-    const filesToDelete = (fullTree.tree || []).filter(f =>
-      f.type === 'blob' && f.path.startsWith(slug + '/')
-    );
 
-    // Récupérer restaurants.json en même temps
-    const regFileInfo = await ghApiD('/contents/data/restaurants.json');
-    const rawRes      = await fetch(regFileInfo.download_url, { cache: 'no-store' });
-    const regData     = await rawRes.json();
+    // Construire la liste des fichiers à supprimer (BFS sur les sous-dossiers)
+    const filesToDelete = [];
+    const queue = Array.isArray(slugTopLevel) ? [...slugTopLevel] : [];
+    while (queue.length) {
+      const entry = queue.shift();
+      if (entry.type === 'file') {
+        filesToDelete.push({ path: entry.path, mode: '100644', type: 'blob', sha: null });
+      } else if (entry.type === 'dir') {
+        const sub = await ghApiD(`/contents/${entry.path}`);
+        if (Array.isArray(sub)) queue.push(...sub);
+      }
+    }
+
+    // Mettre à jour restaurants.json
+    const rawRes = await fetch(regFileInfo.download_url, { cache: 'no-store' });
+    const regData = await rawRes.json();
     delete regData[slug];
-    const regContent  = btoa(unescape(encodeURIComponent(JSON.stringify(regData, null, 2) + '\n')));
 
     // Construire le nouveau tree : supprimer dossier slug + mettre à jour restaurants.json
-    const newTreeItems = filesToDelete.map(f => ({ path: f.path, mode: f.mode, type: 'blob', sha: null }));
-    newTreeItems.push({ path: 'data/restaurants.json', mode: '100644', type: 'blob', content: JSON.stringify(regData, null, 2) + '\n' });
+    const newTreeItems = [...filesToDelete,
+      { path: 'data/restaurants.json', mode: '100644', type: 'blob', content: JSON.stringify(regData, null, 2) + '\n' }
+    ];
 
     const newTree   = await ghApiD('/git/trees', 'POST', { base_tree: baseTreeSha, tree: newTreeItems });
     const newCommit = await ghApiD('/git/commits', 'POST', {
