@@ -1884,9 +1884,22 @@ async function confirmDelete() {
       if (!e404.message.includes('404')) throw e404; // seulement ignorer le 404
     }
 
-    // Décoder restaurants.json directement depuis le contenu base64 (évite un fetch supplémentaire)
-    const regBytes = Uint8Array.from(atob(regFileInfo.content.replace(/\n/g, '')), c => c.charCodeAt(0));
-    const regData  = JSON.parse(new TextDecoder().decode(regBytes));
+    // Décoder restaurants.json depuis la réponse GitHub
+    let regData;
+    if (regFileInfo.content) {
+      // Enlever TOUS les espaces/newlines du base64 (GitHub peut inclure \r\n ou espaces)
+      const b64   = regFileInfo.content.replace(/\s/g, '');
+      const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+      regData = JSON.parse(new TextDecoder().decode(bytes));
+    } else {
+      // Fallback si content absent (fichier > 1MB ou réponse partielle)
+      const ctrl = new AbortController();
+      const t    = setTimeout(() => ctrl.abort(), 15000);
+      try {
+        const r = await fetch(regFileInfo.download_url, { cache: 'no-store', signal: ctrl.signal });
+        regData = await r.json();
+      } finally { clearTimeout(t); }
+    }
     delete regData[slug];
 
     // Construire le nouveau tree : supprimer dossier slug + mettre à jour restaurants.json
