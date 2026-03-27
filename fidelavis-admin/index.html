@@ -1739,13 +1739,16 @@ async function loadRestoSection(preloadedData) {
   const count = document.getElementById('restoCount');
   if (!grid) return;
 
-  let data = preloadedData || null;
+  let data = (preloadedData && typeof preloadedData === 'object' && !preloadedData.type) ? preloadedData : null;
   if (!data) {
-  try {
-    const res = await fetch('/data/restaurants.json', { cache: 'no-store' });
-    data = res.ok ? await res.json() : null;
-  } catch (e) { data = null; }
-  } // end if (!preloadedData)
+    try {
+      // Utiliser GitHub API (rapide, fiable) plutôt que le CDN avec no-store
+      const regInfo = await ghApiD('/contents/data/restaurants.json');
+      const b64   = regInfo.content.replace(/\s/g, '');
+      const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+      data = JSON.parse(new TextDecoder().decode(bytes));
+    } catch(e) { data = null; }
+  }
 
   if (!data || !Object.keys(data).length) {
     grid.innerHTML = '<div class="loading">Aucun restaurant enregistré.</div>';
@@ -2049,10 +2052,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Load restaurants when section becomes active
-document.querySelectorAll('[data-section="restaurants"]').forEach(el => {
-  el.addEventListener('click', () => loadRestoSection()); // pas de MouseEvent en argument
-});
+// (loadRestoSection est déjà appelé via showSection — pas de listener redondant)
 
 // ============================================================
 //  SHARED CONFIG (data/fidelavis-config.json on GitHub)
