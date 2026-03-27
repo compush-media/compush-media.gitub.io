@@ -1884,9 +1884,9 @@ async function confirmDelete() {
       if (!e404.message.includes('404')) throw e404; // seulement ignorer le 404
     }
 
-    // Mettre à jour restaurants.json (utiliser download_url pour éviter l'encodage base64)
-    const rawRes = await fetch(regFileInfo.download_url, { cache: 'no-store' });
-    const regData = await rawRes.json();
+    // Décoder restaurants.json directement depuis le contenu base64 (évite un fetch supplémentaire)
+    const regBytes = Uint8Array.from(atob(regFileInfo.content.replace(/\n/g, '')), c => c.charCodeAt(0));
+    const regData  = JSON.parse(new TextDecoder().decode(regBytes));
     delete regData[slug];
 
     // Construire le nouveau tree : supprimer dossier slug + mettre à jour restaurants.json
