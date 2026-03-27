@@ -1734,16 +1734,18 @@ function escHtml(str) {
 // ============================================================
 const BASE = 'https://app.cartefidelavis.com';
 
-async function loadRestoSection() {
+async function loadRestoSection(preloadedData) {
   const grid = document.getElementById('restoGrid');
   const count = document.getElementById('restoCount');
   if (!grid) return;
 
-  let data;
+  let data = preloadedData || null;
+  if (!data) {
   try {
     const res = await fetch('/data/restaurants.json', { cache: 'no-store' });
     data = res.ok ? await res.json() : null;
   } catch (e) { data = null; }
+  } // end if (!preloadedData)
 
   if (!data || !Object.keys(data).length) {
     grid.innerHTML = '<div class="loading">Aucun restaurant enregistré.</div>';
@@ -1856,29 +1858,33 @@ async function confirmDelete() {
     document.getElementById('deleteStep2').style.display = 'block';
     document.getElementById('deleteStep2').textContent = '⏳ Suppression fichiers GitHub…';
 
-    // Récupérer branche + dossier slug + restaurants.json en parallèle (évite l'arbre complet)
-    const [branchInfo, slugTopLevel, regFileInfo] = await Promise.all([
+    // Récupérer branche + restaurants.json en parallèle
+    const [branchInfo, regFileInfo] = await Promise.all([
       ghApiD(`/branches/${GH_BRANCH_D}`),
-      ghApiD(`/contents/${slug}`),
       ghApiD('/contents/data/restaurants.json')
     ]);
     const baseTreeSha = branchInfo.commit.commit.tree.sha;
     const baseSha     = branchInfo.commit.sha;
 
-    // Construire la liste des fichiers à supprimer (BFS sur les sous-dossiers)
+    // Lister les fichiers du dossier slug (404 = déjà supprimé, on ignore)
     const filesToDelete = [];
-    const queue = Array.isArray(slugTopLevel) ? [...slugTopLevel] : [];
-    while (queue.length) {
-      const entry = queue.shift();
-      if (entry.type === 'file') {
-        filesToDelete.push({ path: entry.path, mode: '100644', type: 'blob', sha: null });
-      } else if (entry.type === 'dir') {
-        const sub = await ghApiD(`/contents/${entry.path}`);
-        if (Array.isArray(sub)) queue.push(...sub);
+    try {
+      const slugTopLevel = await ghApiD(`/contents/${slug}`);
+      const queue = Array.isArray(slugTopLevel) ? [...slugTopLevel] : [];
+      while (queue.length) {
+        const entry = queue.shift();
+        if (entry.type === 'file') {
+          filesToDelete.push({ path: entry.path, mode: '100644', type: 'blob', sha: null });
+        } else if (entry.type === 'dir') {
+          const sub = await ghApiD(`/contents/${entry.path}`);
+          if (Array.isArray(sub)) queue.push(...sub);
+        }
       }
+    } catch(e404) {
+      if (!e404.message.includes('404')) throw e404; // seulement ignorer le 404
     }
 
-    // Mettre à jour restaurants.json
+    // Mettre à jour restaurants.json (utiliser download_url pour éviter l'encodage base64)
     const rawRes = await fetch(regFileInfo.download_url, { cache: 'no-store' });
     const regData = await rawRes.json();
     delete regData[slug];
@@ -1902,8 +1908,8 @@ async function confirmDelete() {
     document.getElementById('deleteStep3').style.display = 'block';
     document.getElementById('deleteStep3').textContent = '✅ Registre mis à jour';
 
-    // ── Terminé ───────────────────────────────────────────────
-    setTimeout(() => { closeDeleteModal(); loadRestoSection(); }, 1200);
+    // ── Terminé : re-rendre la liste sans re-fetch CDN (données déjà en mémoire) ──
+    setTimeout(() => { closeDeleteModal(); loadRestoSection(regData); }, 1200);
 
   } catch(err) {
     document.getElementById('deleteError').style.display = 'block';
