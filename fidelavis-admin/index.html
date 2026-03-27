@@ -1848,15 +1848,14 @@ async function confirmDelete() {
       } catch(e) {}
     }
     if (gasUrl) {
-      try {
-        await fetch(gasUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ action: 'deleteRestaurant', restaurantId: slug })
-        });
-      } catch(e) { /* non bloquant */ }
+      // Fire-and-forget : GAS peut prendre 30-120s, on n'attend pas
+      fetch(gasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'deleteRestaurant', restaurantId: slug })
+      }).catch(function() {});
     }
-    document.getElementById('deleteStep1').textContent = '✅ Brevo nettoyé';
+    document.getElementById('deleteStep1').textContent = '✅ Brevo nettoyé (en arrière-plan)';
 
     // ── Étape 2 : Supprimer les fichiers GitHub (1 seul commit) ─
     document.getElementById('deleteStep2').style.display = 'block';
