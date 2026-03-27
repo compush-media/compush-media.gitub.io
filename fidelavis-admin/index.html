@@ -1858,18 +1858,12 @@ async function confirmDelete() {
     document.getElementById('deleteStep2').style.display = 'block';
     document.getElementById('deleteStep2').textContent = '⏳ Suppression fichiers GitHub…';
 
-    // Yield : laisser Chrome traiter ses événements internes avant les appels réseau
+    await new Promise(r => setTimeout(r, 0)); // yield : laisser Chrome respirer
+
+    // Récupérer restaurants.json (sans branchInfo — on le prend en dernier pour éviter le 422)
+    const regFileInfo = await ghApiD('/contents/data/restaurants.json');
+
     await new Promise(r => setTimeout(r, 0));
-
-    // Récupérer branche + restaurants.json en parallèle
-    const [branchInfo, regFileInfo] = await Promise.all([
-      ghApiD(`/branches/${GH_BRANCH_D}`),
-      ghApiD('/contents/data/restaurants.json')
-    ]);
-    const baseTreeSha = branchInfo.commit.commit.tree.sha;
-    const baseSha     = branchInfo.commit.sha;
-
-    await new Promise(r => setTimeout(r, 0)); // yield entre groupes d'appels
 
     // Lister les fichiers du dossier slug (404 = déjà supprimé, on ignore)
     const filesToDelete = [];
@@ -1881,26 +1875,24 @@ async function confirmDelete() {
         if (entry.type === 'file') {
           filesToDelete.push({ path: entry.path, mode: '100644', type: 'blob', sha: null });
         } else if (entry.type === 'dir') {
-          await new Promise(r => setTimeout(r, 0)); // yield avant chaque sous-dossier
+          await new Promise(r => setTimeout(r, 0));
           const sub = await ghApiD(`/contents/${entry.path}`);
           if (Array.isArray(sub)) queue.push(...sub);
         }
       }
     } catch(e404) {
-      if (!e404.message.includes('404')) throw e404; // seulement ignorer le 404
+      if (!e404.message.includes('404')) throw e404;
     }
 
-    await new Promise(r => setTimeout(r, 0)); // yield avant décodage + commit
+    await new Promise(r => setTimeout(r, 0));
 
     // Décoder restaurants.json depuis la réponse GitHub
     let regData;
     if (regFileInfo.content) {
-      // Enlever TOUS les espaces/newlines du base64 (GitHub peut inclure \r\n ou espaces)
       const b64   = regFileInfo.content.replace(/\s/g, '');
       const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
       regData = JSON.parse(new TextDecoder().decode(bytes));
     } else {
-      // Fallback si content absent (fichier > 1MB ou réponse partielle)
       const ctrl = new AbortController();
       const t    = setTimeout(() => ctrl.abort(), 15000);
       try {
@@ -1910,12 +1902,17 @@ async function confirmDelete() {
     }
     delete regData[slug];
 
-    // Construire le nouveau tree : supprimer dossier slug + mettre à jour restaurants.json
+    const newTreeContent = JSON.stringify(regData, null, 2) + '\n';
     const newTreeItems = [...filesToDelete,
-      { path: 'data/restaurants.json', mode: '100644', type: 'blob', content: JSON.stringify(regData, null, 2) + '\n' }
+      { path: 'data/restaurants.json', mode: '100644', type: 'blob', content: newTreeContent }
     ];
 
-    await new Promise(r => setTimeout(r, 0)); // yield avant le commit
+    await new Promise(r => setTimeout(r, 0));
+
+    // Récupérer branchInfo JUSTE avant le commit pour minimiser la fenêtre de race
+    const branchInfo  = await ghApiD(`/branches/${GH_BRANCH_D}`);
+    const baseTreeSha = branchInfo.commit.commit.tree.sha;
+    const baseSha     = branchInfo.commit.sha;
 
     const newTree   = await ghApiD('/git/trees', 'POST', { base_tree: baseTreeSha, tree: newTreeItems });
     const newCommit = await ghApiD('/git/commits', 'POST', {
@@ -1923,7 +1920,21 @@ async function confirmDelete() {
       tree:    newTree.sha,
       parents: [baseSha]
     });
-    await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: newCommit.sha });
+
+    // PATCH ref — retry automatique si 422 (non fast-forward : quelqu'un a poussé entre-temps)
+    try {
+      await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: newCommit.sha });
+    } catch(patchErr) {
+      if (!patchErr.message.includes('422')) throw patchErr;
+      // Re-fetch le SHA le plus récent et re-tenter une fois
+      const latest    = await ghApiD(`/branches/${GH_BRANCH_D}`);
+      const retryCommit = await ghApiD('/git/commits', 'POST', {
+        message: `chore: supprimer restaurant ${slug}`,
+        tree:    newTree.sha,
+        parents: [latest.commit.sha]
+      });
+      await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: retryCommit.sha });
+    }
 
     document.getElementById('deleteStep2').textContent = `✅ ${filesToDelete.length} fichier(s) supprimé(s)`;
 
