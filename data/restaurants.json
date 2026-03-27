@@ -41,16 +41,16 @@
     "brandColor2": "#9E7A3E",
     "email": "axou.v@hotmail.fr"
   },
-  "test6": {
-    "name": "test6",
-    "brandColor": "#B8924F",
-    "brandColor2": "#9E7A3E",
-    "email": "axou.v@hotmail.fr"
-  },
   "test7": {
     "name": "test7",
     "brandColor": "#B8924F",
     "brandColor2": "#9E7A3E",
     "email": "axou.v@hotmail.fr"
+  },
+  "test10": {
+    "name": "test10",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "brevoListId": 13
   }
 }
