@@ -1858,6 +1858,9 @@ async function confirmDelete() {
     document.getElementById('deleteStep2').style.display = 'block';
     document.getElementById('deleteStep2').textContent = '⏳ Suppression fichiers GitHub…';
 
+    // Yield : laisser Chrome traiter ses événements internes avant les appels réseau
+    await new Promise(r => setTimeout(r, 0));
+
     // Récupérer branche + restaurants.json en parallèle
     const [branchInfo, regFileInfo] = await Promise.all([
       ghApiD(`/branches/${GH_BRANCH_D}`),
@@ -1865,6 +1868,8 @@ async function confirmDelete() {
     ]);
     const baseTreeSha = branchInfo.commit.commit.tree.sha;
     const baseSha     = branchInfo.commit.sha;
+
+    await new Promise(r => setTimeout(r, 0)); // yield entre groupes d'appels
 
     // Lister les fichiers du dossier slug (404 = déjà supprimé, on ignore)
     const filesToDelete = [];
@@ -1876,6 +1881,7 @@ async function confirmDelete() {
         if (entry.type === 'file') {
           filesToDelete.push({ path: entry.path, mode: '100644', type: 'blob', sha: null });
         } else if (entry.type === 'dir') {
+          await new Promise(r => setTimeout(r, 0)); // yield avant chaque sous-dossier
           const sub = await ghApiD(`/contents/${entry.path}`);
           if (Array.isArray(sub)) queue.push(...sub);
         }
@@ -1883,6 +1889,8 @@ async function confirmDelete() {
     } catch(e404) {
       if (!e404.message.includes('404')) throw e404; // seulement ignorer le 404
     }
+
+    await new Promise(r => setTimeout(r, 0)); // yield avant décodage + commit
 
     // Décoder restaurants.json depuis la réponse GitHub
     let regData;
@@ -1906,6 +1914,8 @@ async function confirmDelete() {
     const newTreeItems = [...filesToDelete,
       { path: 'data/restaurants.json', mode: '100644', type: 'blob', content: JSON.stringify(regData, null, 2) + '\n' }
     ];
+
+    await new Promise(r => setTimeout(r, 0)); // yield avant le commit
 
     const newTree   = await ghApiD('/git/trees', 'POST', { base_tree: baseTreeSha, tree: newTreeItems });
     const newCommit = await ghApiD('/git/commits', 'POST', {
@@ -1965,9 +1975,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Load restaurants when section becomes active
-const _origShowSection = typeof showSection === 'function' ? showSection : null;
 document.querySelectorAll('[data-section="restaurants"]').forEach(el => {
-  el.addEventListener('click', loadRestoSection);
+  el.addEventListener('click', () => loadRestoSection()); // pas de MouseEvent en argument
 });
 
 // ============================================================
