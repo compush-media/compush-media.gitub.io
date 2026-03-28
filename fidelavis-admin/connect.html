@@ -63,7 +63,7 @@
 const _GH_OWNER = 'compush-media', _GH_REPO = 'compush-media.gitub.io';
 
 (async function init() {
-  if (!localStorage.getItem('fv_token')) return (window.location.href = '/fidelavis-admin/login.html');
+  if (!localStorage.getItem('fv_token') || localStorage.getItem('fv_role') !== 'superadmin') return (window.location.href = '/fidelavis-admin/login.html');
   // Load shared config from GitHub to get the google_client_id
   const token = localStorage.getItem('fv_gh_token');
   if (token) {
