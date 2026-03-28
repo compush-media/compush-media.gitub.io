@@ -900,6 +900,25 @@ function handleConfirmPasswordReset(body) {
   // Invalider le token
   props.deleteProperty('RESET_TOKEN_' + token);
 
+  // Envoyer l'email avec les nouveaux identifiants
+  var adminEmail = props.getProperty('ADMIN_EMAIL_' + restoId);
+  var restoName  = props.getProperty('SENDER_NAME_'  + restoId) || restoId;
+  if (adminEmail) {
+    try {
+      sendPasswordResetEmail({
+        recipientEmail: adminEmail,
+        recipientName:  restoName,
+        restaurantId:   restoId,
+        restaurantName: restoName,
+        adminPass:      newAdminPass,
+        empPass:        newEmpPass || ''
+      });
+    } catch(e) {
+      Logger.log('[ConfirmReset] Erreur envoi email : ' + e.message);
+      // Le mot de passe est déjà mis à jour — on retourne quand même success
+    }
+  }
+
   Logger.log('[ConfirmReset] Mot de passe mis à jour pour ' + restoId);
   return { success: true };
 }
