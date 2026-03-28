@@ -74,6 +74,8 @@ function doPost(e) {
       output.setContent(JSON.stringify({ success: true }));
     } else if (action === 'deleteRestaurant') {
       output.setContent(JSON.stringify(deleteRestaurant(body)));
+    } else if (action === 'passwordReset') {
+      output.setContent(JSON.stringify(sendPasswordResetEmail(body)));
     } else {
       output.setContent(JSON.stringify({ success: false, error: 'Action inconnue : ' + action }));
     }
@@ -651,4 +653,127 @@ function sendDailyCampaign() {
   });
 
   Logger.log('[Drip] ═══ sendDailyCampaign terminé ═══');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ACTION : PASSWORD RESET — envoi email avec nouveaux identifiants
+// ═══════════════════════════════════════════════════════════════
+//
+//  Paramètres attendus (JSON POST) :
+//    recipientEmail  — adresse email du destinataire (obligatoire)
+//    recipientName   — nom affiché (optionnel)
+//    restaurantId    — slug du restaurant (pour récupérer l'expéditeur)
+//    restaurantName  — nom du restaurant (affiché dans l'email)
+//    adminPass       — nouveau mot de passe admin (obligatoire)
+//    empPass         — nouveau mot de passe employé (optionnel)
+//
+function sendPasswordResetEmail(body) {
+  var recipientEmail = (body.recipientEmail || '').trim();
+  var recipientName  = (body.recipientName  || '').trim();
+  var restoId        = (body.restaurantId   || '').trim();
+  var restoName      = (body.restaurantName || restoId || 'Restaurant').trim();
+  var adminPass      = (body.adminPass      || '').trim();
+  var empPass        = (body.empPass        || '').trim();
+
+  if (!recipientEmail) throw new Error('recipientEmail requis');
+  if (!adminPass)      throw new Error('adminPass requis');
+
+  Logger.log('[PwdReset] Envoi à ' + recipientEmail + ' pour ' + restoId);
+
+  // Récupérer l'expéditeur configuré pour ce restaurant (ou expéditeur par défaut)
+  var props       = PropertiesService.getScriptProperties();
+  var senderName  = props.getProperty('SENDER_NAME_'  + restoId) || restoName;
+  var senderEmail = props.getProperty('SENDER_EMAIL_' + restoId) || SENDER_EMAIL;
+
+  var empRow = empPass
+    ? '<tr><td style="padding:8px 12px;border-bottom:1px solid #f0e8d8;color:#888;font-size:13px;">Employé</td>' +
+      '<td style="padding:8px 12px;border-bottom:1px solid #f0e8d8;font-size:13px;">' +
+      '<code style="background:#f5f1eb;padding:2px 8px;border-radius:5px;font-family:monospace;color:#1d1d1d;">employe</code></td>' +
+      '<td style="padding:8px 12px;border-bottom:1px solid #f0e8d8;font-size:13px;">' +
+      '<code style="background:#f5f1eb;padding:2px 8px;border-radius:5px;font-family:monospace;color:#1d1d1d;">' + empPass + '</code></td></tr>'
+    : '';
+
+  var htmlContent =
+    '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<title>Réinitialisation du mot de passe — ' + restoName + '</title></head>' +
+    '<body style="font-family:\'Helvetica Neue\',Arial,sans-serif;max-width:600px;' +
+    'margin:0 auto;padding:24px 16px;background:#f7f0e8;color:#1d1d1d;">' +
+
+    '<div style="text-align:center;padding:16px 0 8px;">' +
+    '<span style="display:inline-block;background:linear-gradient(135deg,#B8924F,#9E7A3E);' +
+    'color:#fff;font-weight:900;font-size:12px;letter-spacing:.5px;padding:5px 16px;border-radius:999px;">' +
+    'Fidelavis × ' + restoName + '</span>' +
+    '</div>' +
+
+    '<div style="background:#fff;border-radius:16px;padding:32px 28px;margin-top:16px;' +
+    'box-shadow:0 4px 24px rgba(0,0,0,.07);">' +
+
+    '<p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 8px;">' +
+    'Bonjour' + (recipientName ? ' <strong>' + recipientName + '</strong>' : '') + ',</p>' +
+
+    '<h1 style="font-size:20px;font-weight:900;margin:0 0 16px;color:#1d1d1d;line-height:1.3;">' +
+    '🔑 Votre mot de passe a été réinitialisé</h1>' +
+
+    '<p style="font-size:14px;line-height:1.6;color:#666;margin:0 0 20px;">' +
+    'Les identifiants de connexion à votre espace admin <strong>' + restoName + '</strong> ont été mis à jour. ' +
+    'Voici vos nouveaux accès&nbsp;:</p>' +
+
+    '<table style="width:100%;border-collapse:collapse;border:1px solid #f0e8d8;border-radius:10px;overflow:hidden;margin-bottom:24px;">' +
+    '<thead>' +
+    '<tr style="background:#f5f1eb;">' +
+    '<th style="padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#888;font-weight:700;">Rôle</th>' +
+    '<th style="padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#888;font-weight:700;">Identifiant</th>' +
+    '<th style="padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#888;font-weight:700;">Mot de passe</th>' +
+    '</tr>' +
+    '</thead>' +
+    '<tbody>' +
+    '<tr>' +
+    '<td style="padding:8px 12px;border-bottom:1px solid #f0e8d8;color:#888;font-size:13px;">Admin</td>' +
+    '<td style="padding:8px 12px;border-bottom:1px solid #f0e8d8;font-size:13px;">' +
+    '<code style="background:#f5f1eb;padding:2px 8px;border-radius:5px;font-family:monospace;color:#1d1d1d;">admin</code></td>' +
+    '<td style="padding:8px 12px;border-bottom:1px solid #f0e8d8;font-size:13px;">' +
+    '<code style="background:#f5f1eb;padding:2px 8px;border-radius:5px;font-family:monospace;color:#1d1d1d;">' + adminPass + '</code></td>' +
+    '</tr>' +
+    empRow +
+    '</tbody>' +
+    '</table>' +
+
+    '<p style="font-size:13px;color:#999;margin:0 0 24px;">⚠️ Conservez ces identifiants en lieu sûr. ' +
+    'Ne les partagez pas par email ou messagerie.</p>' +
+
+    '<hr style="border:none;border-top:1px solid #eee;margin:24px 0;">' +
+
+    '<div style="font-size:11px;color:#aaa;text-align:center;line-height:1.8;">' +
+    '<p style="margin:0;">Cet email a été envoyé automatiquement par Fidelavis.<br>' +
+    'Si vous n\'êtes pas à l\'origine de cette réinitialisation, contactez votre administrateur Fidelavis.</p>' +
+    '<p style="margin:6px 0 0;">© ' + new Date().getFullYear() + ' ' + restoName + ' · Fidelavis</p>' +
+    '</div>' +
+
+    '</div>' +
+    '</body></html>';
+
+  var textContent =
+    'Réinitialisation du mot de passe — ' + restoName + '\r\n' +
+    '='.repeat(40) + '\r\n\r\n' +
+    'Bonjour' + (recipientName ? ' ' + recipientName : '') + ',\r\n\r\n' +
+    'Vos identifiants de connexion ont été mis à jour.\r\n\r\n' +
+    'Admin    : admin / ' + adminPass + '\r\n' +
+    (empPass ? 'Employé  : employe / ' + empPass + '\r\n' : '') +
+    '\r\nConservez ces identifiants en lieu sûr.\r\n\r\n' +
+    '---\r\nCet email a été envoyé automatiquement par Fidelavis.\r\n' +
+    '© ' + new Date().getFullYear() + ' ' + restoName + ' · Fidelavis';
+
+  brevoFetch('POST', '/smtp/email', {
+    to:          [{ email: recipientEmail, name: recipientName || recipientEmail }],
+    sender:      { name: senderName, email: SENDER_EMAIL },
+    replyTo:     { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
+    subject:     '🔑 Nouveau mot de passe — ' + restoName,
+    htmlContent: htmlContent,
+    textContent: textContent,
+    tags:        ['fidelavis', 'password-reset']
+  });
+
+  Logger.log('[PwdReset] Email envoyé à ' + recipientEmail);
+  return { success: true };
 }
