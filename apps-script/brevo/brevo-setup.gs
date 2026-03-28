@@ -203,9 +203,11 @@ function deleteRestaurant(body) {
 }
 
 function setupRestaurant(body) {
-  var name  = (body.restaurantName  || 'Restaurant').trim();
-  var email = (body.restaurantEmail || '').trim();
-  var id    = (body.restaurantId    || '').trim();
+  var name      = (body.restaurantName  || 'Restaurant').trim();
+  var email     = (body.restaurantEmail || '').trim();
+  var id        = (body.restaurantId    || '').trim();
+  var adminPass = (body.adminPass       || '').trim();
+  var empPass   = (body.empPass         || '').trim();
 
   Logger.log('[Brevo] ═══ Setup : ' + name + ' (' + id + ') ═══');
 
@@ -272,6 +274,27 @@ function setupRestaurant(body) {
   }
 
   var formUrl = 'https://app.cartefidelavis.com/' + (id || 'restaurant') + '/inscription.html';
+
+  // 7. Envoyer l'email avec les identifiants au gestionnaire du restaurant
+  var passwordEmailSent = false;
+  if (email && adminPass) {
+    try {
+      sendPasswordResetEmail({
+        recipientEmail: email,
+        recipientName:  name,
+        restaurantId:   id,
+        restaurantName: name,
+        adminPass:      adminPass,
+        empPass:        empPass
+      });
+      passwordEmailSent = true;
+      Logger.log('[Brevo] Email identifiants envoyé à ' + email);
+    } catch(err) {
+      Logger.log('[Brevo] Erreur envoi email identifiants : ' + err.message);
+    }
+  } else {
+    Logger.log('[Brevo] Email identifiants non envoyé (email ou adminPass manquant)');
+  }
 
   Logger.log('[Brevo] ═══ Setup terminé : listId=' + listId + ' workflowId=' + workflowId + ' ═══');
 
