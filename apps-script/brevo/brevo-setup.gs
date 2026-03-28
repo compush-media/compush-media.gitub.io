@@ -258,6 +258,7 @@ function setupRestaurant(body) {
     props.setProperty('SENDER_NAME_'  + id, sender.name);
     props.setProperty('SENDER_EMAIL_' + id, sender.email);
     props.setProperty('LIST_ID_'      + id, String(listId));
+    if (email) props.setProperty('ADMIN_EMAIL_' + id, email);
     Logger.log('[Brevo] Propriétés stockées pour ' + id + ' : ' + allTemplateIds.length + ' templates');
   }
 
