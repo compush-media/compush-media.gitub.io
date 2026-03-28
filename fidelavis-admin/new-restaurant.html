@@ -243,6 +243,9 @@
 </div>
 
 <script>
+// ─── Auth guard ────────────────────────────────────────────────────────────
+if (!localStorage.getItem('fv_token')) { window.location.href = '/fidelavis-admin/login.html'; }
+
 // ─── Config ────────────────────────────────────────────────────────────────
 const GH_OWNER  = 'compush-media';
 const GH_REPO   = 'compush-media.gitub.io';
