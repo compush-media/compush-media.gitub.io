@@ -62,7 +62,7 @@
     <input id="pass" placeholder="Mot de passe" type="password">
     <button onclick="login()">Se connecter</button>
     <div id="error" class="err"></div>
-    <a class="forgot" href="https://app.cartefidelavis.com/fidelavis-admin/reset-password.html">
+    <a class="forgot" href="#" onclick="location.href='/fidelavis-admin/forgot-password.html?resto='+location.pathname.split('/')[1];return false;">
       Mot de passe oublié ?
     </a>
   </div>
