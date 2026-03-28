@@ -76,6 +76,10 @@ function doPost(e) {
       output.setContent(JSON.stringify(deleteRestaurant(body)));
     } else if (action === 'passwordReset') {
       output.setContent(JSON.stringify(sendPasswordResetEmail(body)));
+    } else if (action === 'requestPasswordReset') {
+      output.setContent(JSON.stringify(handleRequestPasswordReset(body)));
+    } else if (action === 'confirmPasswordReset') {
+      output.setContent(JSON.stringify(handleConfirmPasswordReset(body)));
     } else {
       output.setContent(JSON.stringify({ success: false, error: 'Action inconnue : ' + action }));
     }
@@ -776,4 +780,256 @@ function sendPasswordResetEmail(body) {
 
   Logger.log('[PwdReset] Email envoyé à ' + recipientEmail);
   return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ACTION : REQUEST PASSWORD RESET (self-service)
+//  Le restaurateur demande un lien de réinitialisation.
+//
+//  Paramètres attendus (JSON POST) :
+//    restaurantId  — slug du restaurant (ex: "resto01")
+//    email         — email saisi par le restaurateur
+//
+//  Script Properties requises :
+//    ADMIN_EMAIL_{restaurantId}  — email admin configuré pour ce restaurant
+//    (facultatif) GITHUB_TOKEN   — utilisé lors de la confirmation
+//
+//  Retourne toujours { success: true } pour éviter l'énumération d'emails.
+// ═══════════════════════════════════════════════════════════════
+function handleRequestPasswordReset(body) {
+  var restoId = (body.restaurantId || '').trim();
+  var email   = (body.email        || '').trim().toLowerCase();
+
+  if (!restoId) {
+    Logger.log('[ReqReset] restaurantId manquant');
+    return { success: true }; // réponse neutre
+  }
+
+  var props      = PropertiesService.getScriptProperties();
+  var adminEmail = (props.getProperty('ADMIN_EMAIL_' + restoId) || '').trim().toLowerCase();
+
+  // Si l'email n'est pas configuré ou ne correspond pas, on retourne quand même success
+  if (!adminEmail || (email && email !== adminEmail)) {
+    Logger.log('[ReqReset] Email non configuré ou non correspondant pour : ' + restoId);
+    return { success: true };
+  }
+
+  // Générer un token unique
+  var token  = Utilities.getUuid().replace(/-/g, '');
+  var expiry = new Date().getTime() + 3600000; // 1 heure
+
+  props.setProperty('RESET_TOKEN_' + token, JSON.stringify({
+    restaurantId: restoId,
+    expiry: expiry
+  }));
+
+  // Construire le lien de réinitialisation
+  var resetUrl = 'https://app.cartefidelavis.com/fidelavis-admin/reset-password-confirm.html'
+    + '?token=' + token + '&resto=' + restoId;
+
+  // Envoyer l'email
+  try {
+    sendResetLinkEmail(adminEmail, restoId, resetUrl);
+  } catch(e) {
+    Logger.log('[ReqReset] Erreur envoi email : ' + e.message);
+    // On retourne quand même success côté client
+  }
+
+  Logger.log('[ReqReset] Token créé pour ' + restoId + ', email envoyé à ' + adminEmail);
+  return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ACTION : CONFIRM PASSWORD RESET (self-service)
+//  Le restaurateur valide le token et choisit un nouveau mot de passe.
+//
+//  Paramètres attendus (JSON POST) :
+//    token         — token reçu par email
+//    restaurantId  — slug du restaurant
+//    newAdminPass  — nouveau mot de passe admin
+//    newEmpPass    — nouveau mot de passe employé (optionnel)
+//
+//  Script Properties requises :
+//    GITHUB_TOKEN  — token GitHub avec droit d'écriture sur le repo
+// ═══════════════════════════════════════════════════════════════
+function handleConfirmPasswordReset(body) {
+  var token        = (body.token        || '').trim();
+  var restoId      = (body.restaurantId || '').trim();
+  var newAdminPass = (body.newAdminPass || '').trim();
+  var newEmpPass   = (body.newEmpPass   || '').trim();
+
+  if (!token || !restoId || !newAdminPass) {
+    return { success: false, error: 'Données manquantes' };
+  }
+
+  var props     = PropertiesService.getScriptProperties();
+  var tokenJson = props.getProperty('RESET_TOKEN_' + token);
+
+  if (!tokenJson) {
+    return { success: false, error: 'Lien invalide ou déjà utilisé' };
+  }
+
+  var tokenData;
+  try {
+    tokenData = JSON.parse(tokenJson);
+  } catch(e) {
+    return { success: false, error: 'Token corrompu' };
+  }
+
+  if (tokenData.restaurantId !== restoId) {
+    return { success: false, error: 'Lien invalide' };
+  }
+
+  if (new Date().getTime() > tokenData.expiry) {
+    props.deleteProperty('RESET_TOKEN_' + token);
+    return { success: false, error: 'Lien expiré. Veuillez refaire une demande.' };
+  }
+
+  var githubToken = props.getProperty('GITHUB_TOKEN');
+  if (!githubToken) {
+    return { success: false, error: 'GITHUB_TOKEN non configuré — contactez le support.' };
+  }
+
+  try {
+    updateLoginFileOnGitHub(restoId, newAdminPass, newEmpPass || null, githubToken);
+  } catch(e) {
+    Logger.log('[ConfirmReset] Erreur GitHub : ' + e.message);
+    return { success: false, error: 'Erreur lors de la mise à jour : ' + e.message };
+  }
+
+  // Invalider le token
+  props.deleteProperty('RESET_TOKEN_' + token);
+
+  Logger.log('[ConfirmReset] Mot de passe mis à jour pour ' + restoId);
+  return { success: true };
+}
+
+// ─── Mise à jour de login.html sur GitHub ────────────────────────────────────
+function updateLoginFileOnGitHub(restoId, newAdminPass, newEmpPass, githubToken) {
+  var repo     = 'compush-media/compush-media.gitub.io';
+  var filePath = restoId + '/admin/login.html';
+  var apiUrl   = 'https://api.github.com/repos/' + repo + '/contents/' + filePath;
+
+  var headers = {
+    'Authorization':        'Bearer ' + githubToken,
+    'Accept':               'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28'
+  };
+
+  // Lire le fichier actuel
+  var getResp = UrlFetchApp.fetch(apiUrl, { headers: headers, muteHttpExceptions: true });
+  if (getResp.getResponseCode() !== 200) {
+    throw new Error('Fichier introuvable sur GitHub : ' + filePath + ' (HTTP ' + getResp.getResponseCode() + ')');
+  }
+
+  var fileData = JSON.parse(getResp.getContentText());
+  var content  = Utilities.newBlob(Utilities.base64Decode(fileData.content.replace(/\s/g, ''))).getDataAsString();
+  var sha      = fileData.sha;
+
+  // Remplacer le mot de passe admin
+  content = content.replace(
+    /(\{ user: "admin",\s*pass: ")[^"]*(")/,
+    '$1' + newAdminPass + '$2'
+  );
+
+  // Remplacer le mot de passe employé si fourni
+  if (newEmpPass) {
+    content = content.replace(
+      /(\{ user: "employe",\s*pass: ")[^"]*(")/,
+      '$1' + newEmpPass + '$2'
+    );
+  }
+
+  // Encoder en base64
+  var encodedContent = Utilities.base64Encode(Utilities.newBlob(content, 'UTF-8').getBytes());
+
+  // Committer sur GitHub
+  var putPayload = JSON.stringify({
+    message: 'fix: réinitialisation mot de passe self-service — ' + restoId,
+    content: encodedContent,
+    sha:     sha,
+    branch:  'main'
+  });
+
+  var putResp = UrlFetchApp.fetch(apiUrl, {
+    method:             'PUT',
+    headers:            Object.assign({}, headers, { 'Content-Type': 'application/json' }),
+    payload:            putPayload,
+    muteHttpExceptions: true
+  });
+
+  if (putResp.getResponseCode() !== 200 && putResp.getResponseCode() !== 201) {
+    throw new Error('Commit GitHub échoué (HTTP ' + putResp.getResponseCode() + ') : ' + putResp.getContentText());
+  }
+
+  Logger.log('[GitHub] login.html mis à jour pour ' + restoId);
+}
+
+// ─── Envoi de l'email avec le lien de réinitialisation ──────────────────────
+function sendResetLinkEmail(recipientEmail, restoId, resetUrl) {
+  var props     = PropertiesService.getScriptProperties();
+  var restoName = props.getProperty('SENDER_NAME_' + restoId) || restoId;
+
+  var htmlContent =
+    '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1"></head>' +
+    '<body style="font-family:\'Helvetica Neue\',Arial,sans-serif;max-width:600px;' +
+    'margin:0 auto;padding:24px 16px;background:#f7f0e8;color:#1d1d1d;">' +
+
+    '<div style="text-align:center;padding:16px 0 8px;">' +
+    '<span style="display:inline-block;background:linear-gradient(135deg,#B8924F,#9E7A3E);' +
+    'color:#fff;font-weight:900;font-size:12px;letter-spacing:.5px;padding:5px 16px;border-radius:999px;">' +
+    'Fidelavis × ' + restoName + '</span>' +
+    '</div>' +
+
+    '<div style="background:#fff;border-radius:16px;padding:32px 28px;margin-top:16px;' +
+    'box-shadow:0 4px 24px rgba(0,0,0,.07);">' +
+
+    '<h1 style="font-size:20px;font-weight:900;margin:0 0 16px;color:#1d1d1d;line-height:1.3;">' +
+    'Réinitialisation de votre mot de passe</h1>' +
+
+    '<p style="font-size:14px;line-height:1.6;color:#666;margin:0 0 24px;">' +
+    'Vous avez demandé la réinitialisation du mot de passe administrateur pour ' +
+    '<strong>' + restoName + '</strong>.<br><br>' +
+    'Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe. ' +
+    'Ce lien est valable <strong>1 heure</strong>.</p>' +
+
+    '<div style="text-align:center;margin:28px 0;">' +
+    '<a href="' + resetUrl + '" style="display:inline-block;background:linear-gradient(135deg,#B8924F,#9E7A3E);' +
+    'color:#fff;font-weight:800;font-size:15px;padding:14px 32px;border-radius:10px;text-decoration:none;">' +
+    'Réinitialiser mon mot de passe</a>' +
+    '</div>' +
+
+    '<p style="font-size:13px;color:#999;margin:0 0 8px;">Si vous n\'avez pas fait cette demande, ignorez cet email — votre mot de passe reste inchangé.</p>' +
+
+    '<hr style="border:none;border-top:1px solid #eee;margin:24px 0;">' +
+
+    '<div style="font-size:11px;color:#aaa;text-align:center;line-height:1.8;">' +
+    '<p style="margin:0;">Cet email a été envoyé automatiquement par Fidelavis.<br>' +
+    'Ne répondez pas à cet email.</p>' +
+    '<p style="margin:6px 0 0;">© ' + new Date().getFullYear() + ' ' + restoName + ' · Fidelavis</p>' +
+    '</div>' +
+    '</div>' +
+    '</body></html>';
+
+  var textContent =
+    'Réinitialisation de votre mot de passe — ' + restoName + '\r\n' +
+    '='.repeat(40) + '\r\n\r\n' +
+    'Cliquez sur ce lien pour réinitialiser votre mot de passe (valable 1 heure) :\r\n' +
+    resetUrl + '\r\n\r\n' +
+    'Si vous n\'avez pas fait cette demande, ignorez cet email.\r\n\r\n' +
+    '---\r\nCet email a été envoyé automatiquement par Fidelavis.\r\n' +
+    '© ' + new Date().getFullYear() + ' ' + restoName + ' · Fidelavis';
+
+  brevoFetch('POST', '/smtp/email', {
+    to:          [{ email: recipientEmail }],
+    sender:      { name: 'Fidelavis', email: SENDER_EMAIL },
+    replyTo:     { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
+    subject:     'Réinitialisation de votre mot de passe — ' + restoName,
+    htmlContent: htmlContent,
+    textContent: textContent,
+    tags:        ['fidelavis', 'password-reset-request']
+  });
+
+  Logger.log('[ReqReset] Lien envoyé à ' + recipientEmail);
 }
