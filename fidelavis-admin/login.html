@@ -157,6 +157,7 @@ async function doLogin() {
 
   // Mode démo : accès direct sans backend
   localStorage.setItem('fv_token', 'demo');
+  localStorage.setItem('fv_role', 'superadmin');
   localStorage.setItem('fv_merchant', JSON.stringify({ name: email.split('@')[0] || 'Admin' }));
   window.location.href = '/fidelavis-admin/';
 }
@@ -187,6 +188,7 @@ async function doRegister() {
 
   // Mode démo : création directe sans backend
   localStorage.setItem('fv_token', 'demo');
+  localStorage.setItem('fv_role', 'superadmin');
   localStorage.setItem('fv_merchant', JSON.stringify({ name }));
   sucEl.textContent = '✅ Compte créé ! Redirection...';
   sucEl.style.display = 'block';

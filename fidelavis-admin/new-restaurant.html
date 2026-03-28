@@ -244,7 +244,14 @@
 
 <script>
 // ─── Auth guard ────────────────────────────────────────────────────────────
-if (!localStorage.getItem('fv_token')) { window.location.href = '/fidelavis-admin/login.html'; }
+// ─── Auth guard (super admin only) ─────────────────────────────────────────
+(function() {
+  const token = localStorage.getItem('fv_token');
+  const role  = localStorage.getItem('fv_role');
+  if (!token || role !== 'superadmin') {
+    window.location.href = '/fidelavis-admin/login.html';
+  }
+})();
 
 // ─── Config ────────────────────────────────────────────────────────────────
 const GH_OWNER  = 'compush-media';
