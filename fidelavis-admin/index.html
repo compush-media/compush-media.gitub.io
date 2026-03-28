@@ -887,7 +887,7 @@ async function initApp() {
   if (urlParams.get('connected')) { toast('✅ Fiche Google connectée !', 'success'); history.replaceState({}, '', location.pathname); }
   if (urlParams.get('error'))     { toast('Erreur de connexion Google.', 'error');   history.replaceState({}, '', location.pathname); }
 
-  if (!authToken) return (window.location.href = '/fidelavis-admin/login.html');
+  if (!authToken || localStorage.getItem('fv_role') !== 'superadmin') return (window.location.href = '/fidelavis-admin/login.html');
 
   initGoogleAuth();
 
