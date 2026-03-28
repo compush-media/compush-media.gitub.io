@@ -612,6 +612,7 @@ async function createRestaurant() {
     if (gr)           restaurantsData[sl].googleReview = gr;
     if (email)        restaurantsData[sl].email        = email;
     if (brevoListId)  restaurantsData[sl].brevoListId  = brevoListId;
+    if (brevoGasUrl)  restaurantsData[sl].brevoGasUrl  = brevoGasUrl;
     stepDone('s3', `${sl} ajouté au registre`);
 
     // ── STEP 4 : build new tree ───────────────────────────────────
