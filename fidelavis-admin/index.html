@@ -1542,6 +1542,7 @@ function loadLogs() {
 // ============================================================
 function logout() {
   localStorage.removeItem('fv_token');
+  localStorage.removeItem('fv_role');
   localStorage.removeItem('fv_merchant');
   window.location.href = '/fidelavis-admin/login.html';
 }
