@@ -759,9 +759,16 @@
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
           <span style="font-size:11px;font-weight:700;color:var(--muted);align-self:center">Raccourcis :</span>
-          ${['test3','test4','test7','test8','test9','test10','restotest','lavie','resto1','voltaire-old'].map(s =>
-            `<button onclick="document.getElementById('cleanupSlug').value='${s}'" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg2);cursor:pointer">${s}</button>`
-          ).join('')}
+          <button onclick="document.getElementById('cleanupSlug').value='test3'" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg2);cursor:pointer">test3</button>
+          <button onclick="document.getElementById('cleanupSlug').value='test4'" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg2);cursor:pointer">test4</button>
+          <button onclick="document.getElementById('cleanupSlug').value='test7'" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg2);cursor:pointer">test7</button>
+          <button onclick="document.getElementById('cleanupSlug').value='test8'" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg2);cursor:pointer">test8</button>
+          <button onclick="document.getElementById('cleanupSlug').value='test9'" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg2);cursor:pointer">test9</button>
+          <button onclick="document.getElementById('cleanupSlug').value='test10'" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg2);cursor:pointer">test10</button>
+          <button onclick="document.getElementById('cleanupSlug').value='test01'" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg2);cursor:pointer">test01</button>
+          <button onclick="document.getElementById('cleanupSlug').value='restotest'" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg2);cursor:pointer">restotest</button>
+          <button onclick="document.getElementById('cleanupSlug').value='lavie'" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg2);cursor:pointer">lavie</button>
+          <button onclick="document.getElementById('cleanupSlug').value='resto1'" style="font-size:11px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg2);cursor:pointer">resto1</button>
         </div>
         <div style="display:flex;align-items:center;gap:10px">
           <button onclick="cleanupBrevoList()" style="padding:8px 18px;background:var(--red);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px">🗑 Supprimer liste Brevo</button>
@@ -1872,12 +1879,24 @@ async function saveGasUrl(slug) {
       await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: newCommit.sha });
     } catch(e422) {
       if (!e422.message.includes('422')) throw e422;
-      const latest = await ghApiD(`/branches/${GH_BRANCH_D}`);
-      const retry  = await ghApiD('/git/commits', 'POST', {
-        message: `chore: mettre à jour brevoGasUrl pour ${slug}`,
-        tree: newTree.sha, parents: [latest.commit.sha]
+      // Re-lire l'état le plus récent, réappliquer le changement, recréer tree + commit
+      const latest       = await ghApiD(`/branches/${GH_BRANCH_D}`);
+      const latestFile   = await ghApiD('/contents/data/restaurants.json');
+      const latestBytes  = Uint8Array.from(atob(latestFile.content.replace(/\s/g,'')), c=>c.charCodeAt(0));
+      const latestData   = JSON.parse(new TextDecoder().decode(latestBytes));
+      if (!latestData[slug]) throw new Error('Restaurant introuvable après retry');
+      if (url) latestData[slug].brevoGasUrl = url;
+      else     delete latestData[slug].brevoGasUrl;
+      const retryContent = JSON.stringify(latestData, null, 2) + '\n';
+      const retryTree    = await ghApiD('/git/trees', 'POST', {
+        base_tree: latest.commit.commit.tree.sha,
+        tree: [{ path: 'data/restaurants.json', mode: '100644', type: 'blob', content: retryContent }]
       });
-      await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: retry.sha });
+      const retryCommit  = await ghApiD('/git/commits', 'POST', {
+        message: `chore: mettre à jour brevoGasUrl pour ${slug}`,
+        tree: retryTree.sha, parents: [latest.commit.sha]
+      });
+      await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: retryCommit.sha });
     }
 
     msg.textContent = '✅ Sauvegardé';
