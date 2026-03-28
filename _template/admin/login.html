@@ -44,6 +44,14 @@
       margin-top:12px;
       font-size:14px;
     }
+    .forgot {
+      display:block;
+      margin-top:14px;
+      font-size:13px;
+      color:#999;
+      text-decoration:none;
+    }
+    .forgot:hover { color:#b6152b; text-decoration:underline; }
   </style>
 </head>
 <body>
@@ -54,6 +62,9 @@
     <input id="pass" placeholder="Mot de passe" type="password">
     <button onclick="login()">Se connecter</button>
     <div id="error" class="err"></div>
+    <a class="forgot" href="https://app.cartefidelavis.com/fidelavis-admin/reset-password.html">
+      Mot de passe oublié ?
+    </a>
   </div>
 
   <script>
