@@ -1742,12 +1742,26 @@ async function loadRestoSection(preloadedData) {
   let data = (preloadedData && typeof preloadedData === 'object' && !preloadedData.type) ? preloadedData : null;
   if (!data) {
     try {
-      // Utiliser GitHub API (rapide, fiable) plutôt que le CDN avec no-store
+      // 1) Essayer GitHub API (rapide, pas de cache CDN)
       const regInfo = await ghApiD('/contents/data/restaurants.json');
       const b64   = regInfo.content.replace(/\s/g, '');
       const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
       data = JSON.parse(new TextDecoder().decode(bytes));
-    } catch(e) { data = null; }
+    } catch(apiErr) {
+      // 2) Fallback : raw GitHub (pas de token requis, mais peut être en cache 5 min)
+      try {
+        const RAW = `https://raw.githubusercontent.com/${GH_OWNER_D}/${GH_REPO_D}/main/data/restaurants.json`;
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), 10000);
+        const res = await fetch(RAW, { cache: 'no-store', signal: ctrl.signal });
+        clearTimeout(t);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        data = await res.json();
+      } catch(rawErr) {
+        grid.innerHTML = `<div class="loading" style="color:var(--red)">❌ Erreur chargement : ${apiErr.message}</div>`;
+        return;
+      }
+    }
   }
 
   if (!data || !Object.keys(data).length) {
