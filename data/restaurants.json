@@ -1,8 +1,11 @@
 {
-  "resto1": {
-    "name": "Resto1",
-    "brandColor": "#B8924F",
-    "brandColor2": "#9E7A3E"
+  "voltaire": {
+    "name": "Voltaire",
+    "brandColor": "#C6A667",
+    "brandColor2": "#b09050",
+    "phone": "01 43 33 22 01",
+    "address": "5 rue des Morand, Neuilly-Plaisance",
+    "googleReview": "https://g.page/r/XXXX/review"
   },
   "le-voltaire": {
     "name": "Le voltaire",
