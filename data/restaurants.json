@@ -11,5 +11,12 @@
     "brandColor2": "#9E7A3E",
     "brevoListId": 25,
     "brevoGasUrl": "https://script.google.com/macros/s/AKfycbxLP9n4OpqtOigIhDRSN50A3MC-H7WEEVqVHQLcKtwsXO92Dz7zp0_-p5B0cDqGJJCl/exec"
+  },
+  "resto03": {
+    "name": "resto03",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "brevoListId": 26,
+    "brevoGasUrl": "https://script.google.com/macros/s/AKfycbxLP9n4OpqtOigIhDRSN50A3MC-H7WEEVqVHQLcKtwsXO92Dz7zp0_-p5B0cDqGJJCl/exec"
   }
 }
