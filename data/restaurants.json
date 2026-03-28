@@ -6,5 +6,12 @@
     "email": "dan.drumonde@gmail.com",
     "brevoListId": 29,
     "brevoGasUrl": "https://script.google.com/macros/s/AKfycbxLP9n4OpqtOigIhDRSN50A3MC-H7WEEVqVHQLcKtwsXO92Dz7zp0_-p5B0cDqGJJCl/exec"
+  },
+  "richard": {
+    "name": "richard",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "brevoListId": 30,
+    "brevoGasUrl": "https://script.google.com/macros/s/AKfycbxLP9n4OpqtOigIhDRSN50A3MC-H7WEEVqVHQLcKtwsXO92Dz7zp0_-p5B0cDqGJJCl/exec"
   }
 }
