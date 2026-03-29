@@ -1,8 +1,8 @@
 {
-  "name": "toitoi",
-  "short_name": "toitoi",
-  "start_url": "/toitoi/index.html",
-  "scope": "/toitoi/",
+  "name": "face",
+  "short_name": "face",
+  "start_url": "/face/index.html",
+  "scope": "/face/",
   "display": "standalone",
   "background_color": "#f6efe5",
   "theme_color": "#B8924F",
