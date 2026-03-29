@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nouveau restaurant — Fidelavis</title>
+  <style>
+    :root {
+      --brand:#B48C4A; --brand2:#a97f37; --brand-bg:rgba(180,140,74,.09);
+      --brand-border:rgba(180,140,74,.28);
+      --bg:#fbfaf8; --bg2:#f5f1eb; --card:#ffffff;
+      --ink:#191919; --muted:#6f6f6f; --line:rgba(0,0,0,.08);
+      --shadow:0 4px 28px rgba(0,0,0,.08); --r:14px;
+      --green:#1a9e5c; --red:#d93025; --blue:#1a73e8;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+
+    /* HEADER */
+    .header{background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:0 24px;height:58px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+    .logo{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-weight:900;font-size:13px;padding:5px 11px;border-radius:999px}
+    .header-title{font-size:16px;font-weight:800}
+    .header a{margin-left:auto;font-size:13px;color:var(--muted);text-decoration:none;font-weight:600}
+    .header a:hover{color:var(--brand)}
+
+    /* PAGE */
+    .page{max-width:680px;margin:36px auto;padding:0 20px 60px}
+    .hero{text-align:center;margin-bottom:28px}
+    .hero-icon{font-size:44px;margin-bottom:12px}
+    .hero h1{font-size:24px;font-weight:900;margin-bottom:7px}
+    .hero p{color:var(--muted);font-size:14px}
+
+    /* TOKEN BANNER */
+    .token-banner{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--r);border:1.5px solid var(--brand-border);background:var(--brand-bg);margin-bottom:20px;font-size:13px}
+    .token-banner.ok{border-color:rgba(26,158,92,.3);background:rgba(26,158,92,.07)}
+    .token-banner.error{border-color:rgba(217,48,37,.3);background:rgba(217,48,37,.06)}
+    .token-dot{width:9px;height:9px;border-radius:50%;background:var(--brand);flex-shrink:0}
+    .token-banner.ok  .token-dot{background:var(--green)}
+    .token-banner.error .token-dot{background:var(--red)}
+    .token-banner b{font-weight:800}
+    .token-banner .token-actions{margin-left:auto;display:flex;gap:8px}
+    .token-btn{font-size:12px;font-weight:700;padding:5px 10px;border-radius:7px;border:none;cursor:pointer;background:rgba(0,0,0,.07);color:var(--ink)}
+    .token-btn:hover{background:rgba(0,0,0,.12)}
+    .token-input-wrap{display:none;margin-bottom:16px;gap:8px}
+    .token-input-wrap.show{display:flex}
+    .token-input-wrap input{flex:1;padding:10px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:13px;font-family:monospace;background:var(--bg)}
+    .token-input-wrap input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-bg)}
+    .token-save{padding:10px 18px;background:var(--brand);color:#fff;border:none;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer}
+    .token-help{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}
+    .token-help a{color:var(--blue)}
+
+    /* PREVIEW */
+    .preview-band{display:flex;align-items:center;gap:14px;padding:13px 16px;border:1.5px solid var(--brand-border);border-radius:var(--r);background:var(--brand-bg);margin-bottom:20px}
+    .preview-dot{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#B48C4A,#a97f37);flex-shrink:0}
+    .preview-name{font-weight:900;font-size:15px}
+    .preview-slug{font-size:12px;color:var(--muted);font-family:monospace}
+    .preview-links{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.7}
+
+    /* CARD / FORM */
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--shadow);margin-bottom:20px}
+    .card-title{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px}
+    .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+    .field{display:flex;flex-direction:column;gap:5px}
+    .field.full{grid-column:1/-1}
+    label{font-size:12px;font-weight:700;color:var(--muted)}
+    input[type="text"],input[type="url"],input[type="tel"]{padding:10px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:14px;font-family:inherit;background:var(--bg);color:var(--ink);transition:border-color .15s,box-shadow .15s;width:100%}
+    input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-bg)}
+    input.error{border-color:var(--red)}
+    .color-row{display:flex;gap:8px;align-items:center}
+    input[type="color"]{width:44px;height:44px;border:1.5px solid var(--line);border-radius:9px;padding:3px;cursor:pointer;background:var(--bg);flex-shrink:0}
+    .hint{font-size:11px;color:var(--muted)}
+
+    /* BUTTON */
+    .btn-primary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;transition:opacity .15s,transform .1s;margin-top:22px}
+    .btn-primary:hover{opacity:.88}
+    .btn-primary:active{transform:scale(.98)}
+    .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+    /* PROGRESS */
+    .progress-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--shadow);display:none}
+    .progress-card.show{display:block}
+    .progress-title{font-size:16px;font-weight:900;margin-bottom:16px}
+    .step{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+    .step:last-child{border-bottom:none}
+    .step-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:1px}
+    .step-icon.wait{background:var(--bg2);color:var(--muted)}
+    .step-icon.spin{background:rgba(180,140,74,.15);color:var(--brand);animation:spin .8s linear infinite}
+    .step-icon.done{background:rgba(26,158,92,.12);color:var(--green)}
+    .step-icon.fail{background:rgba(217,48,37,.1);color:var(--red)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .step-text{flex:1}
+    .step-label{font-weight:700}
+    .step-detail{font-size:12px;color:var(--muted);margin-top:2px}
+
+    /* SUCCESS */
+    .success-banner{display:flex;align-items:center;gap:14px;padding:18px;background:rgba(26,158,92,.07);border:1.5px solid rgba(26,158,92,.25);border-radius:var(--r);margin-top:20px}
+    .success-icon{font-size:32px}
+    .success-name{font-size:18px;font-weight:900}
+    .success-sub{font-size:12px;color:var(--muted);margin-top:3px}
+    .link-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+    .link-card{display:flex;flex-direction:column;align-items:center;gap:6px;padding:13px 8px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--ink);font-size:11px;font-weight:700;text-align:center;transition:background .12s,border-color .12s}
+    .link-card:hover{background:var(--brand-bg);border-color:var(--brand-border)}
+    .link-card .ic{font-size:20px}
+
+    /* ERROR BOX */
+    .error-box{background:rgba(217,48,37,.06);border:1.5px solid rgba(217,48,37,.25);border-radius:10px;padding:14px 16px;font-size:13px;color:#b52819;margin-top:14px;line-height:1.6}
+
+    /* NEW BTN */
+    .btn-new{display:block;width:100%;padding:12px;text-align:center;border:1.5px dashed var(--brand-border);border-radius:10px;font-size:14px;font-weight:700;color:var(--brand);background:none;cursor:pointer;margin-top:16px}
+    .btn-new:hover{background:var(--brand-bg)}
+
+    @media(max-width:520px){
+      .field-grid{grid-template-columns:1fr}
+      .field.full{grid-column:1}
+      .link-grid{grid-template-columns:repeat(2,1fr)}
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <span class="logo">FV</span>
+  <span class="header-title">Fidelavis</span>
+  <a href="index.html">← Dashboard</a>
+</header>
+
+<div class="page">
+  <div class="hero">
+    <div class="hero-icon">🍽️</div>
+    <h1>Nouveau restaurant</h1>
+    <p>Création directe depuis le navigateur — aucun terminal requis.</p>
+  </div>
+
+  <!-- TOKEN -->
+  <div class="token-banner" id="tokenBanner">
+    <div class="token-dot"></div>
+    <span><b>Token GitHub</b> — requis pour créer des fichiers</span>
+    <div class="token-actions">
+      <button class="token-btn" onclick="showTokenInput()">Configurer</button>
+    </div>
+  </div>
+  <div class="token-input-wrap" id="tokenInputWrap">
+    <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+    <button class="token-save" onclick="saveToken()">Enregistrer</button>
+  </div>
+  <div class="token-help" id="tokenHelp" style="display:none">
+    Créez un token sur <a href="https://github.com/settings/tokens/new?scopes=repo&description=Fidelavis+Admin" target="_blank">github.com/settings/tokens</a>
+    avec le scope <code>repo</code> (ou <code>contents: write</code> pour fine-grained).<br>
+    Le token est stocké uniquement dans votre navigateur (localStorage).
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-band">
+    <div class="preview-dot" id="previewDot"></div>
+    <div>
+      <div class="preview-name" id="previewName">Nom du restaurant</div>
+      <div class="preview-slug" id="previewSlug">/slug/</div>
+    </div>
+    <div class="preview-links" id="previewLinks">app.cartefidelavis.com/…</div>
+  </div>
+
+  <!-- FORM -->
+  <form class="card" id="restoForm" novalidate onsubmit="return false">
+    <div class="card-title">Informations principales</div>
+    <div class="field-grid">
+      <div class="field">
+        <label for="fName">Nom du restaurant *</label>
+        <input id="fName" type="text" placeholder="Le Bistro de Paris" />
+      </div>
+      <div class="field">
+        <label for="fSlug">Slug URL *</label>
+        <input id="fSlug" type="text" placeholder="bistro-paris" autocomplete="off" spellcheck="false" />
+        <span class="hint">Minuscules, tirets uniquement</span>
+      </div>
+      <div class="field">
+        <label for="fColor">Couleur principale *</label>
+        <div class="color-row">
+          <input id="fColorPicker" type="color" value="#B8924F" />
+          <input id="fColor" type="text" value="#B8924F" placeholder="#B8924F" style="font-family:monospace" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="fColor2">Couleur secondaire</label>
+        <div class="color-row">
+          <input id="fColor2Picker" type="color" value="#9E7A3E" />
+          <input id="fColor2" type="text" value="#9E7A3E" placeholder="#9E7A3E" style="font-family:monospace" />
+        </div>
+      </div>
+
+      <div class="card-title full" style="margin-top:8px">Informations complémentaires</div>
+      <div class="field">
+        <label for="fPhone">Téléphone</label>
+        <input id="fPhone" type="tel" placeholder="01 23 45 67 89" />
+      </div>
+      <div class="field full">
+        <label for="fAddress">Adresse</label>
+        <input id="fAddress" type="text" placeholder="12 rue de Rivoli, 75001 Paris" />
+      </div>
+      <div class="field full">
+        <label for="fGoogleReview">Lien avis Google</label>
+        <input id="fGoogleReview" type="url" placeholder="https://g.page/r/XXXXXXXXXX/review" />
+      </div>
+
+      <div class="card-title full" style="margin-top:8px">Accès admin</div>
+      <div class="field">
+        <label for="fAdminPass">Mot de passe admin *</label>
+        <input id="fAdminPass" type="text" placeholder="ex: bistro2025" autocomplete="off" />
+        <span class="hint">Identifiant : <code>admin</code></span>
+      </div>
+      <div class="field">
+        <label for="fEmployePass">Mot de passe employé</label>
+        <input id="fEmployePass" type="text" placeholder="ex: employe123" autocomplete="off" />
+        <span class="hint">Identifiant : <code>employe</code></span>
+      </div>
+
+      <div class="card-title full" style="margin-top:8px">Email &amp; Brevo</div>
+      <div class="field full">
+        <label for="fEmail">Email du restaurateur</label>
+        <input id="fEmail" type="text" placeholder="contact@restaurant.com" />
+        <span class="hint">Expéditeur dans les emails Brevo (ex&nbsp;: contact@bistro-paris.fr)</span>
+      </div>
+      <div class="field full">
+        <label for="fBrevoGasUrl">URL du script Brevo (Google Apps Script)</label>
+        <input id="fBrevoGasUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec" />
+        <span class="hint">
+          Optionnel — laissez vide pour créer le restaurant sans Brevo.<br>
+          Obtenez cette URL en déployant <code>apps-script/brevo/brevo-setup.gs</code>.
+        </span>
+      </div>
+    </div>
+    <button class="btn-primary" id="createBtn" onclick="createRestaurant()">
+      Créer le restaurant
+    </button>
+  </form>
+
+  <!-- PROGRESS -->
+  <div class="progress-card" id="progressCard">
+    <div class="progress-title">Création en cours…</div>
+    <div id="stepsList"></div>
+    <div class="error-box" id="errorBox" style="display:none"></div>
+  </div>
+
+</div>
+
+<script>
+// ─── Auth guard ────────────────────────────────────────────────────────────
+// ─── Auth guard (super admin only) ─────────────────────────────────────────
+(function() {
+  const token = localStorage.getItem('fv_token');
+  const role  = localStorage.getItem('fv_role');
+  if (!token || role !== 'superadmin') {
+    window.location.href = '/fidelavis-admin/login.html';
+  }
+})();
+
+// ─── Config ────────────────────────────────────────────────────────────────
+const GH_OWNER  = 'compush-media';
+const GH_REPO   = 'compush-media.gitub.io';
+const GH_BRANCH = 'main';
+const TEMPLATE  = '_template';
+const BASE_URL  = 'https://app.cartefidelavis.com';
+
+// ─── Token ─────────────────────────────────────────────────────────────────
+function getToken() { return localStorage.getItem('fv_gh_token') || ''; }
+
+async function saveToken() {
+  const v = document.getElementById('tokenInput').value.trim();
+  if (!v) return;
+  localStorage.setItem('fv_gh_token', v);
+  document.getElementById('tokenInputWrap').classList.remove('show');
+  document.getElementById('tokenHelp').style.display = 'none';
+  await verifyToken();
+}
+
+async function verifyToken() {
+  const b = document.getElementById('tokenBanner');
+  b.className = 'token-banner';
+  b.querySelector('span').innerHTML = '<b>Token GitHub</b> — vérification…';
+  b.querySelector('.token-actions').innerHTML =
+    '<span style="font-size:12px;color:var(--muted)">↻</span>';
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`,
+      { headers: {
+          'Authorization': `Bearer ${getToken()}`,
+          'Accept': 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28'
+      }}
+    );
+    if (res.status === 401) throw new Error('token_invalid');
+    if (res.status === 403) throw new Error('token_forbidden');
+    if (res.status === 404) throw new Error('token_norepo');
+    const data = await res.json();
+    const canPush = data.permissions?.push || data.permissions?.admin;
+    if (!canPush) throw new Error('token_readonly');
+    updateTokenBanner('ok', `Accès vérifié — ${data.full_name}`);
+  } catch(e) {
+    updateTokenBanner('error', e.message);
+  }
+}
+
+function showTokenInput() {
+  document.getElementById('tokenInputWrap').classList.toggle('show');
+  document.getElementById('tokenHelp').style.display =
+    document.getElementById('tokenInputWrap').classList.contains('show') ? 'block' : 'none';
+  if (document.getElementById('tokenInputWrap').classList.contains('show'))
+    document.getElementById('tokenInput').focus();
+}
+
+function updateTokenBanner(state, detail) {
+  const b = document.getElementById('tokenBanner');
+  const msgs = {
+    ok:             `<b>Token GitHub</b> — ${detail || 'configuré ✓'}`,
+    error:          tokenErrorMsg(detail),
+    token_invalid:  '<b>Token invalide</b> — vérifiez la valeur (commence par <code>ghp_</code> ou <code>github_pat_</code>)',
+    token_forbidden:'<b>Accès refusé</b> — voir les instructions ci-dessous',
+    token_norepo:   '<b>Repo introuvable</b> — le token n\'a pas accès à ce repo',
+    token_readonly: '<b>Token en lecture seule</b> — activez la permission Contents: write',
+  };
+  b.className = 'token-banner ' + (state === 'ok' ? 'ok' : 'error');
+  b.querySelector('span').innerHTML = msgs[state] || msgs.error || `<b>Token GitHub</b> — ${detail}`;
+  b.querySelector('.token-actions').innerHTML =
+    `<button class="token-btn" onclick="showTokenInput()">Modifier</button>
+     <button class="token-btn" onclick="verifyToken()">Tester</button>`;
+  // Show help on error
+  const help = document.getElementById('tokenHelp');
+  if (state !== 'ok') {
+    help.style.display = 'block';
+    help.innerHTML = tokenHelpHtml(state);
+  } else {
+    help.style.display = 'none';
+  }
+}
+
+function tokenErrorMsg(code) {
+  const map = {
+    token_invalid:  '<b>Token invalide</b> — vérifiez la valeur',
+    token_forbidden:'<b>Accès refusé (403)</b> — token sans permission d\'écriture',
+    token_norepo:   '<b>Repo introuvable</b> — le token n\'a pas accès à ce repo',
+    token_readonly: '<b>Token en lecture seule</b> — ajoutez Contents: write',
+  };
+  return map[code] || `<b>Erreur token</b> — ${code}`;
+}
+
+function tokenHelpHtml(code) {
+  if (code === 'token_forbidden' || code === 'token_readonly' || code === 'error') {
+    return `<b>Comment corriger l'erreur 403 :</b><br><br>
+    <b>Option A — Token classique (recommandé)</b><br>
+    1. Allez sur <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a><br>
+    2. Cochez le scope <code>repo</code> (accès complet)<br>
+    3. Si l'org <code>compush-media</code> utilise le SSO : cliquez <b>Configure SSO → Authorize</b><br><br>
+    <b>Option B — Fine-grained token</b><br>
+    1. Allez sur <a href="https://github.com/settings/tokens?type=beta" target="_blank">github.com/settings/tokens</a><br>
+    2. Créez/modifiez le token, dans <b>Repository access</b> sélectionnez <code>compush-media.gitub.io</code><br>
+    3. Dans <b>Permissions → Contents</b> → choisissez <b>Read and write</b>`;
+  }
+  if (code === 'token_invalid') {
+    return `Le token doit commencer par <code>ghp_</code> (classic) ou <code>github_pat_</code> (fine-grained).<br>
+    Créez-en un sur <a href="https://github.com/settings/tokens/new?scopes=repo" target="_blank">github.com/settings/tokens/new</a>`;
+  }
+  return `Créez un token sur <a href="https://github.com/settings/tokens/new?scopes=repo&description=Fidelavis+Admin" target="_blank">github.com/settings/tokens</a>
+  avec le scope <code>repo</code>.`;
+}
+
+// Init token check
+if (getToken()) verifyToken();
+else {
+  document.getElementById('tokenBanner').querySelector('.token-actions').innerHTML =
+    `<button class="token-btn" onclick="showTokenInput()">Configurer</button>`;
+}
+
+// ─── Slug ──────────────────────────────────────────────────────────────────
+function slug(v) {
+  return v.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9-]/g,'-').replace(/-{2,}/g,'-').replace(/^-|-$/g,'');
+}
+
+// ─── Preview ───────────────────────────────────────────────────────────────
+function updatePreview() {
+  const s  = slug(document.getElementById('fSlug').value);
+  const n  = document.getElementById('fName').value.trim() || 'Nom du restaurant';
+  const c1 = document.getElementById('fColor').value  || '#B8924F';
+  const c2 = document.getElementById('fColor2').value || '#9E7A3E';
+  document.getElementById('previewDot').style.background = `linear-gradient(135deg,${c1},${c2})`;
+  document.getElementById('previewName').textContent = n;
+  document.getElementById('previewSlug').textContent = s ? `/${s}/` : '/slug/';
+  document.getElementById('previewLinks').innerHTML  = s
+    ? `app.cartefidelavis.com/${s}/<br><span style="opacity:.6">cartefidelavis.com/${s}/admin/</span>`
+    : 'app.cartefidelavis.com/…';
+}
+
+function syncColor(pid,hid){
+  const p=document.getElementById(pid), h=document.getElementById(hid);
+  p.addEventListener('input',()=>{h.value=p.value;updatePreview()});
+  h.addEventListener('input',()=>{if(/^#[0-9a-fA-F]{6}$/.test(h.value)){p.value=h.value;updatePreview()}});
+}
+syncColor('fColorPicker','fColor');
+syncColor('fColor2Picker','fColor2');
+
+document.getElementById('fName').addEventListener('input', function(){
+  const sf = document.getElementById('fSlug');
+  if (!sf._manual) sf.value = slug(this.value);
+  updatePreview();
+});
+document.getElementById('fSlug').addEventListener('input', function(){
+  this._manual = true; updatePreview();
+});
+['fPhone','fAddress','fGoogleReview'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', updatePreview);
+});
+updatePreview();
+
+// ─── GitHub API helper ─────────────────────────────────────────────────────
+async function ghApi(path, method='GET', body=null) {
+  const token = getToken();
+  if (!token) throw new Error('Token GitHub manquant. Configurez-le en haut de la page.');
+  const opts = {
+    method,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'Content-Type': 'application/json',
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}${path}`, opts);
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    const msg = err.message || res.statusText;
+    if (res.status === 403) {
+      throw new Error(
+        `403 — Accès refusé. Votre token n'a pas la permission d'écrire sur ce repo.\n` +
+        `→ Consultez le bandeau "Token GitHub" en haut de la page pour les instructions.`
+      );
+    }
+    throw new Error(`GitHub API ${res.status}: ${msg}`);
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+// ─── Steps UI ──────────────────────────────────────────────────────────────
+const STEPS_DEF = [
+  { id:'s1',     label:'Lecture du template',    detail:'Récupération de la liste des fichiers de /resto1/' },
+  { id:'s2',     label:'Génération des fichiers', detail:'config.json, progressier.json' },
+  { id:'sBrevo', label:'Configuration Brevo',     detail:'Création liste contacts + 12 templates email + workflow automation' },
+  { id:'s3',     label:'Mise à jour du registre', detail:'data/restaurants.json' },
+  { id:'s4',     label:'Création du commit',      detail:'Assemblage de l\'arbre Git' },
+  { id:'s5',     label:'Déploiement',             detail:'Push sur GitHub Pages (branche main)' },
+];
+function renderSteps() {
+  document.getElementById('stepsList').innerHTML = STEPS_DEF.map(s =>
+    `<div class="step" id="${s.id}">
+      <div class="step-icon wait" id="${s.id}Icon">○</div>
+      <div class="step-text">
+        <div class="step-label">${s.label}</div>
+        <div class="step-detail" id="${s.id}Detail">${s.detail}</div>
+      </div>
+    </div>`
+  ).join('');
+}
+function stepStart(id) {
+  document.getElementById(id+'Icon').className = 'step-icon spin';
+  document.getElementById(id+'Icon').textContent = '↻';
+}
+function stepDone(id, detail='') {
+  document.getElementById(id+'Icon').className = 'step-icon done';
+  document.getElementById(id+'Icon').textContent = '✓';
+  if (detail) document.getElementById(id+'Detail').textContent = detail;
+}
+function stepFail(id, detail='') {
+  document.getElementById(id+'Icon').className = 'step-icon fail';
+  document.getElementById(id+'Icon').textContent = '✕';
+  if (detail) document.getElementById(id+'Detail').textContent = detail;
+}
+
+// ─── Main creation ─────────────────────────────────────────────────────────
+async function createRestaurant() {
+  const name       = document.getElementById('fName').value.trim();
+  const sl         = slug(document.getElementById('fSlug').value);
+  const color      = document.getElementById('fColor').value.trim()  || '#B8924F';
+  const color2     = document.getElementById('fColor2').value.trim() || '#9E7A3E';
+  const phone      = document.getElementById('fPhone').value.trim();
+  const addr       = document.getElementById('fAddress').value.trim();
+  const gr         = document.getElementById('fGoogleReview').value.trim();
+  const adminPass  = document.getElementById('fAdminPass').value.trim();
+  const employePass= document.getElementById('fEmployePass').value.trim() || 'employe123';
+  const email      = document.getElementById('fEmail').value.trim();
+  const brevoGasUrl= document.getElementById('fBrevoGasUrl').value.trim();
+
+  // Validate
+  let ok = true;
+  [['fSlug', sl], ['fName', name], ['fAdminPass', adminPass]].forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (!val) { el.classList.add('error'); ok = false; }
+    else       { el.classList.remove('error'); }
+  });
+  if (!ok) return;
+
+  if (!getToken()) {
+    showTokenInput();
+    document.getElementById('tokenInput').focus();
+    return;
+  }
+
+  // Pre-flight: verify write access
+  const permRes = await fetch(
+    `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`,
+    { headers: {
+        'Authorization': `Bearer ${getToken()}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+    }}
+  );
+  if (!permRes.ok || !(await permRes.json().then(d => d.permissions?.push || d.permissions?.admin).catch(()=>false))) {
+    updateTokenBanner('token_forbidden');
+    document.getElementById('tokenHelp').style.display = 'block';
+    document.getElementById('tokenHelp').innerHTML = tokenHelpHtml('token_forbidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  // Show progress
+  document.getElementById('createBtn').disabled = true;
+  const pc = document.getElementById('progressCard');
+  pc.querySelector('.progress-title').textContent = `Création de « ${name} »…`;
+  renderSteps();
+  pc.classList.add('show');
+  pc.scrollIntoView({ behavior:'smooth', block:'start' });
+  document.getElementById('errorBox').style.display = 'none';
+
+  try {
+    // ── STEP 1 : fetch template tree ──────────────────────────────
+    stepStart('s1');
+    const refData  = await ghApi(`/git/ref/heads/${GH_BRANCH}`);
+    const commitSha= refData.object.sha;
+    const commitData = await ghApi(`/git/commits/${commitSha}`);
+    const treeSha  = commitData.tree.sha;
+
+    // Get full recursive tree
+    const treeData = await ghApi(`/git/trees/${treeSha}?recursive=1`);
+    const allItems = treeData.tree;
+
+    // Filter template files (blobs only)
+    const templateFiles = allItems.filter(f =>
+      f.type === 'blob' && f.path.startsWith(TEMPLATE + '/')
+    );
+    if (!templateFiles.length) throw new Error(`Aucun fichier trouvé dans /${TEMPLATE}/`);
+    stepDone('s1', `${templateFiles.length} fichiers trouvés dans /${TEMPLATE}/`);
+
+    // ── STEP 2 : generate config & progressier ────────────────────
+    stepStart('s2');
+    const cfg = { name, color, color2 };
+    if (phone) cfg.phone = phone;
+    if (addr)  cfg.address = addr;
+    if (gr)    cfg.googleReview = gr;
+
+    const manifest = {
+      name, short_name: name,
+      start_url: `/${sl}/index.html`,
+      scope: `/${sl}/`,
+      display: 'standalone',
+      background_color: '#f6efe5',
+      theme_color: color,
+      orientation: 'portrait',
+      icons: [
+        { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+        { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
+      ]
+    };
+    stepDone('s2', 'config.json + progressier.json générés');
+
+    // ── STEP BREVO : setup liste + templates + workflow ───────────
+    stepStart('sBrevo');
+    let brevoListId = 0, brevoWorkflowId = null;
+    if (brevoGasUrl) {
+      try {
+        // Content-Type: text/plain évite le preflight CORS sur Google Apps Script
+        const brevoRes = await fetch(brevoGasUrl, {
+          method:  'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            action:          'setup',
+            restaurantName:  name,
+            restaurantEmail: email || ('noreply@' + sl + '.fr'),
+            restaurantId:    sl,
+            adminPass:       adminPass,
+            empPass:         employePass
+          })
+        });
+        if (!brevoRes.ok) throw new Error('HTTP ' + brevoRes.status);
+        const brevoData = await brevoRes.json();
+        if (!brevoData.success) throw new Error(brevoData.error || 'Erreur Brevo');
+        brevoListId   = brevoData.listId     || 0;
+        brevoWorkflowId = brevoData.workflowId || null;
+        // Injecter les infos Brevo dans config.json
+        if (brevoListId) cfg.brevoListId = brevoListId;
+        cfg.brevoGasUrl = brevoGasUrl;
+        const wfMsg = brevoWorkflowId ? ` · workflow #${brevoWorkflowId}` : ' · templates créés (workflow à activer dans Brevo)';
+        stepDone('sBrevo', `Liste Brevo #${brevoListId} créée${wfMsg}`);
+      } catch(brevoErr) {
+        // Brevo non bloquant : le restaurant est quand même créé
+        stepFail('sBrevo', 'Brevo : ' + brevoErr.message + ' — restaurant créé sans Brevo');
+      }
+    } else {
+      stepDone('sBrevo', 'Ignoré (aucune URL Brevo renseignée)');
+    }
+
+    // ── STEP 3 : update data/restaurants.json ─────────────────────
+    stepStart('s3');
+    let restaurantsData = {};
+    const restaurantsItem = allItems.find(f => f.path === 'data/restaurants.json');
+    if (restaurantsItem) {
+      const blobData = await ghApi(`/git/blobs/${restaurantsItem.sha}`);
+      const decoded  = atob(blobData.content.replace(/\s/g,''));
+      restaurantsData = JSON.parse(decoded);
+    }
+    restaurantsData[sl] = { name, brandColor: color, brandColor2: color2 };
+    if (phone)        restaurantsData[sl].phone        = phone;
+    if (addr)         restaurantsData[sl].address      = addr;
+    if (gr)           restaurantsData[sl].googleReview = gr;
+    if (email)        restaurantsData[sl].email        = email;
+    if (brevoListId)  restaurantsData[sl].brevoListId  = brevoListId;
+    if (brevoGasUrl)  restaurantsData[sl].brevoGasUrl  = brevoGasUrl;
+    stepDone('s3', `${sl} ajouté au registre`);
+
+    // ── STEP 4 : build new tree ───────────────────────────────────
+    stepStart('s4');
+
+    // Build tree items: copy template blobs → new slug paths
+    const newTreeItems = [];
+
+    // Template files (reuse blob SHAs directly — no re-upload needed)
+    // Files we'll generate ourselves (skip blob copy for these)
+    const overridePaths = new Set([
+      `${sl}/config.json`, `${sl}/progressier.json`, `${sl}/admin/login.html`
+    ]);
+
+    for (const f of templateFiles) {
+      const newPath = sl + '/' + f.path.slice(TEMPLATE.length + 1);
+      if (overridePaths.has(newPath)) continue;
+      newTreeItems.push({ path: newPath, mode: f.mode, type: 'blob', sha: f.sha });
+    }
+
+    // Fetch template login.html and patch credentials
+    const loginTemplateItem = templateFiles.find(f => f.path === `${TEMPLATE}/admin/login.html`);
+    if (!loginTemplateItem) throw new Error('login.html introuvable dans le template');
+    const loginBlob = await ghApi(`/git/blobs/${loginTemplateItem.sha}`);
+    let loginContent = new TextDecoder().decode(
+      Uint8Array.from(atob(loginBlob.content.replace(/\s/g,'')), c => c.charCodeAt(0))
+    );
+    // Replace hardcoded credentials with the new ones
+    loginContent = loginContent.replace(
+      /(\{ user: "admin",\s*pass: ")[^"]*(")/,
+      `$1${adminPass}$2`
+    ).replace(
+      /(\{ user: "employe",\s*pass: ")[^"]*(")/,
+      `$1${employePass}$2`
+    );
+
+    // Upload new blobs for generated files
+    const toUpload = [
+      { path: `${sl}/config.json`,        content: JSON.stringify(cfg, null, 2) + '\n' },
+      { path: `${sl}/progressier.json`,   content: JSON.stringify(manifest, null, 2) + '\n' },
+      { path: `${sl}/admin/login.html`,   content: loginContent },
+      { path: 'data/restaurants.json',    content: JSON.stringify(restaurantsData, null, 2) + '\n' },
+    ];
+    for (const item of toUpload) {
+      const blob = await ghApi('/git/blobs', 'POST', { content: item.content, encoding: 'utf-8' });
+      newTreeItems.push({ path: item.path, mode: '100644', type: 'blob', sha: blob.sha });
+    }
+
+    // Create new tree (base = current tree)
+    const newTree = await ghApi('/git/trees', 'POST', {
+      base_tree: treeSha,
+      tree: newTreeItems
+    });
+    stepDone('s4', `${templateFiles.length + toUpload.length} fichiers dans l'arbre`);
+
+    // ── STEP 5 : commit + push ────────────────────────────────────
+    stepStart('s5');
+    const newCommit = await ghApi('/git/commits', 'POST', {
+      message: `feat: nouveau restaurant ${sl} — ${name}`,
+      tree: newTree.sha,
+      parents: [commitSha]
+    });
+    await ghApi(`/git/refs/heads/${GH_BRANCH}`, 'PATCH', {
+      sha: newCommit.sha,
+      force: false
+    });
+    stepDone('s5', 'Déployé sur GitHub Pages ✓');
+
+    // ── SUCCESS ────────────────────────────────────────────────────
+    pc.querySelector('.progress-title').textContent = 'Restaurant créé !';
+
+    const links = [
+      { id:'lSite',  ic:'🏠', label:'Site client',   path:`/${sl}/index.html` },
+      { id:'lAdmin', ic:'⚙️',  label:'Admin',         path:`/${sl}/admin/login.html` },
+      { id:'lStats', ic:'📊', label:'Stats',          path:`/${sl}/admin/state.html` },
+      { id:'lRep',   ic:'⭐', label:'Réputation',     path:`/${sl}/admin/reputation-google.html` },
+    ];
+
+    const brevoInfo = brevoListId
+      ? `<div style="margin-top:12px;padding:10px 14px;background:rgba(26,158,92,.07);
+           border:1px solid rgba(26,158,92,.25);border-radius:10px;font-size:12px;color:#1a7a45;font-weight:700;">
+           ✅ Brevo configuré — Liste #${brevoListId}${brevoWorkflowId ? ' · Workflow #' + brevoWorkflowId : ' · Activez le workflow dans Brevo > Automations'}
+         </div>`
+      : (brevoGasUrl ? `<div style="margin-top:12px;padding:10px 14px;background:rgba(217,48,37,.06);
+           border:1px solid rgba(217,48,37,.2);border-radius:10px;font-size:12px;color:#b52819;font-weight:700;">
+           ⚠️ Brevo non configuré — vérifiez les logs du script GAS
+         </div>` : '');
+
+    pc.insertAdjacentHTML('beforeend', `
+      <div class="success-banner">
+        <span class="success-icon">🎉</span>
+        <div>
+          <div class="success-name">${name}</div>
+          <div class="success-sub">/${sl}/ — déployé sur app.cartefidelavis.com</div>
+        </div>
+      </div>
+      ${brevoInfo}
+      <div class="link-grid" style="margin-top:16px">
+        ${links.map(l=>`<a class="link-card" href="${BASE_URL}${l.path}" target="_blank">
+          <span class="ic">${l.ic}</span>${l.label}</a>`).join('')}
+      </div>
+      <button class="btn-new" onclick="resetForm()">+ Créer un autre restaurant</button>
+    `);
+
+  } catch(err) {
+    const failStep = STEPS_DEF.find(s =>
+      document.getElementById(s.id+'Icon').classList.contains('spin')
+    );
+    if (failStep) stepFail(failStep.id, err.message);
+    document.getElementById('errorBox').style.display = 'block';
+    document.getElementById('errorBox').textContent = '⚠️ ' + err.message;
+    document.getElementById('createBtn').disabled = false;
+  }
+}
+
+// ─── Reset ─────────────────────────────────────────────────────────────────
+function resetForm() {
+  ['fName','fSlug','fPhone','fAddress','fGoogleReview'].forEach(id => {
+    document.getElementById(id).value = '';
+    document.getElementById(id).classList.remove('error');
+  });
+  document.getElementById('fSlug')._manual = false;
+  document.getElementById('fColor').value  = '#B8924F';
+  document.getElementById('fColor2').value = '#9E7A3E';
+  document.getElementById('fColorPicker').value  = '#B8924F';
+  document.getElementById('fColor2Picker').value = '#9E7A3E';
+  const pc = document.getElementById('progressCard');
+  pc.classList.remove('show');
+  pc.innerHTML = '<div class="progress-title">Création en cours…</div><div id="stepsList"></div><div class="error-box" id="errorBox" style="display:none"></div>';
+  document.getElementById('createBtn').disabled = false;
+  updatePreview();
+  window.scrollTo({ top: 0, behavior:'smooth' });
+}
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fidelavis – Connexion</title>
+  <title>Fidelavis – Connexion Super Admin</title>
   <style>
     :root {
       --brand: #B48C4A; --brand2: #a97f37;
@@ -42,17 +42,12 @@
     }
     .logo-area h1 { font-size: 22px; font-weight: 900; color: var(--ink); }
     .logo-area p  { font-size: 14px; color: var(--muted); margin-top: 4px; }
-    .tabs { display: flex; gap: 0; margin-bottom: 24px; border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; }
-    .tab {
-      flex: 1; padding: 10px; text-align: center;
-      font-size: 14px; font-weight: 700;
-      cursor: pointer; background: var(--bg); color: var(--muted);
-      transition: background .15s, color .15s;
-      border: none;
+    .admin-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(180,140,74,.1); border: 1px solid rgba(180,140,74,.3);
+      color: var(--brand); font-size: 12px; font-weight: 700;
+      padding: 4px 10px; border-radius: 999px; margin-top: 8px;
     }
-    .tab.active { background: var(--brand); color: #fff; }
-    .form-panel { display: none; }
-    .form-panel.active { display: block; }
     .form-row { margin-bottom: 16px; }
     .form-row label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
     .form-row input {
@@ -75,130 +70,95 @@
     .btn-submit:hover { opacity: .88; }
     .btn-submit:disabled { opacity: .5; cursor: default; }
     .error-msg { color: var(--red); font-size: 13px; font-weight: 600; margin-top: 12px; text-align: center; display: none; }
-    .success-msg { color: var(--green); font-size: 13px; font-weight: 600; margin-top: 12px; text-align: center; display: none; }
-    .footer-note { text-align: center; font-size: 12px; color: var(--muted); margin-top: 20px; }
+    .footer-note { text-align: center; font-size: 12px; color: var(--muted); margin-top: 20px; line-height: 1.6; }
+    .footer-note a { color: var(--brand); text-decoration: none; }
   </style>
 </head>
 <body>
 <div class="card">
   <div class="logo-area">
     <div class="logo">Fidelavis</div>
-    <h1>Gestion des avis Google</h1>
-    <p>Connectez-vous à votre espace commerçant</p>
+    <h1>Espace Super Admin</h1>
+    <p>Accès réservé à l'administrateur</p>
+    <div class="admin-badge">🔒 Accès restreint</div>
   </div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('login')">Connexion</button>
-    <button class="tab" onclick="switchTab('register')">Créer un compte</button>
+  <div class="form-row">
+    <label>Token GitHub (Personal Access Token)</label>
+    <input type="password" id="loginToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="current-password" />
   </div>
 
-  <!-- LOGIN -->
-  <div class="form-panel active" id="panel-login">
-    <div class="form-row">
-      <label>Email</label>
-      <input type="email" id="loginEmail" placeholder="vous@email.com" autocomplete="email" />
-    </div>
-    <div class="form-row">
-      <label>Mot de passe</label>
-      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
-    </div>
-    <button class="btn-submit" id="loginBtn" onclick="doLogin()">Se connecter</button>
-    <div class="error-msg" id="loginError"></div>
-  </div>
+  <button class="btn-submit" id="loginBtn" onclick="doLogin()">🔑 Se connecter</button>
+  <div class="error-msg" id="loginError"></div>
 
-  <!-- REGISTER -->
-  <div class="form-panel" id="panel-register">
-    <div class="form-row">
-      <label>Nom de votre commerce</label>
-      <input type="text" id="regName" placeholder="Le Bistrot Marcel" />
-    </div>
-    <div class="form-row">
-      <label>Email</label>
-      <input type="email" id="regEmail" placeholder="vous@email.com" autocomplete="email" />
-    </div>
-    <div class="form-row">
-      <label>Mot de passe (min. 8 caractères)</label>
-      <input type="password" id="regPassword" placeholder="Choisissez un mot de passe sécurisé" autocomplete="new-password" />
-    </div>
-    <button class="btn-submit" id="regBtn" onclick="doRegister()">Créer mon compte</button>
-    <div class="error-msg" id="regError"></div>
-    <div class="success-msg" id="regSuccess"></div>
+  <div class="footer-note">
+    Connectez-vous avec votre <a href="https://github.com/settings/tokens" target="_blank">Token GitHub</a>
+    ayant accès en écriture au dépôt.
   </div>
-
-  <div class="footer-note">Vos données sont sécurisées et ne sont jamais partagées.</div>
 </div>
 
 <script>
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000/api'
-  : 'https://api.fidelavis.com/api';
-
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register')));
-  document.getElementById('panel-login').classList.toggle('active', tab === 'login');
-  document.getElementById('panel-register').classList.toggle('active', tab === 'register');
-}
+const GH_OWNER = 'compush-media';
+const GH_REPO  = 'compush-media.gitub.io';
 
 async function doLogin() {
-  const email    = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const errEl    = document.getElementById('loginError');
-  const btn      = document.getElementById('loginBtn');
+  const token = document.getElementById('loginToken').value.trim();
+  const errEl = document.getElementById('loginError');
+  const btn   = document.getElementById('loginBtn');
   errEl.style.display = 'none';
 
-  if (!email || !password) {
-    errEl.textContent = 'Veuillez remplir tous les champs.';
+  if (!token) {
+    errEl.textContent = 'Veuillez saisir votre Token GitHub.';
     errEl.style.display = 'block';
     return;
   }
 
   btn.disabled = true;
-  btn.textContent = 'Connexion...';
+  btn.textContent = 'Vérification...';
 
-  // Mode démo : accès direct sans backend
-  localStorage.setItem('fv_token', 'demo');
-  localStorage.setItem('fv_merchant', JSON.stringify({ name: email.split('@')[0] || 'Admin' }));
-  window.location.href = '/fidelavis-admin/';
-}
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    });
 
-async function doRegister() {
-  const name     = document.getElementById('regName').value.trim();
-  const email    = document.getElementById('regEmail').value.trim();
-  const password = document.getElementById('regPassword').value;
-  const errEl    = document.getElementById('regError');
-  const sucEl    = document.getElementById('regSuccess');
-  const btn      = document.getElementById('regBtn');
-  errEl.style.display = 'none';
-  sucEl.style.display = 'none';
+    if (res.status === 401) throw new Error('Token invalide — vérifiez votre PAT GitHub.');
+    if (res.status === 403) throw new Error('Token refusé — permissions insuffisantes.');
+    if (!res.ok) throw new Error(`Erreur GitHub API (${res.status}).`);
 
-  if (!name || !email || !password) {
-    errEl.textContent = 'Veuillez remplir tous les champs.';
+    const data = await res.json();
+    const canPush = data.permissions?.push || data.permissions?.admin;
+    if (!canPush) throw new Error('Token en lecture seule — un accès en écriture est requis.');
+
+    // Authentification réussie : seul le propriétaire du repo peut arriver ici
+    localStorage.setItem('fv_token', 'superadmin');
+    localStorage.setItem('fv_role', 'superadmin');
+    localStorage.setItem('fv_gh_token', token);
+    localStorage.setItem('fv_merchant', JSON.stringify({ name: 'Super Admin' }));
+    window.location.href = '/fidelavis-admin/';
+
+  } catch (err) {
+    errEl.textContent = '⚠️ ' + err.message;
     errEl.style.display = 'block';
-    return;
+    btn.disabled = false;
+    btn.textContent = '🔑 Se connecter';
   }
-  if (password.length < 8) {
-    errEl.textContent = 'Mot de passe minimum 8 caractères.';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Création...';
-
-  // Mode démo : création directe sans backend
-  localStorage.setItem('fv_token', 'demo');
-  localStorage.setItem('fv_merchant', JSON.stringify({ name }));
-  sucEl.textContent = '✅ Compte créé ! Redirection...';
-  sucEl.style.display = 'block';
-  setTimeout(() => window.location.href = '/fidelavis-admin/', 1000);
 }
 
 // Enter key support
 document.addEventListener('keydown', (e) => {
-  if (e.key !== 'Enter') return;
-  if (document.getElementById('panel-login').classList.contains('active')) doLogin();
-  else doRegister();
+  if (e.key === 'Enter') doLogin();
 });
+
+// Redirect if already authenticated
+(function() {
+  const token = localStorage.getItem('fv_token');
+  const role  = localStorage.getItem('fv_role');
+  if (token && role === 'superadmin') window.location.href = '/fidelavis-admin/';
+})();
 </script>
 </body>
 </html>

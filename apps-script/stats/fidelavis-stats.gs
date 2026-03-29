@@ -19,12 +19,8 @@
  *       Accès : Tout le monde (anonyme)
  *  6. Copier l'URL et remplacer SCRIPT_URL dans :
  *       assets/core.js
- *       resto1/admin/espace-admin.html
- *       resto2/admin/espace-admin.html
- *       voltaire/admin/espace-admin.html
- *       resto1/admin/state.html
- *       resto2/admin/state.html
- *       voltaire/admin/state.html
+ *       <slug>/admin/espace-admin.html
+ *       <slug>/admin/state.html
  * ============================================================
  */
 

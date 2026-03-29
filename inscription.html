@@ -118,13 +118,46 @@
       padding:10px;
       text-align:left;
     }
-    iframe{
-      width:100%;
-      border:0;
-      border-radius:14px;
-      background:#fff;
-      display:block;
-      height:560px;
+    /* ── Formulaire Brevo ── */
+    .bv-field { margin-bottom:16px; }
+    .bv-label {
+      display:block;font-size:12px;font-weight:800;
+      color:#555;margin-bottom:6px;letter-spacing:.2px;
+    }
+    .bv-input {
+      width:100%;padding:13px 14px;
+      border:1.5px solid var(--line);border-radius:12px;
+      font-size:15px;font-family:inherit;background:#faf8f5;color:#1d1d1d;
+      transition:border-color .15s,box-shadow .15s;
+    }
+    .bv-input:focus {
+      outline:none;border-color:var(--gold);
+      box-shadow:0 0 0 3px rgba(184,146,79,.12);background:#fff;
+    }
+    .bv-btn {
+      width:100%;padding:15px;border:none;border-radius:14px;
+      background:linear-gradient(135deg,var(--gold),#9E7A3E);
+      color:#fff;font-size:15px;font-weight:900;font-family:inherit;
+      cursor:pointer;margin-top:4px;
+      transition:opacity .15s,transform .1s;
+      box-shadow:0 6px 18px rgba(184,146,79,.35);
+    }
+    .bv-btn:hover  { opacity:.88; }
+    .bv-btn:active { transform:scale(.98); }
+    .bv-btn:disabled { opacity:.5;cursor:not-allowed;transform:none; }
+    .bv-privacy {
+      font-size:11px;color:#888;text-align:center;
+      margin-top:12px;font-weight:600;line-height:1.5;
+    }
+    .bv-loading {
+      text-align:center;padding:32px 16px;
+      color:#999;font-size:13px;font-weight:700;
+    }
+    .bv-error {
+      display:none;background:rgba(192,57,43,.07);
+      border:1px solid rgba(192,57,43,.25);border-radius:10px;
+      padding:10px 14px;font-size:13px;color:#c0392b;
+      margin-top:12px;text-align:center;
     }
 
     .sticky{
@@ -229,10 +262,28 @@
     <p class="micro">⚡ 10 secondes • 🎁 Gratuit • 🔒 Anti-spam</p>
 
     <div class="card" id="card">
-      <iframe
-        id="ghlFrame"
-        src="https://api.leadconnectorhq.com/widget/form/MAbxQNqssstYs2a4VbuI"
-        title="Formulaire d'inscription"></iframe>
+      <!-- ✅ Formulaire Brevo (remplace l'iframe GHL) -->
+      <div id="brevoLoading" class="bv-loading">Chargement…</div>
+
+      <form id="brevoForm" style="display:none;padding:4px 0" onsubmit="submitBrevoForm(event)" novalidate>
+        <div class="bv-field">
+          <label class="bv-label" for="bvPrenom">Prénom</label>
+          <input class="bv-input" type="text" id="bvPrenom"
+            placeholder="Votre prénom" autocomplete="given-name" />
+        </div>
+        <div class="bv-field">
+          <label class="bv-label" for="bvEmail">Email *</label>
+          <input class="bv-input" type="email" id="bvEmail"
+            placeholder="votre@email.com" required autocomplete="email" />
+        </div>
+        <button class="bv-btn" type="submit" id="bvSubmitBtn">
+          🎁 Activer ma réduction -10%
+        </button>
+        <div class="bv-privacy">
+          🔒 Anti-spam · Données non partagées · Résiliable à tout moment
+        </div>
+        <div class="bv-error" id="bvError"></div>
+      </form>
     </div>
   </div>
 
@@ -244,6 +295,7 @@
   </div>
 
   <script>
+  var _brevoConfig = null; // accessible par submitBrevoForm (hors IIFE)
   (function(){
     const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
 
@@ -281,89 +333,97 @@
     document.getElementById("ppBtn").href  = "/privacy.html?from=" + from;
     document.getElementById("cguBtn").href = "/cgu.html?from=" + from;
 
-    // ─── Détection soumission GHL via postMessage ────────────
-    // GHL redirige l'iframe après submit → le parent ne voit pas ?submitted=1
-    // On écoute les messages de l'iframe pour déclencher le tracking quoi qu'il arrive.
-    let _ghlTracked = false;
-    window.addEventListener("message", function(ev) {
-      if (_ghlTracked) return;
-
-      // GHL envoie différents formats selon la version
-      var d = ev.data;
-      if (!d) return;
-
-      // Détecter un événement de soumission GHL
-      var isSubmit = false;
-      if (typeof d === "string") {
-        try { d = JSON.parse(d); } catch(_) { return; }
-      }
-      if (typeof d === "object") {
-        // formats connus : {event:"form_submitted"}, {type:"form_submit"}, {submitted:true}
-        var ev2 = (d.event || d.type || "").toLowerCase();
-        isSubmit = ev2.includes("submit") || ev2.includes("form_submit") || ev2.includes("submitted") || !!d.submitted;
-      }
-      if (!isSubmit) return;
-
-      _ghlTracked = true;
-
-      // Même logique que la détection par ?submitted=1
-      const STATS_URL2 = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
-      const RESTO2 = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
-      const now2 = Date.now();
-
+    // ─── Formulaire Brevo ─────────────────────────────────────
+    // La page racine n'est liée à aucun restaurant — on charge le config par défaut
+    (async function initBrevoForm() {
       try {
-        localStorage.setItem("is_registered", "1");
-        localStorage.setItem("fv_onboarding_done", "1");
-        localStorage.setItem("fv_registered_" + RESTO2, "1");
-        localStorage.setItem("fv_registered_at_" + RESTO2, String(now2));
+        const res = await fetch("/resto1/config.json", { cache: "no-store" });
+        if (res.ok) _brevoConfig = await res.json();
       } catch(_) {}
+      document.getElementById("brevoLoading").style.display = "none";
+      document.getElementById("brevoForm").style.display = "block";
+    })();
+    // ─────────────────────────────────────────────────────────
+  })();
+  </script>
 
-      const dedupKey2 = "signup_pm_" + RESTO2;
-      const last2 = Number(localStorage.getItem(dedupKey2) || "0");
-      if (!last2 || (now2 - last2) > 86400000) {
-        try { localStorage.setItem(dedupKey2, String(now2)); } catch(_) {}
-        try {
-          const sp2 = new URLSearchParams();
-          sp2.append("data", JSON.stringify({
-            resto: RESTO2, event: "signup",
-            jour: new Date().toISOString().slice(0, 10),
-            mois: new Date().getMonth() + 1,
-            annee: new Date().getFullYear(),
-            user: localStorage.getItem("user_email") || "",
-            userAgent: navigator.userAgent,
-            pageURL: location.href,
-            deviceId: localStorage.getItem("device_id") || "",
-            sessionId: sessionStorage.getItem("fv_session_id") || "",
-            src: "ghl_postmessage",
-            demo: location.pathname.includes("/demo/") ? "1" : "0"
-          }));
-          navigator.sendBeacon(STATS_URL2, sp2);
-        } catch(_) {}
-      }
+  <!-- ✅ Soumission formulaire Brevo -->
+  <script>
+  function submitBrevoForm(e) {
+    e.preventDefault();
+    const email  = document.getElementById("bvEmail").value.trim();
+    const prenom = document.getElementById("bvPrenom").value.trim();
+    const errDiv = document.getElementById("bvError");
 
-      setTimeout(() => window.location.replace("redit.html"), 400);
-    });
-    // ────────────────────────────────────────────────────────
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errDiv.style.display = "block";
+      errDiv.textContent   = "Veuillez saisir un email valide.";
+      return;
+    }
+    errDiv.style.display = "none";
 
-    function setFrameHeight(){
-      const frame = document.getElementById("ghlFrame");
-      const card  = document.getElementById("card");
-      const sticky = document.querySelector(".sticky");
+    const btn = document.getElementById("bvSubmitBtn");
+    btn.disabled    = true;
+    btn.textContent = "Inscription en cours…";
 
-      const vh = window.innerHeight;
-      const top = card.getBoundingClientRect().top;
-      const stickyH = sticky.getBoundingClientRect().height;
+    const RESTO  = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+    const listId = _brevoConfig?.brevoListId  || 0;
+    const gasUrl = _brevoConfig?.brevoGasUrl  || "";
+    const now    = Date.now();
 
-      const safety = 8;
-      const available = Math.max(420, Math.floor(vh - top - stickyH - safety));
-      frame.style.height = available + "px";
+    // ── Envoi vers Brevo via GAS (fire-and-forget) ──
+    if (gasUrl && listId) {
+      try {
+        const sp = new URLSearchParams();
+        sp.append("data", JSON.stringify({
+          action:    "subscribe",
+          email:     email,
+          firstName: prenom,
+          listId:    listId,
+          resto:     RESTO
+        }));
+        navigator.sendBeacon(gasUrl, sp);
+      } catch(_) {}
     }
 
-    window.addEventListener("resize", setFrameHeight);
-    window.addEventListener("orientationchange", setFrameHeight);
-    setTimeout(setFrameHeight, 60);
-    setTimeout(setFrameHeight, 240);
-  })();
+    // ── Persistance localStorage ──
+    try {
+      localStorage.setItem("is_registered",              "1");
+      localStorage.setItem("fv_onboarding_done",         "1");
+      localStorage.setItem("fv_registered_"    + RESTO,  "1");
+      localStorage.setItem("fv_registered_at_" + RESTO,  String(now));
+      if (email) localStorage.setItem("user_email", email);
+    } catch(_) {}
+
+    // ── Tracking ──
+    const STATS_URL = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
+    const dedupKey  = "signup_brevo_" + RESTO;
+    const last      = Number(localStorage.getItem(dedupKey) || "0");
+    if (!last || (now - last) > 86400000) {
+      try { localStorage.setItem(dedupKey, String(now)); } catch(_) {}
+      try {
+        const sp2 = new URLSearchParams();
+        sp2.append("data", JSON.stringify({
+          resto:     RESTO,
+          event:     "signup",
+          jour:      new Date().toISOString().slice(0, 10),
+          mois:      new Date().getMonth() + 1,
+          annee:     new Date().getFullYear(),
+          user:      email,
+          userAgent: navigator.userAgent,
+          pageURL:   location.href,
+          deviceId:  localStorage.getItem("device_id") || "",
+          sessionId: sessionStorage.getItem("fv_session_id") || "",
+          src:       "brevo_form",
+          demo:      location.pathname.includes("/demo/") ? "1" : "0"
+        }));
+        navigator.sendBeacon(STATS_URL, sp2);
+      } catch(_) {}
+    }
+
+    // ── Redirection ──
+    setTimeout(() => window.location.replace("redit.html"), 400);
+  }
   </script>
 
 </body>

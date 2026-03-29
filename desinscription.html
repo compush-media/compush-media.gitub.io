@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Désabonnement confirmé — Fidelavis</title>
+<style>
+:root{
+  --gold:#B8924F;
+  --bg:#f6efe5;
+  --card:#ffffff;
+  --ink:#1d1d1d;
+  --muted:#6b6b6b;
+  --line:rgba(0,0,0,0.08);
+  --shadow:0 18px 40px rgba(0,0,0,0.12);
+  --radius:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:linear-gradient(180deg,#f7f0e8 0%,#f4eadf 100%);
+  color:var(--ink);
+  min-height:100dvh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px 16px;
+  text-align:center;
+}
+.wrap{max-width:480px;width:100%;}
+.icon{
+  font-size:52px;
+  line-height:1;
+  margin-bottom:20px;
+}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:999px;
+  background:rgba(255,255,255,.9);
+  border:1px solid var(--line);
+  font-weight:700;font-size:12px;
+  color:var(--muted);
+  letter-spacing:.3px;
+  text-transform:uppercase;
+  margin-bottom:20px;
+  box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+h1{
+  font-size:26px;
+  font-weight:900;
+  letter-spacing:-.3px;
+  color:var(--ink);
+  margin-bottom:12px;
+  line-height:1.2;
+}
+.sub{
+  font-size:15px;
+  color:var(--muted);
+  line-height:1.6;
+  margin-bottom:28px;
+}
+.email{
+  font-weight:700;
+  color:var(--ink);
+}
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--line);
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.6;
+}
+.powered{
+  margin-top:28px;
+  font-size:11px;
+  color:#bbb;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="icon">✅</div>
+  <div class="badge">Fidelavis · Programme de fidélité</div>
+  <h1>Désabonnement confirmé</h1>
+  <p class="sub" id="msg">
+    Votre adresse a bien été retirée de la liste.<br>
+    Vous ne recevrez plus d'emails de ce programme de fidélité.
+  </p>
+  <div class="card">
+    Si vous changez d'avis, vous pouvez vous réinscrire à tout moment via le QR code du restaurant.
+  </div>
+  <p class="powered">Fidelavis · Fidélité sans carte</p>
+</div>
+<script>
+  const p     = new URLSearchParams(location.search);
+  const email  = p.get('email')  || '';
+  const listId = p.get('listId') || '';
+  const gasUrl = p.get('gas')    || '';
+
+  if (email) {
+    document.getElementById('msg').innerHTML =
+      'L\'adresse <span class="email">' + email + '</span> a bien été retirée de la liste.<br>' +
+      'Vous ne recevrez plus d\'emails de ce programme de fidélité.';
+  }
+
+  // Appeler le GAS en arrière-plan pour supprimer le contact de la liste Brevo
+  if (email && listId && gasUrl) {
+    fetch(gasUrl, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify({ action: 'unsubscribe', email: email, listId: parseInt(listId, 10) })
+    }).catch(function() {}); // silencieux — la suppression peut avoir déjà été faite par doGet
+  }
+</script>
+</body>
+</html>
