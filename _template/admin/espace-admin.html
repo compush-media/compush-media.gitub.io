@@ -602,11 +602,9 @@ const ROLE = localStorage.getItem(ROLE_KEY) || 'employe';
 document.getElementById('roleBadge').textContent = ROLE === 'admin' ? '👑 Admin' : '👤 Employé';
 
 if (ROLE !== 'admin') {
-  // Employé : accès coupon uniquement
+  // Employé : tableau de bord + coupon (stats, avis, notifications masqués)
   document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
   document.querySelectorAll('#linkStats, #linkAvis').forEach(el => el.style.display = 'none');
-  const dashBtn = document.querySelector('.tab-btn[data-tab="dashboard"]');
-  if (dashBtn) dashBtn.style.display = 'none';
 }
 
 // Charger nom du restaurant depuis config.json
@@ -634,7 +632,6 @@ let kpisLoaded = false;
 function switchTab(tabId) {
   if (!INLINE_TABS.includes(tabId)) return;
   if (tabId === 'notifications' && ROLE !== 'admin') return;
-  if (tabId === 'dashboard' && ROLE !== 'admin') return;
 
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
@@ -660,7 +657,12 @@ document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
 function initFromHash() {
   const hash = location.hash.replace('#', '');
   if (ROLE !== 'admin') {
-    switchTab('coupon');
+    // Employé : tableau de bord par défaut, coupon accessible
+    if (['dashboard', 'coupon'].includes(hash)) {
+      switchTab(hash);
+    } else {
+      switchTab('dashboard');
+    }
     return;
   }
   if (INLINE_TABS.includes(hash)) {
