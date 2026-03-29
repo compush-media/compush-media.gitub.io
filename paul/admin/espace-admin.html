@@ -149,37 +149,6 @@
     }
     .card-title-icon { font-size: 18px; }
 
-    /* ── ACTIONS RAPIDES ── */
-    .actions-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 12px;
-    }
-    .action-btn {
-      display: flex; align-items: center; gap: 14px;
-      padding: 16px; background: var(--white);
-      border: 1.5px solid var(--line); border-radius: var(--r);
-      cursor: pointer; text-decoration: none; color: var(--ink);
-      transition: border-color .15s, box-shadow .15s, transform .1s;
-      box-shadow: var(--shadow); font-family: inherit;
-    }
-    .action-btn:hover {
-      border-color: var(--brand);
-      box-shadow: 0 4px 20px rgba(182,21,43,.13);
-      transform: translateY(-1px);
-    }
-    .action-icon {
-      font-size: 22px; width: 46px; height: 46px;
-      background: var(--brand-light); border-radius: 11px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .action-icon.green  { background: var(--green-bg); }
-    .action-icon.blue   { background: var(--blue-bg); }
-    .action-icon.orange { background: var(--orange-bg); }
-    .action-label { font-size: 14px; font-weight: 700; }
-    .action-sub   { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
     /* ── SUMMARY LIST ── */
     .summary-list { list-style: none; }
     .summary-item {
@@ -297,14 +266,12 @@
       .tab-nav     { top: 56px; }
       .kpi-grid    { grid-template-columns: repeat(2, 1fr); }
       .grid-2      { grid-template-columns: 1fr; }
-      .actions-grid{ grid-template-columns: repeat(2, 1fr); }
       .content     { padding: 16px 12px; }
       .tab-btn     { padding: 12px 12px; font-size: 13px; }
       .pin-display { font-size: 40px; letter-spacing: 8px; }
     }
     @media (max-width: 380px) {
       .kpi-grid    { grid-template-columns: 1fr; }
-      .actions-grid{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -379,107 +346,6 @@
         <div class="kpi-label">Coupon du mois</div>
       </div>
     </div>
-
-    <!-- Actions rapides -->
-    <div class="card">
-      <div class="card-title"><span class="card-title-icon">⚡</span> Actions rapides</div>
-      <div class="actions-grid">
-        <button class="action-btn" onclick="switchTab('coupon')">
-          <span class="action-icon">🎫</span>
-          <div>
-            <div class="action-label">Voir le coupon</div>
-            <div class="action-sub">Code PIN & statut actif</div>
-          </div>
-        </button>
-        <a class="action-btn" href="state.html">
-          <span class="action-icon green">📊</span>
-          <div>
-            <div class="action-label">Voir les stats</div>
-            <div class="action-sub">État complet plateforme</div>
-          </div>
-        </a>
-        <a class="action-btn" href="reputation-google.html">
-          <span class="action-icon blue">⭐</span>
-          <div>
-            <div class="action-label">Voir les avis</div>
-            <div class="action-sub">Réputation Google</div>
-          </div>
-        </a>
-        <button class="action-btn admin-only" onclick="switchTab('notifications')">
-          <span class="action-icon orange">🔔</span>
-          <div>
-            <div class="action-label">Envoyer une notif</div>
-            <div class="action-sub">Push aux clients installés</div>
-          </div>
-        </button>
-      </div>
-    </div>
-
-    <!-- Résumé du mois -->
-    <div class="card">
-      <div class="card-title"><span class="card-title-icon">📋</span> Résumé du mois</div>
-      <ul class="summary-list">
-        <li class="summary-item">
-          <span class="summary-dot" id="dotCoupon"></span>
-          <span class="summary-label">Coupon mensuel</span>
-          <span class="summary-val" id="summaryCoupon"><span class="skel" style="width:70px"></span></span>
-        </li>
-        <li class="summary-item">
-          <span class="summary-dot" id="dotAvis"></span>
-          <span class="summary-label">Avis Google en attente</span>
-          <span class="summary-val" id="summaryAvis">—</span>
-        </li>
-        <li class="summary-item">
-          <span class="summary-dot" id="dotInstallsSummary"></span>
-          <span class="summary-label">Installations PWA ce mois</span>
-          <span class="summary-val" id="summaryInstalls"><span class="skel" style="width:40px"></span></span>
-        </li>
-        <li class="summary-item">
-          <span class="summary-dot green"></span>
-          <span class="summary-label">Statut plateforme</span>
-          <span class="summary-val" style="color:var(--green);">En ligne ✓</span>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════ COUPON ═══════════════════════════ -->
-  <div id="coupon" class="tab-panel">
-    <div class="section-title">Coupon du mois</div>
-    <div class="section-sub" id="couponPeriod">—</div>
-
-    <div class="grid-2">
-
-      <!-- Carte info coupon -->
-      <div>
-        <div class="card">
-          <div class="card-title"><span class="card-title-icon">🎫</span> Offre active</div>
-          <div style="margin-bottom:14px;">
-            <span class="coupon-badge" id="couponStatusBadge">—</span>
-          </div>
-          <div style="font-size:22px;font-weight:900;margin-bottom:8px;" id="couponTitle">—</div>
-          <div style="font-size:13px;color:var(--muted);margin-bottom:18px;" id="couponDesc">
-            Offre exclusive réservée aux membres Fidelavis inscrits.
-          </div>
-          <div class="info-panel" style="margin-bottom:16px;">
-            <strong>Message client :</strong><br>
-            <span id="couponMessage">Présentez ce coupon au personnel pour en bénéficier.</span>
-          </div>
-          <div>
-            <div class="detail-row">
-              <span class="detail-label">Période</span>
-              <span class="detail-value" id="couponMonthDisplay">—</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Validations ce mois</span>
-              <span class="detail-value" id="couponValidCount"><span class="skel" style="width:30px"></span></span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Dernière validation</span>
-              <span class="detail-value" id="lastValidation">Aucune</span>
-            </div>
-          </div>
-        </div>
 
         <!-- Info personnel -->
         <div class="card">
