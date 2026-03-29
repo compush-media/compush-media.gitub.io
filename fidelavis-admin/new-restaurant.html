@@ -586,7 +586,9 @@ async function createRestaurant() {
             action:          'setup',
             restaurantName:  name,
             restaurantEmail: email || ('noreply@' + sl + '.fr'),
-            restaurantId:    sl
+            restaurantId:    sl,
+            adminPass:       adminPass,
+            empPass:         employePass
           })
         });
         if (!brevoRes.ok) throw new Error('HTTP ' + brevoRes.status);
