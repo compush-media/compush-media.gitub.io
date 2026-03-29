@@ -380,41 +380,6 @@
       </div>
     </div>
 
-    <!-- Actions rapides -->
-    <div class="card">
-      <div class="card-title"><span class="card-title-icon">⚡</span> Actions rapides</div>
-      <div class="actions-grid">
-        <button class="action-btn" onclick="switchTab('coupon')">
-          <span class="action-icon">🎫</span>
-          <div>
-            <div class="action-label">Voir le coupon</div>
-            <div class="action-sub">Code PIN & statut actif</div>
-          </div>
-        </button>
-        <a class="action-btn admin-only" href="state.html">
-          <span class="action-icon green">📊</span>
-          <div>
-            <div class="action-label">Voir les stats</div>
-            <div class="action-sub">État complet plateforme</div>
-          </div>
-        </a>
-        <a class="action-btn admin-only" href="reputation-google.html">
-          <span class="action-icon blue">⭐</span>
-          <div>
-            <div class="action-label">Voir les avis</div>
-            <div class="action-sub">Réputation Google</div>
-          </div>
-        </a>
-        <button class="action-btn admin-only" onclick="switchTab('notifications')">
-          <span class="action-icon orange">🔔</span>
-          <div>
-            <div class="action-label">Envoyer une notif</div>
-            <div class="action-sub">Push aux clients installés</div>
-          </div>
-        </button>
-      </div>
-    </div>
-
     <!-- Résumé du mois -->
     <div class="card">
       <div class="card-title"><span class="card-title-icon">📋</span> Résumé du mois</div>
@@ -691,7 +656,7 @@ document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
 function initFromHash() {
   const hash = location.hash.replace('#', '');
   if (ROLE !== 'admin') {
-    // Employé : atterrit sur le dashboard pour voir Actions rapides (coupon accessible via bouton)
+    // Employé : atterrit sur le dashboard (coupon accessible via l'onglet)
     if (INLINE_TABS.includes(hash) && hash !== 'notifications') {
       switchTab(hash);
     } else {
