@@ -22,5 +22,13 @@
     "email": "dan.drumonde@gmail.com",
     "brevoListId": 35,
     "brevoGasUrl": "https://script.google.com/macros/s/AKfycbxLP9n4OpqtOigIhDRSN50A3MC-H7WEEVqVHQLcKtwsXO92Dz7zp0_-p5B0cDqGJJCl/exec"
+  },
+  "jo": {
+    "name": "JO",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "email": "axou.v@aliceadsl.fr",
+    "brevoListId": 36,
+    "brevoGasUrl": "https://script.google.com/macros/s/AKfycbxLP9n4OpqtOigIhDRSN50A3MC-H7WEEVqVHQLcKtwsXO92Dz7zp0_-p5B0cDqGJJCl/exec"
   }
 }
