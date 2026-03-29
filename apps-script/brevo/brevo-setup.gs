@@ -977,8 +977,15 @@ function updateLoginFileOnGitHub(restoId, newAdminPass, newEmpPass, githubToken)
 
   // Lire le fichier actuel
   var getResp = UrlFetchApp.fetch(apiUrl, { headers: headers, muteHttpExceptions: true });
-  if (getResp.getResponseCode() !== 200) {
-    throw new Error('Fichier introuvable sur GitHub : ' + filePath + ' (HTTP ' + getResp.getResponseCode() + ')');
+  var getCode = getResp.getResponseCode();
+  if (getCode === 401) {
+    throw new Error('Token GitHub invalide ou expiré — veuillez renouveler GITHUB_TOKEN dans les propriétés du script.');
+  }
+  if (getCode === 404) {
+    throw new Error('Fichier introuvable sur GitHub : ' + filePath + ' — ce restaurant n\'a pas encore de fichier login.html dans le repo.');
+  }
+  if (getCode !== 200) {
+    throw new Error('Erreur GitHub lors de la lecture de ' + filePath + ' (HTTP ' + getCode + ')');
   }
 
   var fileData = JSON.parse(getResp.getContentText());
