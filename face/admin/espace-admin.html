@@ -391,14 +391,14 @@
             <div class="action-sub">Code PIN & statut actif</div>
           </div>
         </button>
-        <a class="action-btn" href="state.html">
+        <a class="action-btn admin-only" href="state.html">
           <span class="action-icon green">📊</span>
           <div>
             <div class="action-label">Voir les stats</div>
             <div class="action-sub">État complet plateforme</div>
           </div>
         </a>
-        <a class="action-btn" href="reputation-google.html">
+        <a class="action-btn admin-only" href="reputation-google.html">
           <span class="action-icon blue">⭐</span>
           <div>
             <div class="action-label">Voir les avis</div>
@@ -691,7 +691,12 @@ document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
 function initFromHash() {
   const hash = location.hash.replace('#', '');
   if (ROLE !== 'admin') {
-    switchTab('coupon');
+    // Employé : atterrit sur le dashboard pour voir Actions rapides (coupon accessible via bouton)
+    if (INLINE_TABS.includes(hash) && hash !== 'notifications') {
+      switchTab(hash);
+    } else {
+      switchTab('dashboard');
+    }
     return;
   }
   if (INLINE_TABS.includes(hash)) {
