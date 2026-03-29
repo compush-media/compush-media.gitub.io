@@ -211,7 +211,13 @@ function setupRestaurant(body) {
 
   Logger.log('[Brevo] ═══ Setup : ' + name + ' (' + id + ') ═══');
 
-  // 0. Récupérer l'expéditeur vérifié du compte (évite "Sender is invalid")
+  // 0a. Stocker l'email admin immédiatement (avant tout appel API qui pourrait échouer)
+  if (id && email && !email.startsWith('noreply@')) {
+    PropertiesService.getScriptProperties().setProperty('ADMIN_EMAIL_' + id, email.toLowerCase());
+    Logger.log('[Brevo] ADMIN_EMAIL_' + id + ' stocké : ' + email);
+  }
+
+  // 0b. Récupérer l'expéditeur vérifié du compte (évite "Sender is invalid")
   var sender = getVerifiedSender(name, email);
   Logger.log('[Brevo] Expéditeur utilisé : ' + sender.email);
 
@@ -820,6 +826,35 @@ function sendPasswordResetEmail(body) {
 //
 //  Retourne toujours { success: true } pour éviter l'énumération d'emails.
 // ═══════════════════════════════════════════════════════════════
+function getAdminEmailForResto(restoId, props) {
+  // 1. Chercher dans les Script Properties
+  var stored = (props.getProperty('ADMIN_EMAIL_' + restoId) || '').trim().toLowerCase();
+  if (stored) return stored;
+
+  // 2. Fallback : récupérer depuis restaurants.json sur GitHub
+  try {
+    var res = UrlFetchApp.fetch(
+      'https://raw.githubusercontent.com/compush-media/compush-media.gitub.io/main/data/restaurants.json',
+      { muteHttpExceptions: true }
+    );
+    if (res.getResponseCode() === 200) {
+      var data = JSON.parse(res.getContentText());
+      var resto = data[restoId];
+      if (resto && resto.email) {
+        var fallbackEmail = resto.email.trim().toLowerCase();
+        // Mettre en cache pour les prochains appels
+        props.setProperty('ADMIN_EMAIL_' + restoId, fallbackEmail);
+        Logger.log('[ReqReset] ADMIN_EMAIL_' + restoId + ' récupéré depuis restaurants.json et mis en cache');
+        return fallbackEmail;
+      }
+    }
+  } catch(e) {
+    Logger.log('[ReqReset] Erreur fallback restaurants.json : ' + e.message);
+  }
+
+  return '';
+}
+
 function handleRequestPasswordReset(body) {
   var restoId = (body.restaurantId || '').trim();
   var email   = (body.email        || '').trim().toLowerCase();
@@ -830,9 +865,9 @@ function handleRequestPasswordReset(body) {
   }
 
   var props      = PropertiesService.getScriptProperties();
-  var adminEmail = (props.getProperty('ADMIN_EMAIL_' + restoId) || '').trim().toLowerCase();
+  var adminEmail = getAdminEmailForResto(restoId, props);
 
-  // Si l'email n'est pas configuré ou ne correspond pas, on retourne quand même success
+  // Si l'email ne correspond pas, on retourne quand même success (pas d'énumération)
   if (!adminEmail || (email && email !== adminEmail)) {
     Logger.log('[ReqReset] Email non configuré ou non correspondant pour : ' + restoId);
     return { success: true };
