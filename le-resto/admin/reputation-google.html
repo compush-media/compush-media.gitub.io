@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Fidelavis – Dashboard Réputation</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root {
+      --brand:   #B48C4A;
+      --brand2:  #a97f37;
+      --brand-bg: rgba(180,140,74,.08);
+      --brand-border: rgba(180,140,74,.22);
+      --bg:      #fbfaf8;
+      --bg2:     #f5f1eb;
+      --card:    #ffffff;
+      --ink:     #191919;
+      --muted:   #6f6f6f;
+      --line:    rgba(0,0,0,.08);
+      --shadow:  0 4px 24px rgba(0,0,0,.07);
+      --r:       16px;
+      --green:   #1a9e5c;
+      --green-bg:#edf7f2;
+      --red:     #d93025;
+      --red-bg:  #fdf0ef;
+      --orange:  #e67e22;
+      --orange-bg:#fdf4e7;
+      --blue:    #2563eb;
+      --blue-bg: #eff3ff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    /* ── HEADER ── */
+    .header {
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 100%);
+      color: #fff;
+      font-weight: 900;
+      font-size: 13px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      letter-spacing: .3px;
+    }
+    .header h1 { font-size: 16px; font-weight: 800; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .btn-outline {
+      padding: 7px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--ink);
+      transition: border-color .15s, background .15s;
+    }
+    .btn-outline:hover { border-color: var(--brand); background: var(--brand-bg); }
+    .btn-primary {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn-primary:hover { opacity: .88; }
+    .btn-primary:disabled { opacity: .5; cursor: default; }
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--brand-bg);
+      border: 2px solid var(--brand-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 900; color: var(--brand);
+      cursor: pointer;
+    }
+    /* ── LAYOUT ── */
+    .app { display: flex; min-height: calc(100vh - 60px); }
+    /* ── NAV ── */
+    .nav {
+      width: 220px;
+      min-width: 220px;
+      background: var(--card);
+      border-right: 1px solid var(--line);
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background .12s, color .12s;
+      text-decoration: none;
+    }
+    .nav-item:hover  { background: var(--bg2); color: var(--ink); }
+    .nav-item.active { background: var(--brand-bg); color: var(--brand); border: 1px solid var(--brand-border); }
+    .nav-icon { font-size: 17px; }
+    .nav-badge {
+      margin-left: auto;
+      background: var(--red);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+      display: none;
+    }
+    .nav-badge.show { display: inline; }
+    /* ── MAIN ── */
+    .main { flex: 1; padding: 24px; overflow-y: auto; }
+    /* ── SECTION ── */
+    .section { display: none; }
+    .section.active { display: block; }
+    /* ── STAT CARDS ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .stat-card .label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+    .stat-card .value { font-size: 32px; font-weight: 900; line-height: 1; }
+    .stat-card .sub   { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .stat-card.green .value { color: var(--green); }
+    .stat-card.red   .value { color: var(--red);   }
+    .stat-card.orange .value { color: var(--orange); }
+    .stat-card.gold  .value { color: var(--brand);  }
+    /* ── STATUS BAND ── */
+    .status-band {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow);
+    }
+    .status-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #ccc; }
+    .dot.green  { background: var(--green);  box-shadow: 0 0 0 3px var(--green-bg); }
+    .dot.orange { background: var(--orange); box-shadow: 0 0 0 3px var(--orange-bg); }
+    .dot.red    { background: var(--red);    box-shadow: 0 0 0 3px var(--red-bg); }
+    /* ── REVIEW CARDS ── */
+    .reviews-list { display: flex; flex-direction: column; gap: 14px; }
+    .review-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+      transition: box-shadow .15s;
+    }
+    .review-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.1); }
+    .review-card.new { border-left: 3px solid var(--brand); }
+    .review-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+    .reviewer-avatar {
+      width: 40px; height: 40px; min-width: 40px;
+      border-radius: 50%;
+      background: var(--bg2);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 15px; color: var(--brand);
+      overflow: hidden;
+    }
+    .reviewer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .reviewer-info { flex: 1; }
+    .reviewer-name { font-weight: 800; font-size: 14px; }
+    .review-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .stars { color: #f5a623; font-size: 15px; letter-spacing: 1px; }
+    .review-text { font-size: 14px; line-height: 1.6; color: #333; margin-bottom: 12px; }
+    .review-reply-existing {
+      background: var(--brand-bg);
+      border: 1px solid var(--brand-border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .review-reply-existing .reply-label { font-weight: 700; font-size: 11px; color: var(--brand); margin-bottom: 4px; }
+    .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tag {
+      font-size: 11px; font-weight: 700;
+      padding: 3px 9px; border-radius: 999px;
+    }
+    .tag.positif  { background: var(--green-bg);  color: var(--green); }
+    .tag.negatif  { background: var(--red-bg);    color: var(--red);   }
+    .tag.mitige   { background: var(--orange-bg); color: var(--orange);}
+    .tag.urgent   { background: #fce4e4;          color: #c0392b; }
+    .tag.agressif { background: #fce4e4;          color: #c0392b; }
+    .tag.sans-commentaire { background: var(--blue-bg); color: var(--blue); }
+    .tag.nouveau  { background: var(--brand-bg);  color: var(--brand); }
+    .review-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    /* ── IA DRAFT ZONE ── */
+    .ia-draft {
+      background: var(--bg2);
+      border: 1px solid var(--brand-border);
+      border-radius: 10px;
+      padding: 14px;
+      margin: 12px 0;
+    }
+    .ia-draft-label { font-size: 11px; font-weight: 900; color: var(--brand); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .ia-draft textarea {
+      width: 100%;
+      border: 1.5px solid var(--brand-border);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      resize: vertical;
+      min-height: 80px;
+      background: var(--card);
+      font-family: inherit;
+      color: var(--ink);
+    }
+    .ia-draft textarea:focus { outline: none; border-color: var(--brand); }
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state h3 { font-size: 18px; font-weight: 800; color: var(--ink); margin-bottom: 6px; }
+    /* ── PAGINATION ── */
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 24px; }
+    .page-btn {
+      padding: 7px 13px;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .page-btn:disabled { opacity: .4; cursor: default; }
+    .page-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+    /* ── TOAST ── */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+    }
+    .toast {
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      max-width: 320px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.15);
+      animation: slideIn .2s ease;
+    }
+    .toast.success { background: var(--green); }
+    .toast.error   { background: var(--red); }
+    .toast.info    { background: var(--blue); }
+    @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+    /* ── SETTINGS ── */
+    .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    .settings-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .settings-card h3 { font-size: 15px; font-weight: 800; margin-bottom: 16px; color: var(--ink); }
+    .form-row { margin-bottom: 14px; }
+    .form-row label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
+    .form-row input, .form-row textarea, .form-row select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+      outline: none;
+      border-color: var(--brand);
+      background: var(--card);
+    }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-label { font-size: 14px; font-weight: 600; }
+    .toggle-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .toggle {
+      position: relative;
+      width: 44px; height: 24px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #ddd;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px; height: 18px;
+      left: 3px; top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform .2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    .toggle input:checked + .toggle-slider { background: var(--brand); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+    .rule-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .rule-row:last-child { border-bottom: none; }
+    .rule-stars { font-size: 14px; min-width: 80px; }
+    .rule-select { flex: 1; padding: 6px 10px; border: 1.5px solid var(--line); border-radius: 7px; font-size: 13px; }
+    .connect-banner {
+      background: linear-gradient(135deg, var(--brand-bg) 0%, #fff8ed 100%);
+      border: 1.5px solid var(--brand-border);
+      border-radius: var(--r);
+      padding: 28px 24px;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .connect-banner h2 { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+    .connect-banner p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+    .btn-google {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      background: #fff;
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: box-shadow .15s, border-color .15s;
+      color: var(--ink);
+    }
+    .btn-google:hover { box-shadow: 0 4px 16px rgba(0,0,0,.12); border-color: #aaa; }
+    .section-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .filter-btn {
+      padding: 6px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--card);
+      color: var(--muted);
+    }
+    .filter-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    @media (max-width: 680px) {
+      .nav { display: none; }
+      .main { padding: 16px; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <span class="logo">Fidelavis</span>
+    <h1>Réputation Google</h1>
+  </div>
+  <div class="header-right">
+    <a href="espace-admin.html" class="btn-outline" style="text-decoration:none;">← Admin</a>
+    <button class="btn-outline" id="syncBtn" onclick="triggerSync()">↻ Synchroniser</button>
+    <div class="avatar" id="merchantAvatar" title="Mon compte">?</div>
+  </div>
+</header>
+<!-- APP -->
+<div class="app">
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <a class="nav-item active" href="javascript:void(0)" data-section="dashboard" onclick="showSection('dashboard',this)">
+      <span class="nav-icon">📊</span> Dashboard
+    </a>
+    <a class="nav-item" href="javascript:void(0)" data-section="reviews" onclick="showSection('reviews',this)">
+      <span class="nav-icon">⭐</span> Avis
+      <span class="nav-badge" id="newBadge">0</span>
+    </a>
+    <a class="nav-item" href="javascript:void(0)" data-section="settings" onclick="showSection('settings',this)">
+      <span class="nav-icon">⚙️</span> Paramètres
+    </a>
+    <a class="nav-item" href="javascript:void(0)" data-section="logs" onclick="showSection('logs',this)">
+      <span class="nav-icon">📋</span> Historique
+    </a>
+    <div style="margin-top:auto;padding-top:20px;">
+      <a class="nav-item" href="javascript:void(0)" onclick="logout()" style="color:var(--red)">
+        <span class="nav-icon">🚪</span> Déconnexion
+      </a>
+    </div>
+  </nav>
+  <!-- CONTENU -->
+  <main class="main">
+    <!-- ── DASHBOARD ── -->
+    <section class="section active" id="section-dashboard">
+      <div class="section-title">📊 Dashboard</div>
+      <!-- Banner connexion Google (visible si non connecté) -->
+      <div class="connect-banner" id="connectBanner" style="display:none">
+        <h2>Connectez votre fiche Google</h2>
+        <p>Reliez votre Google Business Profile pour importer vos avis et activer les réponses IA automatiques.</p>
+        <button class="btn-google" onclick="connectGoogle()">
+          <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Connecter ma fiche Google
+        </button>
+        <a href="setup-google.html" target="_blank" style="display:inline-block;margin-top:12px;font-size:13px;color:var(--brand);font-weight:600;text-decoration:none">📖 Voir le guide de configuration →</a>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(180,140,74,.2)">
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Pas encore de fiche Google ? Testez toutes les fonctionnalités avec des données fictives :</p>
+          <button class="btn-outline" onclick="loadDemoData()" style="font-size:13px;padding:8px 18px">
+            🎭 Charger des données de démo
+          </button>
+        </div>
+      </div>
+      <!-- Bande de statut -->
+      <div class="status-band" id="statusBand">
+        <div class="status-item">
+          <div class="dot" id="dotGoogle"></div>
+          <span id="statusGoogle">Connexion Google...</span>
+        </div>
+        <div class="status-item">
+          <div class="dot" id="dotSync"></div>
+          <span id="statusSync">Sync : –</span>
+        </div>
+        <div class="status-item">
+          <div class="dot" id="dotAuto"></div>
+          <span id="statusAuto">Auto-réponse : –</span>
+        </div>
+        <div style="margin-left:auto;font-size:12px;color:var(--muted)" id="locationLabel">–</div>
+      </div>
+      <!-- Stats -->
+      <div class="stat-grid">
+        <div class="stat-card gold">
+          <div class="label">Note moyenne</div>
+          <div class="value" id="statAvg">–</div>
+          <div class="sub">/ 5 étoiles</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Total avis</div>
+          <div class="value" id="statTotal">–</div>
+          <div class="sub">importés</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="label">En attente</div>
+          <div class="value" id="statPending">–</div>
+          <div class="sub">sans réponse</div>
+        </div>
+        <div class="stat-card green">
+          <div class="label">Répondus</div>
+          <div class="value" id="statReplied">–</div>
+          <div class="sub">réponses publiées</div>
+        </div>
+      </div>
+      <!-- Derniers avis -->
+      <div class="section-title" style="font-size:16px;margin-bottom:14px">
+        🕐 Derniers avis reçus
+        <button class="btn-primary" style="margin-left:auto;font-size:12px;padding:6px 12px" onclick="showSection('reviews',document.querySelector('[data-section=reviews]'))">Voir tous →</button>
+      </div>
+      <div class="reviews-list" id="recentReviewsList">
+        <div class="loading">Chargement...</div>
+      </div>
+    </section>
+    <!-- ── AVIS ── -->
+    <section class="section" id="section-reviews">
+      <div class="section-title">⭐ Avis Google</div>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterReviews('',this)">Tous</button>
+        <button class="filter-btn" onclick="filterReviews('pending',this)">⏳ En attente</button>
+        <button class="filter-btn" onclick="filterReviews('replied',this)">✅ Répondus</button>
+        <button class="filter-btn" onclick="filterReviews('5',this,true)">⭐⭐⭐⭐⭐</button>
+        <button class="filter-btn" onclick="filterReviews('1',this,true)">⭐ Critiques</button>
+        <div style="margin-left:auto">
+          <input type="text" id="reviewSearch" placeholder="Rechercher..." style="padding:6px 12px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;width:180px" oninput="searchReviews(this.value)" />
+        </div>
+      </div>
+      <div class="reviews-list" id="reviewsList">
+        <div class="loading">Chargement des avis...</div>
+      </div>
+      <div class="pagination" id="reviewPagination"></div>
+    </section>
+    <!-- ── PARAMÈTRES ── -->
+    <section class="section" id="section-settings">
+      <div class="section-title">⚙️ Paramètres</div>
+      <div class="settings-grid">
+        <!-- Profil établissement -->
+        <div class="settings-card">
+          <h3>🏪 Votre établissement</h3>
+          <div class="form-row">
+            <label>Nom du restaurant / commerce</label>
+            <input type="text" id="set_restaurant_name" placeholder="Le Bistrot Marcel" />
+          </div>
+          <div class="form-row">
+            <label>Votre prénom / nom (gérant)</label>
+            <input type="text" id="set_owner_name" placeholder="Marcel Dupont" />
+          </div>
+          <div class="form-row">
+            <label>Signature de réponse</label>
+            <input type="text" id="set_signature" placeholder="Marcel et toute l'équipe du Bistrot" />
+          </div>
+        </div>
+        <!-- Ton et personnalisation IA -->
+        <div class="settings-card">
+          <h3>🤖 Personnalisation IA</h3>
+          <div class="form-row">
+            <label>Ton de réponse</label>
+            <select id="set_response_tone">
+              <option value="warm">🤗 Chaleureux (recommandé pour les restaurants)</option>
+              <option value="professional">💼 Professionnel</option>
+              <option value="formal">🎩 Formel</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Phrase d'invitation à revenir</label>
+            <input type="text" id="set_return_phrase" placeholder="Au plaisir de vous revoir très prochainement !" />
+          </div>
+          <div class="form-row">
+            <label>Phrase de contact (avis négatifs)</label>
+            <input type="text" id="set_contact_phrase" placeholder="N'hésitez pas à nous contacter directement..." />
+          </div>
+          <button class="btn-primary" style="width:100%" onclick="saveSettings()">💾 Enregistrer</button>
+        </div>
+        <!-- Auto-réponse -->
+        <div class="settings-card">
+          <h3>⚡ Auto-réponse</h3>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">Activer l'auto-réponse</div>
+              <div class="toggle-sub">Traitement automatique selon les règles ci-dessous</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="set_auto_reply_enabled" onchange="saveSettings()">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div style="margin-top:16px;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px">RÈGLES PAR NOTE</div>
+          <div class="rule-row">
+            <div class="rule-stars">⭐⭐⭐⭐⭐ 5★</div>
+            <select class="rule-select" id="set_rule_5" onchange="saveSettings()">
+              <option value="auto">Publication automatique</option>
+              <option value="validate">À valider</option>
+              <option value="disabled">Désactivé</option>
+            </select>
+          </div>
+          <div class="rule-row">
+            <div class="rule-stars">⭐⭐⭐⭐ 4★</div>
+            <select class="rule-select" id="set_rule_4" onchange="saveSettings()">
+              <option value="auto">Publication automatique</option>
+              <option value="validate">À valider</option>
+              <option value="disabled">Désactivé</option>
+            </select>
+          </div>
+          <div class="rule-row">
+            <div class="rule-stars">⭐⭐⭐ 3★</div>
+            <select class="rule-select" id="set_rule_3" onchange="saveSettings()">
+              <option value="auto">Publication automatique</option>
+              <option value="validate" selected>À valider</option>
+              <option value="disabled">Désactivé</option>
+            </select>
+          </div>
+          <div class="rule-row">
+            <div class="rule-stars">⭐⭐ 2★</div>
+            <select class="rule-select" id="set_rule_2" onchange="saveSettings()">
+              <option value="auto">Publication automatique</option>
+              <option value="validate">À valider</option>
+              <option value="disabled" selected>Validation obligatoire</option>
+            </select>
+          </div>
+          <div class="rule-row">
+            <div class="rule-stars">⭐ 1★</div>
+            <select class="rule-select" id="set_rule_1" onchange="saveSettings()">
+              <option value="auto">Publication automatique</option>
+              <option value="validate">À valider</option>
+              <option value="disabled" selected>Validation obligatoire</option>
+            </select>
+          </div>
+        </div>
+        <!-- Clés API -->
+        <div class="settings-card">
+          <h3>🔑 Clés API</h3>
+          <div class="form-row">
+            <label>Google Client ID <span style="font-size:11px;color:var(--muted)">(console.cloud.google.com)</span></label>
+            <input type="text" id="set_google_client_id" placeholder="123456789.apps.googleusercontent.com" />
+          </div>
+          <div class="form-row">
+            <label>Clé API Claude <span style="font-size:11px;color:var(--muted)">(optionnel – génération IA)</span></label>
+            <input type="password" id="set_claude_api_key" placeholder="sk-ant-..." />
+          </div>
+          <button class="btn-primary" style="width:100%" onclick="saveSettings()">💾 Enregistrer</button>
+          <div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.5">
+            Ces clés sont stockées uniquement dans votre navigateur.
+            <a href="setup-google.html" target="_blank" style="color:var(--brand);font-weight:700;text-decoration:none;display:inline-block;margin-top:6px">📖 Guide de configuration Google →</a>
+          </div>
+        </div>
+        <!-- Fiches connectées -->
+        <div class="settings-card">
+          <h3>📍 Fiches Google connectées</h3>
+          <div id="locationsList" style="font-size:14px;color:var(--muted)">Chargement...</div>
+          <button class="btn-google" style="width:100%;margin-top:16px;justify-content:center" onclick="connectGoogle()">
+            <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+            Ajouter / Reconnecter Google
+          </button>
+        </div>
+      </div>
+    </section>
+    <!-- ── HISTORIQUE ── -->
+    <section class="section" id="section-logs">
+      <div class="section-title">📋 Historique des actions</div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead>
+            <tr style="background:var(--bg2);border-bottom:1px solid var(--line)">
+              <th style="padding:12px 16px;text-align:left;font-weight:700;color:var(--muted)">Action</th>
+              <th style="padding:12px 16px;text-align:left;font-weight:700;color:var(--muted)">Entité</th>
+              <th style="padding:12px 16px;text-align:left;font-weight:700;color:var(--muted)">Date</th>
+            </tr>
+          </thead>
+          <tbody id="logsTableBody">
+            <tr><td colspan="3" style="padding:32px;text-align:center;color:var(--muted)">Chargement...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+<script>
+// ============================================================
+//  STATE
+// ============================================================
+const _adminSite  = location.pathname.split('/')[1] || 'resto1';
+let authToken     = localStorage.getItem('fv_token') || localStorage.getItem('admin_' + _adminSite) || null;
+let merchantData  = null;
+let googleToken   = null;
+let currentAccount  = null;
+let currentLocation = null;
+let currentFilter = { status: '', rating: '', search: '', isRating: false };
+let currentPage   = 1;
+// ============================================================
+//  INIT
+// ============================================================
+async function initApp() {
+  // ── Charger le google_client_id partagé (fidelavis-config.json) ──
+  try {
+    const res = await fetch('/data/fidelavis-config.json');
+    if (res.ok) {
+      const cfg = await res.json();
+      if (cfg.google_client_id) {
+        const s = JSON.parse(localStorage.getItem('fv_settings') || '{}');
+        if (!s.google_client_id) {
+          s.google_client_id = cfg.google_client_id;
+          localStorage.setItem('fv_settings', JSON.stringify(s));
+        }
+      }
+    }
+  } catch(e) {}
+
+  // Handle OAuth implicit flow callback (hash fragment)
+  const hash = new URLSearchParams(location.hash.substring(1));
+  if (hash.get('access_token')) {
+    const token = hash.get('access_token');
+    const expiresIn = parseInt(hash.get('expires_in') || '3600');
+    localStorage.setItem('fv_google_token', token);
+    localStorage.setItem('fv_google_token_expiry', String(Date.now() + (expiresIn - 60) * 1000));
+    history.replaceState({}, '', location.pathname);
+    googleToken = token;
+    toast('✅ Connecté à Google !', 'success');
+    addLog('google.connected', 'google', 'oauth');
+    await fetchGBPAccounts();
+  }
+  const urlParams = new URLSearchParams(location.search);
+  if (urlParams.get('connected')) { toast('✅ Fiche Google connectée !', 'success'); history.replaceState({}, '', location.pathname); }
+  if (urlParams.get('error'))     { toast('Erreur de connexion Google.', 'error');   history.replaceState({}, '', location.pathname); }
+  if (!authToken) return (window.location.href = 'login.html');
+  initGoogleAuth();
+  const savedMerchant = JSON.parse(localStorage.getItem('fv_merchant') || '{"name":"Admin"}');
+  merchantData = savedMerchant;
+  el('merchantAvatar').textContent = (merchantData.name || 'A')[0].toUpperCase();
+  document.title = `Fidelavis – ${merchantData.name}`;
+  populateSettings();
+  loadDashboard();
+  addLog('merchant.login', 'merchant', merchantData.name);
+}
+// ============================================================
+//  GOOGLE AUTH STATE
+// ============================================================
+function initGoogleAuth() {
+  const stored = localStorage.getItem('fv_google_token');
+  const expiry  = parseInt(localStorage.getItem('fv_google_token_expiry') || '0');
+  if (stored && Date.now() < expiry) {
+    googleToken = stored;
+  } else {
+    googleToken = null;
+    localStorage.removeItem('fv_google_token');
+    localStorage.removeItem('fv_google_token_expiry');
+  }
+  currentAccount  = localStorage.getItem('fv_selected_account');
+  currentLocation = localStorage.getItem('fv_selected_location');
+  // Auto-refresh : vérifie toutes les minutes si le token expire bientôt
+  setInterval(autoRefreshToken, 60 * 1000);
+}
+
+// ── Refresh silencieux (sans popup) ─────────────────────────
+async function refreshAccessToken() {
+  const settings = getSettings();
+  const clientId = settings.google_client_id;
+  if (!clientId || typeof google === 'undefined' || !google.accounts) return false;
+  return new Promise((resolve) => {
+    try {
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: 'https://www.googleapis.com/auth/business.manage',
+        prompt: '',   // chaîne vide = tentative silencieuse
+        callback: (resp) => {
+          if (resp.error || !resp.access_token) { resolve(false); return; }
+          localStorage.setItem('fv_google_token', resp.access_token);
+          localStorage.setItem('fv_google_token_expiry',
+            String(Date.now() + (resp.expires_in - 60) * 1000));
+          googleToken = resp.access_token;
+          addLog('google.token_refresh', 'google', 'auto');
+          resolve(true);
+        }
+      });
+      client.requestAccessToken({ prompt: '' });
+    } catch(e) { resolve(false); }
+  });
+}
+
+// ── Déclenché toutes les minutes ────────────────────────────
+async function autoRefreshToken() {
+  const expiry = parseInt(localStorage.getItem('fv_google_token_expiry') || '0');
+  // Refresh si le token expire dans moins de 5 minutes
+  if (googleToken && expiry && Date.now() > expiry - 5 * 60 * 1000) {
+    const ok = await refreshAccessToken();
+    if (!ok) {
+      // Refresh silencieux échoué → invalider le token
+      googleToken = null;
+      localStorage.removeItem('fv_google_token');
+      localStorage.removeItem('fv_google_token_expiry');
+    }
+  }
+}
+
+async function connectGoogle() {
+  const settings = getSettings();
+  const clientId = settings.google_client_id;
+  if (!clientId) {
+    toast('Saisissez d\'abord votre Google Client ID dans Paramètres → Clés API', 'error');
+    showSection('settings', document.querySelector('[data-section=settings]'));
+    return;
+  }
+  if (typeof google !== 'undefined' && google.accounts) {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: 'https://www.googleapis.com/auth/business.manage',
+      callback: async (resp) => {
+        if (resp.error) { toast('Connexion annulée : ' + resp.error, 'error'); return; }
+        localStorage.setItem('fv_google_token', resp.access_token);
+        localStorage.setItem('fv_google_token_expiry', String(Date.now() + (resp.expires_in - 60) * 1000));
+        googleToken = resp.access_token;
+        addLog('google.connected', 'google', 'oauth');
+        toast('✅ Connecté à Google !', 'success');
+        await fetchGBPAccounts();
+        loadDashboard();
+        refreshLocationsList();
+      }
+    });
+    client.requestAccessToken();
+  } else {
+    // Fallback: redirect OAuth flow
+    const redirect = encodeURIComponent(window.location.origin + window.location.pathname);
+    const scope    = encodeURIComponent('https://www.googleapis.com/auth/business.manage');
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirect}&response_type=token&scope=${scope}`;
+  }
+}
+// ============================================================
+//  GOOGLE BUSINESS PROFILE API
+// ============================================================
+async function gbpGet(url) {
+  if (!googleToken) throw new Error('Non connecté à Google');
+  let resp = await fetch(url, { headers: { 'Authorization': `Bearer ${googleToken}` } });
+  // Token expiré : tentative de refresh silencieux puis 1 retry
+  if (resp.status === 401) {
+    const ok = await refreshAccessToken();
+    if (ok) resp = await fetch(url, { headers: { 'Authorization': `Bearer ${googleToken}` } });
+  }
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error?.message || `Google API ${resp.status}`);
+  }
+  return resp.json();
+}
+async function gbpPut(url, body) {
+  if (!googleToken) throw new Error('Non connecté à Google');
+  const resp = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Authorization': `Bearer ${googleToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error?.message || `Google API ${resp.status}`);
+  }
+  return resp.json().catch(() => ({}));
+}
+async function fetchGBPAccounts() {
+  try {
+    const data = await gbpGet('https://mybusinessaccountmanagement.googleapis.com/v1/accounts');
+    const accounts = data.accounts || [];
+    if (accounts.length === 0) { toast('Aucun compte Google Business Profile trouvé.', 'error'); return; }
+    const account = accounts[0];
+    localStorage.setItem('fv_selected_account', account.name);
+    currentAccount = account.name;
+    await fetchGBPLocations(account.name);
+  } catch (e) {
+    toast('Erreur Google : ' + e.message, 'error');
+  }
+}
+async function fetchGBPLocations(accountName) {
+  try {
+    const data = await gbpGet(
+      `https://mybusinessinformation.googleapis.com/v1/${accountName}/locations?readMask=name,title,storefrontAddress`
+    );
+    const locations = (data.locations || []).map(l => ({
+      name: l.name,
+      title: l.title || l.name.split('/').pop(),
+      address: l.storefrontAddress
+        ? [l.storefrontAddress.addressLines?.[0], l.storefrontAddress.locality].filter(Boolean).join(', ')
+        : ''
+    }));
+    localStorage.setItem('fv_locations', JSON.stringify(locations));
+    if (locations.length > 0 && !localStorage.getItem('fv_selected_location')) {
+      localStorage.setItem('fv_selected_location', locations[0].name);
+      currentLocation = locations[0].name;
+    }
+    refreshLocationsList();
+  } catch (e) {
+    console.error('fetchGBPLocations', e);
+  }
+}
+async function fetchGBPReviews() {
+  if (!googleToken || !currentLocation) return [];
+  try {
+    const data = await gbpGet(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews?pageSize=50`);
+    const ratingMap = { ONE: 1, TWO: 2, THREE: 3, FOUR: 4, FIVE: 5 };
+    const reviews = (data.reviews || []).map(r => ({
+      id: r.reviewId,
+      reviewer_name: r.reviewer?.displayName || 'Anonyme',
+      reviewer_photo: r.reviewer?.profilePhotoUrl || null,
+      rating: ratingMap[r.starRating] || 0,
+      comment: r.comment || '',
+      published_at: r.createTime,
+      reply_text: r.reviewReply?.comment || null,
+      status: r.reviewReply ? 'replied' : 'pending',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: currentLocation.split('/').pop()
+    }));
+    localStorage.setItem('fv_reviews', JSON.stringify(reviews));
+    localStorage.setItem('fv_last_sync', new Date().toISOString());
+    reviews.forEach(r => addLog('review.new', 'review', r.id));
+    return reviews;
+  } catch (e) {
+    console.error('fetchGBPReviews', e);
+    return [];
+  }
+}
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function showSection(name, navEl) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el('section-' + name)?.classList.add('active');
+  if (navEl) navEl.classList.add('active');
+  if (name === 'reviews') loadReviews();
+  if (name === 'logs')    loadLogs();
+}
+// ============================================================
+//  DASHBOARD
+// ============================================================
+function loadDashboard() {
+  const reviews  = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+  const lastSync = localStorage.getItem('fv_last_sync');
+  const s        = getSettings();
+  // Status dots
+  if (googleToken) {
+    el('dotGoogle').className = 'dot green';
+    el('statusGoogle').textContent = 'Google connecté';
+    el('connectBanner').style.display = 'none';
+  } else {
+    el('dotGoogle').className = 'dot red';
+    el('statusGoogle').textContent = 'Google non connecté';
+    el('connectBanner').style.display = 'block';
+  }
+  if (lastSync) {
+    el('dotSync').className = 'dot green';
+    el('statusSync').textContent = 'Sync : ' + formatDate(lastSync);
+  } else {
+    el('dotSync').className = 'dot orange';
+    el('statusSync').textContent = 'Jamais synchronisé';
+  }
+  el('dotAuto').className  = s.auto_reply_enabled ? 'dot green' : 'dot orange';
+  el('statusAuto').textContent = s.auto_reply_enabled ? 'Auto-réponse : ✓ Active' : 'Auto-réponse : Manuelle';
+  const locs   = JSON.parse(localStorage.getItem('fv_locations') || '[]');
+  const selLoc = localStorage.getItem('fv_selected_location');
+  const loc    = locs.find(l => l.name === selLoc);
+  if (loc) el('locationLabel').textContent = '📍 ' + (loc.title || loc.name.split('/').pop());
+  const active  = reviews.filter(r => r.status !== 'ignored');
+  const replied = active.filter(r => r.status === 'replied');
+  const pending = active.filter(r => r.status === 'pending');
+  const avg     = active.length
+    ? (active.reduce((sum, r) => sum + r.rating, 0) / active.length).toFixed(1)
+    : '–';
+  el('statAvg').textContent     = avg;
+  el('statTotal').textContent   = active.length;
+  el('statPending').textContent = pending.length;
+  el('statReplied').textContent = replied.length;
+  const badge = el('newBadge');
+  if (pending.length > 0) { badge.textContent = pending.length; badge.classList.add('show'); }
+  else badge.classList.remove('show');
+  renderReviewCards(active.slice(0, 5), 'recentReviewsList', true);
+}
+// ============================================================
+//  AVIS
+// ============================================================
+function loadReviews(page = 1) {
+  currentPage = page;
+  let reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]')
+    .filter(r => r.status !== 'ignored');
+  if (currentFilter.status && !currentFilter.isRating) reviews = reviews.filter(r => r.status === currentFilter.status);
+  if (currentFilter.isRating) reviews = reviews.filter(r => String(r.rating) === currentFilter.status);
+  if (currentFilter.search) {
+    const q = currentFilter.search.toLowerCase();
+    reviews = reviews.filter(r =>
+      (r.reviewer_name || '').toLowerCase().includes(q) ||
+      (r.comment || '').toLowerCase().includes(q)
+    );
+  }
+  const limit = 15;
+  const pages = Math.ceil(reviews.length / limit) || 1;
+  renderReviewCards(reviews.slice((page - 1) * limit, page * limit), 'reviewsList', false);
+  renderPagination({ page, pages });
+}
+function filterReviews(value, el, isRating = false) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = { ...currentFilter, status: value, isRating };
+  loadReviews(1);
+}
+function searchReviews(q) {
+  currentFilter.search = q;
+  clearTimeout(window._searchTimer);
+  window._searchTimer = setTimeout(() => loadReviews(1), 400);
+}
+function renderPagination(pag) {
+  const pEl = el('reviewPagination');
+  if (!pEl || pag.pages <= 1) { if (pEl) pEl.innerHTML = ''; return; }
+  let html = `<button class="page-btn" onclick="loadReviews(${pag.page - 1})" ${pag.page <= 1 ? 'disabled' : ''}>‹</button>`;
+  for (let i = 1; i <= pag.pages; i++) {
+    if (Math.abs(i - pag.page) <= 2 || i === 1 || i === pag.pages) {
+      html += `<button class="page-btn ${i === pag.page ? 'active' : ''}" onclick="loadReviews(${i})">${i}</button>`;
+    } else if (Math.abs(i - pag.page) === 3) {
+      html += `<span style="padding:0 4px;color:var(--muted)">…</span>`;
+    }
+  }
+  html += `<button class="page-btn" onclick="loadReviews(${pag.page + 1})" ${pag.page >= pag.pages ? 'disabled' : ''}>›</button>`;
+  pEl.innerHTML = html;
+}
+// ============================================================
+//  RENDER REVIEW CARDS
+// ============================================================
+function renderReviewCards(reviews, containerId, compact) {
+  const container = el(containerId);
+  if (!container) return;
+  if (!reviews || reviews.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">🎉</div><h3>Aucun avis ici</h3><p>Les avis apparaîtront ici après synchronisation.</p></div>`;
+    return;
+  }
+  container.innerHTML = reviews.map(r => renderOneCard(r, compact)).join('');
+}
+function renderOneCard(r, compact) {
+  const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+  const starsColor = r.rating >= 4 ? '#f5a623' : r.rating === 3 ? '#e67e22' : '#e74c3c';
+  const date   = formatDate(r.published_at);
+  const tags   = (r.tags || []).map(t => `<span class="tag ${t}">${t}</span>`).join('');
+  const isNew  = r.is_new ? 'new' : '';
+  const initial = (r.reviewer_name || '?')[0].toUpperCase();
+  const avatarHtml = r.reviewer_photo
+    ? `<img src="${escHtml(r.reviewer_photo)}" alt="" />`
+    : initial;
+  const replyHtml = r.reply_text
+    ? `<div class="review-reply-existing"><div class="reply-label">Votre réponse publiée</div>${escHtml(r.reply_text)}</div>`
+    : '';
+  const aiDraftHtml = !compact && r.status !== 'replied' && r.ai_draft
+    ? `<div class="ia-draft" id="draft-${r.id}">
+        <div class="ia-draft-label">🤖 Réponse IA proposée</div>
+        <textarea id="draftText-${r.id}" rows="4">${escHtml(r.ai_draft)}</textarea>
+      </div>`
+    : '';
+  const actionsHtml = compact
+    ? `<button class="btn-outline" style="font-size:12px;padding:5px 10px" onclick="showSection('reviews',document.querySelector('[data-section=reviews]'))">Voir →</button>`
+    : buildActionButtons(r);
+  return `
+    <div class="review-card ${isNew}" id="card-${r.id}">
+      <div class="review-header">
+        <div class="reviewer-avatar">${avatarHtml}</div>
+        <div class="reviewer-info">
+          <div class="reviewer-name">${escHtml(r.reviewer_name)}</div>
+          <div class="review-meta">
+            <span style="color:${starsColor};font-size:14px">${stars}</span>
+            <span style="margin-left:8px">${r.rating}/5 · ${date}</span>
+            ${r.location_name ? `<span style="margin-left:6px;color:var(--muted)">· ${escHtml(r.location_name)}</span>` : ''}
+          </div>
+        </div>
+        <div style="margin-left:auto">
+          ${r.status === 'replied' ? '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Répondu</span>' : ''}
+          ${r.status === 'pending' ? '<span style="font-size:12px;color:var(--orange);font-weight:700">⏳ En attente</span>' : ''}
+        </div>
+      </div>
+      ${r.comment ? `<div class="review-text">${escHtml(r.comment)}</div>` : '<div class="review-text" style="color:var(--muted);font-style:italic">(Avis sans commentaire)</div>'}
+      ${tags ? `<div class="tags">${tags}</div>` : ''}
+      ${replyHtml}
+      ${aiDraftHtml}
+      <div class="review-actions">${actionsHtml}</div>
+    </div>`;
+}
+function buildActionButtons(r) {
+  if (r.status === 'replied') {
+    return `<span style="font-size:12px;color:var(--green);font-weight:700">✅ Déjà répondu</span>`;
+  }
+  let btns = '';
+  if (r.ai_draft) {
+    btns += `<button class="btn-primary" onclick="publishDraft('${r.id}')">📤 Publier</button>`;
+    btns += `<button class="btn-outline" style="font-size:12px" onclick="regenerate('${r.id}')">↻ Régénérer</button>`;
+  } else {
+    btns += `<button class="btn-primary" onclick="generateAndShow('${r.id}')">🤖 Générer réponse IA</button>`;
+  }
+  btns += `<button class="btn-outline" style="font-size:12px;color:var(--muted)" onclick="ignoreReview('${r.id}')">Ignorer</button>`;
+  return btns;
+}
+// ============================================================
+//  GÉNÉRATION IA
+// ============================================================
+function generateTemplateResponse(review) {
+  const s            = getSettings();
+  const tone         = s.response_tone || 'warm';
+  const businessName = s.restaurant_name || 'notre établissement';
+  const signature    = s.signature || s.owner_name || 'L\'équipe';
+  const returnPhrase = s.return_phrase || 'Au plaisir de vous revoir très prochainement !';
+  const contactPhrase= s.contact_phrase || 'N\'hésitez pas à nous contacter directement.';
+  const reviewerName = review.reviewer_name !== 'Anonyme' ? review.reviewer_name : null;
+  const greeting = reviewerName
+    ? (tone === 'formal' ? `Madame, Monsieur ${reviewerName},` : `Bonjour ${reviewerName},`)
+    : (tone === 'formal' ? 'Madame, Monsieur,' : 'Bonjour,');
+  let body;
+  const r = review.rating;
+  if (r === 5)      body = `Merci infiniment pour votre magnifique avis 5 étoiles ! Nous sommes vraiment touchés par votre enthousiasme et ravis que votre expérience chez ${businessName} vous ait pleinement satisfait. ${returnPhrase}`;
+  else if (r === 4) body = `Merci beaucoup pour votre avis positif ! Votre retour nous encourage à continuer nos efforts pour vous offrir la meilleure expérience possible chez ${businessName}. ${returnPhrase}`;
+  else if (r === 3) body = `Merci pour votre avis et pour avoir pris le temps de nous faire part de votre expérience. Nous prenons note de vos remarques et travaillons chaque jour à améliorer nos services chez ${businessName}. ${returnPhrase}`;
+  else if (r === 2) body = `Merci pour votre retour, nous sommes sincèrement désolés que votre expérience n'ait pas été à la hauteur de vos attentes. Vos remarques sont précieuses pour nous améliorer. ${contactPhrase}`;
+  else              body = `Merci d'avoir pris le temps de partager votre avis. Nous sommes vraiment désolés pour cette expérience décevante chez ${businessName}. ${contactPhrase}`;
+  return `${greeting}\n\n${body}\n\n${signature}`;
+}
+async function generateWithClaude(review, apiKey) {
+  const s = getSettings();
+  const prompt = `Tu es le gérant de "${s.restaurant_name || 'mon commerce'}". Génère une réponse ${s.response_tone === 'formal' ? 'formelle' : 'chaleureuse'} pour cet avis Google ${review.rating}/5 étoiles.
+Avis de ${review.reviewer_name}: "${review.comment || '(sans commentaire)'}"
+Consignes: signe avec "${s.signature || s.owner_name || "L'équipe"}", ${review.rating >= 4 ? `invite à revenir: "${s.return_phrase || ''}"` : `phrase de contact: "${s.contact_phrase || ''}"`}. Maximum 4 phrases, naturel, en français.`;
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 300,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  if (!resp.ok) throw new Error(`Claude API ${resp.status}`);
+  const data = await resp.json();
+  return data.content[0].text;
+}
+// ============================================================
+//  ACTIONS AVIS
+// ============================================================
+async function generateAndShow(reviewId) {
+  const btn = document.querySelector(`#card-${reviewId} .btn-primary`);
+  if (btn) { btn.disabled = true; btn.textContent = '🤖 Génération...'; }
+  try {
+    const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+    const review  = reviews.find(r => r.id === reviewId);
+    if (!review) throw new Error('Avis non trouvé');
+    const s = getSettings();
+    let responseText;
+    if (s.claude_api_key) {
+      try { responseText = await generateWithClaude(review, s.claude_api_key); }
+      catch (e) { console.warn('Claude API failed, using template:', e); }
+    }
+    if (!responseText) responseText = generateTemplateResponse(review);
+    // Save draft
+    review.ai_draft = responseText;
+    const idx = reviews.findIndex(r => r.id === reviewId);
+    if (idx >= 0) { reviews[idx] = review; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
+    const card       = el(`card-${reviewId}`);
+    const actionsDiv = card.querySelector('.review-actions');
+    let draftEl      = el(`draft-${reviewId}`);
+    if (!draftEl) {
+      draftEl = document.createElement('div');
+      draftEl.className = 'ia-draft';
+      draftEl.id = `draft-${reviewId}`;
+      card.insertBefore(draftEl, actionsDiv);
+    }
+    draftEl.innerHTML = `<div class="ia-draft-label">🤖 Réponse IA proposée</div>
+      <textarea id="draftText-${reviewId}" rows="5">${escHtml(responseText)}</textarea>`;
+    actionsDiv.innerHTML = `
+      <button class="btn-primary" onclick="publishDraft('${reviewId}')">📤 Publier</button>
+      <button class="btn-outline" style="font-size:12px" onclick="generateAndShow('${reviewId}')">↻ Régénérer</button>
+      <button class="btn-outline" style="font-size:12px;color:var(--muted)" onclick="ignoreReview('${reviewId}')">Ignorer</button>`;
+    addLog('response.generated', 'review', reviewId);
+    toast('Réponse générée !', 'success');
+  } catch (e) {
+    toast('Erreur : ' + e.message, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = '🤖 Générer réponse IA'; }
+  }
+}
+async function regenerate(reviewId) {
+  await generateAndShow(reviewId);
+}
+async function publishDraft(reviewId) {
+  const text = el(`draftText-${reviewId}`)?.value?.trim();
+  if (!text) { toast('Réponse vide.', 'error'); return; }
+  const btn = document.querySelector(`#card-${reviewId} .btn-primary`);
+  if (btn) { btn.disabled = true; btn.textContent = '📤 Publication...'; }
+  try {
+    if (googleToken && currentLocation) {
+      await gbpPut(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews/${reviewId}/reply`, { comment: text });
+      toast('Réponse publiée sur Google !', 'success');
+    } else {
+      toast('Réponse sauvegardée (connectez Google pour publier).', 'info');
+    }
+    const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+    const idx = reviews.findIndex(r => r.id === reviewId);
+    if (idx >= 0) { reviews[idx].status = 'replied'; reviews[idx].reply_text = text; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
+    const publishedCard = el(`card-${reviewId}`);
+    if (publishedCard) publishedCard.querySelector('.review-actions').innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
+    addLog('response.published', 'review', reviewId);
+    loadDashboard();
+  } catch (e) {
+    toast('Erreur publication : ' + e.message, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
+  }
+}
+function ignoreReview(reviewId) {
+  if (!confirm('Ignorer cet avis ?')) return;
+  const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+  const idx = reviews.findIndex(r => r.id === reviewId);
+  if (idx >= 0) { reviews[idx].status = 'ignored'; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
+  el(`card-${reviewId}`)?.remove();
+  addLog('review.ignored', 'review', reviewId);
+  toast('Avis ignoré.', 'info');
+}
+// ============================================================
+//  SYNC
+// ============================================================
+async function triggerSync() {
+  const btn = el('syncBtn');
+  btn.disabled = true; btn.textContent = '↻ Sync...';
+  try {
+    if (!googleToken) { toast('Connectez d\'abord votre fiche Google.', 'error'); return; }
+    if (!currentLocation) await fetchGBPAccounts();
+    const reviews = await fetchGBPReviews();
+    addLog('sync.completed', 'sync', String(reviews.length));
+    toast(`Synchronisation terminée ! ${reviews.length} avis importés.`, 'success');
+    loadDashboard();
+    if (el('section-reviews').classList.contains('active')) loadReviews();
+  } catch (e) {
+    toast('Erreur sync : ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = '↻ Synchroniser';
+  }
+}
+// ============================================================
+//  PARAMÈTRES
+// ============================================================
+function getSettings() {
+  return JSON.parse(localStorage.getItem('fv_settings') || '{}');
+}
+function saveSettings() {
+  const body = {
+    restaurant_name:    el('set_restaurant_name')?.value?.trim(),
+    owner_name:         el('set_owner_name')?.value?.trim(),
+    signature:          el('set_signature')?.value?.trim(),
+    response_tone:      el('set_response_tone')?.value,
+    return_phrase:      el('set_return_phrase')?.value?.trim(),
+    contact_phrase:     el('set_contact_phrase')?.value?.trim(),
+    auto_reply_enabled: el('set_auto_reply_enabled')?.checked,
+    auto_reply_rule_5:  el('set_rule_5')?.value,
+    auto_reply_rule_4:  el('set_rule_4')?.value,
+    auto_reply_rule_3:  el('set_rule_3')?.value,
+    auto_reply_rule_2:  el('set_rule_2')?.value,
+    auto_reply_rule_1:  el('set_rule_1')?.value,
+    google_client_id:   el('set_google_client_id')?.value?.trim(),
+    claude_api_key:     el('set_claude_api_key')?.value?.trim()
+  };
+  Object.keys(body).forEach(k => { if (body[k] == null || body[k] === '') delete body[k]; });
+  localStorage.setItem('fv_settings', JSON.stringify(body));
+  if (body.restaurant_name) {
+    const merchant = JSON.parse(localStorage.getItem('fv_merchant') || '{}');
+    merchant.name = body.restaurant_name;
+    localStorage.setItem('fv_merchant', JSON.stringify(merchant));
+    el('merchantAvatar').textContent = merchant.name[0].toUpperCase();
+    document.title = `Fidelavis – ${merchant.name}`;
+  }
+  addLog('settings.updated', 'settings', 'fv_settings');
+  toast('Paramètres enregistrés !', 'success');
+}
+function populateSettings() {
+  const s = getSettings();
+  const f = (id, val) => { const e = el(id); if (e && val != null) e.value = val; };
+  f('set_restaurant_name', s.restaurant_name);
+  f('set_owner_name',      s.owner_name);
+  f('set_signature',       s.signature);
+  f('set_response_tone',   s.response_tone);
+  f('set_return_phrase',   s.return_phrase);
+  f('set_contact_phrase',  s.contact_phrase);
+  f('set_rule_5',          s.auto_reply_rule_5);
+  f('set_rule_4',          s.auto_reply_rule_4);
+  f('set_rule_3',          s.auto_reply_rule_3);
+  f('set_rule_2',          s.auto_reply_rule_2);
+  f('set_rule_1',          s.auto_reply_rule_1);
+  f('set_google_client_id', s.google_client_id);
+  f('set_claude_api_key',   s.claude_api_key);
+  const autoEl = el('set_auto_reply_enabled');
+  if (autoEl) autoEl.checked = !!s.auto_reply_enabled;
+  refreshLocationsList();
+}
+function refreshLocationsList() {
+  const locList = el('locationsList');
+  if (!locList) return;
+  const locations = JSON.parse(localStorage.getItem('fv_locations') || '[]');
+  const selLoc    = localStorage.getItem('fv_selected_location');
+  if (locations.length === 0) {
+    locList.innerHTML = '<p style="color:var(--muted)">Aucune fiche connectée</p>';
+  } else {
+    locList.innerHTML = locations.map(l => {
+      const isPrimary = l.name === selLoc;
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
+        <span style="font-size:20px">${isPrimary ? '📍' : '🏪'}</span>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:14px">${escHtml(l.title || l.name.split('/').pop())}</div>
+          ${l.address ? `<div style="font-size:12px;color:var(--muted)">${escHtml(l.address)}</div>` : ''}
+        </div>
+        ${!isPrimary
+          ? `<button class="btn-outline" style="font-size:11px;padding:4px 8px" onclick="selectLocation('${escHtml(l.name)}')">Sélectionner</button>`
+          : '<span style="font-size:11px;font-weight:700;color:var(--brand)">Principale</span>'}
+      </div>`;
+    }).join('');
+  }
+}
+function selectLocation(locationName) {
+  localStorage.setItem('fv_selected_location', locationName);
+  currentLocation = locationName;
+  refreshLocationsList();
+  toast('Fiche principale mise à jour !', 'success');
+  loadDashboard();
+}
+// ============================================================
+//  HISTORIQUE
+// ============================================================
+function addLog(action, entityType, entityId) {
+  const logs = JSON.parse(localStorage.getItem('fv_logs') || '[]');
+  logs.unshift({ action, entity_type: entityType, entity_id: String(entityId), created_at: new Date().toISOString() });
+  if (logs.length > 100) logs.pop();
+  localStorage.setItem('fv_logs', JSON.stringify(logs));
+}
+function loadLogs() {
+  const tbody = el('logsTableBody');
+  const logs  = JSON.parse(localStorage.getItem('fv_logs') || '[]');
+  const labels = {
+    'review.new':         '⭐ Nouvel avis importé',
+    'review.ignored':     '🙈 Avis ignoré',
+    'response.generated': '🤖 Réponse IA générée',
+    'response.published': '📤 Réponse publiée',
+    'sync.completed':     '🔄 Synchronisation terminée',
+    'google.connected':   '🔗 Google connecté',
+    'settings.updated':   '⚙️ Paramètres modifiés',
+    'merchant.login':     '👤 Connexion'
+  };
+  tbody.innerHTML = logs.length === 0
+    ? '<tr><td colspan="3" style="padding:32px;text-align:center;color:var(--muted)">Aucune action enregistrée</td></tr>'
+    : logs.map(l => `
+      <tr style="border-bottom:1px solid var(--line)">
+        <td style="padding:11px 16px">${labels[l.action] || l.action}</td>
+        <td style="padding:11px 16px;color:var(--muted);font-size:12px">${l.entity_type || ''} ${l.entity_id ? String(l.entity_id).slice(0,8)+'…' : ''}</td>
+        <td style="padding:11px 16px;color:var(--muted);font-size:12px">${formatDate(l.created_at)}</td>
+      </tr>`).join('');
+}
+// ============================================================
+//  AUTH
+// ============================================================
+function logout() {
+  localStorage.removeItem('fv_token');
+  localStorage.removeItem('fv_merchant');
+  window.location.href = 'login.html';
+}
+// ============================================================
+//  UTILS
+// ============================================================
+function el(id) { return document.getElementById(id); }
+// ============================================================
+//  UTILS
+// ============================================================
+function toast(msg, type = 'info') {
+  const c = el('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+function formatDate(iso) {
+  if (!iso) return '–';
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  } catch { return iso; }
+}
+// ============================================================
+//  MODE DÉMO
+// ============================================================
+function loadDemoData() {
+  const now = new Date();
+  const daysAgo = n => new Date(now - n * 86400000).toISOString();
+  const DEMO_REVIEWS = [
+    {
+      id: 'demo-1',
+      reviewer_name: 'Sophie Martin',
+      reviewer_photo: null,
+      rating: 5,
+      comment: 'Excellente expérience ! Le service était impeccable et les plats délicieux. Je recommande vivement cet établissement à tous mes amis. On reviendra très bientôt !',
+      published_at: daysAgo(1),
+      reply_text: null,
+      status: 'pending',
+      is_new: true,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-2',
+      reviewer_name: 'Jean-Pierre Dubois',
+      reviewer_photo: null,
+      rating: 4,
+      comment: 'Très bon restaurant, cuisine savoureuse et cadre agréable. Le service était rapide. Petit bémol sur le bruit ambiant mais rien de rédhibitoire.',
+      published_at: daysAgo(3),
+      reply_text: null,
+      status: 'pending',
+      is_new: true,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-3',
+      reviewer_name: 'Marie Leclerc',
+      reviewer_photo: null,
+      rating: 2,
+      comment: 'Déçue par ma visite. L\'attente était trop longue (45 min) et mon plat est arrivé froid. Pour le prix, on s\'attend à mieux.',
+      published_at: daysAgo(5),
+      reply_text: null,
+      status: 'pending',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-4',
+      reviewer_name: 'Thomas Bernard',
+      reviewer_photo: null,
+      rating: 5,
+      comment: 'Incroyable ! La meilleure table de la ville sans hésitation. Chef talentueux, service aux petits soins. Le dessert maison était un pur régal.',
+      published_at: daysAgo(7),
+      reply_text: 'Bonjour Thomas,\n\nMerci pour ce bel avis qui nous touche vraiment ! Ravie que vous ayez apprécié notre cuisine. Au plaisir de vous revoir !\n\nL\'équipe',
+      status: 'replied',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-5',
+      reviewer_name: 'Claire Fontaine',
+      reviewer_photo: null,
+      rating: 3,
+      comment: 'Endroit correct sans être exceptionnel. La carte manque un peu de variété et les portions sont petites pour le prix. L\'accueil était chaleureux.',
+      published_at: daysAgo(10),
+      reply_text: null,
+      status: 'pending',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-6',
+      reviewer_name: 'Alexandre Petit',
+      reviewer_photo: null,
+      rating: 1,
+      comment: 'Très mauvaise expérience. Personnel désagréable, plat immangeable. Je ne remettrai pas les pieds ici.',
+      published_at: daysAgo(14),
+      reply_text: null,
+      status: 'pending',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-7',
+      reviewer_name: 'Isabelle Moreau',
+      reviewer_photo: null,
+      rating: 5,
+      comment: 'On y fête nos anniversaires chaque année ! Toujours aussi bien. Merci à toute l\'équipe pour leur gentillesse.',
+      published_at: daysAgo(18),
+      reply_text: 'Bonjour Isabelle,\n\nQuelle belle fidélité ! Merci du fond du cœur. C\'est un honneur de partager ces moments avec vous. À très bientôt !\n\nL\'équipe',
+      status: 'replied',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    },
+    {
+      id: 'demo-8',
+      reviewer_name: 'Nicolas Leroy',
+      reviewer_photo: null,
+      rating: 4,
+      comment: 'Belle découverte ! Rapport qualité-prix honnête, plats généreux. Je recommande le menu du midi, excellent.',
+      published_at: daysAgo(22),
+      reply_text: null,
+      status: 'pending',
+      is_new: false,
+      ai_draft: null,
+      tags: [],
+      location_name: 'Établissement principal'
+    }
+  ];
+  // Paramètres démo
+  const demoSettings = {
+    restaurant_name:    'Le Bistrot Marcel',
+    owner_name:         'Marcel Dupont',
+    signature:          'Marcel et toute l\'équipe du Bistrot',
+    response_tone:      'warm',
+    return_phrase:      'Au plaisir de vous revoir très prochainement !',
+    contact_phrase:     'N\'hésitez pas à nous contacter directement au 01 23 45 67 89.',
+    auto_reply_rule_5:  'validate',
+    auto_reply_rule_4:  'auto',
+    auto_reply_rule_3:  'validate',
+    auto_reply_rule_2:  'disabled',
+    auto_reply_rule_1:  'disabled',
+    auto_reply_enabled: false
+  };
+  // Ne pas écraser les clés API si déjà saisies
+  const existing = getSettings();
+  if (existing.google_client_id) demoSettings.google_client_id = existing.google_client_id;
+  if (existing.claude_api_key)   demoSettings.claude_api_key   = existing.claude_api_key;
+  localStorage.setItem('fv_reviews',  JSON.stringify(DEMO_REVIEWS));
+  localStorage.setItem('fv_settings', JSON.stringify(demoSettings));
+  localStorage.setItem('fv_last_sync', daysAgo(1));
+  localStorage.setItem('fv_locations', JSON.stringify([{
+    name: 'accounts/demo/locations/demo-location',
+    title: 'Le Bistrot Marcel',
+    address: '12 Rue de la Paix, Paris'
+  }]));
+  localStorage.setItem('fv_selected_location', 'accounts/demo/locations/demo-location');
+  const merchant = JSON.parse(localStorage.getItem('fv_merchant') || '{}');
+  merchant.name = 'Le Bistrot Marcel';
+  localStorage.setItem('fv_merchant', JSON.stringify(merchant));
+  el('merchantAvatar').textContent = 'L';
+  document.title = 'Fidelavis – Le Bistrot Marcel';
+  addLog('sync.completed', 'demo', '8');
+  populateSettings();
+  toast('🎭 Données de démo chargées ! 8 avis fictifs ajoutés.', 'success');
+  loadDashboard();
+}
+function clearDemoData() {
+  if (!confirm('Supprimer toutes les données de démo ?')) return;
+  ['fv_reviews','fv_last_sync','fv_locations','fv_selected_location','fv_selected_account'].forEach(k => localStorage.removeItem(k));
+  loadDashboard();
+  toast('Données de démo supprimées.', 'info');
+}
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+// ============================================================
+//  START
+// ============================================================
+initApp();
+</script>
+</body>
+</html>
