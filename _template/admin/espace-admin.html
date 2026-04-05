@@ -695,9 +695,9 @@ async function loadDashboard() {
       const s = await fetchStats(30);
       document.getElementById('kpiScans').textContent    = s.scan             ?? '—';
       document.getElementById('kpiSignups').textContent  = s.signup           ?? '—';
-      document.getElementById('kpiInstalls').textContent = (s.install_confirmed ?? s.install) ?? '—';
+      document.getElementById('kpiInstalls').textContent = (s.install ?? s.install_confirmed ?? s.install) ?? '—';
 
-      const installs = parseInt(s.install_confirmed ?? s.install) || 0;
+      const installs = parseInt(s.install ?? s.install_confirmed ?? s.install) || 0;
       document.getElementById('summaryInstalls').textContent = installs;
       document.getElementById('dotInstallsSummary').className = 'summary-dot ' + (installs > 0 ? 'green' : 'orange');
 
@@ -841,7 +841,7 @@ document.getElementById('notifMessage').addEventListener('input', function() {
 async function loadPWACount() {
   try {
     const s = await fetchStats(365);
-    document.getElementById('pwaCount').textContent = (s.install_confirmed ?? s.install) ?? '—';
+    document.getElementById('pwaCount').textContent = (s.install ?? s.install_confirmed ?? s.install) ?? '—';
   } catch {
     document.getElementById('pwaCount').textContent = '—';
   }
