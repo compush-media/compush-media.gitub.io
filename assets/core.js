@@ -4,7 +4,7 @@
    ===================================================== */
 (function () {
 
-  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzrmSA6V4c4WxNRmzBAb_RLEMHZhfUeoqb_3yY3QXnrlJkaGPK5c6GF1z-hyA_uVDsj/exec";
+  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
 
   /* --------------------------------------------------
      getRestoSlug() — extrait le slug depuis l'URL
@@ -86,6 +86,12 @@
     var slug = getRestoSlug();
     return fetch("/" + slug + "/config.json", { cache: "no-store" })
       .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (cfg) {
+        if (cfg && cfg.name) {
+          try { localStorage.setItem("fv_resto_name_" + slug, cfg.name); } catch (e) {}
+        }
+        return cfg;
+      })
       .catch(function () { return null; });
   }
 
@@ -161,7 +167,8 @@
   -------------------------------------------------- */
   function track(eventName, extra) {
     var slug = getRestoSlug();
-    _sendEvent(eventName, slug, extra || {});
+    var name = localStorage.getItem("fv_resto_name_" + slug) || slug;
+    _sendEvent(eventName, name, extra || {});
   }
 
   /* --------------------------------------------------

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fidelavis – Connexion Super Admin</title>
+  <style>
+    :root {
+      --brand: #B48C4A; --brand2: #a97f37;
+      --bg: #fbfaf8; --card: #fff;
+      --ink: #191919; --muted: #6f6f6f;
+      --line: rgba(0,0,0,.08); --r: 16px;
+      --red: #d93025; --green: #1a9e5c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(160deg, #fbfaf8 0%, #f0ebe0 100%);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.08);
+    }
+    .logo-area { text-align: center; margin-bottom: 28px; }
+    .logo {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color: #fff;
+      font-weight: 900;
+      font-size: 15px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .logo-area h1 { font-size: 22px; font-weight: 900; color: var(--ink); }
+    .logo-area p  { font-size: 14px; color: var(--muted); margin-top: 4px; }
+    .admin-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(180,140,74,.1); border: 1px solid rgba(180,140,74,.3);
+      color: var(--brand); font-size: 12px; font-weight: 700;
+      padding: 4px 10px; border-radius: 999px; margin-top: 8px;
+    }
+    .form-row { margin-bottom: 16px; }
+    .form-row label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
+    .form-row input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 10px; font-size: 14px;
+      font-family: inherit; color: var(--ink);
+      background: var(--bg);
+      transition: border-color .15s;
+    }
+    .form-row input:focus { outline: none; border-color: var(--brand); background: var(--card); }
+    .btn-submit {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color: #fff; border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 800;
+      cursor: pointer; margin-top: 4px;
+      transition: opacity .15s;
+    }
+    .btn-submit:hover { opacity: .88; }
+    .btn-submit:disabled { opacity: .5; cursor: default; }
+    .error-msg { color: var(--red); font-size: 13px; font-weight: 600; margin-top: 12px; text-align: center; display: none; }
+    .footer-note { text-align: center; font-size: 12px; color: var(--muted); margin-top: 20px; line-height: 1.6; }
+    .footer-note a { color: var(--brand); text-decoration: none; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo-area">
+    <div class="logo">Fidelavis</div>
+    <h1>Espace Super Admin</h1>
+    <p>Accès réservé à l'administrateur</p>
+    <div class="admin-badge">🔒 Accès restreint</div>
+  </div>
+
+  <div class="form-row">
+    <label>Token GitHub (Personal Access Token)</label>
+    <input type="password" id="loginToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="current-password" />
+  </div>
+
+  <button class="btn-submit" id="loginBtn" onclick="doLogin()">🔑 Se connecter</button>
+  <div class="error-msg" id="loginError"></div>
+
+  <div class="footer-note">
+    Connectez-vous avec votre <a href="https://github.com/settings/tokens" target="_blank">Token GitHub</a>
+    ayant accès en écriture au dépôt.
+  </div>
+</div>
+
+<script>
+const GH_OWNER = 'compush-media';
+const GH_REPO  = 'compush-media.gitub.io';
+
+async function doLogin() {
+  const token = document.getElementById('loginToken').value.trim();
+  const errEl = document.getElementById('loginError');
+  const btn   = document.getElementById('loginBtn');
+  errEl.style.display = 'none';
+
+  if (!token) {
+    errEl.textContent = 'Veuillez saisir votre Token GitHub.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Vérification...';
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    });
+
+    if (res.status === 401) throw new Error('Token invalide — vérifiez votre PAT GitHub.');
+    if (res.status === 403) throw new Error('Token refusé — permissions insuffisantes.');
+    if (!res.ok) throw new Error(`Erreur GitHub API (${res.status}).`);
+
+    const data = await res.json();
+    const canPush = data.permissions?.push || data.permissions?.admin;
+    if (!canPush) throw new Error('Token en lecture seule — un accès en écriture est requis.');
+
+    // Authentification réussie : seul le propriétaire du repo peut arriver ici
+    localStorage.setItem('fv_token', 'superadmin');
+    localStorage.setItem('fv_role', 'superadmin');
+    localStorage.setItem('fv_gh_token', token);
+    localStorage.setItem('fv_merchant', JSON.stringify({ name: 'Super Admin' }));
+    window.location.href = '/fidelavis-admin/';
+
+  } catch (err) {
+    errEl.textContent = '⚠️ ' + err.message;
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = '🔑 Se connecter';
+  }
+}
+
+// Enter key support
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') doLogin();
+});
+
+// Redirect if already authenticated
+(function() {
+  const token = localStorage.getItem('fv_token');
+  const role  = localStorage.getItem('fv_role');
+  if (token && role === 'superadmin') window.location.href = '/fidelavis-admin/';
+})();
+</script>
+</body>
+</html>
