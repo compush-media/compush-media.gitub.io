@@ -342,8 +342,9 @@
       </div>
       <div class="kpi-card" id="kpiCouponCard" onclick="switchTab('coupon')" style="cursor:pointer;" title="Voir le coupon">
         <div class="kpi-icon">🎫</div>
-        <div class="kpi-val" id="kpiCouponState" style="font-size:22px;">—</div>
-        <div class="kpi-label">Coupon du mois</div>
+        <div class="kpi-val" id="kpiCouponCount"><span class="skel"></span></div>
+        <div class="kpi-label">Validations coupon</div>
+        <div id="kpiCouponState" style="font-size:11px;font-weight:600;margin-top:4px;">—</div>
       </div>
     </div>
 
@@ -711,6 +712,7 @@ async function loadDashboard() {
       document.getElementById('kpiScans').textContent    = s.scan             ?? '—';
       document.getElementById('kpiSignups').textContent  = s.signup           ?? '—';
       document.getElementById('kpiInstalls').textContent = (s.install ?? s.install_confirmed) ?? '—';
+      document.getElementById('kpiCouponCount').textContent = s.coupon_validate ?? '0';
 
       const installs = parseInt(s.install ?? s.install_confirmed) || 0;
       document.getElementById('summaryInstalls').textContent = installs;
@@ -727,7 +729,7 @@ async function loadDashboard() {
   }
 
   // Échec après 3 tentatives
-  ['kpiScans','kpiSignups','kpiInstalls'].forEach(id => {
+  ['kpiScans','kpiSignups','kpiInstalls','kpiCouponCount'].forEach(id => {
     document.getElementById(id).textContent = '—';
   });
   document.getElementById('summaryInstalls').textContent = '—';
