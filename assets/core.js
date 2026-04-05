@@ -167,8 +167,7 @@
   -------------------------------------------------- */
   function track(eventName, extra) {
     var slug = getRestoSlug();
-    var name = localStorage.getItem("fv_resto_name_" + slug) || slug;
-    _sendEvent(eventName, name, extra || {});
+    _sendEvent(eventName, slug, extra || {});
   }
 
   /* --------------------------------------------------
