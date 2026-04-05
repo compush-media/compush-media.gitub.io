@@ -348,6 +348,15 @@
     </div>
 
 
+    <!-- PIN validation rapide -->
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">🔐</span> Code PIN validation coupon</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-bottom:8px;">Demandez au client de vous montrer le même code dans l'app Fidelavis.</div>
+      <div class="pin-display" id="pinDisplayDash">----</div>
+      <div class="pin-bar"><div class="pin-bar-fill" id="pinBarFillDash" style="width:0%"></div></div>
+      <div class="pin-timer" id="timerPinDash">Nouveau code dans : --</div>
+    </div>
+
     <!-- Résumé du mois -->
     <div class="card">
       <div class="card-title"><span class="card-title-icon">📋</span> Résumé du mois</div>
@@ -672,6 +681,12 @@ async function fetchStats(days) {
 async function loadDashboard() {
   if (kpisLoaded) return;
 
+  // PIN — start immediately on dashboard
+  if (!pinInterval) {
+    updatePin();
+    pinInterval = setInterval(updatePin, 1000);
+  }
+
   // Date display
   const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   const now = new Date();
@@ -771,9 +786,15 @@ function updatePin() {
   const now  = Date.now();
   const secs = Math.floor((60000 - (now % 60000)) / 1000);
   const pct  = ((60 - secs) / 60) * 100;
-  document.getElementById('pinDisplay').textContent    = genPin();
+  const pin  = genPin();
+  // Coupon tab
+  document.getElementById('pinDisplay').textContent    = pin;
   document.getElementById('timerPin').textContent      = `Nouveau code dans : ${secs}s`;
   document.getElementById('pinBarFill').style.width    = pct + '%';
+  // Dashboard tab
+  document.getElementById('pinDisplayDash').textContent    = pin;
+  document.getElementById('timerPinDash').textContent      = `Nouveau code dans : ${secs}s`;
+  document.getElementById('pinBarFillDash').style.width    = pct + '%';
 }
 
 let couponInitialized = false;
