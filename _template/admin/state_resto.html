@@ -137,7 +137,7 @@
           <option value="signup">signup</option>
           <option value="install">install (confirmée)</option>
           <option value="coupon_validate">coupon_validate</option>
-          <option value="review_click">review_click</option>
+          <option value="review">avis (review)</option>
         </select>
       </label>
     </div>
@@ -177,7 +177,7 @@
     <div class="card kpi">
       <div class="kpiLabel">Clic “Donner mon avis”</div>
       <div class="kpiValue" id="kReview">—</div>
-      <div class="kpiHint">review_click</div>
+      <div class="kpiHint">review (tous variants)</div>
     </div>
 
     <div class="card kpi">
@@ -245,7 +245,7 @@
     "signup":           "signup",
     "install":          "install",
     "coupon_validate":  "coupon",
-    "review_click":     "review",
+    "review":           "review",
     "":                 "total"
   };
 
@@ -321,7 +321,7 @@
       <tr><td class="muted">Installs (tentatives)</td><td>${ia}</td></tr>
       <tr><td class="muted">Installs (confirmées)</td><td>${ic}</td></tr>
       <tr><td class="muted">Coupons validés</td><td>${s.coupon_validate ?? "—"}</td></tr>
-      <tr><td class="muted">Avis Google</td><td>${s.review_total ?? "—"}</td></tr>
+      <tr><td class="muted">Avis Google (clics)</td><td>${s.review ?? s.review_total ?? "—"}</td></tr>
       <tr><td class="muted">Conversion (signup/scan)</td><td>${pct(s.signup, s.scan)}</td></tr>
       <tr><td class="muted">Taux install réel (install/attempt)</td><td>${pct(ic, ia)}</td></tr>
     `;
@@ -351,7 +351,7 @@
     document.getElementById("kInstallAttempt").textContent   = s.install_attempt  ?? "—";
     document.getElementById("kInstallConfirmed").textContent = s.install_confirmed ?? "—";
     document.getElementById("kCoupon").textContent           = s.coupon_validate  ?? "—";
-    document.getElementById("kReview").textContent           = s.review_total     ?? "—";
+    document.getElementById("kReview").textContent           = s.review ?? s.review_total ?? "—";
     document.getElementById("kConv").textContent             = pct(s.signup, s.scan);
     document.getElementById("kInstallRate").textContent      = pct(s.install_confirmed, s.install_attempt);
 

@@ -199,18 +199,20 @@ async function fetchAll(){
 
 function applyFilter(){
   const resto = String(restoSelect.value||"").trim().toLowerCase();
+  const toSlug = s => (s||"").toString().trim().toLowerCase().replace(/\s+/g,'-');
   FILTERED = ALL_ROWS.filter(x => {
-    const r = String(x.resto||x.restaurant||"").trim().toLowerCase();
-    return !resto || r === resto;
+    const r = toSlug(x.resto || x.restaurant);
+    return !resto || r === toSlug(resto);
   });
 
-  const count = (evt)=> FILTERED.filter(x=>String(x.event||"")===evt).length;
+  const count    = (evt)  => FILTERED.filter(x => String(x.event||"") === evt).length;
+  const countAny = (...ev)=> FILTERED.filter(x => ev.includes(String(x.event||""))).length;
 
-  const scan = count("scan");
-  const signup = count("signup");
-  const install = count("install");
-  const coupon = count("coupon_validate");
-  const review = count("review_open");
+  const scan    = count("scan");
+  const signup  = countAny("signup", "inscription", "form_submit");
+  const install = countAny("install", "install_confirmed");
+  const coupon  = countAny("coupon_validate", "coupon_validated");
+  const review  = countAny("review_open", "review_click", "review_page_view", "review_qr_view");
 
   el("scan").textContent = scan;
   el("signup").textContent = signup;
@@ -233,8 +235,8 @@ function drawDaily(){
     const day = ymd(x.ts);
     if(!day) return;
     byDay[day] ||= { coupon:0, review:0 };
-    if(x.event==="coupon_validate") byDay[day].coupon++;
-    if(x.event==="review_open") byDay[day].review++;
+    if(["coupon_validate","coupon_validated"].includes(x.event)) byDay[day].coupon++;
+    if(["review_open","review_click","review_page_view","review_qr_view"].includes(x.event)) byDay[day].review++;
   });
 
   const table = [["Date","Coupons","Avis (clics)"]];
@@ -247,7 +249,7 @@ function drawDaily(){
 }
 
 function drawEvents(){
-  const events = ["scan","signup","install","coupon_validate","review_open","review_page_view","review_qr_view"];
+  const events = ["scan","signup","install","install_confirmed","coupon_validate","review_open","review_click","review_page_view","review_qr_view"];
   const table = [["Event","Total"]];
   events.forEach(evt => table.push([evt, FILTERED.filter(x=>x.event===evt).length]));
   const data = google.visualization.arrayToDataTable(table);
