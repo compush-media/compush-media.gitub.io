@@ -1,8 +1,8 @@
 {
-  "name": "claude",
-  "short_name": "claude",
-  "start_url": "/claude/index.html",
-  "scope": "/claude/",
+  "name": "Le coreen",
+  "short_name": "Le coreen",
+  "start_url": "/le-coreen/index.html",
+  "scope": "/le-coreen/",
   "display": "standalone",
   "background_color": "#f6efe5",
   "theme_color": "#B8924F",
