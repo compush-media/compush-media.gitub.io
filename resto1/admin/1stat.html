@@ -347,16 +347,17 @@
   function computeStats(rows){
     const s = {
       scan:0, signup:0, install_cta_click:0,
-      install_confirmed:0, coupon_validate:0,
+      install:0, install_confirmed:0, coupon_validate:0,
       review_page_view:0, review_qr_view:0
     };
     rows.forEach(r => {
       const ev = String(r.event || "");
       if (Object.prototype.hasOwnProperty.call(s, ev)) s[ev]++;
     });
+    s.install_total = s.install + s.install_confirmed;
     s.review_total = s.review_page_view + s.review_qr_view;
     s.signup_rate  = s.scan                > 0 ? Math.round(s.signup            / s.scan              * 100) : 0;
-    s.install_rate = s.install_cta_click   > 0 ? Math.min(100, Math.round(s.install_confirmed / s.install_cta_click * 100)) : 0;
+    s.install_rate = s.install_cta_click   > 0 ? Math.min(100, Math.round(s.install_total / s.install_cta_click * 100)) : 0;
     return s;
   }
 
@@ -377,7 +378,7 @@
     document.getElementById("kScan").textContent = stats.scan ?? 0;
     document.getElementById("kSignup").textContent = stats.signup ?? 0;
     document.getElementById("kInstallAttempt").textContent = stats.install_cta_click ?? 0;
-    document.getElementById("kInstallConfirmed").textContent = stats.install_confirmed ?? 0;
+    document.getElementById("kInstallConfirmed").textContent = stats.install_total ?? (stats.install + stats.install_confirmed) ?? 0;
     document.getElementById("kCoupon").textContent = stats.coupon_validate ?? 0;
     document.getElementById("kReview").textContent = stats.review_total ?? ((stats.review_page_view ?? 0) + (stats.review_qr_view ?? 0));
     document.getElementById("kSignupRate").textContent = (stats.signup_rate ?? 0) + "%";
