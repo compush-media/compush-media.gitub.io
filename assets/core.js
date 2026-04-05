@@ -234,7 +234,7 @@
 
 /* =====================================================
    Tracking installation PWA — iOS + Android
-   Déclenche install_confirmed à la première ouverture
+   Déclenche install à la première ouverture
    depuis l'écran d'accueil (standalone).
    Dédup localStorage (1 seule fois par appareil/resto).
    ===================================================== */
@@ -254,7 +254,7 @@
     if (localStorage.getItem(key)) return;           // déjà tracké → stop
     localStorage.setItem(key, "1");                  // marque 1 seule fois
     if (window.Fidelavis && typeof window.Fidelavis.track === "function") {
-      window.Fidelavis.track("install_confirmed", { src: src });
+      window.Fidelavis.track("install", { src: src });
     }
   }
 

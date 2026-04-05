@@ -340,13 +340,23 @@
         <div class="kpi-val" id="kpiInstalls"><span class="skel"></span></div>
         <div class="kpi-label">Installations PWA</div>
       </div>
-      <div class="kpi-card" id="kpiCouponCard">
+      <div class="kpi-card" id="kpiCouponCard" onclick="switchTab('coupon')" style="cursor:pointer;" title="Voir le coupon">
         <div class="kpi-icon">🎫</div>
-        <div class="kpi-val" id="kpiCouponState" style="font-size:22px;">—</div>
-        <div class="kpi-label">Coupon du mois</div>
+        <div class="kpi-val" id="kpiCouponCount"><span class="skel"></span></div>
+        <div class="kpi-label">Validations coupon</div>
+        <div id="kpiCouponState" style="font-size:11px;font-weight:600;margin-top:4px;">—</div>
       </div>
     </div>
 
+
+    <!-- PIN validation rapide -->
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">🔐</span> Code PIN validation coupon</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-bottom:8px;">Demandez au client de vous montrer le même code dans l'app Fidelavis.</div>
+      <div class="pin-display" id="pinDisplayDash">----</div>
+      <div class="pin-bar"><div class="pin-bar-fill" id="pinBarFillDash" style="width:0%"></div></div>
+      <div class="pin-timer" id="timerPinDash">Nouveau code dans : --</div>
+    </div>
 
     <!-- Résumé du mois -->
     <div class="card">
@@ -672,6 +682,12 @@ async function fetchStats(days) {
 async function loadDashboard() {
   if (kpisLoaded) return;
 
+  // PIN — start immediately on dashboard
+  if (!pinInterval) {
+    updatePin();
+    pinInterval = setInterval(updatePin, 1000);
+  }
+
   // Date display
   const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
   const now = new Date();
@@ -695,9 +711,10 @@ async function loadDashboard() {
       const s = await fetchStats(30);
       document.getElementById('kpiScans').textContent    = s.scan             ?? '—';
       document.getElementById('kpiSignups').textContent  = s.signup           ?? '—';
-      document.getElementById('kpiInstalls').textContent = (s.install_confirmed ?? s.install) ?? '—';
+      document.getElementById('kpiInstalls').textContent = (s.install ?? s.install_confirmed) ?? '—';
+      document.getElementById('kpiCouponCount').textContent = s.coupon_validate ?? '0';
 
-      const installs = parseInt(s.install_confirmed ?? s.install) || 0;
+      const installs = parseInt(s.install ?? s.install_confirmed) || 0;
       document.getElementById('summaryInstalls').textContent = installs;
       document.getElementById('dotInstallsSummary').className = 'summary-dot ' + (installs > 0 ? 'green' : 'orange');
 
@@ -712,7 +729,7 @@ async function loadDashboard() {
   }
 
   // Échec après 3 tentatives
-  ['kpiScans','kpiSignups','kpiInstalls'].forEach(id => {
+  ['kpiScans','kpiSignups','kpiInstalls','kpiCouponCount'].forEach(id => {
     document.getElementById(id).textContent = '—';
   });
   document.getElementById('summaryInstalls').textContent = '—';
@@ -771,9 +788,15 @@ function updatePin() {
   const now  = Date.now();
   const secs = Math.floor((60000 - (now % 60000)) / 1000);
   const pct  = ((60 - secs) / 60) * 100;
-  document.getElementById('pinDisplay').textContent    = genPin();
+  const pin  = genPin();
+  // Coupon tab
+  document.getElementById('pinDisplay').textContent    = pin;
   document.getElementById('timerPin').textContent      = `Nouveau code dans : ${secs}s`;
   document.getElementById('pinBarFill').style.width    = pct + '%';
+  // Dashboard tab
+  document.getElementById('pinDisplayDash').textContent    = pin;
+  document.getElementById('timerPinDash').textContent      = `Nouveau code dans : ${secs}s`;
+  document.getElementById('pinBarFillDash').style.width    = pct + '%';
 }
 
 let couponInitialized = false;
@@ -841,7 +864,7 @@ document.getElementById('notifMessage').addEventListener('input', function() {
 async function loadPWACount() {
   try {
     const s = await fetchStats(365);
-    document.getElementById('pwaCount').textContent = (s.install_confirmed ?? s.install) ?? '—';
+    document.getElementById('pwaCount').textContent = (s.install ?? s.install_confirmed) ?? '—';
   } catch {
     document.getElementById('pwaCount').textContent = '—';
   }
