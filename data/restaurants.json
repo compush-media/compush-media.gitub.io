@@ -31,14 +31,6 @@
     "brevoListId": 38,
     "brevoGasUrl": "https://script.google.com/macros/s/AKfycbxLP9n4OpqtOigIhDRSN50A3MC-H7WEEVqVHQLcKtwsXO92Dz7zp0_-p5B0cDqGJJCl/exec"
   },
-  "le-resto": {
-    "name": "Le resto",
-    "brandColor": "#B8924F",
-    "brandColor2": "#9E7A3E",
-    "email": "tirakountech@gmail.com",
-    "brevoListId": 39,
-    "brevoGasUrl": "https://script.google.com/macros/s/AKfycbxLP9n4OpqtOigIhDRSN50A3MC-H7WEEVqVHQLcKtwsXO92Dz7zp0_-p5B0cDqGJJCl/exec"
-  },
   "le-coreen": {
     "name": "Le coreen",
     "brandColor": "#B8924F",
