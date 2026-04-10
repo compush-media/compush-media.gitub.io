@@ -1,5 +1,13 @@
 {
   "name": "Resto1",
   "color": "#B8924F",
-  "color2": "#9E7A3E"
+  "color2": "#9E7A3E",
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": []
 }

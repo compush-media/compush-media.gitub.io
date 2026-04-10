@@ -309,6 +309,9 @@
   <button class="tab-btn admin-only" data-tab="notifications">
     <span class="tab-icon">🔔</span> Notifications
   </button>
+  <a class="tab-btn admin-only" href="billing.html" id="linkBilling">
+    <span class="tab-icon">💳</span> Compte
+  </a>
   <!-- Offre du jour : masquée pour l'instant, architecture prête -->
   <!-- <button class="tab-btn admin-only" data-tab="offre">
     <span class="tab-icon">📸</span> Offre du jour
@@ -586,7 +589,7 @@ document.getElementById('roleBadge').textContent = ROLE === 'admin' ? '👑 Admi
 if (ROLE !== 'admin') {
   // Employé : tableau de bord + coupon (stats, avis, notifications masqués)
   document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
-  document.querySelectorAll('#linkStats, #linkAvis').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('#linkStats, #linkAvis, #linkBilling').forEach(el => el.style.display = 'none');
 }
 
 // Charger nom du restaurant depuis config.json
