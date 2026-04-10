@@ -8,8 +8,8 @@
    Remplacer les valeurs par vos vraies clés Stripe
 -------------------------------------------------- */
 var STRIPE_CONFIG = {
-  // Clé publique Stripe (commence par pk_live_ ou pk_test_)
-  publishableKey: "pk_test_REMPLACER",
+  // Clé publique Stripe (mode test)
+  publishableKey: "pk_test_bb0bwiR1lGv5bUv2cHCNZSq6",
 
   // URL du Google Apps Script proxy (crée les Checkout Sessions)
   checkoutGasUrl: "REMPLACER_PAR_URL_GAS_CHECKOUT",
@@ -17,11 +17,11 @@ var STRIPE_CONFIG = {
   // URL du Google Apps Script proxy (portail client Stripe)
   portalGasUrl: "REMPLACER_PAR_URL_GAS_PORTAL",
 
-  // IDs des prix Stripe (à récupérer dans le dashboard Stripe)
+  // IDs des prix Stripe (mode test)
   priceIds: {
-    setup:     "price_SETUP_199",      // 199 € installation (one-time)
-    essentiel: "price_ESSENTIEL_97",   // 97 €/mois
-    pro:       "price_PRO_149"         // 149 €/mois
+    setup:     "price_1TKmDvDpSXl9Whzr1VHwlRj5",   // 199 € installation (one-time)
+    essentiel: "price_1TKmIoDpSXl9Whzr8iKy2Dhl",   // 97 €/mois
+    pro:       "price_1TKmNtDpSXl9WhzrsMhfAShh"    // 149 €/mois
   }
 };
 
