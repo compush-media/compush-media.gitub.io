@@ -8,8 +8,8 @@
    Remplacer les valeurs par vos vraies clés Stripe
 -------------------------------------------------- */
 var STRIPE_CONFIG = {
-  // Clé publique Stripe (commence par pk_live_ ou pk_test_)
-  publishableKey: "pk_test_REMPLACER",
+  // Clé publique Stripe (mode test)
+  publishableKey: "pk_test_bb0bwiR1lGv5bUv2cHCNZSq6",
 
   // URL du Google Apps Script proxy (crée les Checkout Sessions)
   checkoutGasUrl: "REMPLACER_PAR_URL_GAS_CHECKOUT",
