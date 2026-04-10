@@ -376,6 +376,11 @@
           <span class="summary-val" id="summaryAvis">—</span>
         </li>
         <li class="summary-item">
+          <span class="summary-dot" id="dotReviewClicks"></span>
+          <span class="summary-label">Clics "Donner un avis" ce mois</span>
+          <span class="summary-val" id="summaryReviewClicks"><span class="skel" style="width:40px"></span></span>
+        </li>
+        <li class="summary-item">
           <span class="summary-dot" id="dotInstallsSummary"></span>
           <span class="summary-label">Installations PWA ce mois</span>
           <span class="summary-val" id="summaryInstalls"><span class="skel" style="width:40px"></span></span>
@@ -721,6 +726,10 @@ async function loadDashboard() {
       document.getElementById('summaryInstalls').textContent = installs;
       document.getElementById('dotInstallsSummary').className = 'summary-dot ' + (installs > 0 ? 'green' : 'orange');
 
+      const reviewClicks = parseInt(s.review) || 0;
+      document.getElementById('summaryReviewClicks').textContent = reviewClicks;
+      document.getElementById('dotReviewClicks').className = 'summary-dot ' + (reviewClicks > 0 ? 'green' : 'orange');
+
       const errBanner = document.getElementById('dashboardError');
       if (errBanner) errBanner.style.display = 'none';
 
@@ -735,7 +744,8 @@ async function loadDashboard() {
   ['kpiScans','kpiSignups','kpiInstalls','kpiCouponCount'].forEach(id => {
     document.getElementById(id).textContent = '—';
   });
-  document.getElementById('summaryInstalls').textContent = '—';
+  document.getElementById('summaryInstalls').textContent     = '—';
+  document.getElementById('summaryReviewClicks').textContent = '—';
 
   let errBanner = document.getElementById('dashboardError');
   if (!errBanner) {
