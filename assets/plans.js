@@ -12,10 +12,10 @@ var STRIPE_CONFIG = {
   publishableKey: "pk_test_bb0bwiR1lGv5bUv2cHCNZSq6",
 
   // URL du Google Apps Script proxy (crée les Checkout Sessions)
-  checkoutGasUrl: "REMPLACER_PAR_URL_GAS_CHECKOUT",
+  checkoutGasUrl: "https://script.google.com/macros/s/AKfycbzHJTQS6BoHH1r4VfMOGRsI5yi5uHFPT_HPPIObnRcheJIYurrFGVD3k36NfnMpQJHaWA/exec",
 
   // URL du Google Apps Script proxy (portail client Stripe)
-  portalGasUrl: "REMPLACER_PAR_URL_GAS_PORTAL",
+  portalGasUrl: "https://script.google.com/macros/s/AKfycbzHJTQS6BoHH1r4VfMOGRsI5yi5uHFPT_HPPIObnRcheJIYurrFGVD3k36NfnMpQJHaWA/exec",
 
   // IDs des prix Stripe (mode test)
   priceIds: {
