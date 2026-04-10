@@ -272,18 +272,17 @@
 </main>
 
 <script>
-// ── Auth guard ──────────────────────────────────────
-var AUTH_KEY = "fv_admin_auth";
-var ROLE_KEY = "fv_admin_role";
-if (!localStorage.getItem(AUTH_KEY)) {
-  window.location.href = "login.html";
-}
-
-// ── Charger le nom du resto ─────────────────────────
+// ── Auth guard (même logique que espace-admin.html) ──
 var SITE = (function() {
   var m = location.pathname.match(/^\/([^/]+)\//);
   return (m && m[1] !== "assets" && m[1] !== "fidelavis-admin") ? m[1] : "resto";
 })();
+
+var AUTH_KEY = "admin_" + SITE;
+var ROLE_KEY = "role_"  + SITE;
+if (!localStorage.getItem(AUTH_KEY)) {
+  window.location.href = "login.html";
+}
 
 fetch("/" + SITE + "/config.json")
   .then(function(r) { return r.json(); })
