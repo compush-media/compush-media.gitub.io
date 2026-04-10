@@ -3,5 +3,30 @@
   "color": "#B8924F",
   "color2": "#9E7A3E",
   "brevoListId": 40,
-  "brevoGasUrl": "https://script.google.com/macros/s/AKfycbxLP9n4OpqtOigIhDRSN50A3MC-H7WEEVqVHQLcKtwsXO92Dz7zp0_-p5B0cDqGJJCl/exec"
+  "brevoGasUrl": "https://script.google.com/macros/s/AKfycbxLP9n4OpqtOigIhDRSN50A3MC-H7WEEVqVHQLcKtwsXO92Dz7zp0_-p5B0cDqGJJCl/exec",
+  "plan": "pro",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@lecoreen.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "2026-05-01",
+  "invoices": [
+    {
+      "id": "in_demo_001",
+      "date": "2026-04-01",
+      "amount": 14900,
+      "status": "paid",
+      "description": "Abonnement Fidelavis Pro — Avril 2026",
+      "pdf": ""
+    },
+    {
+      "id": "in_demo_000",
+      "date": "2026-03-01",
+      "amount": 19900,
+      "status": "paid",
+      "description": "Installation Fidelavis",
+      "pdf": ""
+    }
+  ]
 }
