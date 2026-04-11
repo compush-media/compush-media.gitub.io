@@ -8,8 +8,8 @@
   "subscriptionStatus": "active",
   "setupPaid": true,
   "billingEmail": "danydrumonde@gmail.com",
-  "stripeCustomerId": "",
-  "stripeSubscriptionId": "",
+  "stripeCustomerId": "cus_UJilUKTWuTUPyv",
+  "stripeSubscriptionId": "sub_1TL5JiDpSXl9WhzrDwu5OefC",
   "nextBillingDate": "2026-05-01",
   "invoices": [
     {
