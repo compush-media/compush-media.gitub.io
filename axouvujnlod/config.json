@@ -1,0 +1,14 @@
+{
+  "name": "axouvujnlod",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "plan": "pro",
+  "subscriptionStatus": "trialing",
+  "setupPaid": false,
+  "trialEndDate": "2026-04-25",
+  "billingEmail": "axou.v@aliceadsl.fr",
+  "stripeCustomerId": "cus_UJnlOdSLg7Oz55",
+  "stripeSubscriptionId": "sub_1TLA9sDpSXl9WhzrRHgD0Vww",
+  "nextBillingDate": "2026-04-25",
+  "invoices": []
+}
