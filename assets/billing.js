@@ -52,9 +52,10 @@
         }
       };
 
+      // Content-Type: text/plain évite le preflight CORS sur GAS
       var res  = await fetch(STRIPE_CONFIG.checkoutGasUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain" },
         body:    JSON.stringify(payload)
       });
 
@@ -107,7 +108,7 @@
 
       var res  = await fetch(STRIPE_CONFIG.portalGasUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain" },
         body:    JSON.stringify({
           action:     "createPortalSession",
           customerId: customerId,
