@@ -102,9 +102,7 @@ function createCheckoutSession(body) {
     "metadata[planId]=" + encodeURIComponent(planId),
     "metadata[source]=fidelavis-web",
     "allow_promotion_codes=true",
-    "billing_address_collection=required",
-    // Afficher le montant total avant paiement
-    "consent_collection[terms_of_service]=required"
+    "billing_address_collection=auto"
   ].concat(lineItems).filter(Boolean).join("&");
 
   // Ajouter les metadata custom
