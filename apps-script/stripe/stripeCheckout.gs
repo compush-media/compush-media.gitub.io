@@ -78,19 +78,18 @@ function createCheckoutSession(body) {
   if (!priceId) return { error: "priceId manquant" };
 
   // Construire les line_items
-  // 1) Frais d'installation (one-time) si setupPriceId fourni
-  // 2) Abonnement mensuel
-  var lineItems = [];
+  // L'abonnement mensuel en line_items
+  // Les frais d'installation en add_invoice_items → facturés avec le 1er prélèvement (après essai)
+  var lineItems = [
+    "line_items[0][price]=" + priceId,
+    "line_items[0][quantity]=1"
+  ];
 
-  if (setupPriceId) {
-    lineItems.push("line_items[0][price]=" + setupPriceId);
-    lineItems.push("line_items[0][quantity]=1");
-    lineItems.push("line_items[1][price]=" + priceId);
-    lineItems.push("line_items[1][quantity]=1");
-  } else {
-    lineItems.push("line_items[0][price]=" + priceId);
-    lineItems.push("line_items[0][quantity]=1");
-  }
+  // Frais d'installation différés (facturés à la fin de l'essai avec le 1er mois)
+  var setupItems = setupPriceId ? [
+    "subscription_data[add_invoice_items][0][price]=" + setupPriceId,
+    "subscription_data[add_invoice_items][0][quantity]=1"
+  ] : [];
 
   // Construire le payload
   var params = [
@@ -104,7 +103,7 @@ function createCheckoutSession(body) {
     "allow_promotion_codes=true",
     "billing_address_collection=auto",
     "subscription_data[trial_period_days]=14"
-  ].concat(lineItems).filter(Boolean).join("&");
+  ].concat(lineItems).concat(setupItems).filter(Boolean).join("&");
 
   // Ajouter les metadata custom
   var metaIdx = 2;
