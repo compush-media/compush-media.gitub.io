@@ -478,31 +478,44 @@ function _updateGithubConfig(restoId, fields) {
 
     var getCode = getRes.getResponseCode();
 
-    if (getCode === 404) {
-      Logger.log("_updateGithubConfig: config.json introuvable pour « " + restoId + " » — restaurant pas encore provisionné");
-      return;
-    }
+    var sha     = null;
+    var current = null;
 
-    if (getCode !== 200) {
+    if (getCode === 404) {
+      // Nouveau client — créer le config.json depuis le template
+      Logger.log("_updateGithubConfig: 404 pour « " + restoId + " » — création automatique du config.json");
+      current = _defaultConfig(restoId);
+
+    } else if (getCode !== 200) {
       Logger.log("_updateGithubConfig: GET échoué (" + getCode + ") pour " + restoId);
       return;
+
+    } else {
+      var fileData = JSON.parse(getRes.getContentText());
+      sha          = fileData.sha;
+
+      // Décoder le contenu base64 → JSON
+      var rawB64   = (fileData.content || "").replace(/\n/g, "");
+      var rawBytes = Utilities.base64Decode(rawB64);
+      current      = JSON.parse(Utilities.newBlob(rawBytes).getDataAsString());
     }
-
-    var fileData = JSON.parse(getRes.getContentText());
-    var sha      = fileData.sha;
-
-    // Décoder le contenu base64 → JSON
-    var rawB64   = (fileData.content || "").replace(/\n/g, "");
-    var rawBytes = Utilities.base64Decode(rawB64);
-    var current  = JSON.parse(Utilities.newBlob(rawBytes).getDataAsString());
 
     // 2. Fusionner les champs
     var updated = _shallowMerge(current, fields);
 
-    // 3. PUT — réécrire le fichier
+    // 3. PUT — créer ou réécrire le fichier
     var newContent = Utilities.base64Encode(
       Utilities.newBlob(JSON.stringify(updated, null, 2) + "\n").getBytes()
     );
+
+    var putPayload = {
+      message: sha
+        ? "billing: update " + restoId + " — " + (fields.subscriptionStatus || "sync")
+        : "billing: provision " + restoId + " — nouveau client",
+      content: newContent,
+      branch:  branch
+    };
+    if (sha) putPayload.sha = sha;   // obligatoire pour PUT (update), absent pour CREATE
 
     var putRes = UrlFetchApp.fetch(apiUrl, {
       method:  "put",
@@ -511,18 +524,13 @@ function _updateGithubConfig(restoId, fields) {
         Accept:        "application/vnd.github.v3+json",
         "Content-Type": "application/json"
       },
-      payload: JSON.stringify({
-        message: "billing: update " + restoId + " — " + (fields.subscriptionStatus || "sync"),
-        content: newContent,
-        sha:     sha,
-        branch:  branch
-      }),
+      payload: JSON.stringify(putPayload),
       muteHttpExceptions: true
     });
 
     var putCode = putRes.getResponseCode();
     if (putCode === 200 || putCode === 201) {
-      Logger.log("_updateGithubConfig: OK — " + restoId + " [" + (fields.subscriptionStatus || "") + "]");
+      Logger.log("_updateGithubConfig: " + (putCode === 201 ? "CRÉÉ" : "OK") + " — " + restoId + " [" + (fields.subscriptionStatus || "") + "]");
     } else {
       Logger.log("_updateGithubConfig: PUT échoué (" + putCode + ") — " + putRes.getContentText().substring(0, 300));
     }
@@ -530,6 +538,27 @@ function _updateGithubConfig(restoId, fields) {
   } catch(err) {
     Logger.log("_updateGithubConfig error: " + err.message);
   }
+}
+
+/**
+ * _defaultConfig(restoId)
+ * Retourne un config.json vide (template) pour un nouveau client.
+ */
+function _defaultConfig(restoId) {
+  return {
+    name:                 restoId,
+    color:                "#B8924F",
+    color2:               "#9E7A3E",
+    plan:                 "essentiel",
+    subscriptionStatus:   "trialing",
+    setupPaid:            false,
+    trialEndDate:         "",
+    billingEmail:         "",
+    stripeCustomerId:     "",
+    stripeSubscriptionId: "",
+    nextBillingDate:      "",
+    invoices:             []
+  };
 }
 
 /**
