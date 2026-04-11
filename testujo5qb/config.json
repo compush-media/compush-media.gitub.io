@@ -1,0 +1,14 @@
+{
+  "name": "testujo5qb",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "plan": "pro",
+  "subscriptionStatus": "trialing",
+  "setupPaid": false,
+  "trialEndDate": "2026-04-25",
+  "billingEmail": "test@example.com",
+  "stripeCustomerId": "cus_UJo5qBIWKzu0WG",
+  "stripeSubscriptionId": "sub_1TLATcDpSXl9Whzruh9s0qt5",
+  "nextBillingDate": "2026-04-25",
+  "invoices": []
+}
