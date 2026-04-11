@@ -1,30 +1,24 @@
 /**
  * Fidelavis — stripeWebhook.gs
  * Google Apps Script — réception des webhooks Stripe
+ *                    + synchronisation automatique de config.json sur GitHub
  *
  * Gère :
  *   checkout.session.completed    → client créé, config initialisée
- *   invoice.paid                  → statut = active
+ *   invoice.paid                  → statut = active, facture ajoutée
  *   invoice.payment_failed        → statut = past_due
  *   customer.subscription.deleted → statut = canceled
+ *   customer.subscription.updated → statut + nextBillingDate mis à jour
  *
- * DÉPLOIEMENT :
- * 1. Aller sur https://script.google.com → Nouveau projet
- * 2. Coller ce code
- * 3. Extensions > Propriétés du script > Ajouter :
- *    - STRIPE_SECRET_KEY       : sk_live_xxx
- *    - STRIPE_WEBHOOK_SECRET   : whsec_xxx (depuis le dashboard Stripe)
- *    - BILLING_SHEET_ID        : ID de la Google Sheet "fidelavis-billing"
- *    - ADMIN_EMAIL             : votre email pour les notifications
- *    - BREVO_GAS_URL           : URL du GAS Brevo (pour emails onboarding)
- * 4. Déployer > Nouveau déploiement > Application Web
- *    - Exécuter en tant que : Moi
- *    - Accès : Tout le monde (anonyme)
- * 5. Copier l'URL et la configurer comme webhook dans le dashboard Stripe
- *    (Developers > Webhooks > Add endpoint)
+ * PROPRIÉTÉS REQUISES (Extensions > Propriétés du script) :
+ *   STRIPE_SECRET_KEY       sk_live_xxx
+ *   STRIPE_WEBHOOK_SECRET   whsec_xxx
+ *   BILLING_SHEET_ID        ID de la Google Sheet "fidelavis-billing"
+ *   ADMIN_EMAIL             email pour notifications
+ *   GITHUB_TOKEN            Personal Access Token (scope: contents write)
+ *   GITHUB_REPO             compush-media/compush-media.gitub.io  (valeur par défaut)
  *
- * GOOGLE SHEET "fidelavis-billing" :
- * Créer une Sheet avec les colonnes (ligne 1) :
+ * GOOGLE SHEET "fidelavis-billing" — colonnes :
  * timestamp | restoId | email | plan | subscriptionStatus | setupPaid |
  * stripeCustomerId | stripeSubscriptionId | nextBillingDate | event | raw
  */
@@ -41,7 +35,6 @@ function doPost(e) {
     var body  = JSON.parse(e.postData.contents);
     var event = body.type || "";
 
-    // Dispatch selon le type d'événement
     if (event === "checkout.session.completed") {
       _handleCheckoutCompleted(body.data.object);
 
@@ -58,7 +51,6 @@ function doPost(e) {
       _handleSubscriptionUpdated(body.data.object);
     }
 
-    // Toujours logger l'événement dans la Sheet
     _logEvent(event, body.data ? body.data.object : {}, body);
 
   } catch(err) {
@@ -69,23 +61,47 @@ function doPost(e) {
 }
 
 /* =====================================================
+   doGet — synchronisation manuelle + diagnostic
+   Usage :
+     ?action=syncBilling&restoId=le-coreen&customerId=cus_xxx
+       → force la sync Sheet → config.json pour ce restaurant
+     ?action=ping
+       → retourne {"ok":true} pour tester le déploiement
+   ===================================================== */
+function doGet(e) {
+  var params = e ? (e.parameter || {}) : {};
+  var action = params.action || "";
+
+  if (action === "syncBilling") {
+    var restoId    = params.restoId    || "";
+    var customerId = params.customerId || "";
+
+    if (!restoId || !customerId) {
+      return _jsonResponse({ error: "restoId et customerId requis" });
+    }
+
+    var result = _syncBillingFromSheet(restoId, customerId);
+    return _jsonResponse(result);
+  }
+
+  return _jsonResponse({ ok: true, service: "Fidelavis Stripe Webhook" });
+}
+
+/* =====================================================
    checkout.session.completed
    → Nouveau client qui vient de payer
    ===================================================== */
 function _handleCheckoutCompleted(session) {
-  var email          = session.customer_email || session.customer_details?.email || "";
+  var email          = session.customer_email || (session.customer_details && session.customer_details.email) || "";
   var customerId     = session.customer || "";
   var subscriptionId = session.subscription || "";
-  var planId         = session.metadata?.planId || "essentiel";
+  var planId         = (session.metadata && session.metadata.planId) || "essentiel";
 
-  // Générer un restoId (slug) unique
   var restoId = _generateRestoId(email, customerId);
 
-  // Récupérer les détails de l'abonnement
-  var subDetails = _fetchSubscription(subscriptionId);
+  var subDetails  = _fetchSubscription(subscriptionId);
   var nextBilling = subDetails ? _tsToDate(subDetails.current_period_end) : "";
 
-  // Données client complètes
   var clientData = {
     restoId:              restoId,
     plan:                 planId,
@@ -99,42 +115,69 @@ function _handleCheckoutCompleted(session) {
     createdAt:            new Date().toISOString()
   };
 
-  // 1. Enregistrer dans la Google Sheet
   _saveBillingRecord(clientData, "checkout.session.completed");
-
-  // 2. Envoyer email de confirmation + onboarding
   _sendOnboardingEmail(email, planId, restoId);
-
-  // 3. Notifier l'admin
   _notifyAdmin("Nouveau client Fidelavis", [
     "Email : " + email,
     "Plan : " + planId,
-    "RestoId : " + restoId,
+    "RestoId suggéré : " + restoId,
     "CustomerId : " + customerId,
-    "SubscriptionId : " + subscriptionId
+    "SubscriptionId : " + subscriptionId,
+    "",
+    "→ Provisionnez le restaurant puis appelez :",
+    "  ?action=syncBilling&restoId=<slug>&customerId=" + customerId
   ].join("\n"));
+
+  // Tenter la mise à jour GitHub si le dossier existe déjà
+  // (cas : client existant qui renouvelle, ou pré-provisionnement)
+  _updateGithubConfig(restoId, {
+    plan:                 planId,
+    subscriptionStatus:   "active",
+    setupPaid:            true,
+    billingEmail:         email,
+    stripeCustomerId:     customerId,
+    stripeSubscriptionId: subscriptionId,
+    nextBillingDate:      nextBilling
+  });
 
   Logger.log("checkout.session.completed — restoId: " + restoId + " plan: " + planId);
 }
 
 /* =====================================================
-   invoice.paid → statut = active
+   invoice.paid → statut = active, facture ajoutée
    ===================================================== */
 function _handleInvoicePaid(invoice) {
   var customerId     = invoice.customer || "";
   var subscriptionId = invoice.subscription || "";
 
-  // Enregistrer la facture dans la Sheet
   var invoiceData = {
-    id:          invoice.id,
+    id:          invoice.id || "",
     date:        _tsToDate(invoice.created),
-    amount:      invoice.amount_paid,    // en centimes
+    amount:      invoice.amount_paid,
     status:      "paid",
     description: invoice.description || "Abonnement Fidelavis",
-    pdf:         invoice.invoice_pdf || ""
+    pdf:         invoice.invoice_pdf  || ""
   };
 
-  _updateBillingStatus(customerId, subscriptionId, "active", invoiceData);
+  // Récupérer la prochaine date de facturation depuis l'abonnement
+  var nextBilling = "";
+  if (subscriptionId) {
+    var sub = _fetchSubscription(subscriptionId);
+    if (sub) nextBilling = _tsToDate(sub.current_period_end);
+  }
+
+  _updateBillingStatus(customerId, subscriptionId, "active", invoiceData, nextBilling);
+
+  // Sync GitHub
+  var restoId = _findRestoIdByCustomer(customerId);
+  if (restoId) {
+    _updateGithubConfig(restoId, {
+      subscriptionStatus: "active",
+      nextBillingDate:    nextBilling || undefined,
+      invoices:           [invoiceData]
+    });
+  }
+
   Logger.log("invoice.paid — customer: " + customerId);
 }
 
@@ -146,14 +189,19 @@ function _handleInvoicePaymentFailed(invoice) {
   var subscriptionId = invoice.subscription || "";
   var email          = invoice.customer_email || "";
 
-  _updateBillingStatus(customerId, subscriptionId, "past_due", null);
+  _updateBillingStatus(customerId, subscriptionId, "past_due", null, "");
 
-  // Notifier l'admin
+  // Sync GitHub
+  var restoId = _findRestoIdByCustomer(customerId);
+  if (restoId) {
+    _updateGithubConfig(restoId, { subscriptionStatus: "past_due" });
+  }
+
   _notifyAdmin("Paiement échoué — Fidelavis", [
     "Client : " + customerId,
     "Email : " + email,
     "Abonnement : " + subscriptionId,
-    "Montant : " + (invoice.amount_due / 100) + " €"
+    "Montant : " + ((invoice.amount_due || 0) / 100) + " €"
   ].join("\n"));
 
   Logger.log("invoice.payment_failed — customer: " + customerId);
@@ -166,7 +214,13 @@ function _handleSubscriptionDeleted(subscription) {
   var customerId     = subscription.customer || "";
   var subscriptionId = subscription.id || "";
 
-  _updateBillingStatus(customerId, subscriptionId, "canceled", null);
+  _updateBillingStatus(customerId, subscriptionId, "canceled", null, "");
+
+  // Sync GitHub
+  var restoId = _findRestoIdByCustomer(customerId);
+  if (restoId) {
+    _updateGithubConfig(restoId, { subscriptionStatus: "canceled" });
+  }
 
   _notifyAdmin("Résiliation abonnement — Fidelavis", [
     "Client : " + customerId,
@@ -187,7 +241,76 @@ function _handleSubscriptionUpdated(subscription) {
   var nextBilling    = _tsToDate(subscription.current_period_end);
 
   _updateBillingStatus(customerId, subscriptionId, status, null, nextBilling);
+
+  // Sync GitHub
+  var restoId = _findRestoIdByCustomer(customerId);
+  if (restoId) {
+    _updateGithubConfig(restoId, {
+      subscriptionStatus: status,
+      nextBillingDate:    nextBilling
+    });
+  }
+
   Logger.log("subscription.updated — customer: " + customerId + " status: " + status);
+}
+
+/* =====================================================
+   _syncBillingFromSheet(restoId, customerId)
+   Sync manuelle : lit la Sheet, met à jour config.json
+   Appelée via doGet?action=syncBilling
+   ===================================================== */
+function _syncBillingFromSheet(restoId, customerId) {
+  try {
+    var sheet  = _getSheet();
+    var data   = sheet.getDataRange().getValues();
+    var record = null;
+
+    for (var i = data.length - 1; i >= 1; i--) {
+      if (data[i][6] === customerId) {
+        record = data[i];
+        break;
+      }
+    }
+
+    if (!record) {
+      return { error: "customerId non trouvé dans la Sheet : " + customerId };
+    }
+
+    // Reconstruire les données billing depuis la ligne Sheet
+    var raw = {};
+    try { raw = JSON.parse(record[10] || "{}"); } catch(e) {}
+
+    var fields = {
+      plan:                 record[3]  || raw.plan || "essentiel",
+      subscriptionStatus:   record[4]  || "incomplete",
+      setupPaid:            record[5] === "oui" || raw.setupPaid === true,
+      billingEmail:         record[2]  || "",
+      stripeCustomerId:     customerId,
+      stripeSubscriptionId: record[7]  || "",
+      nextBillingDate:      record[8]  || raw.nextBillingDate || "",
+      invoices:             raw.invoices || []
+    };
+
+    // Mettre à jour le restoId dans la Sheet si différent
+    if (record[1] !== restoId) {
+      // Trouver la ligne et mettre à jour
+      for (var j = data.length - 1; j >= 1; j--) {
+        if (data[j][6] === customerId) {
+          sheet.getRange(j + 1, 2).setValue(restoId);
+          break;
+        }
+      }
+    }
+
+    _updateGithubConfig(restoId, fields);
+
+    Logger.log("_syncBillingFromSheet: OK — restoId: " + restoId);
+    return { ok: true, restoId: restoId, status: fields.subscriptionStatus };
+
+  } catch(err) {
+    Logger.log("_syncBillingFromSheet error: " + err.message);
+    return { error: err.message };
+  }
 }
 
 /* =====================================================
@@ -224,34 +347,29 @@ function _saveBillingRecord(data, event) {
 
 function _updateBillingStatus(customerId, subscriptionId, status, invoice, nextBilling) {
   try {
-    var sheet  = _getSheet();
-    var data   = sheet.getDataRange().getValues();
+    var sheet   = _getSheet();
+    var data    = sheet.getDataRange().getValues();
     var updated = false;
 
-    // Chercher la ligne avec ce customerId (colonne G = index 6)
     for (var i = data.length - 1; i >= 1; i--) {
       if (data[i][6] === customerId) {
-        // Mettre à jour le statut (colonne E = index 4)
         sheet.getRange(i + 1, 5).setValue(status);
 
         if (nextBilling) {
           sheet.getRange(i + 1, 9).setValue(nextBilling);
         }
 
-        // Ajouter la facture dans la colonne raw (colonne K = index 10)
         if (invoice) {
           var raw = {};
           try { raw = JSON.parse(data[i][10] || "{}"); } catch(e) {}
           if (!raw.invoices) raw.invoices = [];
           raw.invoices.unshift(invoice);
-          // Garder les 24 dernières factures
-          raw.invoices = raw.invoices.slice(0, 24);
+          raw.invoices           = raw.invoices.slice(0, 24);
           raw.subscriptionStatus = status;
           if (nextBilling) raw.nextBillingDate = nextBilling;
           sheet.getRange(i + 1, 11).setValue(JSON.stringify(raw));
         }
 
-        // Logguer l'événement de mise à jour
         sheet.appendRow([
           new Date().toISOString(), "", "", "", status, "",
           customerId, subscriptionId, nextBilling || "", "status_update", ""
@@ -276,7 +394,7 @@ function _logEvent(eventType, obj, rawBody) {
     sheet.appendRow([
       new Date().toISOString(),
       obj.metadata ? (obj.metadata.restoId || "") : "",
-      obj.customer_email || obj.customer_details?.email || "",
+      obj.customer_email || (obj.customer_details && obj.customer_details.email) || "",
       obj.metadata ? (obj.metadata.planId || "") : "",
       "", "", obj.customer || "", obj.subscription || "",
       "", eventType, JSON.stringify(rawBody).substring(0, 1000)
@@ -284,6 +402,148 @@ function _logEvent(eventType, obj, rawBody) {
   } catch(err) {
     Logger.log("_logEvent error: " + err.message);
   }
+}
+
+/* =====================================================
+   GitHub API — mise à jour automatique de config.json
+   ===================================================== */
+
+/**
+ * _findRestoIdByCustomer(customerId)
+ * Cherche le restoId dans la Sheet à partir du stripeCustomerId.
+ */
+function _findRestoIdByCustomer(customerId) {
+  if (!customerId) return null;
+  try {
+    var sheet = _getSheet();
+    var data  = sheet.getDataRange().getValues();
+    for (var i = data.length - 1; i >= 1; i--) {
+      if (data[i][6] === customerId && data[i][1]) {
+        return data[i][1];
+      }
+    }
+  } catch(e) {
+    Logger.log("_findRestoIdByCustomer error: " + e.message);
+  }
+  return null;
+}
+
+/**
+ * _updateGithubConfig(restoId, fields)
+ * Met à jour /<restoId>/config.json sur GitHub via l'API REST.
+ *
+ * fields.invoices (array) : les nouvelles factures sont PREPENDÉES
+ * au tableau existant (max 24 entrées conservées).
+ *
+ * Les champs undefined/null sont ignorés.
+ */
+function _updateGithubConfig(restoId, fields) {
+  if (!restoId || !fields) return;
+
+  var token  = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo   = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+               || "compush-media/compush-media.gitub.io";
+  var branch = "main";
+  var path   = restoId + "/config.json";
+  var apiUrl = "https://api.github.com/repos/" + repo + "/contents/" + path;
+
+  if (!token) {
+    Logger.log("_updateGithubConfig: GITHUB_TOKEN non configuré — sync ignorée");
+    return;
+  }
+
+  try {
+    // 1. GET — lire le fichier courant (pour récupérer SHA + contenu)
+    var getRes = UrlFetchApp.fetch(apiUrl + "?ref=" + branch, {
+      headers: {
+        Authorization: "token " + token,
+        Accept:        "application/vnd.github.v3+json"
+      },
+      muteHttpExceptions: true
+    });
+
+    var getCode = getRes.getResponseCode();
+
+    if (getCode === 404) {
+      Logger.log("_updateGithubConfig: config.json introuvable pour « " + restoId + " » — restaurant pas encore provisionné");
+      return;
+    }
+
+    if (getCode !== 200) {
+      Logger.log("_updateGithubConfig: GET échoué (" + getCode + ") pour " + restoId);
+      return;
+    }
+
+    var fileData = JSON.parse(getRes.getContentText());
+    var sha      = fileData.sha;
+
+    // Décoder le contenu base64 → JSON
+    var rawB64   = (fileData.content || "").replace(/\n/g, "");
+    var rawBytes = Utilities.base64Decode(rawB64);
+    var current  = JSON.parse(Utilities.newBlob(rawBytes).getDataAsString());
+
+    // 2. Fusionner les champs
+    var updated = _shallowMerge(current, fields);
+
+    // 3. PUT — réécrire le fichier
+    var newContent = Utilities.base64Encode(
+      Utilities.newBlob(JSON.stringify(updated, null, 2) + "\n").getBytes()
+    );
+
+    var putRes = UrlFetchApp.fetch(apiUrl, {
+      method:  "put",
+      headers: {
+        Authorization: "token " + token,
+        Accept:        "application/vnd.github.v3+json",
+        "Content-Type": "application/json"
+      },
+      payload: JSON.stringify({
+        message: "billing: update " + restoId + " — " + (fields.subscriptionStatus || "sync"),
+        content: newContent,
+        sha:     sha,
+        branch:  branch
+      }),
+      muteHttpExceptions: true
+    });
+
+    var putCode = putRes.getResponseCode();
+    if (putCode === 200 || putCode === 201) {
+      Logger.log("_updateGithubConfig: OK — " + restoId + " [" + (fields.subscriptionStatus || "") + "]");
+    } else {
+      Logger.log("_updateGithubConfig: PUT échoué (" + putCode + ") — " + putRes.getContentText().substring(0, 300));
+    }
+
+  } catch(err) {
+    Logger.log("_updateGithubConfig error: " + err.message);
+  }
+}
+
+/**
+ * _shallowMerge(base, patch)
+ * Fusionne patch dans base.
+ * Cas spécial invoices : prepend + déduplique sur id + limite à 24.
+ */
+function _shallowMerge(base, patch) {
+  var result = {};
+  // Copie base
+  Object.keys(base).forEach(function(k) { result[k] = base[k]; });
+
+  Object.keys(patch).forEach(function(k) {
+    var v = patch[k];
+    if (v === undefined || v === null) return;   // ignorer les valeurs nulles
+
+    if (k === "invoices" && Array.isArray(v) && v.length > 0) {
+      var existing = Array.isArray(result.invoices) ? result.invoices : [];
+      // Déduplique par id avant de fusionner
+      var existingIds = existing.map(function(inv) { return inv.id; });
+      var newInvoices = v.filter(function(inv) { return inv.id && existingIds.indexOf(inv.id) === -1; });
+      result.invoices = newInvoices.concat(existing).slice(0, 24);
+    } else {
+      result[k] = v;
+    }
+  });
+
+  return result;
 }
 
 /* =====================================================
@@ -349,7 +609,6 @@ function _notifyAdmin(subject, body) {
    ===================================================== */
 
 function _generateRestoId(email, customerId) {
-  // Génère un slug à partir de l'email ou du customerId
   var base = email
     ? email.split("@")[0].toLowerCase().replace(/[^a-z0-9]/g, "").substring(0, 12)
     : "resto";
@@ -366,4 +625,10 @@ function _tsToDate(timestamp) {
   try {
     return new Date(parseInt(timestamp) * 1000).toISOString().slice(0, 10);
   } catch(e) { return ""; }
+}
+
+function _jsonResponse(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
 }
