@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Merci — Fidelavis</title>
+  <style>
+    :root {
+      --brand: #b6152b;
+      --green: #059669;
+      --green-bg: #d1fae5;
+      --bg: #f4f6f9;
+      --ink: #1c1c2e;
+      --muted: #6b7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 32px rgba(0,0,0,.10);
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .icon {
+      width: 72px; height: 72px;
+      background: var(--green-bg);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      margin: 0 auto 24px;
+    }
+
+    h1 {
+      font-size: 26px; font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 15px; color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .highlight {
+      color: var(--ink); font-weight: 600;
+    }
+
+    .divider {
+      border: none; border-top: 1px solid #e5e7eb;
+      margin: 28px 0;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--brand); color: #fff;
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-size: 15px; font-weight: 700;
+      text-decoration: none;
+      margin-top: 8px;
+      transition: background .15s;
+    }
+    .btn:hover { background: #8b0f21; }
+
+    .logo {
+      font-size: 13px; color: var(--muted);
+      margin-top: 32px;
+      font-weight: 700; letter-spacing: .03em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="icon">🎉</div>
+
+    <h1>Bienvenue sur Fidelavis !</h1>
+    <p>Votre abonnement est <span class="highlight">actif</span>.</p>
+    <p>Notre équipe va configurer votre espace dans les <span class="highlight">24h</span>.<br>
+       Vous recevrez un email avec vos accès.</p>
+
+    <hr class="divider" />
+
+    <p style="font-size:13px;">Des questions ? Écrivez-nous à<br>
+      <a href="mailto:support@fidelavis.com" style="color:var(--brand);font-weight:600;">support@fidelavis.com</a>
+    </p>
+
+    <a href="https://app.cartefidelavis.com/fidelavis-admin/" class="btn">
+      Accéder à mon espace →
+    </a>
+  </div>
+
+  <div class="logo">Fidelavis</div>
+
+</body>
+</html>
