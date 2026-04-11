@@ -161,11 +161,19 @@ function _handleCheckoutCompleted(session) {
 function _handleInvoicePaid(invoice) {
   var customerId     = invoice.customer || "";
   var subscriptionId = invoice.subscription || "";
+  var amountPaid     = invoice.amount_paid || 0;
+
+  // Ignorer les factures à 0€ (déclenchées au démarrage du trial par Stripe)
+  // Elles ne représentent pas un vrai paiement
+  if (amountPaid === 0) {
+    Logger.log("invoice.paid (0€) ignorée — client en trial : " + customerId);
+    return;
+  }
 
   var invoiceData = {
     id:          invoice.id || "",
     date:        _tsToDate(invoice.created),
-    amount:      invoice.amount_paid,
+    amount:      amountPaid,
     status:      "paid",
     description: invoice.description || "Abonnement Fidelavis",
     pdf:         invoice.invoice_pdf  || ""
@@ -185,14 +193,14 @@ function _handleInvoicePaid(invoice) {
   if (restoId) {
     _updateGithubConfig(restoId, {
       subscriptionStatus: "active",
-      setupPaid:          true,        // 1er prélèvement = installation + 1er mois payés
+      setupPaid:          true,        // 1er vrai prélèvement = installation + 1er mois payés
       trialEndDate:       "",          // trial terminé
       nextBillingDate:    nextBilling || undefined,
       invoices:           [invoiceData]
     });
   }
 
-  Logger.log("invoice.paid — customer: " + customerId);
+  Logger.log("invoice.paid (" + (amountPaid / 100) + "€) — customer: " + customerId);
 }
 
 /* =====================================================
