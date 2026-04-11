@@ -1,0 +1,14 @@
+{
+  "name": "dumondedamieujottf",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "plan": "pro",
+  "subscriptionStatus": "trialing",
+  "setupPaid": false,
+  "trialEndDate": "2026-04-25",
+  "billingEmail": "dumondedamien6@gmail.com",
+  "stripeCustomerId": "cus_UJotTFpEJHQGP4",
+  "stripeSubscriptionId": "sub_1TLBGADpSXl9WhzrbZ5wKzdv",
+  "nextBillingDate": "2026-04-25",
+  "invoices": []
+}
