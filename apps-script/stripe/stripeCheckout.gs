@@ -102,7 +102,8 @@ function createCheckoutSession(body) {
     "metadata[planId]=" + encodeURIComponent(planId),
     "metadata[source]=fidelavis-web",
     "allow_promotion_codes=true",
-    "billing_address_collection=auto"
+    "billing_address_collection=auto",
+    "subscription_data[trial_period_days]=14"
   ].concat(lineItems).filter(Boolean).join("&");
 
   // Ajouter les metadata custom
