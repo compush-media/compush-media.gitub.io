@@ -78,19 +78,14 @@ function createCheckoutSession(body) {
   if (!priceId) return { error: "priceId manquant" };
 
   // Construire les line_items
-  // 1) Frais d'installation (one-time) → débités aujourd'hui
-  // 2) Abonnement mensuel → 14 jours gratuits puis 149€/mois
-  var lineItems = [];
-
-  if (setupPriceId) {
-    lineItems.push("line_items[0][price]=" + setupPriceId);
-    lineItems.push("line_items[0][quantity]=1");
-    lineItems.push("line_items[1][price]=" + priceId);
-    lineItems.push("line_items[1][quantity]=1");
-  } else {
-    lineItems.push("line_items[0][price]=" + priceId);
-    lineItems.push("line_items[0][quantity]=1");
-  }
+  // Modèle : 0€ aujourd'hui — 14 jours d'essai gratuit
+  // Frais d'installation (199€) → InvoiceItem créé par le webhook après checkout
+  //   → facturé automatiquement avec le 1er prélèvement (J+14)
+  // Abonnement mensuel → démarre après le trial
+  var lineItems = [
+    "line_items[0][price]=" + priceId,
+    "line_items[0][quantity]=1"
+  ];
 
   // Construire le payload
   var params = [
@@ -99,17 +94,20 @@ function createCheckoutSession(body) {
     successUrl ? ("success_url=" + encodeURIComponent(successUrl)) : "",
     cancelUrl  ? ("cancel_url="  + encodeURIComponent(cancelUrl))  : "",
     email      ? ("customer_email=" + encodeURIComponent(email))   : "",
-    "metadata[planId]=" + encodeURIComponent(planId),
+    "metadata[planId]="     + encodeURIComponent(planId),
     "metadata[source]=fidelavis-web",
+    // Passer setupPriceId en metadata → webhook crée l'InvoiceItem
+    setupPriceId ? ("metadata[setupPriceId]=" + encodeURIComponent(setupPriceId)) : "",
     "allow_promotion_codes=true",
     "billing_address_collection=auto",
-    "subscription_data[trial_period_days]=14"
+    "subscription_data[trial_period_days]=14",
+    // Forcer la collecte du moyen de paiement même sans débit immédiat
+    "payment_method_collection=always"
   ].concat(lineItems).filter(Boolean).join("&");
 
   // Ajouter les metadata custom
-  var metaIdx = 2;
   Object.keys(metadata).forEach(function(k) {
-    if (k !== "planId" && k !== "source") {
+    if (k !== "planId" && k !== "source" && k !== "setupPriceId") {
       params += "&metadata[" + encodeURIComponent(k) + "]=" + encodeURIComponent(metadata[k]);
     }
   });

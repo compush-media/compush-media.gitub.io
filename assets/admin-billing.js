@@ -67,28 +67,53 @@
      _buildBillingHTML(cfg) — génère le HTML complet
   -------------------------------------------------- */
   function _buildBillingHTML(cfg) {
-    var plan   = cfg.plan || "essentiel";
-    var status = cfg.subscriptionStatus || "incomplete";
-    var statusLabel = (typeof getStatusLabel  === "function") ? getStatusLabel(status)  : status;
-    var statusColor = (typeof getStatusColor  === "function") ? getStatusColor(status)  : "#6b7280";
-    var planLabel   = (typeof getPlanLabel    === "function") ? getPlanLabel(plan)      : plan;
-    var planPrice   = (typeof getPlanPrice    === "function") ? getPlanPrice(plan)      : null;
-    var fmt         = (typeof formatPrice     === "function") ? formatPrice             : function(v) { return v + " €"; };
+    var plan        = cfg.plan || "essentiel";
+    var status      = cfg.subscriptionStatus || "incomplete";
+    var isTrialing  = status === "trialing";
+    var statusLabel = (typeof getStatusLabel === "function") ? getStatusLabel(status) : status;
+    var statusColor = (typeof getStatusColor === "function") ? getStatusColor(status) : "#6b7280";
+    var planLabel   = (typeof getPlanLabel   === "function") ? getPlanLabel(plan)     : plan;
+    var planPrice   = (typeof getPlanPrice   === "function") ? getPlanPrice(plan)     : null;
+    var fmt         = (typeof formatPrice    === "function") ? formatPrice            : function(v) { return v + " €"; };
 
-    var nextBilling = cfg.nextBillingDate ? _formatDate(cfg.nextBillingDate) : "—";
-    var setupPaid   = cfg.setupPaid === true;
+    var nextBilling  = cfg.nextBillingDate ? _formatDate(cfg.nextBillingDate) : "—";
+    var trialEndDate = cfg.trialEndDate    ? _formatDate(cfg.trialEndDate)    : null;
+    var setupPaid    = cfg.setupPaid === true;
+
+    // ── Bandeau essai gratuit ──
+    var trialBanner = isTrialing ? [
+      '<div class="billing-trial-banner">',
+        '<div class="billing-trial-icon">🎁</div>',
+        '<div>',
+          '<div class="billing-trial-title">Essai gratuit en cours</div>',
+          '<div class="billing-trial-sub">',
+            trialEndDate
+              ? 'Aucun paiement avant le <strong>' + trialEndDate + '</strong>'
+              : 'Aucun paiement pendant 14 jours',
+          '</div>',
+          '<div class="billing-trial-sub" style="margin-top:4px;color:#6b7280;font-size:12px;">',
+            'À la fin de l\'essai : 199 € installation + ' + fmt(planPrice || 0) + '/mois',
+          '</div>',
+        '</div>',
+      '</div>'
+    ].join("") : "";
 
     return [
+      trialBanner,
+
       // ── COMPTE ──────────────────────────────────────
       '<div class="billing-section">',
         '<div class="billing-section-title">👤 Compte</div>',
         '<div class="billing-grid">',
-          _row("Email",          cfg.billingEmail || "—"),
-          _row("Plan",           '<strong>' + _esc(planLabel) + '</strong>' +
-                                 (planPrice ? ' <span class="billing-muted">· ' + fmt(planPrice) + '/mois</span>' : "")),
-          _row("Installation",   setupPaid
-                                 ? '<span class="billing-badge green">✓ Payée (199 €)</span>'
-                                 : '<span class="billing-badge orange">En attente</span>'),
+          _row("Email", cfg.billingEmail || "—"),
+          _row("Plan",  '<strong>' + _esc(planLabel) + '</strong>' +
+                        (planPrice ? ' <span class="billing-muted">· ' + fmt(planPrice) + '/mois</span>' : "")),
+          _row("Installation",
+               isTrialing
+               ? '<span class="billing-badge blue">À facturer après l\'essai (199 €)</span>'
+               : setupPaid
+                 ? '<span class="billing-badge green">✓ Payée (199 €)</span>'
+                 : '<span class="billing-badge orange">En attente</span>'),
         '</div>',
       '</div>',
 
@@ -99,30 +124,43 @@
           _row("Statut",
                '<span class="billing-status-dot" style="background:' + statusColor + '"></span>' +
                '<strong style="color:' + statusColor + '">' + _esc(statusLabel) + '</strong>'),
-          _row("Plan",           _esc(planLabel)),
-          _row("Prochaine facturation", nextBilling),
-          _row("ID abonnement",  cfg.stripeSubscriptionId
-                                 ? '<code class="billing-code">' + _esc(cfg.stripeSubscriptionId) + '</code>'
-                                 : "—"),
+          _row("Plan", _esc(planLabel)),
+          isTrialing && trialEndDate
+            ? _row("Fin d'essai", '<strong style="color:#2563eb">' + trialEndDate + '</strong>')
+            : "",
+          isTrialing
+            ? _row("1ère facturation", trialEndDate || "Dans 14 jours")
+            : _row("Prochaine facturation", nextBilling),
+          cfg.stripeSubscriptionId
+            ? _row("ID abonnement", '<code class="billing-code">' + _esc(cfg.stripeSubscriptionId) + '</code>')
+            : "",
         '</div>',
+
+        // Alerte essai gratuit
+        isTrialing ?
+          '<div class="billing-alert blue">🎁 Aucun prélèvement jusqu\'à la fin de l\'essai.' +
+          (trialEndDate ? ' Date de fin : <strong>' + trialEndDate + '</strong>.' : '') +
+          ' Annulez à tout moment avant cette date.</div>' : "",
 
         // Alerte paiement en retard
         (status === "past_due" || status === "unpaid") ?
-          '<div class="billing-alert orange">⚠️ Paiement en retard — Mettez à jour votre moyen de paiement pour continuer à utiliser Fidelavis.</div>' : "",
+          '<div class="billing-alert orange">⚠️ Paiement en retard — Mettez à jour votre moyen de paiement.</div>' : "",
 
         // Alerte résilié
         (status === "canceled") ?
-          '<div class="billing-alert red">❌ Votre abonnement est résilié. Contactez-nous pour réactiver votre compte.</div>' : "",
+          '<div class="billing-alert red">❌ Abonnement résilié. Contactez-nous pour réactiver.</div>' : "",
 
         '<button id="manageSubBtn" class="billing-btn">',
-          '⚙️ Gérer mon abonnement',
+          isTrialing ? '❌ Annuler l\'essai gratuit' : '⚙️ Gérer mon abonnement',
         '</button>',
       '</div>',
 
       // ── FACTURES ────────────────────────────────────
       '<div class="billing-section">',
         '<div class="billing-section-title">🧾 Factures</div>',
-        _buildInvoicesHTML(cfg.invoices),
+        isTrialing
+          ? '<div class="billing-empty">Aucune facture — votre essai est gratuit jusqu\'au ' + (trialEndDate || "J+14") + '.</div>'
+          : _buildInvoicesHTML(cfg.invoices),
       '</div>'
     ].join("");
   }

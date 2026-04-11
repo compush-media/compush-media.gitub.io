@@ -89,24 +89,35 @@ function doGet(e) {
 
 /* =====================================================
    checkout.session.completed
-   → Nouveau client qui vient de payer
+   → Client inscrit pour l'essai gratuit (0€ aujourd'hui)
    ===================================================== */
 function _handleCheckoutCompleted(session) {
   var email          = session.customer_email || (session.customer_details && session.customer_details.email) || "";
   var customerId     = session.customer || "";
   var subscriptionId = session.subscription || "";
   var planId         = (session.metadata && session.metadata.planId) || "essentiel";
+  var setupPriceId   = (session.metadata && session.metadata.setupPriceId) || "";
 
   var restoId = _generateRestoId(email, customerId);
 
-  var subDetails  = _fetchSubscription(subscriptionId);
-  var nextBilling = subDetails ? _tsToDate(subDetails.current_period_end) : "";
+  // Récupérer les détails de l'abonnement (trial_end, status)
+  var subDetails   = _fetchSubscription(subscriptionId);
+  var trialEnd     = subDetails ? _tsToDate(subDetails.trial_end)          : _dateInDays(14);
+  var nextBilling  = subDetails ? _tsToDate(subDetails.current_period_end) : _dateInDays(14);
+  var subStatus    = (subDetails && subDetails.status) || "trialing";
+
+  // Créer l'InvoiceItem pour les frais d'installation (199€)
+  // → sera facturé automatiquement avec le 1er prélèvement à la fin du trial
+  if (setupPriceId && customerId) {
+    _createSetupInvoiceItem(customerId, setupPriceId);
+  }
 
   var clientData = {
     restoId:              restoId,
     plan:                 planId,
-    subscriptionStatus:   "active",
-    setupPaid:            true,
+    subscriptionStatus:   subStatus,   // "trialing"
+    setupPaid:            false,        // sera true après invoice.paid
+    trialEndDate:         trialEnd,
     billingEmail:         email,
     stripeCustomerId:     customerId,
     stripeSubscriptionId: subscriptionId,
@@ -116,10 +127,12 @@ function _handleCheckoutCompleted(session) {
   };
 
   _saveBillingRecord(clientData, "checkout.session.completed");
-  _sendOnboardingEmail(email, planId, restoId);
-  _notifyAdmin("Nouveau client Fidelavis", [
+  _sendOnboardingEmail(email, planId, restoId, trialEnd);
+  _notifyAdmin("Nouveau client Fidelavis (essai gratuit)", [
     "Email : " + email,
     "Plan : " + planId,
+    "Statut : " + subStatus,
+    "Fin d'essai : " + trialEnd,
     "RestoId suggéré : " + restoId,
     "CustomerId : " + customerId,
     "SubscriptionId : " + subscriptionId,
@@ -128,19 +141,18 @@ function _handleCheckoutCompleted(session) {
     "  ?action=syncBilling&restoId=<slug>&customerId=" + customerId
   ].join("\n"));
 
-  // Tenter la mise à jour GitHub si le dossier existe déjà
-  // (cas : client existant qui renouvelle, ou pré-provisionnement)
   _updateGithubConfig(restoId, {
     plan:                 planId,
-    subscriptionStatus:   "active",
-    setupPaid:            true,
+    subscriptionStatus:   subStatus,
+    setupPaid:            false,
+    trialEndDate:         trialEnd,
     billingEmail:         email,
     stripeCustomerId:     customerId,
     stripeSubscriptionId: subscriptionId,
     nextBillingDate:      nextBilling
   });
 
-  Logger.log("checkout.session.completed — restoId: " + restoId + " plan: " + planId);
+  Logger.log("checkout.session.completed — restoId: " + restoId + " plan: " + planId + " status: " + subStatus);
 }
 
 /* =====================================================
@@ -173,6 +185,8 @@ function _handleInvoicePaid(invoice) {
   if (restoId) {
     _updateGithubConfig(restoId, {
       subscriptionStatus: "active",
+      setupPaid:          true,        // 1er prélèvement = installation + 1er mois payés
+      trialEndDate:       "",          // trial terminé
       nextBillingDate:    nextBilling || undefined,
       invoices:           [invoiceData]
     });
@@ -567,22 +581,27 @@ function _fetchSubscription(subscriptionId) {
    Emails & Notifications
    ===================================================== */
 
-function _sendOnboardingEmail(email, planId, restoId) {
+function _sendOnboardingEmail(email, planId, restoId, trialEndDate) {
   if (!email) return;
 
   var planName = planId === "pro" ? "Pro" : "Essentiel";
-  var subject  = "Bienvenue sur Fidelavis ! 🎉 Votre compte est actif";
+  var subject  = "Votre essai gratuit Fidelavis commence ! 🎉";
   var body = [
     "Bonjour,",
     "",
-    "Votre abonnement Fidelavis " + planName + " est maintenant actif.",
+    "Votre essai gratuit Fidelavis " + planName + " est maintenant actif.",
+    "",
+    "✅ Aucun paiement aujourd'hui.",
+    "📅 Votre essai se termine le : " + (trialEndDate || "dans 14 jours"),
+    "",
+    "Après l'essai, vous serez facturé :",
+    "  - 199€ d'installation (une seule fois)",
+    "  - " + (planId === "pro" ? "149€" : "97€") + "/mois pour le plan " + planName,
     "",
     "Votre identifiant restaurant : " + restoId,
-    "",
     "Notre équipe va configurer votre espace dans les 24h.",
-    "Vous recevrez un email avec les accès à votre tableau de bord.",
     "",
-    "Des questions ? Répondez à cet email.",
+    "Pour annuler avant la fin d'essai, répondez à cet email.",
     "",
     "L'équipe Fidelavis"
   ].join("\n");
@@ -591,6 +610,35 @@ function _sendOnboardingEmail(email, planId, restoId) {
     GmailApp.sendEmail(email, subject, body);
   } catch(err) {
     Logger.log("_sendOnboardingEmail error: " + err.message);
+  }
+}
+
+/* =====================================================
+   _createSetupInvoiceItem(customerId, setupPriceId)
+   Crée un InvoiceItem (frais d'installation 199€) sur le client.
+   Cet item sera automatiquement inclus dans la prochaine facture
+   générée par Stripe (= 1er prélèvement à la fin du trial).
+   ===================================================== */
+function _createSetupInvoiceItem(customerId, setupPriceId) {
+  if (!customerId || !setupPriceId) return;
+  try {
+    var secretKey = PropertiesService.getScriptProperties().getProperty("STRIPE_SECRET_KEY");
+    var res = UrlFetchApp.fetch(STRIPE_API + "/invoiceitems", {
+      method:             "post",
+      headers:            { Authorization: "Bearer " + secretKey },
+      contentType:        "application/x-www-form-urlencoded",
+      payload:            "customer=" + encodeURIComponent(customerId) +
+                          "&price="    + encodeURIComponent(setupPriceId),
+      muteHttpExceptions: true
+    });
+    var data = JSON.parse(res.getContentText());
+    if (data.error) {
+      Logger.log("_createSetupInvoiceItem error: " + data.error.message);
+    } else {
+      Logger.log("_createSetupInvoiceItem OK: " + data.id + " — customer: " + customerId);
+    }
+  } catch(e) {
+    Logger.log("_createSetupInvoiceItem exception: " + e.message);
   }
 }
 
@@ -607,6 +655,10 @@ function _notifyAdmin(subject, body) {
 /* =====================================================
    Utilitaires
    ===================================================== */
+
+function _dateInDays(n) {
+  return new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
+}
 
 function _generateRestoId(email, customerId) {
   var base = email
