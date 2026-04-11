@@ -3,12 +3,21 @@
   "color": "#B8924F",
   "color2": "#9E7A3E",
   "plan": "pro",
-  "subscriptionStatus": "trialing",
-  "setupPaid": false,
-  "trialEndDate": "2026-04-25",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "trialEndDate": "",
   "billingEmail": "axou.v@aliceadsl.fr",
   "stripeCustomerId": "cus_UJoWxuKEK2tA70",
   "stripeSubscriptionId": "sub_1TLAthDpSXl9WhzrOHG7pzQF",
   "nextBillingDate": "2026-04-25",
-  "invoices": []
+  "invoices": [
+    {
+      "id": "in_1TLAthDpSXl9Whzrs2i72W0v",
+      "date": "2026-04-11",
+      "amount": 0,
+      "status": "paid",
+      "description": "Abonnement Fidelavis",
+      "pdf": "https://pay.stripe.com/invoice/acct_1Ay0NtDpSXl9Whzr/test_YWNjdF8xQXkwTnREcFNYbDlXaHpyLF9VSm9XdHFQRjI4UmpxT3J5Tk9oNFRUQ3d4eTJnNUJZLDE2NjQ5MDcxMA0200i5z1Jc30/pdf?s=ap"
+    }
+  ]
 }
