@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Tarifs — Fidelavis</title>
+  <script src="/assets/plans.js" onerror="void(0)"></script>
+  <script src="/assets/billing.js" onerror="void(0)"></script>
+  <style>
+    :root {
+      --brand:       #b6152b;
+      --brand2:      #8b0f21;
+      --bg:          #f4f6f9;
+      --white:       #ffffff;
+      --ink:         #1c1c2e;
+      --muted:       #6b7280;
+      --line:        #e5e7eb;
+      --shadow:      0 2px 20px rgba(0,0,0,.09);
+      --r:           16px;
+      --green:       #059669;
+      --green-bg:    #d1fae5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--brand);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 12px rgba(182,21,43,.35);
+    }
+    .header-logo { font-weight: 900; font-size: 22px; color: #fff; letter-spacing: -0.5px; }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+      text-align: center;
+    }
+    .page-title { font-size: 32px; font-weight: 900; margin-bottom: 10px; }
+    .page-sub   { font-size: 16px; color: var(--muted); margin-bottom: 12px; }
+    .page-note  {
+      display: inline-block;
+      background: var(--green-bg); color: var(--green);
+      font-size: 13px; font-weight: 700;
+      padding: 6px 16px; border-radius: 999px;
+      margin-bottom: 40px;
+    }
+
+    /* ── CARDS ── */
+    .plans {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      text-align: left;
+    }
+    .plan-card {
+      background: var(--white);
+      border: 2px solid var(--line);
+      border-radius: var(--r);
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .plan-card.recommended { border-color: var(--brand); }
+    .plan-badge-rec {
+      position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+      background: var(--brand); color: #fff;
+      font-size: 11px; font-weight: 800; padding: 4px 14px;
+      border-radius: 999px; white-space: nowrap; letter-spacing: .03em;
+    }
+
+    .plan-name  { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+    .plan-desc  { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+    .plan-price {
+      font-size: 40px; font-weight: 900; color: var(--brand);
+      margin-bottom: 2px;
+    }
+    .plan-price span { font-size: 16px; font-weight: 400; color: var(--muted); }
+    .plan-setup { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+
+    .plan-features { list-style: none; font-size: 14px; margin-bottom: 28px; flex: 1; }
+    .plan-features li {
+      padding: 5px 0;
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .plan-features li::before {
+      content: "✓";
+      color: var(--green); font-weight: 800; flex-shrink: 0;
+    }
+
+    .plan-btn {
+      display: block; text-align: center;
+      background: var(--brand); color: #fff;
+      border: none; border-radius: 12px;
+      padding: 14px; font-size: 15px; font-weight: 700;
+      cursor: pointer; width: 100%;
+      transition: background .15s;
+    }
+    .plan-btn:hover    { background: var(--brand2); }
+    .plan-btn:disabled { opacity: .6; cursor: not-allowed; }
+    .btn-spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── ERREUR ── */
+    #billingError {
+      background: #fee2e2; color: #dc2626;
+      border-radius: 10px; padding: 14px 18px;
+      font-size: 14px; font-weight: 600;
+      margin-bottom: 24px; display: none;
+      text-align: left;
+    }
+
+    /* ── GARANTIE ── */
+    .guarantee {
+      margin-top: 36px;
+      font-size: 13px; color: var(--muted);
+    }
+    .guarantee strong { color: var(--ink); }
+
+    @media (max-width: 600px) {
+      .plans { grid-template-columns: 1fr; }
+      .page-title { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <span class="header-logo">Fidelavis</span>
+</header>
+
+<main class="content">
+
+  <h1 class="page-title">Choisissez votre plan</h1>
+  <p class="page-sub">Tout inclus · Sans engagement · Résiliable à tout moment</p>
+  <span class="page-note">✓ Frais d'installation inclus · 199 € une seule fois</span>
+
+  <!-- Erreur Stripe -->
+  <div id="billingError"></div>
+
+  <!-- Cards -->
+  <div class="plans">
+
+    <!-- ESSENTIEL -->
+    <div class="plan-card">
+      <div class="plan-name">Essentiel</div>
+      <div class="plan-desc">Pour démarrer avec la fidélité digitale</div>
+      <div class="plan-price">97 € <span>/ mois</span></div>
+      <div class="plan-setup">+ 199 € d'installation (une seule fois)</div>
+      <ul class="plan-features">
+        <li>QR code fidélité personnalisé</li>
+        <li>Coupon mensuel automatique</li>
+        <li>Tableau de bord admin</li>
+        <li>Notifications push clients</li>
+        <li>1 établissement</li>
+      </ul>
+      <button class="plan-btn" data-plan="essentiel">
+        Démarrer — Essentiel
+      </button>
+    </div>
+
+    <!-- PRO -->
+    <div class="plan-card recommended">
+      <div class="plan-badge-rec">⭐ Recommandé</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-desc">Pour les restaurateurs qui veulent tout maîtriser</div>
+      <div class="plan-price">149 € <span>/ mois</span></div>
+      <div class="plan-setup">+ 199 € d'installation (une seule fois)</div>
+      <ul class="plan-features">
+        <li>Tout le plan Essentiel</li>
+        <li>Réponses avis IA (Claude)</li>
+        <li>Google Business intégré</li>
+        <li>Statistiques avancées</li>
+        <li>Support prioritaire</li>
+      </ul>
+      <button class="plan-btn" data-plan="pro">
+        Démarrer — Pro
+      </button>
+    </div>
+
+  </div>
+
+  <p class="guarantee">
+    <strong>Paiement sécurisé</strong> via Stripe · Facture envoyée par email ·
+    Résiliation en 1 clic depuis votre espace client
+  </p>
+
+</main>
+
+<script>
+// Auto-init des boutons data-plan via billing.js
+document.addEventListener("DOMContentLoaded", function() {
+  if (window.FidelavisBilling) {
+    FidelavisBilling.initCheckoutButtons();
+  } else {
+    document.querySelectorAll("[data-plan]").forEach(function(btn) {
+      btn.disabled = true;
+      btn.textContent = "Non disponible";
+    });
+  }
+});
+</script>
+
+</body>
+</html>
