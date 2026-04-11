@@ -69,7 +69,7 @@
 
     } catch(err) {
       console.error("[Fidelavis/billing] startCheckout error:", err);
-      _showError("Impossible de lancer le paiement. Réessayez ou contactez-nous.");
+      _showError("Erreur : " + (err.message || err));
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = originalText;
