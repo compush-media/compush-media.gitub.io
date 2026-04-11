@@ -4,12 +4,21 @@
   "color2": "#9E7A3E",
   "brevoListId": 40,
   "brevoGasUrl": "https://script.google.com/macros/s/AKfycbxLP9n4OpqtOigIhDRSN50A3MC-H7WEEVqVHQLcKtwsXO92Dz7zp0_-p5B0cDqGJJCl/exec",
-  "plan": "essentiel",
-  "subscriptionStatus": "incomplete",
-  "setupPaid": false,
+  "plan": "pro",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
   "billingEmail": "danydrumonde@gmail.com",
   "stripeCustomerId": "cus_UJilUKTWuTUPyv",
   "stripeSubscriptionId": "sub_1TL5JiDpSXl9WhzrDwu5OefC",
-  "nextBillingDate": "",
-  "invoices": []
+  "nextBillingDate": "2026-05-11",
+  "invoices": [
+    {
+      "id": "in_demo_001",
+      "date": "2026-04-11",
+      "amount": 34800,
+      "status": "paid",
+      "description": "Fidelavis Pro + Installation — Avril 2026",
+      "pdf": ""
+    }
+  ]
 }
