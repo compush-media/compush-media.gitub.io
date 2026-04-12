@@ -84,28 +84,20 @@
     }
   </style>
 </head>
+<script>
+  // Redirection immédiate vers le formulaire de création du restaurant
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    var sessionId = params.get("session_id") || "";
+    var url = "/fidelavis-admin/setup.html" + (sessionId ? "?session_id=" + sessionId : "");
+    window.location.replace(url);
+  })();
+</script>
 <body>
-
   <div class="card">
-    <div class="icon">🎉</div>
-
-    <h1>Bienvenue sur Fidelavis !</h1>
-    <p>Votre abonnement est <span class="highlight">actif</span>.</p>
-    <p>Notre équipe va configurer votre espace dans les <span class="highlight">24h</span>.<br>
-       Vous recevrez un email avec vos accès.</p>
-
-    <hr class="divider" />
-
-    <p style="font-size:13px;">Des questions ? Écrivez-nous à<br>
-      <a href="mailto:support@fidelavis.com" style="color:var(--brand);font-weight:600;">support@fidelavis.com</a>
-    </p>
-
-    <a href="https://app.cartefidelavis.com/fidelavis-admin/" class="btn">
-      Accéder à mon espace →
-    </a>
+    <div class="icon">⏳</div>
+    <h1>Redirection…</h1>
+    <p>Vous allez être redirigé vers la configuration de votre restaurant.</p>
   </div>
-
-  <div class="logo">Fidelavis</div>
-
 </body>
 </html>
