@@ -270,32 +270,31 @@
     return "#" + [r,g,b].map(function(v){ return v.toString(16).padStart(2,"0"); }).join("");
   }
 
-  // ── 1. Load session ──
-  if (!sessionId || !GAS_URL) {
-    hide("loadingState");
-    show("errorState");
-    return;
-  }
-
-  fetch(GAS_URL, {
-    method:  "POST",
-    headers: { "Content-Type": "text/plain" },
-    body:    JSON.stringify({ action: "getSession", sessionId: sessionId })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (data.error) { hide("loadingState"); show("errorState"); return; }
-
-    customerId = data.customerId || "";
-    planId     = data.planId     || "pro";
-
+  // ── 1. Load session (optionnel — si pas de session_id on affiche quand même le formulaire) ──
+  if (sessionId && GAS_URL) {
+    fetch(GAS_URL, {
+      method:  "POST",
+      headers: { "Content-Type": "text/plain" },
+      body:    JSON.stringify({ action: "getSession", sessionId: sessionId })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data.error) {
+        customerId = data.customerId || "";
+        planId     = data.planId     || "pro";
+      }
+      hide("loadingState");
+      show("formState");
+    })
+    .catch(function() {
+      hide("loadingState");
+      show("formState");  // afficher le formulaire même en cas d'erreur
+    });
+  } else {
+    // Pas de session_id → afficher le formulaire directement
     hide("loadingState");
     show("formState");
-  })
-  .catch(function() {
-    hide("loadingState");
-    show("errorState");
-  });
+  }
 
   // ── 2. Slug auto-generation ──
   var nameInput  = document.getElementById("restName");
