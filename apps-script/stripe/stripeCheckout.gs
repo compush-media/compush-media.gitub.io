@@ -93,6 +93,7 @@ function _provisionRestaurant(body) {
   var name       = (body.name       || slug).trim();
   var color      = body.color       || "#B8924F";
   var color2     = body.color2      || "#9E7A3E";
+  var password   = body.password    || "";
   var customerId = body.customerId  || "";
 
   if (!slug)  return { error: "slug manquant" };
@@ -163,6 +164,10 @@ function _provisionRestaurant(body) {
         text = text.replace(/Resto1/g, name);
         text = text.replace(/#B8924F/g, color);
         text = text.replace(/#9E7A3E/g, color2);
+        // Remplacer le mot de passe admin par défaut si fourni
+        if (password && file.path === "admin/login.html") {
+          text = text.replace(/voltaire2025/g, password);
+        }
         newB64 = Utilities.base64Encode(Utilities.newBlob(text).getBytes());
       }
 

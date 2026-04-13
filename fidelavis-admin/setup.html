@@ -202,6 +202,19 @@
         </div>
       </div>
 
+      <div class="field">
+        <label for="restPass">Mot de passe admin</label>
+        <input type="password" id="restPass" placeholder="Choisissez un mot de passe" autocomplete="new-password" required />
+        <div class="field-hint">Minimum 6 caractères. Vous l'utiliserez pour accéder à votre tableau de bord.</div>
+        <div class="field-error" id="restPassError">Mot de passe trop court (minimum 6 caractères).</div>
+      </div>
+
+      <div class="field">
+        <label for="restPass2">Confirmer le mot de passe</label>
+        <input type="password" id="restPass2" placeholder="Répétez le mot de passe" autocomplete="new-password" required />
+        <div class="field-error" id="restPass2Error">Les mots de passe ne correspondent pas.</div>
+      </div>
+
       <button type="submit" class="btn-submit" id="submitBtn">
         <span class="spinner" id="submitSpinner"></span>
         <span id="submitLabel">🚀 Créer mon espace restaurant</span>
@@ -330,15 +343,18 @@
   document.getElementById("setupForm").addEventListener("submit", function(ev) {
     ev.preventDefault();
 
-    var name  = nameInput.value.trim();
-    var slug  = slugInput.value.trim();
-    var color = colorInput.value;
+    var name   = nameInput.value.trim();
+    var slug   = slugInput.value.trim();
+    var color  = colorInput.value;
     var color2 = darkenHex(color);
+    var pass   = document.getElementById("restPass").value;
+    var pass2  = document.getElementById("restPass2").value;
 
     // Validation
     var valid = true;
-    document.getElementById("restNameError").style.display = "none";
-    document.getElementById("restSlugError").style.display = "none";
+    ["restNameError","restSlugError","restPassError","restPass2Error"].forEach(function(id){
+      document.getElementById(id).style.display = "none";
+    });
 
     if (!name || name.length < 2) {
       document.getElementById("restNameError").style.display = "";
@@ -346,6 +362,14 @@
     }
     if (!slug || !/^[a-z0-9][a-z0-9\-]{0,28}[a-z0-9]$/.test(slug)) {
       document.getElementById("restSlugError").style.display = "";
+      valid = false;
+    }
+    if (!pass || pass.length < 6) {
+      document.getElementById("restPassError").style.display = "";
+      valid = false;
+    }
+    if (pass !== pass2) {
+      document.getElementById("restPass2Error").style.display = "";
       valid = false;
     }
     if (!valid) return;
@@ -371,6 +395,7 @@
         name:       name,
         color:      color,
         color2:     color2,
+        password:   pass,
         customerId: customerId,
         sessionId:  sessionId
       })
