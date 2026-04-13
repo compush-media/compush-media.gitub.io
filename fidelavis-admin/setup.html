@@ -236,7 +236,7 @@
       Votre espace Fidelavis a été créé.<br>
       Connectez-vous à votre tableau de bord pour commencer.
     </p>
-    <a id="adminLink" href="#" class="btn-go">Accéder à mon tableau de bord →</a>
+    <button id="adminLink" onclick="goToAdmin()" class="btn-go" style="border:none;cursor:pointer;">Accéder à mon tableau de bord →</button>
   </div>
 
   <!-- ── ERROR (no session) ── -->
@@ -425,8 +425,7 @@
         return;
       }
       var adminUrl = "https://app.cartefidelavis.com/" + slug + "/admin/login.html";
-      var activateUrl = "https://app.cartefidelavis.com/fidelavis-admin/activate.html?goto=" + encodeURIComponent(adminUrl);
-      document.getElementById("adminLink").href = activateUrl;
+      window._adminUrl = adminUrl;
       setTimeout(function() {
         hide("formState");
         hide("progressArea");
@@ -460,6 +459,26 @@
   }
 
 })();
+
+// Nettoyage SW + caches AVANT navigation vers le site créé
+function goToAdmin() {
+  var dest = window._adminUrl || '/';
+  var done = function() { window.location.href = dest; };
+
+  var p1 = ('serviceWorker' in navigator)
+    ? navigator.serviceWorker.getRegistrations().then(function(regs) {
+        return Promise.all(regs.map(function(r) { return r.unregister(); }));
+      })
+    : Promise.resolve();
+
+  var p2 = ('caches' in window)
+    ? caches.keys().then(function(keys) {
+        return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+      })
+    : Promise.resolve();
+
+  Promise.all([p1, p2]).then(done).catch(done);
+}
 </script>
 
 </body>
