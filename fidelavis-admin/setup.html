@@ -383,7 +383,22 @@
     label.textContent = "Création en cours…";
     document.getElementById("formAlert").style.display = "none";
     show("progressArea");
-    setProgress(5, "Connexion à GitHub…");
+    setProgress(3, "Connexion à GitHub…");
+
+    // Animation de progression simulée (la vraie opération dure ~25s)
+    var steps = [
+      { pct:  8, label: "Création du dossier…",          delay: 1500  },
+      { pct: 18, label: "Copie des pages clients…",       delay: 3500  },
+      { pct: 32, label: "Copie des pages admin…",         delay: 6000  },
+      { pct: 48, label: "Configuration des couleurs…",    delay: 9000  },
+      { pct: 62, label: "Personnalisation du contenu…",   delay: 12000 },
+      { pct: 75, label: "Sécurisation de l'accès…",      delay: 16000 },
+      { pct: 85, label: "Finalisation…",                  delay: 20000 },
+      { pct: 90, label: "Presque terminé…",               delay: 24000 }
+    ];
+    var timers = steps.map(function(s) {
+      return setTimeout(function() { setProgress(s.pct, s.label); }, s.delay);
+    });
 
     // Call GAS provision
     fetch(GAS_URL, {
@@ -402,22 +417,23 @@
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      setProgress(100, "Terminé !");
+      timers.forEach(clearTimeout);
+      setProgress(100, "✅ Votre restaurant est créé !");
       if (data.error) {
         showFormError("Erreur : " + data.error);
         resetBtn();
         return;
       }
-      // Success
       var adminUrl = "https://app.cartefidelavis.com/" + slug + "/admin/login.html";
       document.getElementById("adminLink").href = adminUrl;
       setTimeout(function() {
         hide("formState");
         hide("progressArea");
         show("successState");
-      }, 600);
+      }, 800);
     })
     .catch(function(err) {
+      timers.forEach(clearTimeout);
       showFormError("Erreur réseau. Réessayez ou contactez support@fidelavis.com");
       resetBtn();
     });
