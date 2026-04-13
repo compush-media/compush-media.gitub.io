@@ -162,6 +162,7 @@ function _provisionRestaurant(body) {
         var bytes = Utilities.base64Decode(b64);
         var text  = Utilities.newBlob(bytes).getDataAsString();
         text = text.replace(/Resto1/g, name);
+        text = text.replace(/resto1/g, slug);   // chemins URL, cache names, scopes
         text = text.replace(/#B8924F/g, color);
         text = text.replace(/#9E7A3E/g, color2);
         // Remplacer le mot de passe admin par défaut si fourni
