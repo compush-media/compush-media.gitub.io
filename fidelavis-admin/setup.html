@@ -425,7 +425,8 @@
         return;
       }
       var adminUrl = "https://app.cartefidelavis.com/" + slug + "/admin/login.html";
-      document.getElementById("adminLink").href = adminUrl;
+      var activateUrl = "https://app.cartefidelavis.com/fidelavis-admin/activate.html?goto=" + encodeURIComponent(adminUrl);
+      document.getElementById("adminLink").href = activateUrl;
       setTimeout(function() {
         hide("formState");
         hide("progressArea");

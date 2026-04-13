@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Activation…</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #f4f6f9; display: flex;
+           align-items: center; justify-content: center; height: 100vh; margin: 0; }
+    .msg { text-align: center; color: #6b7280; font-size: 15px; }
+    .dot { display: inline-block; width: 8px; height: 8px; background: #b6152b;
+           border-radius: 50%; animation: b 1.2s infinite; margin: 0 3px; }
+    .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+    @keyframes b{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  </style>
+</head>
+<body>
+<div class="msg">
+  <div><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+  <p style="margin-top:14px;">Activation de votre espace…</p>
+</div>
+<script>
+(function() {
+  var dest = new URLSearchParams(location.search).get('goto') || '/';
+
+  function redirect() { window.location.replace(dest); }
+
+  if (!('serviceWorker' in navigator) && !('caches' in window)) {
+    return redirect();
+  }
+
+  var p1 = ('serviceWorker' in navigator)
+    ? navigator.serviceWorker.getRegistrations()
+        .then(function(regs) {
+          return Promise.all(regs.map(function(r) { return r.unregister(); }));
+        })
+    : Promise.resolve();
+
+  var p2 = ('caches' in window)
+    ? caches.keys().then(function(keys) {
+        return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+      })
+    : Promise.resolve();
+
+  Promise.all([p1, p2]).then(redirect).catch(redirect);
+})();
+</script>
+</body>
+</html>
