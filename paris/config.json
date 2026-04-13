@@ -1,0 +1,16 @@
+{
+  "name": "paris",
+  "color": "#b8924f",
+  "color2": "#9c7c43",
+  "brevoListId": "",
+  "brevoGasUrl": "",
+  "plan": "pro",
+  "subscriptionStatus": "trialing",
+  "setupPaid": false,
+  "trialEndDate": "",
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": []
+}
