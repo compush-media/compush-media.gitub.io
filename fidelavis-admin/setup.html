@@ -460,24 +460,37 @@
 
 })();
 
-// Nettoyage SW + caches AVANT navigation vers le site créé
+// Installe sw-null.js (scope "/") pour écraser Progressier + vider tous les caches
 function goToAdmin() {
   var dest = window._adminUrl || '/';
-  var done = function() { window.location.href = dest; };
 
-  var p1 = ('serviceWorker' in navigator)
-    ? navigator.serviceWorker.getRegistrations().then(function(regs) {
-        return Promise.all(regs.map(function(r) { return r.unregister(); }));
-      })
-    : Promise.resolve();
+  if (!('serviceWorker' in navigator)) {
+    window.location.href = dest;
+    return;
+  }
 
-  var p2 = ('caches' in window)
-    ? caches.keys().then(function(keys) {
-        return Promise.all(keys.map(function(k) { return caches.delete(k); }));
-      })
-    : Promise.resolve();
+  var navigated = false;
+  function go() {
+    if (!navigated) { navigated = true; window.location.href = dest; }
+  }
 
-  Promise.all([p1, p2]).then(done).catch(done);
+  // Timeout de sécurité : navigue quand même après 3s
+  setTimeout(go, 3000);
+
+  navigator.serviceWorker.register('/sw-null.js', { scope: '/' })
+    .then(function(reg) {
+      // Attendre que sw-null.js prenne le contrôle
+      if (reg.active) { go(); return; }
+      var w = reg.installing || reg.waiting;
+      if (w) {
+        w.addEventListener('statechange', function() {
+          if (w.state === 'activated') go();
+        });
+      } else {
+        go();
+      }
+    })
+    .catch(go);
 }
 </script>
 
