@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Avis Google – Fidelavis</title>
+
+  <!-- ✅ Core commun (resto, cookies, tracking, go()) -->
+  <script src="../assets/core.js"></script>
+
+  <style>
+    :root{
+      --brand:#B48C4A;
+      --bg:#fbfaf8;
+      --card:#ffffff;
+      --ink:#191919;
+      --muted:#6f6f6f;
+      --line:rgba(0,0,0,.08);
+      --shadow:0 18px 50px rgba(0,0,0,.08);
+      --r:22px;
+      --topbar-h: 56px;
+      --green:#1f8a4c;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1100px 520px at 50% -160px, rgba(180,140,74,0.16), transparent 60%),
+        linear-gradient(180deg, #fbfaf8 0%, #f6f2ec 100%);
+      color:var(--ink);
+      text-align:center;
+    }
+
+    .topbar{
+      position:fixed;
+      top:0; left:0; right:0;
+      height:var(--topbar-h);
+      display:flex;
+      align-items:center;
+      padding:0 14px;
+      z-index:9999;
+      background:linear-gradient(180deg, rgba(251,250,248,.92) 0%, rgba(251,250,248,.70) 100%);
+      backdrop-filter: blur(8px);
+      border-bottom:1px solid rgba(0,0,0,.04);
+    }
+
+    .back-btn{
+      display:inline-grid;
+      place-items:center;
+      width:40px;
+      height:40px;
+      border-radius:999px;
+      background:rgba(180, 140, 74, 0.14);
+      text-decoration:none;
+      border:1px solid rgba(180,140,74,.18);
+    }
+    .back-btn::before{
+      content:"";
+      width:12px;height:12px;
+      border-left:3px solid var(--brand);
+      border-bottom:3px solid var(--brand);
+      transform: translateX(2px) rotate(45deg);
+      display:block;
+    }
+
+    .wrap{
+      max-width:520px;
+      margin:0 auto;
+      padding: calc(var(--topbar-h) + 22px) 14px 30px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.75);
+      border:1px solid var(--line);
+      box-shadow:0 10px 22px rgba(0,0,0,.05);
+      font-weight:900;
+      font-size:13px;
+      color:#3b3b3b;
+      margin-bottom:10px;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background:var(--green);
+      box-shadow:0 0 0 6px rgba(31,138,76,.12);
+    }
+
+    h1{
+      margin:10px 0 6px;
+      font-size:26px;
+      letter-spacing:-0.4px;
+      font-weight:950;
+      color:#1a1a1a;
+    }
+    .sub{
+      margin:0 auto 18px;
+      max-width:440px;
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      padding:18px 16px 16px;
+      box-shadow:var(--shadow);
+      text-align:left;
+    }
+
+    .step{
+      border-radius:18px;
+      padding:14px 14px;
+      border:1px solid rgba(180,140,74,.22);
+      background:linear-gradient(180deg, rgba(180,140,74,.12) 0%, rgba(180,140,74,.06) 100%);
+      margin-bottom:14px;
+    }
+    .stepTitle{
+      margin:0 0 6px;
+      font-weight:950;
+      color:#4a3a18;
+      font-size:13px;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+    }
+    .stepText{
+      margin:0;
+      font-size:15px;
+      font-weight:900;
+      color:#241b0b;
+      line-height:1.25;
+    }
+
+    .btn{
+      width:100%;
+      margin-top:12px;
+      padding:16px 16px;
+      border-radius:16px;
+      border:none;
+      cursor:pointer;
+      font-weight:950;
+      font-size:16px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      text-decoration:none;
+    }
+    .btnPrimary{
+      background:linear-gradient(180deg, var(--brand) 0%, #a97f37 100%);
+      color:#fff;
+      box-shadow:0 16px 30px rgba(180,140,74,.22);
+    }
+    .btnSecondary{
+      background:#fff;
+      color:var(--brand);
+      border:2px solid rgba(180,140,74,.55);
+      margin-top:10px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+      margin-top:14px;
+    }
+    .qrBox{
+      border:1px dashed rgba(0,0,0,.14);
+      border-radius:18px;
+      padding:12px;
+      text-align:center;
+      background:rgba(255,255,255,.70);
+    }
+    .qrTitle{
+      margin:0 0 8px;
+      font-weight:950;
+      font-size:14px;
+      color:#2a2a2a;
+    }
+    .qrImg{
+      width:190px;
+      height:190px;
+      border-radius:14px;
+      display:block;
+      margin:0 auto;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.06);
+    }
+
+    .mini{
+      margin-top:12px;
+      font-size:12px;
+      color:#8a8a8a;
+      line-height:1.35;
+      text-align:center;
+    }
+
+    .ok{
+      margin-top:12px;
+      padding:14px;
+      border-radius:14px;
+      font-weight:950;
+      font-size:15px;
+      text-align:center;
+      border:1px solid rgba(31,138,76,.18);
+      background:rgba(31,138,76,.08);
+      color:#0f5f33;
+      display:none;
+      animation:fadeIn .35s ease;
+    }
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(6px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <a id="backLink" class="back-btn" aria-label="Retour"></a>
+</header>
+
+<div class="wrap">
+  <div class="badge"><span class="dot"></span>Avis Google</div>
+  <h1 id="messageTitre">Votre avis nous aide</h1>
+  <p class="sub" id="messageTexte">Merci 🙏 Un avis prend 10 secondes et aide énormément le restaurant.</p>
+
+  <div class="card">
+    <div class="step">
+      <p class="stepTitle">1 clic</p>
+      <p class="stepText">Cliquez pour ouvrir Google, puis laissez votre avis ⭐</p>
+    </div>
+
+    <a id="googleReviewBtn" class="btn btnPrimary" href="#" rel="noopener">
+      ⭐ Laisser un avis sur Google
+    </a>
+
+    <div id="ok" class="ok">✅ Merci ! Votre clic a été enregistré.</div>
+
+    <div class="grid">
+      <div class="qrBox">
+        <p class="qrTitle">Ou scannez le QR Code</p>
+        <img id="qrImg" class="qrImg" src="" alt="QR Code Avis Google">
+      </div>
+    </div>
+
+    <a id="couponLink" class="btn btnSecondary" href="#">← Retour au coupon</a>
+
+    <div class="mini">
+      Astuce : si Google demande une connexion, c’est normal (sécurité Google).
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const RESTO = window.Fidelavis?.getRestoSlug?.() || "paul";
+  window.Fidelavis?.rememberLastResto?.();
+
+  // ✅ Retour : on renvoie au coupon (index.html chez toi)
+  document.getElementById("couponLink").addEventListener("click", (e)=>{
+    e.preventDefault();
+    if (window.Fidelavis?.go) window.Fidelavis.go("index.html");
+    else location.href = "./index.html";
+  });
+
+  // ✅ Back topbar : pareil = coupon
+  const back = document.getElementById("backLink");
+  back.href = "#";
+  back.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if (window.Fidelavis?.go) window.Fidelavis.go("index.html");
+    else location.href = "./index.html";
+  });
+
+  /* ===============================
+     DONNÉES RESTAURANTS
+     - Ajoute tes restos ici
+  =============================== */
+  const restoData = {
+    voltaire: {
+      title: "⭐ Votre avis nous aide ⭐",
+      message: "Merci de partager votre expérience en un clic 🌿",
+      link: "https://search.google.com/local/writereview?placeid=ChIJ6-iH2gBl5kcR_8dVpV-kiCE",
+      qr: "https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/68b43a06ba67b31819ae53c9.png"
+    }
+  };
+  const data = restoData[RESTO] || restoData.voltaire;
+
+  document.getElementById("messageTitre").innerText = data.title || "⭐ Votre avis nous aide ⭐";
+  document.getElementById("messageTexte").innerText = data.message || "Merci 🙏 Un avis aide énormément le restaurant.";
+  document.getElementById("qrImg").src = data.qr || "";
+
+  // ✅ Tracking page view (1x/session)
+  window.Fidelavis?.trackOnce?.("review_page_view", `review_page_view_${RESTO}`, {});
+  if (data.qr) window.Fidelavis?.trackOnce?.("review_qr_view", `review_qr_view_${RESTO}`, {});
+
+  const btn = document.getElementById("googleReviewBtn");
+  btn.href = data.link || "https://www.google.com/";
+
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    window.Fidelavis?.track?.("review_open", { target: "google" });
+
+    const ok = document.getElementById("ok");
+    ok.style.display = "block";
+
+    // petit délai pour laisser partir le tracking
+    setTimeout(() => { window.location.href = btn.href; }, 150);
+  });
+
+  // Optionnel: harmonise le brand depuis config.json
+  (async function(){
+    try{ await window.Fidelavis?.loadConfig?.(); }catch(e){}
+  })();
+})();
+</script>
+
+</body>
+</html>
