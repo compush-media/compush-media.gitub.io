@@ -307,6 +307,9 @@
       if (!data.error) {
         customerId = data.customerId || "";
         planId     = data.planId     || "pro";
+        if (data.email) {
+          document.getElementById("restEmail").value = data.email;
+        }
       }
       hide("loadingState");
       show("formState");

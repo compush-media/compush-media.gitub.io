@@ -183,8 +183,14 @@ function _provisionRestaurant(body) {
     }
   }
 
-  // Mettre à jour config.json avec le nom et les couleurs
+  // Mettre à jour config.json avec le nom, couleurs et données Stripe
   _updateSlugConfig(token, repo, slug, name, color, color2, customerId, email);
+
+  // Mettre à jour la Sheet : remplacer le placeholder customerId par le vrai slug
+  // pour que les futurs webhooks (invoice.paid etc.) trouvent le bon restoId
+  if (customerId) {
+    _updateSheetRestoId(customerId, slug);
+  }
 
   Logger.log("_provisionRestaurant: " + slug + " — " + copied + "/" + FILES.length + " fichiers, " + errors.length + " erreurs");
 
@@ -289,6 +295,31 @@ function _updateSlugConfig(token, repo, slug, name, color, color2, customerId, e
     payload: JSON.stringify(payload),
     muteHttpExceptions: true
   });
+}
+
+/**
+ * _updateSheetRestoId(customerId, slug)
+ * Met à jour la colonne restoId (col 1) dans la Sheet de facturation
+ * pour remplacer le placeholder customerId par le vrai slug du restaurant.
+ * Appelé après provisionnement pour que les futurs webhooks trouvent le bon slug.
+ */
+function _updateSheetRestoId(customerId, slug) {
+  if (!customerId || !slug) return;
+  try {
+    var sheetId = PropertiesService.getScriptProperties().getProperty("BILLING_SHEET_ID");
+    if (!sheetId) return;
+    var sheet = SpreadsheetApp.openById(sheetId).getActiveSheet();
+    var data  = sheet.getDataRange().getValues();
+    // Colonne 6 = stripeCustomerId, colonne 1 = restoId (index 0-based)
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][6] === customerId) {
+        sheet.getRange(i + 1, 2).setValue(slug); // colonne B = restoId
+        Logger.log("_updateSheetRestoId: " + customerId + " → " + slug + " (ligne " + (i+1) + ")");
+      }
+    }
+  } catch(e) {
+    Logger.log("_updateSheetRestoId error: " + e.message);
+  }
 }
 
 /* =====================================================

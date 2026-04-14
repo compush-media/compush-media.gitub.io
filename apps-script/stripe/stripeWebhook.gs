@@ -98,7 +98,9 @@ function _handleCheckoutCompleted(session) {
   var planId         = (session.metadata && session.metadata.planId) || "essentiel";
   var setupPriceId   = (session.metadata && session.metadata.setupPriceId) || "";
 
-  var restoId = _generateRestoId(email, customerId);
+  // Slug inconnu à ce stade — on utilise customerId comme clé provisoire.
+  // Le vrai slug sera enregistré dans la Sheet lors du provisionnement (setup.html).
+  var restoId = customerId;
 
   // Récupérer les détails de l'abonnement (trial_end, status)
   var subDetails   = _fetchSubscription(subscriptionId);
@@ -115,8 +117,8 @@ function _handleCheckoutCompleted(session) {
   var clientData = {
     restoId:              restoId,
     plan:                 planId,
-    subscriptionStatus:   subStatus,   // "trialing"
-    setupPaid:            false,        // sera true après invoice.paid
+    subscriptionStatus:   subStatus,
+    setupPaid:            false,
     trialEndDate:         trialEnd,
     billingEmail:         email,
     stripeCustomerId:     customerId,
@@ -127,32 +129,22 @@ function _handleCheckoutCompleted(session) {
   };
 
   _saveBillingRecord(clientData, "checkout.session.completed");
-  _sendOnboardingEmail(email, planId, restoId, trialEnd);
+  _sendOnboardingEmail(email, planId, "", trialEnd);
   _notifyAdmin("Nouveau client Fidelavis (essai gratuit)", [
     "Email : " + email,
     "Plan : " + planId,
     "Statut : " + subStatus,
     "Fin d'essai : " + trialEnd,
-    "RestoId suggéré : " + restoId,
     "CustomerId : " + customerId,
     "SubscriptionId : " + subscriptionId,
     "",
-    "→ Provisionnez le restaurant puis appelez :",
-    "  ?action=syncBilling&restoId=<slug>&customerId=" + customerId
+    "→ Le restaurant sera créé via setup.html après paiement."
   ].join("\n"));
 
-  _updateGithubConfig(restoId, {
-    plan:                 planId,
-    subscriptionStatus:   subStatus,
-    setupPaid:            false,
-    trialEndDate:         trialEnd,
-    billingEmail:         email,
-    stripeCustomerId:     customerId,
-    stripeSubscriptionId: subscriptionId,
-    nextBillingDate:      nextBilling
-  });
+  // PAS de _updateGithubConfig ici : le slug réel est inconnu.
+  // La mise à jour de config.json se fait lors du provisionnement (_updateSlugConfig).
 
-  Logger.log("checkout.session.completed — restoId: " + restoId + " plan: " + planId + " status: " + subStatus);
+  Logger.log("checkout.session.completed — customerId: " + customerId + " plan: " + planId + " status: " + subStatus);
 }
 
 /* =====================================================
@@ -439,11 +431,13 @@ function _findRestoIdByCustomer(customerId) {
   try {
     var sheet = _getSheet();
     var data  = sheet.getDataRange().getValues();
+    // Chercher d'abord un vrai slug (restoId ne commence pas par "cus_")
     for (var i = data.length - 1; i >= 1; i--) {
-      if (data[i][6] === customerId && data[i][1]) {
-        return data[i][1];
+      if (data[i][6] === customerId && data[i][1] && !String(data[i][1]).startsWith("cus_")) {
+        return data[i][1]; // vrai slug trouvé
       }
     }
+    // Le slug n'a pas encore été mis à jour dans la Sheet → provisionnement pas encore fait
   } catch(e) {
     Logger.log("_findRestoIdByCustomer error: " + e.message);
   }

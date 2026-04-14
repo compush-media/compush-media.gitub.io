@@ -44,7 +44,7 @@
         setupPriceId:  plan.setupPriceId,
         email:         options.email || "",
         restoId:       options.restoId || "",
-        successUrl:    options.successUrl || (window.location.origin + "/fidelavis-admin/merci-abonnement.html"),
+        successUrl:    options.successUrl || (window.location.origin + "/fidelavis-admin/merci-abonnement.html?session_id={CHECKOUT_SESSION_ID}"),
         cancelUrl:     options.cancelUrl  || window.location.href,
         metadata: {
           planId:    planId,
