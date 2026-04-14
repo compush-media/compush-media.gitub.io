@@ -94,6 +94,7 @@ function _provisionRestaurant(body) {
   var color      = body.color       || "#B8924F";
   var color2     = body.color2      || "#9E7A3E";
   var password   = body.password    || "";
+  var email      = body.email       || "";
   var customerId = body.customerId  || "";
 
   if (!slug)  return { error: "slug manquant" };
@@ -183,7 +184,7 @@ function _provisionRestaurant(body) {
   }
 
   // Mettre à jour config.json avec le nom et les couleurs
-  _updateSlugConfig(token, repo, slug, name, color, color2, customerId);
+  _updateSlugConfig(token, repo, slug, name, color, color2, customerId, email);
 
   Logger.log("_provisionRestaurant: " + slug + " — " + copied + "/" + FILES.length + " fichiers, " + errors.length + " erreurs");
 
@@ -240,7 +241,7 @@ function _githubPut(token, repo, path, b64Content, message) {
  * Si le config.json a déjà été créé par le webhook (billing data),
  * on merge pour ne pas écraser les données Stripe.
  */
-function _updateSlugConfig(token, repo, slug, name, color, color2, customerId) {
+function _updateSlugConfig(token, repo, slug, name, color, color2, customerId, email) {
   var apiUrl = "https://api.github.com/repos/" + repo + "/contents/" + slug + "/config.json";
   var headers = {
     Authorization: "token " + token,
@@ -271,7 +272,7 @@ function _updateSlugConfig(token, repo, slug, name, color, color2, customerId) {
     subscriptionStatus:   existing.subscriptionStatus   || "trialing",
     setupPaid:            existing.setupPaid            || false,
     trialEndDate:         existing.trialEndDate         || "",
-    billingEmail:         existing.billingEmail         || "",
+    billingEmail:         existing.billingEmail         || email || "",
     stripeCustomerId:     existing.stripeCustomerId     || customerId,
     stripeSubscriptionId: existing.stripeSubscriptionId || "",
     nextBillingDate:      existing.nextBillingDate      || "",

@@ -181,6 +181,13 @@
     <form id="setupForm" novalidate>
 
       <div class="field">
+        <label for="restEmail">Votre adresse e-mail</label>
+        <input type="email" id="restEmail" placeholder="contact@monrestaurant.fr" autocomplete="email" required />
+        <div class="field-hint">Pour recevoir vos accès et les notifications importantes.</div>
+        <div class="field-error" id="restEmailError">Veuillez saisir une adresse e-mail valide.</div>
+      </div>
+
+      <div class="field">
         <label for="restName">Nom du restaurant</label>
         <input type="text" id="restName" placeholder="Ex : Le Coréen" autocomplete="organization" required />
         <div class="field-error" id="restNameError">Veuillez saisir le nom du restaurant.</div>
@@ -352,15 +359,20 @@
     var slug   = slugInput.value.trim();
     var color  = colorInput.value;
     var color2 = darkenHex(color);
+    var email  = document.getElementById("restEmail").value.trim();
     var pass   = document.getElementById("restPass").value;
     var pass2  = document.getElementById("restPass2").value;
 
     // Validation
     var valid = true;
-    ["restNameError","restSlugError","restPassError","restPass2Error"].forEach(function(id){
+    ["restEmailError","restNameError","restSlugError","restPassError","restPass2Error"].forEach(function(id){
       document.getElementById(id).style.display = "none";
     });
 
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      document.getElementById("restEmailError").style.display = "";
+      valid = false;
+    }
     if (!name || name.length < 2) {
       document.getElementById("restNameError").style.display = "";
       valid = false;
@@ -413,6 +425,7 @@
         action:     "provision",
         slug:       slug,
         name:       name,
+        email:      email,
         color:      color,
         color2:     color2,
         password:   pass,
