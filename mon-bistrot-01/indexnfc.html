@@ -9,9 +9,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- ✅ PWA : TOUJOURS relatif dans chaque dossier resto -->
+  <!-- ✅ PWA : SW scoped au dossier du resto uniquement (pas de scope root) -->
   <link rel="manifest" href="progressier.json">
-  <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(function(){});
+    }
+  </script>
 
   <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
@@ -443,32 +447,6 @@
   })();
 </script>
 
-<script>
-/* ✅ Force suppression widget Progressier flottant */
-(function removeProgressierFloating(){
-  function kill(){
-    const selectors = [
-      "progressier-install-button",
-      "pwa-install",
-      "#progressier-install-button",
-      ".progressier-install-button",
-      "#progressier-widget",
-      ".progressier-widget"
-    ];
-    selectors.forEach(sel => {
-      document.querySelectorAll(sel).forEach(el => el.remove());
-    });
-
-    document.querySelectorAll("[id*='progressier'],[class*='progressier']").forEach(el=>{
-      const style = getComputedStyle(el);
-      if(style.position === "fixed") el.remove();
-    });
-  }
-  kill();
-  setTimeout(kill, 300);
-  setTimeout(kill, 1200);
-})();
-</script>
 
 </body>
 </html>

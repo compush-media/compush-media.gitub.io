@@ -1,10 +1,9 @@
 /**
  * sw-null.js — Service Worker de nettoyage à la racine
  * S'installe avec scope "/" et remplace tous les autres SW (Progressier, etc.)
- * Ne fait AUCUN cache — laisse passer toutes les requêtes vers le réseau.
+ * Ne cache RIEN et n'intercepte AUCUNE requête.
  */
 
-// Activation immédiate sans attendre la fermeture des onglets
 self.addEventListener('install', () => self.skipWaiting());
 
 self.addEventListener('activate', e => {
@@ -15,7 +14,4 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Toutes les requêtes → réseau directement, aucun cache
-self.addEventListener('fetch', e => {
-  e.respondWith(fetch(e.request).catch(() => new Response('', { status: 503 })));
-});
+// Pas de fetch handler = toutes les requêtes vont directement au réseau

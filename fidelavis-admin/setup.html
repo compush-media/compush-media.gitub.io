@@ -460,11 +460,11 @@
 
 })();
 
-// Installe sw-null.js (scope "/") pour écraser Progressier + vider tous les caches
+// Désinscrit tous les SW + vide tous les caches, puis navigue
 function goToAdmin() {
   var dest = window._adminUrl || '/';
 
-  if (!('serviceWorker' in navigator)) {
+  if (!('serviceWorker' in navigator) && !('caches' in window)) {
     window.location.href = dest;
     return;
   }
@@ -474,23 +474,23 @@ function goToAdmin() {
     if (!navigated) { navigated = true; window.location.href = dest; }
   }
 
-  // Timeout de sécurité : navigue quand même après 3s
-  setTimeout(go, 3000);
+  // Timeout de sécurité : navigue quand même après 5s
+  setTimeout(go, 5000);
 
-  navigator.serviceWorker.register('/sw-null.js', { scope: '/' })
-    .then(function(reg) {
-      // Attendre que sw-null.js prenne le contrôle
-      if (reg.active) { go(); return; }
-      var w = reg.installing || reg.waiting;
-      if (w) {
-        w.addEventListener('statechange', function() {
-          if (w.state === 'activated') go();
-        });
-      } else {
-        go();
-      }
-    })
-    .catch(go);
+  var p1 = ('serviceWorker' in navigator)
+    ? navigator.serviceWorker.getRegistrations()
+        .then(function(regs) {
+          return Promise.all(regs.map(function(r) { return r.unregister(); }));
+        })
+    : Promise.resolve();
+
+  var p2 = ('caches' in window)
+    ? caches.keys().then(function(keys) {
+        return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+      })
+    : Promise.resolve();
+
+  Promise.all([p1, p2]).then(go).catch(go);
 }
 </script>
 
