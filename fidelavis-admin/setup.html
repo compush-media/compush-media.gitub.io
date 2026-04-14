@@ -236,7 +236,12 @@
       Votre espace Fidelavis a été créé.<br>
       Connectez-vous à votre tableau de bord pour commencer.
     </p>
-    <button id="adminLink" onclick="goToAdmin()" class="btn-go" style="border:none;cursor:pointer;">Accéder à mon tableau de bord →</button>
+    <!-- Affiché pendant que GitHub Pages déploie -->
+    <div id="deployWait" style="display:none; margin-bottom:12px;">
+      <span class="spinner" style="display:inline-block;"></span>
+      <span id="deployMsg" style="font-size:14px; color:#666;">Publication en cours…</span>
+    </div>
+    <button id="adminLink" onclick="goToAdmin()" class="btn-go" style="border:none;cursor:pointer;display:none;">Accéder à mon tableau de bord →</button>
   </div>
 
   <!-- ── ERROR (no session) ── -->
@@ -430,6 +435,7 @@
         hide("formState");
         hide("progressArea");
         show("successState");
+        startDeployPolling(adminUrl);
       }, 800);
     })
     .catch(function(err) {
@@ -460,37 +466,53 @@
 
 })();
 
-// Désinscrit tous les SW + vide tous les caches, puis navigue
-function goToAdmin() {
-  var dest = window._adminUrl || '/';
+// Attend que GitHub Pages déploie la page admin avant d'afficher le bouton
+function startDeployPolling(url) {
+  var maxAttempts = 36; // 36 × 5s = 3 minutes max
+  var attempt = 0;
+  var msgs = [
+    "Publication en cours…",
+    "Déploiement GitHub Pages (~1-3 min)…",
+    "Encore quelques secondes…",
+    "Presque prêt…"
+  ];
 
-  if (!('serviceWorker' in navigator) && !('caches' in window)) {
-    window.location.href = dest;
-    return;
-  }
+  document.getElementById("deployWait").style.display = "";
 
-  var navigated = false;
-  function go() {
-    if (!navigated) { navigated = true; window.location.href = dest; }
-  }
+  function poll() {
+    attempt++;
+    var msg = msgs[Math.min(Math.floor(attempt / 4), msgs.length - 1)];
+    document.getElementById("deployMsg").textContent = msg;
 
-  // Timeout de sécurité : navigue quand même après 5s
-  setTimeout(go, 5000);
-
-  var p1 = ('serviceWorker' in navigator)
-    ? navigator.serviceWorker.getRegistrations()
-        .then(function(regs) {
-          return Promise.all(regs.map(function(r) { return r.unregister(); }));
-        })
-    : Promise.resolve();
-
-  var p2 = ('caches' in window)
-    ? caches.keys().then(function(keys) {
-        return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+    fetch(url, { method: "HEAD", cache: "no-store" })
+      .then(function(resp) {
+        if (resp.ok) {
+          // Page disponible : montrer le bouton
+          document.getElementById("deployWait").style.display = "none";
+          document.getElementById("adminLink").style.display = "";
+        } else if (attempt < maxAttempts) {
+          setTimeout(poll, 5000);
+        } else {
+          // Timeout : montrer quand même le bouton
+          document.getElementById("deployWait").style.display = "none";
+          document.getElementById("adminLink").style.display = "";
+        }
       })
-    : Promise.resolve();
+      .catch(function() {
+        if (attempt < maxAttempts) { setTimeout(poll, 5000); }
+        else {
+          document.getElementById("deployWait").style.display = "none";
+          document.getElementById("adminLink").style.display = "";
+        }
+      });
+  }
 
-  Promise.all([p1, p2]).then(go).catch(go);
+  poll();
+}
+
+// Navigation directe (la page est déjà disponible grâce au polling)
+function goToAdmin() {
+  window.location.href = window._adminUrl || '/';
 }
 </script>
 

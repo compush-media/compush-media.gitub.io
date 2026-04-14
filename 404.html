@@ -2,11 +2,29 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=/" />
+  <title>Page introuvable</title>
   <script>
-    sessionStorage.redirect = location.pathname;
+    // Anti-boucle : si on a déjà redirigé une fois et qu'on est encore sur 404,
+    // NE PAS rediriger à nouveau — afficher une erreur à la place.
+    var path = location.pathname;
+    if (sessionStorage.getItem('redirect404') === path) {
+      // Boucle détectée : laisser la page s'afficher normalement
+      sessionStorage.removeItem('redirect404');
+    } else {
+      sessionStorage.setItem('redirect404', path);
+      location.replace('/');
+    }
   </script>
-  <title>Redirection…</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 4rem 1rem; color: #333; }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
+    a { color: #b6152b; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
 </head>
-<body></body>
+<body>
+  <h1>Page introuvable</h1>
+  <p>Cette adresse n'existe pas ou est en cours de déploiement.</p>
+  <p><a href="/">Retour à l'accueil</a></p>
+</body>
 </html>
