@@ -618,6 +618,47 @@ function _fetchSubscription(subscriptionId) {
    Emails & Notifications
    ===================================================== */
 
+/**
+ * _sendEmail(to, subject, body)
+ * Envoie un email depuis support@fidelavis.com via Brevo.
+ * Fallback sur MailApp si la clé Brevo n'est pas configurée.
+ *
+ * Propriété GAS requise : BREVO_API_KEY
+ */
+function _sendEmail(to, subject, body) {
+  if (!to) return;
+  var apiKey = PropertiesService.getScriptProperties().getProperty("BREVO_API_KEY");
+
+  if (apiKey) {
+    try {
+      var payload = {
+        sender:      { name: "Fidelavis", email: "support@fidelavis.com" },
+        to:          [{ email: to }],
+        subject:     subject,
+        textContent: body
+      };
+      var res = UrlFetchApp.fetch("https://api.brevo.com/v3/smtp/email", {
+        method:             "post",
+        headers:            { "api-key": apiKey, "Content-Type": "application/json" },
+        payload:            JSON.stringify(payload),
+        muteHttpExceptions: true
+      });
+      Logger.log("_sendEmail Brevo → " + to + " | status: " + res.getResponseCode());
+      return;
+    } catch(e) {
+      Logger.log("_sendEmail Brevo error: " + e.message + " — fallback MailApp");
+    }
+  }
+
+  // Fallback : MailApp (Gmail du propriétaire du script)
+  try {
+    MailApp.sendEmail(to, subject, body);
+    Logger.log("_sendEmail MailApp → " + to);
+  } catch(e) {
+    Logger.log("_sendEmail MailApp error: " + e.message);
+  }
+}
+
 function _sendOnboardingEmail(email, planId, sessionId, trialEndDate) {
   if (!email) return;
 
@@ -646,7 +687,7 @@ function _sendOnboardingEmail(email, planId, sessionId, trialEndDate) {
   ].join("\n");
 
   try {
-    MailApp.sendEmail(email, subject, body);
+    _sendEmail(email, subject, body);
     Logger.log("_sendOnboardingEmail envoyé à " + email);
   } catch(err) {
     Logger.log("_sendOnboardingEmail error: " + err.message);
@@ -708,7 +749,7 @@ function _notifyAdmin(subject, body) {
   var adminEmail = PropertiesService.getScriptProperties().getProperty("ADMIN_EMAIL");
   if (!adminEmail) return;
   try {
-    GmailApp.sendEmail(adminEmail, "[Fidelavis] " + subject, body);
+    _sendEmail(adminEmail, "[Fidelavis] " + subject, body);
   } catch(err) {
     Logger.log("_notifyAdmin error: " + err.message);
   }
