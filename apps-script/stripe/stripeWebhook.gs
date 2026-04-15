@@ -654,7 +654,7 @@ function _sendOnboardingEmail(email, planId, sessionId, trialEndDate) {
   ].join("\n");
 
   try {
-    GmailApp.sendEmail(email, subject, body);
+    MailApp.sendEmail(email, subject, body);
   } catch(err) {
     Logger.log("_sendOnboardingEmail error: " + err.message);
   }

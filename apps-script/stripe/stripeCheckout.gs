@@ -368,7 +368,7 @@ function _sendProvisionEmail(email, name, slug, password) {
   ].join("\n");
 
   try {
-    GmailApp.sendEmail(email, subject, body);
+    MailApp.sendEmail(email, subject, body);
     Logger.log("_sendProvisionEmail envoyé à " + email + " pour " + slug);
   } catch(err) {
     Logger.log("_sendProvisionEmail error: " + err.message);
