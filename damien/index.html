@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Coupon du Mois – Fidelavis</title>
+
+  <!-- ✅ Manifest RELATIF dans chaque dossier resto -->
+  <link rel="manifest" href="progressier.json"/>
+  <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+
+  <!-- ✅ Core commun (1 seule fois) -->
+  <script src="../assets/core.js"></script>
+
+  <!-- window.trackEventFidelavis est defini par core.js avec iframe unique par envoi -->
+
+  <style>
+    :root{
+      --brand:#B48C4A;
+      --bg:#fbfaf8;
+      --card:#ffffff;
+      --ink:#191919;
+      --muted:#6f6f6f;
+      --line:rgba(0,0,0,.08);
+      --shadow:0 18px 50px rgba(0,0,0,.08);
+      --r:22px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1100px 520px at 50% -160px, rgba(180,140,74,0.16), transparent 60%),
+        linear-gradient(180deg, #fbfaf8 0%, #f6f2ec 100%);
+      color:var(--ink);
+      padding:24px 14px 30px;
+      text-align:center;
+    }
+    .wrap{ max-width:520px; margin:0 auto; }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.75);
+      border:1px solid var(--line);
+      box-shadow:0 10px 22px rgba(0,0,0,.05);
+      font-weight:900;
+      font-size:13px;
+      color:#3b3b3b;
+      margin-bottom:10px;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background:#1f8a4c;
+      box-shadow:0 0 0 6px rgba(31,138,76,.12);
+    }
+
+    h1{
+      margin:10px 0 6px;
+      font-size:28px;
+      letter-spacing:-0.4px;
+      font-weight:950;
+      color:#1a1a1a;
+    }
+    .sub{
+      margin:0 auto 18px;
+      max-width:420px;
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      padding:18px 16px 16px;
+      box-shadow:var(--shadow);
+      text-align:left;
+    }
+
+    .offer{
+      border-radius:18px;
+      padding:14px 14px;
+      border:1px solid rgba(180,140,74,.22);
+      background:linear-gradient(180deg, rgba(180,140,74,.12) 0%, rgba(180,140,74,.06) 100%);
+      margin-bottom:14px;
+    }
+    .offerTitle{
+      margin:0 0 6px;
+      font-weight:950;
+      color:#4a3a18;
+      font-size:13px;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+    }
+    .offerText{
+      margin:0;
+      font-size:16px;
+      font-weight:900;
+      color:#241b0b;
+      line-height:1.2;
+    }
+
+    .pinLabel{
+      margin:10px 0 10px;
+      color:#2a2a2a;
+      font-weight:900;
+      font-size:13px;
+      text-align:left;
+    }
+    .pinGrid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:12px;
+      margin:0 0 6px;
+    }
+    .pinBox{
+      width:100%;
+      height:64px;
+      border-radius:16px;
+      border:2px solid rgba(180,140,74,.45);
+      background:#fff;
+      font-size:26px;
+      font-weight:950;
+      text-align:center;
+      outline:none;
+      box-shadow:0 10px 22px rgba(180,140,74,.06);
+    }
+    .pinBox:focus{
+      border-color: rgba(180,140,74,.85);
+      box-shadow:0 14px 26px rgba(180,140,74,.14);
+    }
+    .pinBox::-webkit-outer-spin-button,
+    .pinBox::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+
+    .btn{
+      width:100%;
+      margin-top:12px;
+      padding:16px 16px;
+      border-radius:16px;
+      border:none;
+      cursor:pointer;
+      font-weight:950;
+      font-size:16px;
+    }
+    .btnPrimary{
+      background:linear-gradient(180deg, var(--brand) 0%, #a97f37 100%);
+      color:#fff;
+      box-shadow:0 16px 30px rgba(180,140,74,.22);
+    }
+    .btnSecondary{
+      background:#fff;
+      color:var(--brand);
+      border:2px solid rgba(180,140,74,.55);
+      margin-top:10px;
+    }
+
+    .result{ margin-top:12px; }
+    .ok-box{
+      padding:14px;
+      border-radius:14px;
+      font-weight:950;
+      font-size:16px;
+      text-align:center;
+      border:1px solid var(--line);
+    }
+    .success { background:#d4edda;color:#155724; border-color: rgba(21,87,36,.18); }
+    .error { background:#f8d7da;color:#721c24; border-color: rgba(114,28,36,.18); }
+    .warn { background:#fff3cd;color:#856404; border-color: rgba(133,100,4,.18); }
+
+    small{
+      display:block;
+      margin-top:12px;
+      color:#8a8a8a;
+      font-size:12px;
+      text-align:center;
+      line-height:1.3;
+    }
+
+    .reviewBox{
+      margin-top:14px;
+      padding:16px;
+      border-radius:16px;
+      background:rgba(180,140,74,.08);
+      border:1px solid rgba(180,140,74,.18);
+      text-align:center;
+      animation:fadeIn .4s ease;
+    }
+    .reviewTitle{ margin:0 0 8px; font-weight:950; color:#2a2a2a; }
+    .reviewSub{ margin:0 0 12px; font-size:13px; color:#6f6f6f; line-height:1.35; }
+    .reviewLink{
+      display:block;
+      margin-top:10px;
+      font-size:12.5px;
+      color:#8a8a8a;
+      text-decoration:underline;
+      cursor:pointer;
+    }
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(6px);}
+      to{opacity:1; transform:translateY(0);}
+    }
+  </style>
+
+  <!-- ✅ Gate d’accès : si pas onboardé => redirige selon le contexte -->
+  <script>
+  (function(){
+    try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
+
+    function hasAccessSafe(){
+      try{ return window.Fidelavis?.hasAccess?.() === true; }
+      catch(e){ return false; }
+    }
+
+    // Detecte si l’app est ouverte depuis l’icone ecran d’accueil (PWA standalone)
+    // Sur iOS, le localStorage de la PWA standalone est ISOLE de Safari :
+    // l’utilisateur peut avoir une session valide dans Safari mais
+    // un localStorage vide dans le contexte standalone.
+    function isStandalone(){
+      return window.navigator.standalone === true ||
+             window.matchMedia("(display-mode: standalone)").matches;
+    }
+
+    if (!hasAccessSafe()){
+      setTimeout(() => {
+        if (!hasAccessSafe()){
+          if (isStandalone()){
+            // Mode PWA standalone sans session : renvoyer vers indexnfc.html
+            // avec ?from=pwa pour que indexnfc.html gère le routage (retour → index,
+            // non-inscrit → inscription) SANS déclencher un event scan NFC.
+            window.Fidelavis?.go?.("indexnfc.html?from=pwa");
+          } else {
+            // Mode navigateur normal : flux NFC standard
+            window.Fidelavis?.go?.("indexnfc.html");
+          }
+        }
+      }, 350);
+    }
+  })();
+  </script>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="badge"><span class="dot"></span>Accès client activé</div>
+  <h1>Coupon du mois</h1>
+  <p class="sub">Présentez ce coupon en caisse. Entrez le code PIN affiché par le restaurant.</p>
+
+  <div class="card">
+    <div class="offer">
+      <p class="offerTitle">OFFRE EN COURS</p>
+      <p class="offerText" id="txtOffer">Chargement…</p>
+    </div>
+
+    <div class="pinLabel">Code PIN (4 chiffres)</div>
+
+    <div class="pinGrid" id="pinGrid" aria-label="Code PIN 4 chiffres">
+      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" aria-label="Chiffre 1">
+      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 2">
+      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 3">
+      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 4">
+    </div>
+
+    <button class="btn btnPrimary" id="btnValidate" type="button" onclick="soumettrePin()">Valider le coupon</button>
+    <button class="btn btnSecondary" type="button" onclick="partager()">Partager ce restaurant</button>
+
+    <div id="result" class="result"></div>
+
+    <small>Valable une fois par mois – Réinitialisation automatique chaque 1er.</small>
+  </div>
+
+  <audio id="audioOK">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-reward-952.mp3">
+  </audio>
+</div>
+
+<script>
+/* ✅ PIN UX */
+(function pinUX(){
+  const grid = document.getElementById("pinGrid");
+  if (!grid) return;
+
+  const boxes = Array.from(grid.querySelectorAll(".pinBox"));
+  function sanitizeDigit(v){ return (v || "").replace(/\D/g, "").slice(0,1); }
+
+  setTimeout(()=> boxes[0]?.focus(), 250);
+
+  boxes.forEach((box, idx) => {
+    box.addEventListener("input", () => {
+      const d = sanitizeDigit(box.value);
+      box.value = d;
+      if (d && idx < boxes.length - 1) boxes[idx + 1].focus();
+    });
+
+    box.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && !box.value && idx > 0) {
+        boxes[idx - 1].focus();
+        boxes[idx - 1].value = "";
+        e.preventDefault();
+      }
+      if (e.key === "Enter") soumettrePin();
+    });
+
+    box.addEventListener("paste", (e) => {
+      const txt = (e.clipboardData || window.clipboardData).getData("text") || "";
+      const digits = txt.replace(/\D/g, "").slice(0, 4).split("");
+      if (!digits.length) return;
+
+      e.preventDefault();
+      const start = idx;
+      for (let i = 0; i < digits.length && (start + i) < boxes.length; i++){
+        boxes[start + i].value = digits[i];
+      }
+      boxes[Math.min(start + digits.length, boxes.length - 1)].focus();
+    });
+  });
+
+  window.getPinCode = function(){
+    return boxes.map(b => (b.value || "")).join("");
+  };
+})();
+</script>
+
+<script>
+/* ===========================
+   APP LOGIC (mois suivant)
+=========================== */
+const RESTO = window.Fidelavis?.getRestoSlug?.() || "damien";
+window.Fidelavis?.rememberLastResto?.();
+
+// ✅ Installation confirmée (Android Chrome — iOS ne déclenche pas cet event)
+window.addEventListener("appinstalled", function() {
+  window.Fidelavis?.track?.("install", { src: "pwa_appinstalled", page: "index" });
+});
+
+try {
+  if (!sessionStorage.getItem("fv_session_id")) {
+    sessionStorage.setItem("fv_session_id", "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2,8));
+  }
+} catch(e){}
+
+try {
+  if (!localStorage.getItem("device_id")) {
+    localStorage.setItem("device_id", "dev_" + Math.random().toString(36).slice(2,10));
+  }
+} catch(e){}
+
+window.Fidelavis?.trackOnce?.("coupon_view", `coupon_view_${RESTO}`, { src: "coupon_page" });
+
+const offers = [
+  "🎁 Janvier : -10% menu","🎁 Février : Dessert offert","🎁 Mars : Café offert",
+  "🎁 Avril : -15% végétarien","🎁 Mai : Apéritif offert","🎁 Juin : Entrée offerte",
+  "🎁 Juillet : Glace enfant","🎁 Août : Boisson gratuite","🎁 Septembre : -20% étudiants",
+  "🎁 Octobre : Café gourmand","🎁 Novembre : Menu duo","🎁 Décembre : Chocolat chaud"
+];
+
+let ACTIVE_YEAR = new Date().getFullYear();
+let ACTIVE_MONTH = new Date().getMonth();
+let IS_LOCKED = false;
+
+(async function init(){
+  try{ await window.Fidelavis?.loadConfig?.(); }catch(e){}
+
+  const offerEl = document.getElementById("txtOffer");
+  const subEl = document.querySelector(".sub");
+  const btn = document.getElementById("btnValidate");
+
+  try{
+    if (window.Fidelavis?.isCouponAvailable && !window.Fidelavis.isCouponAvailable()){
+      IS_LOCKED = true;
+
+      const cd = window.Fidelavis.getCouponCountdown();
+      const unlock = cd.unlock;
+
+      ACTIVE_YEAR = unlock.getFullYear();
+      ACTIVE_MONTH = unlock.getMonth();
+
+      const unlockLabel = unlock.toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" });
+
+      offerEl.textContent = `${offers[ACTIVE_MONTH]} — 🔒 disponible le ${unlockLabel}`;
+
+      if (subEl){
+        subEl.innerHTML = `✅ Inscription confirmée.<br><b>Revenez le mois prochain</b> pour profiter de votre coupon.`;
+      }
+
+      if (btn){
+        btn.disabled = true;
+        btn.style.opacity = "0.55";
+        btn.style.cursor = "not-allowed";
+        btn.textContent = "⏳ Disponible le mois prochain";
+      }
+
+      window.Fidelavis?.trackOnce?.("coupon_locked_view", `coupon_locked_${RESTO}_${unlock.toISOString().slice(0,10)}`, { src: "coupon_page" });
+
+      syncCouponState();
+      return;
+    }
+  }catch(e){}
+
+  IS_LOCKED = false;
+  ACTIVE_YEAR = new Date().getFullYear();
+  ACTIVE_MONTH = new Date().getMonth();
+  offerEl.textContent = offers[ACTIVE_MONTH];
+
+  if (btn){
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.style.cursor = "pointer";
+    btn.textContent = "Valider le coupon";
+  }
+
+  syncCouponState();
+})();
+
+function couponKey(){
+  return `coupon_${RESTO}_${ACTIVE_YEAR}_${ACTIVE_MONTH}`;
+}
+
+function reviewKey(){
+  return `review_${RESTO}_${ACTIVE_YEAR}_${ACTIVE_MONTH}`;
+}
+
+function syncCouponState(){
+  const res = document.getElementById("result");
+  if (!res) return;
+
+  if (localStorage.getItem(couponKey()) === "used") {
+    res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
+  }
+}
+
+function allerAvis(){
+  localStorage.setItem(reviewKey(), "done");
+  window.Fidelavis?.track?.("review_click", { src: "coupon_review_prompt" });
+  setTimeout(()=> window.Fidelavis?.go?.("avis.html"), 120);
+}
+
+function fermerAvis(){
+  localStorage.setItem(reviewKey(), "later");
+  window.Fidelavis?.track?.("review_later", { src: "coupon_review_prompt" });
+  document.getElementById("reviewPrompt")?.remove();
+}
+
+/* PIN (synchro admin) */
+const SECRET_KEY = "OFFLINE123";
+function simpleHash(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 1000000007;
+  return h;
+}
+function getMinute(offset = 0) { return Math.floor(Date.now() / 60000) + offset; }
+function generatePin(offset = 0) {
+  return (simpleHash(SECRET_KEY + getMinute(offset)) % 10000).toString().padStart(4, "0");
+}
+function verifierPin(pin) { return [-2, -1, 0, 1, 2].some(o => generatePin(o) === pin); }
+
+function soumettrePin() {
+  const res = document.getElementById("result");
+
+  if (IS_LOCKED){
+    try{
+      const cd = window.Fidelavis.getCouponCountdown();
+      const unlockLabel = cd.unlock.toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" });
+      res.innerHTML = `<div class="ok-box warn">⏳ Coupon disponible le ${unlockLabel}. Revenez à ce moment-là ✅</div>`;
+      window.Fidelavis?.track?.("coupon_locked_try", { src: "coupon_validate" });
+      return;
+    }catch(e){
+      res.innerHTML = `<div class="ok-box warn">⏳ Coupon disponible le mois prochain ✅</div>`;
+      return;
+    }
+  }
+
+  const code = (window.getPinCode ? window.getPinCode() : "").trim();
+  document.getElementById("reviewPrompt")?.remove();
+
+  if (localStorage.getItem(couponKey()) === "used") {
+    res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
+    window.Fidelavis?.track?.("coupon_already_used", { src: "coupon_validate" });
+    return;
+  }
+
+  if (!/^\d{4}$/.test(code)) {
+    res.innerHTML = `<div class="ok-box warn">⚠️ Code invalide</div>`;
+    window.Fidelavis?.track?.("coupon_pin_invalid", { src: "coupon_validate" });
+    return;
+  }
+
+  window.Fidelavis?.track?.("coupon_validate_attempt", { src: "coupon_validate" });
+
+  if (verifierPin(code)) {
+    localStorage.setItem(couponKey(), "used");
+    res.innerHTML = `<div class="ok-box success">✅ Coupon validé</div>`;
+    document.getElementById("audioOK").play().catch(()=>{});
+
+    window.Fidelavis?.track?.("coupon_validate", { src: "coupon_validate" });
+
+    setTimeout(() => {
+      if (localStorage.getItem(reviewKey())) return;
+
+      const box = document.createElement("div");
+      box.className = "reviewBox";
+      box.id = "reviewPrompt";
+      box.innerHTML = `
+        <p class="reviewTitle">Votre avis compte</p>
+        <p class="reviewSub">Si vous le souhaitez, vous pouvez partager votre expérience.</p>
+        <button class="btn btnSecondary" type="button" onclick="allerAvis()">Donner mon avis</button>
+        <span class="reviewLink" onclick="fermerAvis()">Plus tard</span>
+      `;
+      res.appendChild(box);
+    }, 1000);
+
+  } else {
+    res.innerHTML = `<div class="ok-box error">❌ Code incorrect</div>`;
+    window.Fidelavis?.track?.("coupon_validate_fail", { src: "coupon_validate" });
+  }
+}
+
+function partager() {
+  const shareUrl = "https://bit.ly/4psvq0G";
+  window.Fidelavis?.track?.("share_click", { src: "coupon_share" });
+
+  const data = {
+    title: "Découvre ce restaurant",
+    text: "Je te recommande ce restaurant. Il y a des offres exclusives via Fidelavis 👇",
+    url: shareUrl
+  };
+
+  if (navigator.share) {
+    navigator.share(data).catch(()=>{});
+  } else if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(shareUrl)
+      .then(()=>alert("Lien copié 👍"))
+      .catch(()=>alert("Copiez ce lien : " + shareUrl));
+  } else {
+    alert("Copiez ce lien : " + shareUrl);
+  }
+}
+</script>
+
+</body>
+</html>
