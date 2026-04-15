@@ -192,6 +192,11 @@ function _provisionRestaurant(body) {
     _updateSheetRestoId(customerId, slug);
   }
 
+  // Envoyer l'email avec les accès au tableau de bord
+  if (email) {
+    _sendProvisionEmail(email, name, slug, password);
+  }
+
   Logger.log("_provisionRestaurant: " + slug + " — " + copied + "/" + FILES.length + " fichiers, " + errors.length + " erreurs");
 
   if (errors.length > 0) {
@@ -319,6 +324,54 @@ function _updateSheetRestoId(customerId, slug) {
     }
   } catch(e) {
     Logger.log("_updateSheetRestoId error: " + e.message);
+  }
+}
+
+/**
+ * _sendProvisionEmail(email, name, slug, password)
+ * Envoyé après la création du restaurant.
+ * Contient l'URL de connexion, l'identifiant et le mot de passe.
+ */
+function _sendProvisionEmail(email, name, slug, password) {
+  if (!email || !slug) return;
+  var siteUrl  = PropertiesService.getScriptProperties().getProperty("FIDELAVIS_SITE_URL") || "https://app.cartefidelavis.com";
+  var loginUrl = siteUrl + "/" + slug + "/admin/login.html";
+  var subject  = "✅ Votre espace " + name + " est prêt — vos accès";
+  var body = [
+    "Bonjour,",
+    "",
+    "Votre espace restaurant Fidelavis est en ligne !",
+    "",
+    "─────────────────────────────",
+    "VOS ACCÈS ADMINISTRATEUR",
+    "─────────────────────────────",
+    "",
+    "🔗 Lien de connexion :",
+    loginUrl,
+    "",
+    "👤 Identifiant : admin",
+    "🔑 Mot de passe : " + (password || "(celui que vous avez choisi)"),
+    "",
+    "─────────────────────────────",
+    "LIEN NFC / QR CODE CLIENT",
+    "─────────────────────────────",
+    "",
+    "Lien à programmer sur votre tag NFC ou QR code :",
+    siteUrl + "/" + slug + "/indexnfc.html",
+    "",
+    "─────────────────────────────",
+    "",
+    "Conservez cet email précieusement.",
+    "Pour toute question : support@fidelavis.com",
+    "",
+    "L'équipe Fidelavis"
+  ].join("\n");
+
+  try {
+    GmailApp.sendEmail(email, subject, body);
+    Logger.log("_sendProvisionEmail envoyé à " + email + " pour " + slug);
+  } catch(err) {
+    Logger.log("_sendProvisionEmail error: " + err.message);
   }
 }
 

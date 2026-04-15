@@ -128,8 +128,14 @@ function _handleCheckoutCompleted(session) {
     createdAt:            new Date().toISOString()
   };
 
+  // Anti-doublon : si cet email a déjà été traité pour checkout.session.completed, on stop
+  if (_isAlreadyProcessed(customerId)) {
+    Logger.log("checkout.session.completed déjà traité pour " + customerId + " — ignoré");
+    return;
+  }
+
   _saveBillingRecord(clientData, "checkout.session.completed");
-  _sendOnboardingEmail(email, planId, "", trialEnd);
+  _sendOnboardingEmail(email, planId, session.id, trialEnd);
   _notifyAdmin("Nouveau client Fidelavis (essai gratuit)", [
     "Email : " + email,
     "Plan : " + planId,
@@ -612,29 +618,39 @@ function _fetchSubscription(subscriptionId) {
    Emails & Notifications
    ===================================================== */
 
-function _sendOnboardingEmail(email, planId, restoId, trialEndDate) {
+function _sendOnboardingEmail(email, planId, sessionId, trialEndDate) {
   if (!email) return;
 
+  var siteUrl  = PropertiesService.getScriptProperties().getProperty("FIDELAVIS_SITE_URL") || "https://app.cartefidelavis.com";
   var planName = planId === "pro" ? "Pro" : "Essentiel";
-  var subject  = "Votre essai gratuit Fidelavis commence ! 🎉";
+  var setupUrl = siteUrl + "/fidelavis-admin/setup.html" + (sessionId ? "?session_id=" + sessionId : "");
+  var subject  = "Votre essai gratuit Fidelavis commence !";
   var body = [
     "Bonjour,",
     "",
-    "Votre essai gratuit Fidelavis " + planName + " est maintenant actif.",
+    "Votre paiement a bien été enregistré. Votre essai gratuit Fidelavis " + planName + " est actif.",
     "",
     "✅ Aucun paiement aujourd'hui.",
-    "📅 Votre essai se termine le : " + (trialEndDate || "dans 14 jours"),
+    "📅 Fin d'essai : " + (trialEndDate || "dans 14 jours"),
     "",
+    "─────────────────────────────",
+    "ÉTAPE SUIVANTE : Créez votre espace restaurant",
+    "─────────────────────────────",
+    "",
+    "Cliquez sur ce lien pour configurer votre restaurant (2 minutes) :",
+    setupUrl,
+    "",
+    "Vous choisirez votre nom de restaurant et votre mot de passe administrateur.",
+    "",
+    "─────────────────────────────",
     "Après l'essai, vous serez facturé :",
-    "  - 199€ d'installation (une seule fois)",
-    "  - " + (planId === "pro" ? "149€" : "97€") + "/mois pour le plan " + planName,
-    "",
-    "Votre identifiant restaurant : " + restoId,
-    "Notre équipe va configurer votre espace dans les 24h.",
+    "  - 199 € d'installation (une seule fois)",
+    "  - " + (planId === "pro" ? "149" : "97") + " €/mois — plan " + planName,
     "",
     "Pour annuler avant la fin d'essai, répondez à cet email.",
     "",
-    "L'équipe Fidelavis"
+    "L'équipe Fidelavis",
+    "support@fidelavis.com"
   ].join("\n");
 
   try {
@@ -642,6 +658,28 @@ function _sendOnboardingEmail(email, planId, restoId, trialEndDate) {
   } catch(err) {
     Logger.log("_sendOnboardingEmail error: " + err.message);
   }
+}
+
+/**
+ * _isAlreadyProcessed(customerId)
+ * Retourne true si checkout.session.completed a déjà été traité pour ce customerId.
+ * Évite les doubles envois en cas de retry Stripe ou double webhook.
+ */
+function _isAlreadyProcessed(customerId) {
+  if (!customerId) return false;
+  try {
+    var sheet = _getSheet();
+    var data  = sheet.getDataRange().getValues();
+    // Colonne 6 (index 6) = stripeCustomerId, colonne 9 (index 9) = event
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][6] === customerId && data[i][9] === "checkout.session.completed") {
+        return true;
+      }
+    }
+  } catch(e) {
+    Logger.log("_isAlreadyProcessed error: " + e.message);
+  }
+  return false;
 }
 
 /* =====================================================
