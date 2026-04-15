@@ -1,0 +1,16 @@
+{
+  "name": "louneaaline",
+  "color": "#b8924f",
+  "color2": "#9c7c43",
+  "brevoListId": "",
+  "brevoGasUrl": "",
+  "plan": "pro",
+  "subscriptionStatus": "trialing",
+  "setupPaid": false,
+  "trialEndDate": "",
+  "billingEmail": "louneaaline@gmail.com",
+  "stripeCustomerId": "cus_ULH5MCd9BX297k",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": []
+}
