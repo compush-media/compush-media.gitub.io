@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Fidelavis — État de la plateforme</title>
+  <script src="../../assets/core.js" onerror="void(0)"></script>
+  <style>
+    :root {
+      --bg:      #f4f6f9;
+      --white:   #ffffff;
+      --ink:     #1c1c2e;
+      --muted:   #6b7280;
+      --line:    #e5e7eb;
+      --brand:   #B48C4A;
+      --r:       14px;
+      --sh:      0 2px 16px rgba(0,0,0,.09);
+      --green:   #059669;
+      --green-bg:#d1fae5;
+      --red:     #dc2626;
+      --red-bg:  #fee2e2;
+      --orange:  #d97706;
+      --orange-bg:#fef3c7;
+      --blue:    #1976d2;
+      --blue-bg: #dbeafe;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .logo {
+      background: linear-gradient(135deg, var(--brand) 0%, #9c7c43 100%);
+      color: #fff;
+      font-weight: 900;
+      font-size: 13px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      letter-spacing: .3px;
+    }
+    .header h1 { font-size: 16px; font-weight: 800; }
+    .header-nav { display: flex; gap: 6px; }
+    .nav-btn {
+      padding: 7px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--ink);
+      text-decoration: none;
+      transition: border-color .15s, background .15s;
+    }
+    .nav-btn:hover { border-color: var(--brand); background: rgba(180,140,74,.06); }
+    .nav-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+    /* ── CONTENT ── */
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .page-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    #lastRefresh { font-weight: 600; color: var(--ink); }
+
+    /* ── GRID ── */
+    .state-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    /* ── STATE CARD ── */
+    .state-card {
+      background: var(--white);
+      border-radius: var(--r);
+      box-shadow: var(--sh);
+      padding: 20px;
+      border-left: 4px solid transparent;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .state-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,.13); }
+    .state-card.ok      { border-left-color: var(--green); }
+    .state-card.warn    { border-left-color: var(--orange); }
+    .state-card.err     { border-left-color: var(--red); }
+    .state-card.neutral { border-left-color: var(--blue); }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .card-icon {
+      font-size: 26px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .badge.ok      { background: var(--green-bg);  color: var(--green); }
+    .badge.warn    { background: var(--orange-bg); color: var(--orange); }
+    .badge.err     { background: var(--red-bg);    color: var(--red); }
+    .badge.neutral { background: var(--blue-bg);   color: var(--blue); }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .card-sub {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── DETAILS ── */
+    .card-details {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+    }
+    .detail-label { color: var(--muted); font-weight: 500; }
+    .detail-value { font-weight: 700; color: var(--ink); }
+    .detail-value.ok     { color: var(--green); }
+    .detail-value.warn   { color: var(--orange); }
+    .detail-value.err    { color: var(--red); }
+
+    /* ── CARD ACTION ── */
+    .card-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: opacity .15s;
+    }
+    .card-action:hover { opacity: .82; }
+    .ca-brand  { background: linear-gradient(135deg, var(--brand), #9c7c43); color: #fff; }
+    .ca-blue   { background: var(--blue); color: #fff; }
+    .ca-green  { background: var(--green); color: #fff; }
+    .ca-ghost  { background: var(--line); color: var(--ink); }
+
+    /* ── SECTION KPI MINI ── */
+    .kpi-mini-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .kpi-mini {
+      text-align: center;
+    }
+    .kpi-mini-val {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .kpi-mini-lbl {
+      font-size: 10.5px;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin-top: 3px;
+    }
+
+    /* ── SECTION: Activity Log ── */
+    .section {
+      background: var(--white);
+      border-radius: var(--r);
+      box-shadow: var(--sh);
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+    .log-list { list-style: none; }
+    .log-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+    }
+    .log-item:last-child { border-bottom: none; }
+    .log-icon { font-size: 16px; width: 24px; text-align: center; flex-shrink: 0; }
+    .log-text { flex: 1; color: var(--ink); }
+    .log-time { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+
+    /* ── Refresh btn ── */
+    .btn-refresh {
+      padding: 8px 16px;
+      border-radius: 9px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-refresh:hover { opacity: .88; }
+
+    /* ── Skeleton ── */
+    @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+    .skel {
+      background: linear-gradient(90deg,#e9ecef 25%,#f8f9fa 50%,#e9ecef 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 4px;
+      height: .85em;
+      display: inline-block;
+    }
+
+    @media (max-width: 640px) {
+      .header-nav { display: none; }
+      .state-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <div class="header-left">
+    <span class="logo">FV</span>
+    <h1>État de la plateforme</h1>
+  </div>
+  <nav class="header-nav">
+    <a class="nav-btn" href="espace-admin.html#dashboard">Tableau de bord</a>
+    <a class="nav-btn" href="espace-admin.html#coupon">Coupon</a>
+    <a class="nav-btn active" href="state.html">Stats</a>
+    <a class="nav-btn" href="reputation-google.html">Avis</a>
+    <a class="nav-btn" href="espace-admin.html#notifications">Notifications</a>
+    <a class="nav-btn" href="login.html" id="logoutBtn">Déconnexion</a>
+  </nav>
+</div>
+
+<!-- ── CONTENT ── -->
+<div class="wrap">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:6px;">
+    <div>
+      <div class="page-title">État de la plateforme</div>
+      <div class="page-sub">Dernière vérification : <span id="lastRefresh">—</span></div>
+    </div>
+    <button class="btn-refresh" id="refreshBtn">↻ Actualiser</button>
+  </div>
+
+  <!-- ── STATE CARDS ── -->
+  <div class="state-grid" id="stateGrid">
+
+    <!-- GOOGLE GBP -->
+    <div class="state-card" id="cardGoogle">
+      <div class="card-header">
+        <span class="card-icon">🔗</span>
+        <span class="badge" id="badgeGoogle">…</span>
+      </div>
+      <div class="card-title">Connexion Google Business</div>
+      <div class="card-sub" id="subGoogle">Vérification en cours…</div>
+      <div class="card-details">
+        <div class="detail-row">
+          <span class="detail-label">Token OAuth</span>
+          <span class="detail-value" id="detTokenStatus">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Expire dans</span>
+          <span class="detail-value" id="detTokenExpiry">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Client ID</span>
+          <span class="detail-value" id="detClientId">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Fiche Google</span>
+          <span class="detail-value" id="detLocation">—</span>
+        </div>
+      </div>
+      <a class="card-action ca-brand" href="reputation-google.html">→ Gérer les avis</a>
+    </div>
+
+    <!-- AVIS GOOGLE -->
+    <div class="state-card neutral" id="cardReviews">
+      <div class="card-header">
+        <span class="card-icon">⭐</span>
+        <span class="badge neutral" id="badgeReviews">—</span>
+      </div>
+      <div class="card-title">Avis Google</div>
+      <div class="card-sub" id="subReviews">Chargement des données…</div>
+      <div class="kpi-mini-row">
+        <div class="kpi-mini">
+          <div class="kpi-mini-val" id="kvTotal">—</div>
+          <div class="kpi-mini-lbl">Total</div>
+        </div>
+        <div class="kpi-mini">
+          <div class="kpi-mini-val" id="kvAvg">—</div>
+          <div class="kpi-mini-lbl">Moyenne</div>
+        </div>
+        <div class="kpi-mini">
+          <div class="kpi-mini-val" id="kvPending">—</div>
+          <div class="kpi-mini-lbl">En attente</div>
+        </div>
+      </div>
+      <a class="card-action ca-brand" href="reputation-google.html">→ Répondre aux avis</a>
+    </div>
+
+    <!-- SYNC GBP -->
+    <div class="state-card" id="cardSync">
+      <div class="card-header">
+        <span class="card-icon">🔄</span>
+        <span class="badge" id="badgeSync">—</span>
+      </div>
+      <div class="card-title">Synchronisation GBP</div>
+      <div class="card-sub" id="subSync">—</div>
+      <div class="card-details">
+        <div class="detail-row">
+          <span class="detail-label">Dernière sync</span>
+          <span class="detail-value" id="detLastSync">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Auto-refresh token</span>
+          <span class="detail-value ok">✅ Actif</span>
+        </div>
+      </div>
+      <a class="card-action ca-ghost" href="reputation-google.html">→ Forcer une sync</a>
+    </div>
+
+    <!-- PLATEFORME -->
+    <div class="state-card neutral" id="cardPlatform">
+      <div class="card-header">
+        <span class="card-icon">📊</span>
+        <span class="badge neutral">Actif</span>
+      </div>
+      <div class="card-title">Statistiques Plateforme</div>
+      <div class="card-sub">Activité du mois en cours</div>
+      <div class="kpi-mini-row">
+        <div class="kpi-mini">
+          <div class="kpi-mini-val" id="pScan">—</div>
+          <div class="kpi-mini-lbl">Scans</div>
+        </div>
+        <div class="kpi-mini">
+          <div class="kpi-mini-val" id="pSignup">—</div>
+          <div class="kpi-mini-lbl">Inscrits</div>
+        </div>
+        <div class="kpi-mini">
+          <div class="kpi-mini-val" id="pCoupon">—</div>
+          <div class="kpi-mini-lbl">Coupons</div>
+        </div>
+      </div>
+      <a class="card-action ca-blue" href="state.html?tab=stats">→ Voir les stats</a>
+    </div>
+
+    <!-- IA CLAUDE -->
+    <div class="state-card" id="cardAI">
+      <div class="card-header">
+        <span class="card-icon">🤖</span>
+        <span class="badge" id="badgeAI">—</span>
+      </div>
+      <div class="card-title">IA Claude (Réponses auto)</div>
+      <div class="card-sub" id="subAI">Vérification de la configuration…</div>
+      <div class="card-details">
+        <div class="detail-row">
+          <span class="detail-label">Proxy Apps Script</span>
+          <span class="detail-value ok">✅ Configuré</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Clé API Claude</span>
+          <span class="detail-value" id="detClaudeKey">—</span>
+        </div>
+      </div>
+      <a class="card-action ca-brand" href="reputation-google.html">→ Paramètres IA</a>
+    </div>
+
+    <!-- PARAMÈTRES -->
+    <div class="state-card" id="cardSettings">
+      <div class="card-header">
+        <span class="card-icon">⚙️</span>
+        <span class="badge" id="badgeSettings">—</span>
+      </div>
+      <div class="card-title">Configuration</div>
+      <div class="card-sub" id="subSettings">Vérification des paramètres…</div>
+      <div class="card-details">
+        <div class="detail-row">
+          <span class="detail-label">Nom du restaurant</span>
+          <span class="detail-value" id="detRestName">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Connexion admin</span>
+          <span class="detail-value ok">✅ Authentifié</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">PWA / Service Worker</span>
+          <span class="detail-value" id="detPWA">—</span>
+        </div>
+      </div>
+      <a class="card-action ca-ghost" href="espace-admin.html">→ Espace Admin</a>
+    </div>
+
+  </div><!-- /state-grid -->
+
+  <!-- ── LOG ACTIVITÉ ── -->
+  <div class="section">
+    <div class="section-title">Journal d'activité récent</div>
+    <ul class="log-list" id="logList">
+      <li class="log-item"><span class="skel" style="width:80%"></span></li>
+      <li class="log-item"><span class="skel" style="width:60%"></span></li>
+      <li class="log-item"><span class="skel" style="width:70%"></span></li>
+    </ul>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── Auth guard ────────────────────────────────────────────────
+const SITE = (() => {
+  const m = location.pathname.match(/^\/([^/]+)\//);
+  return (m && m[1] !== 'assets') ? m[1] : (localStorage.getItem('fv_last_resto') || 'denise');
+})();
+const authKey = `admin_${SITE}`;
+if (!localStorage.getItem(authKey)) window.location.href = 'login.html';
+
+document.getElementById('logoutBtn').addEventListener('click', e => {
+  e.preventDefault();
+  localStorage.removeItem(authKey);
+  window.location.href = 'login.html';
+});
+
+// ── Helpers ───────────────────────────────────────────────────
+function setCard(card, state) {
+  card.className = 'state-card ' + state;
+}
+function setBadge(el, state, label) {
+  el.className = 'badge ' + state;
+  el.textContent = label;
+}
+function fmt(ms) {
+  if (!ms || ms < 0) return 'Expiré';
+  const m = Math.round(ms / 60000);
+  if (m < 1)  return '< 1 min';
+  if (m < 60) return `${m} min`;
+  return `${Math.floor(m / 60)} h ${m % 60} min`;
+}
+function relTime(iso) {
+  const d = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(d / 60000);
+  if (m < 1)  return 'À l\'instant';
+  if (m < 60) return `Il y a ${m} min`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `Il y a ${h} h`;
+  return `Il y a ${Math.floor(h / 24)} j`;
+}
+
+// ── GOOGLE CONNECTION STATE ───────────────────────────────────
+function checkGoogleState() {
+  const token   = localStorage.getItem('fv_google_token');
+  const expiry  = parseInt(localStorage.getItem('fv_google_token_expiry') || '0');
+  const clientId = JSON.parse(localStorage.getItem('fv_settings') || '{}').google_client_id;
+  const location_name = localStorage.getItem('fv_selected_location');
+
+  const cardEl   = document.getElementById('cardGoogle');
+  const badgeEl  = document.getElementById('badgeGoogle');
+  const subEl    = document.getElementById('subGoogle');
+  const remaining = expiry - Date.now();
+
+  if (token && remaining > 0) {
+    setCard(cardEl, 'ok');
+    setBadge(badgeEl, 'ok', 'Connecté');
+    subEl.textContent = 'Compte Google Business Profile actif.';
+    document.getElementById('detTokenStatus').textContent = '✅ Valide';
+    document.getElementById('detTokenStatus').className = 'detail-value ok';
+    document.getElementById('detTokenExpiry').textContent = fmt(remaining);
+    document.getElementById('detTokenExpiry').className = remaining < 5 * 60000 ? 'detail-value warn' : 'detail-value ok';
+  } else if (token && remaining <= 0) {
+    setCard(cardEl, 'warn');
+    setBadge(badgeEl, 'warn', 'Expiré');
+    subEl.textContent = 'Token expiré — refresh automatique en cours.';
+    document.getElementById('detTokenStatus').textContent = '⚠️ Expiré';
+    document.getElementById('detTokenStatus').className = 'detail-value warn';
+    document.getElementById('detTokenExpiry').textContent = 'Expiré';
+    document.getElementById('detTokenExpiry').className = 'detail-value warn';
+  } else {
+    setCard(cardEl, 'err');
+    setBadge(badgeEl, 'err', 'Non connecté');
+    subEl.textContent = 'Aucune connexion Google. Rendez-vous dans Avis Google pour vous connecter.';
+    document.getElementById('detTokenStatus').textContent = '❌ Absent';
+    document.getElementById('detTokenStatus').className = 'detail-value err';
+    document.getElementById('detTokenExpiry').textContent = '—';
+    document.getElementById('detTokenExpiry').className = 'detail-value';
+  }
+  document.getElementById('detClientId').textContent = clientId ? '✅ ' + clientId.slice(0, 12) + '…' : '❌ Non renseigné';
+  document.getElementById('detClientId').className   = 'detail-value ' + (clientId ? 'ok' : 'err');
+  document.getElementById('detLocation').textContent = location_name ? '✅ Fiche liée' : '— Non sélectionnée';
+  document.getElementById('detLocation').className   = 'detail-value ' + (location_name ? 'ok' : '');
+}
+
+// ── REVIEWS STATE ─────────────────────────────────────────────
+function checkReviewsState() {
+  const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+  const total   = reviews.length;
+  const pending = reviews.filter(r => r.status === 'pending').length;
+  const ratings = reviews.filter(r => r.rating).map(r => r.rating);
+  const avg     = ratings.length ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1) : '—';
+
+  document.getElementById('kvTotal').textContent   = total;
+  document.getElementById('kvAvg').textContent     = avg;
+  document.getElementById('kvPending').textContent = pending;
+
+  const cardEl  = document.getElementById('cardReviews');
+  const badgeEl = document.getElementById('badgeReviews');
+  const subEl   = document.getElementById('subReviews');
+
+  if (total === 0) {
+    setCard(cardEl, 'warn');
+    setBadge(badgeEl, 'warn', 'Aucun avis');
+    subEl.textContent = 'Aucun avis chargé. Synchronisez votre fiche Google.';
+  } else if (pending > 0) {
+    setCard(cardEl, 'warn');
+    setBadge(badgeEl, 'warn', `${pending} en attente`);
+    subEl.textContent = `${pending} avis sans réponse sur ${total} avis chargés.`;
+  } else {
+    setCard(cardEl, 'ok');
+    setBadge(badgeEl, 'ok', 'À jour');
+    subEl.textContent = `Tous les avis ont une réponse. Note moyenne : ${avg}/5.`;
+  }
+}
+
+// ── SYNC STATE ────────────────────────────────────────────────
+function checkSyncState() {
+  const lastSync = localStorage.getItem('fv_last_sync');
+  const cardEl   = document.getElementById('cardSync');
+  const badgeEl  = document.getElementById('badgeSync');
+  const subEl    = document.getElementById('subSync');
+
+  document.getElementById('detLastSync').textContent = lastSync ? relTime(lastSync) : '—';
+
+  if (!lastSync) {
+    setCard(cardEl, 'warn');
+    setBadge(badgeEl, 'warn', 'Jamais synchronisé');
+    subEl.textContent = 'Connectez Google pour démarrer la synchronisation.';
+  } else {
+    const age = Date.now() - new Date(lastSync).getTime();
+    if (age < 2 * 3600 * 1000) {
+      setCard(cardEl, 'ok');
+      setBadge(badgeEl, 'ok', 'Synchronisé');
+      subEl.textContent = 'Données à jour.';
+    } else {
+      setCard(cardEl, 'warn');
+      setBadge(badgeEl, 'warn', 'Ancienne sync');
+      subEl.textContent = 'Dernière synchronisation il y a plus de 2 h.';
+    }
+  }
+}
+
+// ── AI STATE ─────────────────────────────────────────────────
+function checkAIState() {
+  const settings  = JSON.parse(localStorage.getItem('fv_settings') || '{}');
+  const hasKey    = !!settings.claude_api_key;
+  const cardEl    = document.getElementById('cardAI');
+  const badgeEl   = document.getElementById('badgeAI');
+  const subEl     = document.getElementById('subAI');
+
+  document.getElementById('detClaudeKey').textContent = hasKey ? '✅ Configuré' : '❌ Non renseigné';
+  document.getElementById('detClaudeKey').className   = 'detail-value ' + (hasKey ? 'ok' : 'err');
+
+  if (hasKey) {
+    setCard(cardEl, 'ok');
+    setBadge(badgeEl, 'ok', 'Opérationnel');
+    subEl.textContent = 'Génération automatique de réponses activée.';
+  } else {
+    setCard(cardEl, 'warn');
+    setBadge(badgeEl, 'warn', 'Partiel');
+    subEl.textContent = 'Proxy Apps Script prêt, mais la clé Claude API n\'est pas configurée.';
+  }
+}
+
+// ── SETTINGS STATE ────────────────────────────────────────────
+function checkSettingsState() {
+  const settings  = JSON.parse(localStorage.getItem('fv_settings') || '{}');
+  const cardEl    = document.getElementById('cardSettings');
+  const badgeEl   = document.getElementById('badgeSettings');
+  const subEl     = document.getElementById('subSettings');
+
+  const name      = settings.restaurant_name || localStorage.getItem('fv_merchant')
+                      ? (JSON.parse(localStorage.getItem('fv_merchant') || '{}').name || '—')
+                      : '—';
+  document.getElementById('detRestName').textContent = name;
+  document.getElementById('detPWA').textContent = 'serviceWorker' in navigator ? '✅ Supporté' : '⚠️ Non supporté';
+
+  const hasClient = !!settings.google_client_id;
+  if (hasClient) {
+    setCard(cardEl, 'ok');
+    setBadge(badgeEl, 'ok', 'Complet');
+    subEl.textContent = 'Toutes les clés essentielles sont configurées.';
+  } else {
+    setCard(cardEl, 'warn');
+    setBadge(badgeEl, 'warn', 'Incomplet');
+    subEl.textContent = 'Le Google Client ID n\'est pas encore renseigné.';
+  }
+}
+
+// ── PLATFORM STATS ────────────────────────────────────────────
+const API = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
+async function loadPlatformStats() {
+  try {
+    const url = `${API}?resto=${encodeURIComponent(SITE)}&days=30`;
+    const res  = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data || data.ok !== true) return;
+    const s = data.stats || {};
+    document.getElementById('pScan').textContent   = s.scan    ?? '—';
+    document.getElementById('pSignup').textContent = s.signup  ?? '—';
+    document.getElementById('pCoupon').textContent = s.coupon_validate ?? '—';
+  } catch(e) { /* silently fail */ }
+}
+
+// ── ACTIVITY LOG ──────────────────────────────────────────────
+const LOG_META = {
+  'google.connected':      { icon: '🔗', label: 'Connexion Google établie' },
+  'google.token_refresh':  { icon: '🔄', label: 'Token Google renouvelé automatiquement' },
+  'merchant.login':        { icon: '🔑', label: 'Connexion admin' },
+  'sync.completed':        { icon: '✅', label: 'Synchronisation terminée' },
+  'reply.sent':            { icon: '💬', label: 'Réponse envoyée' },
+  'ai.generated':          { icon: '🤖', label: 'Réponse IA générée' },
+};
+function renderLog() {
+  const logs = JSON.parse(localStorage.getItem('fv_activity_log') || '[]').slice(-12).reverse();
+  const list = document.getElementById('logList');
+  if (!logs.length) {
+    list.innerHTML = '<li class="log-item" style="color:var(--muted)">Aucune activité enregistrée.</li>';
+    return;
+  }
+  list.innerHTML = logs.map(entry => {
+    const meta  = LOG_META[entry.type] || { icon: '🔔', label: entry.type };
+    const label = entry.detail ? `${meta.label} — ${entry.detail}` : meta.label;
+    const time  = entry.ts ? relTime(entry.ts) : '';
+    return `<li class="log-item">
+      <span class="log-icon">${meta.icon}</span>
+      <span class="log-text">${label}</span>
+      ${time ? `<span class="log-time">${time}</span>` : ''}
+    </li>`;
+  }).join('');
+}
+
+// ── MAIN ──────────────────────────────────────────────────────
+function refresh() {
+  checkGoogleState();
+  checkReviewsState();
+  checkSyncState();
+  checkAIState();
+  checkSettingsState();
+  renderLog();
+  loadPlatformStats();
+  document.getElementById('lastRefresh').textContent =
+    new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+
+document.getElementById('refreshBtn').addEventListener('click', refresh);
+refresh();
+// Auto-refresh toutes les 60 secondes
+setInterval(refresh, 60 * 1000);
+</script>
+</body>
+</html>
