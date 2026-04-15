@@ -621,9 +621,7 @@ function _fetchSubscription(subscriptionId) {
 function _sendOnboardingEmail(email, planId, sessionId, trialEndDate) {
   if (!email) return;
 
-  var siteUrl  = PropertiesService.getScriptProperties().getProperty("FIDELAVIS_SITE_URL") || "https://app.cartefidelavis.com";
   var planName = planId === "pro" ? "Pro" : "Essentiel";
-  var setupUrl = siteUrl + "/fidelavis-admin/setup.html" + (sessionId ? "?session_id=" + sessionId : "");
   var subject  = "Votre essai gratuit Fidelavis commence !";
   var body = [
     "Bonjour,",
@@ -633,14 +631,8 @@ function _sendOnboardingEmail(email, planId, sessionId, trialEndDate) {
     "✅ Aucun paiement aujourd'hui.",
     "📅 Fin d'essai : " + (trialEndDate || "dans 14 jours"),
     "",
-    "─────────────────────────────",
-    "ÉTAPE SUIVANTE : Créez votre espace restaurant",
-    "─────────────────────────────",
-    "",
-    "Cliquez sur ce lien pour configurer votre restaurant (2 minutes) :",
-    setupUrl,
-    "",
-    "Vous choisirez votre nom de restaurant et votre mot de passe administrateur.",
+    "Votre espace restaurant est en cours de création.",
+    "Vous recevrez un second email avec vos identifiants de connexion d'ici quelques minutes.",
     "",
     "─────────────────────────────",
     "Après l'essai, vous serez facturé :",
@@ -655,6 +647,7 @@ function _sendOnboardingEmail(email, planId, sessionId, trialEndDate) {
 
   try {
     MailApp.sendEmail(email, subject, body);
+    Logger.log("_sendOnboardingEmail envoyé à " + email);
   } catch(err) {
     Logger.log("_sendOnboardingEmail error: " + err.message);
   }
