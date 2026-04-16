@@ -292,6 +292,9 @@
   </div>
 </header>
 
+<!-- ── SUBSCRIPTION BANNER ── -->
+<div id="subBanner" style="display:none;padding:10px 20px;font-size:13px;font-weight:600;text-align:center;"></div>
+
 <!-- ── TAB NAV ── -->
 <nav class="tab-nav" id="tabNav">
   <button class="tab-btn" data-tab="dashboard">
@@ -359,6 +362,18 @@
       <div class="pin-display" id="pinDisplayDash">----</div>
       <div class="pin-bar"><div class="pin-bar-fill" id="pinBarFillDash" style="width:0%"></div></div>
       <div class="pin-timer" id="timerPinDash">Nouveau code dans : --</div>
+    </div>
+
+    <!-- Lien NFC / QR Code -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title"><span class="card-title-icon">📲</span> Lien NFC / QR Code</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Programmez ce lien sur votre tag NFC ou générez un QR code à afficher en caisse.</p>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <code id="nfcLink" style="flex:1;background:#f4f6f9;border:1.5px solid var(--line);border-radius:8px;padding:10px 14px;font-size:13px;word-break:break-all;min-width:0;"></code>
+        <button class="btn btn-brand" style="white-space:nowrap;padding:10px 18px;" onclick="copyNfcLink()">📋 Copier</button>
+        <a id="qrBtn" class="btn" style="background:#1976d2;color:#fff;white-space:nowrap;padding:10px 18px;text-decoration:none;" target="_blank">🔗 QR Code</a>
+      </div>
+      <div id="copyMsg" style="display:none;font-size:12px;color:var(--green);margin-top:6px;font-weight:600;">✓ Lien copié !</div>
     </div>
 
     <!-- Résumé du mois -->
@@ -592,13 +607,61 @@ if (ROLE !== 'admin') {
   document.querySelectorAll('#linkStats, #linkAvis, #linkBilling').forEach(el => el.style.display = 'none');
 }
 
-// Charger nom du restaurant depuis config.json
+// Charger config.json : nom + statut abonnement + lien NFC
 fetch(`/${SITE}/config.json`)
   .then(r => r.json())
   .then(cfg => {
     if (cfg?.name) document.getElementById('restNameHeader').textContent = cfg.name;
+
+    // Lien NFC
+    const nfcUrl = `${location.origin}/${SITE}/indexnfc.html`;
+    const nfcEl  = document.getElementById('nfcLink');
+    if (nfcEl) nfcEl.textContent = nfcUrl;
+    const qrBtn  = document.getElementById('qrBtn');
+    if (qrBtn) qrBtn.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(nfcUrl)}`;
+
+    // Bannière statut abonnement
+    const banner = document.getElementById('subBanner');
+    const status = cfg?.subscriptionStatus || '';
+    const trial  = cfg?.trialEndDate || '';
+    if (status === 'trialing' && trial) {
+      const days = Math.ceil((new Date(trial) - new Date()) / 86400000);
+      if (days > 0) {
+        banner.style.display = '';
+        banner.style.background = '#dbeafe';
+        banner.style.color = '#1e40af';
+        banner.innerHTML = `🎁 Essai gratuit — <strong>${days} jour${days > 1 ? 's' : ''} restant${days > 1 ? 's' : ''}</strong> (fin le ${trial}) · <a href="billing.html" style="color:#1e40af;font-weight:700;">Gérer mon abonnement →</a>`;
+      }
+    } else if (status === 'past_due') {
+      banner.style.display = '';
+      banner.style.background = '#fee2e2';
+      banner.style.color = '#dc2626';
+      banner.innerHTML = `⚠️ <strong>Paiement en attente</strong> — Mettez à jour votre moyen de paiement pour continuer à utiliser Fidelavis. <a href="billing.html" style="color:#dc2626;font-weight:700;">Régulariser →</a>`;
+    } else if (status === 'canceled') {
+      banner.style.display = '';
+      banner.style.background = '#f3f4f6';
+      banner.style.color = '#6b7280';
+      banner.innerHTML = `Abonnement résilié. <a href="billing.html" style="color:#6b7280;font-weight:700;">Réactiver →</a>`;
+    }
   })
-  .catch(() => {});
+  .catch(() => {
+    // Afficher le lien NFC même sans config
+    const nfcUrl = `${location.origin}/${SITE}/indexnfc.html`;
+    const nfcEl  = document.getElementById('nfcLink');
+    if (nfcEl) nfcEl.textContent = nfcUrl;
+    const qrBtn  = document.getElementById('qrBtn');
+    if (qrBtn) qrBtn.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(nfcUrl)}`;
+  });
+
+function copyNfcLink() {
+  const url = document.getElementById('nfcLink')?.textContent;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => {
+    const msg = document.getElementById('copyMsg');
+    msg.style.display = '';
+    setTimeout(() => { msg.style.display = 'none'; }, 2000);
+  });
+}
 
 // ── Logout ──────────────────────────────────────────────────
 document.getElementById('logoutBtn').addEventListener('click', () => {
