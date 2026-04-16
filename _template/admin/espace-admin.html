@@ -627,10 +627,12 @@ fetch(`/${SITE}/config.json`)
     if (status === 'trialing' && trial) {
       const days = Math.ceil((new Date(trial) - new Date()) / 86400000);
       if (days > 0) {
+        const [y,m,d] = trial.split('-');
+        const trialFr = `${d}-${m}-${y}`;
         banner.style.display = '';
         banner.style.background = '#dbeafe';
         banner.style.color = '#1e40af';
-        banner.innerHTML = `🎁 Essai gratuit — <strong>${days} jour${days > 1 ? 's' : ''} restant${days > 1 ? 's' : ''}</strong> (fin le ${trial}) · <a href="billing.html" style="color:#1e40af;font-weight:700;">Gérer mon abonnement →</a>`;
+        banner.innerHTML = `🎁 Essai gratuit — <strong>${days} jour${days > 1 ? 's' : ''} restant${days > 1 ? 's' : ''}</strong> (fin le ${trialFr}) · <a href="billing.html" style="color:#1e40af;font-weight:700;">Gérer mon abonnement →</a>`;
       }
     } else if (status === 'past_due') {
       banner.style.display = '';
