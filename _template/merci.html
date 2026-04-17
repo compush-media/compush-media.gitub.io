@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>Activation confirmée — Fidelavis</title>
 
+<script src="../assets/core.js"></script>
+<script>(function(){var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';var c=s?localStorage.getItem('fv_brand_'+s):null;if(c)document.documentElement.style.setProperty('--gold',c);if(!s)return;fetch('/'+s+'/config.json').then(function(r){return r.json();}).then(function(d){var col=d&&d.color;if(!col)return;document.documentElement.style.setProperty('--gold',col);try{localStorage.setItem('fv_brand_'+s,col);}catch(_){}}).catch(function(){});})();</script>
 <style>
 :root{
-  --gold:#B8924F;
+  --gold:#b8924f;
   --bg:#f6efe5;
   --card:#ffffff;
   --ink:#1d1d1d;
