@@ -53,6 +53,9 @@ function doPost(e) {
       case "push_notification":
         result = pushNotification(body);
         break;
+      case "save_icon":
+        result = saveRestaurantIcon(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -387,6 +390,109 @@ function pushNotification(params) {
     resto: resto,
     recipients: recipients,
     progressier: parsed
+  };
+}
+
+// ─── Action 5 : Enregistrer l'icône d'un restaurant ─────────
+//
+//  Paramètres (POST JSON) :
+//    resto    — slug du restaurant (ex: "test06")
+//    iconUrl  — URL absolue de l'icône 512×512 (ex: "https://monresto.fr/logo.png")
+//               Passer "" pour revenir à l'icône par défaut (icons/icon-512.png)
+//
+//  Met à jour deux fichiers sur GitHub :
+//    /{resto}/config.json      → champ "iconUrl"
+//    /{resto}/progressier.json → tableau "icons"
+//
+function saveRestaurantIcon(params) {
+  var resto   = (params.resto   || "").trim().toLowerCase().replace(/\s+/g, "-");
+  var iconUrl = (params.iconUrl || "").trim();
+
+  if (!resto) return { error: "Paramètre resto manquant." };
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré dans les propriétés du script." };
+
+  var results = {};
+
+  // ── 1. Mise à jour config.json ───────────────────────────────
+  var configPath = resto + "/config.json";
+  var configUrl  = "https://api.github.com/repos/" + repo + "/contents/" + configPath + "?ref=main";
+  var headers    = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+
+  var configRes  = UrlFetchApp.fetch(configUrl, { headers: headers, muteHttpExceptions: true });
+  var configCode = configRes.getResponseCode();
+
+  if (configCode === 200) {
+    var configData = JSON.parse(configRes.getContentText());
+    var existing;
+    try { existing = JSON.parse(Utilities.newBlob(Utilities.base64Decode(configData.content.replace(/\n/g,""))).getDataAsString()); }
+    catch(_) { existing = {}; }
+
+    if (iconUrl) {
+      existing.iconUrl = iconUrl;
+    } else {
+      delete existing.iconUrl;
+    }
+
+    var newConfigB64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(existing, null, 2)).getBytes());
+    var configPut = UrlFetchApp.fetch("https://api.github.com/repos/" + repo + "/contents/" + configPath, {
+      method: "put",
+      headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+      payload: JSON.stringify({ message: "icon: mise à jour iconUrl pour " + resto, content: newConfigB64, sha: configData.sha }),
+      muteHttpExceptions: true
+    });
+    results.config = configPut.getResponseCode();
+  } else {
+    results.config = "config.json introuvable (" + configCode + ")";
+  }
+
+  // ── 2. Mise à jour progressier.json ─────────────────────────
+  var manifestPath = resto + "/progressier.json";
+  var manifestUrl  = "https://api.github.com/repos/" + repo + "/contents/" + manifestPath + "?ref=main";
+  var manifestRes  = UrlFetchApp.fetch(manifestUrl, { headers: headers, muteHttpExceptions: true });
+  var manifestCode = manifestRes.getResponseCode();
+
+  if (manifestCode === 200) {
+    var manifestData = JSON.parse(manifestRes.getContentText());
+    var manifest;
+    try { manifest = JSON.parse(Utilities.newBlob(Utilities.base64Decode(manifestData.content.replace(/\n/g,""))).getDataAsString()); }
+    catch(_) { manifest = {}; }
+
+    if (iconUrl) {
+      manifest.icons = [
+        { src: iconUrl, sizes: "512x512", type: "image/png" },
+        { src: iconUrl, sizes: "512x512", type: "image/png", purpose: "maskable" }
+      ];
+    } else {
+      manifest.icons = [
+        { src: "icons/icon-512.png",          sizes: "512x512", type: "image/png" },
+        { src: "icons/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" }
+      ];
+    }
+
+    var newManifestB64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(manifest, null, 2)).getBytes());
+    var manifestPut = UrlFetchApp.fetch("https://api.github.com/repos/" + repo + "/contents/" + manifestPath, {
+      method: "put",
+      headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+      payload: JSON.stringify({ message: "icon: mise à jour progressier.json pour " + resto, content: newManifestB64, sha: manifestData.sha }),
+      muteHttpExceptions: true
+    });
+    results.manifest = manifestPut.getResponseCode();
+  } else {
+    results.manifest = "progressier.json introuvable (" + manifestCode + ")";
+  }
+
+  var success = (results.config === 200 || results.config === 201) &&
+                (results.manifest === 200 || results.manifest === 201);
+
+  return {
+    ok:      success,
+    resto:   resto,
+    iconUrl: iconUrl || "(défaut)",
+    results: results
   };
 }
 

@@ -315,6 +315,9 @@
   <a class="tab-btn admin-only" href="billing.html" id="linkBilling">
     <span class="tab-icon">💳</span> Compte
   </a>
+  <button class="tab-btn admin-only" data-tab="parametres">
+    <span class="tab-icon">⚙️</span> Paramètres
+  </button>
   <!-- Offre du jour : masquée pour l'instant, architecture prête -->
   <!-- <button class="tab-btn admin-only" data-tab="offre">
     <span class="tab-icon">📸</span> Offre du jour
@@ -563,6 +566,74 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════ PARAMÈTRES ═══════════════════════════ -->
+  <div id="parametres" class="tab-panel">
+    <div class="section-title">⚙️ Paramètres de l'app</div>
+    <div class="section-sub">Personnalisation de votre application PWA</div>
+
+    <!-- Icône -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">🖼️</span> Icône de l'application</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+        L'icône apparaît sur l'écran d'accueil de vos clients après installation.<br>
+        Utilisez une image carrée 512×512 px, fond non transparent (JPG ou PNG).
+      </p>
+
+      <!-- Aperçu icône actuelle -->
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+        <img id="iconPreview" src="" alt="Icône actuelle"
+          style="width:72px;height:72px;border-radius:16px;object-fit:cover;border:1px solid var(--line);display:none;" />
+        <div id="iconPlaceholder"
+          style="width:72px;height:72px;border-radius:16px;background:var(--bg);border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:28px;">
+          🖼️
+        </div>
+        <div>
+          <div id="iconStatus" style="font-size:13px;font-weight:700;color:var(--muted);">Icône par défaut</div>
+          <div id="iconUrlDisplay" style="font-size:11px;color:var(--muted);word-break:break-all;max-width:240px;"></div>
+        </div>
+      </div>
+
+      <label class="form-label" for="iconUrlInput">URL de votre logo (512×512 recommandé)</label>
+      <input class="form-input" type="url" id="iconUrlInput"
+        placeholder="https://monresto.fr/logo.png"
+        style="margin-bottom:10px;" />
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-brand" id="saveIconBtn" type="button" onclick="saveIcon()">
+          💾 Enregistrer l'icône
+        </button>
+        <button class="btn" type="button" onclick="resetIcon()"
+          style="background:#f3f4f6;color:#555;border:1px solid var(--line);">
+          🔄 Remettre l'icône par défaut
+        </button>
+      </div>
+      <div class="notif-msg" id="iconFeedback" style="margin-top:12px;"></div>
+      <p style="font-size:12px;color:var(--muted);margin:12px 0 0;">
+        ⏱️ Après enregistrement, l'icône est mise à jour sur GitHub Pages en ~1 minute.<br>
+        ℹ️ Les clients ayant déjà installé l'app doivent la réinstaller pour voir la nouvelle icône.
+      </p>
+    </div>
+
+    <!-- Couleur de marque -->
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">🎨</span> Couleur de marque</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+        Couleur principale utilisée dans les boutons, accents et barre de titre de la PWA.
+      </p>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <input type="color" id="brandColorInput"
+          style="width:48px;height:48px;border:none;border-radius:10px;cursor:pointer;padding:2px;" />
+        <div>
+          <div style="font-size:13px;font-weight:700;" id="brandColorLabel">#b8924f</div>
+          <div style="font-size:12px;color:var(--muted);">Couleur actuelle</div>
+        </div>
+      </div>
+      <button class="btn btn-brand" type="button" onclick="saveColor()" style="margin-top:4px;">
+        💾 Enregistrer la couleur
+      </button>
+      <div class="notif-msg" id="colorFeedback" style="margin-top:12px;"></div>
+    </div>
+  </div>
+
   <!-- ═══════════════════════════ OFFRE DU JOUR (masquée, architecture prête) ═══════════════════════════ -->
   <!-- Pour réactiver : retirer les commentaires + ajouter le tab-btn dans la nav -->
   <!--
@@ -683,12 +754,13 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 //  NAVIGATION PAR HASH
 // ═══════════════════════════════════════════════════════════════
 
-const INLINE_TABS = ['dashboard', 'coupon', 'notifications'];
+const INLINE_TABS = ['dashboard', 'coupon', 'notifications', 'parametres'];
 let kpisLoaded = false;
 
 function switchTab(tabId) {
   if (!INLINE_TABS.includes(tabId)) return;
   if (tabId === 'notifications' && ROLE !== 'admin') return;
+  if (tabId === 'parametres'    && ROLE !== 'admin') return;
 
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
@@ -703,6 +775,7 @@ function switchTab(tabId) {
   if (tabId === 'dashboard')     loadDashboard();
   if (tabId === 'coupon')        initCoupon();
   if (tabId === 'notifications') loadPWACount();
+  if (tabId === 'parametres')    loadParametres();
 }
 
 // Clics sur les boutons tab inline
@@ -1007,6 +1080,111 @@ function showNotifFeedback(text, type) {
   const el = document.getElementById('notifFeedback');
   el.textContent = text;
   el.className   = `notif-msg ${type}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PARAMÈTRES — Icône & Couleur de marque
+// ═══════════════════════════════════════════════════════════════
+
+let _paramsLoaded = false;
+
+async function loadParametres() {
+  if (_paramsLoaded) return;
+  _paramsLoaded = true;
+
+  // Charger config.json pour afficher les valeurs actuelles
+  try {
+    const res = await fetch(`/${SITE}/config.json`, { cache: 'no-store' });
+    const cfg = await res.json();
+
+    // Icône
+    const iconUrl = cfg.iconUrl || '';
+    document.getElementById('iconUrlInput').value = iconUrl;
+    if (iconUrl) {
+      document.getElementById('iconPreview').src = iconUrl;
+      document.getElementById('iconPreview').style.display = '';
+      document.getElementById('iconPlaceholder').style.display = 'none';
+      document.getElementById('iconStatus').textContent = 'Icône personnalisée';
+      document.getElementById('iconUrlDisplay').textContent = iconUrl;
+    }
+
+    // Couleur
+    const color = cfg.color || '#b8924f';
+    document.getElementById('brandColorInput').value = color;
+    document.getElementById('brandColorLabel').textContent = color;
+  } catch(e) {}
+
+  // Mise à jour label couleur en temps réel
+  document.getElementById('brandColorInput').addEventListener('input', function() {
+    document.getElementById('brandColorLabel').textContent = this.value;
+  });
+}
+
+async function saveIcon() {
+  const iconUrl = document.getElementById('iconUrlInput').value.trim();
+  const fb      = document.getElementById('iconFeedback');
+  const btn     = document.getElementById('saveIconBtn');
+
+  if (iconUrl && !/^https?:\/\//.test(iconUrl)) {
+    fb.textContent = '⚠️ L\'URL doit commencer par https://';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Enregistrement…';
+  fb.className    = 'notif-msg';
+
+  try {
+    const res  = await fetch(API, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ action: 'save_icon', resto: SITE, iconUrl: iconUrl })
+    });
+    const data = await res.json();
+
+    if (data?.ok) {
+      fb.textContent = '✅ Icône mise à jour ! Visible dans ~1 minute après déploiement GitHub Pages.';
+      fb.className   = 'notif-msg success';
+
+      // Mise à jour de l'aperçu
+      if (iconUrl) {
+        document.getElementById('iconPreview').src = iconUrl;
+        document.getElementById('iconPreview').style.display = '';
+        document.getElementById('iconPlaceholder').style.display = 'none';
+        document.getElementById('iconStatus').textContent = 'Icône personnalisée';
+        document.getElementById('iconUrlDisplay').textContent = iconUrl;
+      } else {
+        document.getElementById('iconPreview').style.display = 'none';
+        document.getElementById('iconPlaceholder').style.display = '';
+        document.getElementById('iconStatus').textContent = 'Icône par défaut';
+        document.getElementById('iconUrlDisplay').textContent = '';
+      }
+      _paramsLoaded = false; // forcer reload au prochain accès
+    } else {
+      fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue');
+      fb.className   = 'notif-msg error';
+    }
+  } catch(err) {
+    fb.textContent = '⚠️ ' + (err?.message || 'Erreur réseau');
+    fb.className   = 'notif-msg error';
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '💾 Enregistrer l\'icône';
+}
+
+function resetIcon() {
+  document.getElementById('iconUrlInput').value = '';
+  saveIcon();
+}
+
+async function saveColor() {
+  const color = document.getElementById('brandColorInput').value;
+  const fb    = document.getElementById('colorFeedback');
+
+  fb.textContent = '⏳ Fonctionnalité à venir — contactez le support pour modifier la couleur.';
+  fb.className   = 'notif-msg';
 }
 
 // ═══════════════════════════════════════════════════════════════
