@@ -1,6 +1,6 @@
 {
-  "name": "Restaurant",
-  "short_name": "Restaurant",
+  "name": "test06",
+  "short_name": "test06",
   "start_url": "/test06/index.html",
   "scope": "/test06/",
   "display": "standalone",
@@ -9,14 +9,15 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192.png",
-      "sizes": "192x192",
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "icons/icon-maskable-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
