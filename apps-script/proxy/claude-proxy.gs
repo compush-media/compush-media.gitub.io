@@ -317,35 +317,61 @@ function parseJsonResponse(raw) {
 }
 
 // ─── Action 4 : Envoyer une notification push (Progressier) ──
+//
+//  Paramètres attendus :
+//    title  — Titre (max 50 car.)
+//    body   — Message (max 100 car.)
+//    url    — URL de destination au clic (ex: /test06/index.html)
+//    resto  — Slug du restaurant (ex: "test06")
+//             → filtre push_path=/test06/ pour n'atteindre que ses abonnés
+//             → si absent, envoie à TOUS les abonnés (à utiliser avec précaution)
+//
 function pushNotification(params) {
   var title = (params.title || "").trim();
   var body  = (params.body  || "").trim();
   var url   = (params.url   || "").trim();
+  var resto = (params.resto || "").trim().toLowerCase().replace(/\s+/g, "-");
 
   if (!title) return { error: "Le titre est obligatoire." };
   if (!body)  return { error: "Le message est obligatoire." };
 
   var apiKey = PropertiesService.getScriptProperties().getProperty("PROGRESSIER_API_KEY");
   if (!apiKey) {
-    return { error: "Clé API Progressier non configurée. Ajoutez PROGRESSIER_API_KEY dans Extensions > Propriétés du script." };
+    return {
+      error: "Clé API Progressier non configurée. " +
+             "Allez dans Extensions > Propriétés du script > Ajouter PROGRESSIER_API_KEY."
+    };
+  }
+
+  // ── Segmentation par restaurant ──────────────────────────────
+  //   push_path = chemin depuis lequel l'abonné a accepté les notifications
+  //   Ainsi les clients de /test06/ ne reçoivent que les notifs de test06.
+  var recipients;
+  if (resto) {
+    recipients = { push_path: "/" + resto + "/" };
+  } else {
+    recipients = { users: "all" };   // fallback (admin global uniquement)
   }
 
   var payload = {
     title:      title,
     body:       body,
-    recipients: { users: "all" }
+    recipients: recipients
   };
   if (url) payload.url = url;
 
+  var APP_ID = PropertiesService.getScriptProperties().getProperty("PROGRESSIER_APP_ID") ||
+               "zb3Ezrlt6Ezd6iN3VpMW";  // valeur par défaut
+
   var options = {
-    method:          "post",
-    contentType:     "application/json",
-    headers:         { "authorization": "Bearer " + apiKey },
-    payload:         JSON.stringify(payload),
+    method:             "post",
+    contentType:        "application/json",
+    headers:            { "authorization": "Bearer " + apiKey },
+    payload:            JSON.stringify(payload),
     muteHttpExceptions: true
   };
 
-  var response = UrlFetchApp.fetch("https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/send", options);
+  var response = UrlFetchApp.fetch("https://progressier.app/" + APP_ID + "/send", options);
   var code     = response.getResponseCode();
   var content  = response.getContentText();
 
@@ -353,7 +379,15 @@ function pushNotification(params) {
     return { error: "Erreur Progressier (" + code + ") : " + content.substring(0, 300) };
   }
 
-  return { ok: true };
+  var parsed = {};
+  try { parsed = JSON.parse(content); } catch(_) {}
+
+  return {
+    ok:    true,
+    resto: resto,
+    recipients: recipients,
+    progressier: parsed
+  };
 }
 
 // ─── Constructeur de réponse HTTP ────────────────────────────
