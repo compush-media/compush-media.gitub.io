@@ -1,6 +1,6 @@
 {
-  "name": "Restaurant",
-  "short_name": "Restaurant",
+  "name": "Resto1",
+  "short_name": "Resto1",
   "start_url": "/resto1/index.html",
   "scope": "/resto1/",
   "display": "standalone",

@@ -165,6 +165,7 @@ function _provisionRestaurant(body) {
     { path: "admin/state.html",                 binary: false },
     { path: "admin/state_admin_fidelavis.html", binary: false },
     { path: "admin/state_resto.html",           binary: false },
+    { path: "admin/print-qr.html",              binary: false },
     { path: "icons/icon-512.png",               binary: true  },
     { path: "icons/icon-maskable-512.png",      binary: true  }
   ];
@@ -200,9 +201,10 @@ function _provisionRestaurant(body) {
         var bytes = Utilities.base64Decode(b64);
         var text  = Utilities.newBlob(bytes).getDataAsString();
         text = text.replace(/Resto1/g, name);
-        text = text.replace(/resto1/g, slug);   // chemins URL, cache names, scopes
-        text = text.replace(/#B8924F/g, color);
-        text = text.replace(/#9E7A3E/g, color2);
+        text = text.replace(/resto1/g, slug);    // chemins URL, cache names, scopes
+        text = text.replace(/#B8924F/gi, color); // insensible à la casse (#b8924f aussi)
+        text = text.replace(/#9E7A3E/gi, color2);
+        text = text.replace(/#B48C4A/gi, color); // variante dans index.html
         // Remplacer le mot de passe admin par défaut si fourni
         if (password && file.path === "admin/login.html") {
           text = text.replace(/voltaire2025/g, password);
@@ -309,6 +311,14 @@ function _updateSlugConfig(token, repo, slug, name, color, color2, customerId, e
     } catch(e) {}
   }
 
+  // Calculer trialEndDate = aujourd'hui + 14 jours si pas déjà défini
+  var trialEnd = existing.trialEndDate || "";
+  if (!trialEnd) {
+    var d = new Date();
+    d.setDate(d.getDate() + 14);
+    trialEnd = d.toISOString().slice(0, 10); // "YYYY-MM-DD"
+  }
+
   // Merger : préserver les données billing, mettre à jour name/color
   var updated = {
     name:                 name,
@@ -319,7 +329,7 @@ function _updateSlugConfig(token, repo, slug, name, color, color2, customerId, e
     plan:                 existing.plan                 || "pro",
     subscriptionStatus:   existing.subscriptionStatus   || "trialing",
     setupPaid:            existing.setupPaid            || false,
-    trialEndDate:         existing.trialEndDate         || "",
+    trialEndDate:         trialEnd,
     billingEmail:         existing.billingEmail         || email || "",
     stripeCustomerId:     existing.stripeCustomerId     || customerId,
     stripeSubscriptionId: existing.stripeSubscriptionId || "",
