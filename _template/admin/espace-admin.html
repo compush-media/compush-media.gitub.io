@@ -759,6 +759,8 @@ async function fetchStats(days) {
 //  DASHBOARD
 // ═══════════════════════════════════════════════════════════════
 
+let pinInterval = null;   // déclaré ici pour éviter la temporal dead zone
+
 async function loadDashboard() {
   if (kpisLoaded) return;
 
@@ -866,8 +868,6 @@ function genPin() {
   const minute = Math.floor(Date.now() / 60000);
   return (simpleHash(SECRET_KEY + minute) % 10000).toString().padStart(4, '0');
 }
-
-let pinInterval = null;
 
 function updatePin() {
   const now  = Date.now();
