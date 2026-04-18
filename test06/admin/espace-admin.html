@@ -816,7 +816,7 @@ function initFromHash() {
 }
 
 window.addEventListener('popstate', initFromHash);
-initFromHash();
+// initFromHash() est appelé en toute fin de script (après TOUTES les const/let) pour éviter TDZ
 
 // ═══════════════════════════════════════════════════════════════
 //  APPS SCRIPT API
@@ -1229,6 +1229,12 @@ function supprimerOffre() {
   if (document.getElementById('previewBox')) document.getElementById('previewBox').innerHTML = '';
   if (document.getElementById('offreMessage')) document.getElementById('offreMessage').textContent = 'Offre supprimée.';
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT FINAL — appelé APRÈS toutes les déclarations const/let
+//  (évite le TDZ sur SECRET_KEY, API, etc. depuis loadDashboard)
+// ═══════════════════════════════════════════════════════════════
+initFromHash();
 </script>
 </body>
 </html>
