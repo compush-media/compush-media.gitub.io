@@ -339,6 +339,24 @@ window.addEventListener("appinstalled", function() {
   window.Fidelavis?.track?.("install", { src: "pwa_appinstalled", page: "index" });
 });
 
+// ✅ Détection premier lancement standalone (iOS + Android)
+(function detectFirstStandaloneLaunch() {
+  try {
+    var standalone = window.navigator.standalone === true ||
+                     window.matchMedia("(display-mode: standalone)").matches;
+    if (!standalone) return;
+    var RESTO_SLUG = window.Fidelavis?.getRestoSlug?.() || "le-martin";
+    var trackKey   = "fv_install_tracked_" + RESTO_SLUG;
+    if (localStorage.getItem(trackKey)) return;
+    localStorage.setItem(trackKey, String(Date.now()));
+    localStorage.setItem("is_registered",              "1");
+    localStorage.setItem("fv_onboarding_done",         "1");
+    localStorage.setItem("fv_registered_" + RESTO_SLUG, "1");
+    window.Fidelavis?.setAuthCookie?.();
+    window.Fidelavis?.track?.("install_confirmed", { src: "standalone_first_launch", page: "index", resto: RESTO_SLUG });
+  } catch(e) {}
+})();
+
 try {
   if (!sessionStorage.getItem("fv_session_id")) {
     sessionStorage.setItem("fv_session_id", "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2,8));
