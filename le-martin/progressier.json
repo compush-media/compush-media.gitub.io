@@ -1,0 +1,23 @@
+{
+  "name": "Le Martin",
+  "short_name": "Le Martin",
+  "start_url": "/le-martin/index.html",
+  "scope": "/le-martin/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#b8924f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
