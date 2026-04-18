@@ -9,12 +9,12 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icons/icon-512.png",
+      "src": "https://dn721804.ca.archive.org/0/items/512x-512-icon-logo-png/512x512%20icon%20logo%20png.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-maskable-512.png",
+      "src": "https://dn721804.ca.archive.org/0/items/512x-512-icon-logo-png/512x512%20icon%20logo%20png.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
