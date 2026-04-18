@@ -1,0 +1,16 @@
+{
+  "name": "Le Martin",
+  "color": "#b8924f",
+  "color2": "#9c7c43",
+  "brevoListId": "",
+  "brevoGasUrl": "",
+  "plan": "pro",
+  "subscriptionStatus": "trialing",
+  "setupPaid": false,
+  "trialEndDate": "2026-05-02",
+  "billingEmail": "danydrumonde@gmail.com",
+  "stripeCustomerId": "cus_UMKkW2YUyc4J2U",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": []
+}
