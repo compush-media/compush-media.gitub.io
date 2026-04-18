@@ -659,11 +659,11 @@
 // ═══════════════════════════════════════════════════════════════
 
 const SITE = (() => {
-  // Priorité 1 : path URL → /le-martin/admin/... → "le-martin"
+  // Priorité 1 : path URL → /resto1/admin/... → "resto1"
   const m = location.pathname.match(/^\/([^/]+)\//);
   if (m && m[1] !== 'assets' && m[1] !== 'data') return m[1];
   // Fallback
-  return localStorage.getItem('fv_last_resto') || 'le-martin';
+  return localStorage.getItem('fv_last_resto') || 'resto1';
 })();
 
 const AUTH_KEY = `admin_${SITE}`;
@@ -1136,11 +1136,9 @@ async function saveIcon() {
   fb.className    = 'notif-msg';
 
   try {
-    const res  = await fetch(API, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ action: 'save_icon', resto: SITE, iconUrl: iconUrl })
-    });
+    // GET pour éviter le preflight CORS (même pattern que push_notification)
+    const url  = `${API}?action=save_icon&resto=${encodeURIComponent(SITE)}&iconUrl=${encodeURIComponent(iconUrl)}`;
+    const res  = await fetch(url, { cache: 'no-store' });
     const data = await res.json();
 
     if (data?.ok) {
