@@ -1136,11 +1136,9 @@ async function saveIcon() {
   fb.className    = 'notif-msg';
 
   try {
-    const res  = await fetch(API, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ action: 'save_icon', resto: SITE, iconUrl: iconUrl })
-    });
+    // GET pour éviter le preflight CORS (même pattern que push_notification)
+    const url  = `${API}?action=save_icon&resto=${encodeURIComponent(SITE)}&iconUrl=${encodeURIComponent(iconUrl)}`;
+    const res  = await fetch(url, { cache: 'no-store' });
     const data = await res.json();
 
     if (data?.ok) {

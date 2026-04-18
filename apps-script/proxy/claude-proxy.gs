@@ -79,6 +79,7 @@ function doGet(e) {
       var result;
       switch (e.parameter.action) {
         case "push_notification": result = pushNotification(e.parameter); break;
+        case "save_icon":         result = saveRestaurantIcon(e.parameter); break;
         default: result = { error: "Action GET inconnue : " + e.parameter.action };
       }
       return buildResponse(result);
