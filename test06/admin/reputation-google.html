@@ -646,13 +646,16 @@
             <label>Google Client ID <span style="font-size:11px;color:var(--muted)">(console.cloud.google.com)</span></label>
             <input type="text" id="set_google_client_id" placeholder="123456789.apps.googleusercontent.com" />
           </div>
-          <div class="form-row">
-            <label>Clé API Claude <span style="font-size:11px;color:var(--muted)">(optionnel – génération IA)</span></label>
-            <input type="password" id="set_claude_api_key" placeholder="sk-ant-..." />
+          <!-- IA centralisée : le restaurant n'a rien à configurer.
+               Input conservé caché pour compatibilité éventuelle (avancé). -->
+          <input type="hidden" id="set_claude_api_key" value="" />
+          <div style="display:flex;gap:10px;padding:10px 12px;background:#eaf7ef;border:1px solid #a5d9b8;border-radius:10px;margin:8px 0 12px;font-size:12.5px;line-height:1.45;color:#1e5a34;">
+            <div style="font-size:16px;flex-shrink:0;">🤖</div>
+            <div><strong>IA incluse :</strong> la génération automatique de réponses aux avis utilise notre service IA centralisé. Aucune clé API à fournir de votre côté.</div>
           </div>
           <button class="btn-primary" style="width:100%" onclick="saveSettings()">💾 Enregistrer</button>
           <div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.5">
-            Ces clés sont stockées uniquement dans votre navigateur.
+            Votre Client ID Google est stocké uniquement dans votre navigateur.
             <a href="setup-google.html" target="_blank" style="color:var(--brand);font-weight:700;text-decoration:none;display:inline-block;margin-top:6px">📖 Guide de configuration Google →</a>
           </div>
         </div>
@@ -706,15 +709,22 @@ let currentPage   = 1;
 // ============================================================
 async function initApp() {
   // ── Charger le google_client_id partagé (fidelavis-config.json) ──
+  // Le config partagé fait AUTORITÉ : il écrase toujours la valeur locale.
+  // Ça permet de faire tourner un nouveau Client ID pour tous les restos
+  // sans avoir à purger le localStorage de chacun.
   try {
-    const res = await fetch('/data/fidelavis-config.json');
+    const res = await fetch('/data/fidelavis-config.json?v=' + Date.now(), { cache: 'no-store' });
     if (res.ok) {
       const cfg = await res.json();
       if (cfg.google_client_id) {
         const s = JSON.parse(localStorage.getItem('fv_settings') || '{}');
-        if (!s.google_client_id) {
+        if (s.google_client_id !== cfg.google_client_id) {
           s.google_client_id = cfg.google_client_id;
           localStorage.setItem('fv_settings', JSON.stringify(s));
+          // Le Client ID a changé → on invalide l'ancien token Google
+          // (sinon le resto resterait connecté avec un token issu d'un autre projet Cloud)
+          localStorage.removeItem('fv_google_token');
+          localStorage.removeItem('fv_google_token_expiry');
         }
       }
     }
@@ -814,29 +824,31 @@ async function connectGoogle() {
     showSection('settings', document.querySelector('[data-section=settings]'));
     return;
   }
-  if (typeof google !== 'undefined' && google.accounts) {
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id: clientId,
-      scope: 'https://www.googleapis.com/auth/business.manage',
-      callback: async (resp) => {
-        if (resp.error) { toast('Connexion annulée : ' + resp.error, 'error'); return; }
-        localStorage.setItem('fv_google_token', resp.access_token);
-        localStorage.setItem('fv_google_token_expiry', String(Date.now() + (resp.expires_in - 60) * 1000));
-        googleToken = resp.access_token;
-        addLog('google.connected', 'google', 'oauth');
-        toast('✅ Connecté à Google !', 'success');
-        await fetchGBPAccounts();
-        loadDashboard();
-        refreshLocationsList();
-      }
-    });
-    client.requestAccessToken();
-  } else {
-    // Fallback: redirect OAuth flow
-    const redirect = encodeURIComponent(window.location.origin + window.location.pathname);
-    const scope    = encodeURIComponent('https://www.googleapis.com/auth/business.manage');
-    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirect}&response_type=token&scope=${scope}`;
+  // Flow UNIQUE : Google Identity Services (popup).
+  // Avantage : Google ne vérifie que l'origine JS, pas l'URL complète.
+  // → Une seule "Origine JS autorisée" (https://compush-media.github.io) dans
+  //   Google Cloud Console couvre TOUS les restaurants présents et futurs.
+  //   Aucun redirect_uri à maintenir par resto.
+  if (typeof google === 'undefined' || !google.accounts) {
+    toast('Service Google Identity indisponible. Désactivez votre bloqueur de pub, vérifiez votre connexion et rechargez la page.', 'error');
+    return;
   }
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: clientId,
+    scope: 'https://www.googleapis.com/auth/business.manage',
+    callback: async (resp) => {
+      if (resp.error) { toast('Connexion annulée : ' + resp.error, 'error'); return; }
+      localStorage.setItem('fv_google_token', resp.access_token);
+      localStorage.setItem('fv_google_token_expiry', String(Date.now() + (resp.expires_in - 60) * 1000));
+      googleToken = resp.access_token;
+      addLog('google.connected', 'google', 'oauth');
+      toast('✅ Connecté à Google !', 'success');
+      await fetchGBPAccounts();
+      loadDashboard();
+      refreshLocationsList();
+    }
+  });
+  client.requestAccessToken();
 }
 // ============================================================
 //  GOOGLE BUSINESS PROFILE API
@@ -1128,28 +1140,34 @@ function generateTemplateResponse(review) {
   else              body = `Merci d'avoir pris le temps de partager votre avis. Nous sommes vraiment désolés pour cette expérience décevante chez ${businessName}. ${contactPhrase}`;
   return `${greeting}\n\n${body}\n\n${signature}`;
 }
-async function generateWithClaude(review, apiKey) {
+// ============================================================
+//  CLAUDE via GAS proxy centralisé (la clé API est côté serveur,
+//  le restaurant n'a RIEN à configurer côté IA).
+// ============================================================
+const CLAUDE_PROXY_URL = 'https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec';
+async function generateWithClaude(review) {
   const s = getSettings();
-  const prompt = `Tu es le gérant de "${s.restaurant_name || 'mon commerce'}". Génère une réponse ${s.response_tone === 'formal' ? 'formelle' : 'chaleureuse'} pour cet avis Google ${review.rating}/5 étoiles.
-Avis de ${review.reviewer_name}: "${review.comment || '(sans commentaire)'}"
-Consignes: signe avec "${s.signature || s.owner_name || "L'équipe"}", ${review.rating >= 4 ? `invite à revenir: "${s.return_phrase || ''}"` : `phrase de contact: "${s.contact_phrase || ''}"`}. Maximum 4 phrases, naturel, en français.`;
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 300,
-      messages: [{ role: 'user', content: prompt }]
-    })
-  });
-  if (!resp.ok) throw new Error(`Claude API ${resp.status}`);
+  const payload = {
+    action:    'generate_response',
+    review:    review.comment || '(sans commentaire)',
+    rating:    review.rating || 3,
+    reviewer:  review.reviewer_name || '',
+    platform:  'google',
+    restoName: s.restaurant_name || _adminSite || 'mon commerce',
+    tone:      s.response_tone === 'formal' ? 'formel' : 'chaleureux',
+    signature: s.signature || s.owner_name || "L'équipe",
+    returnPhrase:  s.return_phrase  || '',
+    contactPhrase: s.contact_phrase || '',
+    pwaLink:   location.origin + '/' + _adminSite + '/'
+  };
+  const url = CLAUDE_PROXY_URL + '?payload=' + encodeURIComponent(JSON.stringify(payload));
+  const resp = await fetch(url, { cache: 'no-store' });
+  if (!resp.ok) throw new Error(`Proxy Claude ${resp.status}`);
   const data = await resp.json();
-  return data.content[0].text;
+  if (data.error) throw new Error(data.error);
+  // Le proxy peut renvoyer soit `reponse_publique` (JSON structuré),
+  // soit `response` (texte brut) suivant la version déployée.
+  return data.reponse_publique || data.response || data.text || '';
 }
 // ============================================================
 //  ACTIONS AVIS
@@ -1161,12 +1179,9 @@ async function generateAndShow(reviewId) {
     const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
     const review  = reviews.find(r => r.id === reviewId);
     if (!review) throw new Error('Avis non trouvé');
-    const s = getSettings();
     let responseText;
-    if (s.claude_api_key) {
-      try { responseText = await generateWithClaude(review, s.claude_api_key); }
-      catch (e) { console.warn('Claude API failed, using template:', e); }
-    }
+    try { responseText = await generateWithClaude(review); }
+    catch (e) { console.warn('Claude proxy failed, using template:', e); }
     if (!responseText) responseText = generateTemplateResponse(review);
     // Save draft
     review.ai_draft = responseText;

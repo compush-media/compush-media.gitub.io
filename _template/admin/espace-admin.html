@@ -367,6 +367,18 @@
       <div class="pin-timer" id="timerPinDash">Nouveau code dans : --</div>
     </div>
 
+    <!-- CTA Configurer avis Google (masqué automatiquement une fois Google connecté) -->
+    <div class="card" id="ctaGoogleSetup" style="margin-bottom:20px;background:linear-gradient(135deg,#fff9ec 0%,#fff3cf 100%);border:1.5px solid #f4c95d;">
+      <div class="card-title" style="color:#6b4f00;"><span class="card-title-icon">⭐</span> Avis Google automatiques</div>
+      <p style="font-size:13.5px;color:#6b4f00;margin-bottom:14px;line-height:1.5;">
+        Connectez votre fiche Google My Business et notre IA rédige automatiquement une réponse personnalisée à chaque nouvel avis.
+        <strong>Gratuit, aucune clé API à fournir.</strong>
+      </p>
+      <a href="reputation-google.html" class="btn btn-brand" style="display:inline-block;padding:12px 22px;text-decoration:none;font-weight:700;font-size:14px;">
+        ⚙️ Configurer mes avis Google →
+      </a>
+    </div>
+
     <!-- Lien NFC / QR Code -->
     <div class="card" style="margin-bottom:20px;">
       <div class="card-title"><span class="card-title-icon">📲</span> Lien NFC / QR Code</div>
@@ -854,6 +866,14 @@ async function loadDashboard() {
   if (!pinInterval) {
     pinInterval = setInterval(updatePin, 1000);
   }
+
+  // Masque le CTA "Configurer mes avis Google" si Google est déjà connecté
+  try {
+    const tokenExpiry = parseInt(localStorage.getItem('fv_google_token_expiry') || '0');
+    const hasGoogle   = !!localStorage.getItem('fv_google_token') && tokenExpiry > Date.now();
+    const cta = document.getElementById('ctaGoogleSetup');
+    if (cta && hasGoogle) cta.style.display = 'none';
+  } catch (_) {}
 
   if (kpisLoaded) return;
 
