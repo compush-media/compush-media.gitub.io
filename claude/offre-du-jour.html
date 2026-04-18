@@ -113,7 +113,7 @@
   </iframe>
 
   <script>
-    const SHARE_URL = "https://bit.ly/4psvq0G";
+    const SHARE_URL = window.location.origin + "/" + (window.location.pathname.split("/")[1] || "") + "/indexnfc.html";
 
     function shareOffer() {
       if (navigator.share) {

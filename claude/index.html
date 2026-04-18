@@ -520,7 +520,7 @@ function soumettrePin() {
 }
 
 function partager() {
-  const shareUrl = "https://bit.ly/4psvq0G";
+  const shareUrl = window.location.origin + "/" + (window.location.pathname.split("/")[1] || "") + "/indexnfc.html";
   window.Fidelavis?.track?.("share_click", { src: "coupon_share" });
 
   const data = {
