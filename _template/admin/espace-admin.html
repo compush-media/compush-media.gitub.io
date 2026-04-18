@@ -768,6 +768,7 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 
 const INLINE_TABS = ['dashboard', 'coupon', 'notifications', 'parametres'];
 let kpisLoaded = false;
+let pinInterval = null;   // ⚠️ doit être déclaré AVANT initFromHash() (qui appelle loadDashboard)
 
 function switchTab(tabId) {
   if (!INLINE_TABS.includes(tabId)) return;
@@ -844,7 +845,7 @@ async function fetchStats(days) {
 //  DASHBOARD
 // ═══════════════════════════════════════════════════════════════
 
-let pinInterval = null;   // déclaré ici pour éviter la temporal dead zone
+// pinInterval est déclaré plus haut (avant initFromHash) — voir commentaire ⚠️
 
 async function loadDashboard() {
   // PIN — toujours mettre à jour immédiatement sur le dashboard
