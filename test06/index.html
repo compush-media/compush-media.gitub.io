@@ -7,8 +7,9 @@
 
   <!-- ✅ Manifest + PWA Progressier + SW local pour le cache offline -->
   <link rel="manifest" href="progressier.json"/>
-  <!-- apple-touch-icon : mis à jour dynamiquement via config.json (contourne le cache SW pour l'icône iOS) -->
-  <link rel="apple-touch-icon" id="ati" href=""/>
+  <!-- apple-touch-icon : enforcé en continu pour contrer l'override de Progressier -->
+  <link rel="apple-touch-icon" id="ati" sizes="180x180" href=""/>
+  <link rel="apple-touch-icon-precomposed" id="atip" sizes="180x180" href=""/>
   <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
   <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}</script>
 
@@ -16,7 +17,33 @@
   <script src="../assets/core.js"></script>
 
   <!-- window.trackEventFidelavis est defini par core.js avec iframe unique par envoi -->
-  <script>(function(){var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';var c=s?localStorage.getItem('fv_brand_'+s):null;if(c)document.documentElement.style.setProperty('--brand',c);if(!s)return;fetch('/'+s+'/config.json').then(function(r){return r.json();}).then(function(d){var col=d&&d.color;if(col){document.documentElement.style.setProperty('--brand',col);try{localStorage.setItem('fv_brand_'+s,col);}catch(_){}}var ico=d&&d.iconUrl;if(ico){var a=document.getElementById('ati');if(a)a.href=ico;}}).catch(function(){});})();</script>
+  <script>(function(){
+    var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';
+    var c=s?localStorage.getItem('fv_brand_'+s):null;
+    if(c)document.documentElement.style.setProperty('--brand',c);
+    var ICON_URL = s?localStorage.getItem('fv_icon_'+s):'';
+    function enforceIcon(url){
+      if(!url)return;
+      document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="apple-touch-icon-precomposed"]').forEach(function(l){
+        if(l.id!=='ati'&&l.id!=='atip') l.parentNode.removeChild(l);
+      });
+      var a=document.getElementById('ati');
+      if(!a){a=document.createElement('link');a.rel='apple-touch-icon';a.id='ati';a.setAttribute('sizes','180x180');document.head.appendChild(a);}
+      a.href=url;
+      var p=document.getElementById('atip');
+      if(!p){p=document.createElement('link');p.rel='apple-touch-icon-precomposed';p.id='atip';p.setAttribute('sizes','180x180');document.head.appendChild(p);}
+      p.href=url;
+    }
+    if(ICON_URL) enforceIcon(ICON_URL);
+    var n=0, iv=setInterval(function(){if(ICON_URL)enforceIcon(ICON_URL); if(++n>=20) clearInterval(iv);},250);
+    if(!s)return;
+    fetch('/'+s+'/config.json').then(function(r){return r.json();}).then(function(d){
+      var col=d&&d.color;
+      if(col){document.documentElement.style.setProperty('--brand',col);try{localStorage.setItem('fv_brand_'+s,col);}catch(_){}}
+      var ico=d&&d.iconUrl;
+      if(ico){ICON_URL=ico;try{localStorage.setItem('fv_icon_'+s,ico);}catch(_){}enforceIcon(ico);}
+    }).catch(function(){});
+  })();</script>
 
   <style>
     :root{
