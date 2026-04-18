@@ -847,13 +847,14 @@ async function fetchStats(days) {
 let pinInterval = null;   // déclaré ici pour éviter la temporal dead zone
 
 async function loadDashboard() {
-  if (kpisLoaded) return;
-
-  // PIN — start immediately on dashboard
+  // PIN — toujours mettre à jour immédiatement sur le dashboard
+  // (même si kpisLoaded, pour que le code s'affiche au retour sur l'onglet)
+  updatePin();
   if (!pinInterval) {
-    updatePin();
     pinInterval = setInterval(updatePin, 1000);
   }
+
+  if (kpisLoaded) return;
 
   // Date display
   const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -959,14 +960,23 @@ function updatePin() {
   const secs = Math.floor((60000 - (now % 60000)) / 1000);
   const pct  = ((60 - secs) / 60) * 100;
   const pin  = genPin();
-  // Coupon tab
-  document.getElementById('pinDisplay').textContent    = pin;
-  document.getElementById('timerPin').textContent      = `Nouveau code dans : ${secs}s`;
-  document.getElementById('pinBarFill').style.width    = pct + '%';
-  // Dashboard tab
-  document.getElementById('pinDisplayDash').textContent    = pin;
-  document.getElementById('timerPinDash').textContent      = `Nouveau code dans : ${secs}s`;
-  document.getElementById('pinBarFillDash').style.width    = pct + '%';
+  const timer = `Nouveau code dans : ${secs}s`;
+  // Set chaque élément indépendamment — si un onglet n'est pas encore rendu,
+  // l'autre s'affiche quand même (évite le TypeError sur null qui bloquait tout)
+  const ids = [
+    ['pinDisplay',      'text',  pin],
+    ['timerPin',        'text',  timer],
+    ['pinBarFill',      'width', pct + '%'],
+    ['pinDisplayDash',  'text',  pin],
+    ['timerPinDash',    'text',  timer],
+    ['pinBarFillDash',  'width', pct + '%'],
+  ];
+  for (const [id, kind, val] of ids) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (kind === 'text')  el.textContent = val;
+    if (kind === 'width') el.style.width = val;
+  }
 }
 
 let couponInitialized = false;
