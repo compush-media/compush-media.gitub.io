@@ -340,7 +340,7 @@ function getVerifiedSender(restaurantName, restaurantEmail) {
     Logger.log('[Brevo] Impossible de récupérer les expéditeurs : ' + err.message);
   }
   // Dernier recours : utiliser l'email fourni tel quel (plantera si non vérifié)
-  return { name: restaurantName, email: restaurantEmail || 'noreply@fidelavis.com' };
+  return { name: restaurantName, email: restaurantEmail || 'contact@fidelavis.com' };
 }
 
 // ── Créer la liste contacts ──────────────────────────────────
@@ -441,7 +441,7 @@ function createTemplate(restaurantName, sender, monthIndex, content) {
     htmlContent:  htmlContent,
     textContent:  textContent,
     sender:       { name: sender.name, email: SENDER_EMAIL },
-    replyTo:      'noreply@fidelavis.com',
+    replyTo:      'contact@fidelavis.com',
     isActive:     true
   });
   Logger.log('[Brevo] Template créé : ' + label + ' id=' + result.id);
@@ -522,7 +522,7 @@ function subscribeContact(body) {
           to:         [{ email: email, name: firstName || email }],
           templateId: templateId,
           sender:     { name: senderName, email: SENDER_EMAIL },
-          replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
+          replyTo:    { email: 'contact@fidelavis.com', name: 'Ne pas répondre' },
           params:     { PRENOM: firstName, NOM: lastName, RESTO: resto, UNSUBSCRIBE_URL: unsubUrl },
           tags:       ['fidelavis', 'bienvenue']
         });
@@ -672,7 +672,7 @@ function sendDailyCampaign() {
             to:         [{ email: email, name: firstName || email }],
             templateId: templates[nextIndex],
             sender:     { name: senderName, email: SENDER_EMAIL },
-            replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
+            replyTo:    { email: 'contact@fidelavis.com', name: 'Ne pas répondre' },
             params:     { PRENOM: firstName, NOM: lastName, RESTO: restoId, UNSUBSCRIBE_URL: unsubUrlDrip },
             tags:       ['fidelavis', 'drip']
           });
@@ -801,7 +801,7 @@ function sendPasswordResetEmail(body) {
   brevoFetch('POST', '/smtp/email', {
     to:          [{ email: recipientEmail, name: recipientName || recipientEmail }],
     sender:      { name: senderName, email: SENDER_EMAIL },
-    replyTo:     { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
+    replyTo:     { email: 'contact@fidelavis.com', name: 'Ne pas répondre' },
     subject:     '🔑 Nouveau mot de passe — ' + restoName,
     htmlContent: htmlContent,
     textContent: textContent,
@@ -1090,7 +1090,7 @@ function sendResetLinkEmail(recipientEmail, restoId, resetUrl) {
   brevoFetch('POST', '/smtp/email', {
     to:          [{ email: recipientEmail }],
     sender:      { name: 'Fidelavis', email: SENDER_EMAIL },
-    replyTo:     { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
+    replyTo:     { email: 'contact@fidelavis.com', name: 'Ne pas répondre' },
     subject:     'Réinitialisation de votre mot de passe — ' + restoName,
     htmlContent: htmlContent,
     textContent: textContent,

@@ -11,7 +11,7 @@
  * 3. Extensions > Propriétés du script > Ajouter :
  *    - STRIPE_SECRET_KEY  : sk_live_xxx  (ou sk_test_xxx pour les tests)
  *    - FIDELAVIS_SITE_URL : https://app.cartefidelavis.com
- *    - BREVO_API_KEY      : xkeysib-xxx (pour envoyer depuis support@fidelavis.com)
+ *    - BREVO_API_KEY      : xkeysib-xxx (pour envoyer depuis contact@fidelavis.com)
  *    - BILLING_SHEET_ID   : ID de la Google Sheet fidelavis-billing
  * 4. Déployer > Nouveau déploiement > Application Web
  *    - Exécuter en tant que : Moi
@@ -23,7 +23,7 @@ var STRIPE_API = "https://api.stripe.com/v1";
 
 /**
  * _sendEmail(to, subject, body)
- * Envoie depuis support@fidelavis.com via Brevo.
+ * Envoie depuis contact@fidelavis.com via Brevo.
  * Fallback MailApp si BREVO_API_KEY absent.
  */
 function _sendEmail(to, subject, body) {
@@ -35,7 +35,7 @@ function _sendEmail(to, subject, body) {
         method:             "post",
         headers:            { "api-key": apiKey, "Content-Type": "application/json" },
         payload:            JSON.stringify({
-          sender:      { name: "Fidelavis", email: "support@fidelavis.com" },
+          sender:      { name: "Fidelavis", email: "contact@fidelavis.com" },
           to:          [{ email: to }],
           subject:     subject,
           textContent: body
@@ -409,7 +409,7 @@ function _sendProvisionEmail(email, name, slug, password) {
     "─────────────────────────────",
     "",
     "Conservez cet email précieusement.",
-    "Pour toute question : support@fidelavis.com",
+    "Pour toute question : contact@fidelavis.com",
     "",
     "L'équipe Fidelavis"
   ].join("\n");

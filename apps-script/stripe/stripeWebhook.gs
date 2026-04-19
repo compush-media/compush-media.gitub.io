@@ -620,7 +620,7 @@ function _fetchSubscription(subscriptionId) {
 
 /**
  * _sendEmail(to, subject, body)
- * Envoie un email depuis support@fidelavis.com via Brevo.
+ * Envoie un email depuis contact@fidelavis.com via Brevo.
  * Fallback sur MailApp si la clé Brevo n'est pas configurée.
  *
  * Propriété GAS requise : BREVO_API_KEY
@@ -632,7 +632,7 @@ function _sendEmail(to, subject, body) {
   if (apiKey) {
     try {
       var payload = {
-        sender:      { name: "Fidelavis", email: "support@fidelavis.com" },
+        sender:      { name: "Fidelavis", email: "contact@fidelavis.com" },
         to:          [{ email: to }],
         subject:     subject,
         textContent: body
@@ -683,7 +683,7 @@ function _sendOnboardingEmail(email, planId, sessionId, trialEndDate) {
     "Pour annuler avant la fin d'essai, répondez à cet email.",
     "",
     "L'équipe Fidelavis",
-    "support@fidelavis.com"
+    "contact@fidelavis.com"
   ].join("\n");
 
   try {
