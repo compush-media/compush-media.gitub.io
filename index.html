@@ -17,21 +17,20 @@
   <meta property="og:image" content="https://app.cartefidelavis.com/img/fidelavis-logo.png" />
   <meta property="og:url" content="https://app.cartefidelavis.com/" />
 
-  <!-- Redirection intelligente : clients qui scannent un NFC ou reviennent sur leur resto -->
+  <!-- Redirection NFC/QR : uniquement si ?resto=X est explicitement dans l'URL.
+       Le refresh sur app.cartefidelavis.com/ reste sur la landing publique. -->
   <script>
     (function () {
-      var p = new URLSearchParams(location.search);
-      var hasResto = !!p.get("resto");
-      var lastResto = localStorage.getItem("fv_last_resto");
-      // On redirige UNIQUEMENT si : ?resto=X explicite OU un resto mémorisé en cache.
-      // Sinon on affiche la landing publique (prospects, Google reviewers, SEO).
-      if (hasResto || lastResto) {
-        var r = (p.get("resto") || lastResto).toLowerCase();
-        location.replace("/" + r + "/indexnfc.html");
-      } else {
-        // Révèle la landing (masquée par défaut pour éviter un flash pendant la redirection)
-        document.documentElement.classList.add("fv-show-landing");
+      var resto = new URLSearchParams(location.search).get("resto");
+      if (resto) {
+        var r = resto.toLowerCase().replace(/[^a-z0-9-]/g, "");
+        if (r) {
+          location.replace("/" + r + "/indexnfc.html");
+          return;
+        }
       }
+      // Pas de ?resto=X → affiche la landing publique (prospects, SEO, Google reviewers)
+      document.documentElement.classList.add("fv-show-landing");
     })();
   </script>
 
