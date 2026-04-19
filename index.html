@@ -104,7 +104,18 @@
       font-size: clamp(16px, 2vw, 20px);
       color: var(--muted); max-width: 720px; margin: 0 auto 30px;
     }
-    .hero .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 42px; }
+    .hero .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+    .hero .returning-card {
+      display: none; /* révélé par JS si fv_last_resto existe */
+      justify-content: center; align-items: center; gap: 8px;
+      margin: 0 auto 42px; padding: 10px 18px;
+      background: rgba(37,99,235,.08); border: 1px solid rgba(37,99,235,.22);
+      border-radius: 100px; font-size: 13.5px; color: var(--navy);
+      font-weight: 600; text-decoration: none; width: fit-content;
+      cursor: pointer; transition: background .15s, transform .15s;
+    }
+    .hero .returning-card:hover { background: rgba(37,99,235,.16); transform: translateY(-1px); text-decoration: none; }
+    .hero .returning-card .arrow { font-weight: 800; }
     .hero .micro {
       display: inline-flex; align-items: center; gap: 8px;
       background: #fff; border: 1px solid var(--line);
@@ -305,6 +316,11 @@
       <a href="#tarifs" class="btn btn-primary btn-lg">Voir les offres</a>
       <a href="#features" class="btn btn-outline btn-lg">Voir les fonctionnalités</a>
     </div>
+
+    <!-- Bouton "retrouver ma carte" — révélé uniquement si fv_last_resto existe -->
+    <a id="returningCardBtn" class="returning-card" href="#" role="button">
+      🎟️ <span>Retrouver ma carte de fidélité</span> <span class="arrow">→</span>
+    </a>
 
     <!-- Mockup SVG du coupon sur mobile -->
     <div class="hero-mock">
@@ -514,16 +530,30 @@
 <script src="/assets/billing.js" onerror="void(0)"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    // Boutons de pricing Stripe
     if (window.FidelavisBilling) {
       FidelavisBilling.initCheckoutButtons();
     } else {
       document.querySelectorAll("[data-plan]").forEach(function (btn) {
-        // Fallback : redirection vers la page d'inscription
-        btn.addEventListener("click", function () {
-          location.href = "/inscription.html";
-        });
+        btn.addEventListener("click", function () { location.href = "/inscription.html"; });
       });
     }
+
+    // Bouton "Retrouver ma carte" — visible uniquement si un resto est mémorisé
+    (function () {
+      try {
+        var last = (localStorage.getItem("fv_last_resto") || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
+        if (!last) return;
+        var btn = document.getElementById("returningCardBtn");
+        if (!btn) return;
+        btn.style.display = "inline-flex";
+        btn.href = "/" + last + "/indexnfc.html";
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          location.href = "/" + last + "/indexnfc.html";
+        });
+      } catch (_) {}
+    })();
   });
 </script>
 
