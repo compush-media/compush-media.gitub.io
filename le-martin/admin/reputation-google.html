@@ -382,6 +382,80 @@
       color: var(--ink);
     }
     .btn-google:hover { box-shadow: 0 4px 16px rgba(0,0,0,.12); border-color: #aaa; }
+    /* ── Mock OAuth popup pour capture d'écran Google API (?demo=oauth) ── */
+    .oauth-demo-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(32,33,36,.55);
+      z-index: 9998;
+      display: none;
+      -webkit-backdrop-filter: blur(2px);
+      backdrop-filter: blur(2px);
+    }
+    .oauth-demo-backdrop.show { display: block; }
+    .oauth-demo-popup {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 460px;
+      max-width: calc(100vw - 32px);
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 2px 6px 2px rgba(60,64,67,.15);
+      z-index: 9999;
+      font-family: 'Google Sans', Roboto, Arial, sans-serif;
+      padding: 28px 32px;
+      display: none;
+      color: #202124;
+    }
+    .oauth-demo-popup.show { display: block; }
+    .oauth-demo-popup .g-logo { margin-bottom: 18px; }
+    .oauth-demo-popup .g-title { font-size: 22px; font-weight: 400; color: #202124; margin: 0 0 6px; line-height: 1.3; }
+    .oauth-demo-popup .g-sub   { font-size: 14px; color: #5f6368; margin: 0 0 18px; }
+    .oauth-demo-popup .g-account {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid #dadce0;
+      border-bottom: 1px solid #dadce0;
+    }
+    .oauth-demo-popup .g-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #1a73e8; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 15px;
+    }
+    .oauth-demo-popup .g-account-name { font-size: 14px; font-weight: 500; color: #202124; }
+    .oauth-demo-popup .g-account-mail { font-size: 12.5px; color: #5f6368; }
+    .oauth-demo-popup .g-body { font-size: 14px; color: #3c4043; line-height: 1.55; margin: 16px 0 10px; }
+    .oauth-demo-popup .g-body strong { color: #1a73e8; font-weight: 500; }
+    .oauth-demo-popup .g-scope-header { font-size: 13px; font-weight: 500; color: #202124; margin: 14px 0 8px; }
+    .oauth-demo-popup .g-scope {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 8px 0;
+      font-size: 13.5px; color: #3c4043;
+      line-height: 1.5;
+    }
+    .oauth-demo-popup .g-scope-icon {
+      width: 22px; height: 22px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #5f6368;
+    }
+    .oauth-demo-popup .g-note { font-size: 12px; color: #5f6368; margin-top: 14px; line-height: 1.45; }
+    .oauth-demo-popup .g-actions {
+      display: flex; justify-content: flex-end; gap: 8px;
+      margin-top: 22px;
+    }
+    .oauth-demo-popup .g-btn {
+      padding: 9px 22px;
+      border-radius: 4px;
+      font-size: 14px; font-weight: 500;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+    .oauth-demo-popup .g-btn-text { background: transparent; color: #1a73e8; }
+    .oauth-demo-popup .g-btn-text:hover { background: rgba(26,115,232,.05); }
+    .oauth-demo-popup .g-btn-primary { background: #1a73e8; color: #fff; }
+    .oauth-demo-popup .g-btn-primary:hover { background: #1765cc; }
     .section-title {
       font-size: 20px;
       font-weight: 900;
@@ -692,6 +766,60 @@
 </div>
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
+<!-- ─────────────────────────────────────────────────────────────
+     MOCK OAUTH POPUP — capture d'écran pour Google API case 1-4847000040165
+     Activé uniquement via ?demo=oauth dans l'URL.
+     Montre l'état déconnecté + la popup de consentement pour screenshot.
+     N'affecte ni le vrai token ni aucune donnée utilisateur.
+     ───────────────────────────────────────────────────────────── -->
+<div class="oauth-demo-backdrop" id="oauthDemoBackdrop"></div>
+<div class="oauth-demo-popup" id="oauthDemoPopup" role="dialog" aria-modal="true" aria-label="Se connecter avec Google">
+  <div class="g-logo">
+    <svg width="75" height="24" viewBox="0 0 75 24" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#4285F4" d="M9.24 8.19v2.46h5.88c-.18 1.38-.64 2.39-1.34 3.1-.86.86-2.2 1.8-4.54 1.8-3.62 0-6.45-2.92-6.45-6.54S5.62 2.47 9.24 2.47c1.95 0 3.38.77 4.43 1.76L15.4 2.5C13.93 1.1 11.97 0 9.24 0 4.28 0 .11 4.04.11 9s4.17 9 9.13 9c2.68 0 4.7-.88 6.28-2.52 1.62-1.62 2.13-3.91 2.13-5.75 0-.57-.04-1.1-.13-1.54H9.24z"/>
+      <path fill="#EA4335" d="M25 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z"/>
+      <path fill="#FBBC05" d="M37.65 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81 3.21 0 5.83-2.46 5.83-5.81 0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z"/>
+      <path fill="#4285F4" d="M54.5 6.54v.94h-.09c-.57-.68-1.67-1.29-3.06-1.29-2.9 0-5.56 2.55-5.56 5.83 0 3.25 2.66 5.79 5.56 5.79 1.39 0 2.49-.61 3.06-1.32h.09v.83c0 2.22-1.19 3.41-3.1 3.41-1.56 0-2.53-1.12-2.93-2.07l-2.22.93c.64 1.54 2.33 3.43 5.15 3.43 2.99 0 5.52-1.76 5.52-6.05V6.54H54.5zm-2.93 8.98c-1.76 0-3.23-1.47-3.23-3.5 0-2.05 1.47-3.54 3.23-3.54 1.74 0 3.1 1.49 3.1 3.54.01 2.03-1.36 3.5-3.1 3.5z"/>
+      <path fill="#34A853" d="M59 .61h2.51v17.06H59z"/>
+      <path fill="#EA4335" d="M69.24 15.52c-1.3 0-2.22-.59-2.82-1.76l7.77-3.21-.26-.66c-.48-1.3-1.96-3.69-4.97-3.69-2.99 0-5.48 2.35-5.48 5.81 0 3.26 2.46 5.81 5.76 5.81 2.66 0 4.2-1.63 4.84-2.57l-1.98-1.32c-.66.96-1.56 1.59-2.86 1.59zm-.18-7.15c1.03 0 1.91.53 2.2 1.28l-5.25 2.17c0-2.44 1.73-3.45 3.05-3.45z"/>
+    </svg>
+  </div>
+  <h3 class="g-title">Se connecter avec Google</h3>
+  <p class="g-sub">Pour continuer avec <strong style="color:#202124;font-weight:500">Fidelavis</strong></p>
+
+  <div class="g-account">
+    <div class="g-avatar">M</div>
+    <div>
+      <div class="g-account-name">Marcel Dupont</div>
+      <div class="g-account-mail">marcel.dupont@lebistrotmarcel.fr</div>
+    </div>
+  </div>
+
+  <p class="g-body">
+    En continuant, vous autorisez <strong>Fidelavis</strong> à accéder à votre Google Business Profile.
+    Consultez la <a href="/privacy.html" target="_blank" style="color:#1a73e8;text-decoration:none">politique de confidentialité</a> et les <a href="/cgu.html" target="_blank" style="color:#1a73e8;text-decoration:none">conditions d'utilisation</a> de Fidelavis.
+  </p>
+
+  <div class="g-scope-header">Fidelavis pourra :</div>
+  <div class="g-scope">
+    <div class="g-scope-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>
+    <div>
+      Gérer votre fiche d'établissement Google (lire les avis des clients et publier des réponses que vous avez approuvées).
+      <div style="color:#5f6368;font-size:12px;margin-top:3px">Scope&nbsp;: <code style="font-family:monospace;background:#f1f3f4;padding:1px 5px;border-radius:3px;color:#1a73e8">https://www.googleapis.com/auth/business.manage</code></div>
+    </div>
+  </div>
+
+  <p class="g-note">
+    Assurez-vous de faire confiance à Fidelavis. Vous pouvez révoquer l'accès à tout moment depuis <span style="color:#1a73e8">myaccount.google.com/permissions</span>.
+  </p>
+
+  <div class="g-actions">
+    <button class="g-btn g-btn-text" onclick="document.getElementById('oauthDemoBackdrop').classList.remove('show');document.getElementById('oauthDemoPopup').classList.remove('show');">Annuler</button>
+    <button class="g-btn g-btn-primary" onclick="document.getElementById('oauthDemoBackdrop').classList.remove('show');document.getElementById('oauthDemoPopup').classList.remove('show');">Autoriser</button>
+  </div>
+</div>
 <script>
 // ============================================================
 //  STATE
@@ -707,6 +835,11 @@ let currentPage   = 1;
 // ============================================================
 //  INIT
 // ============================================================
+// ── Mode démo OAuth (?demo=oauth) — screenshots Google API case 1-4847000040165 ──
+// Affiche la bannière "Connecter Google" + popup OAuth mock pour capture d'écran.
+// Ne touche NI au token réel NI aux données — purement visuel.
+const DEMO_OAUTH = new URLSearchParams(location.search).get('demo') === 'oauth';
+
 async function initApp() {
   // ── Charger le google_client_id partagé (fidelavis-config.json) ──
   // Le config partagé fait AUTORITÉ : il écrase toujours la valeur locale.
@@ -962,7 +1095,7 @@ function loadDashboard() {
   const lastSync = localStorage.getItem('fv_last_sync');
   const s        = getSettings();
   // Status dots
-  if (googleToken) {
+  if (googleToken && !DEMO_OAUTH) {
     el('dotGoogle').className = 'dot green';
     el('statusGoogle').textContent = 'Google connecté';
     el('connectBanner').style.display = 'none';
@@ -970,6 +1103,13 @@ function loadDashboard() {
     el('dotGoogle').className = 'dot red';
     el('statusGoogle').textContent = 'Google non connecté';
     el('connectBanner').style.display = 'block';
+  }
+  // En mode démo OAuth, afficher la popup mock par-dessus pour la capture
+  if (DEMO_OAUTH) {
+    const bd = document.getElementById('oauthDemoBackdrop');
+    const pu = document.getElementById('oauthDemoPopup');
+    if (bd) bd.classList.add('show');
+    if (pu) pu.classList.add('show');
   }
   if (lastSync) {
     el('dotSync').className = 'dot green';
