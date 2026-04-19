@@ -80,6 +80,32 @@
     .brand img { height: 34px; width: auto; }
     nav.topnav { display: flex; gap: 22px; align-items: center; }
     nav.topnav a { color: var(--ink); font-weight: 500; font-size: 14.5px; }
+
+    /* ——— BURGER (mobile only) ——— */
+    .burger {
+      display: none; /* desktop : caché, révélé en mobile */
+      width: 40px; height: 40px;
+      border: 1.5px solid var(--line); background: #fff;
+      border-radius: 10px; cursor: pointer;
+      align-items: center; justify-content: center;
+      padding: 0; transition: background .15s, border-color .15s;
+    }
+    .burger:hover { border-color: var(--blue); }
+    .burger .bar {
+      display: block; position: relative;
+      width: 20px; height: 2px; background: var(--navy);
+      border-radius: 2px;
+    }
+    .burger .bar::before, .burger .bar::after {
+      content: ""; position: absolute; left: 0;
+      width: 20px; height: 2px; background: var(--navy);
+      border-radius: 2px; transition: transform .2s, top .2s;
+    }
+    .burger .bar::before { top: -6px; }
+    .burger .bar::after  { top:  6px; }
+    .burger[aria-expanded="true"] .bar { background: transparent; }
+    .burger[aria-expanded="true"] .bar::before { top: 0; transform: rotate(45deg); }
+    .burger[aria-expanded="true"] .bar::after  { top: 0; transform: rotate(-45deg); }
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px; border-radius: 10px; font-weight: 700; font-size: 14.5px; transition: transform .1s, box-shadow .1s; cursor: pointer; border: 0; }
     .btn-primary { background: var(--blue); color: #fff; }
     .btn-primary:hover { background: var(--navy); text-decoration: none; }
@@ -280,17 +306,23 @@
     footer .tagline { color: #94A3B8; font-size: 13.5px; margin: 0; max-width: 300px; }
 
     @media (max-width: 720px) {
-      header.top { padding: 10px 0; }
-      .top-row { flex-wrap: wrap; gap: 8px; }
-      .brand img { height: 30px; }
-      nav.topnav { gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
-      nav.topnav a { font-size: 13px; }
+      .burger { display: inline-flex; }
+      nav.topnav {
+        display: none;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: #fff; border-bottom: 1px solid var(--line);
+        flex-direction: column; align-items: stretch; gap: 0;
+        padding: 8px 0;
+        box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      }
+      nav.topnav.open { display: flex; }
+      nav.topnav a {
+        padding: 14px 22px; font-size: 15px; font-weight: 600;
+        border-bottom: 1px solid var(--line);
+      }
+      nav.topnav a:last-child { border-bottom: 0; }
       footer .wrap { grid-template-columns: 1fr 1fr; }
       footer .col-about { grid-column: span 2; }
-    }
-    @media (max-width: 430px) {
-      nav.topnav { gap: 10px; width: 100%; justify-content: space-between; }
-      nav.topnav a { font-size: 12.5px; }
     }
   </style>
 </head>
@@ -302,7 +334,10 @@
     <a href="/" class="brand">
       <img src="/img/fidelavis-logo.svg" alt="Fidelavis" />
     </a>
-    <nav class="topnav">
+    <button id="burgerBtn" class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="topnav">
+      <span class="bar"></span>
+    </button>
+    <nav class="topnav" id="topnav">
       <a href="#features">Fonctionnalités</a>
       <a href="#how">Comment ça marche</a>
       <a href="#tarifs">Tarifs</a>
@@ -537,6 +572,31 @@
 <script src="/assets/billing.js" onerror="void(0)"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    // Burger menu mobile
+    (function () {
+      var btn = document.getElementById("burgerBtn");
+      var nav = document.getElementById("topnav");
+      if (!btn || !nav) return;
+      function close() { nav.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); }
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var open = nav.classList.toggle("open");
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      // Ferme le menu après clic sur un lien (scroll-to-anchor sur mobile)
+      nav.querySelectorAll("a").forEach(function (a) {
+        a.addEventListener("click", close);
+      });
+      // Ferme si clic en dehors
+      document.addEventListener("click", function (e) {
+        if (nav.classList.contains("open") && !nav.contains(e.target) && !btn.contains(e.target)) close();
+      });
+      // Ferme sur touche Escape
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") close();
+      });
+    })();
+
     // Boutons de pricing Stripe
     if (window.FidelavisBilling) {
       FidelavisBilling.initCheckoutButtons();
