@@ -87,7 +87,7 @@
 
     if (!window.STRIPE_CONFIG || !STRIPE_CONFIG.portalGasUrl ||
         STRIPE_CONFIG.portalGasUrl === "REMPLACER_PAR_URL_GAS_PORTAL") {
-      _showError("Portail non configuré. Contactez contact@fidelavis.com");
+      _showError("Portail non configuré. Contactez support@fidelavis.com");
       return;
     }
 
@@ -102,7 +102,7 @@
     try {
       var customerId = options.stripeCustomerId || _getCustomerIdFromConfig();
       if (!customerId) {
-        _showError("Aucun compte Stripe trouvé. Contactez contact@fidelavis.com");
+        _showError("Aucun compte Stripe trouvé. Contactez support@fidelavis.com");
         return;
       }
 
@@ -124,7 +124,7 @@
 
     } catch(err) {
       console.error("[Fidelavis/billing] openPortal error:", err);
-      _showError("Impossible d'ouvrir le portail. Contactez contact@fidelavis.com");
+      _showError("Impossible d'ouvrir le portail. Contactez support@fidelavis.com");
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = originalText;
