@@ -3,20 +3,444 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Fidelavis</title>
+  <title>Fidelavis — Fidélisation client & avis Google automatiques pour restaurants</title>
+  <meta name="description" content="Fidelavis est la plateforme tout-en-un pour restaurateurs : carte de fidélité NFC, coupons mensuels, gestion des avis Google avec réponses IA. Essai gratuit 30 jours." />
+  <meta name="theme-color" content="#1E40AF" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Fidelavis — Fidélisation client & avis Google pour restaurants" />
+  <meta property="og:description" content="Carte de fidélité NFC + réponses IA aux avis Google. Essai gratuit 30 jours." />
+  <meta property="og:image" content="https://app.cartefidelavis.com/img/fidelavis-logo.png" />
+  <meta property="og:url" content="https://app.cartefidelavis.com/" />
+
+  <!-- Redirection intelligente : clients qui scannent un NFC ou reviennent sur leur resto -->
   <script>
     (function () {
-      // 1) si on a déjà un resto en mémoire
-      const lastResto = localStorage.getItem("fv_last_resto") || "resto1";
-
-      // 2) si l'URL contient ?resto=restoX, ça prime
-      const p = new URLSearchParams(location.search);
-      const r = (p.get("resto") || lastResto).toLowerCase();
-
-      // redirection sûre vers le dossier
-      location.replace("/" + r + "/indexnfc.html");
+      var p = new URLSearchParams(location.search);
+      var hasResto = !!p.get("resto");
+      var lastResto = localStorage.getItem("fv_last_resto");
+      // On redirige UNIQUEMENT si : ?resto=X explicite OU un resto mémorisé en cache.
+      // Sinon on affiche la landing publique (prospects, Google reviewers, SEO).
+      if (hasResto || lastResto) {
+        var r = (p.get("resto") || lastResto).toLowerCase();
+        location.replace("/" + r + "/indexnfc.html");
+      } else {
+        // Révèle la landing (masquée par défaut pour éviter un flash pendant la redirection)
+        document.documentElement.classList.add("fv-show-landing");
+      }
     })();
   </script>
+
+  <style>
+    /* Masquer la landing pendant le script de redirection (évite le flash) */
+    html:not(.fv-show-landing) body { visibility: hidden; }
+
+    :root {
+      --navy:   #1E3A8A;
+      --blue:   #2563EB;
+      --blue-2: #3B82F6;
+      --bg:     #F8FAFC;
+      --card:   #FFFFFF;
+      --ink:    #0F172A;
+      --muted:  #475569;
+      --line:   #E2E8F0;
+      --ok:     #059669;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(15,23,42,.08);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 1140px; margin: 0 auto; padding: 0 22px; }
+
+    /* ——— HEADER ——— */
+    header.top {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(255,255,255,.85);
+      backdrop-filter: saturate(180%) blur(12px);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .top-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: var(--navy); }
+    .brand img { height: 34px; width: auto; }
+    nav.topnav { display: flex; gap: 22px; align-items: center; }
+    nav.topnav a { color: var(--ink); font-weight: 500; font-size: 14.5px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px; border-radius: 10px; font-weight: 700; font-size: 14.5px; transition: transform .1s, box-shadow .1s; cursor: pointer; border: 0; }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { background: var(--navy); text-decoration: none; }
+    .btn-outline { background: transparent; border: 1.5px solid var(--blue); color: var(--blue); }
+    .btn-outline:hover { background: var(--blue); color: #fff; text-decoration: none; }
+    .btn-lg { padding: 14px 28px; font-size: 16px; }
+
+    /* ——— HERO ——— */
+    section.hero {
+      padding: 72px 0 56px;
+      background: linear-gradient(180deg, #EFF6FF 0%, #F8FAFC 100%);
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5.2vw, 56px);
+      line-height: 1.08; font-weight: 800;
+      color: var(--ink); margin: 0 0 20px;
+      letter-spacing: -0.02em;
+    }
+    .hero h1 em { font-style: normal; color: var(--blue); }
+    .hero p.lead {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--muted); max-width: 720px; margin: 0 auto 30px;
+    }
+    .hero .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 42px; }
+    .hero .micro {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; border: 1px solid var(--line);
+      padding: 6px 14px; border-radius: 100px;
+      font-size: 13px; color: var(--muted); font-weight: 600;
+      margin-bottom: 24px; box-shadow: 0 2px 8px rgba(15,23,42,.04);
+    }
+    .hero .dot-ok { width: 8px; height: 8px; background: var(--ok); border-radius: 50%; display: inline-block; }
+
+    .hero-mock {
+      margin: 0 auto; max-width: 340px;
+      filter: drop-shadow(0 20px 40px rgba(15,23,42,.18));
+    }
+    .hero-mock svg { width: 100%; height: auto; }
+
+    /* ——— FEATURES ——— */
+    section.features {
+      padding: 72px 0;
+    }
+    .section-head { text-align: center; max-width: 720px; margin: 0 auto 44px; }
+    .section-head h2 {
+      font-size: clamp(26px, 3.5vw, 38px);
+      font-weight: 800; letter-spacing: -0.01em;
+      margin: 0 0 12px; color: var(--ink);
+    }
+    .section-head p { font-size: 17px; color: var(--muted); margin: 0; }
+    .feat-grid {
+      display: grid; gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    }
+    .feat {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 28px 24px;
+      box-shadow: 0 2px 10px rgba(15,23,42,.04);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .feat:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .feat-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 12px;
+      background: #EFF6FF; color: var(--blue);
+      font-size: 24px; margin-bottom: 14px;
+    }
+    .feat h3 { font-size: 18px; margin: 0 0 8px; font-weight: 700; }
+    .feat p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.55; }
+
+    /* ——— HOW IT WORKS ——— */
+    section.how {
+      padding: 72px 0;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .steps { display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .step { position: relative; padding-left: 56px; }
+    .step .num {
+      position: absolute; left: 0; top: 0;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 17px;
+    }
+    .step h4 { margin: 4px 0 8px; font-size: 17px; font-weight: 700; }
+    .step p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+    /* ——— PRICING TEASER ——— */
+    section.pricing-teaser {
+      padding: 72px 0; text-align: center;
+    }
+    .price-card {
+      display: inline-block; text-align: left;
+      background: var(--card); border: 2px solid var(--blue);
+      border-radius: 18px; padding: 32px 38px;
+      box-shadow: var(--shadow);
+      max-width: 440px;
+    }
+    .price-card .tag {
+      display: inline-block; background: var(--blue); color: #fff;
+      padding: 4px 12px; border-radius: 100px; font-size: 12px;
+      font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .price-card h3 { font-size: 22px; margin: 0 0 8px; font-weight: 800; }
+    .price-card .price {
+      font-size: 44px; font-weight: 800; color: var(--navy); margin: 12px 0 0;
+    }
+    .price-card .price small { font-size: 16px; color: var(--muted); font-weight: 500; }
+    .price-card ul { list-style: none; padding: 0; margin: 18px 0 24px; }
+    .price-card ul li { padding: 6px 0 6px 26px; position: relative; color: var(--muted); font-size: 14.5px; }
+    .price-card ul li::before { content: "✓"; position: absolute; left: 0; top: 6px; color: var(--ok); font-weight: 800; }
+    .price-card .sub { font-size: 13px; color: var(--muted); margin-top: 10px; text-align: center; }
+
+    /* ——— FINAL CTA ——— */
+    section.final-cta {
+      padding: 68px 0;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+      color: #fff; text-align: center;
+    }
+    section.final-cta h2 { font-size: clamp(24px, 3.5vw, 36px); margin: 0 0 14px; font-weight: 800; letter-spacing: -0.01em; }
+    section.final-cta p { font-size: 17px; opacity: .92; margin: 0 0 26px; }
+    section.final-cta .btn-primary { background: #fff; color: var(--navy); }
+    section.final-cta .btn-primary:hover { background: #F1F5F9; color: var(--navy); }
+
+    /* ——— FOOTER ——— */
+    footer {
+      padding: 44px 0 28px;
+      background: #0F172A; color: #CBD5E1;
+    }
+    footer .wrap { display: grid; gap: 28px; grid-template-columns: 2fr 1fr 1fr 1fr; }
+    footer h5 { color: #fff; font-size: 13.5px; margin: 0 0 12px; text-transform: uppercase; letter-spacing: .06em; }
+    footer a { color: #CBD5E1; display: block; padding: 4px 0; font-size: 14px; }
+    footer a:hover { color: #fff; text-decoration: underline; }
+    footer .brand-f { font-weight: 800; font-size: 18px; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    footer .brand-f img { height: 28px; width: auto; }
+    footer .copy { margin-top: 22px; padding-top: 20px; border-top: 1px solid #1E293B; font-size: 13px; color: #64748B; text-align: center; }
+    footer .tagline { color: #94A3B8; font-size: 13.5px; margin: 0; max-width: 300px; }
+
+    @media (max-width: 720px) {
+      nav.topnav a:not(.btn) { display: none; }
+      footer .wrap { grid-template-columns: 1fr 1fr; }
+      footer .col-about { grid-column: span 2; }
+    }
+  </style>
 </head>
-<body></body>
+<body>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header class="top">
+  <div class="wrap top-row">
+    <a href="/" class="brand">
+      <img src="/img/fidelavis-logo.png" alt="Fidelavis" />
+    </a>
+    <nav class="topnav">
+      <a href="#features">Fonctionnalités</a>
+      <a href="#how">Comment ça marche</a>
+      <a href="/tarifs.html">Tarifs</a>
+      <a href="/inscription.html" class="btn btn-primary">Commencer</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="wrap">
+    <span class="micro"><span class="dot-ok"></span> Essai gratuit 30 jours · Sans carte bancaire</span>
+    <h1>Fidélisez vos clients.<br/>Répondez à vos avis Google. <em>Automatiquement.</em></h1>
+    <p class="lead">
+      Fidelavis est la plateforme tout-en-un conçue pour les restaurateurs indépendants :
+      carte de fidélité numérique par NFC, coupons mensuels, et réponses intelligentes aux avis Google grâce à l'IA.
+    </p>
+    <div class="cta-row">
+      <a href="/inscription.html" class="btn btn-primary btn-lg">🚀 Démarrer l'essai gratuit</a>
+      <a href="#features" class="btn btn-outline btn-lg">Voir les fonctionnalités</a>
+    </div>
+
+    <!-- Mockup SVG du coupon sur mobile -->
+    <div class="hero-mock">
+      <svg viewBox="0 0 320 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Aperçu mobile Fidelavis">
+        <defs>
+          <linearGradient id="phone-bg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1E3A8A"/>
+            <stop offset="1" stop-color="#2563EB"/>
+          </linearGradient>
+        </defs>
+        <rect x="8" y="8" width="304" height="624" rx="44" fill="#0F172A"/>
+        <rect x="18" y="18" width="284" height="604" rx="36" fill="url(#phone-bg)"/>
+        <!-- Notch -->
+        <rect x="130" y="22" width="60" height="18" rx="9" fill="#0F172A"/>
+        <!-- Card content -->
+        <rect x="38" y="120" width="244" height="380" rx="18" fill="#FFFFFF"/>
+        <!-- Badge -->
+        <rect x="98" y="140" width="124" height="28" rx="14" fill="#DCFCE7"/>
+        <circle cx="115" cy="154" r="4" fill="#059669"/>
+        <text x="126" y="158" font-family="-apple-system, Helvetica, Arial" font-size="12" font-weight="700" fill="#065F46">Accès client activé</text>
+        <!-- Title -->
+        <text x="160" y="200" text-anchor="middle" font-family="-apple-system, Helvetica, Arial" font-size="22" font-weight="800" fill="#0F172A">Coupon du mois</text>
+        <!-- Subtitle -->
+        <text x="160" y="224" text-anchor="middle" font-family="-apple-system, Helvetica, Arial" font-size="11" fill="#64748B">Présentez ce coupon en caisse</text>
+        <!-- Offer card -->
+        <rect x="58" y="244" width="204" height="52" rx="10" fill="#FEF3C7" stroke="#FCD34D"/>
+        <text x="68" y="264" font-family="-apple-system, Helvetica, Arial" font-size="9" font-weight="800" fill="#78350F">OFFRE EN COURS</text>
+        <text x="68" y="284" font-family="-apple-system, Helvetica, Arial" font-size="13" font-weight="700" fill="#0F172A">🎁 Avril : -15% végétarien</text>
+        <!-- PIN boxes -->
+        <text x="68" y="320" font-family="-apple-system, Helvetica, Arial" font-size="11" font-weight="700" fill="#0F172A">Code PIN (4 chiffres)</text>
+        <g>
+          <rect x="68" y="330" width="42" height="42" rx="7" fill="#F8FAFC" stroke="#CBD5E1"/>
+          <rect x="118" y="330" width="42" height="42" rx="7" fill="#F8FAFC" stroke="#CBD5E1"/>
+          <rect x="168" y="330" width="42" height="42" rx="7" fill="#F8FAFC" stroke="#CBD5E1"/>
+          <rect x="218" y="330" width="42" height="42" rx="7" fill="#F8FAFC" stroke="#CBD5E1"/>
+        </g>
+        <!-- Validate btn -->
+        <rect x="58" y="390" width="204" height="40" rx="9" fill="#2563EB"/>
+        <text x="160" y="415" text-anchor="middle" font-family="-apple-system, Helvetica, Arial" font-size="13" font-weight="700" fill="#FFFFFF">Valider le coupon</text>
+        <!-- Share btn -->
+        <rect x="58" y="440" width="204" height="40" rx="9" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.5"/>
+        <text x="160" y="465" text-anchor="middle" font-family="-apple-system, Helvetica, Arial" font-size="13" font-weight="700" fill="#2563EB">Partager ce restaurant</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FEATURES ═══════════════ -->
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Tout ce qu'il vous faut pour fidéliser</h2>
+      <p>Une suite intégrée pensée pour les commerces de proximité qui veulent un vrai impact mesurable.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-icon">📲</div>
+        <h3>Carte de fidélité NFC / QR</h3>
+        <p>Un simple tag NFC ou un QR code sur vos tables : vos clients accèdent instantanément à leur carte de fidélité, sans téléchargement.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🎁</div>
+        <h3>Coupon mensuel automatique</h3>
+        <p>Créez une offre par mois avec code PIN de validation. Réinitialisation automatique le 1er de chaque mois. Vos clients reviennent.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">⭐</div>
+        <h3>Avis Google + IA</h3>
+        <p>Récupération automatique de vos avis Google My Business. L'IA rédige une réponse personnalisée que vous validez en un clic.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🔔</div>
+        <h3>Notifications push ciblées</h3>
+        <p>Annoncez votre nouveau menu, une soirée spéciale, une réouverture. Message direct sur le smartphone de chaque client fidèle.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📱</div>
+        <h3>App installable (PWA)</h3>
+        <p>Vos clients ajoutent votre restaurant à leur écran d'accueil comme une vraie app, sans passer par l'App Store.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📊</div>
+        <h3>Tableau de bord en temps réel</h3>
+        <p>Installations, coupons validés, clics "Donner un avis", réponses publiées. Toutes vos métriques clés en un coup d'œil.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Opérationnel en 15 minutes</h2>
+      <p>Pas d'installation technique. Pas de formation. Vous vous inscrivez, on configure, vous commencez.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h4>Inscription + configuration</h4>
+        <p>Renseignez votre restaurant et votre offre du mois. Nous livrons vos cartes NFC / QR prêtes à poser.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h4>Vos clients s'inscrivent</h4>
+        <p>Ils scannent, s'abonnent aux notifications, installent l'app. Le tout en moins de 30 secondes, sans friction.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h4>L'IA gère vos avis</h4>
+        <p>Connectez votre fiche Google. Chaque nouvel avis reçoit une proposition de réponse par IA que vous publiez d'un clic.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PRICING ═══════════════ -->
+<section class="pricing-teaser">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Un tarif unique, tout inclus</h2>
+      <p>Pas de pourcentage sur votre chiffre d'affaires. Pas de coût caché. Annulable à tout moment.</p>
+    </div>
+    <div class="price-card">
+      <span class="tag">Plan Pro</span>
+      <h3>Fidelavis Pro</h3>
+      <p style="margin:0;color:var(--muted);font-size:14.5px;">Tout inclus · Sans engagement</p>
+      <div class="price">149 €<small>/mois</small></div>
+      <p style="margin:6px 0 0;color:var(--muted);font-size:13.5px;">+ 199 € installation unique</p>
+      <ul>
+        <li>Cartes NFC + QR codes à imprimer illimités</li>
+        <li>Coupons mensuels + validations par PIN</li>
+        <li>Avis Google avec réponses IA (Claude)</li>
+        <li>Notifications push ciblées</li>
+        <li>Tableau de bord analytique</li>
+        <li>Support français par email</li>
+      </ul>
+      <a href="/inscription.html" class="btn btn-primary" style="width:100%;">Essayer 30 jours gratuitement</a>
+      <p class="sub">Sans carte bancaire · Aucun paiement avant la fin de l'essai</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FINAL CTA ═══════════════ -->
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Prêt à transformer vos clients occasionnels en habitués ?</h2>
+    <p>Rejoignez les restaurateurs qui ont déjà adopté Fidelavis pour fidéliser et soigner leur réputation.</p>
+    <a href="/inscription.html" class="btn btn-primary btn-lg">Commencer mon essai gratuit →</a>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="wrap">
+    <div class="col-about">
+      <div class="brand-f">
+        <img src="/img/fidelavis-logo.png" alt="Fidelavis" />
+      </div>
+      <p class="tagline">La solution tout-en-un de fidélisation et de gestion des avis Google pour les restaurateurs indépendants.</p>
+    </div>
+    <div>
+      <h5>Produit</h5>
+      <a href="#features">Fonctionnalités</a>
+      <a href="#how">Comment ça marche</a>
+      <a href="/tarifs.html">Tarifs</a>
+      <a href="/inscription.html">S'inscrire</a>
+    </div>
+    <div>
+      <h5>Légal</h5>
+      <a href="/privacy.html">Politique de confidentialité</a>
+      <a href="/cgu.html">Conditions d'utilisation</a>
+      <a href="/desinscription.html">Désinscription</a>
+    </div>
+    <div>
+      <h5>Contact</h5>
+      <a href="mailto:contact@fidelavis.com">contact@fidelavis.com</a>
+      <p class="tagline" style="margin-top:8px;font-size:13px;">Compush Media<br/>France</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="copy">© 2026 Fidelavis — Compush Media. Tous droits réservés.</div>
+  </div>
+</footer>
+
+</body>
 </html>
