@@ -835,10 +835,18 @@ let currentPage   = 1;
 // ============================================================
 //  INIT
 // ============================================================
-// ── Mode démo OAuth (?demo=oauth) — screenshots Google API case 1-4847000040165 ──
-// Affiche la bannière "Connecter Google" + popup OAuth mock pour capture d'écran.
-// Ne touche NI au token réel NI aux données — purement visuel.
-const DEMO_OAUTH = new URLSearchParams(location.search).get('demo') === 'oauth';
+// ── Modes démo (?demo=oauth | ?demo=publish | ?demo=oauth,publish) ──
+// Screenshots Google API case 1-4847000040165.
+// - oauth   : affiche la bannière "Connecter Google" + popup OAuth mock (pour 01-oauth.png)
+// - publish : bypasse l'appel API Google et marque la réponse comme publiée localement
+//             (permet de capturer 04-publish.png tant que l'API v4 reviews n'est pas activée)
+// Aucun de ces modes ne touche aux données utilisateur réelles.
+const _demoFlags = new Set(
+  (new URLSearchParams(location.search).get('demo') || '')
+    .split(',').map(s => s.trim()).filter(Boolean)
+);
+const DEMO_OAUTH   = _demoFlags.has('oauth');
+const DEMO_PUBLISH = _demoFlags.has('publish');
 
 async function initApp() {
   // ── Charger le google_client_id partagé (fidelavis-config.json) ──
@@ -1377,7 +1385,11 @@ async function publishDraft(reviewId) {
   const btn = document.querySelector(`#card-${reviewId} .btn-primary`);
   if (btn) { btn.disabled = true; btn.textContent = '📤 Publication...'; }
   try {
-    if (googleToken && currentLocation) {
+    if (DEMO_PUBLISH) {
+      // Mode démo : on saute l'appel API (ex : quand l'API v4 reviews n'est pas
+      // encore activée pour le projet) pour permettre la capture 04-publish.png.
+      toast('Réponse publiée sur Google !', 'success');
+    } else if (googleToken && currentLocation) {
       await gbpPut(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews/${reviewId}/reply`, { comment: text });
       toast('Réponse publiée sur Google !', 'success');
     } else {
