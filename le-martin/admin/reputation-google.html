@@ -788,10 +788,10 @@
   <p class="g-sub">Pour continuer avec <strong style="color:#202124;font-weight:500">Fidelavis</strong></p>
 
   <div class="g-account">
-    <div class="g-avatar">M</div>
+    <div class="g-avatar" id="oauthDemoAvatar">M</div>
     <div>
-      <div class="g-account-name">Marcel Dupont</div>
-      <div class="g-account-mail">marcel.dupont@lebistrotmarcel.fr</div>
+      <div class="g-account-name" id="oauthDemoOwner">Marcel Dupont</div>
+      <div class="g-account-mail" id="oauthDemoEmail">contact@le-martin.fr</div>
     </div>
   </div>
 
@@ -1108,6 +1108,25 @@ function loadDashboard() {
   if (DEMO_OAUTH) {
     const bd = document.getElementById('oauthDemoBackdrop');
     const pu = document.getElementById('oauthDemoPopup');
+    // Synchroniser la popup avec les vraies données du resto (cohérence screenshots)
+    try {
+      const st = JSON.parse(localStorage.getItem('fv_settings') || '{}');
+      const owner = st.owner_name || 'Le propriétaire';
+      const resto = st.restaurant_name || '';
+      const slug  = _adminSite || 'resto';
+      // Email : <prenom.nom>@<slug>.fr ou fallback contact@<slug>.fr
+      const nameSlug = owner.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z\s-]/g, '').trim().replace(/\s+/g, '.');
+      const email = nameSlug ? (nameSlug + '@' + slug + '.fr') : ('contact@' + slug + '.fr');
+      const avatar = (owner.trim()[0] || resto.trim()[0] || 'M').toUpperCase();
+      const ownerEl  = document.getElementById('oauthDemoOwner');
+      const emailEl  = document.getElementById('oauthDemoEmail');
+      const avatarEl = document.getElementById('oauthDemoAvatar');
+      if (ownerEl)  ownerEl.textContent  = owner;
+      if (emailEl)  emailEl.textContent  = email;
+      if (avatarEl) avatarEl.textContent = avatar;
+    } catch(e) {}
     if (bd) bd.classList.add('show');
     if (pu) pu.classList.add('show');
   }
