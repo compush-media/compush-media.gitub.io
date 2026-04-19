@@ -280,9 +280,17 @@
     footer .tagline { color: #94A3B8; font-size: 13.5px; margin: 0; max-width: 300px; }
 
     @media (max-width: 720px) {
-      nav.topnav a:not(.btn) { display: none; }
+      header.top { padding: 10px 0; }
+      .top-row { flex-wrap: wrap; gap: 8px; }
+      .brand img { height: 30px; }
+      nav.topnav { gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
+      nav.topnav a { font-size: 13px; }
       footer .wrap { grid-template-columns: 1fr 1fr; }
       footer .col-about { grid-column: span 2; }
+    }
+    @media (max-width: 430px) {
+      nav.topnav { gap: 10px; width: 100%; justify-content: space-between; }
+      nav.topnav a { font-size: 12.5px; }
     }
   </style>
 </head>
