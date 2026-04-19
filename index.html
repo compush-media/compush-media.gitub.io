@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Fidelavis — Fidélisation client & avis Google automatiques pour restaurants</title>
-  <meta name="description" content="Fidelavis est la plateforme tout-en-un pour restaurateurs : carte de fidélité NFC, coupons mensuels, gestion des avis Google avec réponses IA. Essai gratuit 30 jours." />
+  <meta name="description" content="Fidelavis est la plateforme tout-en-un pour restaurateurs : carte de fidélité NFC, coupons mensuels, gestion des avis Google avec réponses IA. Essai gratuit 14 jours." />
   <meta name="theme-color" content="#1E40AF" />
 
   <link rel="icon" type="image/svg+xml" href="/img/fidelavis-icon.svg" />
@@ -13,7 +13,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Fidelavis — Fidélisation client & avis Google pour restaurants" />
-  <meta property="og:description" content="Carte de fidélité NFC + réponses IA aux avis Google. Essai gratuit 30 jours." />
+  <meta property="og:description" content="Carte de fidélité NFC + réponses IA aux avis Google. Essai gratuit 14 jours." />
   <meta property="og:image" content="https://app.cartefidelavis.com/img/fidelavis-logo.png" />
   <meta property="og:url" content="https://app.cartefidelavis.com/" />
 
@@ -175,28 +175,74 @@
     section.pricing-teaser {
       padding: 72px 0; text-align: center;
     }
-    .price-card {
-      display: inline-block; text-align: left;
-      background: var(--card); border: 2px solid var(--blue);
-      border-radius: 18px; padding: 32px 38px;
-      box-shadow: var(--shadow);
-      max-width: 440px;
+    .plans-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+      max-width: 900px; margin: 0 auto; text-align: left;
     }
+    @media (max-width: 720px) {
+      .plans-grid { grid-template-columns: 1fr; }
+    }
+    .price-card {
+      position: relative;
+      background: var(--card); border: 2px solid var(--line);
+      border-radius: 18px; padding: 32px 28px;
+      box-shadow: var(--shadow);
+      display: flex; flex-direction: column;
+    }
+    .price-card.recommended { border-color: var(--blue); }
     .price-card .tag {
-      display: inline-block; background: var(--blue); color: #fff;
+      display: inline-block; background: var(--line); color: var(--muted);
       padding: 4px 12px; border-radius: 100px; font-size: 12px;
       font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
       margin-bottom: 14px;
     }
-    .price-card h3 { font-size: 22px; margin: 0 0 8px; font-weight: 800; }
-    .price-card .price {
-      font-size: 44px; font-weight: 800; color: var(--navy); margin: 12px 0 0;
+    .price-card.recommended .tag { background: var(--blue); color: #fff; }
+    .price-card .rec-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--blue); color: #fff;
+      padding: 4px 14px; border-radius: 100px;
+      font-size: 11px; font-weight: 800; letter-spacing: .04em;
+      white-space: nowrap;
     }
-    .price-card .price small { font-size: 16px; color: var(--muted); font-weight: 500; }
-    .price-card ul { list-style: none; padding: 0; margin: 18px 0 24px; }
+    .price-card h3 { font-size: 22px; margin: 0 0 4px; font-weight: 800; }
+    .price-card .plan-desc { font-size: 13.5px; color: var(--muted); margin: 0 0 14px; }
+    .price-card .price {
+      font-size: 40px; font-weight: 800; color: var(--navy); margin: 8px 0 0;
+    }
+    .price-card .price small { font-size: 15px; color: var(--muted); font-weight: 500; }
+    .price-card .setup-line { font-size: 12.5px; color: var(--muted); margin: 4px 0 18px; }
+    .price-card ul { list-style: none; padding: 0; margin: 12px 0 24px; flex: 1; }
     .price-card ul li { padding: 6px 0 6px 26px; position: relative; color: var(--muted); font-size: 14.5px; }
     .price-card ul li::before { content: "✓"; position: absolute; left: 0; top: 6px; color: var(--ok); font-weight: 800; }
+    .price-card .plan-btn {
+      display: block; width: 100%; text-align: center;
+      background: var(--blue); color: #fff;
+      border: none; border-radius: 12px;
+      padding: 14px 18px; font-size: 15px; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      transition: background .15s, transform .15s;
+      font-family: inherit;
+    }
+    .price-card .plan-btn:hover { background: var(--navy); transform: translateY(-1px); }
+    .price-card .plan-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .price-card .plan-btn .btn-spinner {
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
+      border-radius: 50%; animation: spin .7s linear infinite;
+      vertical-align: middle; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .price-card .sub { font-size: 13px; color: var(--muted); margin-top: 10px; text-align: center; }
+    .pricing-foot {
+      margin-top: 28px; font-size: 13.5px; color: var(--muted);
+    }
+    #billingError {
+      max-width: 640px; margin: 0 auto 22px;
+      background: #fee2e2; color: #dc2626;
+      border-radius: 10px; padding: 12px 16px;
+      font-size: 14px; font-weight: 600;
+      display: none; text-align: left;
+    }
 
     /* ——— FINAL CTA ——— */
     section.final-cta {
@@ -241,7 +287,7 @@
     <nav class="topnav">
       <a href="#features">Fonctionnalités</a>
       <a href="#how">Comment ça marche</a>
-      <a href="/tarifs.html">Tarifs</a>
+      <a href="#tarifs">Tarifs</a>
       <a href="/inscription.html" class="btn btn-primary">Commencer</a>
     </nav>
   </div>
@@ -250,7 +296,7 @@
 <!-- ═══════════════ HERO ═══════════════ -->
 <section class="hero">
   <div class="wrap">
-    <span class="micro"><span class="dot-ok"></span> Essai gratuit 30 jours · Sans carte bancaire</span>
+    <span class="micro"><span class="dot-ok"></span> Essai gratuit 14 jours</span>
     <h1>Fidélisez vos clients.<br/>Répondez à vos avis Google. <em>Automatiquement.</em></h1>
     <p class="lead">
       Fidelavis est la plateforme tout-en-un conçue pour les restaurateurs indépendants :
@@ -377,29 +423,57 @@
 </section>
 
 <!-- ═══════════════ PRICING ═══════════════ -->
-<section class="pricing-teaser">
+<section class="pricing-teaser" id="tarifs">
   <div class="wrap">
     <div class="section-head">
-      <h2>Un tarif unique, tout inclus</h2>
-      <p>Pas de pourcentage sur votre chiffre d'affaires. Pas de coût caché. Annulable à tout moment.</p>
+      <h2>Deux offres, zéro engagement</h2>
+      <p>14 jours d'essai · Pas de pourcentage sur votre CA · Annulable à tout moment.</p>
     </div>
-    <div class="price-card">
-      <span class="tag">Plan Pro</span>
-      <h3>Fidelavis Pro</h3>
-      <p style="margin:0;color:var(--muted);font-size:14.5px;">Tout inclus · Sans engagement</p>
-      <div class="price">149 €<small>/mois</small></div>
-      <p style="margin:6px 0 0;color:var(--muted);font-size:13.5px;">+ 199 € installation unique</p>
-      <ul>
-        <li>Cartes NFC + QR codes à imprimer illimités</li>
-        <li>Coupons mensuels + validations par PIN</li>
-        <li>Avis Google avec réponses IA (Claude)</li>
-        <li>Notifications push ciblées</li>
-        <li>Tableau de bord analytique</li>
-        <li>Support français par email</li>
-      </ul>
-      <a href="/inscription.html" class="btn btn-primary" style="width:100%;">Essayer 30 jours gratuitement</a>
-      <p class="sub">Sans carte bancaire · Aucun paiement avant la fin de l'essai</p>
+
+    <div id="billingError"></div>
+
+    <div class="plans-grid">
+
+      <!-- ── ESSENTIEL ── -->
+      <div class="price-card">
+        <span class="tag">Essentiel</span>
+        <h3>Fidelavis Essentiel</h3>
+        <p class="plan-desc">Pour démarrer avec la fidélité digitale</p>
+        <div class="price">97 €<small>/mois</small></div>
+        <div class="setup-line">+ 199 € installation · facturés après l'essai</div>
+        <ul>
+          <li>QR code fidélité personnalisé</li>
+          <li>Coupon mensuel automatique</li>
+          <li>Tableau de bord admin</li>
+          <li>Notifications push clients</li>
+          <li>1 établissement</li>
+        </ul>
+        <button class="plan-btn" data-plan="essentiel">Démarrer — Essentiel</button>
+      </div>
+
+      <!-- ── PRO (recommandé) ── -->
+      <div class="price-card recommended">
+        <div class="rec-badge">⭐ Recommandé</div>
+        <span class="tag">Pro</span>
+        <h3>Fidelavis Pro</h3>
+        <p class="plan-desc">Pour les restaurateurs qui veulent tout maîtriser</p>
+        <div class="price">149 €<small>/mois</small></div>
+        <div class="setup-line">+ 199 € installation · facturés après l'essai</div>
+        <ul>
+          <li>Tout le plan Essentiel</li>
+          <li>Réponses avis IA (Claude)</li>
+          <li>Google Business intégré</li>
+          <li>Statistiques avancées</li>
+          <li>Support prioritaire</li>
+        </ul>
+        <button class="plan-btn" data-plan="pro">Démarrer — Pro</button>
+      </div>
+
     </div>
+
+    <p class="pricing-foot">
+      <strong>0 € aujourd'hui</strong> · Annulez avant J+14 et ne payez rien · Paiement sécurisé Stripe
+    </p>
   </div>
 </section>
 
@@ -444,6 +518,24 @@
     <div class="copy">© 2026 Fidelavis — Compush Media. Tous droits réservés.</div>
   </div>
 </footer>
+
+<!-- ═══════════════ STRIPE CHECKOUT (pricing cards) ═══════════════ -->
+<script src="/assets/plans.js" onerror="void(0)"></script>
+<script src="/assets/billing.js" onerror="void(0)"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.FidelavisBilling) {
+      FidelavisBilling.initCheckoutButtons();
+    } else {
+      document.querySelectorAll("[data-plan]").forEach(function (btn) {
+        // Fallback : redirection vers la page d'inscription
+        btn.addEventListener("click", function () {
+          location.href = "/inscription.html";
+        });
+      });
+    }
+  });
+</script>
 
 </body>
 </html>
