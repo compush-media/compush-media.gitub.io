@@ -816,8 +816,8 @@
   </p>
 
   <div class="g-actions">
-    <button class="g-btn g-btn-text" onclick="document.getElementById('oauthDemoBackdrop').classList.remove('show');document.getElementById('oauthDemoPopup').classList.remove('show');">Annuler</button>
-    <button class="g-btn g-btn-primary" onclick="document.getElementById('oauthDemoBackdrop').classList.remove('show');document.getElementById('oauthDemoPopup').classList.remove('show');">Autoriser</button>
+    <button class="g-btn g-btn-text" onclick="demoCancel()">Annuler</button>
+    <button class="g-btn g-btn-primary" onclick="demoAuthorize()">Autoriser</button>
   </div>
 </div>
 <script>
@@ -846,6 +846,7 @@ const _demoFlags = new Set(
     .split(',').map(s => s.trim()).filter(Boolean)
 );
 const DEMO_OAUTH   = _demoFlags.has('oauth');
+let   _demoAuthorized = false;
 const DEMO_PUBLISH = _demoFlags.has('publish');
 // Nettoie la barre d'URL pour les captures d'écran : retire ?demo=... une fois
 // le flag lu en mémoire. La session courante garde le mode démo actif, mais
@@ -970,6 +971,15 @@ async function autoRefreshToken() {
 }
 
 async function connectGoogle() {
+  // Mode démo screenshots/vidéo : on n'appelle PAS la vraie API Google.
+  // On ouvre uniquement le popup mock. La validation se fera via demoAuthorize().
+  if (DEMO_OAUTH) {
+    const bd = document.getElementById('oauthDemoBackdrop');
+    const pu = document.getElementById('oauthDemoPopup');
+    if (bd) bd.classList.add('show');
+    if (pu) pu.classList.add('show');
+    return;
+  }
   const settings = getSettings();
   const clientId = settings.google_client_id;
   if (!clientId) {
@@ -1002,6 +1012,22 @@ async function connectGoogle() {
     }
   });
   client.requestAccessToken();
+}
+// Demo screenshots/video : simule un "Autoriser" sans appeler l'API Google.
+function demoAuthorize() {
+  const bd = document.getElementById('oauthDemoBackdrop');
+  const pu = document.getElementById('oauthDemoPopup');
+  if (bd) bd.classList.remove('show');
+  if (pu) pu.classList.remove('show');
+  _demoAuthorized = true;
+  toast('✅ Connecté à Google !', 'success');
+  loadDashboard();
+}
+function demoCancel() {
+  const bd = document.getElementById('oauthDemoBackdrop');
+  const pu = document.getElementById('oauthDemoPopup');
+  if (bd) bd.classList.remove('show');
+  if (pu) pu.classList.remove('show');
 }
 // ============================================================
 //  GOOGLE BUSINESS PROFILE API
@@ -1115,7 +1141,8 @@ function loadDashboard() {
   const lastSync = localStorage.getItem('fv_last_sync');
   const s        = getSettings();
   // Status dots
-  if (googleToken && !DEMO_OAUTH) {
+  const demoConnected = DEMO_OAUTH && _demoAuthorized;
+  if ((googleToken && !DEMO_OAUTH) || demoConnected) {
     el('dotGoogle').className = 'dot green';
     el('statusGoogle').textContent = 'Google connecté';
     el('connectBanner').style.display = 'none';
@@ -1125,7 +1152,8 @@ function loadDashboard() {
     el('connectBanner').style.display = 'block';
   }
   // En mode démo OAuth, afficher la popup mock par-dessus pour la capture
-  if (DEMO_OAUTH) {
+  // (sauf si l'utilisateur a déjà cliqué "Autoriser" pendant la vidéo)
+  if (DEMO_OAUTH && !_demoAuthorized) {
     const bd = document.getElementById('oauthDemoBackdrop');
     const pu = document.getElementById('oauthDemoPopup');
     // Synchroniser la popup avec les vraies données du resto (cohérence screenshots)
