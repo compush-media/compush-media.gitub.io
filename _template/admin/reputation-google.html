@@ -1513,9 +1513,24 @@ function saveSettings() {
     localStorage.setItem('fv_merchant', JSON.stringify(merchant));
     el('merchantAvatar').textContent = merchant.name[0].toUpperCase();
     document.title = `Fidelavis – ${merchant.name}`;
+    // Synchronise aussi les fiches locales fictives (demo-location) pour que
+    // la pastille 📍 du header reflète immédiatement le nouveau nom.
+    try {
+      const locs = JSON.parse(localStorage.getItem('fv_locations') || '[]');
+      let changed = false;
+      locs.forEach(l => {
+        if (l && typeof l.name === 'string' && l.name.includes('/demo-location')) {
+          l.title = body.restaurant_name;
+          changed = true;
+        }
+      });
+      if (changed) localStorage.setItem('fv_locations', JSON.stringify(locs));
+    } catch(e) {}
   }
   addLog('settings.updated', 'settings', 'fv_settings');
   toast('Paramètres enregistrés !', 'success');
+  // Re-render le dashboard pour propager le nouveau nom (pastille, dots, etc.)
+  if (typeof loadDashboard === 'function') loadDashboard();
 }
 function populateSettings() {
   const s = getSettings();
@@ -1763,24 +1778,29 @@ function loadDemoData(silent) {
     auto_reply_rule_1:  'disabled',
     auto_reply_enabled: false
   };
-  // Ne pas écraser les clés API si déjà saisies
+  // Ne pas écraser les paramètres déjà saisis par l'utilisateur
+  // (restaurant_name, owner_name, signature + clés API)
   const existing = getSettings();
+  if (existing.restaurant_name) demoSettings.restaurant_name = existing.restaurant_name;
+  if (existing.owner_name)      demoSettings.owner_name      = existing.owner_name;
+  if (existing.signature)       demoSettings.signature       = existing.signature;
   if (existing.google_client_id) demoSettings.google_client_id = existing.google_client_id;
   if (existing.claude_api_key)   demoSettings.claude_api_key   = existing.claude_api_key;
+  const restoName = demoSettings.restaurant_name;
   localStorage.setItem('fv_reviews',  JSON.stringify(DEMO_REVIEWS));
   localStorage.setItem('fv_settings', JSON.stringify(demoSettings));
   localStorage.setItem('fv_last_sync', daysAgo(1));
   localStorage.setItem('fv_locations', JSON.stringify([{
     name: 'accounts/demo/locations/demo-location',
-    title: 'Le Bistrot Marcel',
+    title: restoName,
     address: '12 Rue de la Paix, Paris'
   }]));
   localStorage.setItem('fv_selected_location', 'accounts/demo/locations/demo-location');
   const merchant = JSON.parse(localStorage.getItem('fv_merchant') || '{}');
-  merchant.name = 'Le Bistrot Marcel';
+  merchant.name = restoName;
   localStorage.setItem('fv_merchant', JSON.stringify(merchant));
-  el('merchantAvatar').textContent = 'L';
-  document.title = 'Fidelavis – Le Bistrot Marcel';
+  el('merchantAvatar').textContent = (restoName.trim()[0] || 'L').toUpperCase();
+  document.title = 'Fidelavis – ' + restoName;
   addLog('sync.completed', 'demo', '8');
   populateSettings();
   if (!silent) toast('🎭 Données de démo chargées ! 8 avis fictifs ajoutés.', 'success');
