@@ -1286,7 +1286,7 @@ function renderOneCard(r, compact) {
   const aiDraftHtml = !compact && r.status !== 'replied' && r.ai_draft
     ? `<div class="ia-draft" id="draft-${r.id}">
         <div class="ia-draft-label">🤖 Réponse IA proposée</div>
-        <textarea id="draftText-${r.id}" rows="4">${escHtml(r.ai_draft)}</textarea>
+        <textarea id="draftText-${r.id}" rows="4" oninput="persistDraftEdit('${r.id}', this.value)">${escHtml(r.ai_draft)}</textarea>
       </div>`
     : '';
   const actionsHtml = compact
@@ -1410,7 +1410,7 @@ async function generateAndShow(reviewId) {
       card.insertBefore(draftEl, actionsDiv);
     }
     draftEl.innerHTML = `<div class="ia-draft-label">🤖 Réponse IA proposée</div>
-      <textarea id="draftText-${reviewId}" rows="5">${escHtml(responseText)}</textarea>`;
+      <textarea id="draftText-${reviewId}" rows="5" oninput="persistDraftEdit('${reviewId}', this.value)">${escHtml(responseText)}</textarea>`;
     actionsDiv.innerHTML = `
       <button class="btn-primary" onclick="publishDraft('${reviewId}')">📤 Publier</button>
       <button class="btn-outline" style="font-size:12px" onclick="generateAndShow('${reviewId}')">↻ Régénérer</button>
@@ -1424,6 +1424,16 @@ async function generateAndShow(reviewId) {
 }
 async function regenerate(reviewId) {
   await generateAndShow(reviewId);
+}
+// Sauvegarde l'édition utilisateur dans ai_draft en temps réel (à chaque frappe),
+// pour que les modifications survivent à un re-render (navigation, sync, etc.)
+function persistDraftEdit(reviewId, value) {
+  const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+  const idx = reviews.findIndex(r => r.id === reviewId);
+  if (idx >= 0) {
+    reviews[idx].ai_draft = value;
+    localStorage.setItem('fv_reviews', JSON.stringify(reviews));
+  }
 }
 async function publishDraft(reviewId) {
   const text = el(`draftText-${reviewId}`)?.value?.trim();
@@ -1445,7 +1455,17 @@ async function publishDraft(reviewId) {
     const idx = reviews.findIndex(r => r.id === reviewId);
     if (idx >= 0) { reviews[idx].status = 'replied'; reviews[idx].reply_text = text; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
     const publishedCard = el(`card-${reviewId}`);
-    if (publishedCard) publishedCard.querySelector('.review-actions').innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
+    if (publishedCard) {
+      // Remplace le bloc draft par la réponse publiée (celle que l'utilisateur a éditée)
+      const draftBlock = el(`draft-${reviewId}`);
+      if (draftBlock) {
+        draftBlock.outerHTML = `<div class="review-reply-existing"><div class="reply-label">Votre réponse publiée</div>${escHtml(text)}</div>`;
+      }
+      publishedCard.querySelector('.review-actions').innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
+      // Badge "En attente" → "Répondu"
+      const meta = publishedCard.querySelector('.review-header > div[style*="margin-left:auto"]');
+      if (meta) meta.innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Répondu</span>';
+    }
     addLog('response.published', 'review', reviewId);
     loadDashboard();
   } catch (e) {
