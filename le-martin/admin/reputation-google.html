@@ -1020,6 +1020,12 @@ function demoAuthorize() {
   if (bd) bd.classList.remove('show');
   if (pu) pu.classList.remove('show');
   _demoAuthorized = true;
+  // Seed des avis + fiche fictive si le localStorage est vide (onglet privé),
+  // pour que la vidéo ait du contenu à montrer juste après "Autoriser".
+  const existing = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+  if (existing.length === 0 && typeof loadDemoData === 'function') {
+    loadDemoData(true); // silent : pas de toast "Données de démo chargées"
+  }
   toast('✅ Connecté à Google !', 'success');
   loadDashboard();
 }
@@ -1625,7 +1631,7 @@ function formatDate(iso) {
 // ============================================================
 //  MODE DÉMO
 // ============================================================
-function loadDemoData() {
+function loadDemoData(silent) {
   const now = new Date();
   const daysAgo = n => new Date(now - n * 86400000).toISOString();
   const DEMO_REVIEWS = [
@@ -1777,7 +1783,7 @@ function loadDemoData() {
   document.title = 'Fidelavis – Le Bistrot Marcel';
   addLog('sync.completed', 'demo', '8');
   populateSettings();
-  toast('🎭 Données de démo chargées ! 8 avis fictifs ajoutés.', 'success');
+  if (!silent) toast('🎭 Données de démo chargées ! 8 avis fictifs ajoutés.', 'success');
   loadDashboard();
 }
 function clearDemoData() {
