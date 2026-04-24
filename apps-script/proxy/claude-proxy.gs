@@ -347,15 +347,10 @@ function pushNotification(params) {
     };
   }
 
-  // ── Segmentation par restaurant ──────────────────────────────
-  //   push_path = chemin depuis lequel l'abonné a accepté les notifications
-  //   Ainsi les clients de /test06/ ne reçoivent que les notifs de test06.
-  var recipients;
-  if (resto) {
-    recipients = { push_path: "/" + resto + "/" };
-  } else {
-    recipients = { users: "all" };   // fallback (admin global uniquement)
-  }
+  // ── Segmentation par tag restaurant ─────────────────────────
+  //   Tag assigné à l'inscription via progressier.add({ id: email, tags: [resto] })
+  //   Format API Progressier : { tags: "le-martin" }
+  var recipients = resto ? { tags: resto } : { users: "all" };
 
   var payload = {
     title:      title,

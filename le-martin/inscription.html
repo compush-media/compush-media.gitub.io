@@ -346,6 +346,13 @@
       } catch(_) {}
     }
 
+    // ── Tag Progressier (segmentation par restaurant pour les push) ──
+    try {
+      if (window.progressier) {
+        progressier.add({ id: email, tags: [RESTO] });
+      }
+    } catch(_) {}
+
     // ── Redirection vers merci ──
     setTimeout(() => window.location.replace("redit.html"), 400);
   }
