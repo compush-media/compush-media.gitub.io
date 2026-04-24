@@ -13,5 +13,20 @@
     "statut": "actif",
     "max_restaurants_test": 5,
     "notes": "dcccd"
+  },
+  {
+    "id": "amb_modjew9q",
+    "token": "tok_9fih70u6pm46ej04",
+    "restaurants_crees": [],
+    "date_creation": "2026-04-24",
+    "prenom": "gogo",
+    "nom": "ours",
+    "email": "axou.v@aliceadsl.fr",
+    "telephone": "0233344454",
+    "ville": "paris10",
+    "code": "AMB-GOGO-OUR-002",
+    "statut": "actif",
+    "max_restaurants_test": 5,
+    "notes": ""
   }
 ]
