@@ -56,6 +56,9 @@ function doPost(e) {
       case "save_icon":
         result = saveRestaurantIcon(body);
         break;
+      case "save_ambassadeurs":
+        result = saveAmbassadeursData(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -79,7 +82,8 @@ function doGet(e) {
       var result;
       switch (e.parameter.action) {
         case "push_notification": result = pushNotification(e.parameter); break;
-        case "save_icon":         result = saveRestaurantIcon(e.parameter); break;
+        case "save_icon":          result = saveRestaurantIcon(e.parameter); break;
+        case "get_ambassadeurs":  result = getAmbassadeurs(); break;
         default: result = { error: "Action GET inconnue : " + e.parameter.action };
       }
       return buildResponse(result);
@@ -350,7 +354,7 @@ function pushNotification(params) {
   // ── Segmentation par tag restaurant ─────────────────────────
   //   Tag assigné à l'inscription via progressier.add({ id: email, tags: [resto] })
   //   Format API Progressier : { tags: "le-martin" }
-  var recipients = resto ? { tags: resto } : { users: "all" };
+  var recipients = { users: "all" };
 
   var payload = {
     title:      title,
@@ -490,6 +494,64 @@ function saveRestaurantIcon(params) {
     iconUrl: iconUrl || "(défaut)",
     results: results
   };
+}
+
+// ─── Action 6 : Lire les ambassadeurs (GitHub) ───────────────
+function getAmbassadeurs() {
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré." };
+
+  var url     = "https://api.github.com/repos/" + repo + "/contents/data/ambassadeurs.json?ref=main";
+  var headers = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+  var res     = UrlFetchApp.fetch(url, { headers: headers, muteHttpExceptions: true });
+  var code    = res.getResponseCode();
+
+  if (code === 404) return { ok: true, ambassadeurs: [] };
+  if (code !== 200) return { error: "GitHub API error " + code };
+
+  var data    = JSON.parse(res.getContentText());
+  var content = Utilities.newBlob(Utilities.base64Decode(data.content.replace(/\n/g, ""))).getDataAsString();
+  try { return { ok: true, ambassadeurs: JSON.parse(content) }; }
+  catch(_) { return { ok: true, ambassadeurs: [] }; }
+}
+
+// ─── Action 7 : Sauvegarder les ambassadeurs (GitHub) ────────
+function saveAmbassadeursData(params) {
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré." };
+
+  var ambassadeurs = params.ambassadeurs || [];
+  var filePath     = "data/ambassadeurs.json";
+  var apiUrl       = "https://api.github.com/repos/" + repo + "/contents/" + filePath;
+  var headers      = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+
+  var sha = null;
+  var getRes = UrlFetchApp.fetch(apiUrl + "?ref=main", { headers: headers, muteHttpExceptions: true });
+  if (getRes.getResponseCode() === 200) {
+    sha = JSON.parse(getRes.getContentText()).sha;
+  }
+
+  var content   = JSON.stringify(ambassadeurs, null, 2);
+  var b64       = Utilities.base64Encode(Utilities.newBlob(content).getBytes());
+  var putBody   = { message: "data: mise à jour ambassadeurs", content: b64 };
+  if (sha) putBody.sha = sha;
+
+  var putRes  = UrlFetchApp.fetch(apiUrl, {
+    method:             "put",
+    headers:            { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload:            JSON.stringify(putBody),
+    muteHttpExceptions: true
+  });
+  var putCode = putRes.getResponseCode();
+
+  if (putCode !== 200 && putCode !== 201) {
+    return { error: "Erreur GitHub " + putCode + " : " + putRes.getContentText().substring(0, 200) };
+  }
+  return { ok: true };
 }
 
 // ─── Constructeur de réponse HTTP ────────────────────────────
