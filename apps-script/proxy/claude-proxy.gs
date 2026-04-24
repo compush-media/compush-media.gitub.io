@@ -59,6 +59,9 @@ function doPost(e) {
       case "save_ambassadeurs":
         result = saveAmbassadeursData(body);
         break;
+      case "create_restaurant_for_ambassador":
+        result = createRestaurantForAmbassador(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -84,6 +87,7 @@ function doGet(e) {
         case "push_notification": result = pushNotification(e.parameter); break;
         case "save_icon":          result = saveRestaurantIcon(e.parameter); break;
         case "get_ambassadeurs":  result = getAmbassadeurs(); break;
+        case "get_ambassador":    result = getAmbassadorByToken(e.parameter.token || ""); break;
         default: result = { error: "Action GET inconnue : " + e.parameter.action };
       }
       return buildResponse(result);
@@ -552,6 +556,178 @@ function saveAmbassadeursData(params) {
     return { error: "Erreur GitHub " + putCode + " : " + putRes.getContentText().substring(0, 200) };
   }
   return { ok: true };
+}
+
+// ─── Action 8 : Récupérer un ambassadeur par token ───────────
+function getAmbassadorByToken(token) {
+  if (!token) return { error: "Token manquant." };
+  var data = getAmbassadeurs();
+  if (!data.ok) return { error: data.error || "Impossible de charger les ambassadeurs." };
+  for (var i = 0; i < data.ambassadeurs.length; i++) {
+    if (data.ambassadeurs[i].token === token) {
+      return { ok: true, ambassador: data.ambassadeurs[i] };
+    }
+  }
+  return { error: "Token invalide ou ambassadeur introuvable." };
+}
+
+// ─── Action 9 : Créer un restaurant pour un ambassadeur ──────
+function createRestaurantForAmbassador(params) {
+  var ambToken  = params.amb_token  || "";
+  var name      = params.name       || "";
+  var sl        = params.slug       || "";
+  var color     = params.color      || "#B8924F";
+  var color2    = params.color2     || "#9E7A3E";
+  var email     = params.email      || "";
+  var adminPass = params.adminPass  || "";
+  var phone     = params.phone      || "";
+
+  if (!ambToken || !name || !sl || !adminPass) {
+    return { error: "Paramètres manquants (amb_token, name, slug, adminPass)." };
+  }
+
+  // Vérifier l'ambassadeur
+  var ambData = getAmbassadeurs();
+  if (!ambData.ok) return { error: "Impossible de charger les ambassadeurs." };
+
+  var amb = null;
+  for (var i = 0; i < ambData.ambassadeurs.length; i++) {
+    if (ambData.ambassadeurs[i].token === ambToken) { amb = ambData.ambassadeurs[i]; break; }
+  }
+  if (!amb)                   return { error: "Token ambassadeur invalide." };
+  if (amb.statut !== "actif") return { error: "Compte ambassadeur suspendu ou inactif." };
+
+  var restosCrees = amb.restaurants_crees || [];
+  var maxRestos   = amb.max_restaurants_test || 5;
+  if (restosCrees.length >= maxRestos) {
+    return { error: "Quota maximum atteint (" + maxRestos + " restaurants)." };
+  }
+
+  // GitHub API
+  var ghToken = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo    = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+                || "compush-media/compush-media.gitub.io";
+  if (!ghToken) return { error: "GITHUB_TOKEN non configuré dans le GAS." };
+
+  var ghBase    = "https://api.github.com/repos/" + repo;
+  var ghHeaders = { Authorization: "token " + ghToken, Accept: "application/vnd.github+json", "Content-Type": "application/json" };
+
+  function ghFetch(path, method, body) {
+    var opts = { method: method || "get", headers: ghHeaders, muteHttpExceptions: true };
+    if (body) opts.payload = JSON.stringify(body);
+    var res  = UrlFetchApp.fetch(ghBase + path, opts);
+    var code = res.getResponseCode();
+    if (code >= 300) throw new Error("GitHub " + (method||"GET") + " " + path + " → " + code + " : " + res.getContentText().slice(0,200));
+    return JSON.parse(res.getContentText());
+  }
+
+  try {
+    // Récupérer l'arbre courant
+    var ref      = ghFetch("/git/ref/heads/main");
+    var commitSha = ref.object.sha;
+    var commit   = ghFetch("/git/commits/" + commitSha);
+    var treeSha  = commit.tree.sha;
+    var treeData = ghFetch("/git/trees/" + treeSha + "?recursive=1");
+    var allItems = treeData.tree;
+
+    var templateFiles = allItems.filter(function(f) {
+      return f.type === "blob" && f.path.indexOf("_template/") === 0;
+    });
+    if (!templateFiles.length) throw new Error("Template _template/ introuvable dans le repo.");
+
+    // Vérifier que le slug n'existe pas déjà
+    var slotExists = allItems.some(function(f) { return f.path.indexOf(sl + "/") === 0; });
+    if (slotExists) throw new Error("Le slug /" + sl + "/ existe déjà.");
+
+    // Construire le nouvel arbre
+    var overrides  = [sl+"/config.json", sl+"/progressier.json", sl+"/admin/login.html"];
+    var newItems   = [];
+
+    for (var j = 0; j < templateFiles.length; j++) {
+      var f = templateFiles[j];
+      var newPath = sl + "/" + f.path.slice("_template/".length);
+      if (overrides.indexOf(newPath) === -1) {
+        newItems.push({ path: newPath, mode: f.mode, type: "blob", sha: f.sha });
+      }
+    }
+
+    // Générer config.json
+    var cfg = { name: name, color: color, color2: color2 };
+    if (phone) cfg.phone = phone;
+    if (email) cfg.email = email;
+
+    // Générer progressier.json
+    var manifest = {
+      name: name, short_name: name,
+      start_url: "/" + sl + "/index.html", scope: "/" + sl + "/",
+      display: "standalone", background_color: "#f6efe5",
+      theme_color: color, orientation: "portrait",
+      icons: [
+        { src: "icon-192.png", sizes: "192x192", type: "image/png" },
+        { src: "icon-512.png", sizes: "512x512", type: "image/png" }
+      ]
+    };
+
+    // Patcher login.html avec le mot de passe admin
+    var loginItem = null;
+    for (var k = 0; k < templateFiles.length; k++) {
+      if (templateFiles[k].path === "_template/admin/login.html") { loginItem = templateFiles[k]; break; }
+    }
+    if (!loginItem) throw new Error("login.html introuvable dans _template.");
+    var loginBlob    = ghFetch("/git/blobs/" + loginItem.sha);
+    var loginContent = Utilities.newBlob(Utilities.base64Decode(loginBlob.content.replace(/\n/g,""))).getDataAsString();
+    loginContent = loginContent.replace(/(\{ user: "admin",\s*pass: ")[^"]*(")/g,   "$1" + adminPass + "$2");
+    loginContent = loginContent.replace(/(\{ user: "employe",\s*pass: ")[^"]*(")/g, "$1employe123$2");
+
+    // Mettre à jour data/restaurants.json
+    var restaurantsData = {};
+    for (var m = 0; m < allItems.length; m++) {
+      if (allItems[m].path === "data/restaurants.json") {
+        var rBlob = ghFetch("/git/blobs/" + allItems[m].sha);
+        restaurantsData = JSON.parse(Utilities.newBlob(Utilities.base64Decode(rBlob.content.replace(/\n/g,""))).getDataAsString());
+        break;
+      }
+    }
+    restaurantsData[sl] = { name: name, brandColor: color, brandColor2: color2 };
+    if (phone) restaurantsData[sl].phone = phone;
+    if (email) restaurantsData[sl].email = email;
+    restaurantsData[sl].ambassadorCode = amb.code;
+
+    // Uploader les fichiers générés
+    var toUpload = [
+      { path: sl + "/config.json",      content: JSON.stringify(cfg, null, 2) + "\n" },
+      { path: sl + "/progressier.json", content: JSON.stringify(manifest, null, 2) + "\n" },
+      { path: sl + "/admin/login.html", content: loginContent },
+      { path: "data/restaurants.json",  content: JSON.stringify(restaurantsData, null, 2) + "\n" }
+    ];
+    for (var n = 0; n < toUpload.length; n++) {
+      var blob = ghFetch("/git/blobs", "post", { content: toUpload[n].content, encoding: "utf-8" });
+      newItems.push({ path: toUpload[n].path, mode: "100644", type: "blob", sha: blob.sha });
+    }
+
+    // Créer le nouvel arbre + commit + push
+    var newTree   = ghFetch("/git/trees",   "post", { base_tree: treeSha, tree: newItems });
+    var newCommit = ghFetch("/git/commits", "post", {
+      message: "feat(amb): nouveau restaurant " + sl + " \u2014 " + name + " [via " + amb.code + "]",
+      tree: newTree.sha, parents: [commitSha]
+    });
+    ghFetch("/git/refs/heads/main", "patch", { sha: newCommit.sha, force: false });
+
+    // Mettre à jour l'ambassadeur
+    amb.restaurants_crees = restosCrees.concat([{ slug: sl, name: name, date: new Date().toISOString().slice(0, 10) }]);
+    saveAmbassadeursData({ ambassadeurs: ambData.ambassadeurs });
+
+    return {
+      ok:   true, slug: sl, name: name,
+      urls: {
+        site:  "https://app.cartefidelavis.com/" + sl + "/",
+        admin: "https://app.cartefidelavis.com/" + sl + "/admin/login.html"
+      }
+    };
+
+  } catch(err) {
+    return { error: "Erreur création restaurant : " + err.message };
+  }
 }
 
 // ─── Constructeur de réponse HTTP ────────────────────────────
