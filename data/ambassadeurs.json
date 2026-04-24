@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "id": "amb_modifbiy",
+    "token": "tok_lypx7v325ouyw1qz",
+    "restaurants_crees": [],
+    "date_creation": "2026-04-24",
+    "prenom": "jen",
+    "nom": "Martin",
+    "email": "axou.v@aliceadsl.fr",
+    "telephone": "013445556666",
+    "ville": "Paris12",
+    "code": "AMB-JEN-MAR-001",
+    "statut": "actif",
+    "max_restaurants_test": 5,
+    "notes": "dcccd"
+  }
+]
