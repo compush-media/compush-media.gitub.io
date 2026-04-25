@@ -250,18 +250,16 @@
      pour les restaurants sans stripeCustomerId.
      successUrl → billing.html?stripe_session={SESSION_ID}
   -------------------------------------------------- */
+  // URLs hardcodées — indépendantes du chargement de plans.js
+  var STRIPE_GAS_URL = "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec";
+  var PROXY_URL      = "https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec";
   var PRICE_IDS = {
     essentiel: "price_1TKmIoDpSXl9Whzr8iKy2Dhl",
     pro:       "price_1TKmNtDpSXl9WhzrsMhfAShh",
     setup:     "price_1TKmDvDpSXl9Whzr1VHwlRj5"
   };
-  var PROXY_URL = "https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec";
 
   async function _startSelfSetupCheckout(cfg, btn) {
-    if (!window.STRIPE_CONFIG || !STRIPE_CONFIG.checkoutGasUrl) {
-      _showError("Configuration Stripe manquante.");
-      return;
-    }
     var plan  = cfg.plan  || "essentiel";
     var email = cfg.billingEmail || "";
     var slug  = _getSlug();
@@ -270,7 +268,7 @@
     btn.innerHTML = '<span class="btn-spinner"></span> Préparation…';
 
     try {
-      var res = await fetch(STRIPE_CONFIG.checkoutGasUrl, {
+      var res = await fetch(STRIPE_GAS_URL, {
         method:  "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({
