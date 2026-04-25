@@ -1,4 +1,4 @@
-const CACHE_NAME = "fidelavis-wing-v3";
+const CACHE_NAME = "fidelavis-wing-v4";
 
 const FILES_TO_CACHE = [
   "/wing/",
@@ -41,7 +41,16 @@ self.addEventListener("fetch", (event) => {
   // config.json = TOUJOURS réseau (jamais cache, données billing en temps réel)
   if (url.pathname.endsWith("/config.json")) {
     event.respondWith(
-      fetch(request).catch(() => caches.match(request))
+      fetch(request, { cache: "no-store" }).catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // /assets/ (JS, CSS partagés) = network first, no HTTP cache
+  // → garantit que admin-trial.js, admin-billing.js sont toujours à jour
+  if (url.pathname.startsWith("/assets/")) {
+    event.respondWith(
+      fetch(request, { cache: "no-cache" }).catch(() => caches.match(request))
     );
     return;
   }
@@ -60,7 +69,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static files = cache first
+  // Other static files (icons, images) = cache first
   event.respondWith(
     caches.match(request)
       .then(response => response || fetch(request))
