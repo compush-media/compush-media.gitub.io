@@ -446,8 +446,7 @@ function createCheckoutSession(body) {
 
   // Construire les line_items
   // Modèle : 0€ aujourd'hui — 14 jours d'essai gratuit
-  // Frais d'installation (199€) → InvoiceItem créé par le webhook après checkout
-  //   → facturé automatiquement avec le 1er prélèvement (J+14)
+  // Frais d'installation (199€) → add_invoice_items sur le 1er prélèvement (J+14)
   // Abonnement mensuel → démarre après le trial
   var lineItems = [
     "line_items[0][price]=" + priceId,
@@ -461,10 +460,12 @@ function createCheckoutSession(body) {
     successUrl ? ("success_url=" + encodeURIComponent(successUrl)) : "",
     cancelUrl  ? ("cancel_url="  + encodeURIComponent(cancelUrl))  : "",
     email      ? ("customer_email=" + encodeURIComponent(email))   : "",
-    "metadata[planId]="     + encodeURIComponent(planId),
+    "metadata[planId]="    + encodeURIComponent(planId),
     "metadata[source]=fidelavis-web",
-    // Passer setupPriceId en metadata → webhook crée l'InvoiceItem
-    setupPriceId ? ("metadata[setupPriceId]=" + encodeURIComponent(setupPriceId)) : "",
+    // Frais d'installation : ajouté comme invoice item sur la 1ère facture (après trial)
+    // Aucun webhook nécessaire — Stripe l'inclut automatiquement au 1er prélèvement
+    setupPriceId ? ("subscription_data[add_invoice_items][0][price]="    + encodeURIComponent(setupPriceId)) : "",
+    setupPriceId ? "subscription_data[add_invoice_items][0][quantity]=1" : "",
     "allow_promotion_codes=true",
     "billing_address_collection=auto",
     "subscription_data[trial_period_days]=14",
