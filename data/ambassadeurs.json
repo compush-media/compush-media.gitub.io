@@ -2,7 +2,13 @@
   {
     "id": "amb_modifbiy",
     "token": "tok_lypx7v325ouyw1qz",
-    "restaurants_crees": [],
+    "restaurants_crees": [
+      {
+        "slug": "green",
+        "name": "green",
+        "date": "2026-04-25"
+      }
+    ],
     "date_creation": "2026-04-24",
     "prenom": "jen",
     "nom": "Martin",
