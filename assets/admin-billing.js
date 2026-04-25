@@ -51,12 +51,12 @@
 
     container.innerHTML = _buildBillingHTML(cfg);
 
-    // Attacher le bouton portail
+    // Attacher le bouton portail uniquement si stripeCustomerId présent
     var portalBtn = container.querySelector("#manageSubBtn");
-    if (portalBtn && window.FidelavisBilling) {
+    if (portalBtn && window.FidelavisBilling && cfg.stripeCustomerId) {
       portalBtn.addEventListener("click", function() {
         FidelavisBilling.openPortal({
-          stripeCustomerId: cfg.stripeCustomerId || "",
+          stripeCustomerId: cfg.stripeCustomerId,
           button: portalBtn
         });
       });
@@ -150,9 +150,12 @@
         (status === "canceled") ?
           '<div class="billing-alert red">❌ Abonnement résilié. Contactez-nous pour réactiver.</div>' : "",
 
-        '<button id="manageSubBtn" class="billing-btn">',
-          isTrialing ? '❌ Annuler l\'essai gratuit' : '⚙️ Gérer mon abonnement',
-        '</button>',
+        // Bouton selon disponibilité du compte Stripe
+        (isTrialing || cfg.stripeCustomerId)
+          ? '<button id="manageSubBtn" class="billing-btn">' +
+              (isTrialing ? '❌ Annuler l\'essai gratuit' : '⚙️ Gérer mon abonnement') +
+            '</button>'
+          : '<a href="mailto:support@fidelavis.com?subject=Gestion abonnement" class="billing-btn" style="text-decoration:none;display:inline-flex">✉️ Contacter le support</a>',
       '</div>',
 
       // ── FACTURES ────────────────────────────────────

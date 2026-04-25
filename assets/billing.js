@@ -102,6 +102,7 @@
     try {
       var customerId = options.stripeCustomerId || _getCustomerIdFromConfig();
       if (!customerId) {
+        if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
         _showError("Aucun compte Stripe trouvé. Contactez support@fidelavis.com");
         return;
       }
