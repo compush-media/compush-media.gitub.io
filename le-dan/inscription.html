@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Activer -10% — Fidelavis</title>
+
+  <!-- ✅ Core commun -->
+  <script src="../assets/core.js"></script>
+  <!-- ✅ Manifest + Progressier (push notifications) -->
+  <link rel="manifest" href="progressier.json"/>
+  <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+  <script>(function(){var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';var c=s?localStorage.getItem('fv_brand_'+s):null;if(c)document.documentElement.style.setProperty('--gold',c);if(!s)return;fetch('/'+s+'/config.json').then(function(r){return r.json();}).then(function(d){var col=d&&d.color;if(!col)return;document.documentElement.style.setProperty('--gold',col);try{localStorage.setItem('fv_brand_'+s,col);}catch(_){}}).catch(function(){});})();</script>
+
+  <!-- ✅ trackEventFidelavis fourni par core.js (chargé avant ce script) — pas de redéfinition locale -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --gold:#b8924f;
+      --line:rgba(0,0,0,.08);
+      --shadow:0 16px 34px rgba(0,0,0,.10);
+      --radius:18px;
+      --bg1:#f7f0e8;
+      --bg2:#f4eadf;
+      --ok:#1f8a4c;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 100%);
+      color:#1d1d1d;
+      padding:10px 12px calc(70px + env(safe-area-inset-bottom));
+      text-align:center;
+    }
+    .wrap{max-width:460px;margin:0 auto;}
+
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 12px;border-radius:999px;
+      background:#fff;border:1px solid var(--line);
+      font-weight:900;font-size:12px;
+      margin:0 0 6px;
+    }
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+    h1{
+      margin:0 0 6px;
+      font-size:22px;
+      line-height:1.10;
+      font-weight:950;
+      letter-spacing:-0.35px;
+    }
+    .micro{
+      margin:0 0 10px;
+      font-size:13px;
+      font-weight:900;
+      color:#2b2b2b;
+      opacity:.88;
+    }
+
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:10px;
+      text-align:left;
+    }
+    /* ── Formulaire Brevo ── */
+    .bv-field { margin-bottom:16px; }
+    .bv-label {
+      display:block;font-size:12px;font-weight:800;
+      color:#555;margin-bottom:6px;letter-spacing:.2px;
+    }
+    .bv-input {
+      width:100%;padding:13px 14px;
+      border:1.5px solid var(--line);border-radius:12px;
+      font-size:15px;font-family:inherit;background:#faf8f5;color:#1d1d1d;
+      transition:border-color .15s,box-shadow .15s;
+    }
+    .bv-input:focus {
+      outline:none;border-color:var(--gold);
+      box-shadow:0 0 0 3px rgba(184,146,79,.12);background:#fff;
+    }
+    .bv-btn {
+      width:100%;padding:15px;border:none;border-radius:14px;
+      background:linear-gradient(135deg,var(--gold),#9c7c43);
+      color:#fff;font-size:15px;font-weight:900;font-family:inherit;
+      cursor:pointer;margin-top:4px;
+      transition:opacity .15s,transform .1s;
+      box-shadow:0 6px 18px rgba(184,146,79,.35);
+    }
+    .bv-btn:hover  { opacity:.88; }
+    .bv-btn:active { transform:scale(.98); }
+    .bv-btn:disabled { opacity:.5;cursor:not-allowed;transform:none; }
+    .bv-privacy {
+      font-size:11px;color:#888;text-align:center;
+      margin-top:12px;font-weight:600;line-height:1.5;
+    }
+    .bv-loading {
+      text-align:center;padding:32px 16px;
+      color:#999;font-size:13px;font-weight:700;
+    }
+    .bv-error {
+      display:none;background:rgba(192,57,43,.07);
+      border:1px solid rgba(192,57,43,.25);border-radius:10px;
+      padding:10px 14px;font-size:13px;color:#c0392b;
+      margin-top:12px;text-align:center;
+    }
+
+    .sticky{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+      background:linear-gradient(180deg, rgba(247,240,232,0) 0%, rgba(247,240,232,.92) 30%, rgba(247,240,232,.98) 100%);
+      backdrop-filter: blur(10px);
+      z-index:999;
+    }
+    .stickyInner{
+      max-width:460px;
+      margin:0 auto;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      align-items:center;
+    }
+    .btnLink{
+      flex:1 1 0;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:950;font-size:13px;
+      color:#2b2b2b;
+      text-decoration:none;
+      box-shadow:0 10px 22px rgba(0,0,0,.06);
+    }
+  </style>
+
+  <!-- ✅ Détection retour après soumission (paramètre URL ?submitted=1 conservé pour compatibilité) -->
+  <script>
+  (function(){
+    const params = new URLSearchParams(location.search);
+    if (params.get("submitted") !== "1") return;
+
+    const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+    const now = Date.now();
+
+    try{
+      localStorage.setItem("is_registered", "1");
+      localStorage.setItem("fv_onboarding_done", "1");
+      localStorage.setItem(`fv_registered_${RESTO}`, "1");
+      localStorage.setItem(`fv_registered_at_${RESTO}`, String(now));
+    }catch(e){}
+
+    // ✅ Cookie de persistance pour PWA standalone iOS (localStorage isolé de Safari)
+    window.Fidelavis?.setAuthCookie?.();
+
+    const dedupKey = `signup_${RESTO}`;
+    const last = Number(localStorage.getItem(dedupKey) || "0");
+
+    if (!last || (now - last) > 86400000) {
+      try { localStorage.setItem(dedupKey, String(now)); } catch(e){}
+
+      try {
+        window.Fidelavis?.track?.("signup", {
+          src: "ghl_redirect_inscription",
+          page: "inscription",
+          resto: RESTO
+        });
+      } catch(e){}
+
+      try {
+        window.trackEventFidelavis?.("form_submit", RESTO, {
+          src: "ghl_redirect_inscription",
+          demo: location.pathname.includes("/demo/") ? "1" : "0"
+        });
+      } catch(e){}
+    }
+
+    params.delete("submitted");
+    const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
+    try { history.replaceState({}, document.title, clean); } catch(e){}
+
+    setTimeout(() => window.location.replace("redit.html"), 220);
+  })();
+  </script>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="badge"><span class="dot"></span>Dernière étape</div>
+    <h1>🎁 Où devons-nous envoyer votre -10% ?</h1>
+    <p class="micro">⚡ 10 secondes • 🎁 Gratuit • 🔒 Anti-spam</p>
+
+    <div class="card" id="card">
+      <!-- ✅ Formulaire Brevo (remplace l'iframe GHL) -->
+      <div id="brevoLoading" class="bv-loading">Chargement…</div>
+
+      <form id="brevoForm" style="display:none;padding:4px 0" onsubmit="submitBrevoForm(event)" novalidate>
+        <div class="bv-field">
+          <label class="bv-label" for="bvPrenom">Prénom</label>
+          <input class="bv-input" type="text" id="bvPrenom"
+            placeholder="Votre prénom" autocomplete="given-name" />
+        </div>
+        <div class="bv-field">
+          <label class="bv-label" for="bvEmail">Email *</label>
+          <input class="bv-input" type="email" id="bvEmail"
+            placeholder="votre@email.com" required autocomplete="email" />
+        </div>
+        <button class="bv-btn" type="submit" id="bvSubmitBtn">
+          🎁 Activer ma réduction -10%
+        </button>
+        <div class="bv-privacy">
+          🔒 Anti-spam · Données non partagées · Résiliable à tout moment
+        </div>
+        <div class="bv-error" id="bvError"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="sticky">
+    <div class="stickyInner">
+      <a class="btnLink" id="ppBtn" href="/privacy.html">🔐 Confidentialité</a>
+      <a class="btnLink" id="cguBtn" href="/cgu.html">📄 CGU</a>
+    </div>
+  </div>
+
+  <script>
+  var _brevoConfig = null; // accessible par submitBrevoForm (hors IIFE)
+  (function(){
+    const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+
+    try {
+      if (!sessionStorage.getItem("fv_session_id")) {
+        sessionStorage.setItem("fv_session_id", "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2,8));
+      }
+    } catch(e){}
+
+    try {
+      if (!localStorage.getItem("device_id")) {
+        localStorage.setItem("device_id", "dev_" + Math.random().toString(36).slice(2,10));
+      }
+    } catch(e){}
+
+    try{
+      const key = `scan_to_signup_${RESTO}_${new Date().toISOString().slice(0,10)}`;
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
+        // ✅ Un seul appel — core.js gère un iframe unique par envoi
+        window.Fidelavis?.track?.("scan_to_signup", {
+          src: "inscription",
+          page: "inscription",
+          resto: RESTO
+        });
+      }
+    }catch(e){}
+
+    const from = encodeURIComponent(location.pathname);
+    document.getElementById("ppBtn").href  = "/privacy.html?from=" + from;
+    document.getElementById("cguBtn").href = "/cgu.html?from=" + from;
+
+    // ─── Formulaire Brevo ────────────────────────────────────
+    // _brevoConfig déclaré globalement avant l'IIFE
+    // Charge config.json pour lire brevoListId et brevoGasUrl
+    (async function initBrevoForm() {
+      try {
+        const res = await fetch("/" + RESTO + "/config.json", { cache: "no-store" });
+        if (res.ok) _brevoConfig = await res.json();
+      } catch(_) {}
+      document.getElementById("brevoLoading").style.display = "none";
+      document.getElementById("brevoForm").style.display = "block";
+    })();
+    // ────────────────────────────────────────────────────────
+  })();
+  </script>
+
+  <!-- ✅ Soumission formulaire Brevo -->
+  <script>
+  function submitBrevoForm(e) {
+    e.preventDefault();
+    const email  = document.getElementById("bvEmail").value.trim();
+    const prenom = document.getElementById("bvPrenom").value.trim();
+    const errDiv = document.getElementById("bvError");
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errDiv.style.display = "block";
+      errDiv.textContent   = "Veuillez saisir un email valide.";
+      return;
+    }
+    errDiv.style.display = "none";
+
+    const btn = document.getElementById("bvSubmitBtn");
+    btn.disabled    = true;
+    btn.textContent = "Inscription en cours…";
+
+    const RESTO   = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+    const listId  = _brevoConfig?.brevoListId  || 0;
+    const gasUrl  = _brevoConfig?.brevoGasUrl  || "";
+    const now     = Date.now();
+
+    // ── Envoi vers Brevo via GAS (fire-and-forget) ──
+    // Utilise sendBeacon avec URLSearchParams pour éviter CORS preflight
+    if (gasUrl && listId) {
+      try {
+        const sp = new URLSearchParams();
+        sp.append("data", JSON.stringify({
+          action:    "subscribe",
+          email:     email,
+          firstName: prenom,
+          listId:    listId,
+          resto:     RESTO
+        }));
+        navigator.sendBeacon(gasUrl, sp);
+      } catch(_) {}
+    }
+
+    // ── Persistance localStorage (même logique qu'avec GHL) ──
+    try {
+      localStorage.setItem("is_registered",              "1");
+      localStorage.setItem("fv_onboarding_done",         "1");
+      localStorage.setItem("fv_registered_"    + RESTO,  "1");
+      localStorage.setItem("fv_registered_at_" + RESTO,  String(now));
+      if (email) localStorage.setItem("user_email", email);
+    } catch(_) {}
+
+    // Cookie PWA iOS standalone (localStorage isolé de Safari)
+    window.Fidelavis?.setAuthCookie?.();
+
+    // ── Tracking ──
+    const dedupKey = "signup_brevo_" + RESTO;
+    const last     = Number(localStorage.getItem(dedupKey) || "0");
+    if (!last || (now - last) > 86400000) {
+      try { localStorage.setItem(dedupKey, String(now)); } catch(_) {}
+      try {
+        window.Fidelavis?.track?.("signup", {
+          src:   "brevo_form",
+          page:  "inscription",
+          resto: RESTO
+        });
+      } catch(_) {}
+    }
+
+    // ── Redirection vers merci ──
+    setTimeout(() => window.location.replace("redit.html"), 400);
+  }
+  </script>
+
+</body>
+</html>
