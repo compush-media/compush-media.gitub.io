@@ -222,7 +222,8 @@
     var slug = _getSlug();
     if (!slug) return;
 
-    fetch("/" + slug + "/config.json", { cache: "no-store" })
+    // Cache-buster pour bypass le service worker (cache-first sur config.json)
+    fetch("/" + slug + "/config.json?t=" + Date.now(), { cache: "no-store" })
       .then(function(r) { return r.json(); })
       .then(function(cfg) {
         if (_isExpired(cfg)) _showModal(cfg);

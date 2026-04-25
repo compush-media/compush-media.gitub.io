@@ -1,12 +1,11 @@
-const CACHE_NAME = "fidelavis-resto1-v2";
+const CACHE_NAME = "fidelavis-resto1-v3";
 
 const FILES_TO_CACHE = [
   "/resto1/",
   "/resto1/index.html",
   "/resto1/indexnfc.html",
   "/resto1/inscription.html",
-  "/resto1/redit.html",
-  "/resto1/config.json"
+  "/resto1/redit.html"
 ];
 
 // INSTALL
@@ -34,9 +33,18 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// FETCH (network first for HTML, cache first for assets)
+// FETCH
 self.addEventListener("fetch", (event) => {
   const request = event.request;
+  const url     = new URL(request.url);
+
+  // config.json = TOUJOURS réseau (jamais cache, données billing en temps réel)
+  if (url.pathname.endsWith("/config.json")) {
+    event.respondWith(
+      fetch(request).catch(() => caches.match(request))
+    );
+    return;
+  }
 
   // HTML = network first
   if (request.headers.get("accept")?.includes("text/html")) {

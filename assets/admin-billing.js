@@ -15,7 +15,8 @@
   async function loadBillingConfig() {
     var slug = _getSlug();
     try {
-      var res = await fetch("/" + slug + "/config.json", { cache: "no-store" });
+      // Cache-buster pour bypass le service worker (cache-first sur config.json)
+      var res = await fetch("/" + slug + "/config.json?t=" + Date.now(), { cache: "no-store" });
       if (!res.ok) throw new Error("config.json introuvable");
       var cfg = await res.json();
 
