@@ -833,6 +833,253 @@ function updateRestaurantBilling(params) {
   return { ok: true, slug: slug, plan: plan, status: status, nextBillingDate: nextBillingDate };
 }
 
+// ─── Action 11 : Rappels automatiques fin d'essai ────────────
+//
+//  Fonction à déclencher quotidiennement via un trigger GAS.
+//  Scanne tous les restaurants → envoie un email de rappel selon
+//  le nombre de jours restants avant la fin de l'essai gratuit.
+//
+//  Calendrier des rappels :
+//    J-7 → "Plus qu'une semaine"
+//    J-3 → "Plus que 3 jours"
+//    J-1 → "Demain : fin de l'essai"
+//    J-0 → "Dernière chance"
+//    J+1 → "Votre essai est terminé"
+//
+//  Pour configurer le trigger :
+//    Apps Script → Déclencheurs → + Ajouter un déclencheur
+//    Fonction : _sendTrialReminders
+//    Source : Time-driven (Horaire)
+//    Fréquence : Daily timer (Tous les jours)
+//    Heure : ~9h-10h
+//
+function _sendTrialReminders() {
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) {
+    Logger.log("_sendTrialReminders: GITHUB_TOKEN manquant");
+    return;
+  }
+
+  // 1. Lire data/restaurants.json
+  var listUrl = "https://api.github.com/repos/" + repo + "/contents/data/restaurants.json?ref=main";
+  var headers = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+  var listRes = UrlFetchApp.fetch(listUrl, { headers: headers, muteHttpExceptions: true });
+  if (listRes.getResponseCode() !== 200) {
+    Logger.log("_sendTrialReminders: Impossible de lire restaurants.json (" + listRes.getResponseCode() + ")");
+    return;
+  }
+  var listData;
+  try {
+    var rawJson = Utilities.newBlob(Utilities.base64Decode(JSON.parse(listRes.getContentText()).content.replace(/\n/g, ""))).getDataAsString();
+    listData = JSON.parse(rawJson);
+  } catch(e) {
+    Logger.log("_sendTrialReminders: Parse error " + e.message);
+    return;
+  }
+
+  var slugs = Object.keys(listData);
+  var today = new Date();
+  // Normaliser à minuit pour calcul de jours stable
+  today.setHours(0, 0, 0, 0);
+
+  var sent = 0;
+  var skipped = 0;
+
+  for (var i = 0; i < slugs.length; i++) {
+    var slug = slugs[i];
+    try {
+      // 2. Lire /{slug}/config.json
+      var cfgUrl = "https://api.github.com/repos/" + repo + "/contents/" + slug + "/config.json?ref=main";
+      var cfgRes = UrlFetchApp.fetch(cfgUrl, { headers: headers, muteHttpExceptions: true });
+      if (cfgRes.getResponseCode() !== 200) { skipped++; continue; }
+
+      var cfgFile = JSON.parse(cfgRes.getContentText());
+      var cfgSha  = cfgFile.sha;
+      var cfg;
+      try {
+        cfg = JSON.parse(Utilities.newBlob(Utilities.base64Decode(cfgFile.content.replace(/\n/g, ""))).getDataAsString());
+      } catch(e) { skipped++; continue; }
+
+      // 3. Filtrer : seulement les essais en cours avec email + date
+      if (cfg.subscriptionStatus !== "trialing") { skipped++; continue; }
+      if (!cfg.trialEndDate)                     { skipped++; continue; }
+      if (!cfg.billingEmail && !cfg.email)       { skipped++; continue; }
+
+      // 4. Calculer le nombre de jours restants
+      var trialEnd = new Date(cfg.trialEndDate);
+      trialEnd.setHours(0, 0, 0, 0);
+      var daysLeft = Math.round((trialEnd - today) / 86400000);
+
+      // 5. Déterminer quel rappel envoyer (un seul par jour de référence)
+      var reminderKey = null;
+      if      (daysLeft === 7)  reminderKey = "j-7";
+      else if (daysLeft === 3)  reminderKey = "j-3";
+      else if (daysLeft === 1)  reminderKey = "j-1";
+      else if (daysLeft === 0)  reminderKey = "j-0";
+      else if (daysLeft === -1) reminderKey = "j+1";
+
+      if (!reminderKey) { skipped++; continue; }
+
+      // 6. Vérifier qu'il n'a pas déjà été envoyé
+      var remindersSent = cfg.remindersSent || [];
+      if (remindersSent.indexOf(reminderKey) !== -1) { skipped++; continue; }
+
+      // 7. Envoyer l'email
+      var to     = cfg.billingEmail || cfg.email;
+      var name   = cfg.name || slug;
+      _sendReminderEmail(to, name, slug, reminderKey, daysLeft);
+
+      // 8. Marquer comme envoyé dans config.json
+      remindersSent.push(reminderKey);
+      cfg.remindersSent = remindersSent;
+      _saveConfigJson(token, repo, slug, cfg, cfgSha, "billing: rappel " + reminderKey + " envoyé");
+
+      sent++;
+      Logger.log("_sendTrialReminders: " + slug + " → " + to + " (" + reminderKey + ", J" + (daysLeft >= 0 ? "-" + daysLeft : "+" + (-daysLeft)) + ")");
+    } catch(err) {
+      Logger.log("_sendTrialReminders error pour " + slug + " : " + err.message);
+    }
+  }
+
+  Logger.log("_sendTrialReminders terminé : " + sent + " envoyés, " + skipped + " ignorés sur " + slugs.length + " restaurants.");
+  return { ok: true, sent: sent, skipped: skipped, total: slugs.length };
+}
+
+/**
+ * _sendReminderEmail(to, restoName, slug, reminderKey, daysLeft)
+ * Envoie un email de rappel selon le code (j-7, j-3, j-1, j-0, j+1).
+ */
+function _sendReminderEmail(to, restoName, slug, reminderKey, daysLeft) {
+  var siteUrl    = "https://app.cartefidelavis.com";
+  var billingUrl = siteUrl + "/" + slug + "/admin/billing.html";
+  var loginUrl   = siteUrl + "/" + slug + "/admin/login.html";
+
+  var subject, intro, urgency, cta;
+
+  switch (reminderKey) {
+    case "j-7":
+      subject = "🎁 Plus qu'une semaine d'essai gratuit chez Fidelavis";
+      intro   = "Bonjour,\n\nIl vous reste encore 7 jours pour profiter gratuitement de Fidelavis chez " + restoName + ".";
+      urgency = "Pour continuer après l'essai, choisissez votre formule dès maintenant — votre carte ne sera prélevée qu'à la fin de l'essai.";
+      cta     = "Choisir mon abonnement →";
+      break;
+    case "j-3":
+      subject = "⏰ Plus que 3 jours d'essai gratuit chez " + restoName;
+      intro   = "Bonjour,\n\nVotre essai gratuit de Fidelavis se termine dans 3 jours.";
+      urgency = "Pour ne pas perdre l'accès à votre tableau de bord, votre carte fidélité NFC et vos avis Google, configurez votre abonnement avant la fin de l'essai.";
+      cta     = "S'abonner maintenant →";
+      break;
+    case "j-1":
+      subject = "📅 Demain : fin de votre essai Fidelavis";
+      intro   = "Bonjour,\n\nVotre essai gratuit de Fidelavis pour " + restoName + " se termine DEMAIN.";
+      urgency = "Pour continuer à utiliser Fidelavis sans interruption, abonnez-vous dès aujourd'hui. Aucun prélèvement avant la fin de l'essai — vous restez gratuit jusqu'au bout.";
+      cta     = "S'abonner avant demain →";
+      break;
+    case "j-0":
+      subject = "🚨 Dernière chance — votre essai Fidelavis expire aujourd'hui";
+      intro   = "Bonjour,\n\nVotre essai gratuit de Fidelavis pour " + restoName + " se termine AUJOURD'HUI.";
+      urgency = "Sans abonnement, votre accès sera bloqué dès demain. Choisissez votre formule en quelques clics.";
+      cta     = "S'abonner maintenant →";
+      break;
+    case "j+1":
+      subject = "Votre essai Fidelavis est terminé — réactivez votre compte";
+      intro   = "Bonjour,\n\nVotre essai gratuit de Fidelavis pour " + restoName + " s'est terminé hier.";
+      urgency = "Votre tableau de bord affiche maintenant un message d'invitation à l'abonnement. Choisissez votre formule pour réactiver l'accès complet.";
+      cta     = "Réactiver mon compte →";
+      break;
+  }
+
+  var body = [
+    intro,
+    "",
+    urgency,
+    "",
+    "─────────────────────────────",
+    "VOS FORMULES",
+    "─────────────────────────────",
+    "",
+    "🟢 ESSENTIEL — 97 €/mois",
+    "   • NFC fidélité illimité",
+    "   • Collecte avis Google",
+    "   • Tableau de bord",
+    "   • Notifications push",
+    "",
+    "⭐ PRO — 149 €/mois (Recommandé)",
+    "   • Tout Essentiel +",
+    "   • IA réponse aux avis Google",
+    "   • Offre du jour",
+    "   • Réservations en ligne",
+    "",
+    "+ 199 € installation (sur la 1ère facture uniquement)",
+    "",
+    "─────────────────────────────",
+    "",
+    "👉 " + cta,
+    billingUrl,
+    "",
+    "Connexion à votre espace : " + loginUrl,
+    "",
+    "Une question ? Répondez à cet email ou contactez support@fidelavis.com",
+    "",
+    "L'équipe Fidelavis"
+  ].join("\n");
+
+  _sendEmailFromProxy(to, subject, body);
+}
+
+/**
+ * _sendEmailFromProxy(to, subject, body)
+ * Envoie via Brevo (BREVO_API_KEY) avec fallback MailApp.
+ */
+function _sendEmailFromProxy(to, subject, body) {
+  if (!to) return;
+  var apiKey = PropertiesService.getScriptProperties().getProperty("BREVO_API_KEY");
+  if (apiKey) {
+    try {
+      UrlFetchApp.fetch("https://api.brevo.com/v3/smtp/email", {
+        method:             "post",
+        headers:            { "api-key": apiKey, "Content-Type": "application/json" },
+        payload:            JSON.stringify({
+          sender:      { name: "Fidelavis", email: "support@fidelavis.com" },
+          to:          [{ email: to }],
+          subject:     subject,
+          textContent: body
+        }),
+        muteHttpExceptions: true
+      });
+      return;
+    } catch(e) {
+      Logger.log("_sendEmailFromProxy Brevo error: " + e.message);
+    }
+  }
+  // Fallback : MailApp (envoie depuis l'email du compte Google)
+  try {
+    MailApp.sendEmail(to, subject, body);
+  } catch(e) {
+    Logger.log("_sendEmailFromProxy MailApp error: " + e.message);
+  }
+}
+
+/**
+ * _saveConfigJson(token, repo, slug, cfg, sha, message)
+ * Réécrit /{slug}/config.json sur GitHub avec le nouveau contenu.
+ */
+function _saveConfigJson(token, repo, slug, cfg, sha, message) {
+  var apiUrl  = "https://api.github.com/repos/" + repo + "/contents/" + slug + "/config.json";
+  var b64     = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(cfg, null, 2) + "\n").getBytes());
+  var payload = { message: message, content: b64, branch: "main" };
+  if (sha) payload.sha = sha;
+
+  UrlFetchApp.fetch(apiUrl, {
+    method:             "put",
+    headers:            { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload:            JSON.stringify(payload),
+    muteHttpExceptions: true
+  });
+}
+
 // ─── Constructeur de réponse HTTP ────────────────────────────
 function buildResponse(data) {
   return ContentService
