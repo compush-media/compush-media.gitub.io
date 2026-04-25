@@ -654,8 +654,27 @@ function createRestaurantForAmbassador(params) {
       }
     }
 
-    // Générer config.json
-    var cfg = { name: name, color: color, color2: color2 };
+    // Calculer trialEndDate = aujourd'hui + 14 jours
+    var trialEndD = new Date();
+    trialEndD.setDate(trialEndD.getDate() + 14);
+    var trialEndStr = trialEndD.toISOString().slice(0, 10);
+
+    // Générer config.json avec champs billing (essai 14j)
+    var cfg = {
+      name:   name,
+      color:  color,
+      color2: color2,
+      // Billing — essai gratuit 14 jours
+      plan:                 "essentiel",
+      subscriptionStatus:   "trialing",
+      trialEndDate:         trialEndStr,
+      setupPaid:            false,
+      billingEmail:         email || "",
+      stripeCustomerId:     "",
+      stripeSubscriptionId: "",
+      nextBillingDate:      "",
+      invoices:             []
+    };
     if (phone) cfg.phone = phone;
     if (email) cfg.email = email;
 
@@ -751,6 +770,7 @@ function updateRestaurantBilling(params) {
   var status               = (params.status               || "active").trim();
   var stripeCustomerId     = (params.stripeCustomerId     || "").trim();
   var stripeSubscriptionId = (params.stripeSubscriptionId || "").trim();
+  var trialEndDate         = (params.trialEndDate         || "").trim();
 
   if (!slug) return { error: "Paramètre slug manquant." };
 
@@ -790,6 +810,7 @@ function updateRestaurantBilling(params) {
   if (email)                existing.billingEmail         = email;
   if (stripeCustomerId)     existing.stripeCustomerId     = stripeCustomerId;
   if (stripeSubscriptionId) existing.stripeSubscriptionId = stripeSubscriptionId;
+  if (trialEndDate)         existing.trialEndDate         = trialEndDate;
 
   var newContent = JSON.stringify(existing, null, 2) + "\n";
   var b64        = Utilities.base64Encode(Utilities.newBlob(newContent).getBytes());

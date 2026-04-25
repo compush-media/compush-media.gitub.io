@@ -341,8 +341,12 @@
 
     try {
       // Charger la config pour récupérer plan et email
-      var cfg  = await loadBillingConfig() || {};
-      var plan = cfg.plan || "essentiel";
+      var cfg = await loadBillingConfig() || {};
+
+      // chosen_plan dans l'URL = plan choisi depuis le popup d'expiration (admin-trial.js)
+      // Priorité : URL param > config.json > défaut essentiel
+      var chosenPlan = new URLSearchParams(window.location.search).get("chosen_plan");
+      var plan = chosenPlan || cfg.plan || "essentiel";
 
       // 1. Créer l'abonnement via GAS (trial 14j + 199€ invoice item sur 1ère facture)
       var finalRes = await fetch(STRIPE_GAS_URL, {
@@ -354,13 +358,19 @@
           planId:        plan,
           priceId:       PRICE_IDS[plan] || PRICE_IDS.essentiel,
           setupPriceId:  PRICE_IDS.setup,
-          email:         cfg.billingEmail || ""
+          email:         cfg.billingEmail || cfg.email || ""
         })
       });
       var result = await finalRes.json();
       if (result.error) throw new Error(result.error);
 
       // 2. Sauvegarder dans config.json
+      //    trialEnd (Unix timestamp de Stripe) → date ISO pour config.json
+      var trialEndDate = "";
+      if (result.trialEnd) {
+        trialEndDate = new Date(result.trialEnd * 1000).toISOString().slice(0, 10);
+      }
+
       var saveRes = await fetch(PROXY_URL, {
         method:  "POST",
         headers: { "Content-Type": "text/plain" },
@@ -370,15 +380,19 @@
           stripeCustomerId:     result.customerId     || "",
           stripeSubscriptionId: result.subscriptionId || "",
           plan:                 plan,
-          status:               result.status || "trialing"
+          status:               result.status || "trialing",
+          trialEndDate:         trialEndDate
         })
       });
       var saveData = await saveRes.json();
       if (!saveData.ok) throw new Error(saveData.error || "Erreur sauvegarde config");
 
-      // 3. Nettoyer l'URL et recharger
-      window.history.replaceState({}, "", window.location.pathname);
-      window.location.reload();
+      // 3. Nettoyer l'URL et recharger → espace-admin ou billing
+      var returnTo = chosenPlan
+        ? (window.location.origin + "/" + slug + "/admin/espace-admin.html")
+        : window.location.pathname;
+      window.history.replaceState({}, "", returnTo);
+      window.location.href = returnTo;
 
     } catch(e) {
       container.innerHTML =
