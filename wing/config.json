@@ -7,8 +7,8 @@
   "trialEndDate": "2026-05-09",
   "setupPaid": false,
   "billingEmail": "louneaaline@gmail.com",
-  "stripeCustomerId": "cus_UP2dHQVOqom5Sb",
-  "stripeSubscriptionId": "sub_1TQEXtDpSXl9WhzrxWEn5Eu7",
+  "stripeCustomerId": "cus_UP2d5jrEnHuCJ5",
+  "stripeSubscriptionId": "sub_1TQEYKDpSXl9Whzr8kJPlCfQ",
   "nextBillingDate": "2026-05-25",
   "invoices": [],
   "email": "louneaaline@gmail.com"
