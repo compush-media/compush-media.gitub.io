@@ -40,15 +40,17 @@
     var container = document.getElementById(containerId);
     if (!container) return;
 
-    // ── Retour depuis Stripe Setup (setup_intent=xxx dans l'URL) ──
-    // On accepte tous les redirect_status — la validation se fait côté GAS
-    // (qui vérifie payment_method sur le SetupIntent).
+    // ── Retour depuis Stripe Setup (setup_intent OU session_id dans l'URL) ──
+    // En mode=setup, Stripe NE renvoie PAS setup_intent automatiquement —
+    // il faut utiliser le template {CHECKOUT_SESSION_ID} dans le successUrl
+    // et récupérer le setup_intent côté GAS via la session.
     var _urlParams     = new URLSearchParams(window.location.search);
     var setupIntentId  = _urlParams.get("setup_intent");
+    var sessionId      = _urlParams.get("session_id");
     var redirectStatus = _urlParams.get("redirect_status") || "";
-    if (setupIntentId) {
-      console.log("[Fidelavis] Stripe return — setup_intent=" + setupIntentId + " status=" + redirectStatus);
-      await _handleSetupReturn(containerId, setupIntentId);
+    if (setupIntentId || sessionId) {
+      console.log("[Fidelavis] Stripe return — setup_intent=" + setupIntentId + " session_id=" + sessionId + " status=" + redirectStatus);
+      await _handleSetupReturn(containerId, setupIntentId, sessionId);
       return;
     }
 
@@ -305,8 +307,8 @@
         body: JSON.stringify({
           action:     "createSetupSession",
           email:      email,
-          // Stripe ajoute automatiquement ?setup_intent=xxx&redirect_status=succeeded
-          successUrl: window.location.origin + "/" + slug + "/admin/billing.html",
+          // {CHECKOUT_SESSION_ID} sera remplacé par Stripe avec l'ID de session
+          successUrl: window.location.origin + "/" + slug + "/admin/billing.html?session_id={CHECKOUT_SESSION_ID}",
           cancelUrl:  window.location.href,
           metadata: {
             planId:       plan,
@@ -332,7 +334,7 @@
      Finalise l'abonnement via GAS (add_invoice_items → 199€ à J+14),
      puis sauvegarde customerId + subscriptionId dans config.json.
   -------------------------------------------------- */
-  async function _handleSetupReturn(containerId, setupIntentId) {
+  async function _handleSetupReturn(containerId, setupIntentId, sessionId) {
     var container = document.getElementById(containerId);
     if (!container) return;
     var slug = _getSlug();
@@ -352,12 +354,14 @@
       var plan = chosenPlan || cfg.plan || "essentiel";
 
       // 1. Créer l'abonnement via GAS (trial 14j + 199€ invoice item sur 1ère facture)
+      //    On envoie soit setupIntentId, soit sessionId — le GAS gère les 2.
       var finalRes = await fetch(STRIPE_GAS_URL, {
         method:  "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({
           action:        "finalizeSetup",
-          setupIntentId: setupIntentId,
+          setupIntentId: setupIntentId || "",
+          sessionId:     sessionId     || "",
           planId:        plan,
           priceId:       PRICE_IDS[plan] || PRICE_IDS.essentiel,
           setupPriceId:  PRICE_IDS.setup,

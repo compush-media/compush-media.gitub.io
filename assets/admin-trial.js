@@ -189,8 +189,9 @@
         body: JSON.stringify({
           action:     "createSetupSession",
           email:      cfg.billingEmail || cfg.email || "",
-          // Stripe ajoute ?setup_intent=xxx&redirect_status=succeeded à cette URL
-          successUrl: window.location.origin + "/" + slug + "/admin/billing.html?chosen_plan=" + planId,
+          // Stripe remplace {CHECKOUT_SESSION_ID} par l'ID de la session
+          // (en mode=setup, Stripe n'ajoute PAS automatiquement setup_intent)
+          successUrl: window.location.origin + "/" + slug + "/admin/billing.html?chosen_plan=" + planId + "&session_id={CHECKOUT_SESSION_ID}",
           cancelUrl:  window.location.href,
           metadata: {
             planId:       planId,

@@ -482,15 +482,30 @@ function _finalizeSetup(body) {
   if (!secretKey)  return { error: "STRIPE_SECRET_KEY non configurée" };
 
   var setupIntentId = body.setupIntentId || "";
+  var sessionId     = body.sessionId     || "";
   var planId        = body.planId        || "essentiel";
   var priceId       = body.priceId       || "";
   var setupPriceId  = body.setupPriceId  || "";
   var email         = body.email         || "";
 
-  if (!setupIntentId) return { error: "setupIntentId manquant" };
-  if (!priceId)       return { error: "priceId manquant" };
+  if (!setupIntentId && !sessionId) return { error: "setupIntentId ou sessionId manquant" };
+  if (!priceId)                     return { error: "priceId manquant" };
 
   try {
+    // 0. Si on n'a que sessionId, récupérer le setupIntentId depuis la session
+    if (!setupIntentId && sessionId) {
+      var sessRes = UrlFetchApp.fetch(STRIPE_API + "/checkout/sessions/" + sessionId, {
+        headers:            { Authorization: "Bearer " + secretKey },
+        muteHttpExceptions: true
+      });
+      var sess = JSON.parse(sessRes.getContentText());
+      if (sess.error) return { error: "Session introuvable : " + sess.error.message };
+      setupIntentId = sess.setup_intent || "";
+      if (!setupIntentId) return { error: "Aucun setup_intent dans la session " + sessionId };
+      // On peut aussi récupérer le customer depuis la session si présent
+      if (!email && sess.customer_email) email = sess.customer_email;
+    }
+
     // 1. Récupérer le SetupIntent
     var siRes = UrlFetchApp.fetch(STRIPE_API + "/setup_intents/" + setupIntentId, {
       headers:            { Authorization: "Bearer " + secretKey },
