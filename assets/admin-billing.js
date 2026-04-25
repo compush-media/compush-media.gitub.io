@@ -40,6 +40,13 @@
     var container = document.getElementById(containerId);
     if (!container) return;
 
+    // ── Retour depuis Stripe Checkout (stripe_session=xxx dans l'URL) ──
+    var stripeSession = new URLSearchParams(window.location.search).get("stripe_session");
+    if (stripeSession) {
+      await _handleStripeReturn(containerId, stripeSession);
+      return;
+    }
+
     container.innerHTML = '<div class="billing-loading">Chargement…</div>';
 
     var cfg = await loadBillingConfig();
@@ -59,6 +66,14 @@
           stripeCustomerId: cfg.stripeCustomerId,
           button: portalBtn
         });
+      });
+    }
+
+    // Attacher le bouton "Configurer mon paiement" si pas de stripeCustomerId
+    var setupPayBtn = container.querySelector("#setupPayBtn");
+    if (setupPayBtn) {
+      setupPayBtn.addEventListener("click", function() {
+        _startSelfSetupCheckout(cfg, setupPayBtn);
       });
     }
   }
@@ -155,7 +170,9 @@
           ? '<button id="manageSubBtn" class="billing-btn">' +
               (isTrialing ? '❌ Annuler l\'essai gratuit' : '⚙️ Gérer mon abonnement') +
             '</button>'
-          : '<a href="mailto:support@fidelavis.com?subject=Gestion abonnement" class="billing-btn" style="text-decoration:none;display:inline-flex">✉️ Contacter le support</a>',
+          : '<button id="setupPayBtn" class="billing-btn" style="background:#1976d2">' +
+              '💳 Configurer mon paiement en ligne' +
+            '</button>',
       '</div>',
 
       // ── FACTURES ────────────────────────────────────
@@ -225,6 +242,116 @@
       var d = isNaN(dateStr) ? new Date(dateStr) : new Date(parseInt(dateStr) * 1000);
       return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
     } catch(e) { return dateStr; }
+  }
+
+  /* --------------------------------------------------
+     _startSelfSetupCheckout(cfg, btn)
+     Lance un Stripe Checkout depuis la page billing
+     pour les restaurants sans stripeCustomerId.
+     successUrl → billing.html?stripe_session={SESSION_ID}
+  -------------------------------------------------- */
+  var PRICE_IDS = {
+    essentiel: "price_1TKmIoDpSXl9Whzr8iKy2Dhl",
+    pro:       "price_1TKmNtDpSXl9WhzrsMhfAShh",
+    setup:     "price_1TKmDvDpSXl9Whzr1VHwlRj5"
+  };
+  var PROXY_URL = "https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec";
+
+  async function _startSelfSetupCheckout(cfg, btn) {
+    if (!window.STRIPE_CONFIG || !STRIPE_CONFIG.checkoutGasUrl) {
+      _showError("Configuration Stripe manquante.");
+      return;
+    }
+    var plan  = cfg.plan  || "essentiel";
+    var email = cfg.billingEmail || "";
+    var slug  = _getSlug();
+    var originalHTML = btn.innerHTML;
+    btn.disabled  = true;
+    btn.innerHTML = '<span class="btn-spinner"></span> Préparation…';
+
+    try {
+      var res = await fetch(STRIPE_CONFIG.checkoutGasUrl, {
+        method:  "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({
+          action:       "createCheckoutSession",
+          planId:       plan,
+          priceId:      PRICE_IDS[plan] || PRICE_IDS.essentiel,
+          setupPriceId: PRICE_IDS.setup,
+          email:        email,
+          successUrl:   window.location.origin + "/" + slug + "/admin/billing.html?stripe_session={CHECKOUT_SESSION_ID}",
+          cancelUrl:    window.location.href
+        })
+      });
+      var data = await res.json();
+      if (data.error) throw new Error(data.error);
+      if (!data.url)  throw new Error("URL manquante");
+      window.location.href = data.url;
+    } catch(e) {
+      btn.disabled  = false;
+      btn.innerHTML = originalHTML;
+      _showError("Erreur : " + e.message);
+    }
+  }
+
+  /* --------------------------------------------------
+     _handleStripeReturn(containerId, sessionId)
+     Appelé quand l'URL contient ?stripe_session=xxx.
+     Récupère le stripeCustomerId depuis la session Stripe,
+     le sauvegarde dans config.json via le GAS proxy,
+     puis recharge la page.
+  -------------------------------------------------- */
+  async function _handleStripeReturn(containerId, sessionId) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    var slug = _getSlug();
+
+    container.innerHTML =
+      '<div class="billing-loading" style="font-size:15px;padding:48px">' +
+        '✅ Paiement reçu — Activation de votre compte en cours…' +
+      '</div>';
+
+    try {
+      // 1. Récupérer les infos de la session Stripe (customerId, email, planId)
+      var gasUrl = (window.STRIPE_CONFIG && STRIPE_CONFIG.checkoutGasUrl) || "";
+      if (!gasUrl) throw new Error("Configuration Stripe manquante.");
+
+      var sessionRes = await fetch(gasUrl, {
+        method:  "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ action: "getSession", sessionId: sessionId })
+      });
+      var session = await sessionRes.json();
+      if (session.error) throw new Error(session.error);
+
+      // 2. Sauvegarder le stripeCustomerId dans config.json
+      var saveRes = await fetch(PROXY_URL, {
+        method:  "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({
+          action:          "update_billing",
+          slug:            slug,
+          stripeCustomerId: session.customerId || "",
+          email:           session.email       || "",
+          plan:            session.planId      || "essentiel",
+          status:          "active"
+        })
+      });
+      var saveData = await saveRes.json();
+      if (!saveData.ok) throw new Error(saveData.error || "Erreur sauvegarde");
+
+      // 3. Nettoyer l'URL et recharger
+      window.history.replaceState({}, "", window.location.pathname);
+      window.location.reload();
+
+    } catch(e) {
+      container.innerHTML =
+        '<div class="billing-error" style="margin:20px 0">' +
+          "⚠️ Erreur lors de l'activation : " + e.message +
+          '<br><br><a href="mailto:support@fidelavis.com" style="color:inherit;font-weight:700">' +
+          "Contacter le support →</a>" +
+        "</div>";
+    }
   }
 
   /* --------------------------------------------------
