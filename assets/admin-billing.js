@@ -41,10 +41,13 @@
     if (!container) return;
 
     // ── Retour depuis Stripe Setup (setup_intent=xxx dans l'URL) ──
+    // On accepte tous les redirect_status — la validation se fait côté GAS
+    // (qui vérifie payment_method sur le SetupIntent).
     var _urlParams     = new URLSearchParams(window.location.search);
     var setupIntentId  = _urlParams.get("setup_intent");
-    var redirectStatus = _urlParams.get("redirect_status");
-    if (setupIntentId && redirectStatus === "succeeded") {
+    var redirectStatus = _urlParams.get("redirect_status") || "";
+    if (setupIntentId) {
+      console.log("[Fidelavis] Stripe return — setup_intent=" + setupIntentId + " status=" + redirectStatus);
       await _handleSetupReturn(containerId, setupIntentId);
       return;
     }
@@ -362,7 +365,9 @@
         })
       });
       var result = await finalRes.json();
-      if (result.error) throw new Error(result.error);
+      console.log("[Fidelavis] finalizeSetup result:", result);
+      if (result.error) throw new Error("finalizeSetup: " + result.error);
+      if (!result.customerId) throw new Error("Pas de customerId reçu de Stripe");
 
       // 2. Sauvegarder dans config.json
       //    trialEnd (Unix timestamp de Stripe) → date ISO pour config.json
@@ -390,7 +395,8 @@
         })
       });
       var saveData = await saveRes.json();
-      if (!saveData.ok) throw new Error(saveData.error || "Erreur sauvegarde config");
+      console.log("[Fidelavis] update_billing result:", saveData);
+      if (!saveData.ok) throw new Error("update_billing: " + (saveData.error || "réponse non-ok"));
 
       // 3. Redirection définitive vers espace-admin (location.replace force le reload
       //    et empêche un retour arrière sur l'URL ?setup_intent=xxx)
