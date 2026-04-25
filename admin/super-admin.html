@@ -546,21 +546,34 @@
 
 <!-- ═══════════════ MODAL PAIEMENT ═══════════════ -->
 <div class="modal-overlay" id="payModal">
-  <div class="modal-card" style="max-width:500px">
+  <div class="modal-card" style="max-width:520px">
     <div class="modal-header">
       <div class="modal-title">💳 Générer un lien de paiement</div>
       <button class="modal-close" onclick="closePayModal()">✕</button>
     </div>
     <div class="modal-body">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:20px">
-        Créez un lien Stripe Checkout à envoyer au restaurateur. Il règle en ligne, aucun compte Stripe nécessaire de son côté. 14 jours d'essai inclus.
-      </p>
       <div style="display:flex;flex-direction:column;gap:16px">
+
+        <!-- Sélection du restaurant -->
+        <div class="form-field" id="pRestoSection">
+          <label class="form-label">Restaurant concerné</label>
+          <select class="form-select" id="pRestoSlug" onchange="onRestoChange()">
+          </select>
+          <!-- Info contextuelle selon sélection -->
+          <div id="pRestoInfoExist" style="display:none;margin-top:8px;padding:10px 12px;background:var(--green-bg);border:1px solid rgba(26,158,92,.25);border-radius:8px;font-size:12px;color:var(--green);font-weight:600">
+            ✅ Restaurant déjà créé en démo — après paiement le restaurateur accède directement à son tableau de bord.
+          </div>
+          <div id="pRestoInfoNew" style="display:none;margin-top:8px;padding:10px 12px;background:var(--blue-bg);border:1px solid rgba(37,99,235,.2);border-radius:8px;font-size:12px;color:var(--blue);font-weight:600">
+            🆕 Nouveau restaurant — après paiement le restaurateur créera son espace (nom, couleur, mot de passe).
+          </div>
+        </div>
+
         <div class="form-field">
           <label class="form-label">Email du restaurateur *</label>
           <input class="form-input" type="email" id="pEmail" placeholder="contact@restaurant.fr" />
           <span class="form-hint">Pré-rempli avec l'email de l'ambassadeur — modifiable</span>
         </div>
+
         <div class="form-field">
           <label class="form-label">Plan</label>
           <select class="form-select" id="pPlan">
@@ -568,12 +581,14 @@
             <option value="pro" selected>Pro — 149 €/mois</option>
           </select>
         </div>
+
         <div style="display:flex;align-items:center;gap:10px">
           <input type="checkbox" id="pSetup" checked style="width:18px;height:18px;accent-color:var(--brand);cursor:pointer;flex-shrink:0" />
           <label for="pSetup" style="font-size:13px;cursor:pointer">
             Inclure les frais d'installation <strong>199 €</strong> (une seule fois)
           </label>
         </div>
+
       </div>
 
       <!-- Résultat -->
@@ -583,8 +598,12 @@
           <code id="pLinkText" style="color:var(--blue);font-size:11px;word-break:break-all;flex:1"></code>
           <button class="btn-action blue" style="white-space:nowrap;flex-shrink:0" onclick="copyPayLink()">Copier</button>
         </div>
+        <div id="pAdminLinkBox" style="display:none;margin-top:10px;padding:10px 12px;background:var(--green-bg);border:1px solid rgba(26,158,92,.25);border-radius:8px;font-size:12px;color:var(--green)">
+          <strong>À envoyer aussi au restaurateur :</strong><br>
+          Lien admin existant → <span id="pAdminLink" style="font-family:monospace;word-break:break-all"></span>
+        </div>
         <p style="font-size:11px;color:var(--muted);margin-top:8px">
-          ⚠️ Ce lien expire après le premier paiement. Envoyez-le par email ou WhatsApp au restaurateur.
+          ⚠️ Ce lien Stripe expire après le premier paiement. Envoyez-le par email ou WhatsApp.
         </p>
       </div>
     </div>
@@ -951,16 +970,46 @@ function openPayModal(id) {
   _payAmbId = id;
   const a = ambassadeurs.find(x => x.id === id);
   if (!a) return;
+
+  // Pré-remplir email
   document.getElementById('pEmail').value   = a.email || '';
   document.getElementById('pPlan').value    = 'pro';
   document.getElementById('pSetup').checked = true;
-  document.getElementById('pResult').style.display  = 'none';
-  document.getElementById('pLinkText').textContent  = '';
+  document.getElementById('pResult').style.display = 'none';
+  document.getElementById('pLinkText').textContent = '';
+  document.getElementById('pAdminLinkBox').style.display = 'none';
+
+  // Remplir le sélecteur de restaurants
+  const restos  = a.restaurants_crees || [];
+  const select  = document.getElementById('pRestoSlug');
+  select.innerHTML = '';
+  restos.forEach(r => {
+    const opt = document.createElement('option');
+    opt.value       = r.slug || r;
+    opt.textContent = `${r.name || r.slug || r}  (/${r.slug || r}/)  — démo existante`;
+    select.appendChild(opt);
+  });
+  // Toujours offrir l'option "nouveau restaurant"
+  const optNew = document.createElement('option');
+  optNew.value       = '';
+  optNew.textContent = restos.length ? '+ Nouveau restaurant (via formulaire Stripe)' : 'Nouveau restaurant — formulaire de création';
+  select.appendChild(optNew);
+
+  // Sélectionner par défaut : premier restaurant existant (si dispo), sinon nouveau
+  select.value = restos.length ? (restos[0].slug || restos[0]) : '';
+  onRestoChange();
+
   const btn = document.getElementById('pGenBtn');
   btn.disabled    = false;
   btn.textContent = 'Générer le lien';
   document.getElementById('payModal').classList.add('open');
   document.getElementById('pEmail').focus();
+}
+
+function onRestoChange() {
+  const slug = document.getElementById('pRestoSlug').value;
+  document.getElementById('pRestoInfoExist').style.display = slug ? 'block' : 'none';
+  document.getElementById('pRestoInfoNew').style.display   = slug ? 'none'  : 'block';
 }
 
 function closePayModal() {
@@ -969,9 +1018,10 @@ function closePayModal() {
 }
 
 async function generatePayLink() {
-  const email     = document.getElementById('pEmail').value.trim();
-  const planId    = document.getElementById('pPlan').value;
-  const withSetup = document.getElementById('pSetup').checked;
+  const email       = document.getElementById('pEmail').value.trim();
+  const planId      = document.getElementById('pPlan').value;
+  const withSetup   = document.getElementById('pSetup').checked;
+  const existSlug   = document.getElementById('pRestoSlug').value; // '' = nouveau restaurant
 
   if (!email) { showToast('Email obligatoire.', 'error'); return; }
 
@@ -983,6 +1033,13 @@ async function generatePayLink() {
   const priceId      = PRICE_IDS[planId];
   const setupPriceId = withSetup ? PRICE_IDS.setup : '';
 
+  // ── Déterminer la successUrl ──────────────────────────────────────
+  // Si le restaurant est déjà créé en démo → rediriger vers l'admin existant
+  // Si c'est un nouveau restaurant → formulaire setup.html
+  const successUrl = existSlug
+    ? `${BASE_URL}/${existSlug}/admin/login.html?paiement=ok`
+    : `${BASE_URL}/fidelavis-admin/merci-abonnement.html?session_id={CHECKOUT_SESSION_ID}`;
+
   try {
     const res = await fetch(STRIPE_GAS_URL, {
       method:  'POST',
@@ -993,8 +1050,8 @@ async function generatePayLink() {
         priceId,
         setupPriceId,
         email,
-        successUrl: 'https://app.cartefidelavis.com/fidelavis-admin/merci-abonnement.html?session_id={CHECKOUT_SESSION_ID}',
-        cancelUrl:  'https://app.cartefidelavis.com/fidelavis-admin/'
+        successUrl,
+        cancelUrl:    `${BASE_URL}/fidelavis-admin/`
       })
     });
     const data = await res.json();
@@ -1003,6 +1060,16 @@ async function generatePayLink() {
 
     document.getElementById('pLinkText').textContent = data.url;
     document.getElementById('pResult').style.display = 'block';
+
+    // Si restaurant existant → afficher aussi le lien admin à transmettre
+    if (existSlug) {
+      const adminUrl = `${BASE_URL}/${existSlug}/admin/login.html`;
+      document.getElementById('pAdminLink').textContent    = adminUrl;
+      document.getElementById('pAdminLinkBox').style.display = 'block';
+    } else {
+      document.getElementById('pAdminLinkBox').style.display = 'none';
+    }
+
     showToast('Lien Stripe généré ✓', 'success');
   } catch(e) {
     showToast('Erreur : ' + e.message, 'error');
