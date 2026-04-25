@@ -3,5 +3,12 @@
     "name": "Le Martin",
     "brandColor": "#B8924F",
     "brandColor2": "#9E7A3E"
+  },
+  "wing": {
+    "name": "wing",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "email": "louneaaline@gmail.com",
+    "ambassadorCode": "AMB-JEN-MAR-001"
   }
 }
