@@ -2,5 +2,9 @@
   "name": "denise",
   "color": "#B8924F",
   "color2": "#9E7A3E",
-  "email": "danydrumonde@gmail.com"
+  "email": "danydrumonde@gmail.com",
+  "plan": "pro",
+  "subscriptionStatus": "active",
+  "nextBillingDate": "2026-05-25",
+  "billingEmail": "danydrumonde@gmail.com"
 }
