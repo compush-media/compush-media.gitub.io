@@ -366,9 +366,14 @@
 
       // 2. Sauvegarder dans config.json
       //    trialEnd (Unix timestamp de Stripe) → date ISO pour config.json
-      var trialEndDate = "";
+      //    Fallback : si Stripe ne renvoie pas trial_end, calculer à J+14
+      var trialEndDate;
       if (result.trialEnd) {
         trialEndDate = new Date(result.trialEnd * 1000).toISOString().slice(0, 10);
+      } else {
+        var d = new Date();
+        d.setDate(d.getDate() + 14);
+        trialEndDate = d.toISOString().slice(0, 10);
       }
 
       var saveRes = await fetch(PROXY_URL, {
@@ -387,12 +392,12 @@
       var saveData = await saveRes.json();
       if (!saveData.ok) throw new Error(saveData.error || "Erreur sauvegarde config");
 
-      // 3. Nettoyer l'URL et recharger → espace-admin ou billing
+      // 3. Redirection définitive vers espace-admin (location.replace force le reload
+      //    et empêche un retour arrière sur l'URL ?setup_intent=xxx)
       var returnTo = chosenPlan
         ? (window.location.origin + "/" + slug + "/admin/espace-admin.html")
-        : window.location.pathname;
-      window.history.replaceState({}, "", returnTo);
-      window.location.href = returnTo;
+        : (window.location.origin + window.location.pathname);
+      window.location.replace(returnTo);
 
     } catch(e) {
       container.innerHTML =
