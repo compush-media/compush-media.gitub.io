@@ -2,14 +2,14 @@
   "name": "wing",
   "color": "#B8924F",
   "color2": "#9E7A3E",
-  "plan": "essentiel",
+  "plan": "pro",
   "subscriptionStatus": "trialing",
-  "trialEndDate": "2026-04-20",
+  "trialEndDate": "2026-04-29",
   "setupPaid": false,
   "billingEmail": "louneaaline@gmail.com",
-  "stripeCustomerId": "",
+  "stripeCustomerId": "cus_ULH5MCd9BX297k",
   "stripeSubscriptionId": "",
-  "nextBillingDate": "",
+  "nextBillingDate": "2026-04-29",
   "invoices": [],
   "email": "louneaaline@gmail.com"
 }
