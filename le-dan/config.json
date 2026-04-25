@@ -3,5 +3,9 @@
   "color": "#B8924F",
   "color2": "#9E7A3E",
   "phone": "0000000000",
-  "email": "dan.drumonde@gmail.com"
+  "email": "dan.drumonde@gmail.com",
+  "plan": "pro",
+  "subscriptionStatus": "active",
+  "nextBillingDate": "2026-05-25",
+  "billingEmail": "dan.drumonde@gmail.com"
 }
