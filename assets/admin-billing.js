@@ -245,6 +245,22 @@
   }
 
   /* --------------------------------------------------
+     _showError(msg) — affiche une erreur utilisateur
+     (défini ici car _showError de billing.js est privé)
+  -------------------------------------------------- */
+  function _showError(msg) {
+    var el = document.getElementById("billingError");
+    if (el) {
+      el.textContent = msg;
+      el.style.display = "block";
+      setTimeout(function() { el.style.display = "none"; }, 9000);
+    }
+    // Fallback visible même sans div#billingError
+    console.error("[Fidelavis/admin-billing]", msg);
+    if (!el) alert(msg);
+  }
+
+  /* --------------------------------------------------
      _startSelfSetupCheckout(cfg, btn)
      Lance un Stripe Checkout depuis la page billing
      pour les restaurants sans stripeCustomerId.
@@ -311,10 +327,7 @@
 
     try {
       // 1. Récupérer les infos de la session Stripe (customerId, email, planId)
-      var gasUrl = (window.STRIPE_CONFIG && STRIPE_CONFIG.checkoutGasUrl) || "";
-      if (!gasUrl) throw new Error("Configuration Stripe manquante.");
-
-      var sessionRes = await fetch(gasUrl, {
+      var sessionRes = await fetch(STRIPE_GAS_URL, {
         method:  "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({ action: "getSession", sessionId: sessionId })
