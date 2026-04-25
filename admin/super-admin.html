@@ -340,6 +340,10 @@
     .resto-name { font-weight: 700; font-size: 14px; }
     .resto-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
+    /* ── BLUE BUTTON ── */
+    .btn-action.blue { border-color: rgba(37,99,235,.25); color: var(--blue); }
+    .btn-action.blue:hover { background: var(--blue-bg); }
+
     /* ── TOAST ── */
     #toast {
       position: fixed; bottom: 24px; right: 24px;
@@ -540,6 +544,57 @@
   </div>
 </div>
 
+<!-- ═══════════════ MODAL PAIEMENT ═══════════════ -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-card" style="max-width:500px">
+    <div class="modal-header">
+      <div class="modal-title">💳 Générer un lien de paiement</div>
+      <button class="modal-close" onclick="closePayModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px">
+        Créez un lien Stripe Checkout à envoyer au restaurateur. Il règle en ligne, aucun compte Stripe nécessaire de son côté. 14 jours d'essai inclus.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-field">
+          <label class="form-label">Email du restaurateur *</label>
+          <input class="form-input" type="email" id="pEmail" placeholder="contact@restaurant.fr" />
+          <span class="form-hint">Pré-rempli avec l'email de l'ambassadeur — modifiable</span>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Plan</label>
+          <select class="form-select" id="pPlan">
+            <option value="essentiel">Essentiel — 97 €/mois</option>
+            <option value="pro" selected>Pro — 149 €/mois</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="checkbox" id="pSetup" checked style="width:18px;height:18px;accent-color:var(--brand);cursor:pointer;flex-shrink:0" />
+          <label for="pSetup" style="font-size:13px;cursor:pointer">
+            Inclure les frais d'installation <strong>199 €</strong> (une seule fois)
+          </label>
+        </div>
+      </div>
+
+      <!-- Résultat -->
+      <div id="pResult" style="display:none;margin-top:22px">
+        <div class="form-label" style="margin-bottom:8px">🔗 Lien Stripe à envoyer au restaurateur</div>
+        <div class="link-box" style="background:var(--blue-bg);border-color:rgba(37,99,235,.2)">
+          <code id="pLinkText" style="color:var(--blue);font-size:11px;word-break:break-all;flex:1"></code>
+          <button class="btn-action blue" style="white-space:nowrap;flex-shrink:0" onclick="copyPayLink()">Copier</button>
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-top:8px">
+          ⚠️ Ce lien expire après le premier paiement. Envoyez-le par email ou WhatsApp au restaurateur.
+        </p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closePayModal()">Fermer</button>
+      <button class="btn-primary" id="pGenBtn" onclick="generatePayLink()">Générer le lien</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -700,6 +755,7 @@ function renderTable() {
           <button class="btn-action gold" onclick="openModal('${a.id}')">Modifier</button>
           ${toggleBtn}
           <button class="btn-action" onclick="copyLien('${a.id}')">🔗 Lien</button>
+          <button class="btn-action blue" onclick="openPayModal('${a.id}')">💳 Paiement</button>
         </div>
       </td>
     </tr>`;
@@ -858,9 +914,12 @@ function showRestos(id) {
 function closePanel() { document.getElementById('restoPanel').classList.remove('open'); }
 
 // Close on overlay click
-['modal','restoPanel'].forEach(id => {
+['modal','restoPanel','payModal'].forEach(id => {
   document.getElementById(id).addEventListener('click', function(e) {
-    if (e.target === this) { id === 'modal' ? closeModal() : closePanel(); }
+    if (e.target !== this) return;
+    if (id === 'modal')      closeModal();
+    else if (id === 'payModal') closePayModal();
+    else                     closePanel();
   });
 });
 
@@ -874,6 +933,91 @@ function showToast(msg, type) {
   el.className = 'show' + (type ? ' ' + type : '');
   clearTimeout(_tt);
   _tt = setTimeout(() => { el.className = ''; }, 3200);
+}
+
+// ══════════════════════════════════════
+//  PAIEMENT STRIPE
+// ══════════════════════════════════════
+const STRIPE_GAS_URL = 'https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec';
+const PRICE_IDS = {
+  essentiel: 'price_1TKmIoDpSXl9Whzr8iKy2Dhl',
+  pro:       'price_1TKmNtDpSXl9WhzrsMhfAShh',
+  setup:     'price_1TKmDvDpSXl9Whzr1VHwlRj5'
+};
+
+let _payAmbId = null;
+
+function openPayModal(id) {
+  _payAmbId = id;
+  const a = ambassadeurs.find(x => x.id === id);
+  if (!a) return;
+  document.getElementById('pEmail').value   = a.email || '';
+  document.getElementById('pPlan').value    = 'pro';
+  document.getElementById('pSetup').checked = true;
+  document.getElementById('pResult').style.display  = 'none';
+  document.getElementById('pLinkText').textContent  = '';
+  const btn = document.getElementById('pGenBtn');
+  btn.disabled    = false;
+  btn.textContent = 'Générer le lien';
+  document.getElementById('payModal').classList.add('open');
+  document.getElementById('pEmail').focus();
+}
+
+function closePayModal() {
+  document.getElementById('payModal').classList.remove('open');
+  _payAmbId = null;
+}
+
+async function generatePayLink() {
+  const email     = document.getElementById('pEmail').value.trim();
+  const planId    = document.getElementById('pPlan').value;
+  const withSetup = document.getElementById('pSetup').checked;
+
+  if (!email) { showToast('Email obligatoire.', 'error'); return; }
+
+  const btn = document.getElementById('pGenBtn');
+  btn.disabled    = true;
+  btn.textContent = 'Génération…';
+  document.getElementById('pResult').style.display = 'none';
+
+  const priceId      = PRICE_IDS[planId];
+  const setupPriceId = withSetup ? PRICE_IDS.setup : '';
+
+  try {
+    const res = await fetch(STRIPE_GAS_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify({
+        action:       'createCheckoutSession',
+        planId,
+        priceId,
+        setupPriceId,
+        email,
+        successUrl: 'https://app.cartefidelavis.com/fidelavis-admin/merci-abonnement.html?session_id={CHECKOUT_SESSION_ID}',
+        cancelUrl:  'https://app.cartefidelavis.com/fidelavis-admin/'
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    if (!data.url)  throw new Error('URL manquante dans la réponse Stripe');
+
+    document.getElementById('pLinkText').textContent = data.url;
+    document.getElementById('pResult').style.display = 'block';
+    showToast('Lien Stripe généré ✓', 'success');
+  } catch(e) {
+    showToast('Erreur : ' + e.message, 'error');
+  }
+
+  btn.disabled    = false;
+  btn.textContent = 'Générer le lien';
+}
+
+function copyPayLink() {
+  const url = document.getElementById('pLinkText').textContent;
+  if (!url) return;
+  navigator.clipboard.writeText(url)
+    .then(() => showToast('Lien copié ✓', 'success'))
+    .catch(() => { prompt('Copiez ce lien :', url); });
 }
 
 // ══════════════════════════════════════
