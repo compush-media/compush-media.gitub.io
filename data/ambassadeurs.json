@@ -23,7 +23,13 @@
   {
     "id": "amb_modjew9q",
     "token": "tok_9fih70u6pm46ej04",
-    "restaurants_crees": [],
+    "restaurants_crees": [
+      {
+        "slug": "axfio",
+        "name": "axfio",
+        "date": "2026-04-25"
+      }
+    ],
     "date_creation": "2026-04-24",
     "prenom": "gogo",
     "nom": "ours",
