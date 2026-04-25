@@ -2,13 +2,7 @@
   {
     "id": "amb_modifbiy",
     "token": "tok_lypx7v325ouyw1qz",
-    "restaurants_crees": [
-      {
-        "slug": "wing",
-        "name": "wing",
-        "date": "2026-04-25"
-      }
-    ],
+    "restaurants_crees": [],
     "date_creation": "2026-04-24",
     "prenom": "jen",
     "nom": "Martin",

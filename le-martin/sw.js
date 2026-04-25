@@ -1,12 +1,11 @@
-const CACHE_NAME = "fidelavis-le-martin-v2";
+const CACHE_NAME = "fidelavis-le-martin-v4";
 
 const FILES_TO_CACHE = [
   "/le-martin/",
   "/le-martin/index.html",
   "/le-martin/indexnfc.html",
   "/le-martin/inscription.html",
-  "/le-martin/redit.html",
-  "/le-martin/config.json"
+  "/le-martin/redit.html"
 ];
 
 // INSTALL
@@ -34,9 +33,26 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// FETCH (network first for HTML, cache first for assets)
+// FETCH
 self.addEventListener("fetch", (event) => {
   const request = event.request;
+  const url     = new URL(request.url);
+
+  // config.json = TOUJOURS réseau (jamais cache, données billing en temps réel)
+  if (url.pathname.endsWith("/config.json")) {
+    event.respondWith(
+      fetch(request, { cache: "no-store" }).catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // /assets/ (JS, CSS partagés) = network first, no HTTP cache
+  if (url.pathname.startsWith("/assets/")) {
+    event.respondWith(
+      fetch(request, { cache: "no-cache" }).catch(() => caches.match(request))
+    );
+    return;
+  }
 
   // HTML = network first
   if (request.headers.get("accept")?.includes("text/html")) {
@@ -52,7 +68,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static files = cache first
+  // Other static files (icons, images) = cache first
   event.respondWith(
     caches.match(request)
       .then(response => response || fetch(request))
