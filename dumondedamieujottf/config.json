@@ -1,0 +1,14 @@
+{
+  "name": "dumondedamieujottf",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": false,
+  "trialEndDate": "",
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "2026-05-25",
+  "invoices": []
+}
