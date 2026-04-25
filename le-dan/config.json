@@ -5,7 +5,8 @@
   "phone": "0000000000",
   "email": "dan.drumonde@gmail.com",
   "plan": "pro",
-  "subscriptionStatus": "active",
-  "nextBillingDate": "2026-03-24",
+  "subscriptionStatus": "trialing",
+  "trialEndDate": "2026-04-20",
+  "nextBillingDate": "",
   "billingEmail": "axou.v@aliceadsl.fr"
 }
