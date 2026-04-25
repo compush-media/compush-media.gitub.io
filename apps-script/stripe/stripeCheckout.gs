@@ -464,8 +464,9 @@ function createCheckoutSession(body) {
     "metadata[source]=fidelavis-web",
     // Frais d'installation : ajouté comme invoice item sur la 1ère facture (après trial)
     // Aucun webhook nécessaire — Stripe l'inclut automatiquement au 1er prélèvement
-    setupPriceId ? ("subscription_data[add_invoice_items][0][price]="    + encodeURIComponent(setupPriceId)) : "",
-    setupPriceId ? "subscription_data[add_invoice_items][0][quantity]=1" : "",
+    // Note : add_invoice_items est top-level (pas dans subscription_data)
+    setupPriceId ? ("add_invoice_items[0][price]="    + encodeURIComponent(setupPriceId)) : "",
+    setupPriceId ? "add_invoice_items[0][quantity]=1" : "",
     "allow_promotion_codes=true",
     "billing_address_collection=auto",
     "subscription_data[trial_period_days]=14",
