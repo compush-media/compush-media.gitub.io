@@ -62,6 +62,9 @@ function doPost(e) {
       case "create_restaurant_for_ambassador":
         result = createRestaurantForAmbassador(body);
         break;
+      case "update_billing":
+        result = updateRestaurantBilling(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -728,6 +731,81 @@ function createRestaurantForAmbassador(params) {
   } catch(err) {
     return { error: "Erreur création restaurant : " + err.message };
   }
+}
+
+// ─── Action 10 : Activer l'abonnement d'un restaurant ────────
+//
+//  Paramètres (POST JSON) :
+//    slug   — identifiant du restaurant (ex: "axfio")
+//    plan   — "essentiel" | "pro"
+//    email  — email de facturation du restaurateur
+//    status — "active" (défaut)
+//
+//  Met à jour /{slug}/config.json :
+//    subscriptionStatus, plan, billingEmail, nextBillingDate
+//
+function updateRestaurantBilling(params) {
+  var slug   = (params.slug   || "").trim().toLowerCase();
+  var plan   = (params.plan   || "essentiel").trim();
+  var email  = (params.email  || "").trim();
+  var status = (params.status || "active").trim();
+
+  if (!slug) return { error: "Paramètre slug manquant." };
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré." };
+
+  var configPath = slug + "/config.json";
+  var apiUrl     = "https://api.github.com/repos/" + repo + "/contents/" + configPath;
+  var headers    = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+
+  // Lire le config.json existant
+  var getRes  = UrlFetchApp.fetch(apiUrl + "?ref=main", { headers: headers, muteHttpExceptions: true });
+  var getCode = getRes.getResponseCode();
+  if (getCode === 404) return { error: "config.json introuvable pour /" + slug + "/. Vérifiez que le restaurant existe." };
+  if (getCode !== 200) return { error: "Erreur GitHub GET " + getCode };
+
+  var fileData = JSON.parse(getRes.getContentText());
+  var sha      = fileData.sha;
+  var existing = {};
+  try {
+    existing = JSON.parse(
+      Utilities.newBlob(Utilities.base64Decode(fileData.content.replace(/\n/g, ""))).getDataAsString()
+    );
+  } catch(_) {}
+
+  // Calculer la prochaine date de facturation (aujourd'hui + 30 jours)
+  var nextBilling = new Date();
+  nextBilling.setDate(nextBilling.getDate() + 30);
+  var nextBillingDate = nextBilling.toISOString().slice(0, 10);
+
+  // Mettre à jour les champs billing
+  existing.plan               = plan;
+  existing.subscriptionStatus = status;
+  existing.nextBillingDate    = nextBillingDate;
+  if (email) existing.billingEmail = email;
+
+  var newContent = JSON.stringify(existing, null, 2) + "\n";
+  var b64        = Utilities.base64Encode(Utilities.newBlob(newContent).getBytes());
+
+  var putRes  = UrlFetchApp.fetch(apiUrl, {
+    method:  "put",
+    headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload: JSON.stringify({
+      message: "billing: " + slug + " → " + status + " (" + plan + ")",
+      content: b64,
+      sha:     sha
+    }),
+    muteHttpExceptions: true
+  });
+  var putCode = putRes.getResponseCode();
+  if (putCode !== 200 && putCode !== 201) {
+    return { error: "Erreur GitHub PUT " + putCode + " : " + putRes.getContentText().slice(0, 200) };
+  }
+
+  return { ok: true, slug: slug, plan: plan, status: status, nextBillingDate: nextBillingDate };
 }
 
 // ─── Constructeur de réponse HTTP ────────────────────────────

@@ -544,6 +544,44 @@
   </div>
 </div>
 
+<!-- ═══════════════ MODAL BILLING ═══════════════ -->
+<div class="modal-overlay" id="billingModal">
+  <div class="modal-card" style="max-width:440px">
+    <div class="modal-header">
+      <div class="modal-title">✅ Marquer comme abonné</div>
+      <button class="modal-close" onclick="closeBillingModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px">
+        Met à jour le <code>config.json</code> du restaurant pour activer la facturation.
+        Le restaurateur verra son abonnement comme <strong>Actif</strong> dans son espace.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-field">
+          <label class="form-label">Restaurant</label>
+          <div id="bRestoName" style="font-size:14px;font-weight:700;padding:10px 14px;background:var(--bg2);border-radius:10px;"></div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Plan activé</label>
+          <select class="form-select" id="bPlan">
+            <option value="essentiel">Essentiel — 97 €/mois</option>
+            <option value="pro">Pro — 149 €/mois</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Email de facturation</label>
+          <input class="form-input" type="email" id="bEmail" placeholder="contact@restaurant.fr" />
+          <span class="form-hint">Sera renseigné dans le compte &amp; facturation du restaurateur</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeBillingModal()">Annuler</button>
+      <button class="btn-primary" id="bConfirmBtn" onclick="confirmBilling()" style="background:var(--green)">✅ Activer l'abonnement</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════ MODAL PAIEMENT ═══════════════ -->
 <div class="modal-overlay" id="payModal">
   <div class="modal-card" style="max-width:520px">
@@ -922,9 +960,15 @@ function showRestos(id) {
         return `<div class="resto-item">
           <div>
             <div class="resto-name">${esc(name)}</div>
-            <div class="resto-meta">${date}</div>
+            <div class="resto-meta">${date ? date : ''}</div>
           </div>
-          <a href="${BASE_URL}/${esc(slug)}/" target="_blank" class="btn-action">Voir →</a>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <a href="${BASE_URL}/${esc(slug)}/" target="_blank" class="btn-action">Voir →</a>
+            <button class="btn-action green"
+              onclick="openBillingModal('${esc(slug)}','${esc(name)}','${esc(a.email||'')}')">
+              ✅ Abonné
+            </button>
+          </div>
         </div>`;
       }).join('');
   document.getElementById('restoPanel').classList.add('open');
@@ -932,13 +976,61 @@ function showRestos(id) {
 
 function closePanel() { document.getElementById('restoPanel').classList.remove('open'); }
 
+// ── BILLING MODAL ──────────────────────────────────────
+let _bSlug = '';
+
+function openBillingModal(slug, name, ambEmail) {
+  _bSlug = slug;
+  document.getElementById('bRestoName').textContent = `${name}  (/${slug}/)`;
+  document.getElementById('bPlan').value  = 'essentiel';
+  document.getElementById('bEmail').value = ambEmail || '';
+  const btn = document.getElementById('bConfirmBtn');
+  btn.disabled    = false;
+  btn.textContent = '✅ Activer l\'abonnement';
+  document.getElementById('billingModal').classList.add('open');
+  document.getElementById('bEmail').focus();
+}
+
+function closeBillingModal() {
+  document.getElementById('billingModal').classList.remove('open');
+  _bSlug = '';
+}
+
+async function confirmBilling() {
+  if (!_bSlug) return;
+  const plan  = document.getElementById('bPlan').value;
+  const email = document.getElementById('bEmail').value.trim();
+
+  const btn = document.getElementById('bConfirmBtn');
+  btn.disabled    = true;
+  btn.textContent = 'Mise à jour…';
+
+  try {
+    const res = await fetch(API_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify({ action: 'update_billing', slug: _bSlug, plan, email, status: 'active' })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Erreur GAS');
+    closeBillingModal();
+    closePanel();
+    showToast(`✅ ${_bSlug} — abonnement activé (${plan}) ✓`, 'success');
+  } catch(e) {
+    showToast('Erreur : ' + e.message, 'error');
+    btn.disabled    = false;
+    btn.textContent = '✅ Activer l\'abonnement';
+  }
+}
+
 // Close on overlay click
-['modal','restoPanel','payModal'].forEach(id => {
+['modal','restoPanel','payModal','billingModal'].forEach(id => {
   document.getElementById(id).addEventListener('click', function(e) {
     if (e.target !== this) return;
-    if (id === 'modal')      closeModal();
-    else if (id === 'payModal') closePayModal();
-    else                     closePanel();
+    if (id === 'modal')          closeModal();
+    else if (id === 'payModal')  closePayModal();
+    else if (id === 'billingModal') closeBillingModal();
+    else                         closePanel();
   });
 });
 
