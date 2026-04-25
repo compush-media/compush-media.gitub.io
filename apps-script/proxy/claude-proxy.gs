@@ -745,11 +745,12 @@ function createRestaurantForAmbassador(params) {
 //    subscriptionStatus, plan, billingEmail, nextBillingDate
 //
 function updateRestaurantBilling(params) {
-  var slug             = (params.slug             || "").trim().toLowerCase();
-  var plan             = (params.plan             || "essentiel").trim();
-  var email            = (params.email            || "").trim();
-  var status           = (params.status           || "active").trim();
-  var stripeCustomerId = (params.stripeCustomerId || "").trim();
+  var slug                 = (params.slug                 || "").trim().toLowerCase();
+  var plan                 = (params.plan                 || "essentiel").trim();
+  var email                = (params.email                || "").trim();
+  var status               = (params.status               || "active").trim();
+  var stripeCustomerId     = (params.stripeCustomerId     || "").trim();
+  var stripeSubscriptionId = (params.stripeSubscriptionId || "").trim();
 
   if (!slug) return { error: "Paramètre slug manquant." };
 
@@ -786,8 +787,9 @@ function updateRestaurantBilling(params) {
   existing.plan               = plan;
   existing.subscriptionStatus = status;
   existing.nextBillingDate    = nextBillingDate;
-  if (email)            existing.billingEmail      = email;
-  if (stripeCustomerId) existing.stripeCustomerId  = stripeCustomerId;
+  if (email)                existing.billingEmail         = email;
+  if (stripeCustomerId)     existing.stripeCustomerId     = stripeCustomerId;
+  if (stripeSubscriptionId) existing.stripeSubscriptionId = stripeSubscriptionId;
 
   var newContent = JSON.stringify(existing, null, 2) + "\n";
   var b64        = Utilities.base64Encode(Utilities.newBlob(newContent).getBytes());

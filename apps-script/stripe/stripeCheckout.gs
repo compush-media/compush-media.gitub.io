@@ -71,6 +71,10 @@ function doPost(e) {
 
     if (action === "createCheckoutSession") {
       result = createCheckoutSession(body);
+    } else if (action === "createSetupSession") {
+      result = createSetupSession(body);
+    } else if (action === "finalizeSetup") {
+      result = _finalizeSetup(body);
     } else if (action === "createPortalSession") {
       result = createPortalSession(body);
     } else if (action === "getSession") {
@@ -419,6 +423,148 @@ function _sendProvisionEmail(email, name, slug, password) {
     Logger.log("_sendProvisionEmail envoyé à " + email + " pour " + slug);
   } catch(err) {
     Logger.log("_sendProvisionEmail error: " + err.message);
+  }
+}
+
+/* =====================================================
+   createSetupSession(body)
+   Mode "setup" : collecte la carte sans aucun prélèvement.
+   Après le retour, _finalizeSetup() crée l'abonnement via
+   l'API Subscriptions (qui accepte add_invoice_items).
+   ===================================================== */
+function createSetupSession(body) {
+  var secretKey = PropertiesService.getScriptProperties().getProperty("STRIPE_SECRET_KEY");
+  var siteUrl   = PropertiesService.getScriptProperties().getProperty("FIDELAVIS_SITE_URL") || "https://app.cartefidelavis.com";
+
+  if (!secretKey) return { error: "STRIPE_SECRET_KEY non configurée" };
+
+  var email      = body.email      || "";
+  var successUrl = body.successUrl || siteUrl;
+  var cancelUrl  = body.cancelUrl  || siteUrl;
+  var metadata   = body.metadata   || {};
+
+  var params = [
+    "mode=setup",
+    "payment_method_types[0]=card",
+    "success_url=" + encodeURIComponent(successUrl),
+    "cancel_url="  + encodeURIComponent(cancelUrl),
+    email ? ("customer_email=" + encodeURIComponent(email)) : ""
+  ].filter(Boolean);
+
+  Object.keys(metadata).forEach(function(k) {
+    params.push("metadata[" + k + "]=" + encodeURIComponent(String(metadata[k])));
+  });
+
+  var response = UrlFetchApp.fetch(STRIPE_API + "/checkout/sessions", {
+    method:             "post",
+    headers:            { Authorization: "Bearer " + secretKey },
+    contentType:        "application/x-www-form-urlencoded",
+    payload:            params.join("&"),
+    muteHttpExceptions: true
+  });
+
+  var data = JSON.parse(response.getContentText());
+  if (data.error) return { error: data.error.message || "Erreur Stripe" };
+  return { url: data.url, sessionId: data.id };
+}
+
+/* =====================================================
+   _finalizeSetup(body)
+   Appelé après retour du Checkout mode=setup.
+   1. Récupère le SetupIntent → payment_method
+   2. Crée/récupère le Customer Stripe
+   3. Crée l'abonnement via l'API Subscriptions avec :
+      - trial_period_days=14
+      - add_invoice_items → 199€ sur la 1ère facture (J+14)
+   ===================================================== */
+function _finalizeSetup(body) {
+  var secretKey    = PropertiesService.getScriptProperties().getProperty("STRIPE_SECRET_KEY");
+  if (!secretKey)  return { error: "STRIPE_SECRET_KEY non configurée" };
+
+  var setupIntentId = body.setupIntentId || "";
+  var planId        = body.planId        || "essentiel";
+  var priceId       = body.priceId       || "";
+  var setupPriceId  = body.setupPriceId  || "";
+  var email         = body.email         || "";
+
+  if (!setupIntentId) return { error: "setupIntentId manquant" };
+  if (!priceId)       return { error: "priceId manquant" };
+
+  try {
+    // 1. Récupérer le SetupIntent
+    var siRes = UrlFetchApp.fetch(STRIPE_API + "/setup_intents/" + setupIntentId, {
+      headers:            { Authorization: "Bearer " + secretKey },
+      muteHttpExceptions: true
+    });
+    var si = JSON.parse(siRes.getContentText());
+    if (si.error) return { error: si.error.message };
+
+    var paymentMethodId = si.payment_method || "";
+    var customerId      = si.customer       || "";
+    if (!paymentMethodId) return { error: "Moyen de paiement introuvable sur le SetupIntent" };
+
+    // 2. Créer le Customer s'il n'existe pas encore
+    if (!customerId) {
+      var cuParams = [
+        "payment_method=" + encodeURIComponent(paymentMethodId),
+        "invoice_settings[default_payment_method]=" + encodeURIComponent(paymentMethodId),
+        email ? ("email=" + encodeURIComponent(email)) : ""
+      ].filter(Boolean).join("&");
+
+      var cuRes = UrlFetchApp.fetch(STRIPE_API + "/customers", {
+        method:             "post",
+        headers:            { Authorization: "Bearer " + secretKey },
+        contentType:        "application/x-www-form-urlencoded",
+        payload:            cuParams,
+        muteHttpExceptions: true
+      });
+      var cu = JSON.parse(cuRes.getContentText());
+      if (cu.error) return { error: cu.error.message };
+      customerId = cu.id;
+    }
+
+    // 3. Créer l'abonnement avec trial + frais installation sur 1ère facture
+    var subParams = [
+      "customer="                 + encodeURIComponent(customerId),
+      "default_payment_method="  + encodeURIComponent(paymentMethodId),
+      "items[0][price]="         + encodeURIComponent(priceId),
+      "items[0][quantity]=1",
+      "trial_period_days=14",
+      "payment_settings[payment_method_types][0]=card",
+      "payment_settings[save_default_payment_method]=on_subscription",
+      "metadata[planId]="  + encodeURIComponent(planId),
+      "metadata[source]=fidelavis-web"
+    ];
+
+    // add_invoice_items fonctionne sur /v1/subscriptions (pas sur Checkout Sessions)
+    // Le frais 199€ sera sur la 1ère facture après le trial (J+14)
+    if (setupPriceId) {
+      subParams.push("add_invoice_items[0][price]="    + encodeURIComponent(setupPriceId));
+      subParams.push("add_invoice_items[0][quantity]=1");
+    }
+
+    var subRes = UrlFetchApp.fetch(STRIPE_API + "/subscriptions", {
+      method:             "post",
+      headers:            { Authorization: "Bearer " + secretKey },
+      contentType:        "application/x-www-form-urlencoded",
+      payload:            subParams.join("&"),
+      muteHttpExceptions: true
+    });
+    var sub = JSON.parse(subRes.getContentText());
+    if (sub.error) return { error: sub.error.message };
+
+    Logger.log("_finalizeSetup OK — customer=" + customerId + " sub=" + sub.id + " status=" + sub.status);
+    return {
+      ok:             true,
+      customerId:     customerId,
+      subscriptionId: sub.id,
+      status:         sub.status,   // "trialing"
+      trialEnd:       sub.trial_end // Unix timestamp
+    };
+
+  } catch(e) {
+    Logger.log("_finalizeSetup error: " + e.message);
+    return { error: e.message };
   }
 }
 

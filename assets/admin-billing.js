@@ -40,8 +40,17 @@
     var container = document.getElementById(containerId);
     if (!container) return;
 
-    // ── Retour depuis Stripe Checkout (stripe_session=xxx dans l'URL) ──
-    var stripeSession = new URLSearchParams(window.location.search).get("stripe_session");
+    // ── Retour depuis Stripe Setup (setup_intent=xxx dans l'URL) ──
+    var _urlParams     = new URLSearchParams(window.location.search);
+    var setupIntentId  = _urlParams.get("setup_intent");
+    var redirectStatus = _urlParams.get("redirect_status");
+    if (setupIntentId && redirectStatus === "succeeded") {
+      await _handleSetupReturn(containerId, setupIntentId);
+      return;
+    }
+
+    // ── Retour legacy stripe_session (ancien flow) ──
+    var stripeSession = _urlParams.get("stripe_session");
     if (stripeSession) {
       await _handleStripeReturn(containerId, stripeSession);
       return;
@@ -284,17 +293,23 @@
     btn.innerHTML = '<span class="btn-spinner"></span> Préparation…';
 
     try {
+      // Stripe Checkout mode=setup : collecte la carte sans prélèvement.
+      // Après retour, _handleSetupReturn() crée l'abonnement via l'API
+      // Subscriptions qui, elle, accepte add_invoice_items → 199€ + 97€ à J+14.
       var res = await fetch(STRIPE_GAS_URL, {
         method:  "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({
-          action:       "createCheckoutSession",
-          planId:       plan,
-          priceId:      PRICE_IDS[plan] || PRICE_IDS.essentiel,
-          setupPriceId: PRICE_IDS.setup,
-          email:        email,
-          successUrl:   window.location.origin + "/" + slug + "/admin/billing.html?stripe_session={CHECKOUT_SESSION_ID}",
-          cancelUrl:    window.location.href
+          action:     "createSetupSession",
+          email:      email,
+          // Stripe ajoute automatiquement ?setup_intent=xxx&redirect_status=succeeded
+          successUrl: window.location.origin + "/" + slug + "/admin/billing.html",
+          cancelUrl:  window.location.href,
+          metadata: {
+            planId:       plan,
+            slug:         slug,
+            setupPriceId: PRICE_IDS.setup
+          }
         })
       });
       var data = await res.json();
@@ -305,6 +320,73 @@
       btn.disabled  = false;
       btn.innerHTML = originalHTML;
       _showError("Erreur : " + e.message);
+    }
+  }
+
+  /* --------------------------------------------------
+     _handleSetupReturn(containerId, setupIntentId)
+     Appelé quand l'URL contient ?setup_intent=xxx&redirect_status=succeeded.
+     Finalise l'abonnement via GAS (add_invoice_items → 199€ à J+14),
+     puis sauvegarde customerId + subscriptionId dans config.json.
+  -------------------------------------------------- */
+  async function _handleSetupReturn(containerId, setupIntentId) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    var slug = _getSlug();
+
+    container.innerHTML =
+      '<div class="billing-loading" style="font-size:15px;padding:48px">' +
+        '✅ Carte enregistrée — Activation de votre abonnement en cours…' +
+      '</div>';
+
+    try {
+      // Charger la config pour récupérer plan et email
+      var cfg  = await loadBillingConfig() || {};
+      var plan = cfg.plan || "essentiel";
+
+      // 1. Créer l'abonnement via GAS (trial 14j + 199€ invoice item sur 1ère facture)
+      var finalRes = await fetch(STRIPE_GAS_URL, {
+        method:  "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({
+          action:        "finalizeSetup",
+          setupIntentId: setupIntentId,
+          planId:        plan,
+          priceId:       PRICE_IDS[plan] || PRICE_IDS.essentiel,
+          setupPriceId:  PRICE_IDS.setup,
+          email:         cfg.billingEmail || ""
+        })
+      });
+      var result = await finalRes.json();
+      if (result.error) throw new Error(result.error);
+
+      // 2. Sauvegarder dans config.json
+      var saveRes = await fetch(PROXY_URL, {
+        method:  "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({
+          action:               "update_billing",
+          slug:                 slug,
+          stripeCustomerId:     result.customerId     || "",
+          stripeSubscriptionId: result.subscriptionId || "",
+          plan:                 plan,
+          status:               result.status || "trialing"
+        })
+      });
+      var saveData = await saveRes.json();
+      if (!saveData.ok) throw new Error(saveData.error || "Erreur sauvegarde config");
+
+      // 3. Nettoyer l'URL et recharger
+      window.history.replaceState({}, "", window.location.pathname);
+      window.location.reload();
+
+    } catch(e) {
+      container.innerHTML =
+        '<div class="billing-error" style="margin:20px 0">' +
+          "⚠️ Erreur lors de l'activation : " + e.message +
+          '<br><br><a href="mailto:support@fidelavis.com" style="color:inherit;font-weight:700">' +
+          "Contacter le support →</a>" +
+        "</div>";
     }
   }
 
