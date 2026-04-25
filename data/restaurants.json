@@ -28,5 +28,12 @@
     "phone": "0000000000",
     "email": "dan.drumonde@gmail.com",
     "ambassadorCode": "AMB-JEN-MAR-001"
+  },
+  "denise": {
+    "name": "denise",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "email": "danydrumonde@gmail.com",
+    "ambassadorCode": "AMB-JEN-MAR-001"
   }
 }
