@@ -286,7 +286,7 @@
   var PROXY_URL      = "https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec";
   // ⚠️ REMPLACER par l'ID du price Stripe 129€/mois après création dans le dashboard
   var PRICE_IDS = {
-    terrain: "REMPLACER_PAR_PRICE_ID_129"
+    terrain: "price_1TQUurDpSXl9WhzrrhjhA9WC"
   };
 
   async function _startSelfSetupCheckout(cfg, btn) {

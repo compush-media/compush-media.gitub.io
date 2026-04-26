@@ -9,7 +9,7 @@
   var STRIPE_GAS_URL = "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec";
   // ⚠️ REMPLACER par l'ID du price Stripe 129€/mois après création dans le dashboard Stripe
   var PRICE_IDS = {
-    terrain: "REMPLACER_PAR_PRICE_ID_129"
+    terrain: "price_1TQUurDpSXl9WhzrrhjhA9WC"
   };
 
   /* --------------------------------------------------

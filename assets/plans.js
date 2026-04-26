@@ -20,7 +20,7 @@ var STRIPE_CONFIG = {
   // IDs des prix Stripe — Offre Terrain unique
   // ⚠️ REMPLACER par le vrai price ID après création dans le dashboard Stripe
   priceIds: {
-    terrain: "REMPLACER_PAR_PRICE_ID_129"  // 129 €/mois (mise en place offerte)
+    terrain: "price_1TQUurDpSXl9WhzrrhjhA9WC"  // 129 €/mois (mise en place offerte)
   }
 };
 
