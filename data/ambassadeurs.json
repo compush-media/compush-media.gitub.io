@@ -32,7 +32,13 @@
   {
     "id": "amb_mog4b3lt",
     "token": "tok_7nxurros8jdf85fu",
-    "restaurants_crees": [],
+    "restaurants_crees": [
+      {
+        "slug": "le-voltaire",
+        "name": "Le voltaire",
+        "date": "2026-04-26"
+      }
+    ],
     "date_creation": "2026-04-26",
     "prenom": "Dany",
     "nom": "Drumonde",
