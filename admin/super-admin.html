@@ -665,7 +665,10 @@
 // ══════════════════════════════════════
 const GH_OWNER      = 'compush-media';
 const GH_REPO       = 'compush-media.gitub.io';
-const AUTH_KEY      = 'fv_superadmin_v2';
+// ⚠️ Whitelist des usernames GitHub autorisés à se connecter (insensible à la casse)
+// Ajoute uniquement les comptes des admins. Les autres collaborateurs du repo seront refusés.
+const ALLOWED_USERS = ['compush-media'];   // ← REMPLACE par ton vrai username GitHub
+const AUTH_KEY      = 'fv_superadmin_v3';
 const TOKEN_KEY     = 'fv_superadmin_gh_token';
 const API_URL       = 'https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec';
 const BASE_URL      = 'https://app.cartefidelavis.com';
@@ -708,15 +711,33 @@ async function doLogin() {
 
     if (res.status === 401) throw new Error('Token invalide — vérifiez votre PAT GitHub.');
     if (res.status === 403) throw new Error('Token refusé — permissions insuffisantes.');
+    if (res.status === 404) throw new Error('Repo introuvable ou token sans accès.');
     if (!res.ok) throw new Error(`Erreur GitHub API (${res.status}).`);
 
     const data = await res.json();
     const canPush = data.permissions?.push || data.permissions?.admin;
     if (!canPush) throw new Error('Token en lecture seule — un accès en écriture est requis.');
 
+    // Vérifier l'identité de l'utilisateur (whitelist)
+    const userRes = await fetch('https://api.github.com/user', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    });
+    if (!userRes.ok) throw new Error('Impossible de vérifier l\'identité GitHub.');
+    const user = await userRes.json();
+    const login = (user.login || '').toLowerCase();
+    const allowed = ALLOWED_USERS.map(u => u.toLowerCase());
+    if (!allowed.includes(login)) {
+      throw new Error('Compte GitHub non autorisé pour le super-admin.');
+    }
+
     // Authentification réussie
     localStorage.setItem(AUTH_KEY, 'granted');
     localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem('fv_superadmin_login', user.login);
     showDashboard();
 
   } catch (err) {
