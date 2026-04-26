@@ -739,6 +739,31 @@ function createRestaurantForAmbassador(params) {
     amb.restaurants_crees = restosCrees.concat([{ slug: sl, name: name, date: new Date().toISOString().slice(0, 10) }]);
     saveAmbassadeursData({ ambassadeurs: ambData.ambassadeurs });
 
+    // ─── Envoi des emails de bienvenue ────────────────────────────
+    var siteUrl = "https://app.cartefidelavis.com";
+    var loginUrl = siteUrl + "/" + sl + "/admin/login.html";
+    var nfcUrl   = siteUrl + "/" + sl + "/indexnfc.html";
+
+    // 1. Email au RESTAURATEUR avec ses identifiants
+    if (email) {
+      try {
+        _sendRestaurateurWelcomeEmail(email, name, sl, adminPass, loginUrl, nfcUrl);
+        Logger.log("Email bienvenue restaurateur envoyé à " + email);
+      } catch(emErr) {
+        Logger.log("Erreur email restaurateur : " + emErr.message);
+      }
+    }
+
+    // 2. Email à l'AMBASSADEUR de confirmation
+    if (amb.email) {
+      try {
+        _sendAmbassadeurConfirmationEmail(amb.email, amb.prenom || amb.code, name, sl, loginUrl);
+        Logger.log("Email confirmation ambassadeur envoyé à " + amb.email);
+      } catch(emErr2) {
+        Logger.log("Erreur email ambassadeur : " + emErr2.message);
+      }
+    }
+
     return {
       ok:   true, slug: sl, name: name,
       urls: {
@@ -1184,6 +1209,231 @@ function _sendReminderEmail(to, restoName, slug, reminderKey, daysLeft) {
     "─────────────────────────────",
     "",
     "Connexion à votre espace : " + loginUrl,
+    "Une question ? support@fidelavis.com",
+    "",
+    "L'équipe Fidelavis"
+  ].join("\n");
+
+  _sendEmailFromProxy(to, subject, html, text);
+}
+
+/**
+ * _sendRestaurateurWelcomeEmail(to, restoName, slug, adminPass, loginUrl, nfcUrl)
+ * Email envoyé au restaurateur lors de la création de son espace par l'ambassadeur.
+ * Contient ses identifiants de connexion + lien NFC à programmer.
+ */
+function _sendRestaurateurWelcomeEmail(to, restoName, slug, adminPass, loginUrl, nfcUrl) {
+  var subject = "✅ Votre espace " + restoName + " est prêt — vos accès Fidelavis";
+
+  var html = [
+    '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>',
+    '<body style="margin:0;padding:0;background:#f4f6f9;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1c1c2e">',
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:24px 12px">',
+    '<tr><td align="center">',
+      '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,.08);overflow:hidden">',
+
+        // Header rouge
+        '<tr><td style="background:#b6152b;padding:30px 24px;text-align:center;color:#ffffff">',
+          '<div style="font-size:42px;line-height:1;margin-bottom:10px">🎉</div>',
+          '<div style="font-size:22px;font-weight:900;line-height:1.3">Bienvenue chez Fidelavis !</div>',
+          '<div style="font-size:14px;color:rgba(255,255,255,.85);margin-top:6px">' + restoName + '</div>',
+        '</td></tr>',
+
+        // Body intro
+        '<tr><td style="padding:32px 28px 8px">',
+          '<p style="font-size:15px;line-height:1.6;margin:0 0 12px">Bonjour,</p>',
+          '<p style="font-size:15px;line-height:1.6;margin:0 0 12px">Votre espace restaurant <strong>' + restoName + '</strong> est en ligne ! 🚀</p>',
+          '<p style="font-size:14px;line-height:1.6;color:#4b5563;margin:0 0 20px">Vous bénéficiez de <strong>14 jours d\'essai gratuit</strong> pour tester toutes les fonctionnalités. Aucun paiement aujourd\'hui.</p>',
+        '</td></tr>',
+
+        // Accès admin
+        '<tr><td style="padding:0 28px 8px">',
+          '<div style="background:#fef3c7;border-radius:12px;padding:20px;border-left:4px solid #d97706">',
+            '<div style="font-size:11px;font-weight:800;color:#92400e;letter-spacing:.08em;margin-bottom:10px">🔑 VOS ACCÈS ADMINISTRATEUR</div>',
+            '<table cellpadding="0" cellspacing="0" style="width:100%;font-size:14px;line-height:1.7">',
+              '<tr><td style="color:#6b7280;width:120px">Lien :</td><td><a href="' + loginUrl + '" style="color:#b6152b;font-weight:700;text-decoration:none;word-break:break-all">' + loginUrl + '</a></td></tr>',
+              '<tr><td style="color:#6b7280">Identifiant :</td><td><code style="background:#fff;padding:3px 8px;border-radius:4px;font-size:13px">admin</code></td></tr>',
+              '<tr><td style="color:#6b7280">Mot de passe :</td><td><code style="background:#fff;padding:3px 8px;border-radius:4px;font-size:13px">' + adminPass + '</code></td></tr>',
+            '</table>',
+          '</div>',
+        '</td></tr>',
+
+        // CTA bouton
+        '<tr><td style="padding:20px 28px 8px;text-align:center">',
+          '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto"><tr>',
+            '<td style="background:#b6152b;border-radius:10px">',
+              '<a href="' + loginUrl + '" style="display:inline-block;padding:14px 32px;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700">→ Accéder à mon espace</a>',
+            '</td>',
+          '</tr></table>',
+        '</td></tr>',
+
+        // NFC info
+        '<tr><td style="padding:24px 28px 8px">',
+          '<div style="border-top:1px solid #e5e7eb;padding-top:20px">',
+            '<div style="font-size:11px;font-weight:800;color:#6b7280;letter-spacing:.08em;margin-bottom:10px">📡 LIEN NFC / QR CODE CLIENT</div>',
+            '<p style="font-size:13.5px;line-height:1.6;color:#4b5563;margin:0 0 8px">Lien à programmer sur vos cartes NFC ou QR codes posés sur les tables :</p>',
+            '<a href="' + nfcUrl + '" style="display:block;background:#f4f6f9;padding:10px 14px;border-radius:8px;color:#1c1c2e;font-size:13px;text-decoration:none;word-break:break-all;font-family:monospace">' + nfcUrl + '</a>',
+          '</div>',
+        '</td></tr>',
+
+        // Trial info
+        '<tr><td style="padding:20px 28px">',
+          '<div style="background:#dbeafe;border-radius:10px;padding:14px 18px">',
+            '<div style="font-size:13.5px;color:#1e3a8a;line-height:1.5">',
+              '🎁 <strong>Essai gratuit 14 jours</strong> — Vous recevrez un rappel 7 jours avant la fin pour activer votre abonnement (129€/mois, mise en place offerte).',
+            '</div>',
+          '</div>',
+        '</td></tr>',
+
+        // Footer
+        '<tr><td style="padding:20px 28px 28px;border-top:1px solid #e5e7eb;background:#fafafa">',
+          '<div style="font-size:13px;color:#6b7280;line-height:1.7">',
+            'Une question ? <a href="mailto:support@fidelavis.com" style="color:#b6152b;font-weight:600;text-decoration:none">support@fidelavis.com</a><br>',
+            'Conservez précieusement cet email avec vos accès.',
+          '</div>',
+          '<div style="font-size:12px;color:#9ca3af;margin-top:14px">L\'équipe Fidelavis</div>',
+        '</td></tr>',
+
+      '</table>',
+    '</td></tr></table>',
+    '</body></html>'
+  ].join("");
+
+  var text = [
+    "Bonjour,",
+    "",
+    "Votre espace restaurant " + restoName + " est en ligne !",
+    "",
+    "Vous bénéficiez de 14 jours d'essai gratuit pour tester toutes les fonctionnalités.",
+    "",
+    "─────────────────────────────",
+    "VOS ACCÈS ADMINISTRATEUR",
+    "─────────────────────────────",
+    "",
+    "🔗 Lien : " + loginUrl,
+    "👤 Identifiant : admin",
+    "🔑 Mot de passe : " + adminPass,
+    "",
+    "─────────────────────────────",
+    "LIEN NFC / QR CODE CLIENT",
+    "─────────────────────────────",
+    "",
+    "Lien à programmer sur vos cartes NFC ou QR codes :",
+    nfcUrl,
+    "",
+    "─────────────────────────────",
+    "",
+    "🎁 Essai gratuit 14 jours — Rappel 7 jours avant la fin pour activer votre abonnement (129€/mois, mise en place offerte).",
+    "",
+    "Une question ? support@fidelavis.com",
+    "Conservez précieusement cet email avec vos accès.",
+    "",
+    "L'équipe Fidelavis"
+  ].join("\n");
+
+  _sendEmailFromProxy(to, subject, html, text);
+}
+
+/**
+ * _sendAmbassadeurConfirmationEmail(to, ambName, restoName, slug, loginUrl)
+ * Email de confirmation envoyé à l'ambassadeur après création d'un restaurant.
+ */
+function _sendAmbassadeurConfirmationEmail(to, ambName, restoName, slug, loginUrl) {
+  var subject = "✅ Restaurant " + restoName + " créé avec succès";
+  var siteUrl = "https://app.cartefidelavis.com";
+  var publicUrl = siteUrl + "/" + slug + "/";
+
+  var html = [
+    '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>',
+    '<body style="margin:0;padding:0;background:#f4f6f9;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1c1c2e">',
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:24px 12px">',
+    '<tr><td align="center">',
+      '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,.08);overflow:hidden">',
+
+        // Header vert
+        '<tr><td style="background:#16a34a;padding:28px 24px;text-align:center;color:#ffffff">',
+          '<div style="font-size:40px;line-height:1;margin-bottom:8px">✅</div>',
+          '<div style="font-size:20px;font-weight:900">Restaurant créé !</div>',
+        '</td></tr>',
+
+        // Body
+        '<tr><td style="padding:30px 28px 20px">',
+          '<p style="font-size:15px;line-height:1.6;margin:0 0 14px">Bonjour ' + ambName + ',</p>',
+          '<p style="font-size:15px;line-height:1.6;margin:0 0 14px">Le restaurant <strong>' + restoName + '</strong> vient d\'être créé avec succès dans votre espace ambassadeur. 🎉</p>',
+          '<p style="font-size:14px;line-height:1.6;color:#4b5563;margin:0 0 20px">Le restaurateur a reçu ses identifiants par email à l\'instant et bénéficie de <strong>14 jours d\'essai gratuit</strong>.</p>',
+        '</td></tr>',
+
+        // Détails resto
+        '<tr><td style="padding:0 28px 8px">',
+          '<div style="background:#f0fdf4;border-radius:12px;padding:18px;border-left:4px solid #16a34a">',
+            '<div style="font-size:11px;font-weight:800;color:#15803d;letter-spacing:.08em;margin-bottom:10px">🏪 DÉTAILS DU RESTAURANT</div>',
+            '<table cellpadding="0" cellspacing="0" style="width:100%;font-size:14px;line-height:1.7">',
+              '<tr><td style="color:#6b7280;width:100px">Nom :</td><td style="font-weight:600">' + restoName + '</td></tr>',
+              '<tr><td style="color:#6b7280">Slug :</td><td><code style="background:#fff;padding:2px 6px;border-radius:4px">' + slug + '</code></td></tr>',
+              '<tr><td style="color:#6b7280">Site :</td><td><a href="' + publicUrl + '" style="color:#16a34a;font-weight:600;text-decoration:none">' + publicUrl + '</a></td></tr>',
+              '<tr><td style="color:#6b7280">Admin :</td><td><a href="' + loginUrl + '" style="color:#b6152b;font-weight:600;text-decoration:none;word-break:break-all">' + loginUrl + '</a></td></tr>',
+            '</table>',
+          '</div>',
+        '</td></tr>',
+
+        // CTA
+        '<tr><td style="padding:24px 28px 8px;text-align:center">',
+          '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto"><tr>',
+            '<td style="background:#b6152b;border-radius:10px">',
+              '<a href="' + siteUrl + '/admin/super-admin.html" style="display:inline-block;padding:13px 28px;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700">Voir mes restaurants →</a>',
+            '</td>',
+          '</tr></table>',
+        '</td></tr>',
+
+        // Suite
+        '<tr><td style="padding:24px 28px 8px">',
+          '<div style="border-top:1px solid #e5e7eb;padding-top:18px">',
+            '<div style="font-size:13.5px;line-height:1.7;color:#4b5563">',
+              '<strong style="color:#1c1c2e">📅 Et ensuite ?</strong><br>',
+              'Le restaurateur recevra automatiquement des rappels par email avant la fin de l\'essai (J-7, J-3, J-1) pour activer son abonnement à <strong>129€/mois</strong> avec mise en place offerte.',
+            '</div>',
+          '</div>',
+        '</td></tr>',
+
+        // Footer
+        '<tr><td style="padding:20px 28px 28px;border-top:1px solid #e5e7eb;background:#fafafa">',
+          '<div style="font-size:13px;color:#6b7280;line-height:1.7">',
+            'Une question ? <a href="mailto:support@fidelavis.com" style="color:#b6152b;font-weight:600;text-decoration:none">support@fidelavis.com</a>',
+          '</div>',
+          '<div style="font-size:12px;color:#9ca3af;margin-top:14px">L\'équipe Fidelavis</div>',
+        '</td></tr>',
+
+      '</table>',
+    '</td></tr></table>',
+    '</body></html>'
+  ].join("");
+
+  var text = [
+    "Bonjour " + ambName + ",",
+    "",
+    "Le restaurant " + restoName + " vient d'être créé avec succès dans votre espace ambassadeur.",
+    "",
+    "Le restaurateur a reçu ses identifiants par email à l'instant.",
+    "Il bénéficie de 14 jours d'essai gratuit.",
+    "",
+    "─────────────────────────────",
+    "DÉTAILS DU RESTAURANT",
+    "─────────────────────────────",
+    "",
+    "Nom : " + restoName,
+    "Slug : " + slug,
+    "Site public : " + publicUrl,
+    "Admin : " + loginUrl,
+    "",
+    "─────────────────────────────",
+    "",
+    "📅 ET ENSUITE ?",
+    "Le restaurateur recevra automatiquement des rappels par email",
+    "avant la fin de l'essai (J-7, J-3, J-1) pour activer son",
+    "abonnement à 129€/mois avec mise en place offerte.",
+    "",
+    "Voir mes restaurants : " + siteUrl + "/admin/super-admin.html",
+    "",
     "Une question ? support@fidelavis.com",
     "",
     "L'équipe Fidelavis"
