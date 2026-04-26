@@ -4,11 +4,20 @@
   "color2": "#9E7A3E",
   "plan": "essentiel",
   "subscriptionStatus": "active",
-  "setupPaid": false,
+  "setupPaid": true,
   "trialEndDate": "",
   "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "2026-05-25",
-  "invoices": []
+  "invoices": [
+    {
+      "id": "in_1TQFw7DpSXl9WhzrjmYE2qUu",
+      "date": "2026-04-25",
+      "amount": 74600,
+      "status": "paid",
+      "description": "Abonnement Fidelavis",
+      "pdf": "https://pay.stripe.com/invoice/acct_1Ay0NtDpSXl9Whzr/test_YWNjdF8xQXkwTnREcFNYbDlXaHpyLF9VUDQ0MTJPVjg4OGthdElqZ0RNS1Y3dlhSaHlCdmJuLDE2NzcwNTM2NQ0200gH5HqzcA/pdf?s=ap"
+    }
+  ]
 }
