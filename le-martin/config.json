@@ -7,14 +7,12 @@
   "plan": "pro",
   "subscriptionStatus": "trialing",
   "setupPaid": false,
-  "trialEndDate": "2026-05-03",
+  "trialEndDate": "2026-05-02",
   "billingEmail": "danydrumonde@gmail.com",
   "stripeCustomerId": "cus_UMKkW2YUyc4J2U",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",
   "invoices": [],
   "iconUrl": "https://dn721804.ca.archive.org/0/items/512x-512-icon-logo-png/512x512%20icon%20logo%20png.png",
-  "remindersSent": [
-    "j-7"
-  ]
+  "remindersSent": []
 }
