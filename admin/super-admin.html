@@ -569,8 +569,7 @@
         <div class="form-field">
           <label class="form-label">Plan activé</label>
           <select class="form-select" id="bPlan">
-            <option value="essentiel">Essentiel — 97 €/mois</option>
-            <option value="pro">Pro — 149 €/mois</option>
+            <option value="terrain" selected>Offre Terrain — 129 €/mois</option>
           </select>
         </div>
         <div class="form-field">
@@ -620,17 +619,12 @@
         <div class="form-field">
           <label class="form-label">Plan</label>
           <select class="form-select" id="pPlan">
-            <option value="essentiel">Essentiel — 97 €/mois</option>
-            <option value="pro" selected>Pro — 149 €/mois</option>
+            <option value="terrain" selected>Offre Terrain — 129 €/mois</option>
           </select>
+          <span class="form-hint">Mise en place 199 € → offerte (incluse dans l'offre terrain)</span>
         </div>
 
-        <div style="display:flex;align-items:center;gap:10px">
-          <input type="checkbox" id="pSetup" checked style="width:18px;height:18px;accent-color:var(--brand);cursor:pointer;flex-shrink:0" />
-          <label for="pSetup" style="font-size:13px;cursor:pointer">
-            Inclure les frais d'installation <strong>199 €</strong> (une seule fois)
-          </label>
-        </div>
+        <input type="hidden" id="pSetup" value="false" />
 
       </div>
 
@@ -1048,7 +1042,7 @@ let _bSlug = '';
 function openBillingModal(slug, name, ambEmail) {
   _bSlug = slug;
   document.getElementById('bRestoName').textContent = `${name}  (/${slug}/)`;
-  document.getElementById('bPlan').value  = 'essentiel';
+  document.getElementById('bPlan').value  = 'terrain';
   document.getElementById('bEmail').value = ambEmail || '';
   const btn = document.getElementById('bConfirmBtn');
   btn.disabled    = false;
@@ -1117,9 +1111,7 @@ function showToast(msg, type) {
 // ══════════════════════════════════════
 const STRIPE_GAS_URL = 'https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec';
 const PRICE_IDS = {
-  essentiel: 'price_1TKmIoDpSXl9Whzr8iKy2Dhl',
-  pro:       'price_1TKmNtDpSXl9WhzrsMhfAShh',
-  setup:     'price_1TKmDvDpSXl9Whzr1VHwlRj5'
+  terrain: 'price_1TQUurDpSXl9WhzrrhjhA9WC'   // 129 €/mois — Offre Terrain (mise en place offerte)
 };
 
 let _payAmbId = null;
@@ -1131,8 +1123,7 @@ function openPayModal(id) {
 
   // Pré-remplir email
   document.getElementById('pEmail').value   = a.email || '';
-  document.getElementById('pPlan').value    = 'pro';
-  document.getElementById('pSetup').checked = true;
+  document.getElementById('pPlan').value    = 'terrain';
   document.getElementById('pResult').style.display = 'none';
   document.getElementById('pLinkText').textContent = '';
   document.getElementById('pAdminLinkBox').style.display = 'none';
@@ -1176,10 +1167,9 @@ function closePayModal() {
 }
 
 async function generatePayLink() {
-  const email       = document.getElementById('pEmail').value.trim();
-  const planId      = document.getElementById('pPlan').value;
-  const withSetup   = document.getElementById('pSetup').checked;
-  const existSlug   = document.getElementById('pRestoSlug').value; // '' = nouveau restaurant
+  const email     = document.getElementById('pEmail').value.trim();
+  const planId    = document.getElementById('pPlan').value;
+  const existSlug = document.getElementById('pRestoSlug').value; // '' = nouveau restaurant
 
   if (!email) { showToast('Email obligatoire.', 'error'); return; }
 
@@ -1189,7 +1179,7 @@ async function generatePayLink() {
   document.getElementById('pResult').style.display = 'none';
 
   const priceId      = PRICE_IDS[planId];
-  const setupPriceId = withSetup ? PRICE_IDS.setup : '';
+  const setupPriceId = '';   // Mise en place offerte → pas de frais d'installation
 
   // ── Déterminer la successUrl ──────────────────────────────────────
   // Si le restaurant est déjà créé en démo → rediriger vers l'admin existant
