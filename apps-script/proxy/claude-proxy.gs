@@ -949,52 +949,137 @@ function _sendTrialReminders() {
 
 /**
  * _sendReminderEmail(to, restoName, slug, reminderKey, daysLeft)
- * Envoie un email de rappel selon le code (j-7, j-3, j-1, j-0, j+1).
+ * Envoie un email HTML de rappel selon le code (j-7, j-3, j-1, j-0, j+1).
  */
 function _sendReminderEmail(to, restoName, slug, reminderKey, daysLeft) {
   var siteUrl    = "https://app.cartefidelavis.com";
   var billingUrl = siteUrl + "/" + slug + "/admin/billing.html";
   var loginUrl   = siteUrl + "/" + slug + "/admin/login.html";
 
-  var subject, intro, urgency, cta;
+  var subject, intro, urgency, cta, headerColor, headerEmoji;
 
   switch (reminderKey) {
     case "j-7":
-      subject = "🎁 Plus qu'une semaine d'essai gratuit chez Fidelavis";
-      intro   = "Bonjour,\n\nIl vous reste encore 7 jours pour profiter gratuitement de Fidelavis chez " + restoName + ".";
-      urgency = "Pour continuer après l'essai, choisissez votre formule dès maintenant — votre carte ne sera prélevée qu'à la fin de l'essai.";
-      cta     = "Choisir mon abonnement →";
+      subject     = "🎁 Plus qu'une semaine d'essai gratuit chez Fidelavis";
+      headerEmoji = "🎁";
+      headerColor = "#1976d2";
+      intro       = "Il vous reste encore <strong>7 jours</strong> pour profiter gratuitement de Fidelavis chez <strong>" + restoName + "</strong>.";
+      urgency     = "Pour continuer après l'essai, choisissez votre formule dès maintenant — votre carte ne sera prélevée qu'à la fin de l'essai.";
+      cta         = "Choisir mon abonnement";
       break;
     case "j-3":
-      subject = "⏰ Plus que 3 jours d'essai gratuit chez " + restoName;
-      intro   = "Bonjour,\n\nVotre essai gratuit de Fidelavis se termine dans 3 jours.";
-      urgency = "Pour ne pas perdre l'accès à votre tableau de bord, votre carte fidélité NFC et vos avis Google, configurez votre abonnement avant la fin de l'essai.";
-      cta     = "S'abonner maintenant →";
+      subject     = "⏰ Plus que 3 jours d'essai gratuit chez " + restoName;
+      headerEmoji = "⏰";
+      headerColor = "#d97706";
+      intro       = "Votre essai gratuit de Fidelavis se termine <strong>dans 3 jours</strong>.";
+      urgency     = "Pour ne pas perdre l'accès à votre tableau de bord, votre carte fidélité NFC et vos avis Google, configurez votre abonnement avant la fin de l'essai.";
+      cta         = "S'abonner maintenant";
       break;
     case "j-1":
-      subject = "📅 Demain : fin de votre essai Fidelavis";
-      intro   = "Bonjour,\n\nVotre essai gratuit de Fidelavis pour " + restoName + " se termine DEMAIN.";
-      urgency = "Pour continuer à utiliser Fidelavis sans interruption, abonnez-vous dès aujourd'hui. Aucun prélèvement avant la fin de l'essai — vous restez gratuit jusqu'au bout.";
-      cta     = "S'abonner avant demain →";
+      subject     = "📅 Demain : fin de votre essai Fidelavis";
+      headerEmoji = "📅";
+      headerColor = "#d97706";
+      intro       = "Votre essai gratuit de Fidelavis pour <strong>" + restoName + "</strong> se termine <strong>DEMAIN</strong>.";
+      urgency     = "Pour continuer à utiliser Fidelavis sans interruption, abonnez-vous dès aujourd'hui. Aucun prélèvement avant la fin de l'essai — vous restez gratuit jusqu'au bout.";
+      cta         = "S'abonner avant demain";
       break;
     case "j-0":
-      subject = "🚨 Dernière chance — votre essai Fidelavis expire aujourd'hui";
-      intro   = "Bonjour,\n\nVotre essai gratuit de Fidelavis pour " + restoName + " se termine AUJOURD'HUI.";
-      urgency = "Sans abonnement, votre accès sera bloqué dès demain. Choisissez votre formule en quelques clics.";
-      cta     = "S'abonner maintenant →";
+      subject     = "🚨 Dernière chance — votre essai Fidelavis expire aujourd'hui";
+      headerEmoji = "🚨";
+      headerColor = "#dc2626";
+      intro       = "Votre essai gratuit de Fidelavis pour <strong>" + restoName + "</strong> se termine <strong>AUJOURD'HUI</strong>.";
+      urgency     = "Sans abonnement, votre accès sera bloqué dès demain. Choisissez votre formule en quelques clics.";
+      cta         = "S'abonner maintenant";
       break;
     case "j+1":
-      subject = "Votre essai Fidelavis est terminé — réactivez votre compte";
-      intro   = "Bonjour,\n\nVotre essai gratuit de Fidelavis pour " + restoName + " s'est terminé hier.";
-      urgency = "Votre tableau de bord affiche maintenant un message d'invitation à l'abonnement. Choisissez votre formule pour réactiver l'accès complet.";
-      cta     = "Réactiver mon compte →";
+      subject     = "Votre essai Fidelavis est terminé — réactivez votre compte";
+      headerEmoji = "🔓";
+      headerColor = "#6b7280";
+      intro       = "Votre essai gratuit de Fidelavis pour <strong>" + restoName + "</strong> s'est terminé hier.";
+      urgency     = "Votre tableau de bord affiche maintenant un message d'invitation à l'abonnement. Choisissez votre formule pour réactiver l'accès complet.";
+      cta         = "Réactiver mon compte";
       break;
   }
 
-  var body = [
-    intro,
+  // Version HTML (avec liens cliquables)
+  var html = [
+    '<!DOCTYPE html>',
+    '<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>',
+    '<body style="margin:0;padding:0;background:#f4f6f9;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1c1c2e">',
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:24px 12px">',
+    '<tr><td align="center">',
+
+      '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,.08);overflow:hidden">',
+
+        // Header
+        '<tr><td style="background:' + headerColor + ';padding:28px 24px;text-align:center;color:#ffffff">',
+          '<div style="font-size:36px;line-height:1;margin-bottom:8px">' + headerEmoji + '</div>',
+          '<div style="font-size:20px;font-weight:800;line-height:1.3">Fidelavis</div>',
+        '</td></tr>',
+
+        // Body
+        '<tr><td style="padding:32px 28px 8px">',
+          '<p style="font-size:15px;color:#1c1c2e;margin:0 0 16px">Bonjour,</p>',
+          '<p style="font-size:15px;color:#1c1c2e;margin:0 0 16px;line-height:1.6">' + intro + '</p>',
+          '<p style="font-size:14px;color:#4b5563;margin:0 0 24px;line-height:1.6">' + urgency + '</p>',
+
+          // CTA Button
+          '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 28px"><tr>',
+            '<td style="background:#b6152b;border-radius:10px">',
+              '<a href="' + billingUrl + '" style="display:inline-block;padding:14px 28px;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700">👉 ' + cta + '</a>',
+            '</td>',
+          '</tr></table>',
+
+        '</td></tr>',
+
+        // Plans
+        '<tr><td style="padding:0 28px 28px">',
+          '<div style="border-top:1px solid #e5e7eb;padding-top:24px">',
+            '<div style="font-size:12px;font-weight:800;color:#6b7280;letter-spacing:.08em;margin-bottom:14px">VOS FORMULES</div>',
+
+            // Essentiel
+            '<div style="border:1.5px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:12px">',
+              '<div style="font-weight:800;font-size:15px;margin-bottom:4px">🟢 Essentiel</div>',
+              '<div style="font-size:22px;font-weight:900;color:#b6152b;margin-bottom:8px">97 €<span style="font-size:13px;font-weight:400;color:#6b7280">/mois</span></div>',
+              '<div style="font-size:13px;color:#4b5563;line-height:1.6">NFC fidélité illimité · Collecte avis Google · Tableau de bord · Notifications push</div>',
+            '</div>',
+
+            // Pro
+            '<div style="border:2px solid #b6152b;border-radius:10px;padding:16px;position:relative">',
+              '<div style="position:absolute;top:-10px;right:14px;background:#b6152b;color:#fff;font-size:11px;font-weight:700;padding:2px 12px;border-radius:999px">⭐ Recommandé</div>',
+              '<div style="font-weight:800;font-size:15px;margin-bottom:4px">⭐ Pro</div>',
+              '<div style="font-size:22px;font-weight:900;color:#b6152b;margin-bottom:8px">149 €<span style="font-size:13px;font-weight:400;color:#6b7280">/mois</span></div>',
+              '<div style="font-size:13px;color:#4b5563;line-height:1.6">Tout Essentiel + IA réponse aux avis · Offre du jour · Réservations en ligne</div>',
+            '</div>',
+
+            '<div style="font-size:12px;color:#9ca3af;text-align:center;margin-top:14px">+ 199 € installation (sur la 1ère facture uniquement)</div>',
+          '</div>',
+        '</td></tr>',
+
+        // Footer
+        '<tr><td style="padding:20px 28px 28px;border-top:1px solid #e5e7eb;background:#fafafa">',
+          '<div style="font-size:13px;color:#6b7280;line-height:1.7">',
+            'Connexion à votre espace : <a href="' + loginUrl + '" style="color:#1976d2;text-decoration:none">' + loginUrl + '</a><br>',
+            'Une question ? <a href="mailto:support@fidelavis.com" style="color:#b6152b;font-weight:600;text-decoration:none">support@fidelavis.com</a>',
+          '</div>',
+          '<div style="font-size:12px;color:#9ca3af;margin-top:14px">L\'équipe Fidelavis</div>',
+        '</td></tr>',
+
+      '</table>',
+
+    '</td></tr></table>',
+    '</body></html>'
+  ].join("");
+
+  // Version texte brut (fallback pour clients qui n'affichent pas l'HTML)
+  var text = [
+    "Bonjour,",
+    "",
+    intro.replace(/<\/?strong>/g, "*"),
     "",
     urgency,
+    "",
+    "👉 " + cta + " : " + billingUrl,
     "",
     "─────────────────────────────",
     "VOS FORMULES",
@@ -1016,49 +1101,65 @@ function _sendReminderEmail(to, restoName, slug, reminderKey, daysLeft) {
     "",
     "─────────────────────────────",
     "",
-    "👉 " + cta,
-    billingUrl,
-    "",
     "Connexion à votre espace : " + loginUrl,
-    "",
-    "Une question ? Répondez à cet email ou contactez support@fidelavis.com",
+    "Une question ? support@fidelavis.com",
     "",
     "L'équipe Fidelavis"
   ].join("\n");
 
-  _sendEmailFromProxy(to, subject, body);
+  _sendEmailFromProxy(to, subject, html, text);
 }
 
 /**
- * _sendEmailFromProxy(to, subject, body)
- * Envoie via Brevo (BREVO_API_KEY) avec fallback MailApp.
+ * _sendEmailFromProxy(to, subject, html, text)
+ * Envoie un email HTML via Brevo (sender = support@fidelavis.com).
+ * Fallback MailApp si Brevo échoue.
  */
-function _sendEmailFromProxy(to, subject, body) {
+function _sendEmailFromProxy(to, subject, html, text) {
   if (!to) return;
   var apiKey = PropertiesService.getScriptProperties().getProperty("BREVO_API_KEY");
+
   if (apiKey) {
     try {
-      UrlFetchApp.fetch("https://api.brevo.com/v3/smtp/email", {
+      var res = UrlFetchApp.fetch("https://api.brevo.com/v3/smtp/email", {
         method:             "post",
         headers:            { "api-key": apiKey, "Content-Type": "application/json" },
         payload:            JSON.stringify({
           sender:      { name: "Fidelavis", email: "support@fidelavis.com" },
           to:          [{ email: to }],
           subject:     subject,
-          textContent: body
+          htmlContent: html,
+          textContent: text || subject
         }),
         muteHttpExceptions: true
       });
-      return;
+      var code = res.getResponseCode();
+      if (code >= 200 && code < 300) {
+        Logger.log("_sendEmailFromProxy Brevo OK → " + to + " (HTTP " + code + ")");
+        return;
+      }
+      Logger.log("_sendEmailFromProxy Brevo failed (HTTP " + code + ") : " + res.getContentText().slice(0, 300));
     } catch(e) {
-      Logger.log("_sendEmailFromProxy Brevo error: " + e.message);
+      Logger.log("_sendEmailFromProxy Brevo exception : " + e.message);
     }
+  } else {
+    Logger.log("_sendEmailFromProxy : BREVO_API_KEY manquant — fallback MailApp");
   }
-  // Fallback : MailApp (envoie depuis l'email du compte Google)
+
+  // Fallback : MailApp (envoie depuis l'email Google du compte GAS)
+  // Note : impossible de forcer le From, mais on met replyTo support@fidelavis.com
   try {
-    MailApp.sendEmail(to, subject, body);
+    MailApp.sendEmail({
+      to:       to,
+      subject:  subject,
+      htmlBody: html,
+      body:     text || subject,
+      name:     "Fidelavis",
+      replyTo:  "support@fidelavis.com"
+    });
+    Logger.log("_sendEmailFromProxy MailApp OK → " + to);
   } catch(e) {
-    Logger.log("_sendEmailFromProxy MailApp error: " + e.message);
+    Logger.log("_sendEmailFromProxy MailApp error : " + e.message);
   }
 }
 
