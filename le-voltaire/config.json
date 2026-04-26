@@ -1,0 +1,16 @@
+{
+  "name": "Le voltaire",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "plan": "essentiel",
+  "subscriptionStatus": "trialing",
+  "trialEndDate": "2026-05-10",
+  "setupPaid": false,
+  "billingEmail": "dan.drumonde@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "phone": "0147699592",
+  "email": "dan.drumonde@gmail.com"
+}
