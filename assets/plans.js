@@ -17,50 +17,32 @@ var STRIPE_CONFIG = {
   // URL du Google Apps Script proxy (portail client Stripe)
   portalGasUrl: "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec",
 
-  // IDs des prix Stripe (mode test)
+  // IDs des prix Stripe — Offre Terrain unique
+  // ⚠️ REMPLACER par le vrai price ID après création dans le dashboard Stripe
   priceIds: {
-    setup:     "price_1TKmDvDpSXl9Whzr1VHwlRj5",   // 199 € installation (one-time)
-    essentiel: "price_1TKmIoDpSXl9Whzr8iKy2Dhl",   // 97 €/mois
-    pro:       "price_1TKmNtDpSXl9WhzrsMhfAShh"    // 149 €/mois
+    terrain: "REMPLACER_PAR_PRICE_ID_129"  // 129 €/mois (mise en place offerte)
   }
 };
 
 /* --------------------------------------------------
-   PLANS — définition des offres
+   PLANS — Offre Terrain unique 129€/mois
 -------------------------------------------------- */
 var PLANS = {
-  essentiel: {
-    id:           "essentiel",
-    name:         "Essentiel",
-    monthlyPrice: 97,
-    setupPrice:   199,
-    currency:     "EUR",
-    recommended:  false,
-    description:  "Pour démarrer avec la fidélité digitale",
-    features: [
-      "QR code fidélité personnalisé",
-      "Coupon mensuel automatique",
-      "Tableau de bord admin",
-      "Notifications push clients",
-      "1 établissement"
-    ],
-    priceId:      null, // défini dynamiquement depuis STRIPE_CONFIG
-    setupPriceId: null
-  },
-  pro: {
-    id:           "pro",
-    name:         "Pro",
-    monthlyPrice: 149,
-    setupPrice:   199,
+  terrain: {
+    id:           "terrain",
+    name:         "Offre Terrain",
+    monthlyPrice: 129,
+    setupPrice:   0,        // Mise en place offerte
     currency:     "EUR",
     recommended:  true,
-    description:  "Pour les restaurateurs qui veulent tout maîtriser",
+    description:  "Tout-en-un pour fidéliser vos clients dès aujourd'hui",
     features: [
-      "Tout le plan Essentiel",
-      "Réponses avis IA (Claude)",
-      "Google Business intégré",
-      "Statistiques avancées",
-      "Support prioritaire"
+      "10 cartes NFC prêtes à poser",
+      "Notifications push illimitées",
+      "Offres & coupons fidélité",
+      "Collecte automatique des emails",
+      "Plus d'avis Google naturellement",
+      "Tableau de bord simple"
     ],
     priceId:      null,
     setupPriceId: null
@@ -68,10 +50,8 @@ var PLANS = {
 };
 
 // Injecter les priceIds depuis STRIPE_CONFIG
-PLANS.essentiel.priceId      = STRIPE_CONFIG.priceIds.essentiel;
-PLANS.essentiel.setupPriceId = STRIPE_CONFIG.priceIds.setup;
-PLANS.pro.priceId            = STRIPE_CONFIG.priceIds.pro;
-PLANS.pro.setupPriceId       = STRIPE_CONFIG.priceIds.setup;
+PLANS.terrain.priceId = STRIPE_CONFIG.priceIds.terrain;
+// setupPriceId reste null (mise en place offerte)
 
 /* --------------------------------------------------
    PENNYLANE — facturation électronique
@@ -89,20 +69,24 @@ var PENNYLANE = {
 -------------------------------------------------- */
 
 /**
- * isPro(plan) — true si le plan est "pro"
+ * isPro(plan) — déprécié (1 seul plan désormais).
+ * Retourne true si le plan est actif (terrain).
  */
 function isPro(plan) {
-  return (plan || "").toLowerCase() === "pro";
+  var p = (plan || "").toLowerCase();
+  return p === "terrain" || p === "pro";   // "pro" toléré pour ancien data
 }
 
 /**
  * hasFeature(plan, featureKey) — vérifie si une feature
  * est disponible pour le plan donné
- * @param {string} plan — "essentiel" | "pro"
+ * @param {string} plan — "terrain"
  * @param {string} featureKey — mot-clé à chercher dans les features
  */
 function hasFeature(plan, featureKey) {
-  var p = (plan || "essentiel").toLowerCase();
+  var p = (plan || "terrain").toLowerCase();
+  // Compat ascendante : essentiel/pro → on traite comme terrain
+  if (p === "essentiel" || p === "pro") p = "terrain";
   if (!PLANS[p]) return false;
   var key = featureKey.toLowerCase();
   return PLANS[p].features.some(function(f) {
@@ -112,9 +96,12 @@ function hasFeature(plan, featureKey) {
 
 /**
  * getPlan(planId) — retourne l'objet plan complet
+ * Compat : essentiel/pro mappés vers terrain.
  */
 function getPlan(planId) {
-  return PLANS[(planId || "").toLowerCase()] || null;
+  var p = (planId || "").toLowerCase();
+  if (p === "essentiel" || p === "pro") p = "terrain";
+  return PLANS[p] || null;
 }
 
 /**

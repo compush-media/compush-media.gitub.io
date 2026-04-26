@@ -7,10 +7,9 @@
 (function() {
 
   var STRIPE_GAS_URL = "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec";
+  // ⚠️ REMPLACER par l'ID du price Stripe 129€/mois après création dans le dashboard Stripe
   var PRICE_IDS = {
-    essentiel: "price_1TKmIoDpSXl9Whzr8iKy2Dhl",
-    pro:       "price_1TKmNtDpSXl9WhzrsMhfAShh",
-    setup:     "price_1TKmDvDpSXl9Whzr1VHwlRj5"
+    terrain: "REMPLACER_PAR_PRICE_ID_129"
   };
 
   /* --------------------------------------------------
@@ -83,53 +82,43 @@
             '</p>',
           '</div>',
 
-          // Plans
-          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px" id="fv-plan-cards">',
+          // OFFRE TERRAIN EXCLUSIVE — 1 seule card
+          '<div style="border:2px solid #b6152b;border-radius:14px;overflow:hidden;margin-bottom:20px" id="fv-plan-cards">',
 
-            // Essentiel
-            '<div style="border:2px solid #e5e7eb;border-radius:14px;padding:20px;',
-                  'display:flex;flex-direction:column">',
-              '<div style="font-size:16px;font-weight:800;color:#1c1c2e;margin-bottom:4px">Essentiel</div>',
-              '<div style="font-size:28px;font-weight:900;color:#b6152b;line-height:1">97€',
-                '<span style="font-size:13px;font-weight:400;color:#9ca3af">/mois</span>',
-              '</div>',
-              '<div style="font-size:11px;color:#9ca3af;margin-bottom:14px">+ 199€ installation (1ère facture)</div>',
-              '<ul style="list-style:none;padding:0;margin:0 0 16px;font-size:13px;color:#374151;flex:1">',
-                '<li style="padding:4px 0;border-bottom:1px solid #f3f4f6">✓ NFC fidélité illimité</li>',
-                '<li style="padding:4px 0;border-bottom:1px solid #f3f4f6">✓ Collecte avis Google</li>',
-                '<li style="padding:4px 0;border-bottom:1px solid #f3f4f6">✓ Tableau de bord</li>',
-                '<li style="padding:4px 0">✓ Notifications push</li>',
-              '</ul>',
-              '<button id="fv-btn-essentiel" ',
-                'style="width:100%;background:#e5e7eb;color:#374151;border:none;border-radius:10px;',
-                       'padding:11px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s">',
-                'Choisir Essentiel',
-              '</button>',
+            // Header rouge
+            '<div style="background:#b6152b;color:#fff;padding:22px 22px">',
+              '<div style="display:inline-block;background:rgba(255,255,255,0.2);color:#fff;padding:5px 14px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.05em;margin-bottom:12px">OFFRE TERRAIN EXCLUSIVE</div>',
+              '<div style="font-size:38px;font-weight:900;line-height:1;margin-bottom:6px">129€<span style="font-size:14px;font-weight:400;opacity:.9"> /mois</span></div>',
+              '<div style="font-size:13px;color:rgba(255,255,255,.85);font-style:italic">Résiliable à tout moment — sans engagement</div>',
             '</div>',
 
-            // Pro
-            '<div style="border:2px solid #b6152b;border-radius:14px;padding:20px;',
-                  'position:relative;display:flex;flex-direction:column">',
-              '<div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);',
-                    'background:#b6152b;color:#fff;font-size:11px;font-weight:700;',
-                    'padding:3px 14px;border-radius:999px;white-space:nowrap">',
-                '⭐ Recommandé',
-              '</div>',
-              '<div style="font-size:16px;font-weight:800;color:#1c1c2e;margin-bottom:4px">Pro</div>',
-              '<div style="font-size:28px;font-weight:900;color:#b6152b;line-height:1">149€',
-                '<span style="font-size:13px;font-weight:400;color:#9ca3af">/mois</span>',
-              '</div>',
-              '<div style="font-size:11px;color:#9ca3af;margin-bottom:14px">+ 199€ installation (1ère facture)</div>',
-              '<ul style="list-style:none;padding:0;margin:0 0 16px;font-size:13px;color:#374151;flex:1">',
-                '<li style="padding:4px 0;border-bottom:1px solid #f3f4f6">✓ Tout Essentiel +</li>',
-                '<li style="padding:4px 0;border-bottom:1px solid #f3f4f6">✓ IA réponse aux avis</li>',
-                '<li style="padding:4px 0;border-bottom:1px solid #f3f4f6">✓ Offre du jour</li>',
-                '<li style="padding:4px 0">✓ Réservations en ligne</li>',
+            // Body — features
+            '<div style="padding:18px 20px 8px;background:#fff">',
+              '<div style="font-size:11px;font-weight:700;color:#9ca3af;letter-spacing:.08em;margin-bottom:10px">CE QUI EST INCLUS</div>',
+              '<ul style="list-style:none;padding:0;margin:0;font-size:13px;color:#374151;line-height:1.7">',
+                '<li>✓ 10 cartes NFC prêtes à poser sur vos tables</li>',
+                '<li>✓ Notifications push illimitées</li>',
+                '<li>✓ Offres &amp; coupons fidélité</li>',
+                '<li>✓ Collecte automatique des emails clients</li>',
+                '<li>✓ Plus d\'avis Google naturellement ⭐</li>',
+                '<li>✓ Tableau de bord simple</li>',
               '</ul>',
-              '<button id="fv-btn-pro" ',
+            '</div>',
+
+            // Bonus
+            '<div style="padding:0 20px 18px;background:#fff;font-size:12.5px;color:#374151">',
+              '<div style="margin-top:14px;padding-top:14px;border-top:1px solid #e5e7eb">',
+                '<div><strong>🎁 Mise en place <span style="color:#9ca3af;font-weight:400;text-decoration:line-through">199€</span> → <span style="color:#b6152b">offerte</span></strong></div>',
+                '<div style="margin-top:6px"><strong>⏰ 14 jours d\'essai déjà offerts</strong> — votre carte est enregistrée et la 1ère facture arrive après l\'essai</div>',
+              '</div>',
+            '</div>',
+
+            // Bouton CTA
+            '<div style="padding:0 20px 20px;background:#fff">',
+              '<button id="fv-btn-terrain" ',
                 'style="width:100%;background:#b6152b;color:#fff;border:none;border-radius:10px;',
-                       'padding:11px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s">',
-                'Choisir Pro',
+                       'padding:14px;font-size:15px;font-weight:800;cursor:pointer;transition:all .15s">',
+                '👉 Activer mon abonnement',
               '</button>',
             '</div>',
 
@@ -153,11 +142,9 @@
 
     document.body.appendChild(el);
 
-    // Attacher les boutons
-    var btnEss = document.getElementById("fv-btn-essentiel");
-    var btnPro  = document.getElementById("fv-btn-pro");
-    if (btnEss) btnEss.addEventListener("click", function() { _subscribe("essentiel", cfg, btnEss); });
-    if (btnPro)  btnPro.addEventListener("click",  function() { _subscribe("pro",       cfg, btnPro);  });
+    // Attacher le bouton CTA
+    var btnTerrain = document.getElementById("fv-btn-terrain");
+    if (btnTerrain) btnTerrain.addEventListener("click", function() { _subscribe("terrain", cfg, btnTerrain); });
   }
 
   /* --------------------------------------------------
@@ -195,8 +182,7 @@
           cancelUrl:  window.location.href,
           metadata: {
             planId:       planId,
-            slug:         slug,
-            setupPriceId: PRICE_IDS.setup
+            slug:         slug
           }
         })
       });

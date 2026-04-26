@@ -97,7 +97,7 @@
      _buildBillingHTML(cfg) — génère le HTML complet
   -------------------------------------------------- */
   function _buildBillingHTML(cfg) {
-    var plan        = cfg.plan || "essentiel";
+    var plan        = cfg.plan || "terrain";
     var status      = cfg.subscriptionStatus || "incomplete";
     var isTrialing  = status === "trialing";
     var statusLabel = (typeof getStatusLabel === "function") ? getStatusLabel(status) : status;
@@ -284,14 +284,13 @@
   // URLs hardcodées — indépendantes du chargement de plans.js
   var STRIPE_GAS_URL = "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec";
   var PROXY_URL      = "https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec";
+  // ⚠️ REMPLACER par l'ID du price Stripe 129€/mois après création dans le dashboard
   var PRICE_IDS = {
-    essentiel: "price_1TKmIoDpSXl9Whzr8iKy2Dhl",
-    pro:       "price_1TKmNtDpSXl9WhzrsMhfAShh",
-    setup:     "price_1TKmDvDpSXl9Whzr1VHwlRj5"
+    terrain: "REMPLACER_PAR_PRICE_ID_129"
   };
 
   async function _startSelfSetupCheckout(cfg, btn) {
-    var plan  = cfg.plan  || "essentiel";
+    var plan  = "terrain";  // Plan unique Offre Terrain 129€/mois
     var email = cfg.billingEmail || "";
     var slug  = _getSlug();
     var originalHTML = btn.innerHTML;
@@ -301,7 +300,7 @@
     try {
       // Stripe Checkout mode=setup : collecte la carte sans prélèvement.
       // Après retour, _handleSetupReturn() crée l'abonnement via l'API
-      // Subscriptions qui, elle, accepte add_invoice_items → 199€ + 97€ à J+14.
+      // Subscriptions (mise en place 199€ offerte → pas d'add_invoice_items).
       var res = await fetch(STRIPE_GAS_URL, {
         method:  "POST",
         headers: { "Content-Type": "text/plain" },
@@ -312,9 +311,8 @@
           successUrl: window.location.origin + "/" + slug + "/admin/billing.html?session_id={CHECKOUT_SESSION_ID}",
           cancelUrl:  window.location.href,
           metadata: {
-            planId:       plan,
-            slug:         slug,
-            setupPriceId: PRICE_IDS.setup
+            planId: plan,
+            slug:   slug
           }
         })
       });
@@ -349,12 +347,10 @@
       // Charger la config pour récupérer plan et email
       var cfg = await loadBillingConfig() || {};
 
-      // chosen_plan dans l'URL = plan choisi depuis le popup d'expiration (admin-trial.js)
-      // Priorité : URL param > config.json > défaut essentiel
-      var chosenPlan = new URLSearchParams(window.location.search).get("chosen_plan");
-      var plan = chosenPlan || cfg.plan || "essentiel";
+      // Plan unique : terrain (129€/mois). chosen_plan ignoré, conservé pour debug.
+      var plan = "terrain";
 
-      // 1. Créer l'abonnement via GAS (trial 14j + 199€ invoice item sur 1ère facture)
+      // 1. Créer l'abonnement via GAS (trial 14j, mise en place offerte → pas d'invoice item)
       //    On envoie soit setupIntentId, soit sessionId — le GAS gère les 2.
       var finalRes = await fetch(STRIPE_GAS_URL, {
         method:  "POST",
@@ -364,8 +360,8 @@
           setupIntentId: setupIntentId || "",
           sessionId:     sessionId     || "",
           planId:        plan,
-          priceId:       PRICE_IDS[plan] || PRICE_IDS.essentiel,
-          setupPriceId:  PRICE_IDS.setup,
+          priceId:       PRICE_IDS.terrain,
+          // setupPriceId omis volontairement → mise en place offerte
           email:         cfg.billingEmail || cfg.email || ""
         })
       });
@@ -456,7 +452,7 @@
           slug:            slug,
           stripeCustomerId: session.customerId || "",
           email:           session.email       || "",
-          plan:            session.planId      || "essentiel",
+          plan:            session.planId      || "terrain",
           status:          "active"
         })
       });
