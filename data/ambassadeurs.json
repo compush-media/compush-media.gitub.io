@@ -28,5 +28,20 @@
     "statut": "actif",
     "max_restaurants_test": 5,
     "notes": ""
+  },
+  {
+    "id": "amb_mog4b3lt",
+    "token": "tok_7nxurros8jdf85fu",
+    "restaurants_crees": [],
+    "date_creation": "2026-04-26",
+    "prenom": "Dany",
+    "nom": "Drumonde",
+    "email": "danydrumonde@gmail.com",
+    "telephone": "0661613240",
+    "ville": "La Garenne Colombes",
+    "code": "AMB-DANY-DRU-003",
+    "statut": "actif",
+    "max_restaurants_test": 5,
+    "notes": ""
   }
 ]
