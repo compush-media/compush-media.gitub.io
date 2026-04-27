@@ -675,8 +675,19 @@ let _currentLien = '';
 //  AUTH (GitHub PAT)
 // ══════════════════════════════════════
 function checkAuth() {
-  return localStorage.getItem(AUTH_KEY) === 'granted'
-      && !!localStorage.getItem(TOKEN_KEY);
+  // 1) Auth super-admin propre
+  if (localStorage.getItem(AUTH_KEY) === 'granted'
+      && !!localStorage.getItem(TOKEN_KEY)) return true;
+  // 2) Auth héritée de fidelavis-admin (même origine, même PAT GitHub)
+  //    → permet l'embed iframe et le SSO sans re-login.
+  const fvRole  = localStorage.getItem('fv_role');
+  const fvToken = localStorage.getItem('fv_gh_token');
+  if (fvRole === 'superadmin' && fvToken) {
+    localStorage.setItem(AUTH_KEY, 'granted');
+    localStorage.setItem(TOKEN_KEY, fvToken);
+    return true;
+  }
+  return false;
 }
 
 async function doLogin() {

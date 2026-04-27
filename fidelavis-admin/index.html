@@ -463,6 +463,9 @@
     <a class="nav-item" href="javascript:void(0)" data-section="restaurants" onclick="showSection('restaurants',this)">
       <span class="nav-icon">🍽️</span> Restaurants
     </a>
+    <a class="nav-item" href="javascript:void(0)" data-section="ambassadeurs" onclick="showSection('ambassadeurs',this)">
+      <span class="nav-icon">👥</span> Ambassadeurs
+    </a>
     <a class="nav-item" href="javascript:void(0)" data-section="settings" onclick="showSection('settings',this)">
       <span class="nav-icon">⚙️</span> Paramètres
     </a>
@@ -602,6 +605,17 @@
         <div class="settings-card">
           <h3>🤖 Personnalisation IA</h3>
           <div class="form-row">
+            <label>Type d'établissement</label>
+            <select id="set_business_type">
+              <option value="restaurant_premium">🍽️ Restaurant gastronomique / bistrot premium</option>
+              <option value="brasserie">🍺 Brasserie / restaurant décontracté</option>
+              <option value="cafe">☕ Café / snack / restauration rapide</option>
+              <option value="hotel">🏨 Hôtel / hébergement</option>
+              <option value="barber">💈 Salon de coiffure / barbier / beauté</option>
+              <option value="commerce">🛍️ Commerce de proximité / artisan / services</option>
+            </select>
+          </div>
+          <div class="form-row">
             <label>Ton de réponse</label>
             <select id="set_response_tone">
               <option value="warm">🤗 Chaleureux (recommandé pour les restaurants)</option>
@@ -616,6 +630,10 @@
           <div class="form-row">
             <label>Phrase de contact (avis négatifs)</label>
             <input type="text" id="set_contact_phrase" placeholder="N'hésitez pas à nous contacter directement..." />
+          </div>
+          <div class="form-row">
+            <label>Informations spécifiques à votre établissement <span style="font-size:11px;color:var(--muted)">(optionnel — spécialité, valeurs, quartier…)</span></label>
+            <input type="text" id="set_business_context" placeholder="Ex : spécialiste du ramen depuis 2015, équipe de 8 personnes, quartier Bastille" />
           </div>
           <button class="btn-primary" style="width:100%" onclick="saveSettings()">💾 Enregistrer</button>
         </div>
@@ -828,6 +846,24 @@
       </div>
     </section>
 
+    <!-- ── AMBASSADEURS ── -->
+    <section class="section" id="section-ambassadeurs">
+      <div class="section-title">👥 Ambassadeurs terrain
+        <span style="font-size:13px;font-weight:600;color:var(--muted);margin-left:8px">Gestion des commerciaux et de leurs restaurants</span>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;height:calc(100vh - 180px);min-height:600px">
+        <iframe
+          src="/admin/super-admin.html"
+          style="width:100%;height:100%;border:0;display:block"
+          title="Gestion ambassadeurs"
+          loading="lazy"></iframe>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:10px;text-align:center">
+        Vue intégrée — accessible aussi en plein écran via
+        <a href="/admin/super-admin.html" target="_blank" style="color:var(--brand);font-weight:700">/admin/super-admin.html</a>
+      </p>
+    </section>
+
     <!-- ── HISTORIQUE ── -->
     <section class="section" id="section-logs">
       <div class="section-title">📋 Historique des actions</div>
@@ -864,6 +900,8 @@ let currentAccount  = null;
 let currentLocation = null;
 let currentFilter = { status: '', rating: '', search: '', isRating: false };
 let currentPage   = 1;
+let _pendingPublishReviewId = null;
+let _pendingPublishText     = null;
 
 // ============================================================
 //  INIT
@@ -1021,20 +1059,24 @@ async function fetchGBPReviews() {
   try {
     const data = await gbpGet(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews?pageSize=50`);
     const ratingMap = { ONE: 1, TWO: 2, THREE: 3, FOUR: 4, FIVE: 5 };
-    const reviews = (data.reviews || []).map(r => ({
-      id: r.reviewId,
-      reviewer_name: r.reviewer?.displayName || 'Anonyme',
-      reviewer_photo: r.reviewer?.profilePhotoUrl || null,
-      rating: ratingMap[r.starRating] || 0,
-      comment: r.comment || '',
-      published_at: r.createTime,
-      reply_text: r.reviewReply?.comment || null,
-      status: r.reviewReply ? 'replied' : 'pending',
-      is_new: false,
-      ai_draft: null,
-      tags: [],
-      location_name: currentLocation.split('/').pop()
-    }));
+    const reviews = (data.reviews || []).map(r => {
+      const review = {
+        id: r.reviewId,
+        reviewer_name: r.reviewer?.displayName || 'Anonyme',
+        reviewer_photo: r.reviewer?.profilePhotoUrl || null,
+        rating: ratingMap[r.starRating] || 0,
+        comment: r.comment || '',
+        published_at: r.createTime,
+        reply_text: r.reviewReply?.comment || null,
+        status: r.reviewReply ? 'replied' : 'pending',
+        is_new: false,
+        ai_draft: null,
+        tags: [],
+        location_name: currentLocation.split('/').pop()
+      };
+      review.tags = autoTagReview(review);
+      return review;
+    });
     localStorage.setItem('fv_reviews', JSON.stringify(reviews));
     localStorage.setItem('fv_last_sync', new Date().toISOString());
     reviews.forEach(r => addLog('review.new', 'review', r.id));
@@ -1248,6 +1290,51 @@ function buildActionButtons(r) {
 }
 
 // ============================================================
+//  ANALYSE SÉMANTIQUE DES AVIS
+// ============================================================
+function extractKeywords(comment) {
+  if (!comment) return { mentions: [], positives: [], negatives: [], hasComplaint: false, hasPraise: false, hasWaiting: false, hasPriceConcern: false };
+  const text = comment.toLowerCase();
+
+  const positiveWords  = ['excellent', 'parfait', 'délicieux', 'exceptionnel', 'magnifique', 'incroyable', 'superbe', 'fantastique', 'très bien', 'très bon', 'recommande', 'meilleur', 'régal', 'adoré', 'coup de cœur', 'génial', 'formidable', 'chaleureux', 'souriant', 'accueil', 'impeccable', 'au top', 'bravo', 'félicitations', 'reviendrai', 'fidèle'];
+  const negativeWords  = ['déçu', 'décevant', 'mauvais', 'horrible', 'catastrophique', 'froid', 'trop long', 'sale', 'bruyant', 'insuffisant', 'oubli', 'erreur', 'désagréable', 'immangeable', 'médiocre', 'nul'];
+  const waitingWords   = ['attente', 'attendu', 'attendre', 'lent', 'lenteur', 'long', '30 min', '45 min', '1h'];
+  const priceWords     = ['cher', 'prix', 'rapport qualité', 'addition', 'coût', 'facturation'];
+  const foodWords      = ['cuisine', 'plat', 'repas', 'menu', 'dessert', 'entrée', 'steak', 'pizza', 'sushi', 'burger', 'salade', 'viande', 'poisson', 'pasta', 'gâteau', 'vin', 'cocktail', 'café', 'carte'];
+  const serviceWords   = ['service', 'accueil', 'personnel', 'équipe', 'serveur', 'serveuse', 'gérant', 'propriétaire'];
+  const ambientWords   = ['cadre', 'décor', 'ambiance', 'terrasse', 'salle', 'musique', 'bruit', 'lumière'];
+
+  const positives  = positiveWords.filter(w => text.includes(w));
+  const negatives  = negativeWords.filter(w => text.includes(w));
+  const mentions   = [...new Set([...foodWords, ...serviceWords, ...ambientWords].filter(w => text.includes(w)))].slice(0, 4);
+
+  return {
+    mentions,
+    positives: positives.slice(0, 3),
+    negatives: negatives.slice(0, 3),
+    hasComplaint:    negatives.length > 0,
+    hasPraise:       positives.length > 0,
+    hasWaiting:      waitingWords.some(w => text.includes(w)),
+    hasPriceConcern: priceWords.some(w => text.includes(w))
+  };
+}
+
+function autoTagReview(review) {
+  const tags = [];
+  const r = review.rating;
+  if (r >= 4) tags.push('positif');
+  else if (r === 3) tags.push('mitige');
+  else tags.push('negatif');
+
+  if (!review.comment || review.comment.trim() === '') tags.push('sans-commentaire');
+
+  const kw = extractKeywords(review.comment);
+  if (kw.hasWaiting || kw.hasPriceConcern || kw.negatives.length >= 2) tags.push('urgent');
+
+  return tags;
+}
+
+// ============================================================
 //  GÉNÉRATION IA
 // ============================================================
 function generateTemplateResponse(review) {
@@ -1257,28 +1344,117 @@ function generateTemplateResponse(review) {
   const signature    = s.signature || s.owner_name || 'L\'équipe';
   const returnPhrase = s.return_phrase || 'Au plaisir de vous revoir très prochainement !';
   const contactPhrase= s.contact_phrase || 'N\'hésitez pas à nous contacter directement.';
-  const reviewerName = review.reviewer_name !== 'Anonyme' ? review.reviewer_name : null;
+  const kw           = extractKeywords(review.comment);
+  const reviewerName = (review.reviewer_name && review.reviewer_name !== 'Anonyme') ? review.reviewer_name.split(' ')[0] : null;
 
-  const greeting = reviewerName
-    ? (tone === 'formal' ? `Madame, Monsieur ${reviewerName},` : `Bonjour ${reviewerName},`)
-    : (tone === 'formal' ? 'Madame, Monsieur,' : 'Bonjour,');
+  const greeting = tone === 'formal'
+    ? (reviewerName ? `Madame, Monsieur ${reviewerName},` : 'Madame, Monsieur,')
+    : (reviewerName ? `Bonjour ${reviewerName},` : 'Bonjour,');
 
-  let body;
+  const mentionStr = kw.mentions.length > 0 ? ` — particulièrement ${kw.mentions.slice(0,2).join(' et ')}` : '';
+
+  const variants5 = [
+    `Merci du fond du cœur pour ce magnifique avis ! Votre enthousiasme${mentionStr} nous touche vraiment et donne encore plus de sens à notre travail. ${returnPhrase}`,
+    `Quel plaisir de lire votre retour${mentionStr} ! Toute l'équipe est ravie d'avoir pu vous offrir cette belle expérience. ${returnPhrase}`,
+    `Merci beaucoup pour ces mots qui font chaud au cœur${mentionStr}. Savoir que vous avez passé un aussi bon moment chez nous, c'est notre plus belle récompense. ${returnPhrase}`
+  ];
+  const variants4 = [
+    `Merci pour ce bel avis et pour avoir pris le temps de partager votre expérience${mentionStr}. Votre retour positif nous encourage à continuer nos efforts au quotidien. ${returnPhrase}`,
+    `Merci beaucoup${mentionStr} ! Nous sommes vraiment contents que votre passage chez ${businessName} vous ait plu. ${returnPhrase}`,
+    `Un grand merci pour votre avis${mentionStr}. Nous faisons tout pour offrir la meilleure expérience possible, et c'est gratifiant de savoir que ça se ressent. ${returnPhrase}`
+  ];
+  const variants3 = [
+    `Merci d'avoir pris le temps de nous laisser votre avis. Nous sommes heureux que certains aspects vous aient plu${mentionStr}, et nous prenons note de vos remarques pour continuer à progresser. ${returnPhrase}`,
+    `Merci pour ce retour honnête${mentionStr}. Nous avons bien noté vos points d'amélioration — ils nous sont précieux pour offrir une meilleure expérience à chaque visite. ${returnPhrase}`
+  ];
+  const variants2 = [
+    `Merci d'avoir partagé votre expérience, même si nous sommes sincèrement désolés qu'elle n'ait pas été à la hauteur. Vos remarques${kw.hasWaiting ? ' sur l\'attente' : ''} sont prises très au sérieux. ${contactPhrase}`,
+    `Nous sommes vraiment navrés pour cette expérience décevante. Ce n'est pas du tout le niveau que nous visons chez ${businessName}, et nous comprenons votre déception. ${contactPhrase}`
+  ];
+  const variants1 = [
+    `Nous sommes sincèrement désolés pour cette expérience. Ce que vous décrivez ne reflète pas nos valeurs et nous prenons cela très au sérieux. ${contactPhrase}`,
+    `Votre retour nous touche et nous en sommes vraiment désolés. Nous aimerions pouvoir échanger avec vous pour comprendre ce qui s'est passé et y remédier. ${contactPhrase}`
+  ];
+
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
   const r = review.rating;
-  if (r === 5)      body = `Merci infiniment pour votre magnifique avis 5 étoiles ! Nous sommes vraiment touchés par votre enthousiasme et ravis que votre expérience chez ${businessName} vous ait pleinement satisfait. ${returnPhrase}`;
-  else if (r === 4) body = `Merci beaucoup pour votre avis positif ! Votre retour nous encourage à continuer nos efforts pour vous offrir la meilleure expérience possible chez ${businessName}. ${returnPhrase}`;
-  else if (r === 3) body = `Merci pour votre avis et pour avoir pris le temps de nous faire part de votre expérience. Nous prenons note de vos remarques et travaillons chaque jour à améliorer nos services chez ${businessName}. ${returnPhrase}`;
-  else if (r === 2) body = `Merci pour votre retour, nous sommes sincèrement désolés que votre expérience n'ait pas été à la hauteur de vos attentes. Vos remarques sont précieuses pour nous améliorer. ${contactPhrase}`;
-  else              body = `Merci d'avoir pris le temps de partager votre avis. Nous sommes vraiment désolés pour cette expérience décevante chez ${businessName}. ${contactPhrase}`;
+  let body;
+  if (r === 5)      body = pick(variants5);
+  else if (r === 4) body = pick(variants4);
+  else if (r === 3) body = pick(variants3);
+  else if (r === 2) body = pick(variants2);
+  else              body = pick(variants1);
 
   return `${greeting}\n\n${body}\n\n${signature}`;
 }
 
 async function generateWithClaude(review, apiKey) {
-  const s = getSettings();
-  const prompt = `Tu es le gérant de "${s.restaurant_name || 'mon commerce'}". Génère une réponse ${s.response_tone === 'formal' ? 'formelle' : 'chaleureuse'} pour cet avis Google ${review.rating}/5 étoiles.
-Avis de ${review.reviewer_name}: "${review.comment || '(sans commentaire)'}"
-Consignes: signe avec "${s.signature || s.owner_name || "L'équipe"}", ${review.rating >= 4 ? `invite à revenir: "${s.return_phrase || ''}"` : `phrase de contact: "${s.contact_phrase || ''}"`}. Maximum 4 phrases, naturel, en français.`;
+  const s  = getSettings();
+  const kw = extractKeywords(review.comment);
+
+  const businessTypeLabels = {
+    restaurant_premium: 'restaurant gastronomique ou bistrot premium',
+    brasserie:          'brasserie ou restaurant décontracté',
+    cafe:               'café, snack ou restauration rapide',
+    hotel:              'hôtel ou établissement d\'hébergement',
+    barber:             'salon de coiffure, barbier ou institut de beauté',
+    commerce:           'commerce de proximité, artisan ou prestataire de service'
+  };
+  const toneInstructions = {
+    warm:         'Chaleureux, humain, sincère. Tu peux utiliser "nous" ou "je". Prénomise si le prénom est connu.',
+    professional: 'Professionnel mais accessible. Soigné sans être froid.',
+    formal:       'Formel et courtois. "Vous" systématique. "Madame, Monsieur" si anonyme.'
+  };
+
+  const businessType   = businessTypeLabels[s.business_type] || 'commerce local';
+  const tone           = s.response_tone || 'warm';
+  const businessName   = s.restaurant_name || 'notre établissement';
+  const signature      = s.signature || s.owner_name || "L'équipe";
+  const returnPhrase   = s.return_phrase || 'Au plaisir de vous revoir !';
+  const contactPhrase  = s.contact_phrase || "N'hésitez pas à nous contacter directement.";
+  const contextExtra   = s.business_context ? `\nContexte spécifique : ${s.business_context}.` : '';
+
+  const mentionNote = kw.mentions.length > 0
+    ? `\nL'avis mentionne spécifiquement : ${kw.mentions.join(', ')}. Si naturel, fais-y référence.`
+    : '';
+  const waitingNote = kw.hasWaiting
+    ? '\nLe client mentionne un problème d\'attente — reconnais-le brièvement sans te justifier.'
+    : '';
+  const priceNote = kw.hasPriceConcern
+    ? '\nLe client mentionne le prix — ne le défends pas, reste empathique.'
+    : '';
+
+  const sentimentContext = review.rating >= 4
+    ? 'Avis positif : remercie sincèrement, sois chaleureux sans être excessif. Évite les superlatifs creux.'
+    : review.rating === 3
+    ? 'Avis mitigé : reconnais les points positifs, montre que tu prends note des améliorations sans te justifier.'
+    : 'Avis négatif : sois empathique et calme, ne te défends pas, invite le client à vous contacter pour trouver une solution.';
+
+  const reviewerFirstName = (review.reviewer_name && review.reviewer_name !== 'Anonyme')
+    ? review.reviewer_name.split(' ')[0]
+    : null;
+
+  const prompt = `Tu es le responsable de "${businessName}", un ${businessType}.${contextExtra}
+Rédige une réponse en français à cet avis Google.
+
+AVIS (${review.rating}/5★) de ${reviewerFirstName || 'un client anonyme'} :
+"${review.comment || '(avis sans texte — a laissé uniquement une note)'}"
+
+CONTEXTE : ${sentimentContext}${mentionNote}${waitingNote}${priceNote}
+
+RÈGLES STRICTES :
+- Ton : ${toneInstructions[tone] || toneInstructions.warm}
+- Salutation : ${reviewerFirstName ? `"Bonjour ${reviewerFirstName},"` : tone === 'formal' ? '"Madame, Monsieur,"' : '"Bonjour,"'}
+- Signature finale : "${signature}"
+- ${review.rating >= 4 ? `Termine avec cette invitation : "${returnPhrase}"` : `Termine avec cette ouverture : "${contactPhrase}"`}
+- 2 à 4 phrases MAXIMUM. Pas de liste, pas de bullet points.
+- Réponds directement À CET AVIS — ne sois pas générique.
+- NE PAS répéter mot pour mot la phrase du client.
+- NE PAS utiliser "Cher(e) [prénom]".
+- NE PAS commencer par "Je" — commence par la salutation.
+
+Écris UNIQUEMENT la réponse finale, sans commentaire.`;
 
   const resp = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -1290,13 +1466,13 @@ Consignes: signe avec "${s.signature || s.owner_name || "L'équipe"}", ${review.
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 300,
+      max_tokens: 350,
       messages: [{ role: 'user', content: prompt }]
     })
   });
   if (!resp.ok) throw new Error(`Claude API ${resp.status}`);
   const data = await resp.json();
-  return data.content[0].text;
+  return data.content[0].text.trim();
 }
 
 // ============================================================
@@ -1359,27 +1535,144 @@ async function publishDraft(reviewId) {
   const btn = document.querySelector(`#card-${reviewId} .btn-primary`);
   if (btn) { btn.disabled = true; btn.textContent = '📤 Publication...'; }
 
-  try {
-    if (googleToken && currentLocation) {
+  let published = false;
+
+  // Tentative via API Google (si token disponible ET API approuvée par Google)
+  if (googleToken && currentLocation && !reviewId.startsWith('demo-')) {
+    try {
       await gbpPut(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews/${reviewId}/reply`, { comment: text });
-      toast('Réponse publiée sur Google !', 'success');
-    } else {
-      toast('Réponse sauvegardée (connectez Google pour publier).', 'info');
+      toast('✅ Réponse publiée sur Google !', 'success');
+      published = true;
+    } catch (e) {
+      // API non approuvée ou erreur → fallback vers copier-coller
+      const isApiBlocked = e.message.includes('403') || e.message.includes('PERMISSION_DENIED') || e.message.includes('disabled');
+      if (isApiBlocked) {
+        showManualPublishDialog(reviewId, text);
+        if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
+        return;
+      }
+      toast('Erreur API Google : ' + e.message, 'error');
+      if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
+      return;
     }
-
-    const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
-    const idx = reviews.findIndex(r => r.id === reviewId);
-    if (idx >= 0) { reviews[idx].status = 'replied'; reviews[idx].reply_text = text; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
-
-    const publishedCard = el(`card-${reviewId}`);
-    if (publishedCard) publishedCard.querySelector('.review-actions').innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
-    addLog('response.published', 'review', reviewId);
-    loadDashboard();
-
-  } catch (e) {
-    toast('Erreur publication : ' + e.message, 'error');
-    if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
   }
+
+  // Pas de token → mode copier-coller direct
+  if (!published && (!googleToken || reviewId.startsWith('demo-'))) {
+    showManualPublishDialog(reviewId, text);
+    if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
+    return;
+  }
+
+  // Marquer comme répondu dans le store local
+  markAsReplied(reviewId, text);
+}
+
+function showManualPublishDialog(reviewId, text) {
+  _pendingPublishReviewId = reviewId;
+  _pendingPublishText     = text;
+
+  const existing = el('manualPublishOverlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'manualPublishOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:20px;padding:28px;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+        <div style="font-size:28px">📋</div>
+        <div>
+          <div style="font-weight:900;font-size:17px">Publier votre réponse</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:2px">Copiez le texte et collez-le directement sur Google</div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg2);border:1.5px solid var(--brand-border);border-radius:12px;padding:14px;margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--brand);margin-bottom:8px">RÉPONSE À PUBLIER</div>
+        <div id="manualText" style="font-size:14px;line-height:1.6;white-space:pre-wrap;color:var(--ink)">${escHtml(text)}</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+        <button onclick="copyManualText()" id="copyManualBtn" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+          📋 Copier le texte
+        </button>
+        <a href="https://business.google.com/reviews" target="_blank" rel="noopener"
+           style="width:100%;padding:13px;background:#fff;border:2px solid #e0e0e0;border-radius:10px;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;color:var(--ink);box-sizing:border-box">
+          <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Ouvrir Google Business Profile
+        </a>
+      </div>
+
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;font-size:12px;color:#92400e;line-height:1.6;margin-bottom:20px">
+        <strong>Comment publier en 30 secondes :</strong><br>
+        1. Le texte est déjà copié — collez-le (Ctrl+V / ⌘V)<br>
+        2. Cliquez "Ouvrir Google Business Profile"<br>
+        3. Trouvez l'avis → "Répondre à l'avis" → Collez → Publier<br>
+        4. Revenez ici → "Marquer comme publié"
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <button onclick="markManuallyPublished();closeManualDialog()" style="flex:1;padding:11px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer">
+          ✅ Marquer comme publié
+        </button>
+        <button onclick="closeManualDialog()" style="flex:1;padding:11px;border:1.5px solid var(--line);background:transparent;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer">
+          Fermer
+        </button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeManualDialog(); });
+
+  // Auto-copie dès l'ouverture
+  copyToClipboard(text);
+}
+
+function copyManualText() {
+  const textDiv = el('manualText');
+  const text = textDiv ? textDiv.textContent : '';
+  copyToClipboard(text);
+  const btn = el('copyManualBtn');
+  if (btn) { btn.textContent = '✅ Copié !'; setTimeout(() => { btn.innerHTML = '📋 Copier le texte'; }, 2000); }
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => toast('📋 Texte copié !', 'success')).catch(() => {});
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); toast('📋 Texte copié !', 'success'); } catch {}
+    document.body.removeChild(ta);
+  }
+}
+
+function closeManualDialog() {
+  el('manualPublishOverlay')?.remove();
+}
+
+function markManuallyPublished() {
+  if (_pendingPublishReviewId && _pendingPublishText) {
+    markAsReplied(_pendingPublishReviewId, _pendingPublishText);
+    toast('✅ Marqué comme publié !', 'success');
+  }
+  _pendingPublishReviewId = null;
+  _pendingPublishText     = null;
+}
+
+function markAsReplied(reviewId, text) {
+  const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+  const idx = reviews.findIndex(r => r.id === reviewId);
+  if (idx >= 0) { reviews[idx].status = 'replied'; reviews[idx].reply_text = text; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
+  const card = el(`card-${reviewId}`);
+  if (card) card.querySelector('.review-actions').innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
+  addLog('response.published', 'review', reviewId);
+  loadDashboard();
 }
 
 function ignoreReview(reviewId) {
@@ -1425,6 +1718,8 @@ function saveSettings() {
     restaurant_name:    el('set_restaurant_name')?.value?.trim(),
     owner_name:         el('set_owner_name')?.value?.trim(),
     signature:          el('set_signature')?.value?.trim(),
+    business_type:      el('set_business_type')?.value,
+    business_context:   el('set_business_context')?.value?.trim(),
     response_tone:      el('set_response_tone')?.value,
     return_phrase:      el('set_return_phrase')?.value?.trim(),
     contact_phrase:     el('set_contact_phrase')?.value?.trim(),
@@ -1457,6 +1752,8 @@ function populateSettings() {
   f('set_restaurant_name', s.restaurant_name);
   f('set_owner_name',      s.owner_name);
   f('set_signature',       s.signature);
+  f('set_business_type',   s.business_type);
+  f('set_business_context',s.business_context);
   f('set_response_tone',   s.response_tone);
   f('set_return_phrase',   s.return_phrase);
   f('set_contact_phrase',  s.contact_phrase);
@@ -1545,6 +1842,21 @@ function logout() {
   localStorage.removeItem('fv_role');
   localStorage.removeItem('fv_merchant');
   window.location.href = '/fidelavis-admin/login.html';
+}
+
+// Accès super-admin direct à l'espace d'un restaurant (sans login.html).
+// Possible car app.cartefidelavis.com partage le localStorage entre /admin
+// et /{resto}/admin/. Vérifie que l'on est bien super-admin avant d'injecter.
+function openRestoAdmin(slug) {
+  if (!slug) return;
+  if (localStorage.getItem('fv_role') !== 'superadmin') {
+    alert('Action réservée au super-admin.');
+    return;
+  }
+  localStorage.setItem(`admin_${slug}`, 'true');
+  localStorage.setItem(`role_${slug}`, 'admin');
+  localStorage.setItem(`fv_superadmin_grant_${slug}`, Date.now().toString());
+  window.open(`https://app.cartefidelavis.com/${slug}/admin/espace-admin.html`, '_blank');
 }
 
 // ============================================================
@@ -1694,11 +2006,16 @@ function loadDemoData() {
     }
   ];
 
+  // Appliquer l'auto-tagging sur les avis démo
+  DEMO_REVIEWS.forEach(r => { r.tags = autoTagReview(r); });
+
   // Paramètres démo
   const demoSettings = {
     restaurant_name:    'Le Bistrot Marcel',
     owner_name:         'Marcel Dupont',
     signature:          'Marcel et toute l\'équipe du Bistrot',
+    business_type:      'brasserie',
+    business_context:   'Bistrot de quartier parisien, cuisine française traditionnelle, ouvert depuis 2010',
     response_tone:      'warm',
     return_phrase:      'Au plaisir de vous revoir très prochainement !',
     contact_phrase:     'N\'hésitez pas à nous contacter directement au 01 23 45 67 89.',
@@ -1815,6 +2132,7 @@ async function loadRestoSection(preloadedData) {
         <div style="display:flex;flex-wrap:wrap;gap:6px">
           <a href="${BASE}/${slug}/index.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">🏠 Site</a>
           <a href="${BASE}/${slug}/admin/login.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">⚙️ Admin</a>
+          <button onclick="openRestoAdmin('${slug}')" style="font-size:12px;font-weight:700;padding:5px 10px;background:#fff8e1;border:1px solid #f0c75e;border-radius:7px;color:#8b6914;cursor:pointer" title="Accès super-admin direct (sans login)">🔓 Espace</button>
           <a href="${BASE}/${slug}/admin/state.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">📊 Stats</a>
           <a href="${BASE}/${slug}/admin/reputation-google.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">⭐ Réputation</a>
           <button onclick="openDeleteModal('${slug}','${escHtml(r.name || slug)}','${gasVal}')" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--red-bg);border:1px solid rgba(217,48,37,.25);border-radius:7px;color:var(--red);cursor:pointer">🗑 Supprimer</button>
