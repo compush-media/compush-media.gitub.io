@@ -1022,8 +1022,11 @@ function showRestos(id) {
             <div class="resto-name">${esc(name)}</div>
             <div class="resto-meta">${date ? date : ''}</div>
           </div>
-          <div style="display:flex;gap:6px;flex-shrink:0">
+          <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap">
             <a href="${BASE_URL}/${esc(slug)}/" target="_blank" class="btn-action">Voir →</a>
+            <button class="btn-action gold" onclick="openRestoAdmin('${esc(slug)}')" title="Accès super-admin direct">
+              🔓 Admin
+            </button>
             <button class="btn-action green"
               onclick="openBillingModal('${esc(slug)}','${esc(name)}','${esc(a.email||'')}')">
               ✅ Abonné
@@ -1054,6 +1057,29 @@ function openBillingModal(slug, name, ambEmail) {
 function closeBillingModal() {
   document.getElementById('billingModal').classList.remove('open');
   _bSlug = '';
+}
+
+// ══════════════════════════════════════
+//  ACCÈS DIRECT À L'ADMIN D'UN RESTAURANT (impersonate super-admin)
+//  Injecte les flags d'auth en localStorage et ouvre l'espace admin
+//  directement, sans passer par login.html.
+//  Possible car tout est sur le même domaine app.cartefidelavis.com
+//  → localStorage partagé entre /admin/ et /{resto}/admin/.
+// ══════════════════════════════════════
+function openRestoAdmin(slug) {
+  if (!slug) return;
+  // Vérification : super-admin authentifié ?
+  if (!checkAuth()) {
+    showToast('Session super-admin expirée', 'error');
+    return;
+  }
+  // Injection des flags d'auth restaurant
+  localStorage.setItem(`admin_${slug}`, 'true');
+  localStorage.setItem(`role_${slug}`, 'admin');
+  localStorage.setItem(`fv_superadmin_grant_${slug}`, Date.now().toString());
+  // Ouverture directe de l'espace admin restaurant
+  window.open(`${BASE_URL}/${slug}/admin/espace-admin.html`, '_blank');
+  showToast(`Connexion admin → ${slug}`, 'success');
 }
 
 async function confirmBilling() {
