@@ -245,6 +245,125 @@
     </div>
   </div>
 
+  <!-- ──────────────────────────────────────────────────────
+       SECTION GAS PROXY (Publication sans approbation Google)
+       ────────────────────────────────────────────────────── -->
+  <div style="margin:32px 0 8px;padding:16px 20px;background:linear-gradient(135deg,rgba(180,140,74,.1),rgba(180,140,74,.04));border:1.5px solid rgba(180,140,74,.3);border-radius:var(--r)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <span style="font-size:20px">⚡</span>
+      <strong style="font-size:15px;color:#7a6030">Publication sans attendre Google — Solution recommandée</strong>
+    </div>
+    <p style="margin:0;font-size:13px;color:var(--muted)">
+      Google met 1 à 6 semaines pour approuver l'API de réponse. Ce Google Apps Script publie vos réponses <strong>immédiatement</strong>, en utilisant votre propre compte Google. Aucune approbation nécessaire.
+    </p>
+  </div>
+
+  <div class="step-card" id="stepGas">
+    <div class="step-header" onclick="toggleStep('stepGas')">
+      <div class="step-num" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)">⚡</div>
+      <div class="step-title">Créer le script de publication (GAS Proxy)</div>
+      <span class="step-badge" style="background:rgba(37,99,235,.1);color:#2563eb">Recommandé — 5 min</span>
+      <span class="step-chevron">▾</span>
+    </div>
+    <div class="step-body">
+      <p>Ce script Google Apps Script tourne dans votre compte Google. Il publie les réponses directement sur votre fiche, sans passer par l'API en attente d'approbation.</p>
+
+      <p><strong>① Ouvrir Google Apps Script</strong></p>
+      <a class="btn-link" href="https://script.google.com/home/start" target="_blank" rel="noopener" style="background:#2563eb">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        Ouvrir script.google.com
+      </a>
+
+      <ol style="margin-top:16px">
+        <li>Cliquez sur <strong>"Nouveau projet"</strong></li>
+        <li>Nommez le projet : <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-size:13px">Fidelavis Reply Proxy</code></li>
+        <li>Dans l'éditeur, <strong>supprimez</strong> le code existant (sélectionner tout → Supprimer)</li>
+        <li>Collez le code ci-dessous :</li>
+      </ol>
+
+      <div style="position:relative;margin:16px 0">
+        <div class="code-block" id="gasCodeBlock" style="font-size:11px;line-height:1.7;max-height:340px;overflow-y:auto">
+<span style="color:#6a9955">// Fidelavis Reply Proxy — coller dans Google Apps Script</span>
+
+<span class="highlight">function</span> <span style="color:#dcdcaa">doPost</span>(e) {
+  <span class="highlight">try</span> {
+    <span class="highlight">var</span> raw  = (e && e.parameter && e.parameter.data) ? e.parameter.data : <span class="string">'{}'</span>;
+    <span class="highlight">var</span> body = JSON.parse(raw);
+
+    <span class="highlight">var</span> locationPath = body.locationPath;
+    <span class="highlight">var</span> reviewId     = body.reviewId;
+    <span class="highlight">var</span> comment      = body.comment;
+
+    <span class="highlight">if</span> (!locationPath || !reviewId || !comment) {
+      <span class="highlight">return</span> buildResponse({ error: <span class="string">'Paramètres manquants'</span> });
+    }
+
+    <span class="highlight">var</span> token = ScriptApp.getOAuthToken();
+    <span class="highlight">var</span> url   = <span class="string">'https://mybusiness.googleapis.com/v4/'</span> + locationPath + <span class="string">'/reviews/'</span> + reviewId + <span class="string">'/reply'</span>;
+
+    <span class="highlight">var</span> resp = UrlFetchApp.fetch(url, {
+      method:             <span class="string">'put'</span>,
+      headers:            { <span class="string">'Authorization'</span>: <span class="string">'Bearer '</span> + token, <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
+      payload:             JSON.stringify({ comment: comment }),
+      muteHttpExceptions:  <span class="highlight">true</span>
+    });
+
+    <span class="highlight">var</span> code = resp.getResponseCode();
+    <span class="highlight">if</span> (code >= 200 && code < 300) <span class="highlight">return</span> buildResponse({ ok: <span class="highlight">true</span> });
+
+    <span class="highlight">var</span> errData = JSON.parse(resp.getContentText() || <span class="string">'{}'</span>);
+    <span class="highlight">return</span> buildResponse({ error: errData.error?.message || <span class="string">'Erreur Google '</span> + code });
+
+  } <span class="highlight">catch</span> (err) {
+    <span class="highlight">return</span> buildResponse({ error: err.toString() });
+  }
+}
+
+<span class="highlight">function</span> <span style="color:#dcdcaa">doGet</span>() {
+  <span class="highlight">return</span> buildResponse({ status: <span class="string">'ok'</span>, service: <span class="string">'Fidelavis Reply Proxy'</span> });
+}
+
+<span class="highlight">function</span> <span style="color:#dcdcaa">buildResponse</span>(data) {
+  <span class="highlight">return</span> ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+        </div>
+        <button onclick="copyGasCode()" id="copyGasBtn" style="position:absolute;top:10px;right:10px;padding:5px 12px;background:rgba(255,255,255,.15);color:#d4d4d4;border:1px solid rgba(255,255,255,.2);border-radius:6px;font-size:12px;font-weight:700;cursor:pointer">Copier</button>
+      </div>
+
+      <p style="margin-top:20px"><strong>② Déployer le script</strong></p>
+      <ol>
+        <li>Dans le menu : <strong>Déployer → Nouveau déploiement</strong></li>
+        <li>Type : <strong>"Application Web"</strong></li>
+        <li>Exécuter en tant que : <strong>Moi</strong> (votre compte Google)</li>
+        <li>Personnes ayant accès : <strong>Tout le monde</strong></li>
+        <li>Cliquez <strong>"Déployer"</strong> — autorisez les permissions Google demandées</li>
+        <li>Copiez l'<strong>URL du déploiement</strong> (commence par <code style="background:var(--bg);padding:2px 5px;border-radius:4px;font-size:12px">https://script.google.com/macros/s/</code>)</li>
+      </ol>
+
+      <div class="warning" style="margin-top:16px">
+        ⚠️ Lors du déploiement, Google vous demande d'autoriser l'accès. Cliquez <strong>"Avancé" → "Accéder à Fidelavis Reply Proxy"</strong>. C'est normal — c'est votre propre script.
+      </div>
+
+      <p style="margin-top:20px"><strong>③ Coller l'URL dans Fidelavis</strong></p>
+      <ol>
+        <li>Retournez dans Fidelavis → <strong>Paramètres → Clés API</strong></li>
+        <li>Collez l'URL dans <strong>"URL Google Apps Script (GAS Proxy)"</strong></li>
+        <li>Cliquez <strong>"Enregistrer"</strong> — le badge <span style="background:#edf7f2;color:var(--green);padding:2px 7px;border-radius:999px;font-size:11px;font-weight:700">✓ ACTIF</span> apparaît</li>
+      </ol>
+
+      <div class="note" style="margin-top:16px">
+        ✅ Dès ce moment, vos réponses sont publiées directement sur Google en 1 clic — sans aucune attente.
+      </div>
+
+      <p style="margin-top:20px"><strong>④ Tester que ça fonctionne</strong></p>
+      <p>Ouvrez l'URL du déploiement dans votre navigateur. Vous devez voir :</p>
+      <div class="code-block">{"status":"ok","service":"Fidelavis Reply Proxy"}</div>
+      <p>Si vous voyez ce JSON → le proxy est actif et prêt.</p>
+    </div>
+  </div>
+
   <!-- SECTION FAQ -->
   <div class="step-card" id="stepFaq">
     <div class="step-header" onclick="toggleStep('stepFaq')">
@@ -290,10 +409,75 @@ function toggleStep(id) {
   header.classList.toggle('open', !isOpen);
   body.classList.toggle('open', !isOpen);
 }
-// Ouvrir la 1ère étape par défaut
+
+function copyGasCode() {
+  const code = `// Fidelavis Reply Proxy — coller dans Google Apps Script
+
+function doPost(e) {
+  try {
+    var raw  = (e && e.parameter && e.parameter.data) ? e.parameter.data : '{}';
+    var body = JSON.parse(raw);
+
+    var locationPath = body.locationPath;
+    var reviewId     = body.reviewId;
+    var comment      = body.comment;
+
+    if (!locationPath || !reviewId || !comment) {
+      return buildResponse({ error: 'Paramètres manquants' });
+    }
+
+    var token = ScriptApp.getOAuthToken();
+    var url   = 'https://mybusiness.googleapis.com/v4/' + locationPath + '/reviews/' + reviewId + '/reply';
+
+    var resp = UrlFetchApp.fetch(url, {
+      method:             'put',
+      headers:            { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      payload:             JSON.stringify({ comment: comment }),
+      muteHttpExceptions:  true
+    });
+
+    var code = resp.getResponseCode();
+    if (code >= 200 && code < 300) return buildResponse({ ok: true });
+
+    var errData = JSON.parse(resp.getContentText() || '{}');
+    return buildResponse({ error: errData.error?.message || 'Erreur Google ' + code });
+
+  } catch (err) {
+    return buildResponse({ error: err.toString() });
+  }
+}
+
+function doGet() {
+  return buildResponse({ status: 'ok', service: 'Fidelavis Reply Proxy' });
+}
+
+function buildResponse(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}`;
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.getElementById('copyGasBtn');
+      btn.textContent = '✅ Copié !';
+      setTimeout(() => { btn.textContent = 'Copier'; }, 2500);
+    });
+  }
+}
+
+// Ouvrir le GAS step si on arrive avec #gas dans l'URL
 document.addEventListener('DOMContentLoaded', () => {
   const first = document.querySelector('.step-body');
   if (first) first.classList.add('open');
+  if (location.hash === '#gas') {
+    const gasStep = document.getElementById('stepGas');
+    if (gasStep) {
+      gasStep.querySelector('.step-header').classList.add('open');
+      gasStep.querySelector('.step-body').classList.add('open');
+      gasStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 });
 </script>
 </body>

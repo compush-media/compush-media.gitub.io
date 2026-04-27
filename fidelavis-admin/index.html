@@ -698,6 +698,24 @@
         <!-- Clés API -->
         <div class="settings-card">
           <h3>🔑 Clés API</h3>
+
+          <!-- GAS Proxy — priorité haute -->
+          <div style="background:linear-gradient(135deg,rgba(180,140,74,.08),rgba(180,140,74,.04));border:1.5px solid var(--brand-border);border-radius:12px;padding:14px;margin-bottom:16px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <span style="font-size:16px">⚡</span>
+              <span style="font-size:13px;font-weight:800;color:var(--brand)">Publication instantanée (recommandé)</span>
+              <span id="gasBadge" style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;background:#edf7f2;color:var(--green);display:none">✓ ACTIF</span>
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5">
+              Publie vos réponses directement sur Google sans approbation API.<br>
+              <a href="setup-google.html#gas" target="_blank" style="color:var(--brand);font-weight:700;text-decoration:none">📖 Comment créer ce script →</a>
+            </div>
+            <div class="form-row" style="margin-bottom:0">
+              <label>URL Google Apps Script (GAS Proxy)</label>
+              <input type="text" id="set_gas_reply_url" placeholder="https://script.google.com/macros/s/.../exec" oninput="checkGasBadge()" />
+            </div>
+          </div>
+
           <div class="form-row">
             <label>Google Client ID <span style="font-size:11px;color:var(--muted)">(console.cloud.google.com)</span></label>
             <input type="text" id="set_google_client_id" placeholder="123456789.apps.googleusercontent.com" />
@@ -1535,37 +1553,65 @@ async function publishDraft(reviewId) {
   const btn = document.querySelector(`#card-${reviewId} .btn-primary`);
   if (btn) { btn.disabled = true; btn.textContent = '📤 Publication...'; }
 
-  let published = false;
+  const s    = getSettings();
+  const isDemo = reviewId.startsWith('demo-');
 
-  // Tentative via API Google (si token disponible ET API approuvée par Google)
-  if (googleToken && currentLocation && !reviewId.startsWith('demo-')) {
+  // ── PRIORITÉ 1 : GAS Proxy (aucune approbation Google requise) ──
+  if (s.gas_reply_url && !isDemo) {
     try {
-      await gbpPut(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews/${reviewId}/reply`, { comment: text });
-      toast('✅ Réponse publiée sur Google !', 'success');
-      published = true;
-    } catch (e) {
-      // API non approuvée ou erreur → fallback vers copier-coller
-      const isApiBlocked = e.message.includes('403') || e.message.includes('PERMISSION_DENIED') || e.message.includes('disabled');
-      if (isApiBlocked) {
-        showManualPublishDialog(reviewId, text);
-        if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
+      const result = await publishViaGAS(s.gas_reply_url, reviewId, text);
+      if (result.ok) {
+        toast('✅ Réponse publiée sur Google !', 'success');
+        markAsReplied(reviewId, text);
         return;
+      } else {
+        throw new Error(result.error || 'Erreur GAS');
       }
-      toast('Erreur API Google : ' + e.message, 'error');
+    } catch (e) {
+      console.warn('GAS proxy failed:', e.message);
+      toast('⚠️ GAS proxy indisponible — basculement sur copier-coller', 'info');
       if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
+      showManualPublishDialog(reviewId, text);
       return;
     }
   }
 
-  // Pas de token → mode copier-coller direct
-  if (!published && (!googleToken || reviewId.startsWith('demo-'))) {
-    showManualPublishDialog(reviewId, text);
-    if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
-    return;
+  // ── PRIORITÉ 2 : API Google directe (si token + API approuvée) ──
+  if (googleToken && currentLocation && !isDemo) {
+    try {
+      await gbpPut(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews/${reviewId}/reply`, { comment: text });
+      toast('✅ Réponse publiée sur Google !', 'success');
+      markAsReplied(reviewId, text);
+      return;
+    } catch (e) {
+      console.warn('Direct API failed:', e.message);
+      // Pas d'erreur toast ici — on tombe silencieusement sur le copier-coller
+    }
   }
 
-  // Marquer comme répondu dans le store local
-  markAsReplied(reviewId, text);
+  // ── PRIORITÉ 3 : Copier-coller manuel (toujours disponible) ──
+  if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
+  showManualPublishDialog(reviewId, text);
+}
+
+// ── Publication via Google Apps Script proxy ──
+async function publishViaGAS(gasUrl, reviewId, comment) {
+  const locationPath = currentLocation || localStorage.getItem('fv_selected_location') || '';
+
+  // URLSearchParams évite le preflight CORS (content-type: application/x-www-form-urlencoded)
+  const body = new URLSearchParams();
+  body.append('data', JSON.stringify({ locationPath, reviewId, comment }));
+
+  const resp = await fetch(gasUrl, {
+    method: 'POST',
+    body,
+    redirect: 'follow'
+  });
+
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+  const json = await resp.json().catch(() => ({}));
+  return json;
 }
 
 function showManualPublishDialog(reviewId, text) {
@@ -1729,6 +1775,7 @@ function saveSettings() {
     auto_reply_rule_3:  el('set_rule_3')?.value,
     auto_reply_rule_2:  el('set_rule_2')?.value,
     auto_reply_rule_1:  el('set_rule_1')?.value,
+    gas_reply_url:      el('set_gas_reply_url')?.value?.trim(),
     google_client_id:   el('set_google_client_id')?.value?.trim(),
     claude_api_key:     el('set_claude_api_key')?.value?.trim()
   };
@@ -1762,8 +1809,10 @@ function populateSettings() {
   f('set_rule_3',          s.auto_reply_rule_3);
   f('set_rule_2',          s.auto_reply_rule_2);
   f('set_rule_1',          s.auto_reply_rule_1);
+  f('set_gas_reply_url',    s.gas_reply_url);
   f('set_google_client_id', s.google_client_id);
   f('set_claude_api_key',   s.claude_api_key);
+  checkGasBadge();
   const autoEl = el('set_auto_reply_enabled');
   if (autoEl) autoEl.checked = !!s.auto_reply_enabled;
   refreshLocationsList();
@@ -2059,6 +2108,14 @@ function clearDemoData() {
   ['fv_reviews','fv_last_sync','fv_locations','fv_selected_location','fv_selected_account'].forEach(k => localStorage.removeItem(k));
   loadDashboard();
   toast('Données de démo supprimées.', 'info');
+}
+
+function checkGasBadge() {
+  const badge = el('gasBadge');
+  const input = el('set_gas_reply_url');
+  if (!badge || !input) return;
+  const hasUrl = (input.value || getSettings().gas_reply_url || '').trim().length > 10;
+  badge.style.display = hasUrl ? 'inline' : 'none';
 }
 
 function escHtml(str) {
