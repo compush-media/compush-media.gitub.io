@@ -753,6 +753,7 @@ async function initApp() {
   document.title = `Fidelavis – ${merchantData.name}`;
   populateSettings();
   loadDashboard();
+  refreshLocationsList();
   addLog('merchant.login', 'merchant', merchantData.name);
 }
 // ============================================================
@@ -859,6 +860,7 @@ async function retryLoadLocations() {
   if (btn) { btn.disabled = true; btn.textContent = '🔄 Chargement...'; }
   if (!googleToken) {
     toast('Connectez d\'abord votre compte Google.', 'error');
+    refreshLocationsList();
     if (btn) { btn.disabled = false; btn.textContent = '🔄 Rafraîchir mes fiches'; }
     return;
   }
@@ -868,6 +870,7 @@ async function retryLoadLocations() {
     loadDashboard();
     toast('✅ Fiches Google chargées !', 'success');
   } catch (e) {
+    refreshLocationsList();
     if (e.message && (e.message.includes('Quota') || e.message.includes('quota'))) {
       toast('⏳ Quota Google encore atteint. Réessayez dans 2 minutes.', 'error');
     } else { toast('Erreur : ' + e.message, 'error'); }
@@ -1499,10 +1502,24 @@ function refreshLocationsList() {
   if (!locList) return;
   const locations = JSON.parse(localStorage.getItem('fv_locations') || '[]');
   const selLoc    = localStorage.getItem('fv_selected_location');
-  if (locations.length === 0) {
-    locList.innerHTML = '<p style="color:var(--muted)">Aucune fiche connectée</p>';
+  const tokenExp = parseInt(localStorage.getItem('fv_google_token_expiry') || '0');
+  const isConnected = !!googleToken && tokenExp > Date.now();
+  let statusHtml;
+  if (isConnected) {
+    const expiresIn = Math.floor((tokenExp - Date.now()) / 60000);
+    statusHtml = `<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--green-bg);border-radius:10px;margin-bottom:12px;border:1px solid rgba(26,158,92,.2)"><span style="font-size:16px">✅</span><div style="flex:1;font-size:13px"><div style="font-weight:700;color:var(--green)">Compte Google connecté</div><div style="font-size:11px;color:var(--muted)">Token actif (expire dans ~${expiresIn} min)</div></div></div>`;
   } else {
-    locList.innerHTML = locations.map(l => {
+    statusHtml = `<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--red-bg);border-radius:10px;margin-bottom:12px;border:1px solid rgba(217,48,37,.2)"><span style="font-size:16px">❌</span><div style="flex:1;font-size:13px"><div style="font-weight:700;color:var(--red)">Non connecté à Google</div><div style="font-size:11px;color:var(--muted)">Cliquez sur "Ajouter / Reconnecter Google"</div></div></div>`;
+  }
+  let listHtml;
+  if (locations.length === 0) {
+    if (isConnected) {
+      listHtml = `<div style="padding:12px;background:var(--brand-bg);border-radius:10px;border:1px solid var(--brand-border);font-size:13px"><div style="font-weight:700;margin-bottom:4px">⏳ Fiches non chargées</div><div style="color:var(--muted);font-size:12px">Quota Google atteint. Cliquez sur 🔄 dans 2 minutes.</div></div>`;
+    } else {
+      listHtml = '<p style="color:var(--muted);font-size:13px">Aucune fiche connectée</p>';
+    }
+  } else {
+    listHtml = locations.map(l => {
       const isPrimary = l.name === selLoc;
       return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
         <span style="font-size:20px">${isPrimary ? '📍' : '🏪'}</span>
@@ -1516,6 +1533,7 @@ function refreshLocationsList() {
       </div>`;
     }).join('');
   }
+  locList.innerHTML = statusHtml + listHtml;
 }
 function selectLocation(locationName) {
   localStorage.setItem('fv_selected_location', locationName);
