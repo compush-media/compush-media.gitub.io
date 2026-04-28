@@ -1584,11 +1584,49 @@ function ignoreReview(reviewId) {
 // ============================================================
 //  SYNC
 // ============================================================
+const SYNC_COOLDOWN_MS = 60 * 1000; // 60 secondes minimum entre deux syncs
+let _syncCooldownTimer = null;
+
+function startSyncCooldown(btn) {
+  const endTime = Date.now() + SYNC_COOLDOWN_MS;
+  localStorage.setItem('fv_last_sync_ts', String(endTime));
+  btn.disabled = true;
+  if (_syncCooldownTimer) clearInterval(_syncCooldownTimer);
+  _syncCooldownTimer = setInterval(() => {
+    const remaining = Math.ceil((endTime - Date.now()) / 1000);
+    if (remaining <= 0) {
+      clearInterval(_syncCooldownTimer);
+      _syncCooldownTimer = null;
+      btn.disabled = false;
+      btn.textContent = '↻ Synchroniser';
+    } else {
+      btn.textContent = `↻ Patienter ${remaining}s`;
+    }
+  }, 1000);
+}
+
+function checkSyncCooldown() {
+  const endTime = parseInt(localStorage.getItem('fv_last_sync_ts') || '0');
+  const remaining = endTime - Date.now();
+  if (remaining <= 0) return 0;
+  return remaining;
+}
+
 async function triggerSync() {
   const btn = el('syncBtn');
+  // Vérif cooldown anti-quota
+  const wait = checkSyncCooldown();
+  if (wait > 0) {
+    toast(`⏳ Patientez encore ${Math.ceil(wait/1000)}s avant la prochaine synchronisation (quota Google).`, 'error');
+    return;
+  }
   btn.disabled = true; btn.textContent = '↻ Sync...';
   try {
     if (!googleToken) { toast('Connectez d\'abord votre fiche Google.', 'error'); return; }
+    // Restaure la location depuis localStorage pour éviter un appel inutile à accounts
+    if (!currentLocation) {
+      currentLocation = localStorage.getItem('fv_selected_location');
+    }
     if (!currentLocation) await fetchGBPAccounts();
     const reviews = await fetchGBPReviews();
     addLog('sync.completed', 'sync', String(reviews.length));
@@ -1606,9 +1644,15 @@ async function triggerSync() {
       }
     }
   } catch (e) {
-    toast('Erreur sync : ' + e.message, 'error');
+    // Message spécifique si quota Google dépassé
+    if (e.message && e.message.includes('Quota exceeded')) {
+      toast('⏳ Quota Google atteint. Attendez 1 minute et réessayez.', 'error');
+    } else {
+      toast('Erreur sync : ' + e.message, 'error');
+    }
   } finally {
-    btn.disabled = false; btn.textContent = '↻ Synchroniser';
+    // Lance le cooldown pour protéger le quota
+    startSyncCooldown(btn);
   }
 }
 
