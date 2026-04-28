@@ -66,19 +66,81 @@ function doPost(e) {
   }
 }
 
-// Ping de vérification (depuis le navigateur ou le dashboard)
-function doGet() {
-  return buildResponse({
-    status:    'ok',
-    service:   'Fidelavis Reply Proxy',
-    version:   '1.0',
-    timestamp: new Date().toISOString()
-  });
+// ============================================================
+//  doGet — Ping + liste des fiches (pour trouver l'ID de localisation)
+//  Ouvrir l'URL du script dans le navigateur pour voir vos IDs
+// ============================================================
+function doGet(e) {
+  var action = (e && e.parameter && e.parameter.action) ? e.parameter.action : 'ping';
+
+  // Ping simple
+  if (action === 'ping') {
+    return buildResponse({
+      status:    'ok',
+      service:   'Fidelavis Reply Proxy',
+      version:   '1.1',
+      timestamp: new Date().toISOString(),
+      tip:       'Ajoutez ?action=locations à l\'URL pour voir vos IDs de localisation.'
+    });
+  }
+
+  // Liste des comptes et localisations (pour récupérer l'ID de localisation)
+  if (action === 'locations') {
+    try {
+      var token = ScriptApp.getOAuthToken();
+
+      // Récupère les comptes
+      var accountsResp = UrlFetchApp.fetch(
+        'https://mybusinessaccountmanagement.googleapis.com/v1/accounts',
+        { headers: { 'Authorization': 'Bearer ' + token }, muteHttpExceptions: true }
+      );
+      var accountsData = JSON.parse(accountsResp.getContentText());
+      var accounts = accountsData.accounts || [];
+
+      if (accounts.length === 0) {
+        return buildResponse({ error: 'Aucun compte GBP trouvé pour ce compte Google.' });
+      }
+
+      var result = [];
+      for (var i = 0; i < accounts.length; i++) {
+        var account = accounts[i];
+
+        // Récupère les fiches de ce compte
+        var locsResp = UrlFetchApp.fetch(
+          'https://mybusinessinformation.googleapis.com/v1/' + account.name + '/locations?readMask=name,title',
+          { headers: { 'Authorization': 'Bearer ' + token }, muteHttpExceptions: true }
+        );
+        var locsData = JSON.parse(locsResp.getContentText());
+        var locations = locsData.locations || [];
+
+        for (var j = 0; j < locations.length; j++) {
+          var loc = locations[j];
+          result.push({
+            location_id:   loc.name,           // ← COPIEZ CETTE VALEUR dans Fidelavis
+            nom_fiche:     loc.title || loc.name,
+            compte:        account.name,
+            nom_compte:    account.accountName || account.name
+          });
+        }
+      }
+
+      return buildResponse({
+        ok:        true,
+        fiches:    result,
+        message:   'Copiez la valeur "location_id" dans Fidelavis → Paramètres → Fiches Google → ⚙️ Saisir l\'ID manuellement.'
+      });
+
+    } catch (err) {
+      return buildResponse({ error: err.toString() });
+    }
+  }
+
+  return buildResponse({ error: 'Action inconnue. Utilisez ?action=ping ou ?action=locations' });
 }
 
 // Helper — retourne une réponse JSON
 function buildResponse(data) {
   return ContentService
-    .createTextOutput(JSON.stringify(data))
+    .createTextOutput(JSON.stringify(data, null, 2))
     .setMimeType(ContentService.MimeType.JSON);
 }
