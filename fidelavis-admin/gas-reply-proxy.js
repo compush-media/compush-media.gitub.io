@@ -89,16 +89,38 @@ function doGet(e) {
     try {
       var token = ScriptApp.getOAuthToken();
 
-      // Récupère les comptes
+      // Récupère les comptes — v1 Account Management API
       var accountsResp = UrlFetchApp.fetch(
         'https://mybusinessaccountmanagement.googleapis.com/v1/accounts',
         { headers: { 'Authorization': 'Bearer ' + token }, muteHttpExceptions: true }
       );
-      var accountsData = JSON.parse(accountsResp.getContentText());
+      var accountsCode = accountsResp.getResponseCode();
+      var accountsText = accountsResp.getContentText();
+
+      // Si erreur HTTP, tente l'ancienne API v4
+      if (accountsCode !== 200) {
+        var v4Resp = UrlFetchApp.fetch(
+          'https://mybusiness.googleapis.com/v4/accounts',
+          { headers: { 'Authorization': 'Bearer ' + token }, muteHttpExceptions: true }
+        );
+        return buildResponse({
+          debug: true,
+          v1_code: accountsCode,
+          v1_response: accountsText,
+          v4_code: v4Resp.getResponseCode(),
+          v4_response: v4Resp.getContentText()
+        });
+      }
+
+      var accountsData = JSON.parse(accountsText);
       var accounts = accountsData.accounts || [];
 
       if (accounts.length === 0) {
-        return buildResponse({ error: 'Aucun compte GBP trouvé pour ce compte Google.' });
+        return buildResponse({
+          error: 'Aucun compte GBP trouvé pour ce compte Google.',
+          debug_raw: accountsText,
+          tip: 'Allez sur business.google.com avec ce compte pour vérifier votre fiche, puis relancez.'
+        });
       }
 
       var result = [];
