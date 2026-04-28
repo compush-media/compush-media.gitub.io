@@ -1358,6 +1358,7 @@ function generateTemplateResponse(review) {
 //  le restaurant n'a RIEN à configurer côté IA).
 // ============================================================
 const CLAUDE_PROXY_URL = 'https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec';
+const REPLY_PROXY_URL  = 'https://script.google.com/macros/s/AKfycby3VEoN1wsp3AYsBrbTXSnHsossxVuKwCNA2HLKFo89o6xkeenuOzTCjeMb1ZL7zOI/exec';
 async function generateWithClaude(review) {
   const s = getSettings();
   const payload = {
@@ -1442,37 +1443,101 @@ async function publishDraft(reviewId) {
   if (btn) { btn.disabled = true; btn.textContent = '📤 Publication...'; }
   try {
     if (DEMO_PUBLISH) {
-      // Mode démo : on saute l'appel API (ex : quand l'API v4 reviews n'est pas
-      // encore activée pour le projet) pour permettre la capture 04-publish.png.
+      toast('Réponse publiée sur Google ! (démo)', 'success');
+    } else if (REPLY_PROXY_URL) {
+      const result = await publishViaGAS(REPLY_PROXY_URL, reviewId, text);
+      if (result.error) throw new Error(result.error);
       toast('Réponse publiée sur Google !', 'success');
     } else if (googleToken && currentLocation) {
       await gbpPut(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews/${reviewId}/reply`, { comment: text });
       toast('Réponse publiée sur Google !', 'success');
     } else {
-      toast('Réponse sauvegardée (connectez Google pour publier).', 'info');
+      showManualPublishDialog(reviewId, text);
+      if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
+      return;
     }
-    const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
-    const idx = reviews.findIndex(r => r.id === reviewId);
-    if (idx >= 0) { reviews[idx].status = 'replied'; reviews[idx].reply_text = text; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
-    const publishedCard = el(`card-${reviewId}`);
-    if (publishedCard) {
-      // Remplace le bloc draft par la réponse publiée (celle que l'utilisateur a éditée)
-      const draftBlock = el(`draft-${reviewId}`);
-      if (draftBlock) {
-        draftBlock.outerHTML = `<div class="review-reply-existing"><div class="reply-label">Votre réponse publiée</div>${escHtml(text)}</div>`;
-      }
-      publishedCard.querySelector('.review-actions').innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
-      // Badge "En attente" → "Répondu"
-      const meta = publishedCard.querySelector('.review-header > div[style*="margin-left:auto"]');
-      if (meta) meta.innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Répondu</span>';
-    }
+    markAsReplied(reviewId, text);
     addLog('response.published', 'review', reviewId);
     loadDashboard();
   } catch (e) {
-    toast('Erreur publication : ' + e.message, 'error');
+    console.warn('Publish failed, showing manual dialog:', e.message);
+    showManualPublishDialog(reviewId, text);
     if (btn) { btn.disabled = false; btn.textContent = '📤 Publier'; }
   }
 }
+
+async function publishViaGAS(gasUrl, reviewId, comment) {
+  const locationPath = currentLocation || localStorage.getItem('fv_selected_location') || '';
+  const body = new URLSearchParams();
+  body.append('data', JSON.stringify({ locationPath, reviewId, comment }));
+  const resp = await fetch(gasUrl, { method: 'POST', body, redirect: 'follow' });
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const json = await resp.json().catch(() => ({}));
+  return json;
+}
+
+var _pendingManualReviewId = null;
+var _pendingManualText = '';
+
+function showManualPublishDialog(reviewId, text) {
+  _pendingManualReviewId = reviewId;
+  _pendingManualText = text;
+  let modal = el('manualPublishModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'manualPublishModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:16px;padding:28px;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+      <div style="font-size:18px;font-weight:800;margin-bottom:6px">📋 Publication manuelle</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Copiez la réponse ci-dessous et collez-la directement sur Google Business Profile.</div>
+      <textarea id="manualDialogText" rows="6" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-size:13px;resize:vertical;font-family:inherit">${text}</textarea>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn-primary" onclick="copyManualText()" style="flex:1">📋 Copier le texte</button>
+        <a href="https://business.google.com/reviews" target="_blank" class="btn-outline" style="flex:1;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center">🌐 Ouvrir Google Business</a>
+      </div>
+      <button onclick="markManuallyPublished()" style="width:100%;margin-top:10px;padding:10px;border:none;background:var(--green-bg);color:var(--green);border-radius:10px;font-weight:700;cursor:pointer;font-size:13px">✅ Marquer comme publié manuellement</button>
+      <button onclick="closeManualDialog()" style="width:100%;margin-top:8px;padding:8px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:12px">Annuler</button>
+    </div>`;
+  modal.style.display = 'flex';
+}
+
+function copyManualText() {
+  const t = el('manualDialogText');
+  const text = t ? t.value : _pendingManualText;
+  if (navigator.clipboard) { navigator.clipboard.writeText(text).catch(() => {}); }
+  else { const ta = document.createElement('textarea'); ta.value = text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
+  toast('Texte copié !', 'success');
+}
+
+function closeManualDialog() { const m = el('manualPublishModal'); if (m) m.style.display = 'none'; }
+
+function markManuallyPublished() {
+  const reviewId = _pendingManualReviewId;
+  const text = el('manualDialogText')?.value || _pendingManualText;
+  closeManualDialog();
+  if (!reviewId) return;
+  markAsReplied(reviewId, text);
+  addLog('response.published.manual', 'review', reviewId);
+  toast('Avis marqué comme répondu !', 'success');
+  loadDashboard();
+}
+
+function markAsReplied(reviewId, text) {
+  const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+  const idx = reviews.findIndex(r => r.id === reviewId);
+  if (idx >= 0) { reviews[idx].status = 'replied'; reviews[idx].reply_text = text; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
+  const card = el(`card-${reviewId}`);
+  if (card) {
+    const draftBlock = el(`draft-${reviewId}`);
+    if (draftBlock) draftBlock.outerHTML = `<div class="review-reply-existing"><div class="reply-label">Votre réponse publiée</div>${escHtml(text)}</div>`;
+    const actDiv = card.querySelector('.review-actions');
+    if (actDiv) actDiv.innerHTML = '<span style="font-size:12px;color:var(--green);font-weight:700">✅ Réponse publiée !</span>';
+  }
+}
+
 function ignoreReview(reviewId) {
   if (!confirm('Ignorer cet avis ?')) return;
   const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
@@ -1496,11 +1561,59 @@ async function triggerSync() {
     toast(`Synchronisation terminée ! ${reviews.length} avis importés.`, 'success');
     loadDashboard();
     if (el('section-reviews').classList.contains('active')) loadReviews();
+    // Auto-réponse IA après sync
+    const s = getSettings();
+    if (s.auto_reply_enabled) {
+      const allReviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+      const pending = allReviews.filter(r => r.status === 'pending');
+      if (pending.length > 0) {
+        toast(`🤖 Auto-réponse : traitement de ${pending.length} avis...`, 'info');
+        await applyAutoReplyRules(pending);
+      }
+    }
   } catch (e) {
     toast('Erreur sync : ' + e.message, 'error');
   } finally {
     btn.disabled = false; btn.textContent = '↻ Synchroniser';
   }
+}
+
+async function applyAutoReplyRules(pendingReviews) {
+  const s = getSettings();
+  let published = 0, drafted = 0, skipped = 0;
+  for (const review of pendingReviews) {
+    const stars = review.rating || 3;
+    const rule = s[`auto_reply_rule_${stars}`] || 'disabled';
+    if (rule === 'disabled') { skipped++; continue; }
+    try {
+      let text;
+      try { text = await generateWithClaude(review); } catch(e) { console.warn('Claude failed:', e); }
+      if (!text) text = generateTemplateResponse(review);
+      if (!text) { skipped++; continue; }
+      if (rule === 'auto') {
+        let ok = false;
+        if (!DEMO_PUBLISH && REPLY_PROXY_URL) {
+          try { const res = await publishViaGAS(REPLY_PROXY_URL, review.id, text); if (!res.error) ok = true; } catch(e) {}
+        }
+        if (!ok && !DEMO_PUBLISH && googleToken && currentLocation) {
+          try { await gbpPut(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews/${review.id}/reply`, { comment: text }); ok = true; } catch(e) {}
+        }
+        if (ok || DEMO_PUBLISH) { markAsReplied(review.id, text); addLog('response.auto_published', 'review', review.id); published++; }
+        else { const rv = JSON.parse(localStorage.getItem('fv_reviews')||'[]'); const i = rv.findIndex(r=>r.id===review.id); if(i>=0){rv[i].ai_draft=text;localStorage.setItem('fv_reviews',JSON.stringify(rv));} drafted++; }
+      } else if (rule === 'validate') {
+        const rv = JSON.parse(localStorage.getItem('fv_reviews')||'[]'); const i = rv.findIndex(r=>r.id===review.id); if(i>=0){rv[i].ai_draft=text;localStorage.setItem('fv_reviews',JSON.stringify(rv));}
+        addLog('response.draft_saved', 'review', review.id); drafted++;
+      }
+    } catch(e) { console.error('Auto-reply error', review.id, e); skipped++; }
+    await new Promise(res => setTimeout(res, 800));
+  }
+  const parts = [];
+  if (published > 0) parts.push(`${published} publiés automatiquement`);
+  if (drafted > 0)   parts.push(`${drafted} brouillons générés`);
+  if (skipped > 0)   parts.push(`${skipped} ignorés`);
+  if (parts.length)  toast('🤖 Auto-réponse : ' + parts.join(', '), 'success');
+  loadDashboard();
+  if (el('section-reviews')?.classList.contains('active')) loadReviews();
 }
 // ============================================================
 //  PARAMÈTRES

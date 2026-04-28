@@ -1740,15 +1740,108 @@ async function triggerSync() {
   try {
     if (!googleToken) { toast('Connectez d\'abord votre fiche Google.', 'error'); return; }
     if (!currentLocation) await fetchGBPAccounts();
+
     const reviews = await fetchGBPReviews();
     addLog('sync.completed', 'sync', String(reviews.length));
-    toast(`Synchronisation terminée ! ${reviews.length} avis importés.`, 'success');
+    toast(`Synchronisation terminée — ${reviews.length} avis importés.`, 'success');
     loadDashboard();
     if (el('section-reviews').classList.contains('active')) loadReviews();
+
+    // ── Auto-réponse après sync ──
+    const s = getSettings();
+    if (s.auto_reply_enabled) {
+      const pending = reviews.filter(r => r.status === 'pending');
+      if (pending.length > 0) {
+        toast(`🤖 Auto-réponse : traitement de ${pending.length} avis...`, 'info');
+        await applyAutoReplyRules(pending);
+      }
+    }
+
   } catch (e) {
     toast('Erreur sync : ' + e.message, 'error');
   } finally {
     btn.disabled = false; btn.textContent = '↻ Synchroniser';
+  }
+}
+
+// ============================================================
+//  AUTO-RÉPONSE — Applique les règles par note
+// ============================================================
+async function applyAutoReplyRules(pendingReviews) {
+  const s           = getSettings();
+  let autoCount     = 0;
+  let draftCount    = 0;
+
+  for (const review of pendingReviews) {
+    const rule = s[`auto_reply_rule_${review.rating}`] || 'disabled';
+    if (rule === 'disabled') continue;
+
+    // Générer la réponse IA
+    let responseText;
+    try {
+      if (s.claude_api_key) {
+        try { responseText = await generateWithClaude(review, s.claude_api_key); }
+        catch (e) { console.warn('Claude failed, using template:', e); }
+      }
+      if (!responseText) responseText = generateTemplateResponse(review);
+    } catch (e) {
+      console.error('Erreur génération avis', review.id, e);
+      continue;
+    }
+
+    // Sauvegarder le brouillon
+    const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+    const idx = reviews.findIndex(r => r.id === review.id);
+    if (idx < 0) continue;
+    reviews[idx].ai_draft = responseText;
+    localStorage.setItem('fv_reviews', JSON.stringify(reviews));
+    addLog('response.generated', 'review', review.id);
+
+    if (rule === 'auto') {
+      // Publication automatique
+      let published = false;
+
+      if (s.gas_reply_url) {
+        try {
+          const result = await publishViaGAS(s.gas_reply_url, review.id, responseText);
+          if (result.ok) published = true;
+          else console.warn('GAS auto-publish failed:', result.error);
+        } catch (e) { console.warn('GAS error:', e.message); }
+      }
+
+      if (!published && googleToken && currentLocation) {
+        try {
+          await gbpPut(`https://mybusiness.googleapis.com/v4/${currentLocation}/reviews/${review.id}/reply`, { comment: responseText });
+          published = true;
+        } catch (e) { console.warn('Direct API error:', e.message); }
+      }
+
+      if (published) {
+        markAsReplied(review.id, responseText);
+        autoCount++;
+      } else {
+        // Impossible de publier auto → garder en brouillon pour validation
+        draftCount++;
+      }
+
+    } else if (rule === 'validate') {
+      // Garder en brouillon — le gérant valide manuellement
+      draftCount++;
+    }
+
+    // Petite pause pour ne pas surcharger l'API
+    await new Promise(r => setTimeout(r, 800));
+  }
+
+  // Résumé
+  if (autoCount > 0 || draftCount > 0) {
+    const parts = [];
+    if (autoCount  > 0) parts.push(`${autoCount} publiée${autoCount > 1 ? 's' : ''} automatiquement`);
+    if (draftCount > 0) parts.push(`${draftCount} en attente de validation`);
+    toast(`🤖 Auto-réponse : ${parts.join(' · ')}`, 'success');
+    addLog('auto_reply.completed', 'auto', `${autoCount}+${draftCount}`);
+    loadDashboard();
+    if (el('section-reviews').classList.contains('active')) loadReviews();
   }
 }
 
