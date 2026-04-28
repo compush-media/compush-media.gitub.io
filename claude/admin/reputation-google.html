@@ -869,17 +869,13 @@ async function gbpPut(url, body) {
   return resp.json().catch(() => ({}));
 }
 async function fetchGBPAccounts() {
-  try {
-    const data = await gbpGet('https://mybusinessaccountmanagement.googleapis.com/v1/accounts');
-    const accounts = data.accounts || [];
-    if (accounts.length === 0) { toast('Aucun compte Google Business Profile trouvé.', 'error'); return; }
-    const account = accounts[0];
-    localStorage.setItem('fv_selected_account', account.name);
-    currentAccount = account.name;
-    await fetchGBPLocations(account.name);
-  } catch (e) {
-    toast('Erreur Google : ' + e.message, 'error');
-  }
+  const data = await gbpGet('https://mybusinessaccountmanagement.googleapis.com/v1/accounts');
+  const accounts = data.accounts || [];
+  if (accounts.length === 0) { throw new Error('Aucun compte Google Business Profile trouvé.'); }
+  const account = accounts[0];
+  localStorage.setItem('fv_selected_account', account.name);
+  currentAccount = account.name;
+  await fetchGBPLocations(account.name);
 }
 async function fetchGBPLocations(accountName) {
   try {
@@ -1337,10 +1333,12 @@ async function triggerSync() {
   const wait = checkSyncCooldown();
   if (wait > 0) { toast(`⏳ Patientez encore ${Math.ceil(wait/1000)}s (quota Google).`, 'error'); return; }
   btn.disabled = true; btn.textContent = '↻ Sync...';
+  let syncFailed = false;
   try {
-    if (!googleToken) { toast('Connectez d\'abord votre fiche Google.', 'error'); return; }
+    if (!googleToken) { toast('Connectez d\'abord votre fiche Google.', 'error'); syncFailed = true; return; }
     if (!currentLocation) currentLocation = localStorage.getItem('fv_selected_location');
     if (!currentLocation) await fetchGBPAccounts();
+    if (!currentLocation) { toast('Aucune fiche Google trouvée. Reconnectez votre compte.', 'error'); syncFailed = true; return; }
     const reviews = await fetchGBPReviews();
     addLog('sync.completed', 'sync', String(reviews.length));
     toast(`Synchronisation terminée ! ${reviews.length} avis importés.`, 'success');
@@ -1356,11 +1354,13 @@ async function triggerSync() {
       }
     }
   } catch (e) {
-    if (e.message && e.message.includes('Quota exceeded')) {
-      toast('⏳ Quota Google atteint. Attendez 1 minute et réessayez.', 'error');
+    syncFailed = true;
+    if (e.message && (e.message.includes('Quota exceeded') || e.message.includes('quota'))) {
+      toast('⏳ Quota Google atteint. Attendez 2 minutes avant de réessayer.', 'error');
     } else { toast('Erreur sync : ' + e.message, 'error'); }
   } finally {
-    startSyncCooldown(btn);
+    if (!syncFailed) { startSyncCooldown(btn); }
+    else { btn.disabled = false; btn.textContent = '↻ Synchroniser'; }
   }
 }
 
