@@ -667,7 +667,7 @@
                 Format : <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:11px">accounts/XXXXXXXX/locations/XXXXXXXX</code><br>
                 Trouvez cet ID dans votre <a href="https://business.google.com" target="_blank" style="color:var(--brand)">Google Business Profile</a> → URL de la fiche.
               </div>
-              <input type="text" id="set_manual_location_id" placeholder="accounts/123456789/locations/987654321" style="width:100%;margin-bottom:8px" />
+              <input type="text" id="set_manual_location_id" placeholder="locations/9563940357552092280  ou  accounts/123/locations/456" style="width:100%;margin-bottom:8px" />
               <button class="btn-primary" style="width:100%" onclick="saveManualLocation()">💾 Utiliser cet ID</button>
             </div>
           </details>
@@ -874,15 +874,17 @@ async function connectGoogle() {
 
 function saveManualLocation() {
   const val = el('set_manual_location_id')?.value?.trim();
-  if (!val || !val.includes('/locations/')) {
-    toast('Format invalide. Exemple : accounts/123456789/locations/987654321', 'error');
+  const isValid = val && (val.includes('/locations/') || val.match(/^\d{10,}$/) || val.startsWith('locations/'));
+  if (!isValid) {
+    toast('Format invalide. Exemple : locations/9563940357552092280', 'error');
     return;
   }
-  const title = val.split('/locations/').pop();
-  const locations = [{ name: val, title: title, address: '' }];
+  const normalized = val.match(/^\d+$/) ? 'locations/' + val : val;
+  const title = normalized.split('/locations/').pop() || normalized;
+  const locations = [{ name: normalized, title: title, address: '' }];
   localStorage.setItem('fv_locations', JSON.stringify(locations));
-  localStorage.setItem('fv_selected_location', val);
-  currentLocation = val;
+  localStorage.setItem('fv_selected_location', normalized);
+  currentLocation = normalized;
   refreshLocationsList();
   loadDashboard();
   const d = el('manualLocationDetails');
