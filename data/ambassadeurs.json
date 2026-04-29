@@ -10,7 +10,7 @@
     "telephone": "013445556666",
     "ville": "Paris12",
     "code": "AMB-JEN-MAR-001",
-    "statut": "suspendu",
+    "statut": "actif",
     "max_restaurants_test": 5,
     "notes": "dcccd"
   },
