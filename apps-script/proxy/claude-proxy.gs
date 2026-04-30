@@ -1591,20 +1591,20 @@ function analyzeWebsite(params) {
                || html.match(/href=["'](https?:\/\/[^"']*(?:reserver|reservation|booking|book)[^"']{0,80})/i);
   var reservationUrl = resaMatch ? resaMatch[1] : "";
 
-  // Lien Google Maps / avis Google
-  var gReviewMatch = html.match(/href=["'](https?:\/\/(?:maps\.google|g\.page|goo\.gl)[^"']*)/i)
-                  || html.match(/href=["'](https?:\/\/www\.google\.com\/maps\/[^"']+)/i);
+  // Lien Google avis — uniquement les URLs avec placeid= (pas les directions)
+  var gReviewMatch = html.match(/href=["'](https?:\/\/[^"']*(?:search\.google\.com\/local\/writereview|g\.page\/r)[^"']*)/i)
+                  || html.match(/href=["'](https?:\/\/[^"']*placeid=[^"'&]+[^"']*)/i);
   var googleReview = gReviewMatch ? gReviewMatch[1] : "";
 
-  // Adresse : cherche les balises schema.org ou microdata courantes
-  var addrMatch = html.match(/<[^>]+itemprop=["']streetAddress["'][^>]*>([^<]{5,80})</)
-               || html.match(/class=["'][^"']*address[^"']*["'][^>]*>([^<]{5,120})</i);
+  // Adresse : schema.org, microdata, balises courantes, JSON-LD
+  var addrMatch = html.match(/<[^>]+itemprop=["']streetAddress["'][^>]*>\s*([^<]{5,120})\s*</)
+               || html.match(/"streetAddress"\s*:\s*"([^"]{5,120})"/)
+               || html.match(/<[^>]+class=["'][^"']*(?:address|adresse)[^"']*["'][^>]*>\s*([^<]{5,120})\s*</)
+               || html.match(/(?:adresse|address)\s*[:\-]\s*([^\n<]{10,120})/i);
   var address = addrMatch ? addrMatch[1].replace(/\s+/g, " ").trim() : "";
 
-  // ── Enrichissement Claude (haiku, léger) ────────────────────
-  // On envoie un extrait du HTML (titre, meta, premier 3000 chars) pour
-  // affiner les infos non trouvées par regex.
-  var htmlSnippet = html.slice(0, 4000);
+  // ── Enrichissement Claude — on envoie davantage de HTML pour mieux couvrir le footer ──
+  var htmlSnippet = html.slice(0, 3000) + "\n...\n" + html.slice(-2000);
 
   var systemPrompt = "Tu es un assistant spécialisé dans l'extraction d'informations à partir de pages HTML de restaurants. Réponds UNIQUEMENT en JSON valide, sans texte autour.";
   var userPrompt = [

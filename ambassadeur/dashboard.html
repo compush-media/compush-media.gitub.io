@@ -462,7 +462,7 @@
           <div class="form-field full">
             <label class="form-label">Google Place ID</label>
             <input class="form-input" id="fGoogleReview" placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4" spellcheck="false" />
-            <span class="form-hint">Trouvez-le sur <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" style="color:var(--brand)">Place ID Finder</a> — le lien d'avis sera généré automatiquement</span>
+            <span class="form-hint">Comment trouver mon Place ID ? Cherchez votre restaurant sur <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" style="color:var(--brand)">ce lien</a>, copiez l'ID affiché (ex: ChIJN1t…)</span>
           </div>
           <div class="form-field full">
             <label class="form-label">URL logo / icône</label>
@@ -662,7 +662,8 @@ async function analyzeWebsite() {
     setVal('fReservationUrl', data.reservationUrl);
     if (data.googleReview) {
       const pidMatch = data.googleReview.match(/placeid=([^&]+)/);
-      setVal('fGoogleReview', pidMatch ? pidMatch[1] : data.googleReview);
+      if (pidMatch) setVal('fGoogleReview', pidMatch[1]);
+      // URL sans placeid (ex: directions) → on n'en fait rien
     }
     setVal('fLogoUrl',        data.logoUrl);
     if (data.color && /^#[0-9a-fA-F]{3,6}$/.test(data.color)) {
