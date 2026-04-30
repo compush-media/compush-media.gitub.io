@@ -10,5 +10,13 @@
     "brandColor2": "#9E7A3E",
     "phone": "0142420113",
     "ambassadorCode": "AMB-JEN-MAR-001"
+  },
+  "restaurant-guy-savoy": {
+    "name": "Restaurant Guy Savoy",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "phone": "0445938171",
+    "email": "axou.v@hotmail.fr",
+    "ambassadorCode": "AMB-JEN-MAR-001"
   }
 }
