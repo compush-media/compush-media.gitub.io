@@ -1,0 +1,26 @@
+{
+  "name": "les jardins de voltaire",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "plan": "essentiel",
+  "subscriptionStatus": "trialing",
+  "trialEndDate": "2026-05-14",
+  "setupPaid": false,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "phone": "0142420113",
+  "address": "28 Rue Voltaire, 92250 La Garenne-Colombes",
+  "reservationUrl": "https://www.lesjardinsdevoltaire.com/reservations",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJgexeoqVl5kcRYKZxq0XMZKU",
+  "logoUrl": "https://static.wixstatic.com/media/682343_0f159d9a4cc142e1a426297b294eb664%7Emv2.png/v1/fit/w_2500,h_1330,al_c/682343_0f159d9a4cc142e1a426297b294eb664%7Emv2.png",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  }
+}
