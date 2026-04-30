@@ -460,8 +460,9 @@
             <span class="form-hint">Laisse vide pour utiliser le formulaire intégré</span>
           </div>
           <div class="form-field full">
-            <label class="form-label">URL avis Google</label>
-            <input class="form-input" type="url" id="fGoogleReview" placeholder="https://g.page/r/xxx/review" />
+            <label class="form-label">Google Place ID</label>
+            <input class="form-input" id="fGoogleReview" placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4" spellcheck="false" />
+            <span class="form-hint">Trouvez-le sur <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" style="color:var(--brand)">Place ID Finder</a> — le lien d'avis sera généré automatiquement</span>
           </div>
           <div class="form-field full">
             <label class="form-label">URL logo / icône</label>
@@ -659,7 +660,10 @@ async function analyzeWebsite() {
     setVal('fPhone',       data.phone);
     setVal('fAddress',     data.address);
     setVal('fReservationUrl', data.reservationUrl);
-    setVal('fGoogleReview',   data.googleReview);
+    if (data.googleReview) {
+      const pidMatch = data.googleReview.match(/placeid=([^&]+)/);
+      setVal('fGoogleReview', pidMatch ? pidMatch[1] : data.googleReview);
+    }
     setVal('fLogoUrl',        data.logoUrl);
     if (data.color && /^#[0-9a-fA-F]{3,6}$/.test(data.color)) {
       const c = data.color.length === 4
@@ -723,7 +727,8 @@ async function submitCreation() {
   const phone          = document.getElementById('fPhone').value.trim();
   const address        = document.getElementById('fAddress').value.trim();
   const reservationUrl = document.getElementById('fReservationUrl').value.trim();
-  const googleReview   = document.getElementById('fGoogleReview').value.trim();
+  const placeId        = document.getElementById('fGoogleReview').value.trim();
+  const googleReview   = placeId ? 'https://search.google.com/local/writereview?placeid=' + placeId : '';
   const logoUrl        = document.getElementById('fLogoUrl').value.trim();
 
   let valid = true;
