@@ -400,32 +400,6 @@
         </div>
       </div>
 
-      <!-- Offre du jour -->
-      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)">
-        <div style="font-size:13px;font-weight:800;color:var(--ink);margin-bottom:12px">🔥 Offre du jour (optionnel)</div>
-        <div class="form-grid">
-          <div class="form-field full">
-            <label class="form-label">Titre de l'offre</label>
-            <input class="form-input" id="fOffreTitre" placeholder="Happy Hour ce soir — 2 cocktails = 1 offert" />
-          </div>
-          <div class="form-field full">
-            <label class="form-label">Description</label>
-            <input class="form-input" id="fOffreDesc" placeholder="Valable dès 18h, sur présentation de l'app" />
-          </div>
-          <div class="form-field full">
-            <label class="form-label">Image de l'offre (URL)</label>
-            <input class="form-input" type="url" id="fOffreImage" placeholder="https://..." />
-          </div>
-          <div class="form-field">
-            <label class="form-label">Date de fin</label>
-            <input class="form-input" type="date" id="fOffreDateFin" />
-          </div>
-          <div class="form-field" style="display:flex;align-items:center;gap:10px;padding-top:20px">
-            <input type="checkbox" id="fOffreActive" style="width:18px;height:18px;accent-color:var(--brand);cursor:pointer" />
-            <label class="form-label" for="fOffreActive" style="margin:0;cursor:pointer">Activer l'offre</label>
-          </div>
-        </div>
-      </div>
 
       <!-- Progress création -->
       <div class="creation-progress" id="creationProgress">
@@ -545,12 +519,10 @@ function renderRestoGrid(restos) {
 // ── Modal ─────────────────────────────────────────────────────
 function openModal() {
   ['fName','fSlug','fAdminPass','fEmail','fPhone','fAddress',
-   'fReservationUrl','fGoogleReview','fLogoUrl',
-   'fOffreTitre','fOffreDesc','fOffreImage','fOffreDateFin']
+   'fReservationUrl','fGoogleReview','fLogoUrl']
     .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('fColor').value = '#B8924F';
   document.getElementById('fColorPicker').value = '#B8924F';
-  document.getElementById('fOffreActive').checked = false;
   document.getElementById('creationProgress').classList.remove('show');
   document.getElementById('successBox').style.display = 'none';
   document.getElementById('modalFooter').style.display = 'flex';
@@ -591,19 +563,6 @@ async function submitCreation() {
   const reservationUrl = document.getElementById('fReservationUrl').value.trim();
   const googleReview   = document.getElementById('fGoogleReview').value.trim();
   const logoUrl        = document.getElementById('fLogoUrl').value.trim();
-  const offreTitre     = document.getElementById('fOffreTitre').value.trim();
-  const offreDesc      = document.getElementById('fOffreDesc').value.trim();
-  const offreImage     = document.getElementById('fOffreImage').value.trim();
-  const offreDateFin   = document.getElementById('fOffreDateFin').value.trim();
-  const offreActive    = document.getElementById('fOffreActive').checked;
-
-  const offre_jour = offreTitre ? {
-    active: offreActive,
-    titre: offreTitre,
-    description: offreDesc,
-    image: offreImage,
-    date_fin: offreDateFin
-  } : null;
 
   let valid = true;
   [['fName', name], ['fSlug', sl], ['fAdminPass', adminPass]].forEach(([id, val]) => {
@@ -628,7 +587,6 @@ async function submitCreation() {
       name, slug: sl, color, email, phone, adminPass,
       address, reservationUrl, googleReview, logoUrl
     };
-    if(offre_jour) payload.offre_jour = offre_jour;
 
     const res  = await fetch(API_URL, {
       method: 'POST',

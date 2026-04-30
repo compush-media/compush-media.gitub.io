@@ -319,10 +319,9 @@
   <button class="tab-btn admin-only" data-tab="parametres">
     <span class="tab-icon">⚙️</span> Paramètres
   </button>
-  <!-- Offre du jour : masquée pour l'instant, architecture prête -->
-  <!-- <button class="tab-btn admin-only" data-tab="offre">
-    <span class="tab-icon">📸</span> Offre du jour
-  </button> -->
+  <button class="tab-btn admin-only" data-tab="offre">
+    <span class="tab-icon">🔥</span> Offre du jour
+  </button>
 </nav>
 
 <!-- ── CONTENT ── -->
@@ -659,22 +658,69 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════ OFFRE DU JOUR (masquée, architecture prête) ═══════════════════════════ -->
-  <!-- Pour réactiver : retirer les commentaires + ajouter le tab-btn dans la nav -->
-  <!--
+  <!-- ═══════════════════════════ OFFRE DU JOUR ═══════════════════════════ -->
   <div id="offre" class="tab-panel">
-    <div class="section-title">Offre du jour</div>
-    <div class="section-sub">Gérez l'image de l'offre affichée dans l'app</div>
-    <div class="card">
-      <div class="card-title"><span class="card-title-icon">📸</span> Image de l'offre</div>
-      <input type="file" id="imageInput" accept="image/*" />
-      <div id="previewBox" style="margin-top:16px;"></div>
-      <button class="btn btn-brand" onclick="uploadOffre()" style="margin-top:16px;">📤 Enregistrer</button>
-      <button class="btn" onclick="supprimerOffre()" style="margin-top:10px;background:var(--muted);color:#fff;">🗑️ Supprimer</button>
-      <div id="offreMessage" style="margin-top:14px;font-size:14px;"></div>
+    <div class="section-title">🔥 Offre du jour</div>
+    <div class="section-sub">Configurez l'offre affichée dans l'app de vos clients</div>
+
+    <!-- Statut actif -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">🔄</span> Statut de l'offre</div>
+      <label style="display:flex;align-items:center;gap:14px;cursor:pointer;padding:8px 0;">
+        <input type="checkbox" id="offreActive"
+          style="width:20px;height:20px;accent-color:var(--brand);cursor:pointer;flex-shrink:0;" />
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--ink);">Activer l'offre du jour</div>
+          <div style="font-size:12px;color:var(--muted);">Décochez pour masquer l'offre sans la supprimer</div>
+        </div>
+      </label>
     </div>
+
+    <!-- Contenu de l'offre -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">✍️</span> Contenu</div>
+
+      <label class="form-label" for="offreTitre" style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">Titre *</label>
+      <input class="form-input" type="text" id="offreTitre"
+        placeholder="Happy Hour ce soir — 2 cocktails achetés = 1 offert"
+        style="margin-bottom:14px;" />
+
+      <label class="form-label" for="offreDesc" style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">Description</label>
+      <textarea class="form-input" id="offreDesc" rows="3"
+        placeholder="Valable dès 18h, sur présentation de l'app Fidelavis."
+        style="margin-bottom:14px;resize:vertical;"></textarea>
+
+      <label class="form-label" for="offreDateFin" style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">Date de fin de validité</label>
+      <input class="form-input" type="date" id="offreDateFin"
+        style="margin-bottom:0;" />
+    </div>
+
+    <!-- Image -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">🖼️</span> Image de l'offre</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+        URL d'une image en ligne (JPG/PNG recommandé, format paysage 16:9).
+      </p>
+      <input class="form-input" type="url" id="offreImage"
+        placeholder="https://monresto.fr/offre-happy-hour.jpg"
+        style="margin-bottom:12px;" oninput="previewOffreImage()" />
+      <div id="offreImagePreview" style="display:none;margin-bottom:4px;">
+        <img id="offreImgEl" src="" alt="Aperçu"
+          style="width:100%;max-height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--line);"
+          onerror="document.getElementById('offreImagePreview').style.display='none'" />
+      </div>
+    </div>
+
+    <!-- Bouton save -->
+    <button class="btn btn-brand" type="button" id="saveOffreBtn" onclick="saveOffre()"
+      style="width:100%;padding:14px;font-size:15px;">
+      💾 Enregistrer l'offre
+    </button>
+    <div class="notif-msg" id="offreFeedback" style="margin-top:12px;"></div>
+    <p style="font-size:12px;color:var(--muted);margin:10px 0 0;">
+      ⏱️ Visible dans l'app dans ~1 minute après déploiement GitHub Pages.
+    </p>
   </div>
-  -->
 
 </main>
 
@@ -779,7 +825,7 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 //  NAVIGATION PAR HASH
 // ═══════════════════════════════════════════════════════════════
 
-const INLINE_TABS = ['dashboard', 'coupon', 'notifications', 'parametres'];
+const INLINE_TABS = ['dashboard', 'coupon', 'notifications', 'parametres', 'offre'];
 let kpisLoaded = false;
 let pinInterval = null;   // ⚠️ doit être déclaré AVANT initFromHash() (qui appelle loadDashboard)
 
@@ -787,6 +833,7 @@ function switchTab(tabId) {
   if (!INLINE_TABS.includes(tabId)) return;
   if (tabId === 'notifications' && ROLE !== 'admin') return;
   if (tabId === 'parametres'    && ROLE !== 'admin') return;
+  if (tabId === 'offre'         && ROLE !== 'admin') return;
 
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
@@ -802,6 +849,7 @@ function switchTab(tabId) {
   if (tabId === 'coupon')        initCoupon();
   if (tabId === 'notifications') loadPWACount();
   if (tabId === 'parametres')    loadParametres();
+  if (tabId === 'offre')         loadOffre();
 }
 
 // Clics sur les boutons tab inline
@@ -1230,25 +1278,78 @@ async function saveColor() {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  OFFRE DU JOUR (logique conservée, désactivée dans la nav)
+//  OFFRE DU JOUR
 // ═══════════════════════════════════════════════════════════════
 
-function uploadOffre() {
-  const file = document.getElementById('imageInput')?.files[0];
-  if (!file) { document.getElementById('offreMessage').textContent = 'Sélectionnez une image.'; return; }
-  const reader = new FileReader();
-  reader.onload = e => {
-    localStorage.setItem(`offre_image_${SITE}`, e.target.result);
-    document.getElementById('previewBox').innerHTML = `<img src="${e.target.result}" style="max-width:100%;border-radius:12px;" alt="Aperçu">`;
-    document.getElementById('offreMessage').textContent = 'Image enregistrée.';
-  };
-  reader.readAsDataURL(file);
+let _offreLoaded = false;
+
+async function loadOffre() {
+  if (_offreLoaded) return;
+  _offreLoaded = true;
+  try {
+    const res = await fetch(`/${SITE}/config.json`, { cache: 'no-store' });
+    const cfg = await res.json();
+    const o = cfg.offre_jour || {};
+    document.getElementById('offreActive').checked  = !!o.active;
+    document.getElementById('offreTitre').value     = o.titre       || '';
+    document.getElementById('offreDesc').value      = o.description || '';
+    document.getElementById('offreImage').value     = o.image       || '';
+    document.getElementById('offreDateFin').value   = o.date_fin    || '';
+    if (o.image) previewOffreImage();
+  } catch(e) {}
 }
 
-function supprimerOffre() {
-  localStorage.removeItem(`offre_image_${SITE}`);
-  if (document.getElementById('previewBox')) document.getElementById('previewBox').innerHTML = '';
-  if (document.getElementById('offreMessage')) document.getElementById('offreMessage').textContent = 'Offre supprimée.';
+function previewOffreImage() {
+  const url = document.getElementById('offreImage').value.trim();
+  const wrap = document.getElementById('offreImagePreview');
+  const img  = document.getElementById('offreImgEl');
+  if (url) { img.src = url; wrap.style.display = ''; }
+  else      { wrap.style.display = 'none'; }
+}
+
+async function saveOffre() {
+  const titre   = document.getElementById('offreTitre').value.trim();
+  const fb      = document.getElementById('offreFeedback');
+  const btn     = document.getElementById('saveOffreBtn');
+
+  if (!titre) {
+    fb.textContent = '⚠️ Le titre est obligatoire.';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+
+  const offre = {
+    active:      document.getElementById('offreActive').checked,
+    titre,
+    description: document.getElementById('offreDesc').value.trim(),
+    image:       document.getElementById('offreImage').value.trim(),
+    date_fin:    document.getElementById('offreDateFin').value.trim()
+  };
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Enregistrement…';
+  fb.className    = 'notif-msg';
+
+  try {
+    const url  = `${API}?action=save_offre_jour&resto=${encodeURIComponent(SITE)}&offre_jour=${encodeURIComponent(JSON.stringify(offre))}`;
+    const res  = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data?.ok) {
+      fb.textContent = '✅ Offre enregistrée ! Visible dans l\'app dans ~1 minute.';
+      fb.className   = 'notif-msg success';
+      _offreLoaded   = false;
+    } else {
+      fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue');
+      fb.className   = 'notif-msg error';
+    }
+  } catch(err) {
+    fb.textContent = '⚠️ ' + (err?.message || 'Erreur réseau');
+    fb.className   = 'notif-msg error';
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '💾 Enregistrer l\'offre';
 }
 
 // ═══════════════════════════════════════════════════════════════

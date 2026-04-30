@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Espace Admin – Fidelavis</title>
-  <script src="../../assets/core.js" onerror="void(0)"></script>
+  <script src="../../assets/core.js"        onerror="void(0)"></script>
+  <script src="../../assets/admin-trial.js" onerror="void(0)"></script>
   <style>
     :root {
       --brand:        #b6152b;
@@ -292,6 +293,9 @@
   </div>
 </header>
 
+<!-- ── SUBSCRIPTION BANNER ── -->
+<div id="subBanner" style="display:none;padding:10px 20px;font-size:13px;font-weight:600;text-align:center;"></div>
+
 <!-- ── TAB NAV ── -->
 <nav class="tab-nav" id="tabNav">
   <button class="tab-btn" data-tab="dashboard">
@@ -312,10 +316,12 @@
   <a class="tab-btn admin-only" href="billing.html" id="linkBilling">
     <span class="tab-icon">💳</span> Compte
   </a>
-  <!-- Offre du jour : masquée pour l'instant, architecture prête -->
-  <!-- <button class="tab-btn admin-only" data-tab="offre">
-    <span class="tab-icon">📸</span> Offre du jour
-  </button> -->
+  <button class="tab-btn admin-only" data-tab="parametres">
+    <span class="tab-icon">⚙️</span> Paramètres
+  </button>
+  <button class="tab-btn admin-only" data-tab="offre">
+    <span class="tab-icon">🔥</span> Offre du jour
+  </button>
 </nav>
 
 <!-- ── CONTENT ── -->
@@ -359,6 +365,37 @@
       <div class="pin-display" id="pinDisplayDash">----</div>
       <div class="pin-bar"><div class="pin-bar-fill" id="pinBarFillDash" style="width:0%"></div></div>
       <div class="pin-timer" id="timerPinDash">Nouveau code dans : --</div>
+    </div>
+
+    <!-- CTA Configurer avis Google (masqué automatiquement une fois Google connecté) -->
+    <div class="card" id="ctaGoogleSetup" style="margin-bottom:20px;background:linear-gradient(135deg,#fff9ec 0%,#fff3cf 100%);border:1.5px solid #f4c95d;">
+      <div class="card-title" style="color:#6b4f00;"><span class="card-title-icon">⭐</span> Avis Google automatiques</div>
+      <p style="font-size:13.5px;color:#6b4f00;margin-bottom:14px;line-height:1.5;">
+        Connectez votre fiche Google My Business et notre IA rédige automatiquement une réponse personnalisée à chaque nouvel avis.
+        <strong>Gratuit, aucune clé API à fournir.</strong>
+      </p>
+      <a href="reputation-google.html" class="btn btn-brand" style="display:inline-block;padding:12px 22px;text-decoration:none;font-weight:700;font-size:14px;">
+        ⚙️ Configurer mes avis Google →
+      </a>
+    </div>
+
+    <!-- Lien NFC / QR Code -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title"><span class="card-title-icon">📲</span> Lien NFC / QR Code</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Programmez ce lien sur votre tag NFC ou générez un QR code à afficher en caisse.</p>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <code id="nfcLink" style="flex:1;background:#f4f6f9;border:1.5px solid var(--line);border-radius:8px;padding:10px 14px;font-size:13px;word-break:break-all;min-width:0;"></code>
+        <button class="btn btn-brand" style="white-space:nowrap;padding:10px 18px;" onclick="copyNfcLink()">📋 Copier</button>
+        <a id="qrBtn" class="btn" style="background:#1976d2;color:#fff;white-space:nowrap;padding:10px 18px;text-decoration:none;" target="_blank">🔗 QR Code</a>
+      </div>
+      <div id="copyMsg" style="display:none;font-size:12px;color:var(--green);margin-top:6px;font-weight:600;">✓ Lien copié !</div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px;">🖨️ Cartes à imprimer</div>
+          <div style="font-size:12px;color:var(--muted);">A4 · 4 cartes A6 prêtes à découper — posez-les sur vos tables</div>
+        </div>
+        <a href="print-qr.html" class="btn btn-brand" style="padding:10px 18px;text-decoration:none;white-space:nowrap;">🖨️ Imprimer les cartes</a>
+      </div>
     </div>
 
     <!-- Résumé du mois -->
@@ -541,22 +578,149 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════ OFFRE DU JOUR (masquée, architecture prête) ═══════════════════════════ -->
-  <!-- Pour réactiver : retirer les commentaires + ajouter le tab-btn dans la nav -->
-  <!--
-  <div id="offre" class="tab-panel">
-    <div class="section-title">Offre du jour</div>
-    <div class="section-sub">Gérez l'image de l'offre affichée dans l'app</div>
+  <!-- ═══════════════════════════ PARAMÈTRES ═══════════════════════════ -->
+  <div id="parametres" class="tab-panel">
+    <div class="section-title">⚙️ Paramètres de l'app</div>
+    <div class="section-sub">Personnalisation de votre application PWA</div>
+
+    <!-- Icône -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">🖼️</span> Icône de l'application</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+        L'icône apparaît sur l'écran d'accueil de vos clients après installation.<br>
+        Utilisez une image carrée 512×512 px, fond non transparent (JPG ou PNG).
+      </p>
+
+      <!-- ⚠️ Bandeau : limitation plan Progressier -->
+      <div style="display:flex;gap:10px;padding:12px 14px;background:#fff7e6;border:1px solid #f4c95d;border-radius:12px;margin-bottom:14px;font-size:13px;line-height:1.5;color:#6b4f00;">
+        <div style="font-size:18px;flex-shrink:0;">ℹ️</div>
+        <div>
+          <strong>Icône personnalisée sur PWA installés :</strong> actuellement active uniquement
+          dans le navigateur et lors du partage. L'icône sur l'écran d'accueil des clients
+          (après installation du PWA) sera personnalisable après passage au
+          <strong>plan Scale de Progressier</strong>. D'ici là, tous les restaurants partagent
+          l'icône par défaut de Fidelavis sur iOS/Android installé.
+        </div>
+      </div>
+
+      <!-- Aperçu icône actuelle -->
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+        <img id="iconPreview" src="" alt="Icône actuelle"
+          style="width:72px;height:72px;border-radius:16px;object-fit:cover;border:1px solid var(--line);display:none;" />
+        <div id="iconPlaceholder"
+          style="width:72px;height:72px;border-radius:16px;background:var(--bg);border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:28px;">
+          🖼️
+        </div>
+        <div>
+          <div id="iconStatus" style="font-size:13px;font-weight:700;color:var(--muted);">Icône par défaut</div>
+          <div id="iconUrlDisplay" style="font-size:11px;color:var(--muted);word-break:break-all;max-width:240px;"></div>
+        </div>
+      </div>
+
+      <label class="form-label" for="iconUrlInput">URL de votre logo (512×512 recommandé)</label>
+      <input class="form-input" type="url" id="iconUrlInput"
+        placeholder="https://monresto.fr/logo.png"
+        style="margin-bottom:10px;" />
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-brand" id="saveIconBtn" type="button" onclick="saveIcon()">
+          💾 Enregistrer l'icône
+        </button>
+        <button class="btn" type="button" onclick="resetIcon()"
+          style="background:#f3f4f6;color:#555;border:1px solid var(--line);">
+          🔄 Remettre l'icône par défaut
+        </button>
+      </div>
+      <div class="notif-msg" id="iconFeedback" style="margin-top:12px;"></div>
+      <p style="font-size:12px;color:var(--muted);margin:12px 0 0;">
+        ⏱️ Après enregistrement, l'icône est mise à jour sur GitHub Pages en ~1 minute.<br>
+        ℹ️ Les clients ayant déjà installé l'app doivent la réinstaller pour voir la nouvelle icône.
+      </p>
+    </div>
+
+    <!-- Couleur de marque -->
     <div class="card">
-      <div class="card-title"><span class="card-title-icon">📸</span> Image de l'offre</div>
-      <input type="file" id="imageInput" accept="image/*" />
-      <div id="previewBox" style="margin-top:16px;"></div>
-      <button class="btn btn-brand" onclick="uploadOffre()" style="margin-top:16px;">📤 Enregistrer</button>
-      <button class="btn" onclick="supprimerOffre()" style="margin-top:10px;background:var(--muted);color:#fff;">🗑️ Supprimer</button>
-      <div id="offreMessage" style="margin-top:14px;font-size:14px;"></div>
+      <div class="card-title"><span class="card-title-icon">🎨</span> Couleur de marque</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+        Couleur principale utilisée dans les boutons, accents et barre de titre de la PWA.
+      </p>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <input type="color" id="brandColorInput"
+          style="width:48px;height:48px;border:none;border-radius:10px;cursor:pointer;padding:2px;" />
+        <div>
+          <div style="font-size:13px;font-weight:700;" id="brandColorLabel">#b8924f</div>
+          <div style="font-size:12px;color:var(--muted);">Couleur actuelle</div>
+        </div>
+      </div>
+      <button class="btn btn-brand" type="button" onclick="saveColor()" style="margin-top:4px;">
+        💾 Enregistrer la couleur
+      </button>
+      <div class="notif-msg" id="colorFeedback" style="margin-top:12px;"></div>
     </div>
   </div>
-  -->
+
+  <!-- ═══════════════════════════ OFFRE DU JOUR ═══════════════════════════ -->
+  <div id="offre" class="tab-panel">
+    <div class="section-title">🔥 Offre du jour</div>
+    <div class="section-sub">Configurez l'offre affichée dans l'app de vos clients</div>
+
+    <!-- Statut actif -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">🔄</span> Statut de l'offre</div>
+      <label style="display:flex;align-items:center;gap:14px;cursor:pointer;padding:8px 0;">
+        <input type="checkbox" id="offreActive"
+          style="width:20px;height:20px;accent-color:var(--brand);cursor:pointer;flex-shrink:0;" />
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--ink);">Activer l'offre du jour</div>
+          <div style="font-size:12px;color:var(--muted);">Décochez pour masquer l'offre sans la supprimer</div>
+        </div>
+      </label>
+    </div>
+
+    <!-- Contenu de l'offre -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">✍️</span> Contenu</div>
+
+      <label class="form-label" for="offreTitre" style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">Titre *</label>
+      <input class="form-input" type="text" id="offreTitre"
+        placeholder="Happy Hour ce soir — 2 cocktails achetés = 1 offert"
+        style="margin-bottom:14px;" />
+
+      <label class="form-label" for="offreDesc" style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">Description</label>
+      <textarea class="form-input" id="offreDesc" rows="3"
+        placeholder="Valable dès 18h, sur présentation de l'app Fidelavis."
+        style="margin-bottom:14px;resize:vertical;"></textarea>
+
+      <label class="form-label" for="offreDateFin" style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">Date de fin de validité</label>
+      <input class="form-input" type="date" id="offreDateFin"
+        style="margin-bottom:0;" />
+    </div>
+
+    <!-- Image -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">🖼️</span> Image de l'offre</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+        URL d'une image en ligne (JPG/PNG recommandé, format paysage 16:9).
+      </p>
+      <input class="form-input" type="url" id="offreImage"
+        placeholder="https://monresto.fr/offre-happy-hour.jpg"
+        style="margin-bottom:12px;" oninput="previewOffreImage()" />
+      <div id="offreImagePreview" style="display:none;margin-bottom:4px;">
+        <img id="offreImgEl" src="" alt="Aperçu"
+          style="width:100%;max-height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--line);"
+          onerror="document.getElementById('offreImagePreview').style.display='none'" />
+      </div>
+    </div>
+
+    <!-- Bouton save -->
+    <button class="btn btn-brand" type="button" id="saveOffreBtn" onclick="saveOffre()"
+      style="width:100%;padding:14px;font-size:15px;">
+      💾 Enregistrer l'offre
+    </button>
+    <div class="notif-msg" id="offreFeedback" style="margin-top:12px;"></div>
+    <p style="font-size:12px;color:var(--muted);margin:10px 0 0;">
+      ⏱️ Visible dans l'app dans ~1 minute après déploiement GitHub Pages.
+    </p>
+  </div>
 
 </main>
 
@@ -566,11 +730,11 @@
 // ═══════════════════════════════════════════════════════════════
 
 const SITE = (() => {
-  // Priorité 1 : path URL → /claude/admin/... → "claude"
+  // Priorité 1 : path URL → /resto1/admin/... → "resto1"
   const m = location.pathname.match(/^\/([^/]+)\//);
   if (m && m[1] !== 'assets' && m[1] !== 'data') return m[1];
   // Fallback
-  return localStorage.getItem('fv_last_resto') || 'claude';
+  return localStorage.getItem('fv_last_resto') || 'resto1';
 })();
 
 const AUTH_KEY = `admin_${SITE}`;
@@ -592,13 +756,63 @@ if (ROLE !== 'admin') {
   document.querySelectorAll('#linkStats, #linkAvis, #linkBilling').forEach(el => el.style.display = 'none');
 }
 
-// Charger nom du restaurant depuis config.json
+// Charger config.json : nom + statut abonnement + lien NFC
 fetch(`/${SITE}/config.json`)
   .then(r => r.json())
   .then(cfg => {
     if (cfg?.name) document.getElementById('restNameHeader').textContent = cfg.name;
+
+    // Lien NFC
+    const nfcUrl = `${location.origin}/${SITE}/indexnfc.html`;
+    const nfcEl  = document.getElementById('nfcLink');
+    if (nfcEl) nfcEl.textContent = nfcUrl;
+    const qrBtn  = document.getElementById('qrBtn');
+    if (qrBtn) qrBtn.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(nfcUrl)}`;
+
+    // Bannière statut abonnement
+    const banner = document.getElementById('subBanner');
+    const status = cfg?.subscriptionStatus || '';
+    const trial  = cfg?.trialEndDate || '';
+    if (status === 'trialing' && trial) {
+      const days = Math.ceil((new Date(trial) - new Date()) / 86400000);
+      if (days > 0) {
+        const [y,m,d] = trial.split('-');
+        const trialFr = `${d}-${m}-${y}`;
+        banner.style.display = '';
+        banner.style.background = '#dbeafe';
+        banner.style.color = '#1e40af';
+        banner.innerHTML = `🎁 Essai gratuit — <strong>${days} jour${days > 1 ? 's' : ''} restant${days > 1 ? 's' : ''}</strong> (fin le ${trialFr}) · <a href="billing.html" style="color:#1e40af;font-weight:700;">Gérer mon abonnement →</a>`;
+      }
+    } else if (status === 'past_due') {
+      banner.style.display = '';
+      banner.style.background = '#fee2e2';
+      banner.style.color = '#dc2626';
+      banner.innerHTML = `⚠️ <strong>Paiement en attente</strong> — Mettez à jour votre moyen de paiement pour continuer à utiliser Fidelavis. <a href="billing.html" style="color:#dc2626;font-weight:700;">Régulariser →</a>`;
+    } else if (status === 'canceled') {
+      banner.style.display = '';
+      banner.style.background = '#f3f4f6';
+      banner.style.color = '#6b7280';
+      banner.innerHTML = `Abonnement résilié. <a href="billing.html" style="color:#6b7280;font-weight:700;">Réactiver →</a>`;
+    }
   })
-  .catch(() => {});
+  .catch(() => {
+    // Afficher le lien NFC même sans config
+    const nfcUrl = `${location.origin}/${SITE}/indexnfc.html`;
+    const nfcEl  = document.getElementById('nfcLink');
+    if (nfcEl) nfcEl.textContent = nfcUrl;
+    const qrBtn  = document.getElementById('qrBtn');
+    if (qrBtn) qrBtn.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(nfcUrl)}`;
+  });
+
+function copyNfcLink() {
+  const url = document.getElementById('nfcLink')?.textContent;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => {
+    const msg = document.getElementById('copyMsg');
+    msg.style.display = '';
+    setTimeout(() => { msg.style.display = 'none'; }, 2000);
+  });
+}
 
 // ── Logout ──────────────────────────────────────────────────
 document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -611,12 +825,15 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 //  NAVIGATION PAR HASH
 // ═══════════════════════════════════════════════════════════════
 
-const INLINE_TABS = ['dashboard', 'coupon', 'notifications'];
+const INLINE_TABS = ['dashboard', 'coupon', 'notifications', 'parametres', 'offre'];
 let kpisLoaded = false;
+let pinInterval = null;   // ⚠️ doit être déclaré AVANT initFromHash() (qui appelle loadDashboard)
 
 function switchTab(tabId) {
   if (!INLINE_TABS.includes(tabId)) return;
   if (tabId === 'notifications' && ROLE !== 'admin') return;
+  if (tabId === 'parametres'    && ROLE !== 'admin') return;
+  if (tabId === 'offre'         && ROLE !== 'admin') return;
 
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
@@ -631,6 +848,8 @@ function switchTab(tabId) {
   if (tabId === 'dashboard')     loadDashboard();
   if (tabId === 'coupon')        initCoupon();
   if (tabId === 'notifications') loadPWACount();
+  if (tabId === 'parametres')    loadParametres();
+  if (tabId === 'offre')         loadOffre();
 }
 
 // Clics sur les boutons tab inline
@@ -658,7 +877,7 @@ function initFromHash() {
 }
 
 window.addEventListener('popstate', initFromHash);
-initFromHash();
+// initFromHash() est appelé en toute fin de script (après TOUTES les const/let) pour éviter TDZ
 
 // ═══════════════════════════════════════════════════════════════
 //  APPS SCRIPT API
@@ -687,14 +906,25 @@ async function fetchStats(days) {
 //  DASHBOARD
 // ═══════════════════════════════════════════════════════════════
 
-async function loadDashboard() {
-  if (kpisLoaded) return;
+// pinInterval est déclaré plus haut (avant initFromHash) — voir commentaire ⚠️
 
-  // PIN — start immediately on dashboard
+async function loadDashboard() {
+  // PIN — toujours mettre à jour immédiatement sur le dashboard
+  // (même si kpisLoaded, pour que le code s'affiche au retour sur l'onglet)
+  updatePin();
   if (!pinInterval) {
-    updatePin();
     pinInterval = setInterval(updatePin, 1000);
   }
+
+  // Masque le CTA "Configurer mes avis Google" si Google est déjà connecté
+  try {
+    const tokenExpiry = parseInt(localStorage.getItem('fv_google_token_expiry') || '0');
+    const hasGoogle   = !!localStorage.getItem('fv_google_token') && tokenExpiry > Date.now();
+    const cta = document.getElementById('ctaGoogleSetup');
+    if (cta && hasGoogle) cta.style.display = 'none';
+  } catch (_) {}
+
+  if (kpisLoaded) return;
 
   // Date display
   const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -795,21 +1025,28 @@ function genPin() {
   return (simpleHash(SECRET_KEY + minute) % 10000).toString().padStart(4, '0');
 }
 
-let pinInterval = null;
-
 function updatePin() {
   const now  = Date.now();
   const secs = Math.floor((60000 - (now % 60000)) / 1000);
   const pct  = ((60 - secs) / 60) * 100;
   const pin  = genPin();
-  // Coupon tab
-  document.getElementById('pinDisplay').textContent    = pin;
-  document.getElementById('timerPin').textContent      = `Nouveau code dans : ${secs}s`;
-  document.getElementById('pinBarFill').style.width    = pct + '%';
-  // Dashboard tab
-  document.getElementById('pinDisplayDash').textContent    = pin;
-  document.getElementById('timerPinDash').textContent      = `Nouveau code dans : ${secs}s`;
-  document.getElementById('pinBarFillDash').style.width    = pct + '%';
+  const timer = `Nouveau code dans : ${secs}s`;
+  // Set chaque élément indépendamment — si un onglet n'est pas encore rendu,
+  // l'autre s'affiche quand même (évite le TypeError sur null qui bloquait tout)
+  const ids = [
+    ['pinDisplay',      'text',  pin],
+    ['timerPin',        'text',  timer],
+    ['pinBarFill',      'width', pct + '%'],
+    ['pinDisplayDash',  'text',  pin],
+    ['timerPinDash',    'text',  timer],
+    ['pinBarFillDash',  'width', pct + '%'],
+  ];
+  for (const [id, kind, val] of ids) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (kind === 'text')  el.textContent = val;
+    if (kind === 'width') el.style.width = val;
+  }
 }
 
 let couponInitialized = false;
@@ -938,26 +1175,188 @@ function showNotifFeedback(text, type) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  OFFRE DU JOUR (logique conservée, désactivée dans la nav)
+//  PARAMÈTRES — Icône & Couleur de marque
 // ═══════════════════════════════════════════════════════════════
 
-function uploadOffre() {
-  const file = document.getElementById('imageInput')?.files[0];
-  if (!file) { document.getElementById('offreMessage').textContent = 'Sélectionnez une image.'; return; }
-  const reader = new FileReader();
-  reader.onload = e => {
-    localStorage.setItem(`offre_image_${SITE}`, e.target.result);
-    document.getElementById('previewBox').innerHTML = `<img src="${e.target.result}" style="max-width:100%;border-radius:12px;" alt="Aperçu">`;
-    document.getElementById('offreMessage').textContent = 'Image enregistrée.';
-  };
-  reader.readAsDataURL(file);
+let _paramsLoaded = false;
+
+async function loadParametres() {
+  if (_paramsLoaded) return;
+  _paramsLoaded = true;
+
+  // Charger config.json pour afficher les valeurs actuelles
+  try {
+    const res = await fetch(`/${SITE}/config.json`, { cache: 'no-store' });
+    const cfg = await res.json();
+
+    // Icône
+    const iconUrl = cfg.iconUrl || '';
+    document.getElementById('iconUrlInput').value = iconUrl;
+    if (iconUrl) {
+      document.getElementById('iconPreview').src = iconUrl;
+      document.getElementById('iconPreview').style.display = '';
+      document.getElementById('iconPlaceholder').style.display = 'none';
+      document.getElementById('iconStatus').textContent = 'Icône personnalisée';
+      document.getElementById('iconUrlDisplay').textContent = iconUrl;
+    }
+
+    // Couleur
+    const color = cfg.color || '#b8924f';
+    document.getElementById('brandColorInput').value = color;
+    document.getElementById('brandColorLabel').textContent = color;
+  } catch(e) {}
+
+  // Mise à jour label couleur en temps réel
+  document.getElementById('brandColorInput').addEventListener('input', function() {
+    document.getElementById('brandColorLabel').textContent = this.value;
+  });
 }
 
-function supprimerOffre() {
-  localStorage.removeItem(`offre_image_${SITE}`);
-  if (document.getElementById('previewBox')) document.getElementById('previewBox').innerHTML = '';
-  if (document.getElementById('offreMessage')) document.getElementById('offreMessage').textContent = 'Offre supprimée.';
+async function saveIcon() {
+  const iconUrl = document.getElementById('iconUrlInput').value.trim();
+  const fb      = document.getElementById('iconFeedback');
+  const btn     = document.getElementById('saveIconBtn');
+
+  if (iconUrl && !/^https?:\/\//.test(iconUrl)) {
+    fb.textContent = '⚠️ L\'URL doit commencer par https://';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Enregistrement…';
+  fb.className    = 'notif-msg';
+
+  try {
+    // GET pour éviter le preflight CORS (même pattern que push_notification)
+    const url  = `${API}?action=save_icon&resto=${encodeURIComponent(SITE)}&iconUrl=${encodeURIComponent(iconUrl)}`;
+    const res  = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data?.ok) {
+      fb.textContent = '✅ Icône mise à jour ! Visible dans ~1 minute après déploiement GitHub Pages.';
+      fb.className   = 'notif-msg success';
+
+      // Mise à jour de l'aperçu
+      if (iconUrl) {
+        document.getElementById('iconPreview').src = iconUrl;
+        document.getElementById('iconPreview').style.display = '';
+        document.getElementById('iconPlaceholder').style.display = 'none';
+        document.getElementById('iconStatus').textContent = 'Icône personnalisée';
+        document.getElementById('iconUrlDisplay').textContent = iconUrl;
+      } else {
+        document.getElementById('iconPreview').style.display = 'none';
+        document.getElementById('iconPlaceholder').style.display = '';
+        document.getElementById('iconStatus').textContent = 'Icône par défaut';
+        document.getElementById('iconUrlDisplay').textContent = '';
+      }
+      _paramsLoaded = false; // forcer reload au prochain accès
+    } else {
+      fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue');
+      fb.className   = 'notif-msg error';
+    }
+  } catch(err) {
+    fb.textContent = '⚠️ ' + (err?.message || 'Erreur réseau');
+    fb.className   = 'notif-msg error';
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '💾 Enregistrer l\'icône';
 }
+
+function resetIcon() {
+  document.getElementById('iconUrlInput').value = '';
+  saveIcon();
+}
+
+async function saveColor() {
+  const color = document.getElementById('brandColorInput').value;
+  const fb    = document.getElementById('colorFeedback');
+
+  fb.textContent = '⏳ Fonctionnalité à venir — contactez le support pour modifier la couleur.';
+  fb.className   = 'notif-msg';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  OFFRE DU JOUR
+// ═══════════════════════════════════════════════════════════════
+
+let _offreLoaded = false;
+
+async function loadOffre() {
+  if (_offreLoaded) return;
+  _offreLoaded = true;
+  try {
+    const res = await fetch(`/${SITE}/config.json`, { cache: 'no-store' });
+    const cfg = await res.json();
+    const o = cfg.offre_jour || {};
+    document.getElementById('offreActive').checked  = !!o.active;
+    document.getElementById('offreTitre').value     = o.titre       || '';
+    document.getElementById('offreDesc').value      = o.description || '';
+    document.getElementById('offreImage').value     = o.image       || '';
+    document.getElementById('offreDateFin').value   = o.date_fin    || '';
+    if (o.image) previewOffreImage();
+  } catch(e) {}
+}
+
+function previewOffreImage() {
+  const url = document.getElementById('offreImage').value.trim();
+  const wrap = document.getElementById('offreImagePreview');
+  const img  = document.getElementById('offreImgEl');
+  if (url) { img.src = url; wrap.style.display = ''; }
+  else      { wrap.style.display = 'none'; }
+}
+
+async function saveOffre() {
+  const titre   = document.getElementById('offreTitre').value.trim();
+  const fb      = document.getElementById('offreFeedback');
+  const btn     = document.getElementById('saveOffreBtn');
+
+  if (!titre) {
+    fb.textContent = '⚠️ Le titre est obligatoire.';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+
+  const offre = {
+    active:      document.getElementById('offreActive').checked,
+    titre,
+    description: document.getElementById('offreDesc').value.trim(),
+    image:       document.getElementById('offreImage').value.trim(),
+    date_fin:    document.getElementById('offreDateFin').value.trim()
+  };
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Enregistrement…';
+  fb.className    = 'notif-msg';
+
+  try {
+    const url  = `${API}?action=save_offre_jour&resto=${encodeURIComponent(SITE)}&offre_jour=${encodeURIComponent(JSON.stringify(offre))}`;
+    const res  = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data?.ok) {
+      fb.textContent = '✅ Offre enregistrée ! Visible dans l\'app dans ~1 minute.';
+      fb.className   = 'notif-msg success';
+      _offreLoaded   = false;
+    } else {
+      fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue');
+      fb.className   = 'notif-msg error';
+    }
+  } catch(err) {
+    fb.textContent = '⚠️ ' + (err?.message || 'Erreur réseau');
+    fb.className   = 'notif-msg error';
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '💾 Enregistrer l\'offre';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT FINAL — appelé APRÈS toutes les déclarations const/let
+//  (évite le TDZ sur SECRET_KEY, API, etc. depuis loadDashboard)
+// ═══════════════════════════════════════════════════════════════
+initFromHash();
 </script>
 </body>
 </html>
