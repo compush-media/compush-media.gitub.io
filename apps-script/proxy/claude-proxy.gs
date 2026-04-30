@@ -87,10 +87,12 @@ function doGet(e) {
     try {
       var result;
       switch (e.parameter.action) {
-        case "push_notification": result = pushNotification(e.parameter); break;
+        case "push_notification":  result = pushNotification(e.parameter); break;
         case "save_icon":          result = saveRestaurantIcon(e.parameter); break;
-        case "get_ambassadeurs":  result = getAmbassadeurs(); break;
-        case "get_ambassador":    result = getAmbassadorByToken(e.parameter.token || ""); break;
+        case "get_ambassadeurs":   result = getAmbassadeurs(); break;
+        case "get_ambassador":     result = getAmbassadorByToken(e.parameter.token || ""); break;
+        case "analyze_website":    result = analyzeWebsite(e.parameter); break;
+        case "save_offre_jour":    result = saveOffreJour(e.parameter); break;
         default: result = { error: "Action GET inconnue : " + e.parameter.action };
       }
       return buildResponse(result);
@@ -576,14 +578,18 @@ function getAmbassadorByToken(token) {
 
 // ─── Action 9 : Créer un restaurant pour un ambassadeur ──────
 function createRestaurantForAmbassador(params) {
-  var ambToken  = params.amb_token  || "";
-  var name      = params.name       || "";
-  var sl        = params.slug       || "";
-  var color     = params.color      || "#B8924F";
-  var color2    = params.color2     || "#9E7A3E";
-  var email     = params.email      || "";
-  var adminPass = params.adminPass  || "";
-  var phone     = params.phone      || "";
+  var ambToken       = params.amb_token       || "";
+  var name           = params.name           || "";
+  var sl             = params.slug           || "";
+  var color          = params.color          || "#B8924F";
+  var color2         = params.color2         || "#9E7A3E";
+  var email          = params.email          || "";
+  var adminPass      = params.adminPass      || "";
+  var phone          = params.phone          || "";
+  var address        = params.address        || "";
+  var reservationUrl = params.reservationUrl || "";
+  var googleReview   = params.googleReview   || "";
+  var logoUrl        = params.logoUrl        || "";
 
   if (!ambToken || !name || !sl || !adminPass) {
     return { error: "Paramètres manquants (amb_token, name, slug, adminPass)." };
@@ -675,8 +681,13 @@ function createRestaurantForAmbassador(params) {
       nextBillingDate:      "",
       invoices:             []
     };
-    if (phone) cfg.phone = phone;
-    if (email) cfg.email = email;
+    if (phone)          cfg.phone          = phone;
+    if (email)          cfg.email          = email;
+    if (address)        cfg.address        = address;
+    if (reservationUrl) cfg.reservationUrl = reservationUrl;
+    if (googleReview)   cfg.googleReview   = googleReview;
+    if (logoUrl)        cfg.logoUrl        = logoUrl;
+    cfg.offre_jour = { active: false, titre: "", description: "", image: "", date_fin: "" };
 
     // Générer progressier.json
     var manifest = {
@@ -1533,6 +1544,170 @@ function _saveConfigJson(token, repo, slug, cfg, sha, message) {
     payload:            JSON.stringify(payload),
     muteHttpExceptions: true
   });
+}
+
+// ─── Action : Analyser un site web pour pré-remplir la fiche ─
+//
+//  Paramètres GET :
+//    url  — URL du site web à analyser (ex: "https://lebistro.fr")
+//
+//  Retourne un objet JSON avec les champs extraits :
+//    { ok, name, phone, address, color, logoUrl, reservationUrl, googleReview }
+//
+function analyzeWebsite(params) {
+  var url = (params.url || "").trim();
+  if (!url) return { error: "Paramètre url manquant." };
+  if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+
+  // Récupérer le HTML de la page
+  var html = "";
+  try {
+    var res  = UrlFetchApp.fetch(url, { muteHttpExceptions: true, followRedirects: true });
+    var code = res.getResponseCode();
+    if (code < 200 || code >= 400) return { error: "Le site n'est pas accessible (HTTP " + code + ")." };
+    html = res.getContentText();
+  } catch(e) {
+    return { error: "Impossible de récupérer le site : " + e.message };
+  }
+
+  // ── Extractions par regex ───────────────────────────────────
+
+  function metaContent(prop) {
+    var m = html.match(new RegExp('<meta[^>]+(?:property|name)=["\']' + prop + '["\'][^>]+content=["\']([^"\']+)["\']', 'i'))
+         || html.match(new RegExp('<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\']' + prop + '["\']', 'i'));
+    return m ? m[1].trim() : "";
+  }
+
+  var logoUrl        = metaContent("og:image") || metaContent("twitter:image") || "";
+  var color          = metaContent("theme-color") || "";
+  var siteName       = metaContent("og:site_name") || metaContent("og:title") || "";
+
+  // Numéro de téléphone français
+  var phoneMatch = html.match(/(?:\+33|0)[1-9](?:[\s.\-]?\d{2}){4}/);
+  var phone = phoneMatch ? phoneMatch[0].replace(/\s/g, " ").trim() : "";
+
+  // Liens de réservation (LaFourchette/TheFork, Reserva, Resy, OpenTable, Zenchef, widget)
+  var resaMatch = html.match(/href=["'](https?:\/\/(?:[^"']*(?:lafourchette|thefork|zenchef|reserva|resy|opentable|planity|sunday|tablebooking)[^"']*))/i)
+               || html.match(/href=["'](https?:\/\/[^"']*(?:reserver|reservation|booking|book)[^"']{0,80})/i);
+  var reservationUrl = resaMatch ? resaMatch[1] : "";
+
+  // Lien Google Maps / avis Google
+  var gReviewMatch = html.match(/href=["'](https?:\/\/(?:maps\.google|g\.page|goo\.gl)[^"']*)/i)
+                  || html.match(/href=["'](https?:\/\/www\.google\.com\/maps\/[^"']+)/i);
+  var googleReview = gReviewMatch ? gReviewMatch[1] : "";
+
+  // Adresse : cherche les balises schema.org ou microdata courantes
+  var addrMatch = html.match(/<[^>]+itemprop=["']streetAddress["'][^>]*>([^<]{5,80})</)
+               || html.match(/class=["'][^"']*address[^"']*["'][^>]*>([^<]{5,120})</i);
+  var address = addrMatch ? addrMatch[1].replace(/\s+/g, " ").trim() : "";
+
+  // ── Enrichissement Claude (haiku, léger) ────────────────────
+  // On envoie un extrait du HTML (titre, meta, premier 3000 chars) pour
+  // affiner les infos non trouvées par regex.
+  var htmlSnippet = html.slice(0, 4000);
+
+  var systemPrompt = "Tu es un assistant spécialisé dans l'extraction d'informations à partir de pages HTML de restaurants. Réponds UNIQUEMENT en JSON valide, sans texte autour.";
+  var userPrompt = [
+    "Analyse cet extrait HTML d'un site de restaurant et extrait les informations suivantes.",
+    "Si une information n'est pas présente dans le HTML, laisse le champ vide (\"\").",
+    "Réponds avec ce JSON strict :",
+    '{',
+    '  "name": "Nom du restaurant",',
+    '  "phone": "Numéro de téléphone (format français si possible)",',
+    '  "address": "Adresse complète",',
+    '  "color": "Couleur hexadécimale principale du site (ex: #B8924F)",',
+    '  "logoUrl": "URL absolue du logo ou og:image",',
+    '  "reservationUrl": "URL de réservation en ligne (LaFourchette, Zenchef, etc.)",',
+    '  "googleReview": "URL des avis Google"',
+    '}',
+    "",
+    "Déjà extrait par regex (utilise si meilleur) :",
+    JSON.stringify({ phone: phone, address: address, color: color, logoUrl: logoUrl, reservationUrl: reservationUrl, googleReview: googleReview, name: siteName }),
+    "",
+    "HTML :",
+    "---",
+    htmlSnippet,
+    "---"
+  ].join("\n");
+
+  var aiResult = {};
+  try {
+    var raw = callClaude(systemPrompt, userPrompt);
+    aiResult = parseJsonResponse(raw);
+  } catch(e) {
+    Logger.log("analyzeWebsite: Claude error: " + e.message);
+  }
+
+  // Fusionner : préférer Claude si non vide, sinon regex
+  function pick(aiVal, regexVal) { return (aiVal && String(aiVal).trim()) ? String(aiVal).trim() : regexVal; }
+
+  return {
+    ok:             true,
+    name:           pick(aiResult.name,           siteName),
+    phone:          pick(aiResult.phone,          phone),
+    address:        pick(aiResult.address,        address),
+    color:          pick(aiResult.color,          color),
+    logoUrl:        pick(aiResult.logoUrl,        logoUrl),
+    reservationUrl: pick(aiResult.reservationUrl, reservationUrl),
+    googleReview:   pick(aiResult.googleReview,   googleReview)
+  };
+}
+
+// ─── Action : Enregistrer l'offre du jour d'un restaurant ────
+//
+//  Paramètres GET :
+//    resto      — slug du restaurant (ex: "le-martin")
+//    offre_jour — JSON encodé URI : { active, titre, description, image, date_fin }
+//
+function saveOffreJour(params) {
+  var resto  = (params.resto || "").trim().toLowerCase();
+  var offreRaw = params.offre_jour || "";
+  if (!resto)    return { error: "Paramètre resto manquant." };
+  if (!offreRaw) return { error: "Paramètre offre_jour manquant." };
+
+  var offre;
+  try { offre = JSON.parse(offreRaw); }
+  catch(e) { return { error: "offre_jour JSON invalide : " + e.message }; }
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré." };
+
+  var configPath = resto + "/config.json";
+  var apiUrl     = "https://api.github.com/repos/" + repo + "/contents/" + configPath + "?ref=main";
+  var headers    = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+
+  var getRes = UrlFetchApp.fetch(apiUrl, { headers: headers, muteHttpExceptions: true });
+  if (getRes.getResponseCode() !== 200) {
+    return { error: "config.json introuvable pour le restaurant : " + resto };
+  }
+
+  var fileData = JSON.parse(getRes.getContentText());
+  var cfg;
+  try { cfg = JSON.parse(Utilities.newBlob(Utilities.base64Decode(fileData.content.replace(/\n/g,""))).getDataAsString()); }
+  catch(e) { return { error: "config.json illisible : " + e.message }; }
+
+  cfg.offre_jour = {
+    active:      !!offre.active,
+    titre:       offre.titre       || "",
+    description: offre.description || "",
+    image:       offre.image       || "",
+    date_fin:    offre.date_fin    || ""
+  };
+
+  var b64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(cfg, null, 2) + "\n").getBytes());
+  var putRes = UrlFetchApp.fetch("https://api.github.com/repos/" + repo + "/contents/" + configPath, {
+    method:             "put",
+    headers:            { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload:            JSON.stringify({ message: "offre: mise à jour offre du jour pour " + resto, content: b64, sha: fileData.sha }),
+    muteHttpExceptions: true
+  });
+  var putCode = putRes.getResponseCode();
+  if (putCode !== 200 && putCode !== 201) {
+    return { error: "Erreur GitHub " + putCode + " : " + putRes.getContentText().slice(0, 200) };
+  }
+  return { ok: true, resto: resto, offre_jour: cfg.offre_jour };
 }
 
 // ─── Constructeur de réponse HTTP ────────────────────────────

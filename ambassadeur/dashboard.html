@@ -219,6 +219,43 @@
       background: var(--bg); flex-shrink: 0;
     }
 
+    /* ── STEP INDICATOR ── */
+    .step-indicator {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      margin-bottom: 20px;
+    }
+    .step-dot {
+      width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--brand-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: var(--muted); background: var(--bg);
+      transition: all .2s;
+    }
+    .step-dot.active { border-color: var(--brand); background: var(--brand); color: #fff; }
+    .step-dot.done   { border-color: var(--green); background: var(--green); color: #fff; }
+    .step-sep { flex: 1; max-width: 40px; height: 2px; background: var(--line); border-radius: 1px; }
+    .step-label { font-size: 11px; font-weight: 700; color: var(--muted); }
+    .step-label.active { color: var(--brand); }
+
+    /* ── ANALYSE BOX ── */
+    .analyze-box {
+      background: var(--bg2); border-radius: 12px; padding: 20px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .analyze-title { font-size: 14px; font-weight: 800; }
+    .analyze-hint  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .analyze-row   { display: flex; gap: 8px; }
+    .analyze-row .form-input { flex: 1; }
+    #btnAnalyze {
+      padding: 10px 18px; background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color: #fff; border: none; border-radius: 9px;
+      font-size: 13px; font-weight: 700; font-family: inherit;
+      cursor: pointer; white-space: nowrap; transition: opacity .15s;
+      flex-shrink: 0;
+    }
+    #btnAnalyze:disabled { opacity: .5; cursor: not-allowed; }
+    #analyzeStatus { font-size: 12px; color: var(--muted); display: none; align-items: center; gap: 8px; }
+    #analyzeStatus.show { display: flex; }
+
     /* ── PROGRESS CREATION ── */
     .creation-progress { margin-top: 20px; display: none; }
     .creation-progress.show { display: block; }
@@ -346,76 +383,110 @@
 <div class="modal-overlay" id="modal">
   <div class="modal-card">
     <div class="modal-header">
-      <div class="modal-title">Nouveau restaurant</div>
+      <div class="modal-title" id="modalTitle">Nouveau restaurant</div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-field full">
-          <label class="form-label">Nom du restaurant *</label>
-          <input class="form-input" id="fName" placeholder="Le Bistro de Paris" oninput="autoSlug()" />
-        </div>
-        <div class="form-field">
-          <label class="form-label">Slug URL *</label>
-          <input class="form-input" id="fSlug" placeholder="bistro-paris" spellcheck="false" />
-          <span class="form-hint">Minuscules, tirets uniquement</span>
-        </div>
-        <div class="form-field">
-          <label class="form-label">Mot de passe admin *</label>
-          <input class="form-input" id="fAdminPass" placeholder="ex: bistro2025" autocomplete="off" />
-          <span class="form-hint">Pour se connecter au tableau de bord</span>
-        </div>
-        <div class="form-field">
-          <label class="form-label">Couleur principale</label>
-          <div class="color-row">
-            <input type="color" id="fColorPicker" value="#B8924F" oninput="syncColor()" />
-            <input class="form-input" id="fColor" value="#B8924F" placeholder="#B8924F" style="font-family:monospace" oninput="syncColorPicker()" />
+
+      <!-- Indicateur d'étapes -->
+      <div class="step-indicator" id="stepIndicator">
+        <div class="step-dot active" id="stepDot1">1</div>
+        <div class="step-sep"></div>
+        <div class="step-dot" id="stepDot2">2</div>
+      </div>
+
+      <!-- ── ÉTAPE 1 : Nom + Site web ── -->
+      <div id="step1">
+        <div class="analyze-box">
+          <div class="analyze-title">Entrez le nom et le site du restaurant</div>
+          <div class="analyze-hint">Le système analysera automatiquement le site pour pré-remplir la fiche (téléphone, adresse, logo, couleurs…)</div>
+          <div class="form-field">
+            <label class="form-label">Nom du restaurant *</label>
+            <input class="form-input" id="fName" placeholder="Le Bistro de Paris" oninput="autoSlug()" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Site web officiel</label>
+            <div class="analyze-row">
+              <input class="form-input" id="fWebsite" placeholder="https://lebistrodeparis.fr" type="url" />
+              <button id="btnAnalyze" onclick="analyzeWebsite()">🔍 Analyser</button>
+            </div>
+          </div>
+          <div id="analyzeStatus">
+            <div class="spinner" style="width:16px;height:16px;border-width:2px;flex-shrink:0"></div>
+            <span>Analyse du site en cours…</span>
           </div>
         </div>
-        <div class="form-field">
-          <label class="form-label">Email du restaurateur</label>
-          <input class="form-input" type="email" id="fEmail" placeholder="contact@restaurant.com" />
-        </div>
-        <div class="form-field">
-          <label class="form-label">Téléphone établissement</label>
-          <input class="form-input" type="tel" id="fPhone" placeholder="+33 1 23 45 67 89" />
-        </div>
-        <div class="form-field full">
-          <label class="form-label">Adresse</label>
-          <input class="form-input" id="fAddress" placeholder="12 rue de Rivoli, 75001 Paris" />
-        </div>
-        <div class="form-field full">
-          <label class="form-label">URL de réservation en ligne</label>
-          <input class="form-input" type="url" id="fReservationUrl" placeholder="https://widget.lafourchette.com/..." />
-          <span class="form-hint">Laisse vide pour utiliser le formulaire intégré</span>
-        </div>
-        <div class="form-field full">
-          <label class="form-label">URL avis Google</label>
-          <input class="form-input" type="url" id="fGoogleReview" placeholder="https://g.page/r/xxx/review" />
-        </div>
-        <div class="form-field full">
-          <label class="form-label">URL logo / icône</label>
-          <input class="form-input" type="url" id="fLogoUrl" placeholder="https://..." />
-          <span class="form-hint">Image carrée 512×512 recommandée (PNG/JPG)</span>
-        </div>
       </div>
 
-
-      <!-- Progress création -->
-      <div class="creation-progress" id="creationProgress">
-        <div class="cp-title">Création en cours…</div>
-        <div class="cp-spinner">
-          <div class="spinner" style="width:24px;height:24px;border-width:2px"></div>
-          <span id="creationStatus">Préparation des fichiers…</span>
+      <!-- ── ÉTAPE 2 : Formulaire complet pré-rempli ── -->
+      <div id="step2" style="display:none">
+        <div class="form-grid">
+          <div class="form-field full">
+            <label class="form-label">Nom du restaurant *</label>
+            <input class="form-input" id="fName2" placeholder="Le Bistro de Paris" oninput="autoSlug2()" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Slug URL *</label>
+            <input class="form-input" id="fSlug" placeholder="bistro-paris" spellcheck="false" />
+            <span class="form-hint">Minuscules, tirets uniquement</span>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Mot de passe admin *</label>
+            <input class="form-input" id="fAdminPass" placeholder="ex: bistro2025" autocomplete="off" />
+            <span class="form-hint">Pour se connecter au tableau de bord</span>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Couleur principale</label>
+            <div class="color-row">
+              <input type="color" id="fColorPicker" value="#B8924F" oninput="syncColor()" />
+              <input class="form-input" id="fColor" value="#B8924F" placeholder="#B8924F" style="font-family:monospace" oninput="syncColorPicker()" />
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Email du restaurateur</label>
+            <input class="form-input" type="email" id="fEmail" placeholder="contact@restaurant.com" />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Téléphone établissement</label>
+            <input class="form-input" type="tel" id="fPhone" placeholder="+33 1 23 45 67 89" />
+          </div>
+          <div class="form-field full">
+            <label class="form-label">Adresse</label>
+            <input class="form-input" id="fAddress" placeholder="12 rue de Rivoli, 75001 Paris" />
+          </div>
+          <div class="form-field full">
+            <label class="form-label">URL de réservation en ligne</label>
+            <input class="form-input" type="url" id="fReservationUrl" placeholder="https://widget.lafourchette.com/..." />
+            <span class="form-hint">Laisse vide pour utiliser le formulaire intégré</span>
+          </div>
+          <div class="form-field full">
+            <label class="form-label">URL avis Google</label>
+            <input class="form-input" type="url" id="fGoogleReview" placeholder="https://g.page/r/xxx/review" />
+          </div>
+          <div class="form-field full">
+            <label class="form-label">URL logo / icône</label>
+            <input class="form-input" type="url" id="fLogoUrl" placeholder="https://..." />
+            <span class="form-hint">Image carrée 512×512 recommandée (PNG/JPG)</span>
+          </div>
         </div>
+
+        <!-- Progress création -->
+        <div class="creation-progress" id="creationProgress">
+          <div class="cp-title">Création en cours…</div>
+          <div class="cp-spinner">
+            <div class="spinner" style="width:24px;height:24px;border-width:2px"></div>
+            <span id="creationStatus">Préparation des fichiers…</span>
+          </div>
+        </div>
+
+        <!-- Succès -->
+        <div id="successBox" style="display:none"></div>
       </div>
 
-      <!-- Succès -->
-      <div id="successBox" style="display:none"></div>
     </div>
     <div class="modal-footer" id="modalFooter">
       <button class="btn-outline" onclick="closeModal()">Annuler</button>
-      <button class="btn-primary" id="submitBtn" onclick="submitCreation()">Créer le restaurant</button>
+      <button class="btn-primary" id="step1NextBtn" onclick="goStep2()">Continuer sans analyse →</button>
     </div>
   </div>
 </div>
@@ -518,17 +589,28 @@ function renderRestoGrid(restos) {
 
 // ── Modal ─────────────────────────────────────────────────────
 function openModal() {
-  ['fName','fSlug','fAdminPass','fEmail','fPhone','fAddress',
+  // Reset step 1
+  const fName = document.getElementById('fName');
+  const fWebsite = document.getElementById('fWebsite');
+  if (fName)    fName.value    = '';
+  if (fWebsite) fWebsite.value = '';
+  document.getElementById('analyzeStatus').classList.remove('show');
+  document.getElementById('btnAnalyze').disabled = false;
+
+  // Reset step 2
+  ['fName2','fSlug','fAdminPass','fEmail','fPhone','fAddress',
    'fReservationUrl','fGoogleReview','fLogoUrl']
-    .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('fColor').value = '#B8924F';
   document.getElementById('fColorPicker').value = '#B8924F';
   document.getElementById('creationProgress').classList.remove('show');
   document.getElementById('successBox').style.display = 'none';
-  document.getElementById('modalFooter').style.display = 'flex';
-  document.getElementById('submitBtn').disabled = false;
-  document.getElementById('submitBtn').textContent = 'Créer le restaurant';
-  ['fName','fSlug','fAdminPass'].forEach(id => document.getElementById(id).classList.remove('error'));
+  ['fName2','fSlug','fAdminPass'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.classList.remove('error');
+  });
+
+  // Show step 1
+  _showStep(1);
   document.getElementById('modal').classList.add('open');
   document.getElementById('fName').focus();
 }
@@ -537,8 +619,88 @@ function closeModal() {
   document.getElementById('modal').classList.remove('open');
 }
 
+function _showStep(n) {
+  document.getElementById('step1').style.display = n === 1 ? 'block' : 'none';
+  document.getElementById('step2').style.display = n === 2 ? 'block' : 'none';
+  document.getElementById('stepDot1').className = 'step-dot ' + (n === 1 ? 'active' : 'done');
+  document.getElementById('stepDot2').className = 'step-dot ' + (n === 2 ? 'active' : '');
+  document.getElementById('modalTitle').textContent = n === 1 ? 'Nouveau restaurant' : 'Vérifier et créer';
+
+  const footer = document.getElementById('modalFooter');
+  if (n === 1) {
+    footer.innerHTML = `
+      <button class="btn-outline" onclick="closeModal()">Annuler</button>
+      <button class="btn-primary" id="step1NextBtn" onclick="goStep2()">Continuer sans analyse →</button>`;
+  } else {
+    footer.innerHTML = `
+      <button class="btn-outline" onclick="_showStep(1)">← Retour</button>
+      <button class="btn-primary" id="submitBtn" onclick="submitCreation()">Créer le restaurant</button>`;
+    document.getElementById('fName2').focus();
+  }
+}
+
+// ── Étape 1 → analyser le site ────────────────────────────────
+async function analyzeWebsite() {
+  const url  = document.getElementById('fWebsite').value.trim();
+  const name = document.getElementById('fName').value.trim();
+  if (!url) { showToast('Entrez d\'abord l\'URL du site web.', 'error'); return; }
+
+  document.getElementById('btnAnalyze').disabled = true;
+  document.getElementById('analyzeStatus').classList.add('show');
+
+  try {
+    const res  = await fetch(API_URL + '?action=analyze_website&url=' + encodeURIComponent(url), { cache: 'no-store' });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Analyse échouée');
+
+    // Pré-remplir le formulaire étape 2
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    setVal('fName2',       data.name    || name);
+    setVal('fPhone',       data.phone);
+    setVal('fAddress',     data.address);
+    setVal('fReservationUrl', data.reservationUrl);
+    setVal('fGoogleReview',   data.googleReview);
+    setVal('fLogoUrl',        data.logoUrl);
+    if (data.color && /^#[0-9a-fA-F]{3,6}$/.test(data.color)) {
+      const c = data.color.length === 4
+        ? '#' + data.color[1]+data.color[1]+data.color[2]+data.color[2]+data.color[3]+data.color[3]
+        : data.color;
+      document.getElementById('fColor').value = c;
+      document.getElementById('fColorPicker').value = c;
+    }
+    // Slug auto depuis le nom trouvé
+    if (!document.getElementById('fSlug')._manual) {
+      document.getElementById('fSlug').value = slugify(data.name || name);
+    }
+
+    showToast('Site analysé ! Vérifiez et complétez les champs.', 'success');
+    _showStep(2);
+  } catch(e) {
+    showToast('Analyse impossible : ' + e.message, 'error');
+    document.getElementById('btnAnalyze').disabled = false;
+  } finally {
+    document.getElementById('analyzeStatus').classList.remove('show');
+  }
+}
+
+// ── Étape 1 → passer sans analyser ───────────────────────────
+function goStep2() {
+  const name = document.getElementById('fName').value.trim();
+  document.getElementById('fName2').value = name;
+  if (!document.getElementById('fSlug')._manual) {
+    document.getElementById('fSlug').value = slugify(name);
+  }
+  _showStep(2);
+}
+
 function autoSlug() {
   const v = document.getElementById('fName').value;
+  if (!document.getElementById('fSlug')._manual) {
+    document.getElementById('fSlug').value = slugify(v);
+  }
+}
+function autoSlug2() {
+  const v = document.getElementById('fName2').value;
   if (!document.getElementById('fSlug')._manual) {
     document.getElementById('fSlug').value = slugify(v);
   }
@@ -551,9 +713,9 @@ function syncColorPicker()  {
   if (/^#[0-9a-fA-F]{6}$/.test(v)) document.getElementById('fColorPicker').value = v;
 }
 
-// ── Submit creation ───────────────────────────────────────────
+// ── Submit creation (depuis étape 2) ──────────────────────────
 async function submitCreation() {
-  const name           = document.getElementById('fName').value.trim();
+  const name           = document.getElementById('fName2').value.trim();
   const sl             = document.getElementById('fSlug').value.trim();
   const adminPass      = document.getElementById('fAdminPass').value.trim();
   const color          = document.getElementById('fColor').value.trim() || '#B8924F';
@@ -565,7 +727,7 @@ async function submitCreation() {
   const logoUrl        = document.getElementById('fLogoUrl').value.trim();
 
   let valid = true;
-  [['fName', name], ['fSlug', sl], ['fAdminPass', adminPass]].forEach(([id, val]) => {
+  [['fName2', name], ['fSlug', sl], ['fAdminPass', adminPass]].forEach(([id, val]) => {
     document.getElementById(id).classList.toggle('error', !val);
     if (!val) valid = false;
   });
@@ -610,7 +772,6 @@ async function submitCreation() {
         </div>
       </div>`;
 
-    // Mettre à jour l'UI locale
     if (ambassador) {
       ambassador.restaurants_crees = ambassador.restaurants_crees || [];
       ambassador.restaurants_crees.push({ slug: sl, name, date: new Date().toISOString().slice(0,10) });
