@@ -204,6 +204,47 @@
       from{opacity:0; transform:translateY(6px);}
       to{opacity:1; transform:translateY(0);}
     }
+
+    /* ── Services block ── */
+    .services-block{ margin-top:24px; text-align:left; }
+    .services-title{
+      font-size:12px; font-weight:800; color:var(--muted);
+      text-transform:uppercase; letter-spacing:.7px;
+      margin:0 0 14px; text-align:left;
+    }
+    .services-grid{
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:12px; margin-bottom:12px;
+    }
+    .svc-btn{
+      display:flex; flex-direction:column; align-items:center;
+      justify-content:center; gap:7px; padding:18px 10px;
+      background:var(--card); border:1px solid var(--line);
+      border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,.06);
+      cursor:pointer; transition:transform .12s,box-shadow .12s;
+      text-align:center; width:100%;
+    }
+    .svc-btn:active{ transform:scale(.96); box-shadow:0 4px 12px rgba(0,0,0,.05); }
+    .svc-btn.disabled{ opacity:.45; pointer-events:none; }
+    .svc-icon{ font-size:26px; line-height:1; }
+    .svc-label{ font-size:12.5px; font-weight:700; color:var(--ink); line-height:1.2; }
+    .svc-btn-full{
+      width:100%; padding:18px 20px;
+      background:linear-gradient(135deg,var(--brand) 0%,#a97f37 100%);
+      border:none; border-radius:18px; cursor:pointer; text-align:left;
+      box-shadow:0 16px 32px rgba(180,140,74,.22);
+      transition:transform .12s,box-shadow .12s;
+    }
+    .svc-btn-full:active{ transform:scale(.98); box-shadow:0 8px 20px rgba(180,140,74,.16); }
+    .svc-full-main{
+      display:flex; align-items:center; gap:10px;
+      font-size:17px; font-weight:900; color:#fff; margin-bottom:4px;
+    }
+    .svc-full-sub{ margin:0; font-size:13px; color:rgba(255,255,255,.8); font-weight:600; }
+    @media(hover:hover){
+      .svc-btn:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(0,0,0,.09); }
+      .svc-btn-full:hover{ transform:translateY(-2px); box-shadow:0 20px 36px rgba(180,140,74,.28); }
+    }
   </style>
 
   <!-- ✅ Gate d’accès : si pas onboardé => redirige selon le contexte -->
@@ -266,8 +307,6 @@
     </div>
 
     <button class="btn btnPrimary" id="btnValidate" type="button" onclick="soumettrePin()">Valider le coupon</button>
-    <button class="btn btnSecondary" type="button" onclick="partager()">Partager ce restaurant</button>
-
     <div id="result" class="result"></div>
 
     <small>Valable une fois par mois – Réinitialisation automatique chaque 1er.</small>
@@ -276,6 +315,33 @@
   <audio id="audioOK">
     <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-reward-952.mp3">
   </audio>
+
+  <!-- ── Tout ce dont vous avez besoin ── -->
+  <div class="services-block" id="servicesBlock">
+    <p class="services-title">Tout ce dont vous avez besoin</p>
+    <div class="services-grid">
+      <button class="svc-btn" id="btnReserver" type="button" onclick="svcReserver()">
+        <span class="svc-icon">📅</span>
+        <span class="svc-label">Réserver une table</span>
+      </button>
+      <button class="svc-btn" id="btnAppeler" type="button" onclick="svcAppeler()">
+        <span class="svc-icon">📞</span>
+        <span class="svc-label">Appeler le restaurant</span>
+      </button>
+      <button class="svc-btn" id="btnOffre" type="button" onclick="svcOffre()">
+        <span class="svc-icon">🔥</span>
+        <span class="svc-label">Offre du jour</span>
+      </button>
+      <button class="svc-btn" id="btnAvis" type="button" onclick="svcAvis()">
+        <span class="svc-icon">⭐</span>
+        <span class="svc-label">Laisser un avis Google</span>
+      </button>
+    </div>
+    <button class="svc-btn-full" type="button" onclick="svcRecommander()">
+      <div class="svc-full-main"><span>❤️</span><span>Recommander à un ami</span></div>
+      <p class="svc-full-sub">Partagez votre restaurant et gagnez des avantages</p>
+    </button>
+  </div>
 </div>
 
 <script>
@@ -332,6 +398,37 @@
 const RESTO = window.Fidelavis?.getRestoSlug?.() || "claude";
 window.Fidelavis?.rememberLastResto?.();
 
+/* ── Services block ── */
+var _svcCfg = {};
+function initServices(cfg) {
+  _svcCfg = cfg || {};
+  if (!_svcCfg.phone)        document.getElementById("btnAppeler")?.classList.add("disabled");
+  if (!_svcCfg.googleReview) document.getElementById("btnAvis")?.classList.add("disabled");
+}
+function svcReserver() {
+  window.Fidelavis?.track?.("reserve_click", { src: "services_block" });
+  if (_svcCfg.reservationUrl) window.open(_svcCfg.reservationUrl, "_blank");
+  else window.Fidelavis?.go?.("reservation.html");
+}
+function svcAppeler() {
+  if (!_svcCfg.phone) return;
+  window.Fidelavis?.track?.("call_click", { src: "services_block" });
+  window.location.href = "tel:" + _svcCfg.phone.replace(/\s/g, "");
+}
+function svcOffre() {
+  window.Fidelavis?.track?.("offer_day_click", { src: "services_block" });
+  window.Fidelavis?.go?.("offre-du-jour.html");
+}
+function svcAvis() {
+  if (!_svcCfg.googleReview) return;
+  window.Fidelavis?.track?.("review_click", { src: "services_block" });
+  window.open(_svcCfg.googleReview, "_blank");
+}
+function svcRecommander() {
+  window.Fidelavis?.track?.("share_click", { src: "services_block" });
+  window.Fidelavis?.go?.("recommander.html");
+}
+
 // ✅ Installation confirmée (Android Chrome — iOS ne déclenche pas cet event)
 window.addEventListener("appinstalled", function() {
   window.Fidelavis?.track?.("install", { src: "pwa_appinstalled", page: "index" });
@@ -363,7 +460,9 @@ let ACTIVE_MONTH = new Date().getMonth();
 let IS_LOCKED = false;
 
 (async function init(){
-  try{ await window.Fidelavis?.loadConfig?.(); }catch(e){}
+  let _cfg = null;
+  try{ _cfg = await window.Fidelavis?.loadConfig?.(); }catch(e){}
+  initServices(_cfg);
 
   const offerEl = document.getElementById("txtOffer");
   const subEl = document.querySelector(".sub");
@@ -519,26 +618,6 @@ function soumettrePin() {
   }
 }
 
-function partager() {
-  const shareUrl = window.location.origin + "/" + (window.location.pathname.split("/")[1] || "") + "/indexnfc.html";
-  window.Fidelavis?.track?.("share_click", { src: "coupon_share" });
-
-  const data = {
-    title: "Découvre ce restaurant",
-    text: "Je te recommande ce restaurant. Il y a des offres exclusives via Fidelavis 👇",
-    url: shareUrl
-  };
-
-  if (navigator.share) {
-    navigator.share(data).catch(()=>{});
-  } else if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(shareUrl)
-      .then(()=>alert("Lien copié 👍"))
-      .catch(()=>alert("Copiez ce lien : " + shareUrl));
-  } else {
-    alert("Copiez ce lien : " + shareUrl);
-  }
-}
 </script>
 
 </body>

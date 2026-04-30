@@ -377,8 +377,53 @@
           <input class="form-input" type="email" id="fEmail" placeholder="contact@restaurant.com" />
         </div>
         <div class="form-field">
-          <label class="form-label">Téléphone</label>
-          <input class="form-input" type="tel" id="fPhone" placeholder="01 23 45 67 89" />
+          <label class="form-label">Téléphone établissement</label>
+          <input class="form-input" type="tel" id="fPhone" placeholder="+33 1 23 45 67 89" />
+        </div>
+        <div class="form-field full">
+          <label class="form-label">Adresse</label>
+          <input class="form-input" id="fAddress" placeholder="12 rue de Rivoli, 75001 Paris" />
+        </div>
+        <div class="form-field full">
+          <label class="form-label">URL de réservation en ligne</label>
+          <input class="form-input" type="url" id="fReservationUrl" placeholder="https://widget.lafourchette.com/..." />
+          <span class="form-hint">Laisse vide pour utiliser le formulaire intégré</span>
+        </div>
+        <div class="form-field full">
+          <label class="form-label">URL avis Google</label>
+          <input class="form-input" type="url" id="fGoogleReview" placeholder="https://g.page/r/xxx/review" />
+        </div>
+        <div class="form-field full">
+          <label class="form-label">URL logo / icône</label>
+          <input class="form-input" type="url" id="fLogoUrl" placeholder="https://..." />
+          <span class="form-hint">Image carrée 512×512 recommandée (PNG/JPG)</span>
+        </div>
+      </div>
+
+      <!-- Offre du jour -->
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)">
+        <div style="font-size:13px;font-weight:800;color:var(--ink);margin-bottom:12px">🔥 Offre du jour (optionnel)</div>
+        <div class="form-grid">
+          <div class="form-field full">
+            <label class="form-label">Titre de l'offre</label>
+            <input class="form-input" id="fOffreTitre" placeholder="Happy Hour ce soir — 2 cocktails = 1 offert" />
+          </div>
+          <div class="form-field full">
+            <label class="form-label">Description</label>
+            <input class="form-input" id="fOffreDesc" placeholder="Valable dès 18h, sur présentation de l'app" />
+          </div>
+          <div class="form-field full">
+            <label class="form-label">Image de l'offre (URL)</label>
+            <input class="form-input" type="url" id="fOffreImage" placeholder="https://..." />
+          </div>
+          <div class="form-field">
+            <label class="form-label">Date de fin</label>
+            <input class="form-input" type="date" id="fOffreDateFin" />
+          </div>
+          <div class="form-field" style="display:flex;align-items:center;gap:10px;padding-top:20px">
+            <input type="checkbox" id="fOffreActive" style="width:18px;height:18px;accent-color:var(--brand);cursor:pointer" />
+            <label class="form-label" for="fOffreActive" style="margin:0;cursor:pointer">Activer l'offre</label>
+          </div>
         </div>
       </div>
 
@@ -499,13 +544,13 @@ function renderRestoGrid(restos) {
 
 // ── Modal ─────────────────────────────────────────────────────
 function openModal() {
-  document.getElementById('fName').value      = '';
-  document.getElementById('fSlug').value      = '';
-  document.getElementById('fAdminPass').value = '';
-  document.getElementById('fEmail').value     = '';
-  document.getElementById('fPhone').value     = '';
-  document.getElementById('fColor').value     = '#B8924F';
+  ['fName','fSlug','fAdminPass','fEmail','fPhone','fAddress',
+   'fReservationUrl','fGoogleReview','fLogoUrl',
+   'fOffreTitre','fOffreDesc','fOffreImage','fOffreDateFin']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('fColor').value = '#B8924F';
   document.getElementById('fColorPicker').value = '#B8924F';
+  document.getElementById('fOffreActive').checked = false;
   document.getElementById('creationProgress').classList.remove('show');
   document.getElementById('successBox').style.display = 'none';
   document.getElementById('modalFooter').style.display = 'flex';
@@ -536,12 +581,29 @@ function syncColorPicker()  {
 
 // ── Submit creation ───────────────────────────────────────────
 async function submitCreation() {
-  const name      = document.getElementById('fName').value.trim();
-  const sl        = document.getElementById('fSlug').value.trim();
-  const adminPass = document.getElementById('fAdminPass').value.trim();
-  const color     = document.getElementById('fColor').value.trim() || '#B8924F';
-  const email     = document.getElementById('fEmail').value.trim();
-  const phone     = document.getElementById('fPhone').value.trim();
+  const name           = document.getElementById('fName').value.trim();
+  const sl             = document.getElementById('fSlug').value.trim();
+  const adminPass      = document.getElementById('fAdminPass').value.trim();
+  const color          = document.getElementById('fColor').value.trim() || '#B8924F';
+  const email          = document.getElementById('fEmail').value.trim();
+  const phone          = document.getElementById('fPhone').value.trim();
+  const address        = document.getElementById('fAddress').value.trim();
+  const reservationUrl = document.getElementById('fReservationUrl').value.trim();
+  const googleReview   = document.getElementById('fGoogleReview').value.trim();
+  const logoUrl        = document.getElementById('fLogoUrl').value.trim();
+  const offreTitre     = document.getElementById('fOffreTitre').value.trim();
+  const offreDesc      = document.getElementById('fOffreDesc').value.trim();
+  const offreImage     = document.getElementById('fOffreImage').value.trim();
+  const offreDateFin   = document.getElementById('fOffreDateFin').value.trim();
+  const offreActive    = document.getElementById('fOffreActive').checked;
+
+  const offre_jour = offreTitre ? {
+    active: offreActive,
+    titre: offreTitre,
+    description: offreDesc,
+    image: offreImage,
+    date_fin: offreDateFin
+  } : null;
 
   let valid = true;
   [['fName', name], ['fSlug', sl], ['fAdminPass', adminPass]].forEach(([id, val]) => {
@@ -560,14 +622,18 @@ async function submitCreation() {
   try {
     document.getElementById('creationStatus').textContent = 'Création des fichiers restaurant…';
 
+    const payload = {
+      action:    'create_restaurant_for_ambassador',
+      amb_token: new URLSearchParams(location.search).get('token'),
+      name, slug: sl, color, email, phone, adminPass,
+      address, reservationUrl, googleReview, logoUrl
+    };
+    if(offre_jour) payload.offre_jour = offre_jour;
+
     const res  = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        action:    'create_restaurant_for_ambassador',
-        amb_token: new URLSearchParams(location.search).get('token'),
-        name, slug: sl, color, email, phone, adminPass
-      })
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
 

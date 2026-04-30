@@ -41,6 +41,13 @@ GOOGLE_REVIEW=""
 EMAIL=""
 BREVO_GAS_URL=""
 BREVO_LIST_ID=""
+RESERVATION_URL=""
+LOGO_URL=""
+OFFRE_TITRE=""
+OFFRE_DESC=""
+OFFRE_IMAGE=""
+OFFRE_DATE_FIN=""
+OFFRE_ACTIVE="false"
 
 # Billing / Stripe
 STRIPE_CUSTOMER_ID=""
@@ -63,6 +70,13 @@ while [[ $# -gt 0 ]]; do
     --plan)                PLAN="$2";                  shift 2 ;;
     --billing-email)       BILLING_EMAIL="$2";         shift 2 ;;
     --next-billing)        NEXT_BILLING_DATE="$2";     shift 2 ;;
+    --reservation-url)     RESERVATION_URL="$2";       shift 2 ;;
+    --logo-url)            LOGO_URL="$2";              shift 2 ;;
+    --offre-titre)         OFFRE_TITRE="$2";           shift 2 ;;
+    --offre-desc)          OFFRE_DESC="$2";            shift 2 ;;
+    --offre-image)         OFFRE_IMAGE="$2";           shift 2 ;;
+    --offre-date-fin)      OFFRE_DATE_FIN="$2";        shift 2 ;;
+    --offre-active)        OFFRE_ACTIVE="true";        shift ;;
     *)
       if   [ -z "$SLUG" ];                          then SLUG="$1"
       elif [ "$NAME" = "Nouveau Restaurant" ];       then NAME="$1"
@@ -116,6 +130,9 @@ echo "  Couleur : ${COLOR} / ${COLOR2}"
 [ -n "$PHONE"                ] && echo "  Tél     : ${PHONE}"
 [ -n "$ADDRESS"              ] && echo "  Adresse : ${ADDRESS}"
 [ -n "$GOOGLE_REVIEW"        ] && echo "  Avis    : ${GOOGLE_REVIEW}"
+[ -n "$RESERVATION_URL"      ] && echo "  Resa    : ${RESERVATION_URL}"
+[ -n "$LOGO_URL"             ] && echo "  Logo    : ${LOGO_URL}"
+[ -n "$OFFRE_TITRE"          ] && echo "  Offre   : ${OFFRE_TITRE}"
 [ -n "$EMAIL"                ] && echo "  Email   : ${EMAIL}"
 [ -n "$BREVO_GAS_URL"        ] && echo "  Brevo   : ${BREVO_GAS_URL}"
 [ -n "$BREVO_LIST_ID"        ] && echo "  Liste   : #${BREVO_LIST_ID}"
@@ -145,12 +162,24 @@ cfg = {
 }
 
 # Infos restaurant
-if "${PHONE}":         cfg["phone"]        = """${PHONE}"""
-if "${ADDRESS}":       cfg["address"]      = """${ADDRESS}"""
-if "${GOOGLE_REVIEW}": cfg["googleReview"] = "${GOOGLE_REVIEW}"
-if "${EMAIL}":         cfg["email"]        = """${EMAIL}"""
-if "${BREVO_GAS_URL}": cfg["brevoGasUrl"]  = "${BREVO_GAS_URL}"
-if "${BREVO_LIST_ID}": cfg["brevoListId"]  = int("${BREVO_LIST_ID}")
+if "${PHONE}":           cfg["phone"]          = """${PHONE}"""
+if "${ADDRESS}":         cfg["address"]        = """${ADDRESS}"""
+if "${GOOGLE_REVIEW}":   cfg["googleReview"]   = "${GOOGLE_REVIEW}"
+if "${RESERVATION_URL}": cfg["reservationUrl"] = "${RESERVATION_URL}"
+if "${LOGO_URL}":        cfg["logoUrl"]        = "${LOGO_URL}"
+if "${EMAIL}":           cfg["email"]          = """${EMAIL}"""
+if "${BREVO_GAS_URL}":   cfg["brevoGasUrl"]    = "${BREVO_GAS_URL}"
+if "${BREVO_LIST_ID}":   cfg["brevoListId"]    = int("${BREVO_LIST_ID}")
+
+# Offre du jour
+offre_titre = """${OFFRE_TITRE}"""
+cfg["offre_jour"] = {
+    "active":      offre_titre != "" and "${OFFRE_ACTIVE}" == "true",
+    "titre":       offre_titre,
+    "description": """${OFFRE_DESC}""",
+    "image":       "${OFFRE_IMAGE}",
+    "date_fin":    "${OFFRE_DATE_FIN}"
+}
 
 # Billing / Stripe
 billing_email = """${BILLING_EMAIL}""" or """${EMAIL}"""
