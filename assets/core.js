@@ -7,10 +7,50 @@
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
 
   /* --------------------------------------------------
-     Phase 3 : auto-load Supabase config si absent.
-     Permet à _sendEvent() de double-writer dans Supabase
-     sur toutes les pages qui chargent core.js, sans avoir
-     à inclure explicitement supabase-config.js partout.
+     Supabase — config inlinée dans core.js.
+     Volontairement dupliquée avec assets/supabase-config.js : permet
+     au double-write events de fonctionner IMMÉDIATEMENT, sans attendre
+     le chargement async de supabase-config.js (cas critique sur
+     indexnfc.html qui redirige aussitôt après track('scan')).
+     URL/clé publishable : sûres côté client, RLS protège les données.
+  -------------------------------------------------- */
+  var SUPA_URL = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+  var SUPA_KEY = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
+
+  function _supaTrackEvent(slug, eventName, extra) {
+    if (!SUPA_URL) return;
+    extra = extra || {};
+    try {
+      var payload = {
+        restaurant_slug: slug || null,
+        event_type:      eventName || null,
+        device_id:       extra.deviceId  || localStorage.getItem("device_id")        || null,
+        session_id:      extra.sessionId || sessionStorage.getItem("fv_session_id")  || null,
+        src:             extra.src       || null,
+        demo:            extra.demo === true || extra.demo === "true" || extra.demo === "1",
+        jour:            new Date().toISOString().slice(0, 10),
+        mois:            new Date().getMonth() + 1,
+        annee:           new Date().getFullYear(),
+        page_url:        window.location.href,
+        user_agent:      navigator.userAgent
+      };
+      fetch(SUPA_URL + "/rest/v1/events", {
+        method: "POST",
+        headers: {
+          "apikey":        SUPA_KEY,
+          "Authorization": "Bearer " + SUPA_KEY,
+          "Content-Type":  "application/json",
+          "Prefer":        "return=minimal"
+        },
+        body:      JSON.stringify(payload),
+        keepalive: true
+      }).catch(function () {});  // silencieux : GAS reste source de vérité
+    } catch (e) {}
+  }
+
+  /* --------------------------------------------------
+     Auto-load supabase-config.js (registerClient et helpers SDK).
+     trackEvent fonctionne sans, via _supaTrackEvent inliné ci-dessus.
   -------------------------------------------------- */
   if (!window.fvSupa && !document.querySelector('script[src*="supabase-config"]')) {
     var sbScript = document.createElement('script');
@@ -170,19 +210,10 @@
         try { iframe.remove(); } catch (e) {}
       }, 3000);
 
-      // Phase 3 : double-write Supabase (fire-and-forget).
-      // GAS reste source de vérité tant que Supabase n'est pas validé.
-      // Si Supabase indisponible (SDK pas encore chargé, projet down…) → silencieux.
-      // Le keepalive du SDK garantit que la requête survit aux navigations.
-      try {
-        if (window.fvSupa && window.fvSupa.isReady()) {
-          window.fvSupa.trackEvent(
-            restoName || getRestoSlug(),
-            eventName || "",
-            extra || {}
-          );
-        }
-      } catch (e) {}
+      // Phase 3 : double-write Supabase via fonction inlinée (immédiate).
+      // Pas de dépendance à window.fvSupa qui se charge en async ;
+      // le fetch keepalive survit aux navigations rapides (indexnfc.html).
+      _supaTrackEvent(restoName || getRestoSlug(), eventName || "", extra || {});
 
     } catch (e) {
       console.warn("[Fidelavis] _sendEvent error", e);
