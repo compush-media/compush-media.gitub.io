@@ -21,9 +21,10 @@
 (function () {
 
   // ── 1. Configuration ─────────────────────────────────────────
-  // Remplacer ces valeurs par les vraies depuis le Dashboard Supabase
-  var SUPABASE_URL      = 'VOTRE_SUPABASE_URL';       // ex: https://xxxx.supabase.co
-  var SUPABASE_ANON_KEY = 'VOTRE_SUPABASE_ANON_KEY';  // clé publique anon
+  // Projet Supabase : Fidelavis (eu-west-3)
+  // Dashboard : https://supabase.com/dashboard/project/rtdiaeskmyjjwohirhzj
+  var SUPABASE_URL      = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+  var SUPABASE_ANON_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
 
   // ── 2. Chargement du SDK Supabase depuis CDN ─────────────────
   // Supabase JS v2 — CDN officiel

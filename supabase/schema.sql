@@ -177,7 +177,7 @@ create table public.ambassadeurs (
   code                  text not null unique,     -- "AMB-JEN-MAR-001"
   prenom                text not null,
   nom                   text not null,
-  email                 text not null unique,
+  email                 text not null,
   telephone             text,
   ville                 text,
   statut                text default 'actif',     -- 'actif' | 'inactif' | 'suspendu'
