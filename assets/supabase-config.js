@@ -83,44 +83,63 @@
 
   window.fvSupa = {
 
-    // Indique si Supabase est opérationnel
+    // Indique si la config Supabase est en place.
+    // Pour trackEvent : suffit que SUPABASE_URL/KEY soient configurés
+    // (fetch direct, pas de dépendance au SDK).
+    // Pour les helpers SDK (registerClient, getRestaurantBySlug) :
+    // ajouter un check window.fvSupabase si nécessaire.
     isReady: function () {
-      return !!(window.fvSupabase);
+      return !!SUPABASE_URL && SUPABASE_URL !== 'VOTRE_SUPABASE_URL';
     },
 
-    // Insère un événement de tracking (remplacera progressivement GAS)
-    trackEvent: async function (restaurantSlug, eventType, extra) {
-      if (!this.isReady()) return { ok: false, reason: 'supabase_not_ready' };
+    // Indique si le SDK Supabase JS est chargé (pour helpers complexes)
+    isSdkReady: function () {
+      return !!window.fvSupabase;
+    },
+
+    // Insère un événement de tracking via fetch direct (pas de SDK requis).
+    // Marche immédiatement, sans attendre le chargement async du SDK CDN.
+    // keepalive: true → la requête survit aux navigations rapides
+    // (typique sur indexnfc.html qui redirige aussitôt après le scan).
+    // Le restaurant_id est résolu côté serveur via trigger SQL sur
+    // restaurant_slug (migration phase3_events_restaurant_slug_trigger).
+    trackEvent: function (restaurantSlug, eventType, extra) {
+      if (!this.isReady()) return Promise.resolve({ ok: false, reason: 'supabase_not_configured' });
       extra = extra || {};
-      try {
-        var payload = {
-          event_type:  eventType,
-          device_id:   extra.deviceId  || localStorage.getItem('device_id') || null,
-          session_id:  extra.sessionId || sessionStorage.getItem('fv_session_id') || null,
-          src:         extra.src       || null,
-          demo:        extra.demo      === true || extra.demo === 'true',
-          jour:        new Date().toISOString().slice(0, 10),
-          mois:        new Date().getMonth() + 1,
-          annee:       new Date().getFullYear(),
-          page_url:    window.location.href,
-          user_agent:  navigator.userAgent
-        };
-
-        // Résoudre restaurant_id depuis le slug
-        var resto = await this.getRestaurantBySlug(restaurantSlug);
-        if (resto) payload.restaurant_id = resto.id;
-
-        var res = await window.fvSupabase.from('events').insert(payload);
-        return { ok: !res.error, error: res.error };
-      } catch (e) {
-        return { ok: false, error: e.message };
-      }
+      var payload = {
+        restaurant_slug: restaurantSlug || null,
+        event_type:      eventType      || null,
+        device_id:       extra.deviceId  || localStorage.getItem('device_id')        || null,
+        session_id:      extra.sessionId || sessionStorage.getItem('fv_session_id')  || null,
+        src:             extra.src       || null,
+        demo:            extra.demo === true || extra.demo === 'true' || extra.demo === '1',
+        jour:            new Date().toISOString().slice(0, 10),
+        mois:            new Date().getMonth() + 1,
+        annee:           new Date().getFullYear(),
+        page_url:        window.location.href,
+        user_agent:      navigator.userAgent
+      };
+      return fetch(SUPABASE_URL + '/rest/v1/events', {
+        method: 'POST',
+        headers: {
+          'apikey':        SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type':  'application/json',
+          'Prefer':        'return=minimal'
+        },
+        body:      JSON.stringify(payload),
+        keepalive: true
+      }).then(function (r) {
+        return { ok: r.ok, status: r.status };
+      }).catch(function (e) {
+        return { ok: false, error: e && e.message };
+      });
     },
 
     // Récupère la config d'un restaurant depuis Supabase
     // (remplacera progressivement config.json)
     getRestaurantBySlug: async function (slug) {
-      if (!this.isReady() || !slug) return null;
+      if (!this.isSdkReady() || !slug) return null;
       try {
         var res = await window.fvSupabase
           .from('restaurants')
@@ -138,7 +157,7 @@
     // → compatible avec RLS qui n'autorise pas la lecture de la table clients en anon.
     // Les doublons (même email + même resto) renvoient code 23505, traités comme succès idempotent.
     registerClient: async function (restaurantSlug, email, firstName, deviceId, src) {
-      if (!this.isReady()) return { ok: false, reason: 'supabase_not_ready' };
+      if (!this.isSdkReady()) return { ok: false, reason: 'sdk_not_ready' };
       try {
         var resto = await this.getRestaurantBySlug(restaurantSlug);
         if (!resto) return { ok: false, reason: 'restaurant_not_found' };
@@ -164,7 +183,7 @@
 
     // Vérifie si un coupon est disponible ce mois (complètera localStorage)
     isCouponAvailable: async function (restaurantSlug, deviceId) {
-      if (!this.isReady()) return null;  // null = fallback vers localStorage
+      if (!this.isSdkReady()) return null;  // null = fallback vers localStorage
       try {
         var monthKey = new Date().toISOString().slice(0, 7);  // "2026-05"
         var resto = await this.getRestaurantBySlug(restaurantSlug);
