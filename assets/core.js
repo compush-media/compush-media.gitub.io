@@ -49,6 +49,41 @@
   }
 
   /* --------------------------------------------------
+     Phase 4 — Validation coupon côté serveur (RPC).
+     Appelle fv_validate_coupon(slug, device_id, amount, validated_by, notes)
+     qui fait UPSERT coupons + INSERT validations en transaction.
+     localStorage reste source de vérité — ceci écrit en parallèle.
+     Fire-and-forget, keepalive pour survivre aux navigations.
+  -------------------------------------------------- */
+  function _supaValidateCoupon(slug, extra) {
+    if (!SUPA_URL) return;
+    extra = extra || {};
+    try {
+      var payload = {
+        p_restaurant_slug: slug || null,
+        p_device_id:       extra.deviceId   || localStorage.getItem("device_id") || null,
+        p_amount:          extra.amount     || null,
+        p_validated_by:    extra.validatedBy || "self",
+        p_notes:           extra.notes      || null
+      };
+      fetch(SUPA_URL + "/rest/v1/rpc/fv_validate_coupon", {
+        method: "POST",
+        headers: {
+          "apikey":        SUPA_KEY,
+          "Authorization": "Bearer " + SUPA_KEY,
+          "Content-Type":  "application/json",
+          "Prefer":        "return=minimal"
+        },
+        body:      JSON.stringify(payload),
+        keepalive: true
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
+  // Expose pour usage depuis index.html / espace-admin.html
+  window.fvSupaValidateCoupon = _supaValidateCoupon;
+
+  /* --------------------------------------------------
      Auto-load supabase-config.js (registerClient et helpers SDK).
      trackEvent fonctionne sans, via _supaTrackEvent inliné ci-dessus.
   -------------------------------------------------- */

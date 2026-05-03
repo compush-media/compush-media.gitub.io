@@ -592,6 +592,8 @@ function soumettrePin() {
 
   if (verifierPin(code)) {
     localStorage.setItem(couponKey(), "used");
+    // Phase 4 : double-write Supabase (UPSERT coupon + INSERT validation via RPC)
+    try { window.fvSupaValidateCoupon && window.fvSupaValidateCoupon(RESTO, { validatedBy: "self_pwa" }); } catch(_) {}
     res.innerHTML = `<div class="ok-box success">✅ Coupon validé</div>`;
     document.getElementById("audioOK").play().catch(()=>{});
 
