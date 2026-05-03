@@ -40,7 +40,19 @@
       return null;
     }
     try {
-      return window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      // ✅ keepalive: true → la requête survit à un window.location.replace().
+      // Indispensable car les pages d'inscription redirigent vers redit.html
+      // ~400 ms après le submit et avorteraient sinon le POST Supabase.
+      // Limite navigateur : 64 KB par origine en keepalive — largement assez.
+      return window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        global: {
+          fetch: function (input, init) {
+            init = init || {};
+            init.keepalive = true;
+            return fetch(input, init);
+          }
+        }
+      });
     } catch (e) {
       console.warn('[Fidelavis] Erreur init Supabase:', e.message);
       return null;
