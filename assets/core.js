@@ -7,6 +7,19 @@
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
 
   /* --------------------------------------------------
+     Phase 3 : auto-load Supabase config si absent.
+     Permet à _sendEvent() de double-writer dans Supabase
+     sur toutes les pages qui chargent core.js, sans avoir
+     à inclure explicitement supabase-config.js partout.
+  -------------------------------------------------- */
+  if (!window.fvSupa && !document.querySelector('script[src*="supabase-config"]')) {
+    var sbScript = document.createElement('script');
+    sbScript.src   = '/assets/supabase-config.js';
+    sbScript.async = true;
+    (document.head || document.documentElement).appendChild(sbScript);
+  }
+
+  /* --------------------------------------------------
      getRestoSlug() — extrait le slug depuis l'URL
      ex : /resto1/indexnfc.html => "resto1"
   -------------------------------------------------- */
@@ -156,6 +169,20 @@
         try { form.remove();   } catch (e) {}
         try { iframe.remove(); } catch (e) {}
       }, 3000);
+
+      // Phase 3 : double-write Supabase (fire-and-forget).
+      // GAS reste source de vérité tant que Supabase n'est pas validé.
+      // Si Supabase indisponible (SDK pas encore chargé, projet down…) → silencieux.
+      // Le keepalive du SDK garantit que la requête survit aux navigations.
+      try {
+        if (window.fvSupa && window.fvSupa.isReady()) {
+          window.fvSupa.trackEvent(
+            restoName || getRestoSlug(),
+            eventName || "",
+            extra || {}
+          );
+        }
+      } catch (e) {}
 
     } catch (e) {
       console.warn("[Fidelavis] _sendEvent error", e);
