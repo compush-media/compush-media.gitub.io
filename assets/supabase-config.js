@@ -20,6 +20,10 @@
 
 (function () {
 
+  // Garde-fou : évite double init si la page inclut explicitement ce
+  // script ET que core.js l'auto-charge en parallèle (Phase 3).
+  if (window.fvSupa) return;
+
   // ── 1. Configuration ─────────────────────────────────────────
   // Projet Supabase : Fidelavis (eu-west-3)
   // Dashboard : https://supabase.com/dashboard/project/rtdiaeskmyjjwohirhzj
