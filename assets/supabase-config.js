@@ -118,25 +118,29 @@
     },
 
     // Inscrit un client (double-write : Brevo reste actif en parallèle)
+    // Utilise .insert() (Prefer: return=minimal) — pas de SELECT post-insert
+    // → compatible avec RLS qui n'autorise pas la lecture de la table clients en anon.
+    // Les doublons (même email + même resto) renvoient code 23505, traités comme succès idempotent.
     registerClient: async function (restaurantSlug, email, firstName, deviceId, src) {
       if (!this.isReady()) return { ok: false, reason: 'supabase_not_ready' };
       try {
         var resto = await this.getRestaurantBySlug(restaurantSlug);
         if (!resto) return { ok: false, reason: 'restaurant_not_found' };
 
-        var res = await window.fvSupabase.from('clients').upsert({
+        var res = await window.fvSupabase.from('clients').insert({
           restaurant_id: resto.id,
           email:         email,
           first_name:    firstName || null,
           device_id:     deviceId  || null,
           src:           src       || null,
           user_agent:    navigator.userAgent
-        }, {
-          onConflict: 'restaurant_id,email',
-          ignoreDuplicates: false
         });
 
-        return { ok: !res.error, error: res.error };
+        // 23505 = unique violation (déjà inscrit) → on considère comme succès
+        if (res.error && res.error.code !== '23505') {
+          return { ok: false, error: res.error };
+        }
+        return { ok: true, duplicate: !!res.error };
       } catch (e) {
         return { ok: false, error: e.message };
       }

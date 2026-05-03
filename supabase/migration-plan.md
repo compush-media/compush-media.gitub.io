@@ -11,10 +11,22 @@
 | Phase | Statut | Description |
 |-------|--------|-------------|
 | Phase 1 | ✅ TERMINÉE | Audit + branch + schema SQL + supabase-config.js |
-| Phase 2 | ⏳ EN ATTENTE | Inscription clients → Supabase |
+| Phase 2 | ✅ TERMINÉE | Inscription clients → Supabase (double-write Brevo) |
 | Phase 3 | ⏳ EN ATTENTE | Events/stats → Supabase |
 | Phase 4 | ⏳ EN ATTENTE | Coupons/validations → Supabase |
 | Phase 5 | ⏳ EN ATTENTE | Auth admin + config resto + SaaS complet |
+
+### Phase 2 — Détail des changements
+- 4 fichiers `inscription.html` modifiés : `_template`, `le-martin`, `les-jardins-de-voltaire`, `claude`
+  - Ajout du chargement de `assets/supabase-config.js` après `core.js`
+  - Bloc double-write `fvSupa.registerClient()` ajouté après l'envoi Brevo (fire-and-forget)
+- Migration SQL `phase2_fix_rls_explicit_roles` appliquée :
+  - Drop des policies Phase 1 (avaient `to public` implicite, ne matchaient pas `anon`)
+  - Recréation avec `to anon, authenticated` explicite
+  - Ajout policy `coupons_anon_insert` et `coupons_anon_read` (préparation Phase 4)
+- Helper `registerClient` corrigé : utilise `.insert()` (Prefer minimal) au lieu de `.upsert()` pour éviter le SELECT post-insert (bloqué par RLS volontairement)
+- Doublon (23505) traité comme succès idempotent côté JS
+- Validé par curl : insertion 201, doublon 409, restaurant correctement lié
 
 ---
 
