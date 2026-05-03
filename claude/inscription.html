@@ -7,6 +7,8 @@
 
   <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
+  <!-- ✅ Supabase (Phase 2 — double-write avec Brevo) -->
+  <script src="../assets/supabase-config.js"></script>
 
   <!-- ✅ trackEventFidelavis fourni par core.js (chargé avant ce script) — pas de redéfinition locale -->
 
@@ -315,6 +317,17 @@
         navigator.sendBeacon(gasUrl, sp);
       } catch(_) {}
     }
+
+    // ── Phase 2 : double-write Supabase (fire-and-forget) ──
+    // Brevo reste la source de vérité tant que Supabase n'est pas validé.
+    // Si Supabase indisponible → silencieux, aucun impact UX.
+    try {
+      if (window.fvSupa && window.fvSupa.isReady()) {
+        const deviceId = localStorage.getItem("device_id") || null;
+        window.fvSupa.registerClient(RESTO, email, prenom, deviceId, "brevo_form")
+          .then(r => console.log("[Fidelavis] Supabase client:", r));
+      }
+    } catch(_) {}
 
     // ── Persistance localStorage (même logique qu'avec GHL) ──
     try {
