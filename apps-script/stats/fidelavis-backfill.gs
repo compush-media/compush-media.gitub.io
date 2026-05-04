@@ -188,11 +188,18 @@ function backfillEventsToSupabase() {
 // ─── Helper : ouvre la feuille "events" ──────────────────────
 function getSheet() {
   var sheetId = PropertiesService.getScriptProperties().getProperty("SHEET_ID");
-  var ss = sheetId
-    ? SpreadsheetApp.openById(sheetId)
-    : SpreadsheetApp.getActiveSpreadsheet();
+  if (!sheetId) {
+    throw new Error(
+      'Propriété SHEET_ID manquante. ' +
+      'Va dans Paramètres du projet (⚙️) → Propriétés du script → ' +
+      'Ajouter : clé=SHEET_ID, valeur=ID de ta Google Sheet events ' +
+      '(partie de l\'URL entre /d/ et /edit).'
+    );
+  }
+  var ss = SpreadsheetApp.openById(sheetId);
+  if (!ss) throw new Error('Impossible d\'ouvrir la Sheet ID=' + sheetId);
   var sheet = ss.getSheetByName("events");
-  if (!sheet) throw new Error('Feuille "events" introuvable.');
+  if (!sheet) throw new Error('Feuille "events" introuvable dans la Sheet ID=' + sheetId + '. Vérifie le nom exact de l\'onglet.');
   return sheet;
 }
 
