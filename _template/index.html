@@ -606,7 +606,7 @@ function generatePin(offset = 0) {
 }
 function verifierPin(pin) { return [-2, -1, 0, 1, 2].some(o => generatePin(o) === pin); }
 
-function soumettrePin() {
+async function soumettrePin() {
   const res = document.getElementById("result");
 
   if (IS_LOCKED){
@@ -638,6 +638,36 @@ function soumettrePin() {
   }
 
   window.Fidelavis?.track?.("coupon_validate_attempt", { src: "coupon_validate" });
+
+  // Phase 5c : check serveur — bloque le contournement par clear localStorage
+  try {
+    const deviceId = localStorage.getItem("device_id");
+    if (deviceId) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 2500);
+      const r = await fetch("https://rtdiaeskmyjjwohirhzj.supabase.co/rest/v1/rpc/fv_coupon_status", {
+        method: "POST",
+        headers: {
+          "apikey":        "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ",
+          "Authorization": "Bearer sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ",
+          "Content-Type":  "application/json"
+        },
+        body:   JSON.stringify({ p_slug: RESTO, p_device_id: deviceId }),
+        signal: ctrl.signal
+      });
+      clearTimeout(timer);
+      if (r.ok) {
+        const j = await r.json();
+        if (j && j.ok && j.status === "used") {
+          // Coupon déjà consommé côté serveur → re-synchroniser localStorage
+          localStorage.setItem(couponKey(), "used");
+          res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
+          window.Fidelavis?.track?.("coupon_already_used_supabase", { src: "coupon_validate" });
+          return;
+        }
+      }
+    }
+  } catch(_) { /* offline / Supabase down → on continue avec le check PIN local */ }
 
   if (verifierPin(code)) {
     localStorage.setItem(couponKey(), "used");
