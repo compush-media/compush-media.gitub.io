@@ -81,13 +81,8 @@
   </div>
 
   <script>
-    const USERS = {
-      admin:      { user: "admin",      pass: "111111",  role: "admin" },
-      employe:    { user: "employe",    pass: "employe123",     role: "employe" },
-      superadmin: { user: "superadmin", pass: "FV-Master-2026!", role: "admin" }
-    };
-
-    // Phase 5a : auth Supabase d'abord, fallback USERS local si Supabase down.
+    // Phase 5a-bis : auth 100% Supabase (RPC fv_admin_login + bcrypt).
+    // Plus aucun mot de passe en clair côté client.
     const SUPA_URL = "https://rtdiaeskmyjjwohirhzj.supabase.co";
     const SUPA_KEY = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
 
@@ -96,8 +91,6 @@
       const p = document.getElementById("pass").value.trim();
       const error = document.getElementById("error");
       const site = window.location.pathname.split("/")[1];
-      let user = null;
-      let supaResponded = false;
 
       try {
         const r = await fetch(SUPA_URL + "/rest/v1/rpc/fv_admin_login", {
@@ -109,37 +102,31 @@
           },
           body: JSON.stringify({ p_slug: site, p_username: u, p_password: p })
         });
-        if (r.ok) {
-          supaResponded = true;
-          const j = await r.json();
-          if (j && j.ok) {
-            user = { user: u, role: j.role };
-            console.log("[Fidelavis] Auth Supabase OK", j.role);
-          }
-        }
-      } catch(_) { /* network error → fallback */ }
 
-      if (!user && !supaResponded) {
-        for (const key in USERS) {
-          if (USERS[key].user === u && USERS[key].pass === p) {
-            user = USERS[key];
-            console.log("[Fidelavis] Auth fallback local (Supabase indispo)");
-            break;
-          }
+        if (!r.ok) {
+          error.style.color = "red";
+          error.innerText = "Service d'authentification indisponible. Réessayez dans quelques minutes.";
+          return;
         }
-      }
 
-      if (user) {
+        const j = await r.json();
+        if (!j || !j.ok) {
+          error.style.color = "red";
+          error.innerText = "Identifiants incorrects";
+          return;
+        }
+
         localStorage.setItem(`admin_${site}`, "true");
-        localStorage.setItem(`role_${site}`, user.role);
+        localStorage.setItem(`role_${site}`, j.role);
         error.style.color = "green";
         error.innerText = "Connexion réussie. Redirection...";
         setTimeout(() => {
           window.location.href = `/${site}/admin/espace-admin.html`;
         }, 800);
-      } else {
+
+      } catch (e) {
         error.style.color = "red";
-        error.innerText = "Identifiants incorrects";
+        error.innerText = "Connexion impossible. Vérifiez votre réseau.";
       }
     }
   </script>
