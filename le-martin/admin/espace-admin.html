@@ -929,6 +929,56 @@
       </button>
       <div class="notif-msg" id="colorFeedback" style="margin-top:12px;"></div>
     </div>
+
+    <!-- Équipe / Comptes employés -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title"><span class="card-title-icon">👥</span> Équipe — Comptes employés</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+        Créez un compte par employé. Ils auront accès uniquement à la page Coupon
+        (PIN du moment + QR d'installation). Ils ne verront pas vos statistiques
+        ni vos paramètres.
+      </p>
+
+      <!-- Étape 1 : Authentification admin (cachée 30 min) -->
+      <div id="teamAuthStep">
+        <div style="background:var(--brand-light);border:1px solid var(--brand-border);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;">
+          🔒 Confirmez votre mot de passe administrateur pour gérer les comptes employés.
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="teamAdminPwd">Votre mot de passe admin</label>
+          <input class="form-input" id="teamAdminPwd" type="password" autocomplete="current-password" placeholder="••••••••" />
+        </div>
+        <button class="btn btn-brand" type="button" onclick="teamAuth()">🔓 Déverrouiller</button>
+        <div class="notif-msg" id="teamAuthFeedback" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- Étape 2 : Liste + création (révélée après auth) -->
+      <div id="teamMainStep" style="display:none;">
+        <!-- Liste -->
+        <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px;">Comptes existants</div>
+        <ul class="actions-list" id="teamList" style="margin-bottom:18px;">
+          <li class="action-item" style="cursor:default;"><span class="action-icon">⏳</span><span class="action-label">Chargement…</span></li>
+        </ul>
+
+        <!-- Formulaire création -->
+        <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px;border-top:1px solid var(--line);padding-top:14px;">Créer un nouveau compte</div>
+        <div class="form-group">
+          <label class="form-label" for="teamNewUsername">Nom d'utilisateur (3+ caractères)</label>
+          <input class="form-input" id="teamNewUsername" placeholder="Ex: marie, paul, salle" autocomplete="off" maxlength="50" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="teamNewPassword">Mot de passe (6+ caractères)</label>
+          <input class="form-input" id="teamNewPassword" type="text" placeholder="Mot de passe à transmettre à l'employé" autocomplete="off" />
+          <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">⚠ Notez-le maintenant — vous pourrez toujours le réinitialiser plus tard.</div>
+        </div>
+        <button class="btn btn-brand" type="button" onclick="teamCreate()">➕ Créer le compte</button>
+        <div class="notif-msg" id="teamFeedback" style="margin-top:12px;"></div>
+
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);">
+          <a href="#" onclick="teamLogout();return false;" style="font-size:12px;color:var(--muted);text-decoration:underline;">🔐 Verrouiller la gestion d'équipe</a>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ═══════════════════════════ OFFRE DU JOUR ═══════════════════════════ -->
@@ -2111,6 +2161,176 @@ async function saveOffre() {
 
   btn.disabled    = false;
   btn.textContent = '💾 Enregistrer l\'offre';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ÉQUIPE — Gestion des comptes employés
+// ═══════════════════════════════════════════════════════════════
+
+const TEAM_AUTH_TTL = 30 * 60 * 1000;   // 30 min
+let _teamAdminPwd = null;
+let _teamAuthExpiry = 0;
+
+function teamCachedPwd() {
+  if (_teamAdminPwd && Date.now() < _teamAuthExpiry) return _teamAdminPwd;
+  _teamAdminPwd = null; _teamAuthExpiry = 0;
+  return null;
+}
+
+function teamSupaCall(rpc, body) {
+  return fetch(SUPA_URL + '/rest/v1/rpc/' + rpc, {
+    method: 'POST',
+    headers: {
+      'apikey':        SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+      'Content-Type':  'application/json'
+    },
+    body: JSON.stringify(body)
+  }).then(r => r.ok ? r.json() : Promise.reject(new Error('http_' + r.status)));
+}
+
+async function teamAuth() {
+  const pwd = document.getElementById('teamAdminPwd').value.trim();
+  const fb  = document.getElementById('teamAuthFeedback');
+  if (pwd.length < 6) {
+    fb.textContent = '⚠️ Mot de passe trop court.';
+    fb.className = 'notif-msg error';
+    return;
+  }
+  fb.className = 'notif-msg';
+  fb.textContent = '⏳ Vérification…';
+  try {
+    const j = await teamSupaCall('fv_admin_list_employees', { p_slug: SITE, p_admin_password: pwd });
+    if (j && j.ok) {
+      _teamAdminPwd   = pwd;
+      _teamAuthExpiry = Date.now() + TEAM_AUTH_TTL;
+      document.getElementById('teamAuthStep').style.display = 'none';
+      document.getElementById('teamMainStep').style.display = '';
+      document.getElementById('teamAdminPwd').value = '';
+      teamRenderList(j.employees || []);
+    } else if (j && j.error === 'auth') {
+      fb.textContent = '✗ Mot de passe incorrect.';
+      fb.className = 'notif-msg error';
+    } else {
+      fb.textContent = '⚠️ Erreur ' + (j?.error || 'inconnue');
+      fb.className = 'notif-msg error';
+    }
+  } catch(e) {
+    fb.textContent = '⚠️ Erreur réseau — réessayez.';
+    fb.className = 'notif-msg error';
+  }
+}
+
+async function teamReload() {
+  const pwd = teamCachedPwd();
+  if (!pwd) return teamLogout();
+  try {
+    const j = await teamSupaCall('fv_admin_list_employees', { p_slug: SITE, p_admin_password: pwd });
+    if (j && j.ok) teamRenderList(j.employees || []);
+    else teamLogout();
+  } catch(_) {}
+}
+
+function teamRenderList(employees) {
+  const list = document.getElementById('teamList');
+  if (!list) return;
+  if (employees.length === 0) {
+    list.innerHTML = '<li class="action-item" style="cursor:default;"><span class="action-icon">📭</span><span class="action-label" style="color:var(--muted);">Aucun compte employé pour le moment.</span></li>';
+    return;
+  }
+  list.innerHTML = employees.map(e => {
+    const lastLogin = e.last_login_at
+      ? new Date(e.last_login_at).toLocaleDateString('fr-FR', {day:'numeric', month:'short'})
+      : 'jamais';
+    return `
+      <li class="action-item" style="cursor:default;">
+        <span class="action-icon">👤</span>
+        <span class="action-label">
+          <strong>${e.username}</strong>
+          <div style="font-size:11px;color:var(--muted);font-weight:400;">Dernière connexion : ${lastLogin}</div>
+        </span>
+        <button onclick="teamReset('${e.username.replace(/'/g, "\\'")}')" style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer;color:var(--ink);">🔄 Reset</button>
+        <button onclick="teamDelete('${e.username.replace(/'/g, "\\'")}')" style="background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer;color:#dc2626;">🗑 Supprimer</button>
+      </li>`;
+  }).join('');
+}
+
+async function teamCreate() {
+  const u   = document.getElementById('teamNewUsername').value.trim();
+  const p   = document.getElementById('teamNewPassword').value.trim();
+  const fb  = document.getElementById('teamFeedback');
+  const pwd = teamCachedPwd();
+  if (!pwd) return teamLogout();
+  if (u.length < 3) { fb.textContent = '⚠️ Nom trop court (3 caractères mini).'; fb.className = 'notif-msg error'; return; }
+  if (p.length < 6) { fb.textContent = '⚠️ Mot de passe trop court (6 caractères mini).'; fb.className = 'notif-msg error'; return; }
+  fb.textContent = '⏳ Création…'; fb.className = 'notif-msg';
+  try {
+    const j = await teamSupaCall('fv_admin_create_employee', {
+      p_slug: SITE, p_admin_password: pwd, p_username: u, p_password: p
+    });
+    if (j && j.ok) {
+      fb.textContent = `✅ Compte ${u} créé. Mot de passe : ${p}`;
+      fb.className = 'notif-msg success';
+      document.getElementById('teamNewUsername').value = '';
+      document.getElementById('teamNewPassword').value = '';
+      teamReload();
+    } else if (j && j.error === 'auth')              { _teamAdminPwd = null; teamLogout(); }
+    else if (j && j.error === 'username_taken')      { fb.textContent = '⚠️ Ce nom est déjà utilisé.'; fb.className = 'notif-msg error'; }
+    else if (j && j.error === 'username_too_short')  { fb.textContent = '⚠️ Nom trop court.'; fb.className = 'notif-msg error'; }
+    else if (j && j.error === 'password_too_short')  { fb.textContent = '⚠️ Mot de passe trop court.'; fb.className = 'notif-msg error'; }
+    else                                              { fb.textContent = '⚠️ Erreur ' + (j?.error || 'inconnue'); fb.className = 'notif-msg error'; }
+  } catch(_) {
+    fb.textContent = '⚠️ Erreur réseau.'; fb.className = 'notif-msg error';
+  }
+}
+
+async function teamReset(username) {
+  const pwd = teamCachedPwd();
+  if (!pwd) return teamLogout();
+  const newPwd = prompt(`Nouveau mot de passe pour "${username}" (6+ caractères) :`);
+  if (!newPwd) return;
+  if (newPwd.length < 6) { alert('Mot de passe trop court.'); return; }
+  const fb = document.getElementById('teamFeedback');
+  try {
+    const j = await teamSupaCall('fv_admin_reset_employee_password', {
+      p_slug: SITE, p_admin_password: pwd, p_username: username, p_new_password: newPwd
+    });
+    if (j && j.ok) {
+      fb.textContent = `✅ Mot de passe de ${username} réinitialisé : ${newPwd}`;
+      fb.className = 'notif-msg success';
+    } else if (j && j.error === 'auth') { teamLogout(); }
+    else                                 { fb.textContent = '⚠️ ' + (j?.error || 'Erreur'); fb.className = 'notif-msg error'; }
+  } catch(_) {
+    fb.textContent = '⚠️ Erreur réseau.'; fb.className = 'notif-msg error';
+  }
+}
+
+async function teamDelete(username) {
+  if (!confirm(`Supprimer définitivement le compte "${username}" ?`)) return;
+  const pwd = teamCachedPwd();
+  if (!pwd) return teamLogout();
+  const fb = document.getElementById('teamFeedback');
+  try {
+    const j = await teamSupaCall('fv_admin_delete_employee', {
+      p_slug: SITE, p_admin_password: pwd, p_username: username
+    });
+    if (j && j.ok) {
+      fb.textContent = `✅ ${username} supprimé.`;
+      fb.className = 'notif-msg success';
+      teamReload();
+    } else if (j && j.error === 'auth') { teamLogout(); }
+    else                                 { fb.textContent = '⚠️ ' + (j?.error || 'Erreur'); fb.className = 'notif-msg error'; }
+  } catch(_) {
+    fb.textContent = '⚠️ Erreur réseau.'; fb.className = 'notif-msg error';
+  }
+}
+
+function teamLogout() {
+  _teamAdminPwd = null; _teamAuthExpiry = 0;
+  document.getElementById('teamAuthStep').style.display = '';
+  document.getElementById('teamMainStep').style.display = 'none';
+  const fb = document.getElementById('teamAuthFeedback');
+  if (fb) fb.className = 'notif-msg';
 }
 
 // ═══════════════════════════════════════════════════════════════
