@@ -519,7 +519,7 @@
 </header>
 
 <!-- ── SUBSCRIPTION BANNER ── -->
-<div id="subBanner" style="display:none;padding:10px 20px;font-size:13px;font-weight:600;text-align:center;"></div>
+<div id="subBanner" class="admin-only" style="display:none;padding:10px 20px;font-size:13px;font-weight:600;text-align:center;"></div>
 
 <!-- ── TAB NAV ── -->
 <nav class="tab-nav" id="tabNav">
@@ -1153,7 +1153,9 @@ fetch(`/${SITE}/config.json`)
     const qrBtn  = document.getElementById('qrBtn');
     if (qrBtn) qrBtn.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(nfcUrl)}`;
 
-    // Bannière statut abonnement
+    // Bannière statut abonnement (admin uniquement — pas de billing pour les employés)
+    if (ROLE !== 'admin') return;
+
     const banner = document.getElementById('subBanner');
     const status = cfg?.subscriptionStatus || '';
     const trial  = cfg?.trialEndDate || '';
