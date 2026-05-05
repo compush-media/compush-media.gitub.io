@@ -1022,15 +1022,37 @@
     <div class="card" style="margin-bottom:16px;">
       <div class="card-title"><span class="card-title-icon">🖼️</span> Image de l'offre</div>
       <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
-        URL d'une image en ligne (JPG/PNG recommandé, format paysage 16:9).
+        Prenez une photo ou importez une image depuis votre appareil
+        (JPG/PNG/WebP, format paysage 16:9 recommandé, max 5 MB).
       </p>
-      <input class="form-input" type="url" id="offreImage"
-        placeholder="https://monresto.fr/offre-happy-hour.jpg"
-        style="margin-bottom:12px;" oninput="previewOffreImage()" />
+
+      <!-- input fichier caché + boutons d'action -->
+      <input type="file" id="offreImageFile" accept="image/*" capture="environment"
+        onchange="handleOffreImageFile(this)" style="display:none;" />
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <button type="button" class="btn btn-brand" style="flex:1;min-width:140px;"
+          onclick="document.getElementById('offreImageFile').click()">
+          📷 Prendre / Choisir une photo
+        </button>
+        <button type="button" class="btn" id="offreImageReset" style="background:#f3f4f6;color:#555;border:1px solid var(--line);display:none;"
+          onclick="resetOffreImage()">
+          🗑 Retirer
+        </button>
+      </div>
+
+      <!-- Hidden — stocke l'URL Supabase Storage finale -->
+      <input type="hidden" id="offreImage" value="" />
+
+      <!-- Status / progression -->
+      <div id="offreImageStatus" style="display:none;font-size:12.5px;color:var(--muted);padding:10px;background:var(--bg);border-radius:8px;margin-bottom:10px;text-align:center;"></div>
+
+      <!-- Aperçu -->
       <div id="offreImagePreview" style="display:none;margin-bottom:4px;">
         <img id="offreImgEl" src="" alt="Aperçu"
           style="width:100%;max-height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--line);"
           onerror="document.getElementById('offreImagePreview').style.display='none'" />
+        <div id="offreImgUrl" style="font-size:11px;color:var(--muted);margin-top:6px;word-break:break-all;line-height:1.3;"></div>
       </div>
     </div>
 
@@ -2116,8 +2138,115 @@ function previewOffreImage() {
   const url = document.getElementById('offreImage').value.trim();
   const wrap = document.getElementById('offreImagePreview');
   const img  = document.getElementById('offreImgEl');
-  if (url) { img.src = url; wrap.style.display = ''; }
-  else      { wrap.style.display = 'none'; }
+  const urlEl = document.getElementById('offreImgUrl');
+  const reset = document.getElementById('offreImageReset');
+  if (url) {
+    img.src = url;
+    wrap.style.display = '';
+    if (urlEl) urlEl.textContent = url;
+    if (reset) reset.style.display = '';
+  } else {
+    wrap.style.display = 'none';
+    if (reset) reset.style.display = 'none';
+  }
+}
+
+function resetOffreImage() {
+  document.getElementById('offreImage').value = '';
+  const file = document.getElementById('offreImageFile');
+  if (file) file.value = '';
+  previewOffreImage();
+}
+
+// ── Compression côté client (max 1600px, JPEG ~85%) ──
+async function _compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const MAX = 1600;
+      let w = img.naturalWidth, h = img.naturalHeight;
+      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('blob_failed')), 'image/jpeg', 0.85);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('img_load')); };
+    img.src = url;
+  });
+}
+
+async function handleOffreImageFile(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const status = document.getElementById('offreImageStatus');
+  const showStatus = (txt, isErr) => {
+    status.style.display = '';
+    status.textContent = txt;
+    status.style.color = isErr ? '#dc2626' : 'var(--muted)';
+  };
+
+  // Vérification mime côté client (le bucket re-vérifie)
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
+    showStatus('⚠️ Format non supporté (JPG, PNG ou WebP uniquement).', true);
+    input.value = '';
+    return;
+  }
+  if (file.size > 8 * 1024 * 1024) {
+    showStatus('⚠️ Image trop lourde (8 MB max avant compression).', true);
+    input.value = '';
+    return;
+  }
+
+  showStatus('⏳ Compression de l\'image…', false);
+  let blob;
+  try {
+    blob = await _compressImage(file);
+  } catch(e) {
+    showStatus('⚠️ Impossible de traiter cette image — réessayez.', true);
+    return;
+  }
+
+  const sizeKb = Math.round(blob.size / 1024);
+  showStatus(`⏳ Envoi (${sizeKb} KB)…`, false);
+
+  // Path : {slug}/{timestamp}-{rand}.jpg
+  const rand = Math.random().toString(36).slice(2, 8);
+  const path = `${SITE}/${Date.now()}-${rand}.jpg`;
+
+  try {
+    const r = await fetch(`${SUPA_URL}/storage/v1/object/offres-images/${path}`, {
+      method: 'POST',
+      headers: {
+        'apikey':        SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type':  'image/jpeg',
+        'x-upsert':      'true',
+        'cache-control': '3600'
+      },
+      body: blob
+    });
+    if (!r.ok) {
+      const errTxt = await r.text().catch(() => '');
+      throw new Error('upload_' + r.status + ' ' + errTxt);
+    }
+  } catch(e) {
+    console.error('[Fidelavis] upload offre-image fail:', e);
+    showStatus('⚠️ Échec de l\'envoi — vérifiez votre connexion.', true);
+    return;
+  }
+
+  const publicUrl = `${SUPA_URL}/storage/v1/object/public/offres-images/${path}`;
+  document.getElementById('offreImage').value = publicUrl;
+  previewOffreImage();
+  showStatus(`✅ Image prête (${sizeKb} KB) — n'oubliez pas d'enregistrer l'offre.`, false);
+  status.style.color = 'var(--green)';
+  setTimeout(() => { status.style.display = 'none'; }, 4000);
 }
 
 async function saveOffre() {
