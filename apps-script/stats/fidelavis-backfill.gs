@@ -23,9 +23,14 @@
  * ============================================================
  */
 
-var SUPA_URL  = "https://rtdiaeskmyjjwohirhzj.supabase.co";
-var SUPA_KEY  = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
+var SUPA_URL   = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+var SUPA_KEY   = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
 var BATCH_SIZE = 200;
+
+// Cutoff : n'importer que les events AVANT le double-write Supabase live
+// (le 2026-05-03 = premier event enregistré nativement par Supabase)
+// Les events après cette date sont déjà dans Supabase via Phase 3.
+var CUTOFF = new Date("2026-05-03T00:00:00Z");
 
 // Mapping event_type (même logique que fidelavis-stats.gs)
 var EVENT_KEYS = {
@@ -89,18 +94,26 @@ function backfillEventsToSupabase() {
       continue;
     }
 
+    // Normaliser timestamp d'abord (nécessaire pour le filtre cutoff)
+    var createdAt;
+    var rowDate;
+    try {
+      rowDate = new Date(ts);
+      if (isNaN(rowDate.getTime())) throw new Error("invalid");
+      createdAt = rowDate.toISOString();
+    } catch (_) {
+      rowDate = new Date();
+      createdAt = rowDate.toISOString();
+    }
+
+    // Skip events postérieurs au cutoff (déjà couverts par le double-write Supabase)
+    if (rowDate >= CUTOFF) {
+      skipped++;
+      continue;
+    }
+
     // Normaliser event
     var eventType = EVENT_KEYS[event] || event;
-
-    // Normaliser timestamp
-    var createdAt;
-    try {
-      var d = new Date(ts);
-      if (isNaN(d.getTime())) throw new Error("invalid");
-      createdAt = d.toISOString();
-    } catch (_) {
-      createdAt = new Date().toISOString();
-    }
 
     // Normaliser jour
     if (!jour || jour.length < 10) {
@@ -154,8 +167,7 @@ function backfillEventsToSupabase() {
           "apikey":        SUPA_KEY,
           "Authorization": "Bearer " + SUPA_KEY,
           "Content-Type":  "application/json",
-          // ignore-duplicates : relancer le script est safe
-          "Prefer":        "return=minimal,resolution=ignore-duplicates"
+          "Prefer":        "return=minimal"
         },
         payload:              JSON.stringify(batch),
         muteHttpExceptions:   true
