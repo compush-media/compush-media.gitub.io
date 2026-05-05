@@ -848,6 +848,49 @@ let currentLocation = null;
 let currentFilter = { status: '', rating: '', search: '', isRating: false };
 let currentPage   = 1;
 // ============================================================
+//  PHASE 5e — Double-write reviews vers Supabase (silencieux)
+// ============================================================
+const _SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+const _SUPA_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
+
+function _lsSetReviews(reviews) {
+  // 1) localStorage (toujours, comme avant)
+  try { localStorage.setItem('fv_reviews', JSON.stringify(reviews)); } catch(_) {}
+
+  // 2) Supabase fire-and-forget (n'attend pas, n'affiche pas d'erreur)
+  try {
+    if (!Array.isArray(reviews) || reviews.length === 0) return;
+    const slug = _adminSite;
+    if (!slug || slug === 'resto1') return; // skip demo / template
+    const rows = reviews.map(r => ({
+      restaurant_slug:  slug,
+      google_review_id: r.id || null,
+      author_name:      r.reviewer_name || null,
+      author_photo_url: r.reviewer_photo || null,
+      rating:           r.rating || null,
+      text:             r.comment || null,
+      published_at:     r.published_at || null,
+      status:           r.status || 'pending',
+      reply_text:       r.reply_text || null,
+      reply_draft:      r.ai_draft || null,
+      synced_at:        new Date().toISOString()
+    })).filter(r => r.google_review_id);
+    if (rows.length === 0) return;
+    fetch(_SUPA_URL + '/rest/v1/reviews?on_conflict=restaurant_id,google_review_id', {
+      method: 'POST',
+      headers: {
+        'apikey':        _SUPA_KEY,
+        'Authorization': 'Bearer ' + _SUPA_KEY,
+        'Content-Type':  'application/json',
+        'Prefer':        'return=minimal,resolution=merge-duplicates'
+      },
+      body: JSON.stringify(rows),
+      keepalive: true
+    }).catch(()=>{});
+  } catch(_) {}
+}
+
+// ============================================================
 //  INIT
 // ============================================================
 // ── Modes démo (?demo=oauth | ?demo=publish | ?demo=oauth,publish) ──
@@ -1206,7 +1249,7 @@ async function fetchGBPReviews() {
       tags: [],
       location_name: currentLocation.split('/').pop()
     }));
-    localStorage.setItem('fv_reviews', JSON.stringify(reviews));
+    _lsSetReviews(reviews);
     localStorage.setItem('fv_last_sync', new Date().toISOString());
     reviews.forEach(r => addLog('review.new', 'review', r.id));
     return reviews;
@@ -1487,7 +1530,7 @@ async function generateAndShow(reviewId) {
     // Save draft
     review.ai_draft = responseText;
     const idx = reviews.findIndex(r => r.id === reviewId);
-    if (idx >= 0) { reviews[idx] = review; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
+    if (idx >= 0) { reviews[idx] = review; _lsSetReviews(reviews); }
     const card       = el(`card-${reviewId}`);
     const actionsDiv = card.querySelector('.review-actions');
     let draftEl      = el(`draft-${reviewId}`);
@@ -1520,7 +1563,7 @@ function persistDraftEdit(reviewId, value) {
   const idx = reviews.findIndex(r => r.id === reviewId);
   if (idx >= 0) {
     reviews[idx].ai_draft = value;
-    localStorage.setItem('fv_reviews', JSON.stringify(reviews));
+    _lsSetReviews(reviews);
   }
 }
 async function publishDraft(reviewId) {
@@ -1647,7 +1690,7 @@ function markAsReplied(reviewId, text) {
   if (idx >= 0) {
     reviews[idx].status = 'replied';
     reviews[idx].reply_text = text;
-    localStorage.setItem('fv_reviews', JSON.stringify(reviews));
+    _lsSetReviews(reviews);
   }
   const card = el(`card-${reviewId}`);
   if (card) {
@@ -1663,7 +1706,7 @@ function ignoreReview(reviewId) {
   if (!confirm('Ignorer cet avis ?')) return;
   const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
   const idx = reviews.findIndex(r => r.id === reviewId);
-  if (idx >= 0) { reviews[idx].status = 'ignored'; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
+  if (idx >= 0) { reviews[idx].status = 'ignored'; _lsSetReviews(reviews); }
   el(`card-${reviewId}`)?.remove();
   addLog('review.ignored', 'review', reviewId);
   toast('Avis ignoré.', 'info');
@@ -1792,14 +1835,14 @@ async function applyAutoReplyRules(pendingReviews) {
           // Sauvegarde en brouillon si publication impossible
           const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
           const idx = reviews.findIndex(r => r.id === review.id);
-          if (idx >= 0) { reviews[idx].ai_draft = text; reviews[idx].status = 'pending'; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
+          if (idx >= 0) { reviews[idx].ai_draft = text; reviews[idx].status = 'pending'; _lsSetReviews(reviews); }
           drafted++;
         }
       } else if (rule === 'validate') {
         // Sauvegarde brouillon pour validation humaine
         const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
         const idx = reviews.findIndex(r => r.id === review.id);
-        if (idx >= 0) { reviews[idx].ai_draft = text; localStorage.setItem('fv_reviews', JSON.stringify(reviews)); }
+        if (idx >= 0) { reviews[idx].ai_draft = text; _lsSetReviews(reviews); }
         addLog('response.draft_saved', 'review', review.id);
         drafted++;
       }
