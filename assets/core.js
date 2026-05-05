@@ -7,6 +7,17 @@
   var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
 
   /* --------------------------------------------------
+     Phase 5f — Kill switch GAS writes.
+     Supabase est désormais source unique pour les events.
+     Pour réactiver le double-write GAS en urgence (rollback) :
+       localStorage.setItem('fv_force_gas', '1') puis recharger.
+  -------------------------------------------------- */
+  var FV_GAS_WRITES = false;
+  try {
+    if (localStorage.getItem('fv_force_gas') === '1') FV_GAS_WRITES = true;
+  } catch (e) {}
+
+  /* --------------------------------------------------
      Supabase — config inlinée dans core.js.
      Volontairement dupliquée avec assets/supabase-config.js : permet
      au double-write events de fonctionner IMMÉDIATEMENT, sans attendre
@@ -44,7 +55,7 @@
         },
         body:      JSON.stringify(payload),
         keepalive: true
-      }).catch(function () {});  // silencieux : GAS reste source de vérité
+      }).catch(function () {});  // silencieux : Phase 5f Supabase = source unique
     } catch (e) {}
   }
 
@@ -199,6 +210,20 @@
   var _iframeCounter = 0;
   function _sendEvent(eventName, restoName, extra) {
     extra = extra || {};
+    var slug = restoName || getRestoSlug();
+
+    // Phase 5f : Supabase d'abord (source unique).
+    // Fonction inlinée + keepalive : survit aux navigations rapides (indexnfc.html).
+    try {
+      _supaTrackEvent(slug, eventName || "", extra);
+    } catch (e) {
+      console.warn("[Fidelavis] _supaTrackEvent error", e);
+    }
+
+    // Phase 5f : GAS write désactivé par défaut (Supabase = source unique).
+    // Réactiver via localStorage.setItem('fv_force_gas','1') si besoin rollback.
+    if (!FV_GAS_WRITES) return;
+
     try {
       // Chaque appel cree son propre iframe pour eviter
       // qu'un second form.submit() annule le precedent.
@@ -221,7 +246,7 @@
       input.type  = "hidden";
       input.name  = "data";
       input.value = JSON.stringify({
-        resto:     restoName || getRestoSlug(),
+        resto:     slug,
         event:     eventName || "",
         jour:      new Date().toISOString().slice(0, 10),
         mois:      new Date().getMonth() + 1,
@@ -245,13 +270,8 @@
         try { iframe.remove(); } catch (e) {}
       }, 3000);
 
-      // Phase 3 : double-write Supabase via fonction inlinée (immédiate).
-      // Pas de dépendance à window.fvSupa qui se charge en async ;
-      // le fetch keepalive survit aux navigations rapides (indexnfc.html).
-      _supaTrackEvent(restoName || getRestoSlug(), eventName || "", extra || {});
-
     } catch (e) {
-      console.warn("[Fidelavis] _sendEvent error", e);
+      console.warn("[Fidelavis] _sendEvent GAS error", e);
     }
   }
 
