@@ -616,52 +616,25 @@
       <a href="#notifications" class="kpi-sec-btn admin-only" onclick="switchTab('notifications');return false;">👥 Voir les contacts</a>
     </div>
 
-    <!-- Validation Retour Client -->
-    <div class="validation-card">
-      <div class="validation-header">
-        <span class="validation-title">🛡️ VALIDATION RETOUR CLIENT</span>
-        <span class="validation-secure">Sécurisé 🔒</span>
+    <!-- Montants à compléter -->
+    <div class="card" id="montantsCompleterCard" style="border-left:4px solid var(--orange);display:none;">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <span><span class="card-title-icon">📊</span> Montants à compléter</span>
+        <span id="montantsCompleterCount" style="font-size:12px;font-weight:700;background:#fee2e2;color:#dc2626;padding:3px 10px;border-radius:999px;">0</span>
       </div>
-      <div class="validation-desc">Saisissez le code sécurisé minute pour valider l'utilisation du coupon.</div>
-      <div class="validation-grid">
-        <!-- Code actuel -->
-        <div>
-          <div class="val-block-label">Code actuel</div>
-          <div class="pin-boxes" id="pinBoxesDash">
-            <span class="pin-box">-</span>
-            <span class="pin-box">-</span>
-            <span class="pin-box">-</span>
-            <span class="pin-box">-</span>
-          </div>
-          <div class="val-timer">⏱ Valide encore <strong id="pinTimerVal">--:--</strong></div>
-          <a class="val-refresh-link" onclick="updatePin();return false;">↻ Actualiser</a>
-        </div>
-        <!-- Saisie -->
-        <div>
-          <div class="val-block-label">Entrez le code</div>
-          <div class="pin-input-row" id="pinInputRow">
-            <input class="pin-input" maxlength="1" inputmode="numeric" pattern="[0-9]" data-idx="0" />
-            <input class="pin-input" maxlength="1" inputmode="numeric" pattern="[0-9]" data-idx="1" />
-            <input class="pin-input" maxlength="1" inputmode="numeric" pattern="[0-9]" data-idx="2" />
-            <input class="pin-input" maxlength="1" inputmode="numeric" pattern="[0-9]" data-idx="3" />
-          </div>
-          <button class="btn-validate" id="btnValidateCoupon" onclick="validateCouponPin()">✓ Valider coupon</button>
-        </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:12px;" id="montantsCompleterDesc">
+        Saisissez le montant pour les visites validées sans tranche renseignée par le client.
       </div>
-      <div class="validation-feedback" id="validationFeedback"></div>
-      <div class="validation-footer">🔒 Le code change toutes les minutes</div>
 
-      <!-- Montant inline -->
-      <div class="amount-row-block" id="amountRowBlock" style="display:none;">
-        <div class="amount-row-label">Montant de l'addition ? <span class="est">(estimation)</span></div>
-        <div class="amount-row-h">
-          <button class="amount-btn-h" onclick="saisirMontantDash('0–20€', 10, this)">0–20 €</button>
-          <button class="amount-btn-h" onclick="saisirMontantDash('20–40€', 30, this)">20–40 €</button>
-          <button class="amount-btn-h" onclick="saisirMontantDash('40–60€', 50, this)">40–60 €</button>
-          <button class="amount-btn-h" onclick="saisirMontantDash('60€+', 75, this)">60 €+</button>
-          <button class="amount-btn-h later" onclick="saisirMontantDash(null, null, this)">Plus tard</button>
-        </div>
+      <!-- Liste visites en attente -->
+      <ul class="actions-list" id="montantsList"></ul>
+
+      <!-- Quick fill -->
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <button class="btn-validate" style="width:auto;padding:9px 14px;background:var(--bg);color:var(--ink);box-shadow:none;border:1px solid var(--line);font-size:12.5px;" onclick="remplirTous('20–40€', 30)">⚡ Remplir tous en 20–40 €</button>
+        <span style="font-size:11.5px;color:var(--muted);">Estimation rapide pour le rush</span>
       </div>
+      <div class="validation-feedback" id="montantsFeedback"></div>
     </div>
 
     <!-- Actions du jour -->
@@ -791,7 +764,7 @@
             <button class="amount-btn" onclick="saisirMontant('0–20€', 10, this)">0–20€</button>
             <button class="amount-btn" onclick="saisirMontant('20–40€', 30, this)">20–40€</button>
             <button class="amount-btn" onclick="saisirMontant('40–60€', 50, this)">40–60€</button>
-            <button class="amount-btn" onclick="saisirMontant('60€+', 75, this)">60€+</button>
+            <button class="amount-btn" onclick="saisirMontant('60€+', 70, this)">60€+</button>
             <button class="amount-btn later" onclick="saisirMontant(null, null, this)">Plus tard</button>
           </div>
           <div id="montantFeedback" style="display:none;margin-top:8px;padding:9px 14px;border-radius:8px;background:var(--green-bg);color:var(--green);font-size:13px;font-weight:700;text-align:center;"></div>
@@ -1403,6 +1376,10 @@ async function loadDashboard() {
       const installs = parseInt(s.install ?? s.install_confirmed) || 0;
       document.getElementById('kpiInstalls').textContent = installs || '0';
 
+      // Montants à compléter (staff)
+      window._nbAcompleter = getNbAcompleter(clientsRevenus);
+      renderMontantsCompleter(clientsRevenus);
+
       // Actions du jour dynamique
       renderActionsList(clientsRevenus);
 
@@ -1475,19 +1452,28 @@ function getNbSaisiesMois(data) {
   return data.filter(e => entryYM(e.ts) === ym).length;
 }
 
-function saveRevEntry(tranche, valeur) {
+function saveRevEntry(tranche, valeur, source) {
   const data = getRevData();
-  data.push({ ts: Date.now(), tranche, valeur });
+  data.push({ ts: Date.now(), tranche, valeur, source: source || 'staff' });
   localStorage.setItem(`fv_rev_${SITE}`, JSON.stringify(data));
 }
 
+// Conversion tranche → valeur estimée (alignée brief produit)
+const TRANCHES = [
+  { label: '0–20€',  value: 10 },
+  { label: '20–40€', value: 30 },
+  { label: '40–60€', value: 50 },
+  { label: '60€+',   value: 70 }
+];
+
 function saisirMontant(tranche, valeur, btn) {
+  // Picker dans onglet Coupon (legacy mais utile en mode admin)
   const feedback = document.getElementById('montantFeedback');
   if (!tranche) {
     if (feedback) { feedback.textContent = 'Montant non saisi — noté.'; feedback.style.display = ''; }
     return;
   }
-  saveRevEntry(tranche, valeur);
+  saveRevEntry(tranche, valeur, 'staff');
   document.querySelectorAll('#coupon .amount-btn').forEach(b => b.classList.remove('sel'));
   if (btn) btn.classList.add('sel');
   if (feedback) {
@@ -1498,44 +1484,110 @@ function saisirMontant(tranche, valeur, btn) {
       document.querySelectorAll('#coupon .amount-btn').forEach(b => b.classList.remove('sel'));
     }, 2500);
   }
-  kpisLoaded = false; // force refresh KPIs
+  kpisLoaded = false;
 }
 
-function saisirMontantDash(tranche, valeur, btn) {
-  // "Plus tard" = dismisser sans enregistrer
-  if (!tranche) {
-    const fb = document.getElementById('validationFeedback');
-    if (fb) {
-      fb.textContent = 'Montant noté pour plus tard.';
-      fb.className = 'validation-feedback success';
-      setTimeout(() => { fb.style.display = 'none'; }, 1800);
-    }
-    const arb = document.getElementById('amountRowBlock');
-    if (arb) setTimeout(() => { arb.style.display = 'none'; }, 1500);
-    return;
-  }
-
-  saveRevEntry(tranche, valeur);
-
-  if (btn) {
-    document.querySelectorAll('.amount-btn-h').forEach(b => b.classList.remove('sel'));
-    btn.classList.add('sel');
-  }
-  const fb = document.getElementById('validationFeedback');
-  if (fb) {
-    fb.textContent = `✓ ${tranche} enregistré (~${valeur}€) — CA mis à jour`;
-    fb.className = 'validation-feedback success';
-  }
-  setTimeout(() => {
-    if (fb) fb.style.display = 'none';
-    document.querySelectorAll('.amount-btn-h').forEach(b => b.classList.remove('sel'));
-    const arb = document.getElementById('amountRowBlock');
-    if (arb) arb.style.display = 'none';
-  }, 1800);
-
+// ── Compatibilité : ancien onClick → redirige vers la nouvelle UI ──
+function saisirMontantDash(tranche, valeur) {
+  if (tranche) saveRevEntry(tranche, valeur, 'staff');
   kpisLoaded = false;
   loadDashboard();
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  MONTANTS À COMPLÉTER (saisie staff, post-rush)
+// ═══════════════════════════════════════════════════════════════
+
+// Combien de visites validées sans montant saisi (côté staff/auto) ?
+function getNbAcompleter(clientsRevenus) {
+  const data       = getRevData();
+  const nbSaisies  = getNbSaisiesMois(data);
+  return Math.max(0, (clientsRevenus || 0) - nbSaisies);
+}
+
+function renderMontantsCompleter(clientsRevenus) {
+  const card  = document.getElementById('montantsCompleterCard');
+  const list  = document.getElementById('montantsList');
+  const count = document.getElementById('montantsCompleterCount');
+  const desc  = document.getElementById('montantsCompleterDesc');
+  if (!card || !list) return;
+
+  const nb = getNbAcompleter(clientsRevenus);
+  if (nb === 0) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = '';
+  count.textContent = nb;
+  desc.textContent = nb === 1
+    ? `1 visite ce mois sans montant. Aidez-nous à affiner votre CA.`
+    : `${nb} visites ce mois sans montant. Aidez-nous à affiner votre CA.`;
+
+  // Liste les N premières visites en attente (max 5 affichées)
+  const display = Math.min(nb, 5);
+  list.innerHTML = '';
+  for (let i = 0; i < display; i++) {
+    const item = document.createElement('li');
+    item.className = 'action-item';
+    item.style.cursor = 'default';
+    item.innerHTML = `
+      <span class="action-icon">🍽️</span>
+      <span class="action-label">Visite #${i + 1}</span>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;">
+        ${TRANCHES.map(t => `<button class="amount-btn-h" style="font-size:11px;padding:5px 8px;min-width:auto;flex:0 0 auto;" data-tranche="${t.label}" data-valeur="${t.value}">${t.label.replace('€','')} €</button>`).join('')}
+      </div>
+    `;
+    list.appendChild(item);
+    // Bind clicks
+    item.querySelectorAll('.amount-btn-h').forEach(btn => {
+      btn.addEventListener('click', () => {
+        saveRevEntry(btn.dataset.tranche, parseInt(btn.dataset.valeur), 'staff');
+        const fb = document.getElementById('montantsFeedback');
+        if (fb) {
+          fb.textContent = `✓ ${btn.dataset.tranche} enregistré`;
+          fb.className = 'validation-feedback success';
+          setTimeout(() => { fb.style.display = 'none'; }, 1500);
+        }
+        kpisLoaded = false;
+        loadDashboard();
+      });
+    });
+  }
+
+  if (nb > display) {
+    const more = document.createElement('li');
+    more.className = 'action-item';
+    more.style.cssText = 'cursor:default;color:var(--muted);font-size:12px;padding:8px 4px;';
+    more.innerHTML = `<span style="margin-left:32px;">+ ${nb - display} autre${nb - display > 1 ? 's' : ''} visite${nb - display > 1 ? 's' : ''} en attente — utilisez "Remplir tous" pour aller plus vite</span>`;
+    list.appendChild(more);
+  }
+}
+
+// ── Bouton "Remplir tous en 20–40 €" ──
+function remplirTous(tranche, valeur) {
+  // Détermine N depuis les KPIs courants (clientsRevenus stocké en window)
+  const nb = window._nbAcompleter || 0;
+  if (nb === 0) return;
+  if (!confirm(`Enregistrer ${nb} visite${nb > 1 ? 's' : ''} en "${tranche}" (${valeur}€ chacune) ?`)) return;
+
+  for (let i = 0; i < nb; i++) saveRevEntry(tranche, valeur, 'staff');
+  const fb = document.getElementById('montantsFeedback');
+  if (fb) {
+    fb.textContent = `✓ ${nb} montant${nb > 1 ? 's' : ''} enregistré${nb > 1 ? 's' : ''} (${nb * valeur}€ ajoutés au CA)`;
+    fb.className = 'validation-feedback success';
+    setTimeout(() => { fb.style.display = 'none'; }, 2500);
+  }
+  kpisLoaded = false;
+  loadDashboard();
+}
+
+// ── Estimation auto après 24h ──
+// Si une visite n'a toujours pas de montant 24h après, le CA estimé
+// utilise le panier moyen restaurant (PANIER_MOYEN_DEFAULT par défaut).
+// La fonction est déjà appliquée dans loadDashboard via le fallback :
+//   caEstime = caMois > 0 ? caMois : clientsRevenus * PANIER_MOYEN_DEFAULT
+// → L'estimation auto est implicite quand aucun montant n'est saisi.
 
 // ── Génération dynamique de la liste Actions du jour ──
 function renderActionsList(clientsRevenus) {
@@ -1562,9 +1614,7 @@ function renderActionsList(clientsRevenus) {
   });
 
   // 2. Compléter les montants pour visites sans saisie
-  const data = getRevData();
-  const nbSaisies = getNbSaisiesMois(data);
-  const nbVisitesSansMontant = Math.max(0, (clientsRevenus || 0) - nbSaisies);
+  const nbVisitesSansMontant = getNbAcompleter(clientsRevenus);
   if (nbVisitesSansMontant > 0) {
     items.push({
       icon: '📊',
@@ -1572,8 +1622,8 @@ function renderActionsList(clientsRevenus) {
       status: 'todo',
       statusLabel: 'À faire',
       onClick: () => {
-        const arb = document.getElementById('amountRowBlock');
-        if (arb) { arb.style.display = ''; arb.scrollIntoView({behavior:'smooth', block:'center'}); }
+        const card = document.getElementById('montantsCompleterCard');
+        if (card) { card.style.display = ''; card.scrollIntoView({behavior:'smooth', block:'start'}); }
       }
     });
   }
@@ -1739,79 +1789,9 @@ function updatePin() {
   if (tv) tv.textContent = timerVal;
 }
 
-// ── Validation PIN saisi par l'employé ──
-function validateCouponPin() {
-  const inputs = document.querySelectorAll('#pinInputRow .pin-input');
-  const fb     = document.getElementById('validationFeedback');
-  const btn    = document.getElementById('btnValidateCoupon');
-  const saisi  = Array.from(inputs).map(i => i.value).join('');
-  const expect = genPin();
-
-  if (saisi.length !== 4) {
-    inputs.forEach(i => i.classList.add('error'));
-    fb.textContent = '⚠️ Saisissez les 4 chiffres affichés sur l\'app du client.';
-    fb.className = 'validation-feedback error';
-    return;
-  }
-  if (saisi !== expect) {
-    inputs.forEach(i => i.classList.add('error'));
-    fb.textContent = '✗ Code incorrect. Demandez le code à jour au client.';
-    fb.className = 'validation-feedback error';
-    return;
-  }
-
-  inputs.forEach(i => { i.classList.remove('error'); i.value = ''; });
-  fb.textContent = '✅ Coupon validé — saisissez le montant ci-dessous';
-  fb.className = 'validation-feedback success';
-  btn.disabled = true;
-  setTimeout(() => { btn.disabled = false; }, 1500);
-
-  // Marquer le coupon comme utilisé pour ce mois
-  const now = new Date();
-  const key = `coupon_${SITE}_${now.getFullYear()}_${now.getMonth() + 1}`;
-  localStorage.setItem(key, 'used');
-  localStorage.setItem(`last_validation_${SITE}`, Date.now().toString());
-
-  // Tracking event (compteur côté serveur)
-  try {
-    if (typeof window.fvTrack === 'function') {
-      window.fvTrack('coupon_validate', { site: SITE });
-    } else if (typeof window.trackEvent === 'function') {
-      window.trackEvent('coupon_validate', { site: SITE });
-    }
-  } catch(_) {}
-
-  // Afficher le picker de montant
-  const arb = document.getElementById('amountRowBlock');
-  if (arb) {
-    arb.style.display = '';
-    arb.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  // Forcer reload des KPIs et actions
-  kpisLoaded = false;
-}
-
-// Auto-focus suivant lors de la saisie
-document.addEventListener('DOMContentLoaded', () => {
-  const inputs = document.querySelectorAll('#pinInputRow .pin-input');
-  inputs.forEach((input, idx) => {
-    input.addEventListener('input', e => {
-      const v = e.target.value.replace(/\D/g, '');
-      e.target.value = v;
-      e.target.classList.remove('error');
-      if (v && idx < inputs.length - 1) inputs[idx + 1].focus();
-      if (v && idx === inputs.length - 1) {
-        // Auto-valider si tous remplis
-        const all = Array.from(inputs).every(i => i.value);
-        if (all) validateCouponPin();
-      }
-    });
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Backspace' && !e.target.value && idx > 0) inputs[idx - 1].focus();
-    });
-  });
-});
+// ── Validation PIN désormais 100% côté client (PWA) ──
+// Le dashboard est un outil de suivi uniquement. Voir l'onglet Coupon
+// pour consulter le code en cas de besoin (ex: client sans app).
 
 let couponInitialized = false;
 

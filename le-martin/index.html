@@ -233,6 +233,43 @@
       text-decoration:underline;
       cursor:pointer;
     }
+    /* ── Amount picker post-validation ── */
+    .amountBox{
+      margin-top:14px;
+      padding:14px 12px;
+      border-radius:16px;
+      background:rgba(180,140,74,.08);
+      border:1px solid rgba(180,140,74,.18);
+      text-align:center;
+      animation:fadeIn .4s ease;
+    }
+    .amountTitle{ margin:0 0 4px; font-weight:950; color:#2a2a2a; font-size:14px; }
+    .amountSub{ margin:0 0 10px; font-size:13.5px; color:#3a3a3a; line-height:1.35; font-weight:700; }
+    .amountGrid{
+      display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-bottom:8px;
+    }
+    .amountBtn{
+      padding:13px 8px;
+      border:1.5px solid rgba(180,140,74,.3);
+      border-radius:10px;
+      background:#fff;
+      color:#2a2a2a;
+      font-weight:800;
+      font-size:14px;
+      cursor:pointer;
+      font-family:inherit;
+      transition:all .15s;
+    }
+    .amountBtn:hover, .amountBtn:active { background:rgba(180,140,74,.12); transform:scale(.98); }
+    .amountBtn.sel{ background:#155724; color:#fff; border-color:#155724; transform:none; }
+    .amountSkip{
+      display:inline-block;
+      margin-top:6px;
+      font-size:12.5px;
+      color:#8a8a8a;
+      text-decoration:underline;
+      cursor:pointer;
+    }
     @keyframes fadeIn{
       from{opacity:0; transform:translateY(6px);}
       to{opacity:1; transform:translateY(0);}
@@ -675,25 +712,68 @@ async function soumettrePin() {
     localStorage.setItem(couponKey(), "used");
     // Phase 4 : double-write Supabase (UPSERT coupon + INSERT validation via RPC)
     try { window.fvSupaValidateCoupon && window.fvSupaValidateCoupon(RESTO, { validatedBy: "self_pwa" }); } catch(_) {}
-    res.innerHTML = `<div class="ok-box success">✅ Coupon validé</div>`;
+    res.innerHTML = `
+      <div class="ok-box success">🎉 Coupon validé</div>
+      <div class="amountBox" id="amountBox">
+        <p class="amountTitle">Aidez le restaurant (2 secondes)</p>
+        <p class="amountSub">💰 Quel était le montant de votre addition ?</p>
+        <div class="amountGrid">
+          <button class="amountBtn" type="button" data-bracket="0–20€"  data-value="10">0–20 €</button>
+          <button class="amountBtn" type="button" data-bracket="20–40€" data-value="30">20–40 €</button>
+          <button class="amountBtn" type="button" data-bracket="40–60€" data-value="50">40–60 €</button>
+          <button class="amountBtn" type="button" data-bracket="60€+"   data-value="70">60 €+</button>
+        </div>
+        <span class="amountSkip" id="amountSkip">Passer</span>
+      </div>
+    `;
     document.getElementById("audioOK").play().catch(()=>{});
 
     window.Fidelavis?.track?.("coupon_validate", { src: "coupon_validate" });
 
-    setTimeout(() => {
+    // Affiche le prompt "Donner un avis" après le picker (sélection ou skip)
+    const showReview = () => {
       if (localStorage.getItem(reviewKey())) return;
+      const ab = document.getElementById('amountBox');
+      if (ab) ab.style.opacity = '0.55';
+      setTimeout(() => {
+        if (ab) ab.style.display = 'none';
+        const box = document.createElement("div");
+        box.className = "reviewBox";
+        box.id = "reviewPrompt";
+        box.innerHTML = `
+          <p class="reviewTitle">Votre avis compte</p>
+          <p class="reviewSub">Si vous le souhaitez, vous pouvez partager votre expérience.</p>
+          <button class="btn btnSecondary" type="button" onclick="allerAvis()">Donner mon avis</button>
+          <span class="reviewLink" onclick="fermerAvis()">Plus tard</span>
+        `;
+        res.appendChild(box);
+      }, 600);
+    };
 
-      const box = document.createElement("div");
-      box.className = "reviewBox";
-      box.id = "reviewPrompt";
-      box.innerHTML = `
-        <p class="reviewTitle">Votre avis compte</p>
-        <p class="reviewSub">Si vous le souhaitez, vous pouvez partager votre expérience.</p>
-        <button class="btn btnSecondary" type="button" onclick="allerAvis()">Donner mon avis</button>
-        <span class="reviewLink" onclick="fermerAvis()">Plus tard</span>
-      `;
-      res.appendChild(box);
-    }, 1000);
+    // Bind picker
+    res.querySelectorAll('.amountBtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const bracket = btn.dataset.bracket;
+        const value   = parseInt(btn.dataset.value);
+        // Stockage local par mois (consultable côté staff via export futur)
+        try {
+          const k = `fv_amount_${RESTO}_${new Date().getFullYear()}_${new Date().getMonth()+1}`;
+          const arr = JSON.parse(localStorage.getItem(k) || '[]');
+          arr.push({ ts: Date.now(), bracket, value, source: 'client' });
+          localStorage.setItem(k, JSON.stringify(arr));
+        } catch(_) {}
+        // Tracking côté serveur via events Supabase (event_type=coupon_amount, src=tranche)
+        window.Fidelavis?.track?.("coupon_amount", { src: bracket });
+        // Feedback visuel
+        res.querySelectorAll('.amountBtn').forEach(b => b.classList.remove('sel'));
+        btn.classList.add('sel');
+        showReview();
+      });
+    });
+    document.getElementById('amountSkip')?.addEventListener('click', () => {
+      window.Fidelavis?.track?.("coupon_amount_skip", { src: "skip" });
+      showReview();
+    });
 
   } else {
     res.innerHTML = `<div class="ok-box error">❌ Code incorrect</div>`;
