@@ -1083,9 +1083,10 @@ const ROLE = localStorage.getItem(ROLE_KEY) || 'employe';
 document.getElementById('roleBadge').textContent = ROLE === 'admin' ? '👑 Admin' : '👤 Employé';
 
 if (ROLE !== 'admin') {
-  // Employé : tableau de bord + coupon (stats, avis, notifications masqués)
+  // Employé : accès UNIQUEMENT à la page Coupon (donner le PIN au client)
   document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
   document.querySelectorAll('#linkStats, #linkAvis, #linkBilling').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.tab-btn[data-tab="dashboard"]').forEach(el => el.style.display = 'none');
 }
 
 // Charger config.json : nom + statut abonnement + lien NFC
@@ -1164,6 +1165,7 @@ let pinInterval = null;   // ⚠️ doit être déclaré AVANT initFromHash() (q
 
 function switchTab(tabId) {
   if (!INLINE_TABS.includes(tabId)) return;
+  if (tabId === 'dashboard'     && ROLE !== 'admin') return;
   if (tabId === 'notifications' && ROLE !== 'admin') return;
   if (tabId === 'parametres'    && ROLE !== 'admin') return;
   if (tabId === 'offre'         && ROLE !== 'admin') return;
@@ -1196,12 +1198,8 @@ document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
 function initFromHash() {
   const hash = location.hash.replace('#', '');
   if (ROLE !== 'admin') {
-    // Employé : tableau de bord par défaut, coupon accessible
-    if (['dashboard', 'coupon'].includes(hash)) {
-      switchTab(hash);
-    } else {
-      switchTab('dashboard');
-    }
+    // Employé : accès UNIQUEMENT à la page Coupon (donner le PIN au client)
+    switchTab('coupon');
     return;
   }
   if (INLINE_TABS.includes(hash)) {
