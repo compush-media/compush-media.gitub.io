@@ -32,6 +32,29 @@ var BATCH_SIZE = 200;
 // Les events après cette date sont déjà dans Supabase via Phase 3.
 var CUTOFF = new Date("2026-05-03T00:00:00Z");
 
+// Restaurants valides (existent dans Supabase). Les autres (resto1, resto2, demos)
+// sont skippés pour éviter les events orphelins.
+var VALID_SLUGS = {
+  "le-martin": true,
+  "les-jardins-de-voltaire": true,
+  "restaurant-guy-savoy": true,
+  "claude": true
+};
+
+// ─── Schéma RÉEL de la Sheet (vérifié dans Fidelavis_Stats) ─
+//   A=ts  B=resto  C=event  D=mois  E=annee  F=user
+//   G=userAgent  H=pageURL  I=pageURL  J=demo  K=deviceId
+var COL_TS         = 0;
+var COL_RESTO      = 1;
+var COL_EVENT      = 2;
+var COL_MOIS       = 3;
+var COL_ANNEE      = 4;
+var COL_USER       = 5;
+var COL_USER_AGENT = 6;
+var COL_PAGE_URL   = 7;
+var COL_DEMO       = 9;
+var COL_DEVICE_ID  = 10;
+
 // Mapping event_type (même logique que fidelavis-stats.gs)
 var EVENT_KEYS = {
   scan:              "scan",
@@ -68,19 +91,20 @@ function backfillEventsToSupabase() {
   var skipped  = 0;
   var invalids = 0;
 
+  var skippedCutoff = 0;
+  var skippedResto  = 0;
+
   for (var i = 1; i < data.length; i++) {
-    var row   = data[i];
-    var ts    = row[0]; // timestamp
-    var resto = toSlug(row[1]);
-    var event = (row[2] || "").toString().trim().toLowerCase();
-    var jour  = (row[3] || "").toString().slice(0, 10);
-    var mois  = parseInt(row[4]) || null;
-    var annee = parseInt(row[5]) || null;
-    var user  = (row[6] || "").toString().trim();
-    var devId = (row[7] || "").toString().trim() || null;
-    var sessId= (row[8] || "").toString().trim() || null;
-    var demo  = row[9];
-    var src   = (row[10] || "").toString().trim() || null;
+    var row    = data[i];
+    var ts     = row[COL_TS];
+    var resto  = toSlug(row[COL_RESTO]);
+    var event  = (row[COL_EVENT] || "").toString().trim().toLowerCase();
+    var mois   = parseInt(row[COL_MOIS]) || null;
+    var annee  = parseInt(row[COL_ANNEE]) || null;
+    var ua     = (row[COL_USER_AGENT] || "").toString().trim() || null;
+    var page   = (row[COL_PAGE_URL]   || "").toString().trim() || null;
+    var demo   = row[COL_DEMO];
+    var devId  = (row[COL_DEVICE_ID]  || "").toString().trim() || null;
 
     // Skip demo
     if (demo === true || demo === "true" || demo === "1") {
@@ -94,12 +118,20 @@ function backfillEventsToSupabase() {
       continue;
     }
 
-    // Normaliser timestamp d'abord (nécessaire pour le filtre cutoff)
+    // Skip resto invalide (resto1, resto2, autres tests)
+    if (!VALID_SLUGS[resto]) {
+      skippedResto++;
+      continue;
+    }
+
+    // Normaliser timestamp
     var createdAt;
     var rowDate;
     try {
       rowDate = new Date(ts);
       if (isNaN(rowDate.getTime())) throw new Error("invalid");
+      // Offset par index de ligne pour garantir l'unicité même sans heure
+      rowDate.setMilliseconds(rowDate.getMilliseconds() + i);
       createdAt = rowDate.toISOString();
     } catch (_) {
       rowDate = new Date();
@@ -108,43 +140,42 @@ function backfillEventsToSupabase() {
 
     // Skip events postérieurs au cutoff (déjà couverts par le double-write Supabase)
     if (rowDate >= CUTOFF) {
-      skipped++;
+      skippedCutoff++;
       continue;
     }
 
     // Normaliser event
     var eventType = EVENT_KEYS[event] || event;
 
-    // Normaliser jour
-    if (!jour || jour.length < 10) {
-      try { jour = new Date(ts).toISOString().slice(0, 10); } catch (_) { jour = null; }
-    }
+    // jour depuis ts
+    var jour = createdAt.slice(0, 10);
 
-    // Normaliser mois/annee depuis jour si absents
+    // mois/annee depuis ts si absents
     if (!mois || !annee) {
-      try {
-        var dt = new Date(ts);
-        if (!mois)  mois  = dt.getMonth() + 1;
-        if (!annee) annee = dt.getFullYear();
-      } catch (_) {}
+      if (!mois)  mois  = rowDate.getUTCMonth() + 1;
+      if (!annee) annee = rowDate.getUTCFullYear();
     }
 
     rows.push({
       restaurant_slug: resto,
       event_type:      eventType,
       device_id:       devId,
-      session_id:      sessId,
-      src:             src,
+      session_id:      null,
+      src:             null,
       demo:            false,
-      jour:            jour || null,
-      mois:            mois || null,
-      annee:           annee || null,
-      created_at:      createdAt
+      jour:            jour,
+      mois:            mois,
+      annee:           annee,
+      created_at:      createdAt,
+      page_url:        page,
+      user_agent:      ua
     });
   }
 
   Logger.log("Lignes valides à importer : " + rows.length);
   Logger.log("Ignorées (demo) : "           + skipped);
+  Logger.log("Ignorées (resto invalide) : " + skippedResto);
+  Logger.log("Ignorées (post-cutoff) : "    + skippedCutoff);
   Logger.log("Ignorées (invalides) : "      + invalids);
 
   if (rows.length === 0) {
