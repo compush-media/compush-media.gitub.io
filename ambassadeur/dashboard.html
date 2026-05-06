@@ -460,9 +460,9 @@
             <span class="form-hint">Laisse vide pour utiliser le formulaire intégré</span>
           </div>
           <div class="form-field full">
-            <label class="form-label">Google Place ID</label>
+            <label class="form-label">Lien Google Maps <span style="font-weight:400;color:var(--muted)">(bouton "Laisser un avis")</span></label>
             <input class="form-input" id="fGoogleReview" placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4" spellcheck="false" />
-            <span class="form-hint">Comment trouver mon Place ID ? Cherchez votre restaurant sur <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" style="color:var(--brand)">ce lien</a>, copiez l'ID affiché (ex: ChIJN1t…)</span>
+            <span class="form-hint">Cherchez le restaurant sur <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" style="color:var(--brand)">ce lien</a>, copiez le Place ID affiché (ex: ChIJN1t…) — c'est le bouton que voient les clients pour noter l'établissement.</span>
           </div>
           <div class="form-field full">
             <label class="form-label">URL logo / icône</label>
@@ -470,14 +470,15 @@
             <span class="form-hint">Image carrée 512×512 recommandée (PNG/JPG)</span>
           </div>
 
-          <!-- ── Paramètres réponses IA ── -->
+          <!-- ── Réponses IA aux avis ── -->
           <div class="form-field full" style="margin-top:8px;padding-top:16px;border-top:1px solid var(--line)">
-            <p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px">Réponses aux avis Google</p>
+            <p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Réponses automatiques aux avis</p>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:4px">Ces informations permettent à l'IA de rédiger les réponses aux avis Google au nom du restaurateur.</p>
           </div>
           <div class="form-field">
             <label class="form-label">Nom du gérant</label>
             <input class="form-input" id="fManagerName" placeholder="George Martin" />
-            <span class="form-hint">Utilisé dans les réponses automatiques aux avis</span>
+            <span class="form-hint">Utilisé dans les réponses : "Cordialement, George"</span>
           </div>
           <div class="form-field">
             <label class="form-label">Signature de réponse</label>
@@ -485,9 +486,9 @@
             <span class="form-hint">Apparaît à la fin de chaque réponse</span>
           </div>
           <div class="form-field full">
-            <label class="form-label">ID de localisation Google <span style="font-weight:400;color:var(--muted)">(optionnel)</span></label>
+            <label class="form-label">ID Google Business Profile <span style="font-weight:400;color:var(--muted)">(optionnel)</span></label>
             <input class="form-input" id="fGoogleLocationId" placeholder="accounts/109.../locations/956..." spellcheck="false" />
-            <span class="form-hint">Format : <code style="background:#eee;padding:1px 5px;border-radius:3px">accounts/XXXXXXXX/locations/XXXXXXXX</code> — laissez vide si vous ne l'avez pas, l'administrateur pourra le configurer plus tard.</span>
+            <span class="form-hint">⚠️ Différent du Place ID ci-dessus. Sert à synchroniser et répondre aux avis via l'API Google. Format : <code style="background:#eee;padding:1px 5px;border-radius:3px">accounts/XXX/locations/XXX</code>. Laissez vide si inconnu — l'administrateur le configurera.</span>
           </div>
         </div>
 
