@@ -621,20 +621,23 @@
     <section class="section" id="section-settings">
       <div class="section-title">⚙️ Paramètres</div>
       <div class="settings-grid">
-        <!-- Profil établissement -->
+        <!-- Profil établissement (lecture seule — géré par l'administrateur) -->
         <div class="settings-card">
           <h3>🏪 Votre établissement</h3>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:6px">
+            <span>🔒</span> Ces informations sont configurées par votre administrateur.
+          </p>
           <div class="form-row">
             <label>Nom du restaurant / commerce</label>
-            <input type="text" id="set_restaurant_name" placeholder="Le Bistrot Marcel" />
+            <input type="text" id="set_restaurant_name" placeholder="—" readonly style="background:var(--bg2);cursor:default;color:var(--muted)" />
           </div>
           <div class="form-row">
             <label>Votre prénom / nom (gérant)</label>
-            <input type="text" id="set_owner_name" placeholder="Marcel Dupont" />
+            <input type="text" id="set_owner_name" placeholder="—" readonly style="background:var(--bg2);cursor:default;color:var(--muted)" />
           </div>
           <div class="form-row">
             <label>Signature de réponse</label>
-            <input type="text" id="set_signature" placeholder="Marcel et toute l'équipe du Bistrot" />
+            <input type="text" id="set_signature" placeholder="—" readonly style="background:var(--bg2);cursor:default;color:var(--muted)" />
           </div>
         </div>
         <!-- Ton et personnalisation IA -->
@@ -1771,10 +1774,10 @@ function getSettings() {
   return JSON.parse(localStorage.getItem('fv_settings') || '{}');
 }
 function saveSettings() {
+  // Les champs restaurant_name, owner_name, signature sont gérés par Supabase (super admin)
+  // On préserve leurs valeurs existantes dans fv_settings
+  const existing = JSON.parse(localStorage.getItem('fv_settings') || '{}');
   const body = {
-    restaurant_name:    el('set_restaurant_name')?.value?.trim(),
-    owner_name:         el('set_owner_name')?.value?.trim(),
-    signature:          el('set_signature')?.value?.trim(),
     response_tone:      el('set_response_tone')?.value,
     return_phrase:      el('set_return_phrase')?.value?.trim(),
     contact_phrase:     el('set_contact_phrase')?.value?.trim(),
@@ -1788,10 +1791,11 @@ function saveSettings() {
     claude_api_key:     el('set_claude_api_key')?.value?.trim()
   };
   Object.keys(body).forEach(k => { if (body[k] == null || body[k] === '') delete body[k]; });
-  localStorage.setItem('fv_settings', JSON.stringify(body));
-  if (body.restaurant_name) {
+  // Fusionne avec les valeurs existantes (préserve restaurant_name, owner_name, signature gérés par Supabase)
+  localStorage.setItem('fv_settings', JSON.stringify({ ...existing, ...body }));
+  if (existing.restaurant_name) {
     const merchant = JSON.parse(localStorage.getItem('fv_merchant') || '{}');
-    merchant.name = body.restaurant_name;
+    merchant.name = existing.restaurant_name;
     localStorage.setItem('fv_merchant', JSON.stringify(merchant));
     el('merchantAvatar').textContent = merchant.name[0].toUpperCase();
     document.title = `Fidelavis – ${merchant.name}`;
