@@ -469,6 +469,26 @@
             <input class="form-input" type="url" id="fLogoUrl" placeholder="https://..." />
             <span class="form-hint">Image carrée 512×512 recommandée (PNG/JPG)</span>
           </div>
+
+          <!-- ── Paramètres réponses IA ── -->
+          <div class="form-field full" style="margin-top:8px;padding-top:16px;border-top:1px solid var(--line)">
+            <p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px">Réponses aux avis Google</p>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Nom du gérant</label>
+            <input class="form-input" id="fManagerName" placeholder="George Martin" />
+            <span class="form-hint">Utilisé dans les réponses automatiques aux avis</span>
+          </div>
+          <div class="form-field">
+            <label class="form-label">Signature de réponse</label>
+            <input class="form-input" id="fSignature" placeholder="Toute l'équipe du Martin" />
+            <span class="form-hint">Apparaît à la fin de chaque réponse</span>
+          </div>
+          <div class="form-field full">
+            <label class="form-label">ID de localisation Google <span style="font-weight:400;color:var(--muted)">(optionnel)</span></label>
+            <input class="form-input" id="fGoogleLocationId" placeholder="accounts/109.../locations/956..." spellcheck="false" />
+            <span class="form-hint">Format : <code style="background:#eee;padding:1px 5px;border-radius:3px">accounts/XXXXXXXX/locations/XXXXXXXX</code> — laissez vide si vous ne l'avez pas, l'administrateur pourra le configurer plus tard.</span>
+          </div>
         </div>
 
         <!-- Progress création -->
@@ -497,6 +517,8 @@
 <script>
 const API_URL  = 'https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec';
 const BASE_URL = 'https://app.cartefidelavis.com';
+const SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+const SUPA_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
 
 let ambassador = null;
 
@@ -727,10 +749,13 @@ async function submitCreation() {
   const email          = document.getElementById('fEmail').value.trim();
   const phone          = document.getElementById('fPhone').value.trim();
   const address        = document.getElementById('fAddress').value.trim();
-  const reservationUrl = document.getElementById('fReservationUrl').value.trim();
-  const placeId        = document.getElementById('fGoogleReview').value.trim();
-  const googleReview   = placeId ? 'https://search.google.com/local/writereview?placeid=' + placeId : '';
-  const logoUrl        = document.getElementById('fLogoUrl').value.trim();
+  const reservationUrl    = document.getElementById('fReservationUrl').value.trim();
+  const placeId           = document.getElementById('fGoogleReview').value.trim();
+  const googleReview      = placeId ? 'https://search.google.com/local/writereview?placeid=' + placeId : '';
+  const logoUrl           = document.getElementById('fLogoUrl').value.trim();
+  const managerName       = document.getElementById('fManagerName').value.trim();
+  const signature         = document.getElementById('fSignature').value.trim();
+  const googleLocationId  = document.getElementById('fGoogleLocationId').value.trim();
 
   let valid = true;
   [['fName2', name], ['fSlug', sl], ['fAdminPass', adminPass]].forEach(([id, val]) => {
@@ -777,6 +802,27 @@ async function submitCreation() {
           <a class="success-link" href="${data.urls.admin}" target="_blank">⚙️ Tableau de bord</a>
         </div>
       </div>`;
+
+    // ── Sauvegarde gérant, signature et Google location dans Supabase ──
+    if (managerName || signature || googleLocationId) {
+      try {
+        await fetch(SUPA_URL + '/rest/v1/rpc/admin_set_google_location', {
+          method: 'POST',
+          headers: {
+            'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            p_slug:        sl,
+            p_location_id: googleLocationId || '',
+            p_name:        name,
+            p_manager:     managerName,
+            p_signature:   signature,
+            p_secret:      'fidelavis-super-admin-2026'
+          })
+        });
+      } catch(_) {}
+    }
 
     if (ambassador) {
       ambassador.restaurants_crees = ambassador.restaurants_crees || [];
