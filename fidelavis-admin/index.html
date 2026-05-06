@@ -757,21 +757,41 @@
           </details>
         </div>
 
-        <!-- ── SUPER ADMIN : Configurer la fiche Google d'un restaurant client ── -->
+        <!-- ── SUPER ADMIN : Configurer un restaurant client ── -->
         <div class="settings-card" style="border:2px solid var(--brand-border);background:var(--brand-bg)">
-          <h3>🔐 Super Admin — Fiche Google d'un restaurant</h3>
+          <h3>🔐 Super Admin — Configurer un restaurant</h3>
           <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5">
-            Configure l'ID de localisation Google d'un restaurant client.<br>
-            La page du restaurant le chargera automatiquement au prochain chargement.
+            Sélectionnez un restaurant pour charger et modifier ses paramètres.<br>
+            Les modifications sont appliquées automatiquement au prochain chargement de la page du restaurant.
           </p>
-          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Slug du restaurant</label>
-          <select id="admin_resto_slug" style="width:100%;margin-bottom:12px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px">
-            <option value="">— Chargement... —</option>
+
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Restaurant</label>
+          <select id="admin_resto_slug" onchange="adminLoadRestoConfig()" style="width:100%;margin-bottom:16px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px">
+            <option value="">— Choisir un restaurant —</option>
           </select>
-          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">ID de localisation Google</label>
-          <input type="text" id="admin_location_id" placeholder="accounts/109.../locations/956..." style="width:100%;margin-bottom:12px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
-          <button class="btn-primary" style="width:100%" onclick="adminSetGoogleLocation()">📡 Enregistrer dans Supabase</button>
-          <div id="admin_location_result" style="margin-top:10px;font-size:13px"></div>
+
+          <div id="admin_resto_fields" style="display:none">
+            <div style="display:grid;gap:10px;margin-bottom:12px">
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Nom du restaurant</label>
+                <input type="text" id="admin_resto_name" placeholder="Le Martin" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Prénom / nom du gérant</label>
+                <input type="text" id="admin_manager_name" placeholder="George Martin" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Signature de réponse</label>
+                <input type="text" id="admin_reply_signature" placeholder="Toute l'équipe du Martin" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">ID de localisation Google</label>
+                <input type="text" id="admin_location_id" placeholder="accounts/109.../locations/956..." style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
+              </div>
+            </div>
+            <button class="btn-primary" style="width:100%" onclick="adminSetGoogleLocation()">📡 Enregistrer dans Supabase</button>
+            <div id="admin_location_result" style="margin-top:10px;font-size:13px"></div>
+          </div>
         </div>
 
       </div>
@@ -2073,12 +2093,36 @@ async function loadRestoSlugs() {
   } catch(e) {}
 }
 
-async function adminSetGoogleLocation() {
-  const slug    = el('admin_resto_slug')?.value?.trim();
-  const locId   = el('admin_location_id')?.value?.trim();
+async function adminLoadRestoConfig() {
+  const slug = el('admin_resto_slug')?.value?.trim();
+  const fields = el('admin_resto_fields');
   const resultEl = el('admin_location_result');
-  if (!slug)  { resultEl.innerHTML = '<span style="color:var(--red)">Choisissez un restaurant.</span>'; return; }
-  if (!locId) { resultEl.innerHTML = '<span style="color:var(--red)">Entrez l\'ID de localisation.</span>'; return; }
+  if (!slug) { if (fields) fields.style.display = 'none'; return; }
+  if (fields) fields.style.display = 'block';
+  if (resultEl) resultEl.innerHTML = '⏳ Chargement...';
+  try {
+    const res = await fetch(
+      _SUPA_URL + '/rest/v1/restaurants?slug=eq.' + encodeURIComponent(slug) +
+        '&select=name,manager_name,reply_signature,google_location_id',
+      { headers: { 'apikey': _SUPA_KEY, 'Authorization': 'Bearer ' + _SUPA_KEY } }
+    );
+    const data = await res.json();
+    const row = data[0] || {};
+    const f = (id, val) => { const e = el(id); if (e) e.value = val || ''; };
+    f('admin_resto_name',       row.name);
+    f('admin_manager_name',     row.manager_name);
+    f('admin_reply_signature',  row.reply_signature);
+    f('admin_location_id',      row.google_location_id);
+    if (resultEl) resultEl.innerHTML = '';
+  } catch(e) {
+    if (resultEl) resultEl.innerHTML = '<span style="color:var(--red)">Erreur chargement : ' + e.message + '</span>';
+  }
+}
+
+async function adminSetGoogleLocation() {
+  const slug      = el('admin_resto_slug')?.value?.trim();
+  const resultEl  = el('admin_location_result');
+  if (!slug) { resultEl.innerHTML = '<span style="color:var(--red)">Choisissez un restaurant.</span>'; return; }
   resultEl.innerHTML = '⏳ Enregistrement...';
   try {
     const res = await fetch(_SUPA_URL + '/rest/v1/rpc/admin_set_google_location', {
@@ -2090,14 +2134,17 @@ async function adminSetGoogleLocation() {
       },
       body: JSON.stringify({
         p_slug:        slug,
-        p_location_id: locId,
+        p_location_id: el('admin_location_id')?.value?.trim()      || '',
+        p_name:        el('admin_resto_name')?.value?.trim()        || '',
+        p_manager:     el('admin_manager_name')?.value?.trim()      || '',
+        p_signature:   el('admin_reply_signature')?.value?.trim()   || '',
         p_secret:      'fidelavis-super-admin-2026'
       })
     });
     const data = await res.json();
     if (data.ok) {
-      resultEl.innerHTML = '<span style="color:var(--green)">✅ Enregistré ! La page de ' + slug + ' chargera l\'ID au prochain accès.</span>';
-      toast('✅ Fiche Google configurée pour ' + slug, 'success');
+      resultEl.innerHTML = '<span style="color:var(--green)">✅ Enregistré ! Les paramètres de ' + slug + ' sont mis à jour.</span>';
+      toast('✅ Restaurant ' + slug + ' configuré', 'success');
     } else {
       resultEl.innerHTML = '<span style="color:var(--red)">❌ ' + (data.error || 'Erreur inconnue') + '</span>';
     }

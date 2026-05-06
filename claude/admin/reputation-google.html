@@ -753,18 +753,26 @@ async function loadSupabaseConfig() {
     const slug = _adminSite;
     if (!slug || slug === 'resto1') return;
     const res = await fetch(
-      _SUPA_URL + '/rest/v1/restaurants?slug=eq.' + encodeURIComponent(slug) + '&select=name,google_location_id',
+      _SUPA_URL + '/rest/v1/restaurants?slug=eq.' + encodeURIComponent(slug) +
+        '&select=name,google_location_id,manager_name,reply_signature',
       { headers: { 'apikey': _SUPA_KEY, 'Authorization': 'Bearer ' + _SUPA_KEY } }
     );
     if (!res.ok) return;
     const data = await res.json();
     const row = Array.isArray(data) ? data[0] : null;
-    if (!row || !row.google_location_id) return;
-    const title = (row.name && !/^\d+$/.test(row.name)) ? row.name : 'Ma fiche Google';
-    const locations = [{ name: row.google_location_id, title: title, address: '' }];
-    localStorage.setItem('fv_locations', JSON.stringify(locations));
-    localStorage.setItem('fv_selected_location', row.google_location_id);
-    currentLocation = row.google_location_id;
+    if (!row) return;
+    if (row.google_location_id) {
+      const title = (row.name && !/^\d+$/.test(row.name)) ? row.name : 'Ma fiche Google';
+      const locations = [{ name: row.google_location_id, title: title, address: '' }];
+      localStorage.setItem('fv_locations', JSON.stringify(locations));
+      localStorage.setItem('fv_selected_location', row.google_location_id);
+      currentLocation = row.google_location_id;
+    }
+    const s = JSON.parse(localStorage.getItem('fv_settings') || '{}');
+    if (row.name)            s.restaurant_name = row.name;
+    if (row.manager_name)    s.owner_name      = row.manager_name;
+    if (row.reply_signature) s.signature       = row.reply_signature;
+    localStorage.setItem('fv_settings', JSON.stringify(s));
   } catch(e) {}
 }
 
