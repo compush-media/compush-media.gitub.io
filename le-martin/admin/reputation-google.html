@@ -744,6 +744,7 @@
                 Format : <code style="background:#eee;padding:2px 6px;border-radius:4px;font-size:11px">accounts/XXXXXXXX/locations/XXXXXXXX</code><br>
                 Trouvez cet ID dans votre <a href="https://business.google.com" target="_blank" style="color:var(--brand)">Google Business Profile</a> → URL de la fiche.
               </div>
+              <input type="text" id="set_manual_location_name" placeholder="Nom de l'établissement (ex: Le Martin)" style="width:100%;margin-bottom:8px" />
               <input type="text" id="set_manual_location_id" placeholder="locations/9563940357552092280  ou  accounts/123/locations/456" style="width:100%;margin-bottom:8px" />
               <button class="btn-primary" style="width:100%" onclick="saveManualLocation()">💾 Utiliser cet ID</button>
             </div>
@@ -1122,7 +1123,9 @@ function saveManualLocation() {
     return;
   }
   const normalized = val.match(/^\d+$/) ? 'locations/' + val : val;
-  const title = normalized.split('/locations/').pop() || normalized;
+  const rawTitle = normalized.split('/locations/').pop() || normalized;
+  const customName = el('set_manual_location_name')?.value?.trim();
+  const title = customName || (rawTitle.match(/^\d+$/) ? 'Ma fiche Google' : rawTitle);
   const locations = [{ name: normalized, title: title, address: '' }];
   localStorage.setItem('fv_locations', JSON.stringify(locations));
   localStorage.setItem('fv_selected_location', normalized);
