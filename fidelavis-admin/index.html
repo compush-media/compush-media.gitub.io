@@ -756,6 +756,24 @@
             </div>
           </details>
         </div>
+
+        <!-- ── SUPER ADMIN : Configurer la fiche Google d'un restaurant client ── -->
+        <div class="settings-card" style="border:2px solid var(--brand-border);background:var(--brand-bg)">
+          <h3>🔐 Super Admin — Fiche Google d'un restaurant</h3>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5">
+            Configure l'ID de localisation Google d'un restaurant client.<br>
+            La page du restaurant le chargera automatiquement au prochain chargement.
+          </p>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Slug du restaurant</label>
+          <select id="admin_resto_slug" style="width:100%;margin-bottom:12px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px">
+            <option value="">— Chargement... —</option>
+          </select>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">ID de localisation Google</label>
+          <input type="text" id="admin_location_id" placeholder="accounts/109.../locations/956..." style="width:100%;margin-bottom:12px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
+          <button class="btn-primary" style="width:100%" onclick="adminSetGoogleLocation()">📡 Enregistrer dans Supabase</button>
+          <div id="admin_location_result" style="margin-top:10px;font-size:13px"></div>
+        </div>
+
       </div>
     </section>
 
@@ -1127,6 +1145,7 @@ function showSection(name, navEl) {
   if (name === 'reviews')     loadReviews();
   if (name === 'logs')        loadLogs();
   if (name === 'restaurants') loadRestoSection();
+  if (name === 'settings')    loadRestoSlugs();
 }
 
 // ============================================================
@@ -2031,6 +2050,60 @@ function openRestoAdmin(slug) {
   localStorage.setItem(`role_${slug}`, 'admin');
   localStorage.setItem(`fv_superadmin_grant_${slug}`, Date.now().toString());
   window.open(`https://app.cartefidelavis.com/${slug}/admin/espace-admin.html`, '_blank');
+}
+
+// ============================================================
+//  SUPABASE
+// ============================================================
+const _SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+const _SUPA_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
+
+async function loadRestoSlugs() {
+  try {
+    const res = await fetch(
+      _SUPA_URL + '/rest/v1/restaurants?select=slug,name&order=name.asc',
+      { headers: { 'apikey': _SUPA_KEY, 'Authorization': 'Bearer ' + _SUPA_KEY } }
+    );
+    if (!res.ok) return;
+    const data = await res.json();
+    const sel = el('admin_resto_slug');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">— Choisir un restaurant —</option>' +
+      data.map(r => `<option value="${r.slug}">${r.name || r.slug} (${r.slug})</option>`).join('');
+  } catch(e) {}
+}
+
+async function adminSetGoogleLocation() {
+  const slug    = el('admin_resto_slug')?.value?.trim();
+  const locId   = el('admin_location_id')?.value?.trim();
+  const resultEl = el('admin_location_result');
+  if (!slug)  { resultEl.innerHTML = '<span style="color:var(--red)">Choisissez un restaurant.</span>'; return; }
+  if (!locId) { resultEl.innerHTML = '<span style="color:var(--red)">Entrez l\'ID de localisation.</span>'; return; }
+  resultEl.innerHTML = '⏳ Enregistrement...';
+  try {
+    const res = await fetch(_SUPA_URL + '/rest/v1/rpc/admin_set_google_location', {
+      method: 'POST',
+      headers: {
+        'apikey':        _SUPA_KEY,
+        'Authorization': 'Bearer ' + _SUPA_KEY,
+        'Content-Type':  'application/json'
+      },
+      body: JSON.stringify({
+        p_slug:        slug,
+        p_location_id: locId,
+        p_secret:      'fidelavis-super-admin-2026'
+      })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      resultEl.innerHTML = '<span style="color:var(--green)">✅ Enregistré ! La page de ' + slug + ' chargera l\'ID au prochain accès.</span>';
+      toast('✅ Fiche Google configurée pour ' + slug, 'success');
+    } else {
+      resultEl.innerHTML = '<span style="color:var(--red)">❌ ' + (data.error || 'Erreur inconnue') + '</span>';
+    }
+  } catch(e) {
+    resultEl.innerHTML = '<span style="color:var(--red)">❌ ' + e.message + '</span>';
+  }
 }
 
 // ============================================================

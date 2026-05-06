@@ -748,10 +748,33 @@ function _lsSetReviews(reviews) {
   } catch(_) {}
 }
 
+async function loadSupabaseConfig() {
+  try {
+    const slug = _adminSite;
+    if (!slug || slug === 'resto1') return;
+    const res = await fetch(
+      _SUPA_URL + '/rest/v1/restaurants?slug=eq.' + encodeURIComponent(slug) + '&select=name,google_location_id',
+      { headers: { 'apikey': _SUPA_KEY, 'Authorization': 'Bearer ' + _SUPA_KEY } }
+    );
+    if (!res.ok) return;
+    const data = await res.json();
+    const row = Array.isArray(data) ? data[0] : null;
+    if (!row || !row.google_location_id) return;
+    const title = (row.name && !/^\d+$/.test(row.name)) ? row.name : 'Ma fiche Google';
+    const locations = [{ name: row.google_location_id, title: title, address: '' }];
+    localStorage.setItem('fv_locations', JSON.stringify(locations));
+    localStorage.setItem('fv_selected_location', row.google_location_id);
+    currentLocation = row.google_location_id;
+  } catch(e) {}
+}
+
 // ============================================================
 //  INIT
 // ============================================================
 async function initApp() {
+  // ── Charger la config Google location depuis Supabase (super admin) ──
+  await loadSupabaseConfig();
+
   // ── Charger le google_client_id partagé (fidelavis-config.json) ──
   try {
     const res = await fetch('/data/fidelavis-config.json');
