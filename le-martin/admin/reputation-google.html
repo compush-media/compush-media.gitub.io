@@ -1315,7 +1315,7 @@ function loadDashboard() {
   const locs   = JSON.parse(localStorage.getItem('fv_locations') || '[]');
   const selLoc = localStorage.getItem('fv_selected_location');
   const loc    = locs.find(l => l.name === selLoc);
-  if (loc) el('locationLabel').textContent = '📍 ' + (loc.title || loc.name.split('/').pop());
+  if (loc) el('locationLabel').textContent = '📍 ' + cleanTitle(loc);
   const active  = reviews.filter(r => r.status !== 'ignored');
   const replied = active.filter(r => r.status === 'replied');
   const pending = active.filter(r => r.status === 'pending');
@@ -1862,7 +1862,7 @@ function refreshLocationsList() {
       return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
         <span style="font-size:20px">${isPrimary ? '📍' : '🏪'}</span>
         <div style="flex:1">
-          <div style="font-weight:700;font-size:14px">${escHtml(l.title || l.name.split('/').pop())}</div>
+          <div style="font-weight:700;font-size:14px">${escHtml(cleanTitle(l))}</div>
           ${l.address ? `<div style="font-size:12px;color:var(--muted)">${escHtml(l.address)}</div>` : ''}
         </div>
         ${!isPrimary
@@ -1923,6 +1923,10 @@ function logout() {
 //  UTILS
 // ============================================================
 function el(id) { return document.getElementById(id); }
+function cleanTitle(loc) {
+  const t = (loc && (loc.title || (loc.name && loc.name.split('/').pop()))) || '';
+  return (t && !/^\d+$/.test(t)) ? t : 'Ma fiche Google';
+}
 // ============================================================
 //  UTILS
 // ============================================================
