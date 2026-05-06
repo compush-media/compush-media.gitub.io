@@ -21,7 +21,7 @@
     "j+1"
   ],
   "offre_jour": {
-    "active": true,
+    "active": false,
     "titre": "Ghhsj",
     "description": "Hshhjjs",
     "image": "https://rtdiaeskmyjjwohirhzj.supabase.co/storage/v1/object/public/offres-images/le-martin/1778023578445-9v6szv.jpg",
