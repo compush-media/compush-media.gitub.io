@@ -279,39 +279,50 @@ async function onTokenReceived() {
     // ✅ Succès — on affiche les fiches
     html += `<p style="font-weight:700;font-size:14px;margin-bottom:12px;color:var(--green)">✅ ${locations.length} fiche${locations.length > 1 ? 's' : ''} trouvée${locations.length > 1 ? 's' : ''}</p>`;
     locations.forEach((loc, i) => {
-      const locId = loc.id; // ex: accounts/109.../locations/956...
+      const locId = loc.id;
       html += `<div class="location-box">
         <div class="location-name">📍 ${esc(loc.name)}</div>
         <div class="location-id" id="locid-${i}">${esc(locId)}</div>
         <button class="btn-copy" onclick="copyId('locid-${i}', this)">📋 Copier l'ID</button>
       </div>`;
     });
-    html += `<p style="font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6">
-      Transmettez cet ID à votre ambassadeur pour qu'il le saisisse dans le formulaire de création.
-    </p>`;
+    html += nextStepBox();
 
   } else {
     // ❌ API indisponible — guide manuel
     html += `<div class="error-box">
-      ⚠️ L'accès automatique à votre fiche n'est pas encore disponible${apiError ? ' (' + esc(apiError) + ')' : ''}.
-      Suivez le guide ci-dessous pour trouver votre ID manuellement.
+      ⚠️ La récupération automatique n'est pas disponible pour le moment.<br>
+      Suivez le guide ci-dessous — c'est rapide !
     </div>`;
 
     html += `<div class="guide">
-      <p style="font-weight:700;margin-bottom:10px">📋 Comment trouver votre ID en 3 étapes :</p>
+      <p style="font-weight:700;margin-bottom:10px">📋 Trouver votre ID en 3 étapes :</p>
       <ol>
-        <li>Allez sur <a href="https://business.google.com" target="_blank">business.google.com</a> avec le même compte Google (<strong>${esc(userEmail)}</strong>)</li>
-        <li>Cliquez sur votre établissement pour ouvrir le tableau de bord</li>
-        <li>Regardez l'URL dans votre navigateur — elle contient votre ID :</li>
+        <li>Ouvrez <a href="https://business.google.com" target="_blank">business.google.com</a>${userEmail ? ' (vous êtes connecté en tant que <strong>' + esc(userEmail) + '</strong>)' : ''}</li>
+        <li>Cliquez sur votre établissement</li>
+        <li>Regardez l'adresse dans votre navigateur — copiez le numéro après <code style="background:#eee;padding:1px 4px;border-radius:3px">/locations/</code> :</li>
       </ol>
-      <span class="step-url">business.google.com/…/locations/<strong>9563940357552092280</strong>/…</span>
-      <p style="margin-top:8px">Copiez le <strong>numéro</strong> qui apparaît après <code style="background:#eee;padding:1px 4px;border-radius:3px">/locations/</code> et transmettez-le à votre ambassadeur.</p>
+      <span class="step-url">business.google.com/…/locations/<strong style="color:var(--brand)">9563940357552092280</strong>/…</span>
     </div>`;
+
+    // Champ pour coller l'ID trouvé
+    html += `<div style="margin-top:16px">
+      <p style="font-size:13px;font-weight:700;margin-bottom:8px">Collez votre ID ici :</p>
+      <div style="display:flex;gap:8px">
+        <input id="manualIdInput" type="text" placeholder="9563940357552092280"
+          style="flex:1;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font-family:monospace;font-size:13px"
+          oninput="onManualInput(this.value)" />
+        <button id="manualCopyBtn" onclick="copyManualId()"
+          style="padding:10px 14px;background:var(--brand);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;opacity:.4" disabled>
+          📋 Copier
+        </button>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-top:6px">Entrez le numéro trouvé dans l'URL — puis copiez-le pour l'envoyer à votre ambassadeur.</p>
+    </div>`;
+
+    html += nextStepBox();
   }
 
-  html += `<p style="font-size:12px;color:var(--muted);margin-top:16px;text-align:center">
-    Vous pouvez fermer cette page après avoir copié votre ID.
-  </p>`;
 
   resultEl.innerHTML = html;
 }
@@ -327,6 +338,31 @@ function copyId(elId, btn) {
 
 function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function nextStepBox() {
+  return `<div style="margin-top:16px;padding:14px;background:#f8f6f2;border-radius:12px;font-size:13px;line-height:1.6">
+    <p style="font-weight:700;margin-bottom:6px">📨 Étape suivante :</p>
+    <p>Transmettez cet ID à votre ambassadeur — par SMS, WhatsApp ou email. Il le saisira dans le formulaire de création de votre espace.</p>
+  </div>`;
+}
+
+function onManualInput(val) {
+  const btn = document.getElementById('manualCopyBtn');
+  if (!btn) return;
+  btn.disabled = !val.trim();
+  btn.style.opacity = val.trim() ? '1' : '.4';
+}
+
+function copyManualId() {
+  const val = document.getElementById('manualIdInput')?.value?.trim();
+  if (!val) return;
+  navigator.clipboard.writeText(val).then(() => {
+    const btn = document.getElementById('manualCopyBtn');
+    if (!btn) return;
+    btn.textContent = '✅ Copié !';
+    setTimeout(() => { btn.textContent = '📋 Copier'; }, 2500);
+  });
 }
 </script>
 </body>
