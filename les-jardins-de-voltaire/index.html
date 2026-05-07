@@ -129,15 +129,14 @@
       position:relative;
       border-radius:20px;
       padding:16px 14px 16px;
+      padding-right:96px;
+      min-height:130px;
       border:1px solid rgba(180,140,74,.22);
       background:linear-gradient(180deg, rgba(180,140,74,.14) 0%, rgba(180,140,74,.05) 100%);
       margin-bottom:18px;
-      display:flex;
-      align-items:center;
-      gap:8px;
       overflow:hidden;
     }
-    .offer__body{ flex:1; min-width:0; z-index:1; }
+    .offer__body{ position:relative; z-index:1; }
     .offerPill{
       display:inline-block;
       padding:5px 11px;
@@ -170,25 +169,30 @@
     .offerLine:last-child{ margin-bottom:0; }
     .offerLine .ic{ font-size:13px; margin-right:6px; vertical-align:-1px; }
     .offerImg{
-      flex-shrink:0;
-      width:110px;
-      height:110px;
+      position:absolute;
+      right:6px;
+      top:50%;
+      transform:translateY(-50%);
+      width:100px;
+      height:100px;
       object-fit:contain;
       filter:drop-shadow(0 8px 18px rgba(0,0,0,.18));
       animation:offerImgIn .45s ease both;
-      margin-right:-4px;
+      pointer-events:none;
     }
     @keyframes offerImgIn{
-      from{opacity:0;transform:scale(.85) rotate(-3deg);}
-      to{opacity:1;transform:scale(1) rotate(0);}
+      from{opacity:0;transform:translateY(-50%) scale(.85) rotate(-3deg);}
+      to{opacity:1;transform:translateY(-50%) scale(1) rotate(0);}
     }
     @media (max-width:380px){
-      .offerImg{ width:92px; height:92px; }
-      .offerTitle{ font-size:18px; }
+      .offer{ padding-right:84px; min-height:120px; }
+      .offerImg{ width:84px; height:84px; }
+      .offerTitle{ font-size:19px; }
       .offerLine{ font-size:11.5px; }
     }
     @media (max-width:340px){
-      .offerImg{ width:78px; height:78px; }
+      .offer{ padding-right:72px; min-height:108px; }
+      .offerImg{ width:72px; height:72px; }
       .offerTitle{ font-size:17px; }
     }
 
@@ -470,8 +474,8 @@
       <div class="offer__body">
         <span class="offerPill">VOTRE AVANTAGE</span>
         <p class="offerTitle"><span class="gift">🎁</span> <span id="txtOffer">Chargement…</span></p>
-        <p class="offerLine"><span class="ic">💎</span> Avantage réservé aux clients Fidelavis</p>
-        <p class="offerLine"><span class="ic">📅</span> Disponible jusqu'au <span id="offerEnd">—</span></p>
+        <p class="offerLine"><span class="ic">💎</span> Réservé clients Fidelavis</p>
+        <p class="offerLine"><span class="ic">📅</span> Jusqu'au <span id="offerEnd">—</span></p>
       </div>
       <img id="offerImg" class="offerImg" src="" alt="" aria-hidden="true">
     </div>
