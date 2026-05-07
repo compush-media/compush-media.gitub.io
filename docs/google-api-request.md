@@ -1,10 +1,10 @@
 # Google Business Profile API — Demande d'accès Fidelavis
 
-**Dossier n° : `7-9678000040261`** *(resoumission — dossier original : `1-4847000040165`)*
+**Dossier n° : `1-4847000040165`**
 **Soumis le : 2026-04-19 / Refusé le : 2026-05-07**
 **Motif du refus : email demandeur non propriétaire d'une fiche vérifiée depuis 60+ jours**
-**Resoumission prévue : 24 mai 2026 — utiliser l'email propriétaire de la fiche GBP vérifiée le 25/03/2026**
-**Statut : à resoumettre le 24/05/2026**
+**Action : répondre à l'email [1-4847000040165] le 24/05/2026 avec l'email propriétaire de la fiche GBP vérifiée le 25/03/2026**
+**Statut : en attente — réponse à envoyer le 24/05/2026**
 
 Lien du formulaire : https://support.google.com/business/contact/api_default
 Contact Google (après soumission) : réponds à l'email reçu, en citant le n° de dossier.
@@ -315,12 +315,11 @@ photos, services). We never call accounts.locations.patch or similar.
 
 ## 3. Règles d'interaction avec le support Google
 
-1. **Email demandeur** : utiliser l'email personnel propriétaire de la fiche GBP (vérifiée le 25/03/2026, soit 60 jours le 24/05/2026)
-2. **Citer le n° de dossier `7-9678000040261`** en première ligne de chaque email
-3. **Répondre dans les 24h** — les dossiers actifs sont traités en priorité
-4. **Soumettre un nouveau formulaire** le 24/05 — le motif de refus était l'email, pas le dossier
-5. **Joindre les screenshots + vidéo** dès la première réponse, même sans demande explicite
-6. **Mentionner dans la demande** : *"The requesting account is the verified owner of [nom fiche], verified on March 25, 2026, now exceeding 60 days as required."*
+1. **Répondre à l'email `[1-4847000040165]`** le 24/05/2026 — pas besoin de nouveau formulaire
+2. **Depuis l'email propriétaire de la fiche GBP** (vérifiée le 25/03/2026 = 60 jours le 24/05)
+3. **Répondre dans les 24h** après le 24/05 — les dossiers actifs sont traités en priorité
+4. **Joindre les screenshots + vidéo** dans la réponse
+5. **Texte à inclure** : *"The requesting account is now the verified owner of [nom fiche], verified on March 25, 2026, which now exceeds the 60-day requirement. Please reopen our application."*
 
 ## 4. Étapes parallèles pendant l'attente
 
