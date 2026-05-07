@@ -3,7 +3,7 @@
 **Dossier n° : `1-4847000040165`**
 **Soumis le : 2026-04-19 / Refusé le : 2026-05-07**
 **Motif du refus : email demandeur non propriétaire d'une fiche vérifiée depuis 60+ jours**
-**Action : répondre à l'email [1-4847000040165] le 24/05/2026 avec l'email propriétaire de la fiche GBP vérifiée le 25/03/2026**
+**Action : répondre à l'email [1-4847000040165] le 24/05/2026 depuis `tirakountech@gmail.com` (propriétaire de la fiche GBP vérifiée le 25/03/2026)**
 **Statut : en attente — réponse à envoyer le 24/05/2026**
 
 Lien du formulaire : https://support.google.com/business/contact/api_default
@@ -316,7 +316,7 @@ photos, services). We never call accounts.locations.patch or similar.
 ## 3. Règles d'interaction avec le support Google
 
 1. **Répondre à l'email `[1-4847000040165]`** le 24/05/2026 — pas besoin de nouveau formulaire
-2. **Depuis l'email propriétaire de la fiche GBP** (vérifiée le 25/03/2026 = 60 jours le 24/05)
+2. **Depuis `tirakountech@gmail.com`** — propriétaire de la fiche GBP vérifiée le 25/03/2026 (= 60 jours le 24/05)
 3. **Répondre dans les 24h** après le 24/05 — les dossiers actifs sont traités en priorité
 4. **Joindre les screenshots + vidéo** dans la réponse
 5. **Texte à inclure** : *"The requesting account is now the verified owner of [nom fiche], verified on March 25, 2026, which now exceeds the 60-day requirement. Please reopen our application."*
