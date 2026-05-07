@@ -1,0 +1,25 @@
+{
+  "name": "Mira Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "plan": "essentiel",
+  "subscriptionStatus": "trialing",
+  "trialEndDate": "2026-05-21",
+  "setupPaid": false,
+  "billingEmail": "danydrumonde@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "phone": "0987570485",
+  "email": "danydrumonde@gmail.com",
+  "address": "15 Rue du Renard, 92250 La Garenne-Colombes",
+  "reservationUrl": "https://bookings.zenchef.com/results?rid=376861&#038;pid=1001",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  }
+}
