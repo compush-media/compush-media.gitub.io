@@ -105,6 +105,17 @@
       color:var(--muted);
       line-height:1.35;
     }
+    .restoLine{
+      margin:6px auto 4px;
+      font-size:17px;
+      font-weight:800;
+      color:#2a2a2a;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .restoLine .restoIcon{ font-size:18px; opacity:.85; }
+    .restoLine .restoName{ color:var(--brand); font-weight:950; }
 
     .card{
       background:var(--card);
@@ -115,46 +126,107 @@
       text-align:left;
     }
 
+    /* ── Nouveau bloc "Votre avantage" ── */
     .offer{
-      border-radius:18px;
-      padding:14px 14px;
+      position:relative;
+      border-radius:20px;
+      padding:18px 16px 18px;
       border:1px solid rgba(180,140,74,.22);
-      background:linear-gradient(180deg, rgba(180,140,74,.12) 0%, rgba(180,140,74,.06) 100%);
-      margin-bottom:14px;
+      background:linear-gradient(180deg, rgba(180,140,74,.14) 0%, rgba(180,140,74,.05) 100%);
+      margin-bottom:18px;
       display:flex;
       align-items:center;
-      gap:14px;
+      gap:10px;
+      overflow:hidden;
     }
-    .offer__body{ flex:1; min-width:0; }
-    .offerTitle{
-      margin:0 0 6px;
+    .offer__body{ flex:1; min-width:0; z-index:1; }
+    .offerPill{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      background:linear-gradient(180deg, var(--brand) 0%, #a97f37 100%);
+      color:#fff;
+      font-size:11px;
       font-weight:950;
-      color:#4a3a18;
-      font-size:13px;
-      letter-spacing:.2px;
+      letter-spacing:.6px;
       text-transform:uppercase;
+      box-shadow:0 4px 10px rgba(180,140,74,.25);
+      margin-bottom:10px;
     }
-    .offerText{
-      margin:0;
-      font-size:16px;
-      font-weight:900;
-      color:#241b0b;
-      line-height:1.2;
+    .offerTitle{
+      margin:0 0 12px;
+      font-weight:950;
+      color:#1a1a1a;
+      font-size:26px;
+      line-height:1.05;
+      letter-spacing:-.5px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
     }
+    .offerTitle .gift{ font-size:24px; }
+    .offerLine{
+      margin:0 0 6px;
+      font-size:13px;
+      color:#3a3a3a;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      line-height:1.3;
+    }
+    .offerLine:last-child{ margin-bottom:0; }
+    .offerLine .ic{ font-size:14px; flex-shrink:0; }
     .offerImg{
       flex-shrink:0;
-      width:62px;
-      height:62px;
-      border-radius:14px;
+      width:130px;
+      height:130px;
       object-fit:contain;
-      background:rgba(180,140,74,.08);
-      box-shadow:0 3px 12px rgba(180,140,74,.18);
-      animation:offerImgIn .35s ease both;
+      filter:drop-shadow(0 8px 18px rgba(0,0,0,.18));
+      animation:offerImgIn .45s ease both;
+      margin-right:-6px;
     }
     @keyframes offerImgIn{
-      from{opacity:0;transform:scale(.8);}
-      to{opacity:1;transform:scale(1);}
+      from{opacity:0;transform:scale(.85) rotate(-3deg);}
+      to{opacity:1;transform:scale(1) rotate(0);}
     }
+    @media (max-width:380px){
+      .offerImg{ width:108px; height:108px; }
+      .offerTitle{ font-size:22px; }
+    }
+
+    .pinNotice{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      margin:8px 0 0;
+      font-size:12.5px;
+      color:#7c6a3f;
+      font-weight:700;
+    }
+    .pinFooter{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      margin:14px 0 4px;
+      font-size:12px;
+      color:#8a8a8a;
+      font-weight:600;
+    }
+    .pinCountdown{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      margin:4px 0 0;
+      font-size:13px;
+      color:#3a3a3a;
+      font-weight:700;
+    }
+    .pinCountdown .timer{ color:var(--brand); font-weight:950; font-variant-numeric:tabular-nums; }
 
     .pinLabel{
       margin:10px 0 10px;
@@ -297,8 +369,8 @@
     /* ── Services block ── */
     .services-block{ margin-top:24px; text-align:left; }
     .services-title{
-      font-size:12px; font-weight:800; color:var(--muted);
-      text-transform:uppercase; letter-spacing:.7px;
+      font-size:12px; font-weight:900; color:#9a9a9a;
+      text-transform:uppercase; letter-spacing:1.2px;
       margin:0 0 14px; text-align:left;
     }
     .services-grid{
@@ -306,17 +378,28 @@
       gap:12px; margin-bottom:12px;
     }
     .svc-btn{
-      display:flex; flex-direction:column; align-items:center;
-      justify-content:center; gap:7px; padding:18px 10px;
+      display:flex; flex-direction:row; align-items:center;
+      gap:12px; padding:14px 14px;
       background:var(--card); border:1px solid var(--line);
       border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,.06);
       cursor:pointer; transition:transform .12s,box-shadow .12s;
-      text-align:center; width:100%;
+      text-align:left; width:100%; font-family:inherit;
+      position:relative;
     }
     .svc-btn:active{ transform:scale(.96); box-shadow:0 4px 12px rgba(0,0,0,.05); }
     .svc-btn.disabled{ opacity:.45; pointer-events:none; }
-    .svc-icon{ font-size:26px; line-height:1; }
-    .svc-label{ font-size:12.5px; font-weight:700; color:var(--ink); line-height:1.2; }
+    .svc-icon{ font-size:26px; line-height:1; flex-shrink:0; }
+    .svc-content{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+    .svc-label{ font-size:13px; font-weight:900; color:var(--ink); line-height:1.15; }
+    .svc-desc{ font-size:11px; font-weight:600; color:var(--muted); line-height:1.25; }
+    .svc-arrow{ font-size:18px; color:#c5c5c5; font-weight:600; flex-shrink:0; }
+    @media (max-width:380px){
+      .svc-btn{ padding:12px 10px; gap:8px; }
+      .svc-icon{ font-size:22px; }
+      .svc-label{ font-size:12px; }
+      .svc-desc{ font-size:10.5px; }
+      .svc-arrow{ display:none; }
+    }
     .svc-btn-full{
       width:100%; padding:18px 20px;
       background:linear-gradient(135deg,var(--brand) 0%,#a97f37 100%);
@@ -378,13 +461,16 @@
 <div class="wrap">
   <div class="badge"><span class="dot"></span>Accès client activé</div>
   <h1>Coupon du mois</h1>
+  <p class="restoLine"><span class="restoIcon">🏛️</span> Chez <span class="restoName" id="restoName">Le restaurant</span></p>
   <p class="sub">Présentez ce coupon en caisse. Entrez le code PIN affiché par le restaurant.</p>
 
   <div class="card">
     <div class="offer">
       <div class="offer__body">
-        <p class="offerTitle">OFFRE EN COURS</p>
-        <p class="offerText" id="txtOffer">Chargement…</p>
+        <span class="offerPill">VOTRE AVANTAGE</span>
+        <p class="offerTitle"><span class="gift">🎁</span> <span id="txtOffer">Chargement…</span></p>
+        <p class="offerLine"><span class="ic">💎</span> Avantage réservé aux clients Fidelavis</p>
+        <p class="offerLine"><span class="ic">📅</span> Disponible jusqu'au <span id="offerEnd">—</span></p>
       </div>
       <img id="offerImg" class="offerImg" src="" alt="" aria-hidden="true">
     </div>
@@ -398,10 +484,13 @@
       <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 4">
     </div>
 
-    <button class="btn btnPrimary" id="btnValidate" type="button" onclick="soumettrePin()">Valider le coupon</button>
+    <p class="pinNotice"><span>🛡️</span> Code personnel et sécurisé</p>
+
+    <button class="btn btnPrimary" id="btnValidate" type="button" onclick="soumettrePin()"><span>🎁</span> Valider le coupon</button>
     <div id="result" class="result"></div>
 
-    <small>Valable une fois par mois – Réinitialisation automatique chaque 1er.</small>
+    <p class="pinFooter"><span>🔒</span> Valable une fois par mois — code personnel et sécurisé</p>
+    <p class="pinCountdown"><span>⏱️</span> Nouveau code dans <span class="timer" id="countdown">—</span></p>
   </div>
 
   <audio id="audioOK">
@@ -412,21 +501,37 @@
   <div class="services-block" id="servicesBlock">
     <p class="services-title">Tout ce dont vous avez besoin</p>
     <div class="services-grid">
-      <button class="svc-btn" id="btnReserver" type="button" onclick="svcReserver()">
-        <span class="svc-icon">📅</span>
-        <span class="svc-label">Réserver une table</span>
-      </button>
-      <button class="svc-btn" id="btnAppeler" type="button" onclick="svcAppeler()">
-        <span class="svc-icon">📞</span>
-        <span class="svc-label">Appeler le restaurant</span>
-      </button>
       <button class="svc-btn" id="btnOffre" type="button" onclick="svcOffre()">
         <span class="svc-icon">🔥</span>
-        <span class="svc-label">Offre du jour</span>
+        <span class="svc-content">
+          <span class="svc-label">Offre du jour</span>
+          <span class="svc-desc">Découvrez l'offre du moment</span>
+        </span>
+        <span class="svc-arrow">›</span>
       </button>
       <button class="svc-btn" id="btnAvis" type="button" onclick="svcAvis()">
         <span class="svc-icon">⭐</span>
-        <span class="svc-label">Laisser un avis Google</span>
+        <span class="svc-content">
+          <span class="svc-label">Laisser un avis Google</span>
+          <span class="svc-desc">Partagez votre expérience</span>
+        </span>
+        <span class="svc-arrow">›</span>
+      </button>
+      <button class="svc-btn" id="btnReserver" type="button" onclick="svcReserver()">
+        <span class="svc-icon">📅</span>
+        <span class="svc-content">
+          <span class="svc-label">Réserver une table</span>
+          <span class="svc-desc">Votre prochaine visite</span>
+        </span>
+        <span class="svc-arrow">›</span>
+      </button>
+      <button class="svc-btn" id="btnAppeler" type="button" onclick="svcAppeler()">
+        <span class="svc-icon">📞</span>
+        <span class="svc-content">
+          <span class="svc-label">Appeler le restaurant</span>
+          <span class="svc-desc">Contactez en un clic</span>
+        </span>
+        <span class="svc-arrow">›</span>
       </button>
     </div>
     <button class="svc-btn-full" type="button" onclick="svcRecommander()">
@@ -588,12 +693,69 @@ function setOfferImage(offerText) {
   if (!img) return;
   const lower = offerText.toLowerCase();
   const match = Object.keys(offerImages).find(k => lower.includes(k));
-  const src = match ? offerImages[match] : "/images/default.svg";
+  const src = match ? offerImages[match] : "/_template/images/offres/surprise.png";
   img.src = src;
   img.alt = offerText;
   img.style.animation = "none";
   void img.offsetWidth;
   img.style.animation = "";
+}
+
+/* Extrait le nom de l'offre depuis "🎁 Mars : Café offert" → "Café offert" */
+function extractOfferName(s) {
+  if (!s) return "";
+  const parts = s.split(" : ");
+  let name = parts.length > 1 ? parts.slice(1).join(" : ") : s;
+  name = name.replace(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]\s*/u, "").trim();
+  return name;
+}
+
+/* Met à jour le bouton avec le nom de l'offre */
+function setBtnLabel(offerName) {
+  const btn = document.getElementById("btnValidate");
+  if (!btn || btn.disabled) return;
+  const lower = (offerName || "").toLowerCase();
+  let label = `Utiliser mon coupon`;
+  if (lower.includes("offert") || lower.includes("offerte")) {
+    label = `Utiliser mon ${offerName.toLowerCase()}`;
+  } else if (offerName) {
+    label = `Utiliser : ${offerName}`;
+  }
+  btn.innerHTML = `<span>🎁</span> ${label}`;
+}
+
+/* Date de fin du mois actif au format "31 mai" */
+function setOfferEndLabel() {
+  const el = document.getElementById("offerEnd");
+  if (!el) return;
+  const y = ACTIVE_YEAR, m = ACTIVE_MONTH;
+  const lastDay = new Date(y, m + 1, 0);
+  el.textContent = lastDay.toLocaleDateString("fr-FR", { day:"numeric", month:"long" });
+}
+
+/* Countdown jusqu'au prochain mois */
+let _countdownIv = null;
+function startCountdown() {
+  const el = document.getElementById("countdown");
+  if (!el) return;
+  function pad(n){ return String(n).padStart(2,"0"); }
+  function tick() {
+    const now = new Date();
+    const next = new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 0);
+    const diff = Math.max(0, next - now);
+    const days = Math.floor(diff / 86400000);
+    const hrs  = Math.floor(diff / 3600000) % 24;
+    const mins = Math.floor(diff / 60000) % 60;
+    const secs = Math.floor(diff / 1000) % 60;
+    if (days > 0) {
+      el.textContent = `${days}j ${pad(hrs)}h ${pad(mins)}m`;
+    } else {
+      el.textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+    }
+  }
+  tick();
+  if (_countdownIv) clearInterval(_countdownIv);
+  _countdownIv = setInterval(tick, 1000);
 }
 
 let ACTIVE_YEAR = new Date().getFullYear();
@@ -604,6 +766,13 @@ let IS_LOCKED = false;
   let _cfg = null;
   try{ _cfg = await window.Fidelavis?.loadConfig?.(); }catch(e){}
   initServices(_cfg);
+
+  // Nom du restaurant
+  const restoNameEl = document.getElementById("restoName");
+  if (restoNameEl && _cfg?.name) restoNameEl.textContent = _cfg.name;
+
+  // Démarre le countdown
+  startCountdown();
 
   const offerEl = document.getElementById("txtOffer");
   const subEl = document.querySelector(".sub");
@@ -619,10 +788,10 @@ let IS_LOCKED = false;
       ACTIVE_YEAR = unlock.getFullYear();
       ACTIVE_MONTH = unlock.getMonth();
 
-      const unlockLabel = unlock.toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" });
-
-      offerEl.textContent = `${offers[ACTIVE_MONTH]} — 🔒 disponible le ${unlockLabel}`;
+      const offerName = extractOfferName(offers[ACTIVE_MONTH]);
+      offerEl.textContent = offerName;
       setOfferImage(offers[ACTIVE_MONTH]);
+      setOfferEndLabel();
 
       if (subEl){
         subEl.innerHTML = `✅ Inscription confirmée.<br><b>Revenez le mois prochain</b> pour profiter de votre coupon.`;
@@ -632,7 +801,7 @@ let IS_LOCKED = false;
         btn.disabled = true;
         btn.style.opacity = "0.55";
         btn.style.cursor = "not-allowed";
-        btn.textContent = "⏳ Disponible le mois prochain";
+        btn.innerHTML = "⏳ Disponible le mois prochain";
       }
 
       window.Fidelavis?.trackOnce?.("coupon_locked_view", `coupon_locked_${RESTO}_${unlock.toISOString().slice(0,10)}`, { src: "coupon_page" });
@@ -645,14 +814,16 @@ let IS_LOCKED = false;
   IS_LOCKED = false;
   ACTIVE_YEAR = new Date().getFullYear();
   ACTIVE_MONTH = new Date().getMonth();
-  offerEl.textContent = offers[ACTIVE_MONTH];
+  const offerName = extractOfferName(offers[ACTIVE_MONTH]);
+  offerEl.textContent = offerName;
   setOfferImage(offers[ACTIVE_MONTH]);
+  setOfferEndLabel();
 
   if (btn){
     btn.disabled = false;
     btn.style.opacity = "1";
     btn.style.cursor = "pointer";
-    btn.textContent = "Valider le coupon";
+    setBtnLabel(offerName);
   }
 
   syncCouponState();
