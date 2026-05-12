@@ -930,6 +930,39 @@
       <div class="notif-msg" id="colorFeedback" style="margin-top:12px;"></div>
     </div>
 
+    <!-- Lien Google Avis -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title"><span class="card-title-icon">⭐</span> Lien Google Avis &amp; QR Code</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.6;">
+        Ce lien alimente le bouton <strong>"Donner mon avis sur Google"</strong> et le QR code de la page avis.
+        Entrez le <strong>Place ID</strong> de votre établissement (ex&nbsp;: <code style="background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px">ChIJN1t_tDeuEmsRUsoyG83frY4</code>).
+      </p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">
+        🔍 Trouvez votre Place ID sur
+        <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600;">ce lien Google →</a>
+      </p>
+
+      <!-- Aperçu du lien actuel -->
+      <div id="googleReviewCurrentWrap" style="display:none;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--muted);word-break:break-all;">
+        <span style="font-weight:700;color:var(--ink);">Lien actuel :</span>
+        <span id="googleReviewCurrentVal"></span>
+      </div>
+
+      <label class="form-label" for="googleReviewInput">Place ID Google</label>
+      <input class="form-input" id="googleReviewInput"
+        placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4"
+        spellcheck="false"
+        style="margin-bottom:10px;font-family:monospace;font-size:13px;" />
+
+      <button class="btn btn-brand" id="saveGoogleReviewBtn" type="button" onclick="saveGoogleReview()">
+        💾 Enregistrer le lien avis
+      </button>
+      <div class="notif-msg" id="googleReviewFeedback" style="margin-top:12px;"></div>
+      <p style="font-size:12px;color:var(--muted);margin:10px 0 0;">
+        ⏱️ Après enregistrement, la page avis est mise à jour sur GitHub Pages en ~1 minute.
+      </p>
+    </div>
+
     <!-- Équipe / Comptes employés -->
     <div class="card" style="margin-top:16px;">
       <div class="card-title"><span class="card-title-icon">👥</span> Équipe — Comptes employés</div>
@@ -2039,12 +2072,64 @@ async function loadParametres() {
     const color = cfg.color || '#b8924f';
     document.getElementById('brandColorInput').value = color;
     document.getElementById('brandColorLabel').textContent = color;
+
+    // Google Review Place ID
+    const gr = cfg.googleReview || '';
+    if (gr) {
+      const pidMatch = gr.match(/placeid=([^&]+)/);
+      const placeId  = pidMatch ? decodeURIComponent(pidMatch[1]) : gr;
+      document.getElementById('googleReviewInput').value = placeId;
+      document.getElementById('googleReviewCurrentVal').textContent = gr;
+      document.getElementById('googleReviewCurrentWrap').style.display = 'block';
+    }
   } catch(e) {}
 
   // Mise à jour label couleur en temps réel
   document.getElementById('brandColorInput').addEventListener('input', function() {
     document.getElementById('brandColorLabel').textContent = this.value;
   });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PARAMÈTRES — Lien Google Avis
+// ═══════════════════════════════════════════════════════════════
+
+async function saveGoogleReview() {
+  const placeId = document.getElementById('googleReviewInput').value.trim();
+  const googleReview = placeId
+    ? 'https://search.google.com/local/writereview?placeid=' + encodeURIComponent(placeId)
+    : '';
+
+  const fb  = document.getElementById('googleReviewFeedback');
+  const btn = document.getElementById('saveGoogleReviewBtn');
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Enregistrement…';
+  fb.className    = 'notif-msg';
+
+  try {
+    const url  = `${API}?action=save_google_review&resto=${encodeURIComponent(SITE)}&googleReview=${encodeURIComponent(googleReview)}`;
+    const res  = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data?.ok) {
+      fb.textContent = '✅ Lien avis mis à jour ! Visible dans ~1 minute après déploiement GitHub Pages.';
+      fb.className   = 'notif-msg success';
+      // Rafraîchir l'aperçu
+      document.getElementById('googleReviewCurrentVal').textContent = googleReview;
+      document.getElementById('googleReviewCurrentWrap').style.display = googleReview ? 'block' : 'none';
+      _paramsLoaded = false;
+    } else {
+      fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue — vérifiez que l\'action save_google_review est déployée dans le GAS.');
+      fb.className   = 'notif-msg error';
+    }
+  } catch(err) {
+    fb.textContent = '⚠️ ' + (err?.message || 'Erreur réseau');
+    fb.className   = 'notif-msg error';
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '💾 Enregistrer le lien avis';
 }
 
 async function saveIcon() {

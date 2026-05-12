@@ -89,6 +89,7 @@ function doGet(e) {
       switch (e.parameter.action) {
         case "push_notification":  result = pushNotification(e.parameter); break;
         case "save_icon":          result = saveRestaurantIcon(e.parameter); break;
+        case "save_google_review": result = saveGoogleReview(e.parameter); break;
         case "get_ambassadeurs":   result = getAmbassadeurs(); break;
         case "get_ambassador":     result = getAmbassadorByToken(e.parameter.token || ""); break;
         case "analyze_website":    result = analyzeWebsite(e.parameter); break;
@@ -505,6 +506,60 @@ function saveRestaurantIcon(params) {
   };
 }
 
+// ─── Action : Mettre à jour le lien Google Avis dans config.json ─
+function saveGoogleReview(params) {
+  var resto         = (params.resto         || "").trim().toLowerCase().replace(/\s+/g, "-");
+  var googleReview  = (params.googleReview  || "").trim();
+
+  if (!resto) return { error: "Paramètre resto manquant." };
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré dans les propriétés du script." };
+
+  var configPath = resto + "/config.json";
+  var configUrl  = "https://api.github.com/repos/" + repo + "/contents/" + configPath + "?ref=main";
+  var headers    = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+
+  var configRes  = UrlFetchApp.fetch(configUrl, { headers: headers, muteHttpExceptions: true });
+  var configCode = configRes.getResponseCode();
+
+  if (configCode !== 200) return { error: "config.json introuvable pour " + resto + " (" + configCode + ")" };
+
+  var configData = JSON.parse(configRes.getContentText());
+  var existing;
+  try {
+    existing = JSON.parse(Utilities.newBlob(Utilities.base64Decode(configData.content.replace(/\n/g, ""))).getDataAsString());
+  } catch(_) { existing = {}; }
+
+  if (googleReview) {
+    existing.googleReview = googleReview;
+  } else {
+    delete existing.googleReview;
+  }
+
+  var newConfigB64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(existing, null, 2)).getBytes());
+  var putRes = UrlFetchApp.fetch("https://api.github.com/repos/" + repo + "/contents/" + configPath, {
+    method: "put",
+    headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload: JSON.stringify({
+      message:  "avis: mise à jour googleReview pour " + resto,
+      content:  newConfigB64,
+      sha:      configData.sha
+    }),
+    muteHttpExceptions: true
+  });
+
+  var putCode = putRes.getResponseCode();
+  return {
+    ok:            putCode === 200 || putCode === 201,
+    resto:         resto,
+    googleReview:  googleReview || "(supprimé)",
+    status:        putCode
+  };
+}
+
 // ─── Action 6 : Lire les ambassadeurs (GitHub) ───────────────
 function getAmbassadeurs() {
   var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
@@ -746,6 +801,21 @@ function createRestaurantForAmbassador(params) {
     });
     ghFetch("/git/refs/heads/main", "patch", { sha: newCommit.sha, force: false });
 
+    // ─── Provisionner restaurant + credentials admin dans Supabase ──
+    try {
+      var supaResult = _provisionRestaurantInSupabase(
+        sl, name, color, color2, phone, email, adminPass, googleReview, amb.code
+      );
+      if (!supaResult || !supaResult.ok) {
+        Logger.log("ATTENTION : Supabase provision échouée pour " + sl + " — " + JSON.stringify(supaResult));
+      } else {
+        Logger.log("Supabase provision OK pour " + sl + " (id: " + supaResult.resto_id + ")");
+      }
+    } catch (supaErr) {
+      Logger.log("ERREUR Supabase provision : " + supaErr.message);
+      // Non-bloquant : le restaurant est créé sur GitHub même si Supabase échoue
+    }
+
     // Mettre à jour l'ambassadeur
     amb.restaurants_crees = restosCrees.concat([{ slug: sl, name: name, date: new Date().toISOString().slice(0, 10) }]);
     saveAmbassadeursData({ ambassadeurs: ambData.ambassadeurs });
@@ -786,6 +856,47 @@ function createRestaurantForAmbassador(params) {
   } catch(err) {
     return { error: "Erreur création restaurant : " + err.message };
   }
+}
+
+// ─── Helper : Provisioner restaurant + admins dans Supabase ──
+//  Appelé par createRestaurantForAmbassador après le commit GitHub.
+//  Utilise la clé anon + RPC SECURITY DEFINER fv_provision_restaurant.
+//  Non-bloquant : une erreur Supabase ne fait pas échouer la création.
+function _provisionRestaurantInSupabase(slug, name, color, color2, phone, email, adminPass, googleReview, ambCode) {
+  var SUPA_URL        = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+  var SUPA_KEY        = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
+  var PROVISION_SECRET = "fv_gas_provision_2025";
+
+  var payload = JSON.stringify({
+    p_slug:          slug,
+    p_name:          name          || slug,
+    p_color:         color         || "#B8924F",
+    p_color2:        color2        || "#9E7A3E",
+    p_phone:         phone         || null,
+    p_email:         email         || null,
+    p_admin_pass:    adminPass,
+    p_emp_pass:      "employe123",
+    p_amb_code:      ambCode       || null,
+    p_google_review: googleReview  || null,
+    p_secret:        PROVISION_SECRET
+  });
+
+  var res = UrlFetchApp.fetch(SUPA_URL + "/rest/v1/rpc/fv_provision_restaurant", {
+    method:             "POST",
+    headers: {
+      "apikey":        SUPA_KEY,
+      "Authorization": "Bearer " + SUPA_KEY,
+      "Content-Type":  "application/json"
+    },
+    payload:            payload,
+    muteHttpExceptions: true
+  });
+
+  var code = res.getResponseCode();
+  var body;
+  try { body = JSON.parse(res.getContentText()); } catch (e) { body = { raw: res.getContentText() }; }
+  Logger.log("[_provisionRestaurantInSupabase] HTTP " + code + " — " + JSON.stringify(body));
+  return body;
 }
 
 // ─── Action 10 : Activer l'abonnement d'un restaurant ────────

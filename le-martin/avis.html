@@ -4,323 +4,446 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Avis Google – Fidelavis</title>
-
-  <!-- ✅ Core commun (resto, cookies, tracking, go()) -->
   <script src="../assets/core.js"></script>
-
   <style>
-    :root{
-      --brand:#b8924f;
-      --bg:#fbfaf8;
-      --card:#ffffff;
-      --ink:#191919;
-      --muted:#6f6f6f;
-      --line:rgba(0,0,0,.08);
-      --shadow:0 18px 50px rgba(0,0,0,.08);
-      --r:22px;
-      --topbar-h: 56px;
-      --green:#1f8a4c;
+    :root {
+      --brand:      #B48C4A;
+      --brand-glow: rgba(180,140,74,.28);
+      --bg:         #fbfaf8;
+      --ink:        #1a1a1a;
+      --muted:      #6f6f6f;
+      --line:       rgba(0,0,0,.07);
+      --topbar-h:   52px;
     }
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Roboto, Arial, sans-serif;
       background:
-        radial-gradient(1100px 520px at 50% -160px, rgba(180,140,74,0.16), transparent 60%),
+        radial-gradient(900px 400px at 50% -80px, rgba(180,140,74,.13), transparent 60%),
         linear-gradient(180deg, #fbfaf8 0%, #f6f2ec 100%);
-      color:var(--ink);
-      text-align:center;
+      color: var(--ink);
+      min-height: 100dvh;
+      text-align: center;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .topbar{
-      position:fixed;
-      top:0; left:0; right:0;
-      height:var(--topbar-h);
-      display:flex;
-      align-items:center;
-      padding:0 14px;
-      z-index:9999;
-      background:linear-gradient(180deg, rgba(251,250,248,.92) 0%, rgba(251,250,248,.70) 100%);
-      backdrop-filter: blur(8px);
-      border-bottom:1px solid rgba(0,0,0,.04);
+    /* ── Topbar ── */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      z-index: 9999;
+      background: rgba(251,250,248,.9);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0,0,0,.04);
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      color: var(--brand);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -.1px;
+      opacity: .8;
+      transition: opacity .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:hover { opacity: 1; }
+
+    /* ── Wrapper ── */
+    .wrap {
+      max-width: 440px;
+      margin: 0 auto;
+      padding: calc(var(--topbar-h) + 28px) 18px 48px;
     }
 
-    .back-btn{
-      display:inline-grid;
-      place-items:center;
-      width:40px;
-      height:40px;
-      border-radius:999px;
-      background:rgba(180, 140, 74, 0.14);
-      text-decoration:none;
-      border:1px solid rgba(180,140,74,.18);
+    /* ── Badge ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.88);
+      border: 1px solid var(--line);
+      box-shadow: 0 3px 12px rgba(0,0,0,.05);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      color: var(--brand);
+      margin-bottom: 20px;
     }
-    .back-btn::before{
-      content:"";
-      width:12px;height:12px;
-      border-left:3px solid var(--brand);
-      border-bottom:3px solid var(--brand);
-      transform: translateX(2px) rotate(45deg);
-      display:block;
-    }
-
-    .wrap{
-      max-width:520px;
-      margin:0 auto;
-      padding: calc(var(--topbar-h) + 22px) 14px 30px;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 14px;
-      border-radius:999px;
-      background:rgba(255,255,255,.75);
-      border:1px solid var(--line);
-      box-shadow:0 10px 22px rgba(0,0,0,.05);
-      font-weight:900;
-      font-size:13px;
-      color:#3b3b3b;
-      margin-bottom:10px;
-    }
-    .dot{
-      width:8px;height:8px;border-radius:999px;
-      background:var(--green);
-      box-shadow:0 0 0 6px rgba(31,138,76,.12);
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--brand);
+      box-shadow: 0 0 0 3px rgba(180,140,74,.18);
     }
 
-    h1{
-      margin:10px 0 6px;
-      font-size:26px;
-      letter-spacing:-0.4px;
-      font-weight:950;
-      color:#1a1a1a;
+    /* ── Headline ── */
+    .headline {
+      font-size: clamp(23px, 6.5vw, 30px);
+      font-weight: 800;
+      letter-spacing: -.4px;
+      line-height: 1.15;
+      color: #191919;
+      margin-bottom: 10px;
     }
-    .sub{
-      margin:0 auto 18px;
-      max-width:440px;
-      font-size:14px;
-      color:var(--muted);
-      line-height:1.4;
-    }
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--r);
-      padding:18px 16px 16px;
-      box-shadow:var(--shadow);
-      text-align:left;
+    .subline {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 22px;
+      max-width: 320px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .step{
-      border-radius:18px;
-      padding:14px 14px;
-      border:1px solid rgba(180,140,74,.22);
-      background:linear-gradient(180deg, rgba(180,140,74,.12) 0%, rgba(180,140,74,.06) 100%);
-      margin-bottom:14px;
+    /* ── Stars ── */
+    .stars {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 16px;
     }
-    .stepTitle{
-      margin:0 0 6px;
-      font-weight:950;
-      color:#4a3a18;
-      font-size:13px;
-      letter-spacing:.2px;
-      text-transform:uppercase;
+    .star {
+      font-size: 26px;
+      display: inline-block;
+      animation: starPop .4s cubic-bezier(.34,1.56,.64,1) both;
     }
-    .stepText{
-      margin:0;
-      font-size:15px;
-      font-weight:900;
-      color:#241b0b;
-      line-height:1.25;
+    .star:nth-child(1) { animation-delay: .00s; }
+    .star:nth-child(2) { animation-delay: .06s; }
+    .star:nth-child(3) { animation-delay: .12s; }
+    .star:nth-child(4) { animation-delay: .18s; }
+    .star:nth-child(5) { animation-delay: .24s; }
+    @keyframes starPop {
+      from { opacity: 0; transform: scale(.5) translateY(4px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
     }
-
-    .btn{
-      width:100%;
-      margin-top:12px;
-      padding:16px 16px;
-      border-radius:16px;
-      border:none;
-      cursor:pointer;
-      font-weight:950;
-      font-size:16px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      text-decoration:none;
+    .stars:hover .star,
+    .stars:active .star {
+      animation: starPulse .3s cubic-bezier(.34,1.56,.64,1) both;
     }
-    .btnPrimary{
-      background:linear-gradient(180deg, var(--brand) 0%, #a97f37 100%);
-      color:#fff;
-      box-shadow:0 16px 30px rgba(180,140,74,.22);
-    }
-    .btnSecondary{
-      background:#fff;
-      color:var(--brand);
-      border:2px solid rgba(180,140,74,.55);
-      margin-top:10px;
+    @keyframes starPulse {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.22); }
+      100% { transform: scale(1.08); }
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:12px;
-      margin-top:14px;
-    }
-    .qrBox{
-      border:1px dashed rgba(0,0,0,.14);
-      border-radius:18px;
-      padding:12px;
-      text-align:center;
-      background:rgba(255,255,255,.70);
-    }
-    .qrTitle{
-      margin:0 0 8px;
-      font-weight:950;
-      font-size:14px;
-      color:#2a2a2a;
-    }
-    .qrImg{
-      width:190px;
-      height:190px;
-      border-radius:14px;
-      display:block;
-      margin:0 auto;
-      background:#fff;
-      border:1px solid rgba(0,0,0,.06);
+    /* ── Timer pill ── */
+    .timer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.85);
+      border: 1px solid rgba(0,0,0,.07);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #5a5a5a;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
     }
 
-    .mini{
-      margin-top:12px;
-      font-size:12px;
-      color:#8a8a8a;
-      line-height:1.35;
-      text-align:center;
+    /* ── Primary CTA ── */
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 19px 22px;
+      border-radius: 18px;
+      background: linear-gradient(155deg, #C49A55 0%, var(--brand) 45%, #9a7232 100%);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -.15px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow:
+        0 18px 42px var(--brand-glow),
+        inset 0 1px 0 rgba(255,255,255,.18);
+      transition: transform .16s cubic-bezier(.34,1.56,.64,1), box-shadow .16s ease;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 50%;
+      background: rgba(255,255,255,.1);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 26px 52px rgba(180,140,74,.38), inset 0 1px 0 rgba(255,255,255,.18);
+    }
+    .btn-primary:active {
+      transform: scale(.97);
+      box-shadow: 0 8px 20px rgba(180,140,74,.22);
+      transition-duration: .08s;
     }
 
-    .ok{
-      margin-top:12px;
-      padding:14px;
-      border-radius:14px;
-      font-weight:950;
-      font-size:15px;
-      text-align:center;
-      border:1px solid rgba(31,138,76,.18);
-      background:rgba(31,138,76,.08);
-      color:#0f5f33;
-      display:none;
-      animation:fadeIn .35s ease;
+    /* ── Support text ── */
+    .support-text {
+      font-size: 13px;
+      color: #888;
+      margin-top: 12px;
     }
-    @keyframes fadeIn{
-      from{opacity:0; transform:translateY(6px);}
-      to{opacity:1; transform:translateY(0);}
+
+    /* ── Social proof ── */
+    .social-proof {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 11px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #444;
+      margin-top: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.04);
     }
+
+    /* ── OK badge ── */
+    .ok-badge {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: rgba(31,138,76,.07);
+      border: 1px solid rgba(31,138,76,.15);
+      color: #0f5f33;
+      font-size: 13.5px;
+      font-weight: 700;
+      margin-top: 16px;
+      animation: fadeUp .3s ease;
+    }
+    .ok-badge.show { display: flex; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Or divider ── */
+    .or-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 28px 0 18px;
+      color: #bbb;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .or-divider::before, .or-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(0,0,0,.08);
+    }
+
+    /* ── QR section ── */
+    .qr-section {
+      background: rgba(255,255,255,.78);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 16px 16px 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.05);
+    }
+    .qr-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #2a2a2a;
+      margin-bottom: 12px;
+    }
+    .qr-img-wrap {
+      display: inline-block;
+      background: #fff;
+      border: 1.5px solid rgba(180,140,74,.22);
+      border-radius: 14px;
+      padding: 7px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.07);
+      transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .qr-img-wrap:hover {
+      transform: scale(1.04);
+      box-shadow: 0 8px 24px rgba(180,140,74,.18);
+    }
+    .qr-img {
+      width: 120px;
+      height: 120px;
+      display: block;
+      border-radius: 8px;
+    }
+
+    /* ── Footer note ── */
+    .footer-note {
+      margin-top: 28px;
+      font-size: 12px;
+      color: #b0b0b0;
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 5px;
+    }
+    .footer-note-icon { flex-shrink: 0; }
   </style>
 </head>
 
 <body>
 
 <header class="topbar">
-  <a id="backLink" class="back-btn" aria-label="Retour"></a>
+  <a id="backLink" class="back-btn" href="#">← Retour</a>
 </header>
 
 <div class="wrap">
-  <div class="badge"><span class="dot"></span>Avis Google</div>
-  <h1 id="messageTitre">Votre avis nous aide</h1>
-  <p class="sub" id="messageTexte">Merci 🙏 Un avis prend 10 secondes et aide énormément le restaurant.</p>
 
-  <div class="card">
-    <div class="step">
-      <p class="stepTitle">1 clic</p>
-      <p class="stepText">Cliquez pour ouvrir Google, puis laissez votre avis ⭐</p>
-    </div>
+  <div class="badge">
+    <span class="badge-dot"></span>
+    Avis Google
+  </div>
 
-    <a id="googleReviewBtn" class="btn btnPrimary" href="#" rel="noopener">
-      ⭐ Laisser un avis sur Google
-    </a>
+  <h1 class="headline">❤️ Merci pour votre visite ✨</h1>
+  <p class="subline">Votre avis aide énormément notre restaurant 🌿</p>
 
-    <div id="ok" class="ok">✅ Merci ! Votre clic a été enregistré.</div>
+  <div class="stars" aria-hidden="true">
+    <span class="star">⭐</span>
+    <span class="star">⭐</span>
+    <span class="star">⭐</span>
+    <span class="star">⭐</span>
+    <span class="star">⭐</span>
+  </div>
 
-    <div class="grid">
-      <div class="qrBox">
-        <p class="qrTitle">Ou scannez le QR Code</p>
-        <img id="qrImg" class="qrImg" src="" alt="QR Code Avis Google">
-      </div>
-    </div>
+  <div class="timer-pill">⏱ Cela prend moins de 30 secondes</div>
 
-    <a id="couponLink" class="btn btnSecondary" href="#">← Retour au coupon</a>
+  <a id="googleReviewBtn" class="btn-primary" href="#" rel="noopener">
+    ⭐ Donner mon avis sur Google
+  </a>
 
-    <div class="mini">
-      Astuce : si Google demande une connexion, c’est normal (sécurité Google).
+  <p class="support-text">Votre soutien compte beaucoup pour nous ❤️</p>
+
+  <div class="social-proof">
+    👥 Déjà plus de 240 clients nous ont soutenus ❤️
+  </div>
+
+  <div id="okBadge" class="ok-badge">
+    ✅ Merci ! On vous ouvre Google…
+  </div>
+
+  <div class="or-divider" id="qrDivider">Ou scannez le QR Code</div>
+
+  <div class="qr-section" id="qrSection">
+    <p class="qr-label">📱 Scannez avec votre téléphone</p>
+    <div class="qr-img-wrap">
+      <img id="qrImg" class="qr-img" src="" alt="QR Code Avis Google">
     </div>
   </div>
+
+  <div class="footer-note">
+    <span class="footer-note-icon">🔒</span>
+    <span>Astuce : si Google demande une connexion, c'est normal (sécurité Google).</span>
+  </div>
+
 </div>
 
 <script>
-(function(){
-  const RESTO = window.Fidelavis?.getRestoSlug?.() || "le-martin";
+(function () {
+  const RESTO = window.Fidelavis?.getRestoSlug?.() || "resto1";
   window.Fidelavis?.rememberLastResto?.();
 
-  // ✅ Retour : on renvoie au coupon (index.html chez toi)
-  document.getElementById("couponLink").addEventListener("click", (e)=>{
+  /* ── Back button ── */
+  const backLink = document.getElementById("backLink");
+  backLink.href = "#";
+  backLink.addEventListener("click", (e) => {
     e.preventDefault();
     if (window.Fidelavis?.go) window.Fidelavis.go("index.html");
     else location.href = "./index.html";
   });
 
-  // ✅ Back topbar : pareil = coupon
-  const back = document.getElementById("backLink");
-  back.href = "#";
-  back.addEventListener("click", (e)=>{
-    e.preventDefault();
-    if (window.Fidelavis?.go) window.Fidelavis.go("index.html");
-    else location.href = "./index.html";
-  });
+  /* ── Build Google review URL from Place ID or full URL ── */
+  function buildReviewUrl(val) {
+    if (!val || !val.trim()) return null;
+    val = val.trim();
+    return val.startsWith("http")
+      ? val
+      : "https://search.google.com/local/writereview?placeid=" + encodeURIComponent(val);
+  }
 
-  /* ===============================
-     DONNÉES RESTAURANTS
-     - Ajoute tes restos ici
-  =============================== */
-  const restoData = {
-    voltaire: {
-      title: "⭐ Votre avis nous aide ⭐",
-      message: "Merci de partager votre expérience en un clic 🌿",
-      link: "https://search.google.com/local/writereview?placeid=ChIJ6-iH2gBl5kcR_8dVpV-kiCE",
-      qr: "https://storage.googleapis.com/msgsndr/jpliF4UmGdEH0PBGE1Um/media/68b43a06ba67b31819ae53c9.png"
+  /* ── Generate QR via qrserver.com API (no dependencies, PNG) ── */
+  function makeQrSrc(reviewUrl) {
+    return "https://api.qrserver.com/v1/create-qr-code/?size=240x240"
+      + "&data="    + encodeURIComponent(reviewUrl)
+      + "&bgcolor=ffffff&color=1a1a1a&margin=2";
+  }
+
+  /* ── Apply review URL to button + QR image ── */
+  function applyReviewUrl(reviewUrl) {
+    const btn    = document.getElementById("googleReviewBtn");
+    const qrImg  = document.getElementById("qrImg");
+    const qrSec  = document.getElementById("qrSection");
+    const qrDiv  = document.getElementById("qrDivider");
+
+    if (reviewUrl) {
+      btn.href   = reviewUrl;
+      qrImg.src  = makeQrSrc(reviewUrl);
+      window.Fidelavis?.trackOnce?.("review_qr_view", "review_qr_view_" + RESTO, {});
+    } else {
+      qrSec.style.display = "none";
+      qrDiv.style.display = "none";
     }
+  }
+
+  /* ── Fallback data pour les restaurants déjà configurés ── */
+  const fallbackData = {
+    voltaire: "https://search.google.com/local/writereview?placeid=ChIJ6-iH2gBl5kcR_8dVpV-kiCE"
   };
-  const data = restoData[RESTO] || restoData.voltaire;
 
-  document.getElementById("messageTitre").innerText = data.title || "⭐ Votre avis nous aide ⭐";
-  document.getElementById("messageTexte").innerText = data.message || "Merci 🙏 Un avis aide énormément le restaurant.";
-  document.getElementById("qrImg").src = data.qr || "";
+  /* ── Chargement dynamique config.json, puis fallback ── */
+  (async function () {
+    try {
+      const cfg = await window.Fidelavis?.loadConfig?.();
+      if (cfg?.googleReview) {
+        const url = buildReviewUrl(cfg.googleReview);
+        if (url) { applyReviewUrl(url); return; }
+      }
+    } catch (e) {}
+    applyReviewUrl(fallbackData[RESTO] || null);
+  })();
 
-  // ✅ Tracking page view (1x/session)
-  window.Fidelavis?.trackOnce?.("review_page_view", `review_page_view_${RESTO}`, {});
-  if (data.qr) window.Fidelavis?.trackOnce?.("review_qr_view", `review_qr_view_${RESTO}`, {});
+  /* ── Tracking page view ── */
+  window.Fidelavis?.trackOnce?.("review_page_view", "review_page_view_" + RESTO, {});
 
+  /* ── CTA click ── */
   const btn = document.getElementById("googleReviewBtn");
-  btn.href = data.link || "https://www.google.com/";
-
   btn.addEventListener("click", (e) => {
     e.preventDefault();
-
     window.Fidelavis?.track?.("review_open", { target: "google" });
-
-    const ok = document.getElementById("ok");
-    ok.style.display = "block";
-
-    // petit délai pour laisser partir le tracking
-    setTimeout(() => { window.location.href = btn.href; }, 150);
+    document.getElementById("okBadge").classList.add("show");
+    setTimeout(() => { window.location.href = btn.href; }, 200);
   });
 
-  // Optionnel: harmonise le brand depuis config.json
-  (async function(){
-    try{ await window.Fidelavis?.loadConfig?.(); }catch(e){}
-  })();
 })();
 </script>
 
