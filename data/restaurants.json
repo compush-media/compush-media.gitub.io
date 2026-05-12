@@ -26,5 +26,13 @@
     "phone": "0987570485",
     "email": "danydrumonde@gmail.com",
     "ambassadorCode": "AMB-JEN-MAR-001"
+  },
+  "maison-lagure": {
+    "name": "Maison Lagure",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "phone": "0816025282",
+    "email": "tirakountech@gmail.com",
+    "ambassadorCode": "AMB-JEN-MAR-001"
   }
 }
