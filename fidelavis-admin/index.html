@@ -2424,6 +2424,7 @@ async function loadRestoSection(preloadedData) {
           <button onclick="openRestoAdmin('${slug}')" style="font-size:12px;font-weight:700;padding:5px 10px;background:#fff8e1;border:1px solid #f0c75e;border-radius:7px;color:#8b6914;cursor:pointer" title="Accès super-admin direct (sans login)">🔓 Espace</button>
           <a href="${BASE}/${slug}/admin/state.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">📊 Stats</a>
           <a href="${BASE}/${slug}/admin/reputation-google.html" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink)">⭐ Réputation</a>
+          <a href="${BASE}/admin/restaurants.html?slug=${slug}" target="_blank" style="font-size:12px;font-weight:700;padding:5px 10px;background:#eff6ff;border:1px solid rgba(37,99,235,.25);border-radius:7px;text-decoration:none;color:#2563eb" title="Modifier la fiche complète">🔧 Modifier</a>
           <button onclick="openDeleteModal('${slug}','${escHtml(r.name || slug)}','${gasVal}')" style="font-size:12px;font-weight:700;padding:5px 10px;background:var(--red-bg);border:1px solid rgba(217,48,37,.25);border-radius:7px;color:var(--red);cursor:pointer">🗑 Supprimer</button>
         </div>
         <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">
