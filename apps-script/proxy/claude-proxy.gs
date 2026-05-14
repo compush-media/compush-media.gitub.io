@@ -65,6 +65,12 @@ function doPost(e) {
       case "update_billing":
         result = updateRestaurantBilling(body);
         break;
+      case "update_resto_full":
+        result = updateRestaurantFull(body);
+        break;
+      case "duplicate_resto":
+        result = duplicateRestaurant(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -978,6 +984,224 @@ function updateRestaurantBilling(params) {
   }
 
   return { ok: true, slug: slug, plan: plan, status: status, nextBillingDate: nextBillingDate };
+}
+
+// ─── Action 12 : Mise à jour complète d'un restaurant ───────
+//
+//  Met à jour /{slug}/config.json en mergeant les champs fournis
+//  avec les données existantes. Permet aussi de mettre à jour
+//  /{slug}/progressier.json (PWA) si fourni.
+//
+//  Paramètres (POST JSON) :
+//    slug         — identifiant du restaurant (obligatoire)
+//    config       — objet partiel à merger dans config.json
+//    progressier  — (optionnel) objet partiel à merger dans progressier.json
+//
+function updateRestaurantFull(params) {
+  var slug = (params.slug || "").trim().toLowerCase();
+  if (!slug) return { error: "slug manquant" };
+  if (!params.config && !params.progressier) {
+    return { error: "Aucune donnée à mettre à jour" };
+  }
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré." };
+
+  var headers = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+  var updated = [];
+
+  try {
+    // 1. config.json
+    if (params.config) {
+      var cfgRes = _updateJsonFile(token, repo, headers, slug + "/config.json", params.config, "edit: maj " + slug + "/config.json");
+      if (cfgRes.error) return { error: "config.json : " + cfgRes.error };
+      updated.push("config.json");
+    }
+
+    // 2. progressier.json (PWA)
+    if (params.progressier) {
+      var progRes = _updateJsonFile(token, repo, headers, slug + "/progressier.json", params.progressier, "edit: maj " + slug + "/progressier.json");
+      if (progRes.error) return { error: "progressier.json : " + progRes.error };
+      updated.push("progressier.json");
+    }
+
+    // 3. Mise à jour data/restaurants.json (registry) si nom/email changé
+    if (params.config && (params.config.name || params.config.email || params.config.phone)) {
+      _updateRegistryEntry(token, repo, headers, slug, params.config);
+    }
+
+    return { ok: true, slug: slug, updated: updated };
+
+  } catch(err) {
+    return { error: err.message };
+  }
+}
+
+/**
+ * _updateJsonFile : merge partiel d'un fichier JSON existant.
+ */
+function _updateJsonFile(token, repo, headers, path, newData, message) {
+  var apiUrl = "https://api.github.com/repos/" + repo + "/contents/" + path;
+  var getRes = UrlFetchApp.fetch(apiUrl + "?ref=main", { headers: headers, muteHttpExceptions: true });
+  var getCode = getRes.getResponseCode();
+
+  var existing = {};
+  var sha = null;
+  if (getCode === 200) {
+    var fd = JSON.parse(getRes.getContentText());
+    sha = fd.sha;
+    try {
+      existing = JSON.parse(Utilities.newBlob(Utilities.base64Decode(fd.content.replace(/\n/g, ""))).getDataAsString());
+    } catch(_) { existing = {}; }
+  } else if (getCode !== 404) {
+    return { error: "GitHub GET " + getCode };
+  }
+
+  // Merge superficiel (les sous-objets sont remplacés)
+  var merged = existing;
+  Object.keys(newData).forEach(function(k) {
+    merged[k] = newData[k];
+  });
+
+  var b64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(merged, null, 2) + "\n").getBytes());
+  var payload = { message: message, content: b64, branch: "main" };
+  if (sha) payload.sha = sha;
+
+  var putRes = UrlFetchApp.fetch(apiUrl, {
+    method: "put",
+    headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  });
+  var putCode = putRes.getResponseCode();
+  if (putCode !== 200 && putCode !== 201) {
+    return { error: "GitHub PUT " + putCode + " : " + putRes.getContentText().slice(0, 200) };
+  }
+  return { ok: true };
+}
+
+/**
+ * _updateRegistryEntry : met à jour data/restaurants.json pour ce slug.
+ */
+function _updateRegistryEntry(token, repo, headers, slug, cfg) {
+  var path   = "data/restaurants.json";
+  var apiUrl = "https://api.github.com/repos/" + repo + "/contents/" + path;
+  var getRes = UrlFetchApp.fetch(apiUrl + "?ref=main", { headers: headers, muteHttpExceptions: true });
+  if (getRes.getResponseCode() !== 200) return;
+
+  var fd  = JSON.parse(getRes.getContentText());
+  var sha = fd.sha;
+  var registry;
+  try {
+    registry = JSON.parse(Utilities.newBlob(Utilities.base64Decode(fd.content.replace(/\n/g, ""))).getDataAsString());
+  } catch(_) { return; }
+
+  registry[slug] = registry[slug] || {};
+  if (cfg.name)   registry[slug].name        = cfg.name;
+  if (cfg.color)  registry[slug].brandColor  = cfg.color;
+  if (cfg.color2) registry[slug].brandColor2 = cfg.color2;
+  if (cfg.phone)  registry[slug].phone       = cfg.phone;
+  if (cfg.email)  registry[slug].email       = cfg.email;
+  if (cfg.city)   registry[slug].city        = cfg.city;
+  if (typeof cfg.actif !== "undefined") registry[slug].actif = cfg.actif;
+
+  var b64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(registry, null, 2) + "\n").getBytes());
+  UrlFetchApp.fetch(apiUrl, {
+    method: "put",
+    headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload: JSON.stringify({ message: "registry: maj " + slug, content: b64, sha: sha, branch: "main" }),
+    muteHttpExceptions: true
+  });
+}
+
+// ─── Action 13 : Duplication d'un restaurant ─────────────────
+//
+//  Duplique /{srcSlug}/ vers /{newSlug}/ avec nouveau nom.
+//
+function duplicateRestaurant(params) {
+  var srcSlug = (params.srcSlug || "").trim().toLowerCase();
+  var newSlug = (params.newSlug || "").trim().toLowerCase().replace(/[^a-z0-9-]/g, "").substring(0, 30);
+  var newName = (params.newName || newSlug).trim();
+  if (!srcSlug || !newSlug) return { error: "srcSlug et newSlug obligatoires" };
+  if (srcSlug === newSlug) return { error: "Les slugs doivent être différents" };
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré." };
+
+  var ghBase = "https://api.github.com/repos/" + repo;
+  var hdrs   = { Authorization: "token " + token, Accept: "application/vnd.github+json", "Content-Type": "application/json" };
+
+  function gh(path, method, body) {
+    var opts = { method: method || "get", headers: hdrs, muteHttpExceptions: true };
+    if (body) opts.payload = JSON.stringify(body);
+    var res = UrlFetchApp.fetch(ghBase + path, opts);
+    if (res.getResponseCode() >= 300) throw new Error("GH " + path + " → " + res.getResponseCode());
+    return JSON.parse(res.getContentText());
+  }
+
+  try {
+    var ref       = gh("/git/ref/heads/main");
+    var commit    = gh("/git/commits/" + ref.object.sha);
+    var treeData  = gh("/git/trees/" + commit.tree.sha + "?recursive=1");
+    var allItems  = treeData.tree;
+
+    // Vérifier que srcSlug existe et newSlug n'existe pas
+    var srcFiles  = allItems.filter(function(f) { return f.type === "blob" && f.path.indexOf(srcSlug + "/") === 0; });
+    if (!srcFiles.length) return { error: "Restaurant source " + srcSlug + " introuvable" };
+    if (allItems.some(function(f) { return f.path.indexOf(newSlug + "/") === 0; })) {
+      return { error: "Le slug " + newSlug + " existe déjà" };
+    }
+
+    var newItems = srcFiles.map(function(f) {
+      return { path: newSlug + "/" + f.path.slice(srcSlug.length + 1), mode: f.mode, type: "blob", sha: f.sha };
+    });
+
+    // Patcher config.json avec le nouveau nom + reset billing
+    var cfgIdx = -1;
+    for (var i = 0; i < srcFiles.length; i++) {
+      if (srcFiles[i].path === srcSlug + "/config.json") { cfgIdx = i; break; }
+    }
+    if (cfgIdx >= 0) {
+      var blob  = gh("/git/blobs/" + srcFiles[cfgIdx].sha);
+      var cfgTxt = Utilities.newBlob(Utilities.base64Decode(blob.content.replace(/\n/g,""))).getDataAsString();
+      var cfgObj = JSON.parse(cfgTxt);
+      cfgObj.name = newName;
+      // Reset des champs liés au précédent abonnement
+      cfgObj.stripeCustomerId     = "";
+      cfgObj.stripeSubscriptionId = "";
+      cfgObj.subscriptionStatus   = "trialing";
+      cfgObj.setupPaid            = false;
+      cfgObj.remindersSent        = [];
+      var d = new Date();
+      d.setDate(d.getDate() + 14);
+      cfgObj.trialEndDate = d.toISOString().slice(0, 10);
+      cfgObj.nextBillingDate = "";
+      cfgObj.invoices = [];
+
+      var newBlob = gh("/git/blobs", "post", { content: JSON.stringify(cfgObj, null, 2) + "\n", encoding: "utf-8" });
+      newItems[cfgIdx] = { path: newSlug + "/config.json", mode: "100644", type: "blob", sha: newBlob.sha };
+    }
+
+    // Créer le commit
+    var newTree   = gh("/git/trees",   "post", { base_tree: commit.tree.sha, tree: newItems });
+    var newCommit = gh("/git/commits", "post", {
+      message: "duplicate: " + srcSlug + " → " + newSlug + " (" + newName + ")",
+      tree: newTree.sha, parents: [ref.object.sha]
+    });
+    gh("/git/refs/heads/main", "patch", { sha: newCommit.sha, force: false });
+
+    // Ajouter au registry
+    var headers = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+    _updateRegistryEntry(token, repo, headers, newSlug, { name: newName });
+
+    return { ok: true, srcSlug: srcSlug, newSlug: newSlug, newName: newName };
+  } catch(err) {
+    return { error: err.message };
+  }
 }
 
 // ─── Action 11 : Rappels automatiques fin d'essai ────────────
