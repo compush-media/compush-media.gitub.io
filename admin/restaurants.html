@@ -519,8 +519,8 @@
         <div class="section-title">Logo et couverture</div>
         <div class="field">
           <label class="field-label">URL du logo</label>
-          <input class="field-input" data-cfg="iconUrl" placeholder="https://..." />
-          <div class="field-hint">Image carrée 512×512 recommandée (PNG)</div>
+          <input class="field-input" data-cfg="logoUrl" placeholder="https://..." />
+          <div class="field-hint">Image carrée 512×512 recommandée (PNG). Compat ascendante : <code>iconUrl</code></div>
         </div>
         <div class="field">
           <label class="field-label">URL image de couverture</label>
@@ -533,31 +533,42 @@
     <!-- LINKS -->
     <div class="tab-panel" data-panel="links">
       <div class="section">
+        <div class="section-title">⭐ Google avis (bouton "Laisser un avis")</div>
+        <div class="field">
+          <label class="field-label">Place ID Google <strong style="color:var(--brand)">ou</strong> URL complète</label>
+          <input class="field-input" data-cfg="googleReview" placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4 ou https://g.page/..." />
+          <div class="field-hint">
+            Cherchez le restaurant sur <a href="https://www.google.com/maps" target="_blank" style="color:var(--brand);font-weight:600">Google Maps</a> et copiez le Place ID (ex&nbsp;: <code>ChIJN1t...</code>).
+            <br>Vous pouvez aussi coller l'URL complète <code>https://g.page/r/...</code>.
+            <br>👉 Outil officiel pour trouver un Place ID&nbsp;: <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" style="color:var(--brand);font-weight:600">Place ID Finder</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
         <div class="section-title">Liens d'action</div>
         <div class="field">
           <label class="field-label">Lien réservation</label>
-          <input class="field-input" data-cfg="link_reservation" placeholder="https://thefork.fr/..." />
-        </div>
-        <div class="field">
-          <label class="field-label">Lien Google avis</label>
-          <input class="field-input" data-cfg="link_google" placeholder="https://g.page/r/..." />
+          <input class="field-input" data-cfg="reservationUrl" placeholder="https://thefork.fr/..." />
+          <div class="field-hint">TheFork, Zenchef, OpenTable… ou votre propre URL</div>
         </div>
         <div class="field">
           <label class="field-label">Lien menu</label>
-          <input class="field-input" data-cfg="link_menu" placeholder="https://..." />
+          <input class="field-input" data-cfg="menuUrl" placeholder="https://..." />
+          <div class="field-hint">URL vers votre carte/menu (PDF, page web)</div>
         </div>
         <div class="field">
           <label class="field-label">Lien WhatsApp</label>
-          <input class="field-input" data-cfg="link_whatsapp" placeholder="https://wa.me/336..." />
+          <input class="field-input" data-cfg="whatsappUrl" placeholder="https://wa.me/336..." />
         </div>
         <div class="field-row">
           <div class="field">
             <label class="field-label">Uber Eats</label>
-            <input class="field-input" data-cfg="link_ubereats" placeholder="https://..." />
+            <input class="field-input" data-cfg="ubereatsUrl" placeholder="https://..." />
           </div>
           <div class="field">
             <label class="field-label">Deliveroo</label>
-            <input class="field-input" data-cfg="link_deliveroo" placeholder="https://..." />
+            <input class="field-input" data-cfg="deliverooUrl" placeholder="https://..." />
           </div>
         </div>
       </div>
@@ -890,10 +901,28 @@ function openPanel(slug) {
   ic.textContent = name.charAt(0).toUpperCase();
   ic.style.background = `linear-gradient(135deg,${cfg.color || '#b6152b'},${shade(cfg.color || '#b6152b', -15)})`;
 
+  // Aliases pour rétrocompatibilité : certains restos ont des anciens noms de champs
+  const CFG_ALIASES = {
+    logoUrl:        ['logoUrl', 'iconUrl'],            // anciens restos : iconUrl
+    googleReview:   ['googleReview', 'link_google', 'reviewUrl'],
+    reservationUrl: ['reservationUrl', 'link_reservation'],
+    menuUrl:        ['menuUrl', 'link_menu'],
+    whatsappUrl:    ['whatsappUrl', 'link_whatsapp'],
+    ubereatsUrl:    ['ubereatsUrl', 'link_ubereats'],
+    deliverooUrl:   ['deliverooUrl', 'link_deliveroo']
+  };
+  function readField(key) {
+    const candidates = CFG_ALIASES[key] || [key];
+    for (const k of candidates) {
+      if (cfg[k] !== undefined && cfg[k] !== '' && cfg[k] !== null) return cfg[k];
+    }
+    return cfg[key];   // dernière chance (peut être undefined/null/'')
+  }
+
   // Remplir tous les champs data-cfg
   document.querySelectorAll('[data-cfg]').forEach(el => {
     const key = el.getAttribute('data-cfg');
-    const val = cfg[key];
+    const val = readField(key);
     if (el.type === 'checkbox')      el.checked = val !== false;  // défaut true
     else if (el.type === 'color')    el.value   = val || '#b6152b';
     else                              el.value   = val == null ? '' : val;
