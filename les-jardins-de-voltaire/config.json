@@ -23,5 +23,8 @@
     "image": "",
     "date_fin": ""
   },
-  "email": "admin"
+  "email": "admin",
+  "remindersSent": [
+    "j+1"
+  ]
 }
