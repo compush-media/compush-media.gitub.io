@@ -27,5 +27,13 @@
     "description": "Hshhjjs",
     "image": "https://rtdiaeskmyjjwohirhzj.supabase.co/storage/v1/object/public/offres-images/le-martin/1778023578445-9v6szv.jpg",
     "date_fin": "2026-05-16"
+  },
+  "activeCoupon": {
+    "title": "test",
+    "description": "test de mai",
+    "offerType": "reduction",
+    "value": "un café",
+    "month": "mai",
+    "updatedAt": "2026-05-16T18:14:17.472Z"
   }
 }
