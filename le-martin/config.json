@@ -29,9 +29,9 @@
     "date_fin": "2026-05-16"
   },
   "activeCoupon": {
-    "title": "un café offert pour votre pochain visite au restaurant +Dessert offert, Café offert, -10% sur votre visite.",
+    "title": "un café offert",
     "imageUrl": "/_template/images/offres/cafe.png",
     "month": "mai",
-    "updatedAt": "2026-05-16T18:53:53.391Z"
+    "updatedAt": "2026-05-16T19:49:40.745Z"
   }
 }
