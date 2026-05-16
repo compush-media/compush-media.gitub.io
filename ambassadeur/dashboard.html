@@ -490,6 +490,56 @@
             <input class="form-input" id="fGoogleLocationId" placeholder="accounts/109.../locations/956..." spellcheck="false" />
             <span class="form-hint">⚠️ Différent du Place ID ci-dessus. Sert à synchroniser et répondre aux avis via l'API Google. <strong>Demandez au restaurateur d'ouvrir ce lien et de vous communiquer son ID :</strong> <a href="https://app.cartefidelavis.com/fidelavis-admin/get-location-id.html" target="_blank" style="color:var(--brand)">Obtenir mon ID Google Business →</a>. Laissez vide si indisponible — l'administrateur le configurera.</span>
           </div>
+
+          <!-- ── Coupon du mois ── -->
+          <div class="form-field full" style="margin-top:8px;padding-top:16px;border-top:1px solid var(--line)">
+            <p style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Coupon du mois</p>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:0">L'offre affichée sur la page d'accueil de l'app client.</p>
+          </div>
+          <div class="form-field full">
+            <label class="form-label" for="fCouponTitle" style="display:flex;justify-content:space-between;align-items:center;">
+              <span>Titre du coupon</span>
+              <span style="font-size:11px;color:var(--muted);font-weight:400;"><span id="fCouponTitleCount">0</span>/40</span>
+            </label>
+            <input class="form-input" id="fCouponTitle" maxlength="40"
+              placeholder="Ex : Dessert offert, Café offert"
+              oninput="document.getElementById('fCouponTitleCount').textContent=this.value.length" />
+            <span class="form-hint">Laissez vide pour utiliser le coupon par défaut</span>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="fCouponImage">Image du coupon</label>
+            <select class="form-input" id="fCouponImage">
+              <option value="/_template/images/offres/surprise.png">🎁 Cadeau surprise</option>
+              <option value="/_template/images/offres/aperitif.png">🥂 Apéritif offert</option>
+              <option value="/_template/images/offres/cafe.png">☕ Café offert</option>
+              <option value="/_template/images/offres/dessert.png">🍮 Dessert offert</option>
+              <option value="/_template/images/offres/gateau.png">🎂 Gâteau offert</option>
+              <option value="/_template/images/offres/cocktail.png">🍹 Cocktail offert</option>
+              <option value="/_template/images/offres/boisson.png">🥤 Boisson offerte</option>
+              <option value="/_template/images/offres/entree.png">🥗 Entrée offerte</option>
+              <option value="/_template/images/offres/plat.png">🍽️ Plat offert</option>
+              <option value="/_template/images/offres/pizza.png">🍕 Pizza offerte</option>
+              <option value="/_template/images/offres/menu.png">📋 Menu offert</option>
+              <option value="/_template/images/offres/reduction.png">🏷️ Réduction</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="fCouponMonth">Mois concerné</label>
+            <select class="form-input" id="fCouponMonth">
+              <option value="janvier">Janvier</option>
+              <option value="février">Février</option>
+              <option value="mars">Mars</option>
+              <option value="avril">Avril</option>
+              <option value="mai">Mai</option>
+              <option value="juin">Juin</option>
+              <option value="juillet">Juillet</option>
+              <option value="août">Août</option>
+              <option value="septembre">Septembre</option>
+              <option value="octobre">Octobre</option>
+              <option value="novembre">Novembre</option>
+              <option value="décembre">Décembre</option>
+            </select>
+          </div>
         </div>
 
         <!-- Progress création -->
@@ -632,6 +682,12 @@ function openModal() {
   ['fName2','fSlug','fAdminPass'].forEach(id => {
     const el = document.getElementById(id); if (el) el.classList.remove('error');
   });
+  const fCouponTitle = document.getElementById('fCouponTitle');
+  if (fCouponTitle) fCouponTitle.value = '';
+  const fCouponTitleCount = document.getElementById('fCouponTitleCount');
+  if (fCouponTitleCount) fCouponTitleCount.textContent = '0';
+  const fCouponMonth = document.getElementById('fCouponMonth');
+  if (fCouponMonth) fCouponMonth.value = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'][new Date().getMonth()];
 
   // Show step 1
   _showStep(1);
@@ -822,6 +878,19 @@ async function submitCreation() {
             p_secret:      'fidelavis-super-admin-2026'
           })
         });
+      } catch(_) {}
+    }
+
+    // ── Sauvegarde coupon du mois si renseigné ──
+    const couponTitle = document.getElementById('fCouponTitle').value.trim();
+    if (couponTitle) {
+      try {
+        const coupon = {
+          title:    couponTitle,
+          imageUrl: document.getElementById('fCouponImage').value,
+          month:    document.getElementById('fCouponMonth').value
+        };
+        await fetch(API_URL + '?action=save_coupon_mois&resto=' + encodeURIComponent(sl) + '&coupon=' + encodeURIComponent(JSON.stringify(coupon)), { cache: 'no-store' });
       } catch(_) {}
     }
 
