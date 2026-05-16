@@ -29,9 +29,9 @@
     "date_fin": "2026-05-16"
   },
   "activeCoupon": {
-    "title": "un café offert 10% sur votre visite.10%",
-    "imageUrl": "/_template/images/offres/cafe.png",
+    "title": "Offert 10% sur votre visite.10%",
+    "imageUrl": "/_template/images/offres/reduction.png",
     "month": "mai",
-    "updatedAt": "2026-05-16T19:55:30.875Z"
+    "updatedAt": "2026-05-16T19:56:48.638Z"
   }
 }
