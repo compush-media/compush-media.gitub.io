@@ -696,9 +696,14 @@ const offerImages = {
 function setOfferImage(offerText) {
   const img = document.getElementById("offerImg");
   if (!img) return;
-  const lower = offerText.toLowerCase();
-  const match = Object.keys(offerImages).find(k => lower.includes(k));
-  const src = match ? offerImages[match] : "/_template/images/offres/surprise.png";
+  let src;
+  if (offerText && (offerText.startsWith('/') || offerText.startsWith('http'))) {
+    src = offerText;
+  } else {
+    const lower = (offerText || '').toLowerCase();
+    const match = Object.keys(offerImages).find(k => lower.includes(k));
+    src = match ? offerImages[match] : "/_template/images/offres/surprise.png";
+  }
   img.src = src;
   img.alt = offerText;
   img.style.animation = "none";
@@ -795,7 +800,7 @@ let IS_LOCKED = false;
 
       const offerName = (_cfg?.activeCoupon?.title) || extractOfferName(offers[ACTIVE_MONTH]);
       offerEl.textContent = offerName;
-      setOfferImage(_cfg?.activeCoupon?.title || offers[ACTIVE_MONTH]);
+      setOfferImage(_cfg?.activeCoupon?.imageUrl || _cfg?.activeCoupon?.title || offers[ACTIVE_MONTH]);
       setOfferEndLabel();
 
       if (subEl){

@@ -2050,7 +2050,7 @@ function saveOffreJour(params) {
 //
 //  Paramètres GET :
 //    resto  — slug du restaurant (ex: "le-martin")
-//    coupon — JSON stringifié { title, description, offerType, value, month }
+//    coupon — JSON stringifié { title, imageUrl, month }
 //
 function saveCouponMois(params) {
   var resto     = (params.resto || "").trim().toLowerCase();
@@ -2082,12 +2082,10 @@ function saveCouponMois(params) {
   catch(e) { return { error: "config.json illisible : " + e.message }; }
 
   cfg.activeCoupon = {
-    title:       coupon.title       || "",
-    description: coupon.description || "",
-    offerType:   coupon.offerType   || "cadeau",
-    value:       coupon.value       || "",
-    month:       coupon.month       || "",
-    updatedAt:   new Date().toISOString()
+    title:     coupon.title    || "",
+    imageUrl:  coupon.imageUrl || "",
+    month:     coupon.month    || "",
+    updatedAt: new Date().toISOString()
   };
 
   var b64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(cfg, null, 2) + "\n").getBytes());

@@ -795,26 +795,21 @@
       placeholder="Ex : Dessert offert"
       style="margin-bottom:14px;" />
 
-    <label class="form-label" for="couponEditDesc">Description courte</label>
-    <input class="form-input" id="couponEditDesc"
-      placeholder="Ex : Offert lors de votre prochaine visite"
-      style="margin-bottom:14px;" />
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-      <div>
-        <label class="form-label" for="couponEditType">Type d'offre</label>
-        <select class="form-input" id="couponEditType">
-          <option value="cadeau">🎁 Cadeau</option>
-          <option value="reduction">💸 Réduction</option>
-          <option value="offert">🆓 Offert</option>
-        </select>
-      </div>
-      <div>
-        <label class="form-label" for="couponEditValue">Valeur</label>
-        <input class="form-input" id="couponEditValue"
-          placeholder="Ex : Dessert, 10%, Café" />
-      </div>
-    </div>
+    <label class="form-label" for="couponEditImage">Image du coupon</label>
+    <select class="form-input" id="couponEditImage" style="margin-bottom:14px;">
+      <option value="/_template/images/offres/surprise.png">🎁 Cadeau surprise</option>
+      <option value="/_template/images/offres/aperitif.png">🥂 Apéritif</option>
+      <option value="/_template/images/offres/cafe.png">☕ Café</option>
+      <option value="/_template/images/offres/dessert.png">🍰 Dessert</option>
+      <option value="/_template/images/offres/gateau.png">🎂 Gâteau</option>
+      <option value="/_template/images/offres/cocktail.png">🍹 Cocktail</option>
+      <option value="/_template/images/offres/boisson.png">🥤 Boisson</option>
+      <option value="/_template/images/offres/entree.png">🥗 Entrée</option>
+      <option value="/_template/images/offres/plat.png">🍽️ Plat</option>
+      <option value="/_template/images/offres/pizza.png">🍕 Pizza</option>
+      <option value="/_template/images/offres/menu.png">📋 Menu</option>
+      <option value="/_template/images/offres/reduction.png">💸 Réduction</option>
+    </select>
 
     <label class="form-label" for="couponEditMonth">Mois concerné</label>
     <select class="form-input" id="couponEditMonth" style="margin-bottom:18px;">
@@ -2044,10 +2039,8 @@ async function loadCouponEditForm() {
     const res = await fetch(`/${SITE}/config.json`, { cache: 'no-store' });
     const cfg = await res.json();
     const c   = cfg.activeCoupon || {};
-    document.getElementById('couponEditTitle').value = c.title       || '';
-    document.getElementById('couponEditDesc').value  = c.description || '';
-    document.getElementById('couponEditType').value  = c.offerType   || 'cadeau';
-    document.getElementById('couponEditValue').value = c.value       || '';
+    document.getElementById('couponEditTitle').value = c.title    || '';
+    document.getElementById('couponEditImage').value = c.imageUrl || '/_template/images/offres/surprise.png';
     const monthSel = document.getElementById('couponEditMonth');
     if (c.month) {
       const opt = Array.from(monthSel.options).find(o => o.value === c.month.toLowerCase());
@@ -2075,11 +2068,9 @@ async function saveCouponMoisAdmin() {
   }
 
   const coupon = {
-    title:       titre,
-    description: document.getElementById('couponEditDesc').value.trim(),
-    offerType:   document.getElementById('couponEditType').value,
-    value:       document.getElementById('couponEditValue').value.trim(),
-    month:       document.getElementById('couponEditMonth').value
+    title:    titre,
+    imageUrl: document.getElementById('couponEditImage').value,
+    month:    document.getElementById('couponEditMonth').value
   };
 
   btn.disabled    = true;
