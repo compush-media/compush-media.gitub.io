@@ -29,11 +29,9 @@
     "date_fin": "2026-05-16"
   },
   "activeCoupon": {
-    "title": "test",
-    "description": "test de mai",
-    "offerType": "reduction",
-    "value": "un café",
+    "title": "un café offert pour votre pochain visite au restaurant +Dessert offert, Café offert, -10% sur votre visite.",
+    "imageUrl": "/_template/images/offres/cafe.png",
     "month": "mai",
-    "updatedAt": "2026-05-16T18:14:17.472Z"
+    "updatedAt": "2026-05-16T18:53:53.391Z"
   }
 }
