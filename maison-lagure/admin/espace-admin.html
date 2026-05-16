@@ -790,10 +790,15 @@
       Exemples : <em>Dessert offert</em>, <em>Café offert</em>, <em>-10% sur votre visite</em>.
     </p>
 
-    <label class="form-label" for="couponEditTitle">Titre du coupon <span style="color:#e33">*</span></label>
+    <label class="form-label" for="couponEditTitle" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>Titre du coupon <span style="color:#e33">*</span></span>
+      <span style="font-size:11px;color:var(--muted);font-weight:400;"><span id="couponTitleCount">0</span>/40</span>
+    </label>
     <input class="form-input" id="couponEditTitle"
+      maxlength="40"
       placeholder="Ex : Dessert offert"
-      style="margin-bottom:14px;" />
+      style="margin-bottom:14px;"
+      oninput="document.getElementById('couponTitleCount').textContent=this.value.length" />
 
     <label class="form-label" for="couponEditImage">Image du coupon</label>
     <select class="form-input" id="couponEditImage" style="margin-bottom:14px;">
@@ -2007,6 +2012,8 @@ async function loadCouponEditForm() {
     const cfg = await res.json();
     const c   = cfg.activeCoupon || {};
     document.getElementById('couponEditTitle').value = c.title    || '';
+    const _tc = document.getElementById('couponTitleCount');
+    if (_tc) _tc.textContent = (c.title || '').length;
     document.getElementById('couponEditImage').value = c.imageUrl || '/_template/images/offres/surprise.png';
     const monthSel = document.getElementById('couponEditMonth');
     if (c.month) {
