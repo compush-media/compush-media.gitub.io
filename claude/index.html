@@ -517,7 +517,8 @@ let IS_LOCKED = false;
 
       const unlockLabel = unlock.toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" });
 
-      offerEl.textContent = `${offers[ACTIVE_MONTH]} — 🔒 disponible le ${unlockLabel}`;
+      const lockedOfferText = (_cfg?.activeCoupon?.title) || offers[ACTIVE_MONTH];
+      offerEl.textContent = `${lockedOfferText} — 🔒 disponible le ${unlockLabel}`;
 
       if (subEl){
         subEl.innerHTML = `✅ Inscription confirmée.<br><b>Revenez le mois prochain</b> pour profiter de votre coupon.`;
@@ -540,7 +541,7 @@ let IS_LOCKED = false;
   IS_LOCKED = false;
   ACTIVE_YEAR = new Date().getFullYear();
   ACTIVE_MONTH = new Date().getMonth();
-  offerEl.textContent = offers[ACTIVE_MONTH];
+  offerEl.textContent = (_cfg?.activeCoupon?.title) || offers[ACTIVE_MONTH];
 
   if (btn){
     btn.disabled = false;

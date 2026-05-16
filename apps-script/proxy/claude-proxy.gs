@@ -100,6 +100,7 @@ function doGet(e) {
         case "get_ambassador":     result = getAmbassadorByToken(e.parameter.token || ""); break;
         case "analyze_website":    result = analyzeWebsite(e.parameter); break;
         case "save_offre_jour":    result = saveOffreJour(e.parameter); break;
+        case "save_coupon_mois":   result = saveCouponMois(e.parameter); break;
         default: result = { error: "Action GET inconnue : " + e.parameter.action };
       }
       return buildResponse(result);
@@ -2043,6 +2044,64 @@ function saveOffreJour(params) {
     return { error: "Erreur GitHub " + putCode + " : " + putRes.getContentText().slice(0, 200) };
   }
   return { ok: true, resto: resto, offre_jour: cfg.offre_jour };
+}
+
+// ─── Action : Mettre à jour le coupon du mois dans config.json ─
+//
+//  Paramètres GET :
+//    resto  — slug du restaurant (ex: "le-martin")
+//    coupon — JSON stringifié { title, description, offerType, value, month }
+//
+function saveCouponMois(params) {
+  var resto     = (params.resto || "").trim().toLowerCase();
+  var couponRaw = params.coupon || "";
+  if (!resto)     return { error: "Paramètre resto manquant." };
+  if (!couponRaw) return { error: "Paramètre coupon manquant." };
+
+  var coupon;
+  try { coupon = JSON.parse(couponRaw); }
+  catch(e) { return { error: "coupon JSON invalide : " + e.message }; }
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré." };
+
+  var configPath = resto + "/config.json";
+  var apiUrl     = "https://api.github.com/repos/" + repo + "/contents/" + configPath + "?ref=main";
+  var headers    = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+
+  var getRes = UrlFetchApp.fetch(apiUrl, { headers: headers, muteHttpExceptions: true });
+  if (getRes.getResponseCode() !== 200) {
+    return { error: "config.json introuvable pour le restaurant : " + resto };
+  }
+
+  var fileData = JSON.parse(getRes.getContentText());
+  var cfg;
+  try { cfg = JSON.parse(Utilities.newBlob(Utilities.base64Decode(fileData.content.replace(/\n/g,""))).getDataAsString()); }
+  catch(e) { return { error: "config.json illisible : " + e.message }; }
+
+  cfg.activeCoupon = {
+    title:       coupon.title       || "",
+    description: coupon.description || "",
+    offerType:   coupon.offerType   || "cadeau",
+    value:       coupon.value       || "",
+    month:       coupon.month       || "",
+    updatedAt:   new Date().toISOString()
+  };
+
+  var b64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(cfg, null, 2) + "\n").getBytes());
+  var putRes = UrlFetchApp.fetch("https://api.github.com/repos/" + repo + "/contents/" + configPath, {
+    method:             "put",
+    headers:            { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload:            JSON.stringify({ message: "coupon: mise à jour coupon du mois pour " + resto, content: b64, sha: fileData.sha }),
+    muteHttpExceptions: true
+  });
+  var putCode = putRes.getResponseCode();
+  if (putCode !== 200 && putCode !== 201) {
+    return { error: "Erreur GitHub " + putCode + " : " + putRes.getContentText().slice(0, 200) };
+  }
+  return { ok: true, resto: resto, activeCoupon: cfg.activeCoupon };
 }
 
 // ─── Constructeur de réponse HTTP ────────────────────────────

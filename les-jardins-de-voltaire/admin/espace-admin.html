@@ -781,6 +781,65 @@
       </div>
 
     </div>
+
+  <!-- Modifier le coupon du mois -->
+  <div class="card admin-only" style="margin-top:24px;">
+    <div class="card-title"><span class="card-title-icon">✏️</span> Modifier le coupon du mois</div>
+    <p style="font-size:13px;color:var(--muted);margin:0 0 16px;line-height:1.6;">
+      Personnalisez l'offre affichée sur la page d'accueil de vos clients.
+      Exemples : <em>Dessert offert</em>, <em>Café offert</em>, <em>-10% sur votre visite</em>.
+    </p>
+
+    <label class="form-label" for="couponEditTitle">Titre du coupon <span style="color:#e33">*</span></label>
+    <input class="form-input" id="couponEditTitle"
+      placeholder="Ex : Dessert offert"
+      style="margin-bottom:14px;" />
+
+    <label class="form-label" for="couponEditDesc">Description courte</label>
+    <input class="form-input" id="couponEditDesc"
+      placeholder="Ex : Offert lors de votre prochaine visite"
+      style="margin-bottom:14px;" />
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div>
+        <label class="form-label" for="couponEditType">Type d'offre</label>
+        <select class="form-input" id="couponEditType">
+          <option value="cadeau">🎁 Cadeau</option>
+          <option value="reduction">💸 Réduction</option>
+          <option value="offert">🆓 Offert</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label" for="couponEditValue">Valeur</label>
+        <input class="form-input" id="couponEditValue"
+          placeholder="Ex : Dessert, 10%, Café" />
+      </div>
+    </div>
+
+    <label class="form-label" for="couponEditMonth">Mois concerné</label>
+    <select class="form-input" id="couponEditMonth" style="margin-bottom:18px;">
+      <option value="janvier">Janvier</option>
+      <option value="février">Février</option>
+      <option value="mars">Mars</option>
+      <option value="avril">Avril</option>
+      <option value="mai">Mai</option>
+      <option value="juin">Juin</option>
+      <option value="juillet">Juillet</option>
+      <option value="août">Août</option>
+      <option value="septembre">Septembre</option>
+      <option value="octobre">Octobre</option>
+      <option value="novembre">Novembre</option>
+      <option value="décembre">Décembre</option>
+    </select>
+
+    <button class="btn btn-brand" id="saveCouponBtn" type="button" onclick="saveCouponMoisAdmin()">
+      🎫 Mettre à jour le coupon
+    </button>
+    <div class="notif-msg" id="couponEditFeedback" style="margin-top:12px;"></div>
+    <p style="font-size:12px;color:var(--muted);margin:10px 0 0;">
+      ⏱️ Après enregistrement, le coupon est mis à jour sur GitHub Pages en ~1 minute.
+    </p>
+  </div>
   </div>
 
   <!-- ═══════════════════════════ NOTIFICATIONS ═══════════════════════════ -->
@@ -1957,6 +2016,9 @@ function initCoupon() {
     qrEl.setAttribute('data-loaded', '1');
     if (qrUrlEl) qrUrlEl.textContent = nfcUrl;
   }
+
+  // Formulaire modification coupon (admin uniquement)
+  if (ROLE === 'admin') loadCouponEditForm();
 }
 
 async function loadCouponCount() {
@@ -1966,6 +2028,86 @@ async function loadCouponCount() {
   } catch {
     document.getElementById('couponValidCount').textContent = '—';
   }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  COUPON DU MOIS — Édition
+// ═══════════════════════════════════════════════════════════════
+
+let _couponEditLoaded = false;
+
+async function loadCouponEditForm() {
+  if (_couponEditLoaded) return;
+  _couponEditLoaded = true;
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  try {
+    const res = await fetch(`/${SITE}/config.json`, { cache: 'no-store' });
+    const cfg = await res.json();
+    const c   = cfg.activeCoupon || {};
+    document.getElementById('couponEditTitle').value = c.title       || '';
+    document.getElementById('couponEditDesc').value  = c.description || '';
+    document.getElementById('couponEditType').value  = c.offerType   || 'cadeau';
+    document.getElementById('couponEditValue').value = c.value       || '';
+    const monthSel = document.getElementById('couponEditMonth');
+    if (c.month) {
+      const opt = Array.from(monthSel.options).find(o => o.value === c.month.toLowerCase());
+      if (opt) monthSel.value = opt.value;
+    } else {
+      monthSel.value = months[new Date().getMonth()];
+    }
+    if (c.title) document.getElementById('couponTitle').textContent = c.title;
+  } catch(e) {
+    // Défaut : mois courant pré-sélectionné
+    const monthSel = document.getElementById('couponEditMonth');
+    if (monthSel) monthSel.value = months[new Date().getMonth()];
+  }
+}
+
+async function saveCouponMoisAdmin() {
+  const titre = document.getElementById('couponEditTitle').value.trim();
+  const fb    = document.getElementById('couponEditFeedback');
+  const btn   = document.getElementById('saveCouponBtn');
+
+  if (!titre) {
+    fb.textContent = '⚠️ Le titre est obligatoire.';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+
+  const coupon = {
+    title:       titre,
+    description: document.getElementById('couponEditDesc').value.trim(),
+    offerType:   document.getElementById('couponEditType').value,
+    value:       document.getElementById('couponEditValue').value.trim(),
+    month:       document.getElementById('couponEditMonth').value
+  };
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Enregistrement…';
+  fb.className    = 'notif-msg';
+  fb.textContent  = '';
+
+  try {
+    const url  = `${API}?action=save_coupon_mois&resto=${encodeURIComponent(SITE)}&coupon=${encodeURIComponent(JSON.stringify(coupon))}`;
+    const res  = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data?.ok) {
+      fb.textContent    = '✅ Coupon mis à jour avec succès. Visible dans ~1 minute.';
+      fb.className      = 'notif-msg success';
+      _couponEditLoaded = false;
+      document.getElementById('couponTitle').textContent = coupon.title;
+    } else {
+      fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue');
+      fb.className   = 'notif-msg error';
+    }
+  } catch(err) {
+    fb.textContent = '⚠️ ' + (err?.message || 'Erreur réseau');
+    fb.className   = 'notif-msg error';
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '🎫 Mettre à jour le coupon';
 }
 
 // ═══════════════════════════════════════════════════════════════

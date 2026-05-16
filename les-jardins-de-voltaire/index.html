@@ -793,9 +793,9 @@ let IS_LOCKED = false;
       ACTIVE_YEAR = unlock.getFullYear();
       ACTIVE_MONTH = unlock.getMonth();
 
-      const offerName = extractOfferName(offers[ACTIVE_MONTH]);
+      const offerName = (_cfg?.activeCoupon?.title) || extractOfferName(offers[ACTIVE_MONTH]);
       offerEl.textContent = offerName;
-      setOfferImage(offers[ACTIVE_MONTH]);
+      setOfferImage(_cfg?.activeCoupon?.title || offers[ACTIVE_MONTH]);
       setOfferEndLabel();
 
       if (subEl){
@@ -819,9 +819,9 @@ let IS_LOCKED = false;
   IS_LOCKED = false;
   ACTIVE_YEAR = new Date().getFullYear();
   ACTIVE_MONTH = new Date().getMonth();
-  const offerName = extractOfferName(offers[ACTIVE_MONTH]);
+  const offerName = (_cfg?.activeCoupon?.title) || extractOfferName(offers[ACTIVE_MONTH]);
   offerEl.textContent = offerName;
-  setOfferImage(offers[ACTIVE_MONTH]);
+  setOfferImage(_cfg?.activeCoupon?.title || offers[ACTIVE_MONTH]);
   setOfferEndLabel();
 
   if (btn){
