@@ -2616,7 +2616,33 @@ async function loadRestoSection(preloadedData) {
   }
 
   window._restoData = data;
+  await loadAmbassadeursList();
   renderRestoGrid(data);
+}
+
+// Charge la liste des ambassadeurs pour les menus d'affectation
+async function loadAmbassadeursList() {
+  if (window._ambassadeurs) return;
+  try {
+    const res = await fetch(
+      `https://raw.githubusercontent.com/${GH_OWNER_D}/${GH_REPO_D}/main/data/ambassadeurs.json`,
+      { cache: 'no-store' }
+    );
+    window._ambassadeurs = res.ok ? await res.json() : [];
+  } catch(e) {
+    window._ambassadeurs = [];
+  }
+}
+
+function ambassadeurOptions(selectedCode) {
+  const list = window._ambassadeurs || [];
+  let html = `<option value="" ${!selectedCode ? 'selected' : ''}>— Aucun —</option>`;
+  list.forEach(a => {
+    const code  = a.code || '';
+    const label = `${a.prenom || ''} ${a.nom || ''}`.trim() + (code ? ` (${code})` : '');
+    html += `<option value="${escHtml(code)}" ${code === selectedCode ? 'selected' : ''}>${escHtml(label)}</option>`;
+  });
+  return html;
 }
 
 function renderRestoGrid(data) {
@@ -2680,6 +2706,12 @@ function renderRestoGrid(data) {
               <option value="suspendu" ${sc==='suspendu'?'selected':''}>Suspendu</option>
             </select>
           </div>
+        </div>
+        <div style="margin-bottom:8px">
+          <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Ambassadeur assigné</label>
+          <select onchange="updateAmbassadeur('${slug}',this.value)" style="width:100%;padding:5px 8px;border:1.5px solid var(--line);border-radius:7px;font-size:12px;background:#fff">
+            ${ambassadeurOptions(r.ambassadorCode || '')}
+          </select>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
           <a href="${BASE}/${slug}/index.html" target="_blank" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">🏠 Site</a>
@@ -3145,6 +3177,64 @@ async function updateStatutCommercial(slug, statut) {
 }
 
 // ============================================================
+//  AFFECTATION AMBASSADEUR
+// ============================================================
+async function updateAmbassadeur(slug, code) {
+  try {
+    // 1. Mettre à jour restaurants.json (ambassadorCode)
+    const regInfo = await ghApiD('/contents/data/restaurants.json');
+    const regData = JSON.parse(new TextDecoder().decode(
+      Uint8Array.from(atob(regInfo.content.replace(/\s/g,'')), c => c.charCodeAt(0))
+    ));
+    if (!regData[slug]) return;
+    if (code) regData[slug].ambassadorCode = code;
+    else      delete regData[slug].ambassadorCode;
+    window._restoData = regData;
+
+    const tree = [{
+      path: 'data/restaurants.json', mode: '100644', type: 'blob',
+      content: JSON.stringify(regData, null, 2) + '\n'
+    }];
+
+    // 2. Mettre à jour ambassadeurs.json (restaurants_crees)
+    try {
+      const ambInfo = await ghApiD('/contents/data/ambassadeurs.json');
+      const ambList = JSON.parse(new TextDecoder().decode(
+        Uint8Array.from(atob(ambInfo.content.replace(/\s/g,'')), c => c.charCodeAt(0))
+      ));
+      const restoName = regData[slug].name || slug;
+      ambList.forEach(a => {
+        a.restaurants_crees = (a.restaurants_crees || []).filter(r => (r.slug || r) !== slug);
+        if (code && a.code === code) {
+          a.restaurants_crees.push({ slug, name: restoName, date: new Date().toISOString().slice(0,10) });
+        }
+      });
+      window._ambassadeurs = ambList;
+      tree.push({
+        path: 'data/ambassadeurs.json', mode: '100644', type: 'blob',
+        content: JSON.stringify(ambList, null, 2) + '\n'
+      });
+    } catch(e) { /* ambassadeurs.json absent — on continue */ }
+
+    // 3. Commit unique
+    const branchInfo = await ghApiD(`/branches/${GH_BRANCH_D}`);
+    const newTree    = await ghApiD('/git/trees', 'POST', {
+      base_tree: branchInfo.commit.commit.tree.sha, tree
+    });
+    const newCommit  = await ghApiD('/git/commits', 'POST', {
+      message: `chore: affectation ${slug} → ${code || 'aucun ambassadeur'}`,
+      tree: newTree.sha, parents: [branchInfo.commit.sha]
+    });
+    await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: newCommit.sha });
+
+    toast(code ? `✅ Affecté à ${code}` : '✅ Ambassadeur retiré', 'success');
+    addLog('ambassadeur.affectation', slug, code || 'aucun');
+  } catch(e) {
+    toast('Erreur affectation : ' + e.message, 'error');
+  }
+}
+
+// ============================================================
 //  ACTIVATION RESTAURATEUR
 // ============================================================
 let _activationSlug = '';
@@ -3381,29 +3471,56 @@ function showImportPreview(rows, filename) {
   el('importWarnings').textContent = warn.join(' ');
 }
 
+const IMPORT_TEMPLATE = '_template';
+
 async function confirmImport() {
   if (!_importRows.length) return;
   const btn = el('importConfirmBtn');
   btn.disabled    = true;
-  btn.textContent = '⏳ Import en cours…';
+  btn.textContent = '⏳ Lecture du modèle…';
 
   try {
-    const regFileInfo = await ghApiD('/contents/data/restaurants.json');
-    const b64   = regFileInfo.content.replace(/\s/g, '');
-    const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-    const data  = JSON.parse(new TextDecoder().decode(bytes));
+    // 1. Récupérer l'arbre complet (template + registre)
+    const ref        = await ghApiD(`/git/ref/heads/${GH_BRANCH_D}`);
+    const commitSha  = ref.object.sha;
+    const commitData = await ghApiD(`/git/commits/${commitSha}`);
+    const treeSha    = commitData.tree.sha;
+    const treeData   = await ghApiD(`/git/trees/${treeSha}?recursive=1`);
+    const allItems   = treeData.tree;
 
-    let added = 0;
-    _importRows.forEach(row => {
+    const templateFiles = allItems.filter(f =>
+      f.type === 'blob' && f.path.startsWith(IMPORT_TEMPLATE + '/')
+    );
+    if (!templateFiles.length) throw new Error('Dossier _template introuvable sur GitHub');
+
+    // 2. Charger restaurants.json
+    let data = {};
+    const regItem = allItems.find(f => f.path === 'data/restaurants.json');
+    if (regItem) {
+      const blob = await ghApiD(`/git/blobs/${regItem.sha}`);
+      data = JSON.parse(new TextDecoder().decode(
+        Uint8Array.from(atob(blob.content.replace(/\s/g,'')), c => c.charCodeAt(0))
+      ));
+    }
+
+    const newTreeItems = [];
+    let added = 0, scaffolded = 0, skipped = 0;
+    btn.textContent = '⏳ Génération des fiches…';
+
+    for (const row of _importRows) {
       const slug = slugify(row.denomination);
-      if (!slug) return;
+      if (!slug) { skipped++; continue; }
       const existing = data[slug] || {};
+      const isNew    = !existing.name;
+      const color    = existing.brandColor  || '#B8924F';
+      const color2   = existing.brandColor2 || '#9E7A3E';
+
+      // Entrée registre
       data[slug] = {
         ...existing,
         name:                     row.denomination,
-        brandColor:               existing.brandColor  || '#B8924F',
-        brandColor2:              existing.brandColor2 || '#9E7A3E',
-        // Champs d'affichage (compatibilité dashboard)
+        brandColor:               color,
+        brandColor2:              color2,
         adresse:                  row.rue                || existing.adresse || '',
         ville:                    row.ville              || existing.ville   || '',
         code_postal:              row.code_postal        || existing.code_postal || '',
@@ -3417,7 +3534,6 @@ async function confirmImport() {
         facebook:                 row.facebook           || existing.facebook || '',
         ambassadorCode:           row['ambassadeur_assigné'] || existing.ambassadorCode || '',
         statut_commercial:        row.statut             || existing.statut_commercial || '',
-        // Champs supplémentaires du modèle model1.xlsx
         nom_enseigne:             row.nom_enseigne             || existing.nom_enseigne || '',
         forme_juridique:          row.forme_juridique          || existing.forme_juridique || '',
         dirigeant_role:           row.dirigeant_role           || existing.dirigeant_role || '',
@@ -3431,24 +3547,57 @@ async function confirmImport() {
         date_creation:            existing.date_creation || new Date().toISOString().slice(0,10)
       };
       added++;
-    });
 
-    const newContent  = JSON.stringify(data, null, 2) + '\n';
-    const branchInfo  = await ghApiD(`/branches/${GH_BRANCH_D}`);
-    const newTree     = await ghApiD('/git/trees', 'POST', {
-      base_tree: branchInfo.commit.commit.tree.sha,
-      tree: [{ path: 'data/restaurants.json', mode: '100644', type: 'blob', content: newContent }]
+      // Scaffolder les fichiers du site uniquement si nouveau restaurant
+      if (isNew) {
+        for (const f of templateFiles) {
+          const rel = f.path.slice(IMPORT_TEMPLATE.length + 1);
+          if (rel === 'config.json' || rel === 'progressier.json' || rel.endsWith('.DS_Store')) continue;
+          newTreeItems.push({ path: slug + '/' + rel, mode: f.mode, type: 'blob', sha: f.sha });
+        }
+        // config.json
+        const cfg = { name: row.denomination, color, color2 };
+        if (row.tel)     cfg.phone        = row.tel;
+        if (row.rue)     cfg.address      = [row.rue, row.code_postal, row.ville].filter(Boolean).join(', ');
+        if (row.GMB_URL) cfg.googleReview = row.GMB_URL;
+        // progressier.json
+        const manifest = {
+          name: row.denomination, short_name: row.denomination,
+          start_url: `/${slug}/index.html`, scope: `/${slug}/`,
+          display: 'standalone', background_color: '#f6efe5',
+          theme_color: color, orientation: 'portrait',
+          icons: [
+            { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+            { src: 'icon-512.png', sizes: '512x512', type: 'image/png' }
+          ]
+        };
+        const cfgBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(cfg, null, 2) + '\n', encoding: 'utf-8' });
+        const manBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(manifest, null, 2) + '\n', encoding: 'utf-8' });
+        newTreeItems.push({ path: `${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
+        newTreeItems.push({ path: `${slug}/progressier.json`, mode: '100644', type: 'blob', sha: manBlob.sha });
+        scaffolded++;
+      }
+    }
+
+    // 3. restaurants.json mis à jour
+    const regBlob = await ghApiD('/git/blobs', 'POST', {
+      content: JSON.stringify(data, null, 2) + '\n', encoding: 'utf-8'
     });
-    const newCommit   = await ghApiD('/git/commits', 'POST', {
-      message: `feat: import massif ${added} restaurants`,
-      tree: newTree.sha, parents: [branchInfo.commit.sha]
+    newTreeItems.push({ path: 'data/restaurants.json', mode: '100644', type: 'blob', sha: regBlob.sha });
+
+    // 4. Commit unique
+    btn.textContent = '⏳ Déploiement sur GitHub…';
+    const newTree   = await ghApiD('/git/trees', 'POST', { base_tree: treeSha, tree: newTreeItems });
+    const newCommit = await ghApiD('/git/commits', 'POST', {
+      message: `feat: import massif ${added} restaurants (${scaffolded} fiches créées)`,
+      tree: newTree.sha, parents: [commitSha]
     });
     await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: newCommit.sha });
 
     window._restoData = data;
     closeImportModal();
     renderRestoGrid(data);
-    toast(`✅ ${added} restaurant(s) importé(s) avec succès !`, 'success');
+    toast(`✅ ${added} importé(s) · ${scaffolded} fiche(s) créée(s)${skipped ? ` · ${skipped} ignoré(s)` : ''}`, 'success');
     addLog('import.massif', 'restaurants', added);
     loadKpiSaas();
   } catch(e) {
