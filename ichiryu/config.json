@@ -3,5 +3,11 @@
   "color": "#B8924F",
   "color2": "#9E7A3E",
   "phone": "01 45 80 26 98",
-  "address": "11 RUE DE MONTYON, 75009, PARIS"
+  "address": "11 RUE DE MONTYON, 75009, PARIS",
+  "activeCoupon": {
+    "title": "Café offert le mois pour votre retour",
+    "imageUrl": "/_template/images/offres/cafe.png",
+    "month": "mai",
+    "updatedAt": "2026-05-17T18:15:33.553Z"
+  }
 }
