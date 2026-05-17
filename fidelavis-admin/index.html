@@ -1077,7 +1077,7 @@
       </div>
 
       <div id="importTemplateHint" style="font-size:12px;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:8px;line-height:1.7">
-        <strong>Colonnes supportées :</strong> nom_restaurant · adresse · ville · code_postal · téléphone · email · nom_gérant · catégorie · site_web · note_google · nombre_avis_google · instagram · facebook · ambassadeur_assigné · statut
+        <strong>Colonnes du modèle (model1.xlsx) :</strong> denomination · nom_enseigne · forme_juridique · dirigeant · dirigeant_role · dirigeant_date_naissance · libelle_ape · rue · code_postal · ville · employes_dernier · employes_dernier_annee · tel · site_web · email · twitter · facebook · linkedin · GMB_URL · note_google · nombre_avis_google · ambassadeur_assigné · statut
         <br><button class="btn-outline" style="font-size:11px;padding:4px 10px;margin-top:6px" onclick="downloadTemplate()">📄 Télécharger le modèle</button>
       </div>
 
@@ -3306,22 +3306,40 @@ function parseCSV(text) {
   });
 }
 
+// Colonnes officielles du modèle model1.xlsx — ordre exact à conserver
+const MODEL_COLS = [
+  'denomination','nom_enseigne','forme_juridique','dirigeant','dirigeant_role',
+  'dirigeant_date_naissance','libelle_ape','rue','code_postal','ville',
+  'employes_dernier','employes_dernier_annee','tel','site_web','email',
+  'twitter','facebook','linkedin','GMB_URL','note_google',
+  'nombre_avis_google','ambassadeur_assigné','statut'
+];
+
+// Alias acceptés à l'import (clés = noms officiels du modèle)
 const COL_MAP = {
-  nom_restaurant: ['nom_restaurant','nom','name','restaurant'],
-  adresse: ['adresse','address','adresse_complete'],
-  ville: ['ville','city'],
-  code_postal: ['code_postal','cp','postal'],
-  telephone: ['telephone','téléphone','tel','phone'],
-  email: ['email','mail','courriel'],
-  nom_gerant: ['nom_gérant','nom_gerant','gerant','manager'],
-  categorie: ['catégorie','categorie','category','type'],
-  site_web: ['site_web','site','website','url'],
-  note_google: ['note_google','note','rating'],
-  nombre_avis_google: ['nombre_avis_google','nb_avis','avis','reviews'],
-  instagram: ['instagram'],
-  facebook: ['facebook'],
-  ambassadeur_assigne: ['ambassadeur_assigné','ambassadeur_assigne','ambassadeur','ambassador'],
-  statut: ['statut','status','statut_commercial']
+  denomination:             ['denomination','nom_restaurant','nom','name','restaurant'],
+  nom_enseigne:             ['nom_enseigne','enseigne'],
+  forme_juridique:          ['forme_juridique'],
+  dirigeant:                ['dirigeant','nom_gérant','nom_gerant','gerant','manager'],
+  dirigeant_role:           ['dirigeant_role','role'],
+  dirigeant_date_naissance: ['dirigeant_date_naissance'],
+  libelle_ape:              ['libelle_ape','catégorie','categorie','category','type','ape'],
+  rue:                      ['rue','adresse','address','adresse_complete'],
+  code_postal:              ['code_postal','cp','postal'],
+  ville:                    ['ville','city'],
+  employes_dernier:         ['employes_dernier'],
+  employes_dernier_annee:   ['employes_dernier_annee'],
+  tel:                      ['tel','telephone','téléphone','phone'],
+  site_web:                 ['site_web','site','website','url'],
+  email:                    ['email','mail','courriel'],
+  twitter:                  ['twitter','instagram'],
+  facebook:                 ['facebook'],
+  linkedin:                 ['linkedin'],
+  GMB_URL:                  ['GMB_URL','gmb','google_business','lien_google'],
+  note_google:              ['note_google','note','rating'],
+  nombre_avis_google:       ['nombre_avis_google','nb_avis','avis','reviews'],
+  'ambassadeur_assigné':    ['ambassadeur_assigné','ambassadeur_assigne','ambassadeur','ambassador'],
+  statut:                   ['statut','status','statut_commercial']
 };
 
 function normalizeRow(row) {
@@ -3344,7 +3362,7 @@ function slugify(str) {
 }
 
 function showImportPreview(rows, filename) {
-  const normalized = rows.map(normalizeRow).filter(r => r.nom_restaurant);
+  const normalized = rows.map(normalizeRow).filter(r => r.denomination);
   _importRows = normalized;
 
   el('importPreviewTitle').textContent = `${normalized.length} restaurant(s) détecté(s) dans « ${filename} »`;
@@ -3352,14 +3370,14 @@ function showImportPreview(rows, filename) {
   el('importConfirmBtn').style.display = normalized.length ? 'inline-flex' : 'none';
   el('importConfirmCount').textContent = normalized.length;
 
-  const cols = ['nom_restaurant','ville','telephone','email','nom_gerant','statut','ambassadeur_assigne'];
+  const cols = ['denomination','ville','tel','email','dirigeant','statut','ambassadeur_assigné'];
   el('importPreviewTable').innerHTML = `
     <thead><tr>${cols.map(c => `<th>${c.replace(/_/g,' ')}</th>`).join('')}</tr></thead>
     <tbody>${normalized.slice(0,20).map(r => `<tr>${cols.map(c => `<td>${escHtml(r[c]||'')}</td>`).join('')}</tr>`).join('')}</tbody>
   `;
 
   const warn = [];
-  if (normalized.length < rows.length) warn.push(`⚠️ ${rows.length - normalized.length} ligne(s) ignorée(s) (colonne nom_restaurant vide).`);
+  if (normalized.length < rows.length) warn.push(`⚠️ ${rows.length - normalized.length} ligne(s) ignorée(s) (colonne denomination vide).`);
   el('importWarnings').textContent = warn.join(' ');
 }
 
@@ -3377,30 +3395,40 @@ async function confirmImport() {
 
     let added = 0;
     _importRows.forEach(row => {
-      const slug = slugify(row.nom_restaurant);
+      const slug = slugify(row.denomination);
       if (!slug) return;
       const existing = data[slug] || {};
       data[slug] = {
         ...existing,
-        name:               row.nom_restaurant,
-        brandColor:         existing.brandColor  || '#B8924F',
-        brandColor2:        existing.brandColor2 || '#9E7A3E',
-        adresse:            row.adresse            || existing.adresse || '',
-        ville:              row.ville              || existing.ville   || '',
-        code_postal:        row.code_postal        || existing.code_postal || '',
-        telephone:          row.telephone          || existing.telephone || '',
-        email:              row.email              || existing.email   || '',
-        nom_gerant:         row.nom_gerant         || existing.nom_gerant || '',
-        categorie:          row.categorie          || existing.categorie || '',
-        site_web:           row.site_web           || existing.site_web || '',
-        note_google:        row.note_google        ? parseFloat(row.note_google) : (existing.note_google || null),
-        nombre_avis_google: row.nombre_avis_google ? parseInt(row.nombre_avis_google) : (existing.nombre_avis_google || null),
-        instagram:          row.instagram          || existing.instagram || '',
-        facebook:           row.facebook           || existing.facebook || '',
-        ambassadorCode:     row.ambassadeur_assigne|| existing.ambassadorCode || '',
-        statut_commercial:  row.statut             || existing.statut_commercial || '',
-        acces_statut:       existing.acces_statut  || 'non_active',
-        date_creation:      existing.date_creation || new Date().toISOString().slice(0,10)
+        name:                     row.denomination,
+        brandColor:               existing.brandColor  || '#B8924F',
+        brandColor2:              existing.brandColor2 || '#9E7A3E',
+        // Champs d'affichage (compatibilité dashboard)
+        adresse:                  row.rue                || existing.adresse || '',
+        ville:                    row.ville              || existing.ville   || '',
+        code_postal:              row.code_postal        || existing.code_postal || '',
+        telephone:                row.tel                || existing.telephone || '',
+        email:                    row.email              || existing.email   || '',
+        nom_gerant:               row.dirigeant          || existing.nom_gerant || '',
+        categorie:                row.libelle_ape        || existing.categorie || '',
+        site_web:                 row.site_web           || existing.site_web || '',
+        note_google:              row.note_google        ? parseFloat(row.note_google) : (existing.note_google || null),
+        nombre_avis_google:       row.nombre_avis_google ? parseInt(row.nombre_avis_google) : (existing.nombre_avis_google || null),
+        facebook:                 row.facebook           || existing.facebook || '',
+        ambassadorCode:           row['ambassadeur_assigné'] || existing.ambassadorCode || '',
+        statut_commercial:        row.statut             || existing.statut_commercial || '',
+        // Champs supplémentaires du modèle model1.xlsx
+        nom_enseigne:             row.nom_enseigne             || existing.nom_enseigne || '',
+        forme_juridique:          row.forme_juridique          || existing.forme_juridique || '',
+        dirigeant_role:           row.dirigeant_role           || existing.dirigeant_role || '',
+        dirigeant_date_naissance: row.dirigeant_date_naissance || existing.dirigeant_date_naissance || '',
+        employes_dernier:         row.employes_dernier         || existing.employes_dernier || '',
+        employes_dernier_annee:   row.employes_dernier_annee   || existing.employes_dernier_annee || '',
+        twitter:                  row.twitter                  || existing.twitter || '',
+        linkedin:                 row.linkedin                 || existing.linkedin || '',
+        GMB_URL:                  row.GMB_URL                  || existing.GMB_URL || '',
+        acces_statut:             existing.acces_statut  || 'non_active',
+        date_creation:            existing.date_creation || new Date().toISOString().slice(0,10)
       };
       added++;
     });
@@ -3431,15 +3459,15 @@ async function confirmImport() {
 }
 
 function downloadTemplate() {
-  const ws = XLSX.utils.aoa_to_sheet([[
-    'nom_restaurant','adresse','ville','code_postal','téléphone','email',
-    'nom_gérant','catégorie','site_web','note_google','nombre_avis_google',
-    'instagram','facebook','ambassadeur_assigné','statut'
-  ],[
-    'Le Bistrot Exemple','12 rue de la Paix','Paris','75001','01 23 45 67 89',
-    'contact@bistrot.fr','Jean Martin','restaurant','https://bistrot.fr',
-    '4.5','150','@bistrot','bistrot.paris','AMB-JEN-MAR-001','test_actif'
-  ]]);
+  const example = [
+    'ICHIRYU','KAZ','SASU Société par actions simplifiée à associé unique',
+    'Kazunari KANO','Président','','Restauration traditionnelle',
+    '11 RUE DE MONTYON','75009','PARIS','7','2022','01 45 80 26 98',
+    'http://www.sumibi-kaz.com/','ichiryu0111@gmail.com','',
+    'https://www.facebook.com/WixFrancais','','','4.5','150',
+    'AMB-JEN-MAR-001','test_actif'
+  ];
+  const ws = XLSX.utils.aoa_to_sheet([MODEL_COLS, example]);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Restaurants');
   XLSX.writeFile(wb, 'modele_import_fidelavis.xlsx');
@@ -3457,28 +3485,33 @@ async function exportRestosExcel() {
   const rows = Object.keys(data).map(slug => {
     const r = data[slug];
     return {
-      slug,
-      nom_restaurant:     r.name || '',
-      adresse:            r.adresse || r.address || '',
-      ville:              r.ville || '',
-      code_postal:        r.code_postal || '',
-      telephone:          r.telephone || r.phone || '',
-      email:              r.email || '',
-      nom_gerant:         r.nom_gerant || '',
-      categorie:          r.categorie || '',
-      site_web:           r.site_web || '',
-      note_google:        r.note_google || '',
-      nombre_avis_google: r.nombre_avis_google || '',
-      instagram:          r.instagram || '',
-      facebook:           r.facebook || '',
-      ambassadeur:        r.ambassadorCode || '',
-      statut_commercial:  r.statut_commercial || '',
-      acces_statut:       r.acces_statut || 'non_active',
-      date_creation:      r.date_creation || ''
+      denomination:             r.name || '',
+      nom_enseigne:             r.nom_enseigne || '',
+      forme_juridique:          r.forme_juridique || '',
+      dirigeant:                r.nom_gerant || '',
+      dirigeant_role:           r.dirigeant_role || '',
+      dirigeant_date_naissance: r.dirigeant_date_naissance || '',
+      libelle_ape:              r.libelle_ape || r.categorie || '',
+      rue:                      r.adresse || r.address || '',
+      code_postal:              r.code_postal || '',
+      ville:                    r.ville || '',
+      employes_dernier:         r.employes_dernier || '',
+      employes_dernier_annee:   r.employes_dernier_annee || '',
+      tel:                      r.telephone || r.phone || '',
+      site_web:                 r.site_web || '',
+      email:                    r.email || '',
+      twitter:                  r.twitter || r.instagram || '',
+      facebook:                 r.facebook || '',
+      linkedin:                 r.linkedin || '',
+      GMB_URL:                  r.GMB_URL || '',
+      note_google:              r.note_google || '',
+      nombre_avis_google:       r.nombre_avis_google || '',
+      'ambassadeur_assigné':    r.ambassadorCode || '',
+      statut:                   r.statut_commercial || ''
     };
   });
 
-  const ws = XLSX.utils.json_to_sheet(rows);
+  const ws = XLSX.utils.json_to_sheet(rows, { header: MODEL_COLS });
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Restaurants');
   const date = new Date().toISOString().slice(0,10);
