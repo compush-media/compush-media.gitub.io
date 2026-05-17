@@ -374,7 +374,24 @@
       .modal-body, .modal-header, .modal-footer { padding-left: 20px; padding-right: 20px; }
       .login-card { padding: 36px 24px; }
     }
+
+    /* ── STATUTS COMMERCIAUX ── */
+    .sc-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 999px;
+      font-size: 10px; font-weight: 700; white-space: nowrap;
+    }
+    .sc-a-prospecter { background:#f0f4ff; color:#4f46e5; }
+    .sc-assigne      { background:#eff3ff; color:#2563eb; }
+    .sc-visite       { background:#fdf4e7; color:#e67e22; }
+    .sc-interesse    { background:#fff8e1; color:#b45309; }
+    .sc-test-lance   { background:#f0fdf4; color:#15803d; }
+    .sc-test-actif   { background:#dcfce7; color:#16a34a; }
+    .sc-refus        { background:#fdf0ef; color:#d93025; }
+    .sc-abonne       { background:#d1fae5; color:#059669; }
+    .sc-suspendu     { background:#f5f5f5; color:#6f6f6f; }
   </style>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -410,6 +427,7 @@
     </div>
     <div class="header-right">
       <a class="btn-outline" href="/admin/restaurants.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">🏪 Restaurants</a>
+      <button class="btn-outline" onclick="exportAmbassadeursExcel()">📤 Exporter</button>
       <button class="btn-outline" onclick="doLogout()">Déconnexion</button>
     </div>
   </div>
@@ -1018,21 +1036,46 @@ function copyLienModal() {
     .catch(() => { prompt('Copiez ce lien :', _currentLien); });
 }
 
-function showRestos(id) {
+const SC_LABELS = { a_prospecter:'À prospecter', assigne:'Assigné', visite:'Visité', interesse:'Intéressé', test_lance:'Test lancé', test_actif:'Test actif', refus:'Refus', abonne:'Abonné', suspendu:'Suspendu' };
+
+async function showRestos(id) {
   const a = ambassadeurs.find(x => x.id === id);
   if (!a) return;
   document.getElementById('panelTitle').textContent = `Restaurants — ${a.prenom} ${a.nom}`;
   const restos = a.restaurants_crees || [];
+
+  // Charger restaurants.json pour avoir les statuts
+  let regData = {};
+  try {
+    const res = await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/main/data/restaurants.json`, { cache: 'no-store' });
+    if (res.ok) regData = await res.json();
+  } catch(_) {}
+
   document.getElementById('panelBody').innerHTML = !restos.length
     ? '<p style="color:var(--muted);text-align:center;padding:32px 0">Aucun restaurant créé.</p>'
     : restos.map(r => {
         const name = r.name || r.slug || r;
         const slug = r.slug || r;
         const date = r.date ? fmtDate(r.date) : '';
+        const rData = regData[slug] || {};
+        const sc    = rData.statut_commercial || '';
+        const scBadge = sc
+          ? `<span class="sc-badge sc-${sc.replace(/_/g,'-')}">${SC_LABELS[sc]||sc}</span>`
+          : '';
+        const accesStatut = rData.acces_statut || 'non_active';
+        const acesBadge = accesStatut === 'active'
+          ? `<span style="font-size:10px;font-weight:700;color:var(--green)">✓ Accès activé</span>`
+          : accesStatut === 'invite_envoye'
+            ? `<span style="font-size:10px;font-weight:700;color:var(--orange)">⏳ Invitation envoyée</span>`
+            : `<span style="font-size:10px;font-weight:700;color:var(--muted)">✗ Non activé</span>`;
         return `<div class="resto-item">
-          <div>
+          <div style="flex:1;min-width:0">
             <div class="resto-name">${esc(name)}</div>
-            <div class="resto-meta">${date ? date : ''}</div>
+            <div class="resto-meta" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px">
+              ${date ? `<span>${date}</span>` : ''}
+              ${scBadge}
+              ${acesBadge}
+            </div>
           </div>
           <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap">
             <a href="${BASE_URL}/${esc(slug)}/" target="_blank" class="btn-action">Voir →</a>
@@ -1271,6 +1314,34 @@ function copyPayLink() {
   navigator.clipboard.writeText(url)
     .then(() => showToast('Lien copié ✓', 'success'))
     .catch(() => { prompt('Copiez ce lien :', url); });
+}
+
+// ══════════════════════════════════════
+//  EXPORT EXCEL
+// ══════════════════════════════════════
+function exportAmbassadeursExcel() {
+  if (!ambassadeurs.length) { showToast('Aucun ambassadeur à exporter.', 'error'); return; }
+  const rows = ambassadeurs.map(a => ({
+    id:                   a.id,
+    prenom:               a.prenom || '',
+    nom:                  a.nom    || '',
+    email:                a.email  || '',
+    telephone:            a.telephone || '',
+    ville:                a.ville  || '',
+    code:                 a.code   || '',
+    statut:               a.statut || '',
+    max_restaurants_test: a.max_restaurants_test || 5,
+    nb_restaurants:       (a.restaurants_crees || []).length,
+    restaurants:          (a.restaurants_crees || []).map(r => r.slug || r).join(', '),
+    date_creation:        a.date_creation || '',
+    notes:                a.notes  || ''
+  }));
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Ambassadeurs');
+  const date = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `fidelavis_ambassadeurs_${date}.xlsx`);
+  showToast('Export Excel téléchargé ✓', 'success');
 }
 
 // ══════════════════════════════════════
