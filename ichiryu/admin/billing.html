@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Compte & Facturation – Fidelavis</title>
+  <script src="../../assets/core.js"          onerror="void(0)"></script>
+  <script src="../../assets/plans.js"         onerror="void(0)"></script>
+  <script src="../../assets/billing.js"       onerror="void(0)"></script>
+  <script src="../../assets/admin-billing.js" onerror="void(0)"></script>
+  <style>
+    :root {
+      --brand:        #b6152b;
+      --brand2:       #8b0f21;
+      --brand-light:  rgba(182,21,43,.08);
+      --brand-border: rgba(182,21,43,.2);
+      --bg:           #f4f6f9;
+      --white:        #ffffff;
+      --ink:          #1c1c2e;
+      --muted:        #6b7280;
+      --line:         #e5e7eb;
+      --shadow:       0 2px 16px rgba(0,0,0,.09);
+      --r:            14px;
+      --green:        #059669;
+      --green-bg:     #d1fae5;
+      --orange:       #d97706;
+      --orange-bg:    #fef3c7;
+      --red:          #dc2626;
+      --red-bg:       #fee2e2;
+      --blue:         #1976d2;
+      --blue-bg:      #dbeafe;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--brand);
+      padding: 0 20px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(182,21,43,.35);
+    }
+    .header-left  { display: flex; align-items: center; gap: 12px; }
+    .header-logo  { font-weight: 900; font-size: 20px; color: #fff; letter-spacing: -0.5px; }
+    .header-title { font-size: 14px; color: rgba(255,255,255,.75); }
+    .btn-back {
+      background: rgba(255,255,255,.15);
+      color: #fff; border: none; border-radius: 8px;
+      padding: 8px 14px; font-size: 13px; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-back:hover { background: rgba(255,255,255,.25); }
+
+    /* ── CONTENT ── */
+    .content { max-width: 860px; margin: 0 auto; padding: 28px 20px 60px; }
+    .page-title { font-size: 24px; font-weight: 900; margin-bottom: 6px; }
+    .page-sub    { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+
+    /* ── BILLING SECTIONS ── */
+    .billing-section {
+      background: var(--white);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .billing-section-title {
+      font-size: 16px; font-weight: 800;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* ── ROWS ── */
+    .billing-grid  { display: flex; flex-direction: column; gap: 0; }
+    .billing-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .billing-row:last-child { border-bottom: none; }
+    .billing-label { color: var(--muted); flex-shrink: 0; width: 180px; }
+    .billing-value { font-weight: 500; text-align: right; flex: 1; }
+    .billing-muted { color: var(--muted); font-weight: 400; }
+
+    /* ── STATUS DOT ── */
+    .billing-status-dot {
+      display: inline-block; width: 9px; height: 9px;
+      border-radius: 50%; margin-right: 7px; vertical-align: middle;
+    }
+
+    /* ── BADGES ── */
+    .billing-badge {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 999px; font-size: 12px; font-weight: 700;
+    }
+    .billing-badge.green  { background: var(--green-bg);  color: var(--green); }
+    .billing-badge.orange { background: var(--orange-bg); color: var(--orange); }
+    .billing-badge.red    { background: var(--red-bg);    color: var(--red); }
+    .billing-badge.blue   { background: var(--blue-bg);   color: var(--blue); }
+
+    /* ── TRIAL BANNER ── */
+    .billing-trial-banner {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border: 1.5px solid #93c5fd;
+      border-radius: var(--r);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    .billing-trial-icon  { font-size: 32px; flex-shrink: 0; }
+    .billing-trial-title { font-size: 17px; font-weight: 900; color: #1e40af; margin-bottom: 4px; }
+    .billing-trial-sub   { font-size: 14px; color: #1d4ed8; }
+
+    /* ── CODE ── */
+    .billing-code {
+      font-family: monospace; font-size: 12px;
+      background: var(--bg); padding: 2px 6px;
+      border-radius: 5px; color: var(--muted);
+    }
+
+    /* ── ALERTS ── */
+    .billing-alert {
+      padding: 12px 16px; border-radius: 10px;
+      font-size: 13px; font-weight: 600;
+      margin: 14px 0;
+    }
+    .billing-alert.orange { background: var(--orange-bg); color: var(--orange); }
+    .billing-alert.red    { background: var(--red-bg);    color: var(--red); }
+    .billing-alert.blue   { background: var(--blue-bg);   color: var(--blue); }
+
+    /* ── BUTTON ── */
+    .billing-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--brand); color: #fff;
+      border: none; border-radius: 10px;
+      padding: 12px 22px; font-size: 14px; font-weight: 700;
+      cursor: pointer; margin-top: 18px;
+      transition: background .15s;
+    }
+    .billing-btn:hover    { background: var(--brand2); }
+    .billing-btn:disabled { opacity: .6; cursor: not-allowed; }
+    .btn-spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── INVOICES ── */
+    .billing-invoice-header {
+      display: grid;
+      grid-template-columns: 130px 1fr 90px 80px 60px;
+      gap: 8px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .05em; color: var(--muted);
+      padding: 8px 0 6px;
+      border-bottom: 2px solid var(--line);
+      margin-bottom: 4px;
+    }
+    .billing-invoice-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 90px 80px 60px;
+      gap: 8px;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+    }
+    .billing-invoice-row:last-child { border-bottom: none; }
+    .billing-invoice-date   { color: var(--muted); font-size: 12px; }
+    .billing-invoice-desc   { font-weight: 500; }
+    .billing-invoice-amount { font-weight: 700; text-align: right; }
+    .billing-invoice-dl {
+      color: var(--blue); font-size: 12px; font-weight: 600;
+      text-decoration: none; white-space: nowrap;
+    }
+    .billing-invoice-dl:hover { text-decoration: underline; }
+
+    /* ── EMPTY / LOADING / ERROR ── */
+    .billing-loading, .billing-empty {
+      text-align: center; color: var(--muted);
+      padding: 32px 0; font-size: 14px;
+    }
+    .billing-error {
+      background: var(--red-bg); color: var(--red);
+      border-radius: 10px; padding: 16px;
+      font-size: 14px; font-weight: 600;
+    }
+    #billingError {
+      background: var(--red-bg); color: var(--red);
+      border-radius: 10px; padding: 12px 16px;
+      font-size: 13px; font-weight: 600;
+      margin-bottom: 16px; display: none;
+    }
+
+    /* ── PLAN CARDS (optionnel — pour upgrade) ── */
+    .plan-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .plan-card {
+      border: 2px solid var(--line);
+      border-radius: var(--r);
+      padding: 20px;
+      position: relative;
+    }
+    .plan-card.recommended { border-color: var(--brand); }
+    .plan-badge-rec {
+      position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+      background: var(--brand); color: #fff;
+      font-size: 11px; font-weight: 700; padding: 3px 12px;
+      border-radius: 999px; white-space: nowrap;
+    }
+    .plan-name  { font-size: 18px; font-weight: 900; margin-bottom: 6px; }
+    .plan-price { font-size: 28px; font-weight: 900; color: var(--brand); }
+    .plan-price span { font-size: 14px; font-weight: 400; color: var(--muted); }
+    .plan-setup { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+    .plan-features { list-style: none; font-size: 13px; }
+    .plan-features li { padding: 4px 0; }
+    .plan-features li::before { content: "✓ "; color: var(--green); font-weight: 700; }
+    .plan-btn {
+      display: block; text-align: center; margin-top: 16px;
+      background: var(--brand); color: #fff;
+      border: none; border-radius: 10px;
+      padding: 11px; font-size: 14px; font-weight: 700;
+      cursor: pointer; width: 100%;
+    }
+    .plan-btn:hover { background: var(--brand2); }
+    .plan-btn[data-current] {
+      background: var(--bg); color: var(--muted);
+      border: 2px solid var(--line); cursor: default;
+    }
+
+    @media (max-width: 600px) {
+      .billing-label { width: 130px; font-size: 13px; }
+      .billing-invoice-header,
+      .billing-invoice-row {
+        grid-template-columns: 100px 1fr 70px 60px 50px;
+        font-size: 12px;
+      }
+      .plan-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="header">
+  <div class="header-left">
+    <span class="header-logo">Fidelavis</span>
+    <span class="header-title" id="restNameHeader">Admin</span>
+  </div>
+  <a href="espace-admin.html" class="btn-back">← Tableau de bord</a>
+</header>
+
+<!-- ── CONTENT ── -->
+<main class="content">
+  <div class="page-title">Compte & Facturation</div>
+  <div class="page-sub">Gérez votre abonnement, consultez vos factures et mettez à jour vos informations.</div>
+
+  <!-- Erreur globale -->
+  <div id="billingError"></div>
+
+  <!-- Zone de rendu principal -->
+  <div id="billingContent"></div>
+
+</main>
+
+<script>
+// ── Auth guard (même logique que espace-admin.html) ──
+var SITE = (function() {
+  var m = location.pathname.match(/^\/([^/]+)\//);
+  return (m && m[1] !== "assets" && m[1] !== "fidelavis-admin") ? m[1] : "resto";
+})();
+
+var AUTH_KEY = "admin_" + SITE;
+var ROLE_KEY = "role_"  + SITE;
+if (!localStorage.getItem(AUTH_KEY)) {
+  window.location.href = "login.html";
+}
+
+fetch("/" + SITE + "/config.json")
+  .then(function(r) { return r.json(); })
+  .then(function(cfg) {
+    if (cfg && cfg.name) {
+      document.getElementById("restNameHeader").textContent = cfg.name;
+    }
+  })
+  .catch(function() {});
+
+// ── Rendre la section billing ───────────────────────
+document.addEventListener("DOMContentLoaded", function() {
+  if (window.FidelavisAdminBilling) {
+    FidelavisAdminBilling.renderBilling("billingContent");
+  } else {
+    document.getElementById("billingContent").innerHTML =
+      '<div class="billing-error">⚠️ Module de facturation non chargé.</div>';
+  }
+});
+</script>
+
+</body>
+</html>
