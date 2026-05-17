@@ -826,7 +826,7 @@ let IS_LOCKED = false;
   ACTIVE_MONTH = new Date().getMonth();
   const offerName = (_cfg?.activeCoupon?.title) || extractOfferName(offers[ACTIVE_MONTH]);
   offerEl.textContent = offerName;
-  setOfferImage(_cfg?.activeCoupon?.title || offers[ACTIVE_MONTH]);
+  setOfferImage(_cfg?.activeCoupon?.imageUrl || _cfg?.activeCoupon?.title || offers[ACTIVE_MONTH]);
   setOfferEndLabel();
 
   if (btn){

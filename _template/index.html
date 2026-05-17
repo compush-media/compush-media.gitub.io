@@ -103,6 +103,17 @@
       color:var(--muted);
       line-height:1.35;
     }
+    .restoLine{
+      margin:6px auto 4px;
+      font-size:16px;
+      font-weight:800;
+      color:#2a2a2a;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .restoLine .restoIcon{ font-size:17px; opacity:.85; }
+    .restoLine .restoName{ color:var(--brand); font-weight:950; }
 
     .card{
       background:var(--card);
@@ -114,11 +125,14 @@
     }
 
     .offer{
+      position:relative;
       border-radius:18px;
-      padding:14px 14px;
+      padding:14px 90px 14px 14px;
+      min-height:110px;
       border:1px solid rgba(180,140,74,.22);
       background:linear-gradient(180deg, rgba(180,140,74,.12) 0%, rgba(180,140,74,.06) 100%);
       margin-bottom:14px;
+      overflow:hidden;
     }
     .offerTitle{
       margin:0 0 6px;
@@ -130,10 +144,31 @@
     }
     .offerText{
       margin:0;
-      font-size:16px;
+      font-size:14px;
       font-weight:900;
       color:#241b0b;
-      line-height:1.2;
+      line-height:1.25;
+    }
+    .offerImg{
+      position:absolute;
+      right:6px;
+      top:50%;
+      transform:translateY(-50%);
+      width:80px;
+      height:80px;
+      object-fit:contain;
+      filter:drop-shadow(0 6px 14px rgba(0,0,0,.16));
+      animation:offerImgIn .45s ease both;
+      pointer-events:none;
+    }
+    @keyframes offerImgIn{
+      from{opacity:0;transform:translateY(-50%) scale(.85) rotate(-3deg);}
+      to{opacity:1;transform:translateY(-50%) scale(1) rotate(0);}
+    }
+    @media(max-width:380px){
+      .offer{padding-right:76px;min-height:96px;}
+      .offerImg{width:68px;height:68px;}
+      .offerText{font-size:13px;}
     }
 
     .pinLabel{
@@ -357,12 +392,14 @@
 <div class="wrap">
   <div class="badge"><span class="dot"></span>Accès client activé</div>
   <h1>Coupon du mois</h1>
+  <p class="restoLine"><span class="restoIcon">🏛️</span> Chez <span class="restoName" id="restoName">le restaurant</span></p>
   <p class="sub">Présentez ce coupon en caisse. Entrez le code PIN affiché par le restaurant.</p>
 
   <div class="card">
     <div class="offer">
       <p class="offerTitle">OFFRE EN COURS</p>
       <p class="offerText" id="txtOffer">Chargement…</p>
+      <img id="offerImg" class="offerImg" src="" alt="" aria-hidden="true">
     </div>
 
     <div class="pinLabel">Code PIN (4 chiffres)</div>
@@ -541,6 +578,42 @@ const offers = [
   "🎁 Octobre : Café gourmand","🎁 Novembre : Menu duo","🎁 Décembre : Chocolat chaud"
 ];
 
+const offerImages = {
+  "apéritif": "/_template/images/offres/aperitif.png",
+  "gâteau":   "/_template/images/offres/gateau.png",
+  "café":     "/_template/images/offres/cafe.png",
+  "chocolat": "/_template/images/offres/cafe.png",
+  "dessert":  "/_template/images/offres/dessert.png",
+  "cocktail": "/_template/images/offres/cocktail.png",
+  "boisson":  "/_template/images/offres/boisson.png",
+  "entrée":   "/_template/images/offres/entree.png",
+  "plat":     "/_template/images/offres/plat.png",
+  "pizza":    "/_template/images/offres/pizza.png",
+  "menu":     "/_template/images/offres/menu.png",
+  "surprise": "/_template/images/offres/surprise.png",
+  "glace":    "/_template/images/offres/dessert.png",
+  "réduction":"/_template/images/offres/reduction.png",
+  "%":        "/_template/images/offres/reduction.png"
+};
+
+function setOfferImage(offerText) {
+  const img = document.getElementById("offerImg");
+  if (!img) return;
+  let src;
+  if (offerText && (offerText.startsWith('/') || offerText.startsWith('http'))) {
+    src = offerText;
+  } else {
+    const lower = (offerText || '').toLowerCase();
+    const match = Object.keys(offerImages).find(k => lower.includes(k));
+    src = match ? offerImages[match] : "/_template/images/offres/surprise.png";
+  }
+  img.src = src;
+  img.alt = offerText;
+  img.style.animation = "none";
+  void img.offsetWidth;
+  img.style.animation = "";
+}
+
 let ACTIVE_YEAR = new Date().getFullYear();
 let ACTIVE_MONTH = new Date().getMonth();
 let IS_LOCKED = false;
@@ -549,6 +622,10 @@ let IS_LOCKED = false;
   let _cfg = null;
   try{ _cfg = await window.Fidelavis?.loadConfig?.(); }catch(e){}
   initServices(_cfg);
+
+  // Nom du restaurant
+  const restoNameEl = document.getElementById("restoName");
+  if (restoNameEl && _cfg?.name) restoNameEl.textContent = _cfg.name;
 
   const offerEl = document.getElementById("txtOffer");
   const subEl = document.querySelector(".sub");
@@ -568,6 +645,7 @@ let IS_LOCKED = false;
 
       const lockedOfferText = (_cfg?.activeCoupon?.title) || offers[ACTIVE_MONTH];
       offerEl.textContent = `${lockedOfferText} — 🔒 disponible le ${unlockLabel}`;
+      setOfferImage(_cfg?.activeCoupon?.imageUrl || _cfg?.activeCoupon?.title || offers[ACTIVE_MONTH]);
 
       if (subEl){
         subEl.innerHTML = `✅ Inscription confirmée.<br><b>Revenez le mois prochain</b> pour profiter de votre coupon.`;
@@ -591,6 +669,7 @@ let IS_LOCKED = false;
   ACTIVE_YEAR = new Date().getFullYear();
   ACTIVE_MONTH = new Date().getMonth();
   offerEl.textContent = (_cfg?.activeCoupon?.title) || offers[ACTIVE_MONTH];
+  setOfferImage(_cfg?.activeCoupon?.imageUrl || _cfg?.activeCoupon?.title || offers[ACTIVE_MONTH]);
 
   if (btn){
     btn.disabled = false;
