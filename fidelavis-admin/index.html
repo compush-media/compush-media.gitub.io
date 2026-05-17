@@ -3511,7 +3511,8 @@ async function confirmImport() {
       const slug = slugify(row.denomination);
       if (!slug) { skipped++; continue; }
       const existing = data[slug] || {};
-      const isNew    = !existing.name;
+      // Scaffolder si les fichiers du site n'existent pas encore (même si déjà au registre)
+      const isNew    = !allItems.some(f => f.path === slug + '/index.html');
       const color    = existing.brandColor  || '#B8924F';
       const color2   = existing.brandColor2 || '#9E7A3E';
 
