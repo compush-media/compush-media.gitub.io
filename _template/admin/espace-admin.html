@@ -969,24 +969,70 @@
       </p>
     </div>
 
-    <!-- Couleur de marque -->
-    <div class="card">
-      <div class="card-title"><span class="card-title-icon">🎨</span> Couleur de marque</div>
+    <!-- Design : couleurs + image du haut + tagline -->
+    <div class="card" style="margin-top:0;">
+      <div class="card-title"><span class="card-title-icon">🎨</span> Design &amp; Personnalisation</div>
+
+      <!-- Couleurs -->
       <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
-        Couleur principale utilisée dans les boutons, accents et barre de titre de la PWA.
+        Couleurs utilisées dans les boutons, accents et barre de titre de la PWA.
       </p>
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
-        <input type="color" id="brandColorInput"
-          style="width:48px;height:48px;border:none;border-radius:10px;cursor:pointer;padding:2px;" />
+      <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:6px;">
         <div>
-          <div style="font-size:13px;font-weight:700;" id="brandColorLabel">#b8924f</div>
-          <div style="font-size:12px;color:var(--muted);">Couleur actuelle</div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;">Couleur principale</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="color" id="brandColorInput"
+              style="width:44px;height:44px;border:none;border-radius:10px;cursor:pointer;padding:2px;" />
+            <span style="font-size:13px;font-weight:700;" id="brandColorLabel">#b8924f</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;">Couleur secondaire</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="color" id="brandColor2Input"
+              style="width:44px;height:44px;border:none;border-radius:10px;cursor:pointer;padding:2px;" />
+            <span style="font-size:13px;font-weight:700;" id="brandColor2Label">#9E7A3E</span>
+          </div>
         </div>
       </div>
-      <button class="btn btn-brand" type="button" onclick="saveColor()" style="margin-top:4px;">
-        💾 Enregistrer la couleur
+
+      <!-- Image du haut (hero) — lifestyle uniquement -->
+      <div id="heroSection" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;">Image en-tête</div>
+        <p style="font-size:13px;color:var(--muted);margin:0 0 12px;">
+          Photo d'ambiance affichée en grand sur votre carte. Idéalement une belle photo Instagram ou du restaurant.
+        </p>
+        <div id="heroPreviewWrap" style="display:none;margin-bottom:12px;border-radius:12px;overflow:hidden;">
+          <img id="heroPreviewImg" src="" alt="Aperçu"
+            style="width:100%;height:160px;object-fit:cover;display:block;" />
+        </div>
+        <label class="form-label" for="heroUrlInput">URL de l'image (JPG ou PNG)</label>
+        <input class="form-input" type="url" id="heroUrlInput"
+          placeholder="https://monresto.fr/ambiance.jpg"
+          style="margin-bottom:8px;" />
+        <button class="btn" type="button" onclick="previewHero()"
+          style="background:#f3f4f6;color:#555;border:1px solid var(--line);font-size:13px;">
+          👁 Aperçu
+        </button>
+      </div>
+
+      <!-- Tagline — lifestyle uniquement -->
+      <div id="taglineSection" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;">Tagline</div>
+        <p style="font-size:13px;color:var(--muted);margin:0 0 10px;">
+          Courte phrase d'accroche sous votre logo. Ex : « Instagrammable &amp; gourmand »
+        </p>
+        <input class="form-input" type="text" id="taglineInput"
+          placeholder="Votre accroche…" maxlength="60" />
+      </div>
+
+      <button class="btn btn-brand" type="button" onclick="saveDesign()" id="saveDesignBtn" style="margin-top:16px;">
+        💾 Enregistrer le design
       </button>
-      <div class="notif-msg" id="colorFeedback" style="margin-top:12px;"></div>
+      <div class="notif-msg" id="designFeedback" style="margin-top:12px;"></div>
+      <p style="font-size:12px;color:var(--muted);margin:10px 0 0;">
+        ⏱️ Les modifications sont visibles sur votre carte en ~1 minute.
+      </p>
     </div>
 
     <!-- Lien Google Avis -->
@@ -2208,10 +2254,26 @@ async function loadParametres() {
       document.getElementById('iconUrlDisplay').textContent = iconUrl;
     }
 
-    // Couleur
-    const color = cfg.color || '#b8924f';
-    document.getElementById('brandColorInput').value = color;
-    document.getElementById('brandColorLabel').textContent = color;
+    // Couleurs
+    const color  = cfg.color  || '#b8924f';
+    const color2 = cfg.color2 || '#9E7A3E';
+    document.getElementById('brandColorInput').value         = color;
+    document.getElementById('brandColorLabel').textContent   = color;
+    document.getElementById('brandColor2Input').value        = color2;
+    document.getElementById('brandColor2Label').textContent  = color2;
+
+    // Hero + tagline (lifestyle uniquement)
+    if (cfg.walletTemplate) {
+      document.getElementById('heroSection').style.display    = '';
+      document.getElementById('taglineSection').style.display = '';
+    }
+    const heroUrl = cfg.heroUrl || '';
+    document.getElementById('heroUrlInput').value = heroUrl;
+    if (heroUrl) {
+      document.getElementById('heroPreviewImg').src          = heroUrl;
+      document.getElementById('heroPreviewWrap').style.display = '';
+    }
+    document.getElementById('taglineInput').value = cfg.tagline || '';
 
     // Google Review Place ID
     const gr = cfg.googleReview || '';
@@ -2224,9 +2286,12 @@ async function loadParametres() {
     }
   } catch(e) {}
 
-  // Mise à jour label couleur en temps réel
+  // Mise à jour labels couleur en temps réel
   document.getElementById('brandColorInput').addEventListener('input', function() {
     document.getElementById('brandColorLabel').textContent = this.value;
+  });
+  document.getElementById('brandColor2Input').addEventListener('input', function() {
+    document.getElementById('brandColor2Label').textContent = this.value;
   });
 }
 
@@ -2329,12 +2394,53 @@ function resetIcon() {
   saveIcon();
 }
 
-async function saveColor() {
-  const color = document.getElementById('brandColorInput').value;
-  const fb    = document.getElementById('colorFeedback');
+function previewHero() {
+  const url  = (document.getElementById('heroUrlInput').value || '').trim();
+  const wrap = document.getElementById('heroPreviewWrap');
+  const img  = document.getElementById('heroPreviewImg');
+  if (url) { img.src = url; wrap.style.display = ''; }
+  else     { wrap.style.display = 'none'; }
+}
 
-  fb.textContent = '⏳ Fonctionnalité à venir — contactez le support pour modifier la couleur.';
-  fb.className   = 'notif-msg';
+async function saveDesign() {
+  const color   = document.getElementById('brandColorInput').value;
+  const color2  = document.getElementById('brandColor2Input').value;
+  const heroUrl = (document.getElementById('heroUrlInput')?.value  || '').trim();
+  const tagline = (document.getElementById('taglineInput')?.value  || '').trim();
+  const fb      = document.getElementById('designFeedback');
+  const btn     = document.getElementById('saveDesignBtn');
+
+  if (heroUrl && !/^https?:\/\//.test(heroUrl)) {
+    fb.textContent = '⚠️ L\'URL de l\'image doit commencer par https://';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Enregistrement…';
+  fb.className    = 'notif-msg';
+
+  try {
+    const params = new URLSearchParams({ action: 'save_design', resto: SITE,
+      color, color2, heroUrl, tagline });
+    const res  = await fetch(`${API}?${params}`, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data?.ok) {
+      fb.textContent = '✅ Design mis à jour ! Visible dans ~1 minute.';
+      fb.className   = 'notif-msg success';
+      _paramsLoaded  = false;
+    } else {
+      fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue');
+      fb.className   = 'notif-msg error';
+    }
+  } catch(err) {
+    fb.textContent = '⚠️ ' + (err?.message || 'Erreur réseau');
+    fb.className   = 'notif-msg error';
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '💾 Enregistrer le design';
 }
 
 // ═══════════════════════════════════════════════════════════════

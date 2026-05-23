@@ -71,6 +71,9 @@ function doPost(e) {
       case "duplicate_resto":
         result = duplicateRestaurant(body);
         break;
+      case "save_design":
+        result = saveDesign(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -101,6 +104,7 @@ function doGet(e) {
         case "analyze_website":    result = analyzeWebsite(e.parameter); break;
         case "save_offre_jour":    result = saveOffreJour(e.parameter); break;
         case "save_coupon_mois":   result = saveCouponMois(e.parameter); break;
+        case "save_design":        result = saveDesign(e.parameter); break;
         default: result = { error: "Action GET inconnue : " + e.parameter.action };
       }
       return buildResponse(result);
@@ -565,6 +569,91 @@ function saveGoogleReview(params) {
     googleReview:  googleReview || "(supprimé)",
     status:        putCode
   };
+}
+
+// ─── Action : Mettre à jour le design (couleurs + hero + tagline) ──
+//
+//  Paramètres (GET ou POST) :
+//    resto    — slug du restaurant (ex: "jolia")
+//    color    — couleur principale (#RRGGBB)
+//    color2   — couleur secondaire (#RRGGBB)
+//    heroUrl  — URL de l'image en-tête (vide = supprimer)
+//    tagline  — accroche courte (vide = supprimer)
+//
+//  Met à jour /{resto}/config.json + theme_color dans progressier.json
+//
+function saveDesign(params) {
+  var resto   = (params.resto   || "").trim().toLowerCase().replace(/\s+/g, "-");
+  var color   = (params.color   || "").trim();
+  var color2  = (params.color2  || "").trim();
+  var heroUrl = (params.heroUrl || "").trim();
+  var tagline = (params.tagline || "").trim();
+
+  if (!resto) return { error: "Paramètre resto manquant." };
+  if (color  && !/^#[0-9a-fA-F]{3,6}$/.test(color))  return { error: "Format color invalide." };
+  if (color2 && !/^#[0-9a-fA-F]{3,6}$/.test(color2)) return { error: "Format color2 invalide." };
+  if (heroUrl && !/^https?:\/\//.test(heroUrl))       return { error: "heroUrl doit commencer par https://" };
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré." };
+
+  var headers    = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+  var configPath = resto + "/config.json";
+  var configUrl  = "https://api.github.com/repos/" + repo + "/contents/" + configPath + "?ref=main";
+
+  var configRes  = UrlFetchApp.fetch(configUrl, { headers: headers, muteHttpExceptions: true });
+  var configCode = configRes.getResponseCode();
+  if (configCode !== 200) return { error: "config.json introuvable pour " + resto + " (" + configCode + ")" };
+
+  var configData = JSON.parse(configRes.getContentText());
+  var existing;
+  try {
+    existing = JSON.parse(Utilities.newBlob(Utilities.base64Decode(configData.content.replace(/\n/g, ""))).getDataAsString());
+  } catch(_) { existing = {}; }
+
+  if (color)   existing.color   = color;
+  if (color2)  existing.color2  = color2;
+  if (heroUrl) existing.heroUrl = heroUrl;
+  else         delete existing.heroUrl;
+  if (tagline) existing.tagline = tagline;
+  else         delete existing.tagline;
+
+  var newB64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(existing, null, 2) + "\n").getBytes());
+  var putRes = UrlFetchApp.fetch("https://api.github.com/repos/" + repo + "/contents/" + configPath, {
+    method: "put",
+    headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload: JSON.stringify({ message: "design: maj couleurs/hero pour " + resto, content: newB64, sha: configData.sha }),
+    muteHttpExceptions: true
+  });
+  var putCode = putRes.getResponseCode();
+  if (putCode !== 200 && putCode !== 201) {
+    return { error: "Erreur GitHub PUT " + putCode + " : " + putRes.getContentText().slice(0, 200) };
+  }
+
+  // Mettre à jour theme_color dans progressier.json si couleur changée
+  if (color) {
+    var manifestPath = resto + "/progressier.json";
+    var mRes = UrlFetchApp.fetch("https://api.github.com/repos/" + repo + "/contents/" + manifestPath + "?ref=main",
+      { headers: headers, muteHttpExceptions: true });
+    if (mRes.getResponseCode() === 200) {
+      var mData = JSON.parse(mRes.getContentText());
+      var manifest;
+      try { manifest = JSON.parse(Utilities.newBlob(Utilities.base64Decode(mData.content.replace(/\n/g,""))).getDataAsString()); }
+      catch(_) { manifest = {}; }
+      manifest.theme_color = color;
+      var mB64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(manifest, null, 2) + "\n").getBytes());
+      UrlFetchApp.fetch("https://api.github.com/repos/" + repo + "/contents/" + manifestPath, {
+        method: "put",
+        headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+        payload: JSON.stringify({ message: "design: theme_color pour " + resto, content: mB64, sha: mData.sha }),
+        muteHttpExceptions: true
+      });
+    }
+  }
+
+  return { ok: true, resto: resto };
 }
 
 // ─── Action 6 : Lire les ambassadeurs (GitHub) ───────────────
