@@ -52,7 +52,7 @@
     .pg-head {
       position: relative;
       text-align: center;
-      padding: 20px 20px 0;
+      padding: 18px 18px 0;
     }
 
     /* Status pill */
@@ -77,11 +77,12 @@
     /* Main title */
     .pg-title {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 700;
       color: var(--ink);
-      line-height: 1.2;
-      letter-spacing: -.4px;
+      line-height: 1.18;
+      letter-spacing: -.5px;
+      margin-top: 30px;
       margin-bottom: 10px;
     }
 
@@ -97,7 +98,7 @@
     /* Account button — absolute top-right */
     .acct-btn {
       position: absolute;
-      top: 16px;
+      top: 12px;
       right: 16px;
       background: none;
       border: none;
@@ -108,7 +109,7 @@
       padding: 0;
     }
     .acct-av {
-      width: 48px; height: 48px;
+      width: 52px; height: 52px;
       border-radius: 50%;
       object-fit: cover;
       border: 2.5px solid var(--white);
@@ -146,7 +147,7 @@
     /* Photo area */
     .hero-img {
       position: relative;
-      height: 256px;
+      height: 292px;
       border-radius: 22px;
       overflow: hidden;
       background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 100%);
@@ -178,7 +179,7 @@
     }
     .hero-nm {
       font-family: 'Dancing Script', cursive;
-      font-size: 30px;
+      font-size: 33px;
       font-weight: 700;
       color: #fff;
       line-height: 1;
@@ -200,6 +201,11 @@
       text-transform: uppercase;
       margin-top: 2px;
     }
+    .hero-rule {
+      width: 22px; height: 1px;
+      background: rgba(255,255,255,.55);
+      margin-top: 8px;
+    }
 
     /* White wave at the bottom of the photo */
     .hero-wave {
@@ -218,14 +224,14 @@
     /* Circular logo — sits on the wave boundary */
     .hero-logo {
       position: absolute;
-      bottom: -32px;
+      bottom: -52px;
       left: 50%;
       transform: translateX(-50%);
-      width: 74px; height: 74px;
+      width: 116px; height: 116px;
       border-radius: 50%;
       background: var(--white);
-      border: 4px solid var(--white);
-      box-shadow: 0 4px 20px rgba(0,0,0,.14);
+      border: 5px solid var(--white);
+      box-shadow: 0 4px 22px rgba(0,0,0,.16);
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -239,7 +245,7 @@
     }
     .hero-logo-init {
       font-family: 'Dancing Script', cursive;
-      font-size: 24px;
+      font-size: 38px;
       font-weight: 700;
       color: var(--brand);
       text-align: center;
@@ -251,7 +257,7 @@
     ═══════════════════════════════════════════ */
     .profile {
       text-align: center;
-      padding: 48px 24px 18px;
+      padding: 72px 24px 18px;
     }
     .profile-hi {
       font-family: 'Playfair Display', Georgia, serif;
@@ -740,6 +746,7 @@
       <div class="hero-nm"  id="heroName">Le Restaurant</div>
       <div class="hero-sub" id="heroSub">BRUNCH &amp; COFFEE SHOP</div>
       <div class="hero-city" id="heroCity">PARIS</div>
+      <div class="hero-rule"></div>
     </div>
     <!-- White wave at the bottom -->
     <div class="hero-wave"></div>
