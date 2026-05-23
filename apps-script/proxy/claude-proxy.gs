@@ -74,6 +74,9 @@ function doPost(e) {
       case "save_design":
         result = saveDesign(body);
         break;
+      case "upload_image":
+        result = uploadImage(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -654,6 +657,45 @@ function saveDesign(params) {
   }
 
   return { ok: true, resto: resto };
+}
+
+// ─── Upload d'une image binaire dans le repo (offre/hero/logo) ───
+// Reçoit dataBase64 (contenu encodé base64, avec ou sans préfixe data:),
+// commit le fichier dans {resto}/{slot}-{ts}.{ext} et renvoie l'URL publique.
+function uploadImage(params) {
+  var resto = (params.resto || "").trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
+  if (!resto) return { error: "Paramètre resto manquant." };
+
+  var dataB64 = String(params.dataBase64 || "");
+  var comma = dataB64.indexOf(",");
+  if (dataB64.indexOf("data:") === 0 && comma !== -1) dataB64 = dataB64.substring(comma + 1);
+  dataB64 = dataB64.replace(/\s/g, "");
+  if (!dataB64) return { error: "Image vide." };
+  if (dataB64.length > 2000000) return { error: "Image trop volumineuse (~1,4 Mo max). Réessayez avec une image plus petite." };
+
+  var ext = String(params.ext || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (["jpg","jpeg","png","webp"].indexOf(ext) === -1) ext = "jpg";
+  var slot = String(params.slot || "img").replace(/[^a-z0-9_-]/gi, "").slice(0, 20) || "img";
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré." };
+
+  var filePath = resto + "/" + slot + "-" + Date.now() + "." + ext;
+  var apiUrl   = "https://api.github.com/repos/" + repo + "/contents/" + filePath;
+
+  var putRes = UrlFetchApp.fetch(apiUrl, {
+    method: "put",
+    headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload: JSON.stringify({ message: "upload: image " + filePath, content: dataB64, branch: "main" }),
+    muteHttpExceptions: true
+  });
+  var code = putRes.getResponseCode();
+  if (code !== 200 && code !== 201) {
+    return { error: "Erreur GitHub " + code + " : " + putRes.getContentText().substring(0, 200) };
+  }
+  return { ok: true, url: "https://app.cartefidelavis.com/" + filePath, path: filePath };
 }
 
 // ─── Action 6 : Lire les ambassadeurs (GitHub) ───────────────

@@ -824,6 +824,13 @@
       placeholder="https://… (photo du produit, carré recommandé)"
       style="margin-bottom:10px;"
       oninput="couponImgPreview()" />
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+      <label for="couponEditImageFile" class="btn" style="background:#f3f4f6;color:#333;border:1px solid var(--line);cursor:pointer;margin:0;">
+        📤 Importer une image
+      </label>
+      <input type="file" id="couponEditImageFile" accept="image/*" style="display:none;" onchange="uploadCouponImage(this)" />
+      <span id="couponUploadStatus" style="font-size:12px;color:var(--muted);"></span>
+    </div>
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
       <img id="couponImgPreviewEl" alt="aperçu de l'offre"
         style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid var(--line);display:none;" />
@@ -2137,6 +2144,60 @@ function couponImgPreview() {
   if (!img) return;
   if (src) { img.src = src; img.style.display = ''; img.onerror = () => { img.style.display = 'none'; }; }
   else     { img.style.display = 'none'; }
+}
+
+// Redimensionne une image (côté navigateur) en data URL JPEG compressé
+function resizeImageToDataUrl(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        const cw = Math.round(img.width * scale), ch = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = cw; canvas.height = ch;
+        canvas.getContext('2d').drawImage(img, 0, 0, cw, ch);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => reject(new Error('Image illisible'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('Lecture du fichier échouée'));
+    reader.readAsDataURL(file);
+  });
+}
+
+// Importe une image depuis l'appareil → l'héberge via le proxy → renseigne l'URL
+async function uploadCouponImage(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('couponUploadStatus');
+  statusEl.style.color = 'var(--muted)';
+  statusEl.textContent = '⏳ Préparation…';
+  try {
+    const dataUrl = await resizeImageToDataUrl(file, 800, 0.82);
+    statusEl.textContent = '⏳ Envoi…';
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },  // requête simple → pas de préflight CORS
+      body: JSON.stringify({ action: 'upload_image', resto: SITE, slot: 'offre', ext: 'jpg', dataBase64: dataUrl })
+    });
+    const data = await res.json();
+    if (data && data.ok && data.url) {
+      document.getElementById('couponEditImageUrl').value = data.url;
+      couponImgPreview();
+      statusEl.style.color = '#1a8a4a';
+      statusEl.textContent = '✅ Image importée — cliquez « Mettre à jour le coupon »';
+    } else {
+      statusEl.style.color = '#c0392b';
+      statusEl.textContent = '⚠️ ' + ((data && data.error) || 'Échec de l\'upload');
+    }
+  } catch (err) {
+    statusEl.style.color = '#c0392b';
+    statusEl.textContent = '⚠️ ' + (err?.message || 'Erreur');
+  }
+  input.value = '';
 }
 
 async function saveCouponMoisAdmin() {
