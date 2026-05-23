@@ -1,7 +1,7 @@
 {
   "name": "Jolia",
   "color": "#d81326",
-  "color2": "#b0e52a",
+  "color2": "#0d0d0d",
   "walletTemplate": "templates/brunch-resto",
   "category": "brunch",
   "city": "Paris",
