@@ -873,9 +873,10 @@ function startTimer(){
   if(coupon.title){
     document.getElementById('offerTtl').textContent=coupon.title.replace(/offert[e]?/gi,'').trim()||coupon.title;
   }
-  if(coupon.imageUrl){
+  var offerImg=coupon.imageUrl||heroUrl;
+  if(offerImg){
     var op=document.getElementById('offerPhoto');
-    op.innerHTML='<img src="'+coupon.imageUrl+'" alt="offre" onerror="this.parentNode.textContent=\'🎁\'">';
+    op.innerHTML='<img src="'+offerImg+'" alt="offre" onerror="this.parentNode.textContent=\'🎁\'">';
   }
 
   /* PIN */

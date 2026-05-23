@@ -1,9 +1,10 @@
 {
   "name": "Jolia",
-  "color": "#D4637A",
-  "color2": "#C04868",
+  "color": "#5A6040",
+  "color2": "#454D30",
   "walletTemplate": "templates/brunch-resto",
   "category": "brunch",
+  "city": "Paris",
   "tagline": "Instagrammable & gourmand",
   "heroUrl": "https://app.cartefidelavis.com/jolia/hero.jpg",
   "activeCoupon": {
