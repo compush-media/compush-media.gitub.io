@@ -1062,7 +1062,11 @@
 <div class="modal-overlay" id="importModal">
   <div class="modal-card">
     <div class="modal-header">
-      <div class="modal-title">📥 Importer des restaurants</div>
+      <div>
+        <div class="modal-title">📥 Importer des restaurants</div>
+        <!-- Badge mode auto-détecté -->
+        <div id="importModeBadge" style="display:none;margin-top:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;display:inline-flex;align-items:center;gap:5px;width:fit-content"></div>
+      </div>
       <button class="modal-close" onclick="closeImportModal()">✕</button>
     </div>
     <div class="modal-body">
@@ -1077,8 +1081,9 @@
       </div>
 
       <div id="importTemplateHint" style="font-size:12px;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:8px;line-height:1.7">
-        <strong>Colonnes du modèle (model1.xlsx) :</strong> denomination · nom_enseigne · forme_juridique · dirigeant · dirigeant_role · dirigeant_date_naissance · libelle_ape · rue · code_postal · ville · employes_dernier · employes_dernier_annee · tel · site_web · email · twitter · facebook · linkedin · GMB_URL · note_google · nombre_avis_google · ambassadeur_assigné · statut
-        <br><button class="btn-outline" style="font-size:11px;padding:4px 10px;margin-top:6px" onclick="downloadTemplate()">📄 Télécharger le modèle</button>
+        <strong>Format classique :</strong> denomination · ville · tel · email · GMB_URL · ambassadeur_assigné · statut…
+        <br><strong>Format lifestyle (auto-détecté) :</strong> Name · Instagram_URL · First_category · Second_category · Logo_URL · Review_URL…
+        <br><button class="btn-outline" style="font-size:11px;padding:4px 10px;margin-top:6px" onclick="downloadTemplate()">📄 Télécharger le modèle classique</button>
       </div>
 
       <div id="importPreview" style="display:none">
@@ -3340,12 +3345,43 @@ async function sendActivationEmail() {
 //  IMPORT CSV / EXCEL
 // ============================================================
 let _importRows = [];
+let _importIsLifestyle = false;
+
+// ── Lifestyle helpers ──────────────────────────────────────
+const LIFESTYLE_SIGNALS = {
+  brunch: ['brunch','breakfast','petit-déjeuner','mimosa','pancake','waffle','gaufre','granola','sunday'],
+  gastro: ['gastronomique','bistronomie','fine dining','étoilé','michelin','gourmet','dégustation','gastro'],
+  coffee: ['coffee','coffee shop','barista','espresso','specialty coffee','torréfacteur','roaster','cold brew'],
+};
+const LIFESTYLE_COLORS  = { brunch:{color:'#D4637A',color2:'#C04868'}, gastro:{color:'#C9A84C',color2:'#9A7A2A'}, coffee:{color:'#8B7355',color2:'#6B5535'} };
+const LIFESTYLE_CONTENT = {
+  brunch:{ offers:[['Dessert du chef','Sur présentation de votre code en caisse'],['Mimosa à l\'arrivée','Sur réservation, le week-end'],['Granola bowl maison','Pour tout brunch à partir de 2 personnes']], taglines:['Instagrammable & gourmand','Le spot brunch du quartier','Brunch, partage & bonne humeur'] },
+  gastro:{ offers:[['Cocktail signature','Sur présentation de votre code en caisse'],['Mignardises','En fin de repas, pour les membres'],['Expérience signature','Pour toute table de 2 personnes']], taglines:['L\'art de recevoir à la française','Une expérience gastronomique','La table des amateurs de bonne cuisine'] },
+  coffee:{ offers:[['Café signature','Sur présentation de votre code en caisse'],['Viennoiserie','Avec tout café de spécialité'],['Dégustation découverte','Sélection du mois']], taglines:['Specialty coffee & daily rituals','L\'art du café de spécialité','Le café de vos rituels du matin'] },
+};
+
+function detectLifestyleStyle(name, cat1, cat2) {
+  const text = [name, cat1, cat2].filter(Boolean).join(' ').toLowerCase();
+  const scores = {};
+  for (const [s, kws] of Object.entries(LIFESTYLE_SIGNALS))
+    scores[s] = kws.filter(k => text.includes(k)).length;
+  const best = Object.entries(scores).sort((a,b) => b[1]-a[1])[0];
+  return best[1] > 0 ? best[0] : 'brunch';
+}
+
+function hashInt(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (Math.imul(31,h) + str.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
 
 function openImportModal() {
   _importRows = [];
-  el('importPreview').style.display   = 'none';
+  _importIsLifestyle = false;
+  el('importPreview').style.display    = 'none';
   el('importConfirmBtn').style.display = 'none';
-  el('importFile').value              = '';
+  el('importFile').value               = '';
+  el('importModeBadge').style.display  = 'none';
   el('importModal').classList.add('open');
 }
 
@@ -3452,26 +3488,86 @@ function slugify(str) {
 }
 
 function showImportPreview(rows, filename) {
-  const normalized = rows.map(normalizeRow).filter(r => r.denomination);
-  _importRows = normalized;
+  // ── Détection automatique du format ──────────────────────
+  const firstRow = rows[0] || {};
+  const keys = Object.keys(firstRow).map(k => k.toLowerCase());
+  _importIsLifestyle = keys.includes('instagram_url') || keys.includes('first_category');
 
-  el('importPreviewTitle').textContent = `${normalized.length} restaurant(s) détecté(s) dans « ${filename} »`;
+  // ── Afficher le badge de mode ─────────────────────────────
+  const badge = el('importModeBadge');
+  if (_importIsLifestyle) {
+    badge.style.cssText = 'display:inline-flex;align-items:center;gap:5px;margin-top:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:#fff0f3;color:#D4637A;border:1px solid #F5C2C8';
+    badge.textContent = '✨ Mode Lifestyle détecté — template brunch/gastro/coffee';
+  } else {
+    badge.style.cssText = 'display:inline-flex;align-items:center;gap:5px;margin-top:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--bg2);color:var(--muted)';
+    badge.textContent = '🏪 Mode classique — template standard';
+  }
+
+  if (_importIsLifestyle) {
+    // Format lifestyle : colonnes Name, Instagram_URL, etc.
+    _importRows = rows
+      .filter(r => r.Name && String(r.Name).trim())
+      .map(r => {
+        const name  = String(r.Name).trim();
+        const style = detectLifestyleStyle(name, r.First_category||'', r.Second_category||'');
+        const hi    = hashInt(name);
+        const cont  = LIFESTYLE_CONTENT[style];
+        return {
+          _lifestyle: true,
+          denomination: name,
+          slug_override: slugify(name),
+          style,
+          instagram_url: r.Instagram_URL  || '',
+          logo_url:      r.Logo_URL       || '',
+          review_url:    r.Review_URL     || '',
+          site_web:      r.Website        || '',
+          adresse:       r.Full_Address   || '',
+          tel:           r.Phone_Standard_format || '',
+          email:         r.Email_From_WEBSITE    || '',
+          premium_score: r.premium_score  || '',
+          statut:        r.statut_contact || '',
+          nom_gerant:    r.nom_gerant     || '',
+          ambassadeur:   r.ambassadeur    || '',
+          offer_title:   cont.offers[hi % cont.offers.length][0],
+          offer_sub:     cont.offers[hi % cont.offers.length][1],
+          tagline:       cont.taglines[hi % cont.taglines.length],
+        };
+      });
+
+    const STYLE_COLOR = { brunch:'#D4637A', gastro:'#b59a3a', coffee:'#8B7355' };
+    el('importPreviewTable').innerHTML = `
+      <thead><tr><th>Restaurant</th><th>Slug</th><th>Style</th><th>Instagram</th><th>Score</th><th>Statut</th></tr></thead>
+      <tbody>${_importRows.slice(0,20).map(r => `<tr>
+        <td style="font-weight:700">${escHtml(r.denomination)}</td>
+        <td style="font-family:monospace;font-size:11px;color:var(--muted)">/${escHtml(r.slug_override)}/</td>
+        <td><span style="padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;background:${STYLE_COLOR[r.style]}22;color:${STYLE_COLOR[r.style]}">${r.style}_v1</span></td>
+        <td style="font-size:11px;color:var(--muted)">${r.instagram_url ? escHtml(r.instagram_url.replace('https://www.instagram.com/','@').replace(/\/$/,'')) : '—'}</td>
+        <td style="text-align:center">${r.premium_score||'—'}</td>
+        <td style="font-size:11px">${escHtml(r.statut||'—')}</td>
+      </tr>`).join('')}</tbody>`;
+  } else {
+    // Format classique
+    const normalized = rows.map(normalizeRow).filter(r => r.denomination);
+    _importRows = normalized;
+    const cols = ['denomination','ville','tel','email','dirigeant','statut','ambassadeur_assigné'];
+    el('importPreviewTable').innerHTML = `
+      <thead><tr>${cols.map(c => `<th>${c.replace(/_/g,' ')}</th>`).join('')}</tr></thead>
+      <tbody>${normalized.slice(0,20).map(r => `<tr>${cols.map(c => `<td>${escHtml(r[c]||'')}</td>`).join('')}</tr>`).join('')}</tbody>`;
+    if (normalized.length < rows.length)
+      el('importWarnings').textContent = `⚠️ ${rows.length - normalized.length} ligne(s) ignorée(s) (colonne denomination vide).`;
+  }
+
+  el('importPreviewTitle').textContent = `${_importRows.length} restaurant(s) détecté(s) dans « ${filename} »`;
   el('importPreview').style.display    = 'block';
-  el('importConfirmBtn').style.display = normalized.length ? 'inline-flex' : 'none';
-  el('importConfirmCount').textContent = normalized.length;
-
-  const cols = ['denomination','ville','tel','email','dirigeant','statut','ambassadeur_assigné'];
-  el('importPreviewTable').innerHTML = `
-    <thead><tr>${cols.map(c => `<th>${c.replace(/_/g,' ')}</th>`).join('')}</tr></thead>
-    <tbody>${normalized.slice(0,20).map(r => `<tr>${cols.map(c => `<td>${escHtml(r[c]||'')}</td>`).join('')}</tr>`).join('')}</tbody>
-  `;
-
-  const warn = [];
-  if (normalized.length < rows.length) warn.push(`⚠️ ${rows.length - normalized.length} ligne(s) ignorée(s) (colonne denomination vide).`);
-  el('importWarnings').textContent = warn.join(' ');
+  el('importConfirmBtn').style.display = _importRows.length ? 'inline-flex' : 'none';
+  el('importConfirmCount').textContent = _importRows.length;
+  el('importConfirmBtn').textContent   = _importIsLifestyle
+    ? `✨ Créer ${_importRows.length} wallets lifestyle`
+    : `✅ Importer ${_importRows.length} restaurants`;
 }
 
-const IMPORT_TEMPLATE = '_template';
+const IMPORT_TEMPLATE          = '_template';
+const IMPORT_TEMPLATE_LIFESTYLE = 'templates/brunch-resto';
 
 async function confirmImport() {
   if (!_importRows.length) return;
@@ -3480,7 +3576,7 @@ async function confirmImport() {
   btn.textContent = '⏳ Lecture du modèle…';
 
   try {
-    // 1. Récupérer l'arbre complet (template + registre)
+    // 1. Arbre complet du repo
     const ref        = await ghApiD(`/git/ref/heads/${GH_BRANCH_D}`);
     const commitSha  = ref.object.sha;
     const commitData = await ghApiD(`/git/commits/${commitSha}`);
@@ -3488,12 +3584,12 @@ async function confirmImport() {
     const treeData   = await ghApiD(`/git/trees/${treeSha}?recursive=1`);
     const allItems   = treeData.tree;
 
-    const templateFiles = allItems.filter(f =>
-      f.type === 'blob' && f.path.startsWith(IMPORT_TEMPLATE + '/')
-    );
-    if (!templateFiles.length) throw new Error('Dossier _template introuvable sur GitHub');
+    // 2. Choisir le dossier template selon le mode
+    const tplDir      = _importIsLifestyle ? IMPORT_TEMPLATE_LIFESTYLE : IMPORT_TEMPLATE;
+    const templateFiles = allItems.filter(f => f.type === 'blob' && f.path.startsWith(tplDir + '/'));
+    if (!templateFiles.length) throw new Error(`Dossier ${tplDir} introuvable sur GitHub`);
 
-    // 2. Charger restaurants.json
+    // 3. Charger restaurants.json
     let data = {};
     const regItem = allItems.find(f => f.path === 'data/restaurants.json');
     if (regItem) {
@@ -3508,89 +3604,150 @@ async function confirmImport() {
     btn.textContent = '⏳ Génération des fiches…';
 
     for (const row of _importRows) {
-      const slug = slugify(row.denomination);
+      const slug = row.slug_override || slugify(row.denomination);
       if (!slug) { skipped++; continue; }
+
       const existing = data[slug] || {};
-      // Scaffolder si les fichiers du site n'existent pas encore (même si déjà au registre)
       const isNew    = !allItems.some(f => f.path === slug + '/index.html');
-      const color    = existing.brandColor  || '#B8924F';
-      const color2   = existing.brandColor2 || '#9E7A3E';
 
-      // Entrée registre
-      data[slug] = {
-        ...existing,
-        name:                     row.denomination,
-        brandColor:               color,
-        brandColor2:              color2,
-        adresse:                  row.rue                || existing.adresse || '',
-        ville:                    row.ville              || existing.ville   || '',
-        code_postal:              row.code_postal        || existing.code_postal || '',
-        telephone:                row.tel                || existing.telephone || '',
-        email:                    row.email              || existing.email   || '',
-        nom_gerant:               row.dirigeant          || existing.nom_gerant || '',
-        categorie:                row.libelle_ape        || existing.categorie || '',
-        site_web:                 row.site_web           || existing.site_web || '',
-        note_google:              row.note_google        ? parseFloat(row.note_google) : (existing.note_google || null),
-        nombre_avis_google:       row.nombre_avis_google ? parseInt(row.nombre_avis_google) : (existing.nombre_avis_google || null),
-        facebook:                 row.facebook           || existing.facebook || '',
-        ambassadorCode:           row['ambassadeur_assigné'] || existing.ambassadorCode || '',
-        statut_commercial:        row.statut             || existing.statut_commercial || '',
-        nom_enseigne:             row.nom_enseigne             || existing.nom_enseigne || '',
-        forme_juridique:          row.forme_juridique          || existing.forme_juridique || '',
-        dirigeant_role:           row.dirigeant_role           || existing.dirigeant_role || '',
-        dirigeant_date_naissance: row.dirigeant_date_naissance || existing.dirigeant_date_naissance || '',
-        employes_dernier:         row.employes_dernier         || existing.employes_dernier || '',
-        employes_dernier_annee:   row.employes_dernier_annee   || existing.employes_dernier_annee || '',
-        twitter:                  row.twitter                  || existing.twitter || '',
-        linkedin:                 row.linkedin                 || existing.linkedin || '',
-        GMB_URL:                  row.GMB_URL                  || existing.GMB_URL || '',
-        acces_statut:             existing.acces_statut  || 'non_active',
-        date_creation:            existing.date_creation || new Date().toISOString().slice(0,10)
-      };
-      added++;
+      if (_importIsLifestyle) {
+        // ── MODE LIFESTYLE ────────────────────────────────────
+        const colors = LIFESTYLE_COLORS[row.style];
 
-      // Scaffolder les fichiers du site uniquement si nouveau restaurant
-      if (isNew) {
-        for (const f of templateFiles) {
-          const rel = f.path.slice(IMPORT_TEMPLATE.length + 1);
-          if (rel === 'config.json' || rel === 'progressier.json' || rel.endsWith('.DS_Store')) continue;
-          newTreeItems.push({ path: slug + '/' + rel, mode: f.mode, type: 'blob', sha: f.sha });
-        }
-        // config.json
-        const cfg = { name: row.denomination, color, color2 };
-        if (row.tel)     cfg.phone        = row.tel;
-        if (row.rue)     cfg.address      = [row.rue, row.code_postal, row.ville].filter(Boolean).join(', ');
-        if (row.GMB_URL) cfg.googleReview = row.GMB_URL;
-        // progressier.json
-        const manifest = {
-          name: row.denomination, short_name: row.denomination,
-          start_url: `/${slug}/index.html`, scope: `/${slug}/`,
-          display: 'standalone', background_color: '#f6efe5',
-          theme_color: color, orientation: 'portrait',
-          icons: [
-            { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
-            { src: 'icon-512.png', sizes: '512x512', type: 'image/png' }
-          ]
+        // Registre
+        data[slug] = {
+          ...existing,
+          name:           row.denomination,
+          brandColor:     colors.color,
+          brandColor2:    colors.color2,
+          style:          row.style,
+          instagramUrl:   row.instagram_url  || existing.instagramUrl  || '',
+          telephone:      row.tel            || existing.telephone     || '',
+          adresse:        row.adresse        || existing.adresse       || '',
+          email:          row.email          || existing.email         || '',
+          site_web:       row.site_web       || existing.site_web      || '',
+          nom_gerant:     row.nom_gerant     || existing.nom_gerant    || '',
+          statut_commercial: row.statut      || existing.statut_commercial || '',
+          ambassadorCode: row.ambassadeur    || existing.ambassadorCode || '',
+          acces_statut:   existing.acces_statut  || 'non_active',
+          date_creation:  existing.date_creation || new Date().toISOString().slice(0,10),
+          walletTemplate: tplDir,
         };
-        const cfgBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(cfg, null, 2) + '\n', encoding: 'utf-8' });
-        const manBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(manifest, null, 2) + '\n', encoding: 'utf-8' });
-        newTreeItems.push({ path: `${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
-        newTreeItems.push({ path: `${slug}/progressier.json`, mode: '100644', type: 'blob', sha: manBlob.sha });
-        scaffolded++;
+        added++;
+
+        if (isNew) {
+          // Copier index.html du template
+          for (const f of templateFiles) {
+            const rel = f.path.slice(tplDir.length + 1);
+            if (rel === 'config.json' || rel.endsWith('.DS_Store')) continue;
+            newTreeItems.push({ path: slug + '/' + rel, mode: f.mode, type: 'blob', sha: f.sha });
+          }
+          // config.json lifestyle
+          const cfg = {
+            name:           row.denomination,
+            color:          colors.color,
+            color2:         colors.color2,
+            walletTemplate: tplDir,
+            category:       row.style,
+            tagline:        row.tagline,
+            activeCoupon: {
+              title:       row.offer_title,
+              description: row.offer_sub,
+              month:       new Date().toLocaleDateString('fr-FR',{month:'long'}),
+            },
+            plan: 'terrain',
+            subscriptionStatus: 'active',
+            setupPaid: true,
+            invoices: [],
+          };
+          if (row.instagram_url) cfg.instagramUrl = row.instagram_url;
+          if (row.logo_url)      cfg.logoUrl      = row.logo_url;
+          if (row.review_url)    cfg.googleReview = row.review_url;
+          if (row.site_web)      cfg.reservationUrl = row.site_web;
+          if (row.tel)           cfg.phone        = row.tel;
+          if (row.adresse)       cfg.address      = row.adresse;
+          if (row.email)         cfg.email        = row.email;
+
+          const cfgBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(cfg, null, 2) + '\n', encoding: 'utf-8' });
+          newTreeItems.push({ path: `${slug}/config.json`, mode: '100644', type: 'blob', sha: cfgBlob.sha });
+          scaffolded++;
+        }
+
+      } else {
+        // ── MODE CLASSIQUE ────────────────────────────────────
+        const color  = existing.brandColor  || '#B8924F';
+        const color2 = existing.brandColor2 || '#9E7A3E';
+
+        data[slug] = {
+          ...existing,
+          name:                     row.denomination,
+          brandColor:               color,
+          brandColor2:              color2,
+          adresse:                  row.rue                || existing.adresse || '',
+          ville:                    row.ville              || existing.ville   || '',
+          code_postal:              row.code_postal        || existing.code_postal || '',
+          telephone:                row.tel                || existing.telephone || '',
+          email:                    row.email              || existing.email   || '',
+          nom_gerant:               row.dirigeant          || existing.nom_gerant || '',
+          categorie:                row.libelle_ape        || existing.categorie || '',
+          site_web:                 row.site_web           || existing.site_web || '',
+          note_google:              row.note_google        ? parseFloat(row.note_google) : (existing.note_google || null),
+          nombre_avis_google:       row.nombre_avis_google ? parseInt(row.nombre_avis_google) : (existing.nombre_avis_google || null),
+          facebook:                 row.facebook           || existing.facebook || '',
+          ambassadorCode:           row['ambassadeur_assigné'] || existing.ambassadorCode || '',
+          statut_commercial:        row.statut             || existing.statut_commercial || '',
+          nom_enseigne:             row.nom_enseigne             || existing.nom_enseigne || '',
+          forme_juridique:          row.forme_juridique          || existing.forme_juridique || '',
+          dirigeant_role:           row.dirigeant_role           || existing.dirigeant_role || '',
+          dirigeant_date_naissance: row.dirigeant_date_naissance || existing.dirigeant_date_naissance || '',
+          employes_dernier:         row.employes_dernier         || existing.employes_dernier || '',
+          employes_dernier_annee:   row.employes_dernier_annee   || existing.employes_dernier_annee || '',
+          twitter:                  row.twitter                  || existing.twitter || '',
+          linkedin:                 row.linkedin                 || existing.linkedin || '',
+          GMB_URL:                  row.GMB_URL                  || existing.GMB_URL || '',
+          acces_statut:             existing.acces_statut  || 'non_active',
+          date_creation:            existing.date_creation || new Date().toISOString().slice(0,10),
+        };
+        added++;
+
+        if (isNew) {
+          for (const f of templateFiles) {
+            const rel = f.path.slice(tplDir.length + 1);
+            if (rel === 'config.json' || rel === 'progressier.json' || rel.endsWith('.DS_Store')) continue;
+            newTreeItems.push({ path: slug + '/' + rel, mode: f.mode, type: 'blob', sha: f.sha });
+          }
+          const cfg = { name: row.denomination, color, color2 };
+          if (row.tel)     cfg.phone        = row.tel;
+          if (row.rue)     cfg.address      = [row.rue, row.code_postal, row.ville].filter(Boolean).join(', ');
+          if (row.GMB_URL) cfg.googleReview = row.GMB_URL;
+          const manifest = {
+            name: row.denomination, short_name: row.denomination,
+            start_url: `/${slug}/index.html`, scope: `/${slug}/`,
+            display: 'standalone', background_color: '#f6efe5',
+            theme_color: color, orientation: 'portrait',
+            icons: [{ src:'icon-192.png',sizes:'192x192',type:'image/png'},{ src:'icon-512.png',sizes:'512x512',type:'image/png'}]
+          };
+          const cfgBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(cfg, null, 2) + '\n', encoding: 'utf-8' });
+          const manBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(manifest, null, 2) + '\n', encoding: 'utf-8' });
+          newTreeItems.push({ path: `${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
+          newTreeItems.push({ path: `${slug}/progressier.json`, mode: '100644', type: 'blob', sha: manBlob.sha });
+          scaffolded++;
+        }
       }
     }
 
-    // 3. restaurants.json mis à jour
+    // 4. restaurants.json mis à jour
     const regBlob = await ghApiD('/git/blobs', 'POST', {
       content: JSON.stringify(data, null, 2) + '\n', encoding: 'utf-8'
     });
     newTreeItems.push({ path: 'data/restaurants.json', mode: '100644', type: 'blob', sha: regBlob.sha });
 
-    // 4. Commit unique
+    // 5. Commit unique
     btn.textContent = '⏳ Déploiement sur GitHub…';
     const newTree   = await ghApiD('/git/trees', 'POST', { base_tree: treeSha, tree: newTreeItems });
+    const mode      = _importIsLifestyle ? 'lifestyle' : 'classique';
     const newCommit = await ghApiD('/git/commits', 'POST', {
-      message: `feat: import massif ${added} restaurants (${scaffolded} fiches créées)`,
+      message: `feat: import ${mode} ${added} restaurants (${scaffolded} fiches créées)`,
       tree: newTree.sha, parents: [commitSha]
     });
     await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: newCommit.sha });
@@ -3604,7 +3761,9 @@ async function confirmImport() {
   } catch(e) {
     toast('Erreur import : ' + e.message, 'error');
     btn.disabled    = false;
-    btn.textContent = `✅ Importer ${_importRows.length} restaurants`;
+    btn.textContent = _importIsLifestyle
+      ? `✨ Créer ${_importRows.length} wallets lifestyle`
+      : `✅ Importer ${_importRows.length} restaurants`;
   }
 }
 
