@@ -1,12 +1,12 @@
 {
   "name": "Jolia",
-  "color": "#5A6040",
-  "color2": "#454D30",
+  "color": "#d81326",
+  "color2": "#b0e52a",
   "walletTemplate": "templates/brunch-resto",
   "category": "brunch",
   "city": "Paris",
   "tagline": "Instagrammable & gourmand",
-  "heroUrl": "https://app.cartefidelavis.com/jolia/hero.jpg",
+  "heroUrl": "https://i.pinimg.com/1200x/c1/32/0f/c1320f194c3402637b78732a29d6aaf7.jpg",
   "iconUrl": "https://app.cartefidelavis.com/jolia/logo.jpg",
   "activeCoupon": {
     "title": "Dessert du chef",
