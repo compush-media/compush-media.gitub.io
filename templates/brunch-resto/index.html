@@ -897,6 +897,20 @@ function verifierPin(pin){ return [-2,-1,0,1,2].some(function(o){ return generat
 function couponKey(){ return 'coupon_'+RESTO+'_'+ACTIVE_YEAR+'_'+ACTIVE_MONTH; }
 function reviewKey(){ return 'review_'+RESTO+'_'+ACTIVE_YEAR+'_'+ACTIVE_MONTH; }
 
+/* Emoji de repli pour la photo d'offre (jamais le hero) selon l'intitulé */
+function offerEmoji(t){
+  t=(t||'').toLowerCase();
+  if(/dessert|g[âa]teau|p[âa]tiss|tarte|brownie/.test(t)) return '🍰';
+  if(/matcha|th[ée]|infusion/.test(t))                    return '🍵';
+  if(/caf[ée]|expresso|latt|cappucc|moka/.test(t))        return '☕';
+  if(/cocktail|ap[ée]ritif|spritz|vin|champ|bi[èe]re/.test(t)) return '🍹';
+  if(/pancake|brunch|œuf|oeuf|toast|gaufre/.test(t))      return '🥞';
+  if(/glace|cr[èe]me|sorbet/.test(t))                     return '🍨';
+  if(/croissant|viennois|pain|brioche/.test(t))           return '🥐';
+  if(/jus|smoothie|boisson|limonade/.test(t))             return '🥤';
+  return '🎁';
+}
+
 /* ── PIN UX : auto-advance / backspace / collage / Entrée ── */
 function initPinUX(){
   var grid=document.getElementById('pinGrid'); if(!grid) return;
@@ -1024,10 +1038,12 @@ function startTimer(){
   if(coupon.title){
     document.getElementById('offerTtl').textContent=coupon.title.replace(/offert[e]?/gi,'').trim()||coupon.title;
   }
-  var offerImg=coupon.imageUrl||heroUrl;
-  if(offerImg){
-    var op=document.getElementById('offerPhoto');
-    op.innerHTML='<img src="'+offerImg+'" alt="offre" onerror="this.parentNode.textContent=\'🎁\'">';
+  /* Photo de l'offre : image DÉDIÉE uniquement (jamais le hero) */
+  var op=document.getElementById('offerPhoto');
+  var emj=offerEmoji(coupon.title||'');
+  op.textContent=emj;
+  if(coupon.imageUrl){
+    op.innerHTML='<img src="'+coupon.imageUrl+'" alt="offre" onerror="this.parentNode.textContent=\''+emj+'\'">';
   }
 
   /* PIN — saisie + verrou mensuel */
