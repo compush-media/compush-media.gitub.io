@@ -917,9 +917,10 @@
 
     <!-- Icône -->
     <div class="card" style="margin-bottom:16px;">
-      <div class="card-title"><span class="card-title-icon">🖼️</span> Icône de l'application</div>
+      <div class="card-title"><span class="card-title-icon">🖼️</span> Logo &amp; icône</div>
       <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
-        L'icône apparaît sur l'écran d'accueil de vos clients après installation.<br>
+        Ce logo s'affiche dans le <strong>cercle de votre carte (wallet)</strong> à la place de l'initiale,
+        et sert aussi d'icône de l'app sur l'écran d'accueil après installation.<br>
         Utilisez une image carrée 512×512 px, fond non transparent (JPG ou PNG).
       </p>
 
@@ -955,7 +956,7 @@
         style="margin-bottom:10px;" />
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button class="btn btn-brand" id="saveIconBtn" type="button" onclick="saveIcon()">
-          💾 Enregistrer l'icône
+          💾 Enregistrer le logo
         </button>
         <button class="btn" type="button" onclick="resetIcon()"
           style="background:#f3f4f6;color:#555;border:1px solid var(--line);">
@@ -2359,7 +2360,7 @@ async function saveIcon() {
     const data = await res.json();
 
     if (data?.ok) {
-      fb.textContent = '✅ Icône mise à jour ! Visible dans ~1 minute après déploiement GitHub Pages.';
+      fb.textContent = '✅ Logo mis à jour ! Visible dans ~1 minute après déploiement GitHub Pages.';
       fb.className   = 'notif-msg success';
 
       // Mise à jour de l'aperçu
@@ -2386,7 +2387,7 @@ async function saveIcon() {
   }
 
   btn.disabled    = false;
-  btn.textContent = '💾 Enregistrer l\'icône';
+  btn.textContent = '💾 Enregistrer le logo';
 }
 
 function resetIcon() {
