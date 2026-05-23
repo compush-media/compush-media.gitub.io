@@ -1,5 +1,17 @@
 {
   "name": "Jolia",
-  "color": "#B8924F",
-  "color2": "#9E7A3E"
+  "color": "#D4637A",
+  "color2": "#C04868",
+  "walletTemplate": "templates/brunch-resto",
+  "category": "brunch",
+  "tagline": "Instagrammable & gourmand",
+  "activeCoupon": {
+    "title": "Dessert du chef",
+    "description": "Sur présentation de votre code en caisse",
+    "month": "mai"
+  },
+  "plan": "terrain",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "invoices": []
 }
