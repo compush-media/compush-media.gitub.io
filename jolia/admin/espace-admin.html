@@ -801,7 +801,7 @@
       oninput="document.getElementById('couponTitleCount').textContent=this.value.length" />
 
     <label class="form-label" for="couponEditImage">Image du coupon</label>
-    <select class="form-input" id="couponEditImage" style="margin-bottom:14px;">
+    <select class="form-input" id="couponEditImage" style="margin-bottom:14px;" onchange="couponImgPreview()">
       <option value="/_template/images/offres/surprise.png">🎁 Cadeau surprise</option>
       <option value="/_template/images/offres/aperitif.png">🥂 Apéritif</option>
       <option value="/_template/images/offres/cafe.png">☕ Café</option>
@@ -815,6 +815,20 @@
       <option value="/_template/images/offres/menu.png">📋 Menu</option>
       <option value="/_template/images/offres/reduction.png">💸 Réduction</option>
     </select>
+
+    <label class="form-label" for="couponEditImageUrl">
+      Ou collez l'URL d'une vraie photo
+      <span style="font-size:11px;color:var(--muted);font-weight:400;">(optionnel — prioritaire sur l'icône)</span>
+    </label>
+    <input class="form-input" type="url" id="couponEditImageUrl"
+      placeholder="https://… (photo du produit, carré recommandé)"
+      style="margin-bottom:10px;"
+      oninput="couponImgPreview()" />
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <img id="couponImgPreviewEl" alt="aperçu de l'offre"
+        style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid var(--line);display:none;" />
+      <span style="font-size:12px;color:var(--muted);">Laissez vide pour utiliser l'icône choisie ci-dessus.</span>
+    </div>
 
     <label class="form-label" for="couponEditMonth">Mois concerné</label>
     <select class="form-input" id="couponEditMonth" style="margin-bottom:18px;">
@@ -2094,7 +2108,12 @@ async function loadCouponEditForm() {
     document.getElementById('couponEditTitle').value = c.title    || '';
     const _tc = document.getElementById('couponTitleCount');
     if (_tc) _tc.textContent = (c.title || '').length;
-    document.getElementById('couponEditImage').value = c.imageUrl || '/_template/images/offres/surprise.png';
+    // Image : preset (dropdown) OU URL personnalisée
+    const _img = c.imageUrl || '';
+    const _isPreset = _img.indexOf('/_template/images/offres/') !== -1;
+    document.getElementById('couponEditImage').value = _isPreset ? _img : '/_template/images/offres/surprise.png';
+    document.getElementById('couponEditImageUrl').value = (_img && !_isPreset) ? _img : '';
+    couponImgPreview();
     const monthSel = document.getElementById('couponEditMonth');
     if (c.month) {
       const opt = Array.from(monthSel.options).find(o => o.value === c.month.toLowerCase());
@@ -2110,6 +2129,16 @@ async function loadCouponEditForm() {
   }
 }
 
+function couponImgPreview() {
+  const custom = (document.getElementById('couponEditImageUrl')?.value || '').trim();
+  const sel    = document.getElementById('couponEditImage')?.value || '';
+  const src    = custom || sel;
+  const img    = document.getElementById('couponImgPreviewEl');
+  if (!img) return;
+  if (src) { img.src = src; img.style.display = ''; img.onerror = () => { img.style.display = 'none'; }; }
+  else     { img.style.display = 'none'; }
+}
+
 async function saveCouponMoisAdmin() {
   const titre = document.getElementById('couponEditTitle').value.trim();
   const fb    = document.getElementById('couponEditFeedback');
@@ -2121,9 +2150,16 @@ async function saveCouponMoisAdmin() {
     return;
   }
 
+  const customUrl = (document.getElementById('couponEditImageUrl').value || '').trim();
+  if (customUrl && !/^https?:\/\//.test(customUrl)) {
+    fb.textContent = '⚠️ L\'URL de l\'image doit commencer par https://';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+
   const coupon = {
     title:    titre,
-    imageUrl: document.getElementById('couponEditImage').value,
+    imageUrl: customUrl || document.getElementById('couponEditImage').value,
     month:    document.getElementById('couponEditMonth').value
   };
 
