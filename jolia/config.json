@@ -10,9 +10,9 @@
   "iconUrl": "https://app.cartefidelavis.com/jolia/logo.jpg",
   "activeCoupon": {
     "title": "Dessert du chef",
-    "imageUrl": "/_template/images/offres/cafe.png",
+    "imageUrl": "/_template/images/offres/boisson.png",
     "month": "mai",
-    "updatedAt": "2026-05-23T20:38:47.989Z"
+    "updatedAt": "2026-05-23T20:40:16.522Z"
   },
   "plan": "terrain",
   "subscriptionStatus": "active",
