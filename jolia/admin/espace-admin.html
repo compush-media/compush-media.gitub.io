@@ -1,0 +1,2699 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Espace Admin – Fidelavis</title>
+  <script src="../../assets/core.js"        onerror="void(0)"></script>
+  <script src="../../assets/admin-trial.js" onerror="void(0)"></script>
+  <style>
+    :root {
+      --brand:        #b6152b;
+      --brand2:       #8b0f21;
+      --brand-light:  rgba(182,21,43,.08);
+      --brand-border: rgba(182,21,43,.2);
+      --bg:           #f4f6f9;
+      --white:        #ffffff;
+      --ink:          #1c1c2e;
+      --muted:        #6b7280;
+      --line:         #e5e7eb;
+      --shadow:       0 2px 16px rgba(0,0,0,.09);
+      --r:            14px;
+      --green:        #059669;
+      --green-bg:     #d1fae5;
+      --orange:       #d97706;
+      --orange-bg:    #fef3c7;
+      --blue:         #1976d2;
+      --blue-bg:      #dbeafe;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--brand);
+      padding: 0 20px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(182,21,43,.35);
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      background: rgba(255,255,255,.2);
+      color: #fff;
+      font-weight: 900;
+      font-size: 14px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      letter-spacing: .3px;
+      border: 1.5px solid rgba(255,255,255,.3);
+    }
+    .header-title { color: #fff; font-weight: 800; font-size: 16px; line-height: 1.2; }
+    .header-sub   { color: rgba(255,255,255,.72); font-size: 12px; font-weight: 500; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .role-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 800;
+      background: rgba(255,255,255,.18); color: #fff;
+      border: 1px solid rgba(255,255,255,.3);
+    }
+    .logout-btn {
+      padding: 7px 14px;
+      border: 1.5px solid rgba(255,255,255,.38);
+      border-radius: 8px; background: transparent;
+      color: #fff; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: background .15s;
+    }
+    .logout-btn:hover { background: rgba(255,255,255,.14); }
+
+    /* ── TAB NAV ── */
+    .tab-nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+      display: flex; overflow-x: auto;
+      padding: 0 12px;
+      position: sticky; top: 64px; z-index: 90;
+      scrollbar-width: none;
+    }
+    .tab-nav::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 14px 16px;
+      font-size: 14px; font-weight: 600; color: var(--muted);
+      border: none; background: transparent;
+      border-bottom: 3px solid transparent;
+      cursor: pointer; white-space: nowrap;
+      transition: color .15s, border-color .15s;
+      text-decoration: none; margin-bottom: -1px;
+      font-family: inherit;
+    }
+    .tab-btn:hover { color: var(--brand); }
+    .tab-btn.active { color: var(--brand); border-bottom-color: var(--brand); }
+    .tab-icon { font-size: 15px; }
+
+    /* ── CONTENT ── */
+    .content { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── SECTION HEADER ── */
+    .section-title { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+    .section-sub   { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+    /* ── KPI GRID ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px; margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--white); border-radius: var(--r);
+      box-shadow: var(--shadow); padding: 20px;
+      border-left: 4px solid var(--brand);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,.13); }
+    .kpi-card.green  { border-left-color: var(--green); }
+    .kpi-card.blue   { border-left-color: var(--blue); }
+    .kpi-card.orange { border-left-color: var(--orange); }
+    .kpi-icon  { font-size: 22px; margin-bottom: 8px; }
+    .kpi-val   { font-size: 32px; font-weight: 900; color: var(--brand); line-height: 1; }
+    .kpi-card.green  .kpi-val  { color: var(--green); }
+    .kpi-card.blue   .kpi-val  { color: var(--blue); }
+    .kpi-card.orange .kpi-val  { color: var(--orange); }
+    .kpi-label {
+      font-size: 11.5px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .4px; margin-top: 5px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--white); border-radius: var(--r);
+      box-shadow: var(--shadow); padding: 24px; margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 15px; font-weight: 800; margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px;
+      padding-bottom: 14px; border-bottom: 1px solid var(--line);
+    }
+    .card-title-icon { font-size: 18px; }
+
+    /* ── SUMMARY LIST ── */
+    .summary-list { list-style: none; }
+    .summary-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 0; border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .summary-item:last-child { border-bottom: none; }
+    .summary-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: var(--line); }
+    .summary-dot.green  { background: var(--green); }
+    .summary-dot.orange { background: var(--orange); }
+    .summary-dot.red    { background: var(--brand); }
+    .summary-label { flex: 1; }
+    .summary-val   { font-weight: 700; }
+
+    /* ── PIN ── */
+    .pin-display {
+      font-size: 52px; font-weight: 900; letter-spacing: 12px;
+      color: var(--brand); text-align: center;
+      padding: 22px 12px;
+      background: var(--brand-light);
+      border: 2px dashed var(--brand-border);
+      border-radius: 14px; margin: 16px 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .pin-timer { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .pin-bar { width: 100%; height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; margin-bottom: 14px; }
+    .pin-bar-fill { height: 100%; background: var(--brand); border-radius: 2px; transition: width 1s linear; }
+
+    /* ── COUPON ── */
+    .coupon-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: 999px;
+      font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .3px;
+    }
+    .coupon-badge.active   { background: var(--green-bg);   color: var(--green); }
+    .coupon-badge.used     { background: var(--orange-bg);  color: var(--orange); }
+    .coupon-badge.inactive { background: var(--line);        color: var(--muted); }
+
+    /* ── GRID 2 ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    /* ── INFO PANEL ── */
+    .info-panel {
+      background: var(--brand-light); border: 1px solid var(--brand-border);
+      border-radius: 10px; padding: 13px 16px;
+      font-size: 13px; color: var(--ink); line-height: 1.6;
+    }
+    .info-panel.blue { background: var(--blue-bg); border-color: rgba(25,118,210,.2); }
+    .info-panel.green { background: var(--green-bg); border-color: rgba(5,150,105,.2); }
+
+    /* ── FORM ── */
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    .form-input, .form-textarea, .form-select {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--line); border-radius: 10px;
+      font-size: 14px; color: var(--ink); background: var(--white);
+      transition: border-color .15s; font-family: inherit;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none; border-color: var(--brand);
+    }
+    .form-textarea { resize: vertical; min-height: 80px; }
+    .char-count { font-size: 11px; color: var(--muted); text-align: right; margin-top: 3px; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 12px 24px; border-radius: 10px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      border: none; transition: opacity .15s, transform .1s;
+      text-decoration: none; font-family: inherit;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn-brand { background: var(--brand); color: #fff; box-shadow: 0 3px 12px rgba(182,21,43,.3); }
+    .btn-brand:hover { opacity: .88; }
+    .btn-brand:disabled { opacity: .5; cursor: default; }
+    .btn-full { width: 100%; }
+
+    /* ── NOTIF MSG ── */
+    .notif-msg {
+      padding: 13px 18px; border-radius: 10px;
+      font-size: 14px; font-weight: 600; text-align: center;
+      margin-top: 12px; display: none;
+    }
+    .notif-msg.success { background: var(--green-bg); color: var(--green); display: block; }
+    .notif-msg.error   { background: #fee2e2; color: #dc2626; display: block; }
+
+    /* ── SKELETON ── */
+    @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+    .skel {
+      background: linear-gradient(90deg,#e9ecef 25%,#f8f9fa 50%,#e9ecef 75%);
+      background-size: 200% 100%; animation: shimmer 1.4s infinite;
+      border-radius: 4px; height: .85em; display: inline-block; width: 50px;
+    }
+
+    /* ── DETAIL ROW (coupon info) ── */
+    .detail-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line);
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: var(--muted); font-weight: 500; }
+    .detail-value { font-weight: 700; }
+
+    /* ── PWA AUDIENCE ── */
+    .audience-block { text-align: center; padding: 24px 0; }
+    .audience-num   { font-size: 52px; font-weight: 900; color: var(--brand); line-height: 1; }
+    .audience-label { font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+    /* ── KPI 2-COL FORCED (legacy) ── */
+    .kpi-grid-2col { grid-template-columns: repeat(2, 1fr) !important; }
+
+    /* ── KPI v2 — 2 lignes de 3, avec comparaison vs mois précédent ── */
+    .kpi-grid-3 {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;
+    }
+    @media (max-width: 720px) { .kpi-grid-3 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 380px) { .kpi-grid-3 { grid-template-columns: 1fr; } }
+    .kpi-card-v2 {
+      background: var(--white); border-radius: var(--r);
+      box-shadow: var(--shadow); padding: 14px 14px;
+      border-left: 3px solid var(--brand); position: relative;
+    }
+    .kpi-card-v2.green       { border-left-color: var(--green); }
+    .kpi-card-v2.purple      { border-left-color: #8b5cf6; }
+    .kpi-card-v2.gold        { border-left-color: #f59e0b; }
+    .kpi-card-v2.orange      { border-left-color: var(--orange); }
+    .kpi-card-v2.greenlight  { border-left-color: #10b981; }
+    .kpi-icon-v2  { font-size: 20px; margin-bottom: 6px; opacity: .9; }
+    .kpi-val-v2   { font-size: 28px; font-weight: 900; line-height: 1; color: var(--brand); }
+    .kpi-card-v2.green       .kpi-val-v2 { color: var(--green); }
+    .kpi-card-v2.purple      .kpi-val-v2 { color: #8b5cf6; }
+    .kpi-card-v2.gold        .kpi-val-v2 { color: #f59e0b; }
+    .kpi-card-v2.orange      .kpi-val-v2 { color: var(--orange); }
+    .kpi-card-v2.greenlight  .kpi-val-v2 { color: #10b981; }
+    .kpi-label-v2 { font-size: 11px; font-weight: 800; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .3px; margin-top: 8px; line-height: 1.3; }
+    .kpi-sub-v2   { font-size: 10.5px; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+    .kpi-comp     { font-size: 11.5px; font-weight: 700; margin-top: 8px; }
+    .kpi-comp.positive { color: var(--green); }
+    .kpi-comp.negative { color: #dc2626; }
+    .kpi-comp.neutral  { color: var(--muted); }
+    .kpi-badge-success {
+      display: inline-block; margin-top: 8px;
+      padding: 3px 10px; border-radius: 999px;
+      font-size: 10.5px; font-weight: 700;
+      background: var(--green-bg); color: var(--green);
+    }
+
+    /* ── Secondary v2 — Clients connectés ── */
+    .kpi-sec-v2 {
+      background: var(--white); border-radius: var(--r);
+      box-shadow: var(--shadow); padding: 14px 16px;
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 16px; border-left: 3px solid var(--blue);
+      flex-wrap: wrap;
+    }
+    .kpi-sec-icon { font-size: 22px; }
+    .kpi-sec-num {
+      font-size: 32px; font-weight: 900; color: var(--blue); line-height: 1;
+      min-width: 32px;
+    }
+    .kpi-sec-text { flex: 1; min-width: 140px; }
+    .kpi-sec-label { font-size: 12.5px; font-weight: 800; color: var(--blue); letter-spacing: .3px; }
+    .kpi-sec-sub   { font-size: 11.5px; color: var(--muted); margin-top: 1px; font-weight: 600; }
+    .kpi-sec-desc  { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+    .kpi-sec-btn {
+      background: var(--blue-bg); color: var(--blue); border: none;
+      padding: 9px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 700;
+      cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .kpi-sec-btn:hover { opacity: .85; }
+
+    /* ── Validation Retour Client card ── */
+    .validation-card {
+      background: linear-gradient(135deg, #fff5f5 0%, #fff0ee 100%);
+      border: 1.5px solid #fecaca;
+      border-radius: var(--r); padding: 16px; margin-bottom: 16px;
+    }
+    .validation-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px; gap: 8px; flex-wrap: wrap;
+    }
+    .validation-title {
+      font-size: 13px; font-weight: 900; color: var(--brand);
+      letter-spacing: .4px; display: flex; align-items: center; gap: 6px;
+    }
+    .validation-secure {
+      background: var(--green-bg); color: var(--green);
+      padding: 3px 10px; border-radius: 999px;
+      font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .validation-desc {
+      font-size: 12.5px; color: var(--ink); margin-bottom: 14px; opacity: .85;
+    }
+    .validation-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 10px;
+    }
+    @media (max-width: 640px) { .validation-grid { grid-template-columns: 1fr; gap: 12px; } }
+    .val-block-label {
+      font-size: 11px; font-weight: 800; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .3px; margin-bottom: 6px;
+    }
+    .pin-boxes { display: flex; gap: 4px; margin-bottom: 6px; }
+    .pin-box {
+      flex: 1; max-width: 44px; height: 48px;
+      background: var(--white); border: 1.5px solid var(--brand-border);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 900; color: var(--brand);
+      font-variant-numeric: tabular-nums;
+    }
+    .val-timer { font-size: 11.5px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+    .val-timer strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+    .val-refresh-link {
+      display: inline-block; margin-top: 4px;
+      font-size: 11.5px; color: var(--blue); text-decoration: none; cursor: pointer;
+    }
+    .pin-input-row { display: flex; gap: 4px; margin-bottom: 10px; }
+    .pin-input {
+      flex: 1; max-width: 44px; height: 48px;
+      border: 1.5px solid var(--line); border-radius: 8px;
+      text-align: center; font-size: 22px; font-weight: 900;
+      font-family: inherit; outline: none; background: var(--white);
+      color: var(--ink); padding: 0;
+    }
+    .pin-input:focus { border-color: var(--brand); box-shadow: 0 0 0 2px rgba(182,21,43,.1); }
+    .pin-input.error { border-color: #dc2626; background: #fee2e2; }
+    .btn-validate {
+      width: 100%; padding: 11px;
+      background: var(--brand); color: #fff; border: none;
+      border-radius: 10px; font-size: 13px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      box-shadow: 0 2px 8px rgba(182,21,43,.25);
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-validate:hover    { opacity: .92; }
+    .btn-validate:disabled { opacity: .55; cursor: default; }
+    .validation-footer {
+      font-size: 11.5px; color: var(--muted);
+      display: flex; align-items: center; gap: 4px;
+      padding-top: 10px; border-top: 1px solid rgba(254,202,202,.6);
+    }
+    .validation-feedback {
+      display: none; margin: 8px 0 0; padding: 9px 12px;
+      border-radius: 8px; font-size: 12.5px; font-weight: 700; text-align: center;
+    }
+    .validation-feedback.success { background: var(--green-bg); color: var(--green); display: block; }
+    .validation-feedback.error   { background: #fee2e2; color: #dc2626; display: block; }
+
+    /* ── Montant row inline ── */
+    .amount-row-block { padding-top: 12px; border-top: 1px solid rgba(254,202,202,.6); margin-top: 4px; }
+    .amount-row-label { font-size: 12.5px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
+    .amount-row-label .est { color: var(--muted); font-weight: 500; font-size: 11.5px; }
+    .amount-row-h { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    @media (max-width: 520px) { .amount-row-h { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 380px) { .amount-row-h { grid-template-columns: repeat(2, 1fr); } }
+    .amount-btn-h {
+      padding: 10px 4px; border-radius: 8px; border: 1px solid var(--line);
+      background: var(--white); font-size: 12px; font-weight: 700;
+      cursor: pointer; color: var(--ink); font-family: inherit;
+      transition: all .15s; text-align: center;
+    }
+    .amount-btn-h:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+    .amount-btn-h.sel   { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .amount-btn-h.later { background: var(--bg); color: var(--muted); }
+
+    /* ── Actions du jour list ── */
+    .actions-list { list-style: none; padding: 0; margin: 0; }
+    .action-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 4px; font-size: 13px;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer; transition: background .15s;
+      text-decoration: none; color: var(--ink);
+    }
+    .action-item:hover     { background: var(--bg); }
+    .action-item:last-child { border-bottom: none; }
+    .action-icon  { font-size: 18px; flex-shrink: 0; width: 22px; text-align: center; }
+    .action-label { flex: 1; }
+    .action-status {
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 999px; flex-shrink: 0;
+    }
+    .action-status.todo { background: #fee2e2; color: #dc2626; }
+    .action-status.done { background: var(--green-bg); color: var(--green); }
+    .action-arrow { color: var(--muted); flex-shrink: 0; font-size: 14px; opacity: .6; }
+
+    /* ── Footer security ── */
+    .dash-footer {
+      text-align: center; font-size: 11.5px; color: var(--muted);
+      padding: 14px 0 4px; display: flex; align-items: center;
+      justify-content: center; gap: 6px;
+    }
+
+    /* ── KPI SECONDARY (PWA) ── */
+    .kpi-secondary {
+      background: var(--white); border-radius: var(--r);
+      box-shadow: var(--shadow); padding: 14px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; border-left: 4px solid var(--blue);
+    }
+    .kpi-secondary-left { display: flex; align-items: center; gap: 10px; }
+    .kpi-secondary-icon { font-size: 20px; }
+    .kpi-secondary-label { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
+    .kpi-secondary-val { font-size: 26px; font-weight: 900; color: var(--blue); }
+
+    /* ── AMOUNT PICKER ── */
+    .amount-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 14px 0 6px;
+    }
+    .amount-btn {
+      padding: 16px 8px; border-radius: 12px; border: 2px solid var(--line);
+      background: var(--white); font-size: 16px; font-weight: 800; cursor: pointer;
+      text-align: center; transition: all .15s; color: var(--ink); font-family: inherit;
+    }
+    .amount-btn:hover  { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+    .amount-btn.sel    { border-color: var(--brand); background: var(--brand); color: #fff; }
+    .amount-btn.later  { grid-column: 1/-1; background: var(--bg); color: var(--muted); font-size: 13px; font-weight: 600; padding: 11px; border: 2px solid transparent; }
+    .amount-btn.later:hover { background: #e5e7eb; border-color: transparent; }
+
+    /* ── REVENUE TAB ── */
+    .rev-kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px; }
+    .rev-kpi { background: var(--white); border-radius: var(--r); box-shadow: var(--shadow); padding: 18px 12px; text-align: center; }
+    .rev-kpi-val   { font-size: 28px; font-weight: 900; color: var(--green); line-height: 1; }
+    .rev-kpi-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-top: 6px; }
+    .rev-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .rev-table th { text-align: left; padding: 8px 10px; font-weight: 700; color: var(--muted); border-bottom: 2px solid var(--line); font-size: 11px; text-transform: uppercase; letter-spacing: .3px; }
+    .rev-table td { padding: 10px 10px; border-bottom: 1px solid var(--line); }
+    .rev-table tr:last-child td { border-bottom: none; }
+    .chart-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; }
+    .chart-bar-label { width: 38px; text-align: right; color: var(--muted); flex-shrink: 0; font-size: 11px; }
+    .chart-bar-track { flex: 1; height: 22px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+    .chart-bar-fill  { height: 100%; background: var(--green); border-radius: 4px; transition: width .4s ease; min-width: 2px; }
+    .chart-bar-val   { width: 48px; font-weight: 700; color: var(--ink); font-size: 11px; text-align: right; }
+    @media (max-width: 520px) { .rev-kpi-row { grid-template-columns: repeat(3,1fr); gap: 8px; } .rev-kpi-val { font-size: 20px; } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .header      { height: 56px; }
+      .tab-nav     { top: 56px; }
+      .kpi-grid    { grid-template-columns: repeat(2, 1fr); }
+      .grid-2      { grid-template-columns: 1fr; }
+      .content     { padding: 16px 12px; }
+      .tab-btn     { padding: 12px 12px; font-size: 13px; }
+      .pin-display { font-size: 40px; letter-spacing: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="header">
+  <div class="header-left">
+    <span class="logo">FV</span>
+    <div>
+      <div class="header-title" id="restNameHeader">Espace Admin</div>
+      <div class="header-sub">Fidelavis</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="role-badge" id="roleBadge"></span>
+    <button class="logout-btn" id="logoutBtn">Déconnexion</button>
+  </div>
+</header>
+
+<!-- ── SUBSCRIPTION BANNER ── -->
+<div id="subBanner" class="admin-only" style="display:none;padding:10px 20px;font-size:13px;font-weight:600;text-align:center;"></div>
+
+<!-- ── TAB NAV ── -->
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn" data-tab="dashboard">
+    <span class="tab-icon">🏠</span> Tableau de bord
+  </button>
+  <button class="tab-btn" data-tab="coupon">
+    <span class="tab-icon">🎫</span> Coupon
+  </button>
+  <a class="tab-btn" href="state.html" id="linkStats">
+    <span class="tab-icon">📊</span> Stats
+  </a>
+  <a class="tab-btn" href="reputation-google.html" id="linkAvis">
+    <span class="tab-icon">⭐</span> Avis
+  </a>
+  <button class="tab-btn admin-only" data-tab="notifications">
+    <span class="tab-icon">🔔</span> Notifications
+  </button>
+  <a class="tab-btn admin-only" href="billing.html" id="linkBilling">
+    <span class="tab-icon">💳</span> Compte
+  </a>
+  <button class="tab-btn admin-only" data-tab="parametres">
+    <span class="tab-icon">⚙️</span> Paramètres
+  </button>
+  <button class="tab-btn admin-only" data-tab="offre">
+    <span class="tab-icon">🔥</span> Offre du jour
+  </button>
+  <button class="tab-btn admin-only" data-tab="revenus">
+    <span class="tab-icon">💰</span> Revenus
+  </button>
+</nav>
+
+<!-- ── CONTENT ── -->
+<main class="content">
+
+  <!-- ═══════════════════════════ DASHBOARD ═══════════════════════════ -->
+  <div id="dashboard" class="tab-panel">
+    <div class="section-title">Tableau de bord</div>
+    <div class="section-sub" id="dashboardSub">Vue d'ensemble — mois en cours</div>
+
+    <!-- KPIs — 2 lignes de 3 avec comparaison vs mois précédent -->
+    <div class="kpi-grid-3">
+      <!-- Ligne 1 -->
+      <div class="kpi-card-v2">
+        <div class="kpi-icon-v2">📱</div>
+        <div class="kpi-val-v2" id="kpiScans"><span class="skel"></span></div>
+        <div class="kpi-label-v2">Scans</div>
+        <div class="kpi-comp neutral" id="kpiScansComp">—</div>
+      </div>
+      <div class="kpi-card-v2 green">
+        <div class="kpi-icon-v2">👤</div>
+        <div class="kpi-val-v2" id="kpiSignups"><span class="skel"></span></div>
+        <div class="kpi-label-v2">Inscrits</div>
+        <div class="kpi-comp neutral" id="kpiSignupsComp">—</div>
+      </div>
+      <div class="kpi-card-v2 purple" id="kpiCouponCard" onclick="switchTab('coupon')" style="cursor:pointer;" title="Voir les validations">
+        <div class="kpi-icon-v2">👥</div>
+        <div class="kpi-val-v2" id="kpiCouponCount"><span class="skel"></span></div>
+        <div class="kpi-label-v2">Clients revenus</div>
+        <div class="kpi-sub-v2">Preuves de fidélisation</div>
+        <div class="kpi-comp neutral" id="kpiCouponComp">—</div>
+      </div>
+      <!-- Ligne 2 -->
+      <div class="kpi-card-v2 gold" onclick="switchTab('revenus')" style="cursor:pointer;" title="Voir les revenus">
+        <div class="kpi-icon-v2">💶</div>
+        <div class="kpi-val-v2" id="kpiCaEstime"><span class="skel"></span></div>
+        <div class="kpi-label-v2">Chiffre d'affaires estimé</div>
+        <div class="kpi-comp neutral" id="kpiCaComp">—</div>
+      </div>
+      <div class="kpi-card-v2 orange">
+        <div class="kpi-icon-v2">⭐</div>
+        <div class="kpi-val-v2" id="kpiAvisGoogle"><span class="skel"></span></div>
+        <div class="kpi-label-v2">Avis Google</div>
+        <div class="kpi-comp neutral" id="kpiAvisComp">—</div>
+      </div>
+      <div class="kpi-card-v2 greenlight" id="kpiRoiCard">
+        <div class="kpi-icon-v2">📈</div>
+        <div class="kpi-val-v2" id="kpiRoi"><span class="skel"></span></div>
+        <div class="kpi-label-v2">Rentabilité estimée</div>
+        <div class="kpi-sub-v2">CA estimé / Abonnement</div>
+        <div id="kpiRoiBadge"></div>
+      </div>
+    </div>
+
+    <!-- Secondaire : Clients connectés -->
+    <div class="kpi-sec-v2">
+      <span class="kpi-sec-icon">📲</span>
+      <span class="kpi-sec-num" id="kpiInstalls"><span class="skel" style="width:28px"></span></span>
+      <div class="kpi-sec-text">
+        <div class="kpi-sec-label">CLIENTS CONNECTÉS</div>
+        <div class="kpi-sec-sub">(PWA installée)</div>
+        <div class="kpi-sec-desc">Recevront vos offres et notifications</div>
+      </div>
+      <a href="#notifications" class="kpi-sec-btn admin-only" onclick="switchTab('notifications');return false;">👥 Voir les contacts</a>
+    </div>
+
+    <!-- Montants à compléter -->
+    <div class="card" id="montantsCompleterCard" style="border-left:4px solid var(--orange);display:none;">
+      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <span><span class="card-title-icon">📊</span> Montants à compléter</span>
+        <span id="montantsCompleterCount" style="font-size:12px;font-weight:700;background:#fee2e2;color:#dc2626;padding:3px 10px;border-radius:999px;">0</span>
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:12px;" id="montantsCompleterDesc">
+        Saisissez le montant pour les visites validées sans tranche renseignée par le client.
+      </div>
+
+      <!-- Liste visites en attente -->
+      <ul class="actions-list" id="montantsList"></ul>
+
+      <!-- Quick fill -->
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <button class="btn-validate" style="width:auto;padding:9px 14px;background:var(--bg);color:var(--ink);box-shadow:none;border:1px solid var(--line);font-size:12.5px;" onclick="remplirTous('20–40€', 30)">⚡ Remplir tous en 20–40 €</button>
+        <span style="font-size:11.5px;color:var(--muted);">Estimation rapide pour le rush</span>
+      </div>
+      <div class="validation-feedback" id="montantsFeedback"></div>
+    </div>
+
+    <!-- Actions du jour -->
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">🎯</span> Actions du jour</div>
+      <ul class="actions-list" id="actionsList">
+        <li class="action-item"><span class="action-icon">⏳</span><span class="action-label">Chargement…</span></li>
+      </ul>
+    </div>
+
+    <!-- Footer sécurité -->
+    <div class="dash-footer">🔒 Vos données sont sécurisées et confidentielles.</div>
+
+    <!-- CTA Configurer avis Google (masqué automatiquement une fois Google connecté) -->
+    <div class="card" id="ctaGoogleSetup" style="margin-bottom:20px;background:linear-gradient(135deg,#fff9ec 0%,#fff3cf 100%);border:1.5px solid #f4c95d;">
+      <div class="card-title" style="color:#6b4f00;"><span class="card-title-icon">⭐</span> Avis Google automatiques</div>
+      <p style="font-size:13.5px;color:#6b4f00;margin-bottom:14px;line-height:1.5;">
+        Connectez votre fiche Google My Business et notre IA rédige automatiquement une réponse personnalisée à chaque nouvel avis.
+        <strong>Gratuit, aucune clé API à fournir.</strong>
+      </p>
+      <a href="reputation-google.html" class="btn btn-brand" style="display:inline-block;padding:12px 22px;text-decoration:none;font-weight:700;font-size:14px;">
+        ⚙️ Configurer mes avis Google →
+      </a>
+    </div>
+
+    <!-- Lien NFC / QR Code -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title"><span class="card-title-icon">📲</span> Lien NFC / QR Code</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Programmez ce lien sur votre tag NFC ou générez un QR code à afficher en caisse.</p>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <code id="nfcLink" style="flex:1;background:#f4f6f9;border:1.5px solid var(--line);border-radius:8px;padding:10px 14px;font-size:13px;word-break:break-all;min-width:0;"></code>
+        <button class="btn btn-brand" style="white-space:nowrap;padding:10px 18px;" onclick="copyNfcLink()">📋 Copier</button>
+        <a id="qrBtn" class="btn" style="background:#1976d2;color:#fff;white-space:nowrap;padding:10px 18px;text-decoration:none;" target="_blank">🔗 QR Code</a>
+      </div>
+      <div id="copyMsg" style="display:none;font-size:12px;color:var(--green);margin-top:6px;font-weight:600;">✓ Lien copié !</div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px;">🖨️ Cartes à imprimer</div>
+          <div style="font-size:12px;color:var(--muted);">A4 · 4 cartes A6 prêtes à découper — posez-les sur vos tables</div>
+        </div>
+        <a href="print-qr.html" class="btn btn-brand" style="padding:10px 18px;text-decoration:none;white-space:nowrap;">🖨️ Imprimer les cartes</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════ COUPON ═══════════════════════════ -->
+  <div id="coupon" class="tab-panel">
+    <div class="section-title">Coupon du mois</div>
+    <div class="section-sub" id="couponPeriod">—</div>
+
+    <div class="grid-2">
+
+      <!-- Carte info coupon -->
+      <div>
+        <div class="card">
+          <div class="card-title"><span class="card-title-icon">🎫</span> Offre active</div>
+          <div style="margin-bottom:14px;">
+            <span class="coupon-badge" id="couponStatusBadge">—</span>
+          </div>
+          <div style="font-size:22px;font-weight:900;margin-bottom:8px;" id="couponTitle">—</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:18px;" id="couponDesc">
+            Offre exclusive réservée aux membres Fidelavis inscrits.
+          </div>
+          <div class="info-panel" style="margin-bottom:16px;">
+            <strong>Message client :</strong><br>
+            <span id="couponMessage">Présentez ce coupon au personnel pour en bénéficier.</span>
+          </div>
+          <div>
+            <div class="detail-row">
+              <span class="detail-label">Période</span>
+              <span class="detail-value" id="couponMonthDisplay">—</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Validations ce mois</span>
+              <span class="detail-value" id="couponValidCount"><span class="skel" style="width:30px"></span></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Dernière validation</span>
+              <span class="detail-value" id="lastValidation">Aucune</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info personnel -->
+        <div class="card">
+          <div class="card-title"><span class="card-title-icon">👥</span> Info personnel</div>
+          <ul class="summary-list">
+            <li class="summary-item">
+              <span class="summary-dot green"></span>
+              <span class="summary-label">Vérifier que le PIN client correspond</span>
+            </li>
+            <li class="summary-item">
+              <span class="summary-dot green"></span>
+              <span class="summary-label">1 coupon par client par mois maximum</span>
+            </li>
+            <li class="summary-item">
+              <span class="summary-dot orange"></span>
+              <span class="summary-label">Le code change toutes les 60 secondes</span>
+            </li>
+            <li class="summary-item">
+              <span class="summary-dot green"></span>
+              <span class="summary-label">L'offre est valable tout le mois</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Carte PIN dynamique + Montant -->
+      <div>
+        <div class="card">
+          <div class="card-title"><span class="card-title-icon">🔐</span> Code PIN dynamique</div>
+          <div class="info-panel" style="margin-bottom:16px;font-size:12.5px;">
+            Ce code change automatiquement toutes les 60 secondes.<br>
+            Demandez au client de vous montrer le même code dans l'app Fidelavis.
+          </div>
+          <div class="pin-display" id="pinDisplay">----</div>
+          <div class="pin-bar"><div class="pin-bar-fill" id="pinBarFill" style="width:0%"></div></div>
+          <div class="pin-timer" id="timerPin">Nouveau code dans : --</div>
+        </div>
+
+        <!-- Saisie montant après validation (admin uniquement — l'employé n'en a pas besoin) -->
+        <div class="card admin-only" style="border-left:4px solid var(--orange);">
+          <div class="card-title"><span class="card-title-icon">💶</span> Montant de l'addition ?</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:4px;">Saisissez le montant après validation pour suivre votre CA.</div>
+          <div class="amount-grid">
+            <button class="amount-btn" onclick="saisirMontant('0–20€', 10, this)">0–20€</button>
+            <button class="amount-btn" onclick="saisirMontant('20–40€', 30, this)">20–40€</button>
+            <button class="amount-btn" onclick="saisirMontant('40–60€', 50, this)">40–60€</button>
+            <button class="amount-btn" onclick="saisirMontant('60€+', 70, this)">60€+</button>
+            <button class="amount-btn later" onclick="saisirMontant(null, null, this)">Plus tard</button>
+          </div>
+          <div id="montantFeedback" style="display:none;margin-top:8px;padding:9px 14px;border-radius:8px;background:var(--green-bg);color:var(--green);font-size:13px;font-weight:700;text-align:center;"></div>
+        </div>
+
+        <!-- QR Code installation PWA — réutilise le QR existant (admin général) -->
+        <div class="card" style="text-align:center;">
+          <div class="card-title" style="justify-content:center;"><span class="card-title-icon">📲</span> Installer Fidelavis</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:12px;">Le client peut scanner ce QR code pour installer l'application du restaurant.</div>
+          <img id="couponPwaQr" alt="QR code installation Fidelavis"
+            style="width:170px;height:170px;border-radius:10px;background:#f4f6f9;border:1px solid var(--line);object-fit:contain;display:block;margin:0 auto;" />
+          <div style="font-size:11px;color:var(--muted);margin-top:8px;word-break:break-all;line-height:1.3;" id="couponPwaQrUrl"></div>
+        </div>
+      </div>
+
+    </div>
+
+  <!-- Modifier le coupon du mois -->
+  <div class="card admin-only" style="margin-top:24px;">
+    <div class="card-title"><span class="card-title-icon">✏️</span> Modifier le coupon du mois</div>
+    <p style="font-size:13px;color:var(--muted);margin:0 0 16px;line-height:1.6;">
+      Personnalisez l'offre affichée sur la page d'accueil de vos clients.
+      Exemples : <em>Dessert offert</em>, <em>Café offert</em>, <em>-10% sur votre visite</em>.
+    </p>
+
+    <label class="form-label" for="couponEditTitle" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>Titre du coupon <span style="color:#e33">*</span></span>
+      <span style="font-size:11px;color:var(--muted);font-weight:400;"><span id="couponTitleCount">0</span>/40</span>
+    </label>
+    <input class="form-input" id="couponEditTitle"
+      maxlength="40"
+      placeholder="Ex : Dessert offert"
+      style="margin-bottom:14px;"
+      oninput="document.getElementById('couponTitleCount').textContent=this.value.length" />
+
+    <label class="form-label" for="couponEditImage">Image du coupon</label>
+    <select class="form-input" id="couponEditImage" style="margin-bottom:14px;">
+      <option value="/_template/images/offres/surprise.png">🎁 Cadeau surprise</option>
+      <option value="/_template/images/offres/aperitif.png">🥂 Apéritif</option>
+      <option value="/_template/images/offres/cafe.png">☕ Café</option>
+      <option value="/_template/images/offres/dessert.png">🍰 Dessert</option>
+      <option value="/_template/images/offres/gateau.png">🎂 Gâteau</option>
+      <option value="/_template/images/offres/cocktail.png">🍹 Cocktail</option>
+      <option value="/_template/images/offres/boisson.png">🥤 Boisson</option>
+      <option value="/_template/images/offres/entree.png">🥗 Entrée</option>
+      <option value="/_template/images/offres/plat.png">🍽️ Plat</option>
+      <option value="/_template/images/offres/pizza.png">🍕 Pizza</option>
+      <option value="/_template/images/offres/menu.png">📋 Menu</option>
+      <option value="/_template/images/offres/reduction.png">💸 Réduction</option>
+    </select>
+
+    <label class="form-label" for="couponEditMonth">Mois concerné</label>
+    <select class="form-input" id="couponEditMonth" style="margin-bottom:18px;">
+      <option value="janvier">Janvier</option>
+      <option value="février">Février</option>
+      <option value="mars">Mars</option>
+      <option value="avril">Avril</option>
+      <option value="mai">Mai</option>
+      <option value="juin">Juin</option>
+      <option value="juillet">Juillet</option>
+      <option value="août">Août</option>
+      <option value="septembre">Septembre</option>
+      <option value="octobre">Octobre</option>
+      <option value="novembre">Novembre</option>
+      <option value="décembre">Décembre</option>
+    </select>
+
+    <button class="btn btn-brand" id="saveCouponBtn" type="button" onclick="saveCouponMoisAdmin()">
+      🎫 Mettre à jour le coupon
+    </button>
+    <div class="notif-msg" id="couponEditFeedback" style="margin-top:12px;"></div>
+    <p style="font-size:12px;color:var(--muted);margin:10px 0 0;">
+      ⏱️ Après enregistrement, le coupon est mis à jour sur GitHub Pages en ~1 minute.
+    </p>
+  </div>
+  </div>
+
+  <!-- ═══════════════════════════ NOTIFICATIONS ═══════════════════════════ -->
+  <div id="notifications" class="tab-panel">
+    <div class="section-title">Notifications Push</div>
+    <div class="section-sub">Envoyez une notification à vos clients ayant installé l'app Fidelavis</div>
+
+    <div class="grid-2">
+      <!-- Formulaire -->
+      <div>
+        <div class="card">
+          <div class="card-title"><span class="card-title-icon">🔔</span> Nouvelle notification</div>
+          <div class="form-group">
+            <label class="form-label">Titre de la notification</label>
+            <input class="form-input" id="notifTitle" placeholder="Ex : Offre spéciale ce soir !" maxlength="50" />
+            <div class="char-count"><span id="titleCount">0</span>/50</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" id="notifMessage"
+              placeholder="Ex : Venez profiter de votre coupon Fidelavis avant ce soir !" maxlength="140"></textarea>
+            <div class="char-count"><span id="msgCount">0</span>/140</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ouvrir sur</label>
+            <select class="form-select" id="notifTarget">
+              <option value="index">Page d'accueil</option>
+              <option value="coupon">Page Coupon</option>
+            </select>
+          </div>
+          <button class="btn btn-brand btn-full" id="sendNotifBtn">
+            🚀 Envoyer la notification
+          </button>
+          <div class="notif-msg" id="notifFeedback"></div>
+        </div>
+      </div>
+
+      <!-- Audience + conseils -->
+      <div>
+        <div class="card">
+          <div class="card-title"><span class="card-title-icon">👥</span> Audience estimée</div>
+          <div class="audience-block">
+            <div class="audience-num" id="pwaCount">—</div>
+            <div class="audience-label">installations PWA confirmées</div>
+          </div>
+          <div class="info-panel blue" style="font-size:13px;">
+            Seuls les clients ayant installé l'app sur leur téléphone recevront cette notification.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="card-title-icon">💡</span> Conseils</div>
+          <ul class="summary-list">
+            <li class="summary-item">
+              <span class="summary-dot green"></span>
+              <span class="summary-label">Envoyez en début de soirée pour plus d'impact</span>
+            </li>
+            <li class="summary-item">
+              <span class="summary-dot green"></span>
+              <span class="summary-label">Maximum 1 notification par semaine recommandé</span>
+            </li>
+            <li class="summary-item">
+              <span class="summary-dot orange"></span>
+              <span class="summary-label">Titre court et accrocheur = meilleur taux d'ouverture</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ PARAMÈTRES ═══════════════════════════ -->
+  <div id="parametres" class="tab-panel">
+    <div class="section-title">⚙️ Paramètres de l'app</div>
+    <div class="section-sub">Personnalisation de votre application PWA</div>
+
+    <!-- Icône -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">🖼️</span> Icône de l'application</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+        L'icône apparaît sur l'écran d'accueil de vos clients après installation.<br>
+        Utilisez une image carrée 512×512 px, fond non transparent (JPG ou PNG).
+      </p>
+
+      <!-- ⚠️ Bandeau : limitation plan Progressier -->
+      <div style="display:flex;gap:10px;padding:12px 14px;background:#fff7e6;border:1px solid #f4c95d;border-radius:12px;margin-bottom:14px;font-size:13px;line-height:1.5;color:#6b4f00;">
+        <div style="font-size:18px;flex-shrink:0;">ℹ️</div>
+        <div>
+          <strong>Icône personnalisée sur PWA installés :</strong> actuellement active uniquement
+          dans le navigateur et lors du partage. L'icône sur l'écran d'accueil des clients
+          (après installation du PWA) sera personnalisable après passage au
+          <strong>plan Scale de Progressier</strong>. D'ici là, tous les restaurants partagent
+          l'icône par défaut de Fidelavis sur iOS/Android installé.
+        </div>
+      </div>
+
+      <!-- Aperçu icône actuelle -->
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+        <img id="iconPreview" src="" alt="Icône actuelle"
+          style="width:72px;height:72px;border-radius:16px;object-fit:cover;border:1px solid var(--line);display:none;" />
+        <div id="iconPlaceholder"
+          style="width:72px;height:72px;border-radius:16px;background:var(--bg);border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:28px;">
+          🖼️
+        </div>
+        <div>
+          <div id="iconStatus" style="font-size:13px;font-weight:700;color:var(--muted);">Icône par défaut</div>
+          <div id="iconUrlDisplay" style="font-size:11px;color:var(--muted);word-break:break-all;max-width:240px;"></div>
+        </div>
+      </div>
+
+      <label class="form-label" for="iconUrlInput">URL de votre logo (512×512 recommandé)</label>
+      <input class="form-input" type="url" id="iconUrlInput"
+        placeholder="https://monresto.fr/logo.png"
+        style="margin-bottom:10px;" />
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-brand" id="saveIconBtn" type="button" onclick="saveIcon()">
+          💾 Enregistrer l'icône
+        </button>
+        <button class="btn" type="button" onclick="resetIcon()"
+          style="background:#f3f4f6;color:#555;border:1px solid var(--line);">
+          🔄 Remettre l'icône par défaut
+        </button>
+      </div>
+      <div class="notif-msg" id="iconFeedback" style="margin-top:12px;"></div>
+      <p style="font-size:12px;color:var(--muted);margin:12px 0 0;">
+        ⏱️ Après enregistrement, l'icône est mise à jour sur GitHub Pages en ~1 minute.<br>
+        ℹ️ Les clients ayant déjà installé l'app doivent la réinstaller pour voir la nouvelle icône.
+      </p>
+    </div>
+
+    <!-- Couleur de marque -->
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">🎨</span> Couleur de marque</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+        Couleur principale utilisée dans les boutons, accents et barre de titre de la PWA.
+      </p>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <input type="color" id="brandColorInput"
+          style="width:48px;height:48px;border:none;border-radius:10px;cursor:pointer;padding:2px;" />
+        <div>
+          <div style="font-size:13px;font-weight:700;" id="brandColorLabel">#b8924f</div>
+          <div style="font-size:12px;color:var(--muted);">Couleur actuelle</div>
+        </div>
+      </div>
+      <button class="btn btn-brand" type="button" onclick="saveColor()" style="margin-top:4px;">
+        💾 Enregistrer la couleur
+      </button>
+      <div class="notif-msg" id="colorFeedback" style="margin-top:12px;"></div>
+    </div>
+
+    <!-- Lien Google Avis -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title"><span class="card-title-icon">⭐</span> Lien Google Avis &amp; QR Code</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.6;">
+        Ce lien alimente le bouton <strong>"Donner mon avis sur Google"</strong> et le QR code de la page avis.
+        Entrez le <strong>Place ID</strong> de votre établissement (ex&nbsp;: <code style="background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px">ChIJN1t_tDeuEmsRUsoyG83frY4</code>).
+      </p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">
+        🔍 Trouvez votre Place ID sur
+        <a href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600;">ce lien Google →</a>
+      </p>
+
+      <!-- Aperçu du lien actuel -->
+      <div id="googleReviewCurrentWrap" style="display:none;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--muted);word-break:break-all;">
+        <span style="font-weight:700;color:var(--ink);">Lien actuel :</span>
+        <span id="googleReviewCurrentVal"></span>
+      </div>
+
+      <label class="form-label" for="googleReviewInput">Place ID Google</label>
+      <input class="form-input" id="googleReviewInput"
+        placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4"
+        spellcheck="false"
+        style="margin-bottom:10px;font-family:monospace;font-size:13px;" />
+
+      <button class="btn btn-brand" id="saveGoogleReviewBtn" type="button" onclick="saveGoogleReview()">
+        💾 Enregistrer le lien avis
+      </button>
+      <div class="notif-msg" id="googleReviewFeedback" style="margin-top:12px;"></div>
+      <p style="font-size:12px;color:var(--muted);margin:10px 0 0;">
+        ⏱️ Après enregistrement, la page avis est mise à jour sur GitHub Pages en ~1 minute.
+      </p>
+    </div>
+
+    <!-- Équipe / Comptes employés -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title"><span class="card-title-icon">👥</span> Équipe — Comptes employés</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+        Créez un compte par employé. Ils auront accès uniquement à la page Coupon
+        (PIN du moment + QR d'installation). Ils ne verront pas vos statistiques
+        ni vos paramètres.
+      </p>
+
+      <!-- Étape 1 : Authentification admin (cachée 30 min) -->
+      <div id="teamAuthStep">
+        <div style="background:var(--brand-light);border:1px solid var(--brand-border);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;">
+          🔒 Confirmez votre mot de passe administrateur pour gérer les comptes employés.
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="teamAdminPwd">Votre mot de passe admin</label>
+          <input class="form-input" id="teamAdminPwd" type="password" autocomplete="current-password" placeholder="••••••••" />
+        </div>
+        <button class="btn btn-brand" type="button" onclick="teamAuth()">🔓 Déverrouiller</button>
+        <div class="notif-msg" id="teamAuthFeedback" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- Étape 2 : Liste + création (révélée après auth) -->
+      <div id="teamMainStep" style="display:none;">
+        <!-- Liste -->
+        <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px;">Comptes existants</div>
+        <ul class="actions-list" id="teamList" style="margin-bottom:18px;">
+          <li class="action-item" style="cursor:default;"><span class="action-icon">⏳</span><span class="action-label">Chargement…</span></li>
+        </ul>
+
+        <!-- Formulaire création -->
+        <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px;border-top:1px solid var(--line);padding-top:14px;">Créer un nouveau compte</div>
+        <div class="form-group">
+          <label class="form-label" for="teamNewUsername">Nom d'utilisateur (3+ caractères)</label>
+          <input class="form-input" id="teamNewUsername" placeholder="Ex: marie, paul, salle" autocomplete="off" maxlength="50" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="teamNewPassword">Mot de passe (6+ caractères)</label>
+          <input class="form-input" id="teamNewPassword" type="text" placeholder="Mot de passe à transmettre à l'employé" autocomplete="off" />
+          <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">⚠ Notez-le maintenant — vous pourrez toujours le réinitialiser plus tard.</div>
+        </div>
+        <button class="btn btn-brand" type="button" onclick="teamCreate()">➕ Créer le compte</button>
+        <div class="notif-msg" id="teamFeedback" style="margin-top:12px;"></div>
+
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);">
+          <a href="#" onclick="teamLogout();return false;" style="font-size:12px;color:var(--muted);text-decoration:underline;">🔐 Verrouiller la gestion d'équipe</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ OFFRE DU JOUR ═══════════════════════════ -->
+  <div id="offre" class="tab-panel">
+    <div class="section-title">🔥 Offre du jour</div>
+    <div class="section-sub">Configurez l'offre affichée dans l'app de vos clients</div>
+
+    <!-- Statut actif -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">🔄</span> Statut de l'offre</div>
+      <label style="display:flex;align-items:center;gap:14px;cursor:pointer;padding:8px 0;">
+        <input type="checkbox" id="offreActive"
+          style="width:20px;height:20px;accent-color:var(--brand);cursor:pointer;flex-shrink:0;" />
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--ink);">Activer l'offre du jour</div>
+          <div style="font-size:12px;color:var(--muted);">Décochez pour masquer l'offre sans la supprimer</div>
+        </div>
+      </label>
+    </div>
+
+    <!-- Contenu de l'offre -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">✍️</span> Contenu</div>
+
+      <label class="form-label" for="offreTitre" style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">Titre *</label>
+      <input class="form-input" type="text" id="offreTitre"
+        placeholder="Happy Hour ce soir — 2 cocktails achetés = 1 offert"
+        style="margin-bottom:14px;" />
+
+      <label class="form-label" for="offreDesc" style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">Description</label>
+      <textarea class="form-input" id="offreDesc" rows="3"
+        placeholder="Valable dès 18h, sur présentation de l'app Fidelavis."
+        style="margin-bottom:14px;resize:vertical;"></textarea>
+
+      <label class="form-label" for="offreDateFin" style="font-size:13px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">Date de fin de validité</label>
+      <input class="form-input" type="date" id="offreDateFin"
+        style="margin-bottom:0;" />
+    </div>
+
+    <!-- Image -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title"><span class="card-title-icon">🖼️</span> Image de l'offre</div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+        Prenez une photo ou importez une image depuis votre appareil
+        (JPG/PNG/WebP, format paysage 16:9 recommandé, max 5 MB).
+      </p>
+
+      <!-- input fichier caché + boutons d'action -->
+      <input type="file" id="offreImageFile" accept="image/*" capture="environment"
+        onchange="handleOffreImageFile(this)" style="display:none;" />
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <button type="button" class="btn btn-brand" style="flex:1;min-width:140px;"
+          onclick="document.getElementById('offreImageFile').click()">
+          📷 Prendre / Choisir une photo
+        </button>
+        <button type="button" class="btn" id="offreImageReset" style="background:#f3f4f6;color:#555;border:1px solid var(--line);display:none;"
+          onclick="resetOffreImage()">
+          🗑 Retirer
+        </button>
+      </div>
+
+      <!-- Hidden — stocke l'URL Supabase Storage finale -->
+      <input type="hidden" id="offreImage" value="" />
+
+      <!-- Status / progression -->
+      <div id="offreImageStatus" style="display:none;font-size:12.5px;color:var(--muted);padding:10px;background:var(--bg);border-radius:8px;margin-bottom:10px;text-align:center;"></div>
+
+      <!-- Aperçu -->
+      <div id="offreImagePreview" style="display:none;margin-bottom:4px;">
+        <img id="offreImgEl" src="" alt="Aperçu"
+          style="width:100%;max-height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--line);"
+          onerror="document.getElementById('offreImagePreview').style.display='none'" />
+        <div id="offreImgUrl" style="font-size:11px;color:var(--muted);margin-top:6px;word-break:break-all;line-height:1.3;"></div>
+      </div>
+    </div>
+
+    <!-- Bouton save -->
+    <button class="btn btn-brand" type="button" id="saveOffreBtn" onclick="saveOffre()"
+      style="width:100%;padding:14px;font-size:15px;">
+      💾 Enregistrer l'offre
+    </button>
+    <div class="notif-msg" id="offreFeedback" style="margin-top:12px;"></div>
+    <p style="font-size:12px;color:var(--muted);margin:10px 0 0;">
+      ⏱️ Visible dans l'app dans ~1 minute après déploiement GitHub Pages.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════ REVENUS ═══════════════════════════ -->
+  <div id="revenus" class="tab-panel">
+    <div class="section-title">Revenus Fidelavis</div>
+    <div class="section-sub" id="revenusSub">Impact business ce mois</div>
+
+    <!-- KPIs revenus -->
+    <div class="rev-kpi-row">
+      <div class="rev-kpi">
+        <div class="rev-kpi-val" id="revCaTotal">—</div>
+        <div class="rev-kpi-label">CA total estimé</div>
+      </div>
+      <div class="rev-kpi">
+        <div class="rev-kpi-val" id="revClientsRevenus" style="color:var(--orange);">—</div>
+        <div class="rev-kpi-label">Clients revenus</div>
+      </div>
+      <div class="rev-kpi">
+        <div class="rev-kpi-val" id="revPanierMoyen" style="color:var(--blue);">—</div>
+        <div class="rev-kpi-label">Panier moyen</div>
+      </div>
+    </div>
+
+    <!-- Graphique par jour -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title"><span class="card-title-icon">📊</span> CA par jour (7 derniers jours)</div>
+      <div id="revChart" class="chart-bar-wrap">
+        <div style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">Aucune donnée enregistrée ce mois.</div>
+      </div>
+    </div>
+
+    <!-- Tableau des entrées -->
+    <div class="card">
+      <div class="card-title"><span class="card-title-icon">📋</span> Détail des visites</div>
+      <div id="revTableWrap" style="overflow-x:auto;">
+        <table class="rev-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Tranche</th>
+              <th>Valeur estimée</th>
+            </tr>
+          </thead>
+          <tbody id="revTableBody">
+            <tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px;">Aucun montant saisi ce mois.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <div style="font-size:12px;color:var(--muted);">Valeurs basées sur la tranche saisie après chaque validation coupon.</div>
+        <button onclick="loadRevenus(true)" style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);">↻ Actualiser</button>
+      </div>
+    </div>
+
+    <!-- Note méthodologie -->
+    <div class="info-panel" style="margin-top:16px;font-size:12.5px;">
+      <strong>Méthodologie :</strong> Les valeurs estimées utilisent la valeur centrale de chaque tranche saisie par votre équipe après chaque coupon validé.
+      Pour les coupons sans montant saisi, un panier moyen de <strong id="revPanierDefault">35€</strong> est utilisé.
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  AUTHENTIFICATION & IDENTIFICATION RESTAURANT
+// ═══════════════════════════════════════════════════════════════
+
+const SITE = (() => {
+  // Priorité 1 : path URL → /resto1/admin/... → "resto1"
+  const m = location.pathname.match(/^\/([^/]+)\//);
+  if (m && m[1] !== 'assets' && m[1] !== 'data') return m[1];
+  // Fallback
+  return localStorage.getItem('fv_last_resto') || 'resto1';
+})();
+
+const AUTH_KEY = `admin_${SITE}`;
+const ROLE_KEY = `role_${SITE}`;
+
+// Guard : redirection si non connecté
+if (!localStorage.getItem(AUTH_KEY)) {
+  window.location.href = 'login.html';
+}
+
+const ROLE = localStorage.getItem(ROLE_KEY) || 'employe';
+
+// ── Init UI selon rôle ──────────────────────────────────────
+document.getElementById('roleBadge').textContent = ROLE === 'admin' ? '👑 Admin' : '👤 Employé';
+
+if (ROLE !== 'admin') {
+  // Employé : accès UNIQUEMENT à la page Coupon (donner le PIN au client)
+  document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('#linkStats, #linkAvis, #linkBilling').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.tab-btn[data-tab="dashboard"]').forEach(el => el.style.display = 'none');
+}
+
+// Charger config.json : nom + statut abonnement + lien NFC
+fetch(`/${SITE}/config.json`)
+  .then(r => r.json())
+  .then(cfg => {
+    window._cachedConfig = cfg;
+    if (cfg?.name) document.getElementById('restNameHeader').textContent = cfg.name;
+
+    // Lien NFC
+    const nfcUrl = `${location.origin}/${SITE}/indexnfc.html`;
+    const nfcEl  = document.getElementById('nfcLink');
+    if (nfcEl) nfcEl.textContent = nfcUrl;
+    const qrBtn  = document.getElementById('qrBtn');
+    if (qrBtn) qrBtn.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(nfcUrl)}`;
+
+    // Bannière statut abonnement (admin uniquement — pas de billing pour les employés)
+    if (ROLE !== 'admin') return;
+
+    const banner = document.getElementById('subBanner');
+    const status = cfg?.subscriptionStatus || '';
+    const trial  = cfg?.trialEndDate || '';
+    if (status === 'trialing' && trial) {
+      const days = Math.ceil((new Date(trial) - new Date()) / 86400000);
+      if (days > 0) {
+        const [y,m,d] = trial.split('-');
+        const trialFr = `${d}-${m}-${y}`;
+        banner.style.display = '';
+        banner.style.background = '#dbeafe';
+        banner.style.color = '#1e40af';
+        banner.innerHTML = `🎁 Essai gratuit — <strong>${days} jour${days > 1 ? 's' : ''} restant${days > 1 ? 's' : ''}</strong> (fin le ${trialFr}) · <a href="billing.html" style="color:#1e40af;font-weight:700;">Gérer mon abonnement →</a>`;
+      }
+    } else if (status === 'past_due') {
+      banner.style.display = '';
+      banner.style.background = '#fee2e2';
+      banner.style.color = '#dc2626';
+      banner.innerHTML = `⚠️ <strong>Paiement en attente</strong> — Mettez à jour votre moyen de paiement pour continuer à utiliser Fidelavis. <a href="billing.html" style="color:#dc2626;font-weight:700;">Régulariser →</a>`;
+    } else if (status === 'canceled') {
+      banner.style.display = '';
+      banner.style.background = '#f3f4f6';
+      banner.style.color = '#6b7280';
+      banner.innerHTML = `Abonnement résilié. <a href="billing.html" style="color:#6b7280;font-weight:700;">Réactiver →</a>`;
+    }
+  })
+  .catch(() => {
+    // Afficher le lien NFC même sans config
+    const nfcUrl = `${location.origin}/${SITE}/indexnfc.html`;
+    const nfcEl  = document.getElementById('nfcLink');
+    if (nfcEl) nfcEl.textContent = nfcUrl;
+    const qrBtn  = document.getElementById('qrBtn');
+    if (qrBtn) qrBtn.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(nfcUrl)}`;
+  });
+
+function copyNfcLink() {
+  const url = document.getElementById('nfcLink')?.textContent;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => {
+    const msg = document.getElementById('copyMsg');
+    msg.style.display = '';
+    setTimeout(() => { msg.style.display = 'none'; }, 2000);
+  });
+}
+
+// ── Logout ──────────────────────────────────────────────────
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem(AUTH_KEY);
+  localStorage.removeItem(ROLE_KEY);
+  window.location.href = 'login.html';
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  NAVIGATION PAR HASH
+// ═══════════════════════════════════════════════════════════════
+
+const INLINE_TABS = ['dashboard', 'coupon', 'notifications', 'parametres', 'offre', 'revenus'];
+let kpisLoaded = false;
+let pinInterval = null;   // ⚠️ doit être déclaré AVANT initFromHash() (qui appelle loadDashboard)
+
+function switchTab(tabId) {
+  if (!INLINE_TABS.includes(tabId)) return;
+  if (tabId === 'dashboard'     && ROLE !== 'admin') return;
+  if (tabId === 'notifications' && ROLE !== 'admin') return;
+  if (tabId === 'parametres'    && ROLE !== 'admin') return;
+  if (tabId === 'offre'         && ROLE !== 'admin') return;
+  if (tabId === 'revenus'       && ROLE !== 'admin') return;
+
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
+
+  const panel = document.getElementById(tabId);
+  if (panel) panel.classList.add('active');
+  const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+  if (btn) btn.classList.add('active');
+
+  history.replaceState(null, '', `#${tabId}`);
+
+  if (tabId === 'dashboard')     loadDashboard();
+  if (tabId === 'coupon')        initCoupon();
+  if (tabId === 'notifications') loadPWACount();
+  if (tabId === 'parametres')    loadParametres();
+  if (tabId === 'offre')         loadOffre();
+  if (tabId === 'revenus')       loadRevenus(false);
+}
+
+// Clics sur les boutons tab inline
+document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// Hash initial au chargement
+function initFromHash() {
+  const hash = location.hash.replace('#', '');
+  if (ROLE !== 'admin') {
+    // Employé : accès UNIQUEMENT à la page Coupon (donner le PIN au client)
+    switchTab('coupon');
+    return;
+  }
+  if (INLINE_TABS.includes(hash)) {
+    switchTab(hash);
+  } else {
+    switchTab('dashboard');
+  }
+}
+
+window.addEventListener('popstate', initFromHash);
+// initFromHash() est appelé en toute fin de script (après TOUTES les const/let) pour éviter TDZ
+
+// ═══════════════════════════════════════════════════════════════
+//  APPS SCRIPT API
+// ═══════════════════════════════════════════════════════════════
+
+const API       = 'https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec';
+const STATS_API = 'https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec';
+
+// Phase 5b : Supabase d'abord (rapide), fallback GAS si Supabase indispo.
+const SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+const SUPA_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
+
+async function fetchStats(days) {
+  // 1. Tenter Supabase (timeout court 3s — pas besoin du retry GAS)
+  try {
+    const ctrlSb = new AbortController();
+    const tSb = setTimeout(() => ctrlSb.abort(), 3000);
+    const rSb = await fetch(SUPA_URL + '/rest/v1/rpc/fv_resto_kpis', {
+      method: 'POST',
+      headers: {
+        'apikey':        SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type':  'application/json'
+      },
+      body:   JSON.stringify({ p_slug: SITE, p_days: days }),
+      signal: ctrlSb.signal
+    });
+    clearTimeout(tSb);
+    if (rSb.ok) {
+      const j = await rSb.json();
+      if (j && j.ok && j.stats) {
+        console.log('[Fidelavis] Stats source: Supabase');
+        return j.stats;
+      }
+    }
+  } catch(_) { /* fallback GAS */ }
+
+  // 2. Fallback GAS (cold start tolérant 25s)
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 25000);
+  try {
+    const res  = await fetch(`${STATS_API}?resto=${encodeURIComponent(SITE)}&days=${days}`, { cache: 'no-store', signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    if (!data || data.ok !== true) throw new Error('Bad response');
+    console.log('[Fidelavis] Stats source: GAS (fallback)');
+    return data.stats || {};
+  } catch(e) {
+    clearTimeout(timer);
+    throw e;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════════════════════════════
+
+// pinInterval est déclaré plus haut (avant initFromHash) — voir commentaire ⚠️
+
+async function loadDashboard() {
+  // PIN — toujours mettre à jour immédiatement sur le dashboard
+  // (même si kpisLoaded, pour que le code s'affiche au retour sur l'onglet)
+  updatePin();
+  if (!pinInterval) {
+    pinInterval = setInterval(updatePin, 1000);
+  }
+
+  // Masque le CTA "Configurer mes avis Google" si Google est déjà connecté
+  try {
+    const tokenExpiry = parseInt(localStorage.getItem('fv_google_token_expiry') || '0');
+    const hasGoogle   = !!localStorage.getItem('fv_google_token') && tokenExpiry > Date.now();
+    const cta = document.getElementById('ctaGoogleSetup');
+    if (cta && hasGoogle) cta.style.display = 'none';
+  } catch (_) {}
+
+  if (kpisLoaded) return;
+
+  // Date display
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const now = new Date();
+  document.getElementById('dashboardSub').textContent =
+    `Vue d'ensemble — ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+  // KPIs depuis API — 3 tentatives automatiques (cold start Google Apps Script)
+  let lastErr = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      if (attempt > 0) await new Promise(r => setTimeout(r, attempt * 2000));
+      // Mois courant (30j) + 60j pour calculer le mois précédent
+      const [s, s60] = await Promise.all([fetchStats(30), fetchStats(60).catch(() => null)]);
+
+      const compute = (cur, prev) => {
+        cur = parseInt(cur) || 0; prev = parseInt(prev) || 0;
+        if (prev === 0 && cur === 0) return { txt: '—', cls: 'neutral' };
+        if (prev === 0) return { txt: `+${cur} vs mois préc.`, cls: 'positive' };
+        const diff = Math.round(((cur - prev) / prev) * 100);
+        const sign = diff > 0 ? '+' : '';
+        return {
+          txt: `${sign}${diff}% vs mois préc.`,
+          cls: diff > 0 ? 'positive' : diff < 0 ? 'negative' : 'neutral'
+        };
+      };
+      const setComp = (id, cur, prev) => {
+        const c = compute(cur, prev);
+        const el = document.getElementById(id);
+        if (el) { el.textContent = c.txt; el.className = 'kpi-comp ' + c.cls; }
+      };
+      const prevOf = (key) => {
+        if (!s60) return 0;
+        const total = parseInt(s60[key]) || 0;
+        const curr  = parseInt(s[key])   || 0;
+        return Math.max(0, total - curr);
+      };
+
+      // Ligne 1
+      document.getElementById('kpiScans').textContent    = s.scan   ?? '—';
+      setComp('kpiScansComp',   s.scan,   prevOf('scan'));
+      document.getElementById('kpiSignups').textContent  = s.signup ?? '—';
+      setComp('kpiSignupsComp', s.signup, prevOf('signup'));
+
+      const clientsRevenus = parseInt(s.coupon_validate) || 0;
+      document.getElementById('kpiCouponCount').textContent = clientsRevenus || '0';
+      setComp('kpiCouponComp', clientsRevenus, prevOf('coupon_validate'));
+
+      // Ligne 2
+      const caData   = getRevData();
+      const caMois   = getCaEstimeMois(caData);
+      const caEstime = caMois > 0 ? caMois : clientsRevenus * PANIER_MOYEN_DEFAULT;
+      document.getElementById('kpiCaEstime').textContent = (caEstime > 0 ? caEstime : 0) + ' €';
+      const caPrev = getCaPrevMois(caData);
+      const caPrevFinal = caPrev > 0 ? caPrev : prevOf('coupon_validate') * PANIER_MOYEN_DEFAULT;
+      setComp('kpiCaComp', caEstime, caPrevFinal);
+
+      const reviewClicks = parseInt(s.review) || 0;
+      document.getElementById('kpiAvisGoogle').textContent = reviewClicks || '0';
+      const avisPrev = prevOf('review');
+      const avisDelta = reviewClicks - avisPrev;
+      const avisCompEl = document.getElementById('kpiAvisComp');
+      if (avisCompEl) {
+        if (reviewClicks === 0 && avisPrev === 0) {
+          avisCompEl.textContent = '—'; avisCompEl.className = 'kpi-comp neutral';
+        } else {
+          const sign = avisDelta > 0 ? '+' : '';
+          avisCompEl.textContent = `${sign}${avisDelta} vs mois préc.`;
+          avisCompEl.className = 'kpi-comp ' + (avisDelta > 0 ? 'positive' : avisDelta < 0 ? 'negative' : 'neutral');
+        }
+      }
+
+      // ROI / Rentabilité estimée
+      const roiVal = caEstime > 0 ? (caEstime / ABONNEMENT_MENSUEL) : 0;
+      const roiEl    = document.getElementById('kpiRoi');
+      const roiBadge = document.getElementById('kpiRoiBadge');
+      const roiCard  = document.getElementById('kpiRoiCard');
+      roiEl.textContent = roiVal > 0 ? '×' + roiVal.toFixed(1).replace('.', ',') : '—';
+      if (roiBadge) {
+        if (roiVal >= 1) {
+          roiBadge.innerHTML = '<span class="kpi-badge-success">Abonnement rentabilisé</span>';
+          if (roiCard) roiCard.style.borderLeftColor = '#10b981';
+        } else if (roiVal > 0) {
+          roiBadge.innerHTML = `<div class="kpi-comp neutral" style="margin-top:8px;">CA ${caEstime}€ / Abo ${ABONNEMENT_MENSUEL}€</div>`;
+          if (roiCard) roiCard.style.borderLeftColor = 'var(--orange)';
+        } else {
+          roiBadge.innerHTML = '<div class="kpi-comp neutral" style="margin-top:8px;">Saisir les montants</div>';
+          if (roiCard) roiCard.style.borderLeftColor = 'var(--line)';
+        }
+      }
+
+      // Secondaire — Clients connectés
+      const installs = parseInt(s.install ?? s.install_confirmed) || 0;
+      document.getElementById('kpiInstalls').textContent = installs || '0';
+
+      // Montants à compléter (staff)
+      window._nbAcompleter = getNbAcompleter(clientsRevenus);
+      renderMontantsCompleter(clientsRevenus);
+
+      // Actions du jour dynamique
+      renderActionsList(clientsRevenus);
+
+      const errBanner = document.getElementById('dashboardError');
+      if (errBanner) errBanner.style.display = 'none';
+
+      kpisLoaded = true;
+      return;
+    } catch(err) {
+      lastErr = err;
+    }
+  }
+
+  // Échec après 3 tentatives
+  ['kpiScans','kpiSignups','kpiInstalls','kpiCouponCount','kpiCaEstime','kpiAvisGoogle','kpiRoi'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '—';
+  });
+
+  let errBanner = document.getElementById('dashboardError');
+  if (!errBanner) {
+    errBanner = document.createElement('div');
+    errBanner.id = 'dashboardError';
+    errBanner.style.cssText = 'background:#fee2e2;color:#dc2626;border-radius:10px;padding:14px 18px;font-size:13px;font-weight:600;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;';
+    document.getElementById('dashboard').insertBefore(errBanner, document.querySelector('.kpi-grid'));
+  }
+  const isTimeout = lastErr?.name === 'AbortError';
+  errBanner.innerHTML = `<span>${isTimeout ? '⏱ Délai dépassé — serveur trop lent.' : '⚠️ Impossible de charger les données.'} Vérifiez votre connexion.</span>`
+    + `<button onclick="kpisLoaded=false;loadDashboard();" style="background:#dc2626;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">↻ Réessayer</button>`;
+  errBanner.style.display = 'flex';
+}
+
+function updateCouponSummary() { /* legacy — éléments retirés */ }
+
+// ═══════════════════════════════════════════════════════════════
+//  REVENUS — STOCKAGE & CALCUL
+// ═══════════════════════════════════════════════════════════════
+
+const ABONNEMENT_MENSUEL   = 49;
+const PANIER_MOYEN_DEFAULT = 35;
+
+function getRevData() {
+  try { return JSON.parse(localStorage.getItem(`fv_rev_${SITE}`) || '[]'); }
+  catch { return []; }
+}
+
+function currentYM() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function entryYM(ts) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function getCaEstimeMois(data) {
+  const ym = currentYM();
+  return data.filter(e => entryYM(e.ts) === ym).reduce((acc, e) => acc + (e.valeur || 0), 0);
+}
+
+function getCaPrevMois(data) {
+  const d = new Date(); d.setMonth(d.getMonth() - 1);
+  const ym = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  return data.filter(e => entryYM(e.ts) === ym).reduce((acc, e) => acc + (e.valeur || 0), 0);
+}
+
+function getNbSaisiesMois(data) {
+  const ym = currentYM();
+  return data.filter(e => entryYM(e.ts) === ym).length;
+}
+
+function saveRevEntry(tranche, valeur, source) {
+  const data = getRevData();
+  data.push({ ts: Date.now(), tranche, valeur, source: source || 'staff' });
+  localStorage.setItem(`fv_rev_${SITE}`, JSON.stringify(data));
+}
+
+// Conversion tranche → valeur estimée (alignée brief produit)
+const TRANCHES = [
+  { label: '0–20€',  value: 10 },
+  { label: '20–40€', value: 30 },
+  { label: '40–60€', value: 50 },
+  { label: '60€+',   value: 70 }
+];
+
+function saisirMontant(tranche, valeur, btn) {
+  // Picker dans onglet Coupon (legacy mais utile en mode admin)
+  const feedback = document.getElementById('montantFeedback');
+  if (!tranche) {
+    if (feedback) { feedback.textContent = 'Montant non saisi — noté.'; feedback.style.display = ''; }
+    return;
+  }
+  saveRevEntry(tranche, valeur, 'staff');
+  document.querySelectorAll('#coupon .amount-btn').forEach(b => b.classList.remove('sel'));
+  if (btn) btn.classList.add('sel');
+  if (feedback) {
+    feedback.textContent = `✓ ${tranche} enregistré (~${valeur}€)`;
+    feedback.style.display = '';
+    setTimeout(() => {
+      feedback.style.display = 'none';
+      document.querySelectorAll('#coupon .amount-btn').forEach(b => b.classList.remove('sel'));
+    }, 2500);
+  }
+  kpisLoaded = false;
+}
+
+// ── Compatibilité : ancien onClick → redirige vers la nouvelle UI ──
+function saisirMontantDash(tranche, valeur) {
+  if (tranche) saveRevEntry(tranche, valeur, 'staff');
+  kpisLoaded = false;
+  loadDashboard();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MONTANTS À COMPLÉTER (saisie staff, post-rush)
+// ═══════════════════════════════════════════════════════════════
+
+// Combien de visites validées sans montant saisi (côté staff/auto) ?
+function getNbAcompleter(clientsRevenus) {
+  const data       = getRevData();
+  const nbSaisies  = getNbSaisiesMois(data);
+  return Math.max(0, (clientsRevenus || 0) - nbSaisies);
+}
+
+function renderMontantsCompleter(clientsRevenus) {
+  const card  = document.getElementById('montantsCompleterCard');
+  const list  = document.getElementById('montantsList');
+  const count = document.getElementById('montantsCompleterCount');
+  const desc  = document.getElementById('montantsCompleterDesc');
+  if (!card || !list) return;
+
+  const nb = getNbAcompleter(clientsRevenus);
+  if (nb === 0) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = '';
+  count.textContent = nb;
+  desc.textContent = nb === 1
+    ? `1 visite ce mois sans montant. Aidez-nous à affiner votre CA.`
+    : `${nb} visites ce mois sans montant. Aidez-nous à affiner votre CA.`;
+
+  // Liste les N premières visites en attente (max 5 affichées)
+  const display = Math.min(nb, 5);
+  list.innerHTML = '';
+  for (let i = 0; i < display; i++) {
+    const item = document.createElement('li');
+    item.className = 'action-item';
+    item.style.cursor = 'default';
+    item.innerHTML = `
+      <span class="action-icon">🍽️</span>
+      <span class="action-label">Visite #${i + 1}</span>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;">
+        ${TRANCHES.map(t => `<button class="amount-btn-h" style="font-size:11px;padding:5px 8px;min-width:auto;flex:0 0 auto;" data-tranche="${t.label}" data-valeur="${t.value}">${t.label.replace('€','')} €</button>`).join('')}
+      </div>
+    `;
+    list.appendChild(item);
+    // Bind clicks
+    item.querySelectorAll('.amount-btn-h').forEach(btn => {
+      btn.addEventListener('click', () => {
+        saveRevEntry(btn.dataset.tranche, parseInt(btn.dataset.valeur), 'staff');
+        const fb = document.getElementById('montantsFeedback');
+        if (fb) {
+          fb.textContent = `✓ ${btn.dataset.tranche} enregistré`;
+          fb.className = 'validation-feedback success';
+          setTimeout(() => { fb.style.display = 'none'; }, 1500);
+        }
+        kpisLoaded = false;
+        loadDashboard();
+      });
+    });
+  }
+
+  if (nb > display) {
+    const more = document.createElement('li');
+    more.className = 'action-item';
+    more.style.cssText = 'cursor:default;color:var(--muted);font-size:12px;padding:8px 4px;';
+    more.innerHTML = `<span style="margin-left:32px;">+ ${nb - display} autre${nb - display > 1 ? 's' : ''} visite${nb - display > 1 ? 's' : ''} en attente — utilisez "Remplir tous" pour aller plus vite</span>`;
+    list.appendChild(more);
+  }
+}
+
+// ── Bouton "Remplir tous en 20–40 €" ──
+function remplirTous(tranche, valeur) {
+  // Détermine N depuis les KPIs courants (clientsRevenus stocké en window)
+  const nb = window._nbAcompleter || 0;
+  if (nb === 0) return;
+  if (!confirm(`Enregistrer ${nb} visite${nb > 1 ? 's' : ''} en "${tranche}" (${valeur}€ chacune) ?`)) return;
+
+  for (let i = 0; i < nb; i++) saveRevEntry(tranche, valeur, 'staff');
+  const fb = document.getElementById('montantsFeedback');
+  if (fb) {
+    fb.textContent = `✓ ${nb} montant${nb > 1 ? 's' : ''} enregistré${nb > 1 ? 's' : ''} (${nb * valeur}€ ajoutés au CA)`;
+    fb.className = 'validation-feedback success';
+    setTimeout(() => { fb.style.display = 'none'; }, 2500);
+  }
+  kpisLoaded = false;
+  loadDashboard();
+}
+
+// ── Estimation auto après 24h ──
+// Si une visite n'a toujours pas de montant 24h après, le CA estimé
+// utilise le panier moyen restaurant (PANIER_MOYEN_DEFAULT par défaut).
+// La fonction est déjà appliquée dans loadDashboard via le fallback :
+//   caEstime = caMois > 0 ? caMois : clientsRevenus * PANIER_MOYEN_DEFAULT
+// → L'estimation auto est implicite quand aucun montant n'est saisi.
+
+// ── Génération dynamique de la liste Actions du jour ──
+function renderActionsList(clientsRevenus) {
+  const list = document.getElementById('actionsList');
+  if (!list) return;
+
+  const items = [];
+
+  // 1. Offre du mois activée ?
+  let offreActive = false;
+  try {
+    // Si on a déjà chargé une config en cache local, on l'utilise; sinon on suppose à faire
+    const cachedCfg = window._cachedConfig || null;
+    offreActive = !!(cachedCfg && cachedCfg.offre_jour && cachedCfg.offre_jour.active);
+  } catch(_) {}
+
+  items.push({
+    icon: '🎁',
+    label: offreActive ? 'Offre du mois active' : 'Activer l\'offre du mois',
+    status: offreActive ? 'done' : 'todo',
+    statusLabel: offreActive ? 'Terminé' : 'À faire',
+    href: '#offre',
+    onClick: () => switchTab('offre')
+  });
+
+  // 2. Compléter les montants pour visites sans saisie
+  const nbVisitesSansMontant = getNbAcompleter(clientsRevenus);
+  if (nbVisitesSansMontant > 0) {
+    items.push({
+      icon: '📊',
+      label: `Compléter le montant pour ${nbVisitesSansMontant} visite${nbVisitesSansMontant > 1 ? 's' : ''}`,
+      status: 'todo',
+      statusLabel: 'À faire',
+      onClick: () => {
+        const card = document.getElementById('montantsCompleterCard');
+        if (card) { card.style.display = ''; card.scrollIntoView({behavior:'smooth', block:'start'}); }
+      }
+    });
+  }
+
+  // 3. Avis Google
+  const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
+  const pendingReviews = reviews.filter(r => r.status === 'pending').length;
+  items.push({
+    icon: '⭐',
+    label: `Répondre aux avis (${pendingReviews} en attente)`,
+    status: pendingReviews > 0 ? 'todo' : 'done',
+    statusLabel: pendingReviews > 0 ? 'À faire' : 'Terminé',
+    href: 'reputation-google.html'
+  });
+
+  // 4. Notifications push (uniquement si admin et clients connectés)
+  if (ROLE === 'admin') {
+    const lastNotif = parseInt(localStorage.getItem(`fv_last_notif_${SITE}`) || '0');
+    const daysSince = (Date.now() - lastNotif) / 86400000;
+    if (daysSince > 14 || lastNotif === 0) {
+      items.push({
+        icon: '🔔',
+        label: 'Envoyer une notification à vos clients',
+        status: 'todo',
+        statusLabel: 'À faire',
+        onClick: () => switchTab('notifications')
+      });
+    }
+  }
+
+  // Render
+  list.innerHTML = items.map((it, idx) => {
+    const attr = it.href && !it.onClick ? `href="${it.href}"` : 'href="#"';
+    const tag  = it.href && !it.onClick ? 'a' : 'a';
+    return `<${tag} class="action-item" data-idx="${idx}" ${attr}>
+      <span class="action-icon">${it.icon}</span>
+      <span class="action-label">${it.label}</span>
+      <span class="action-status ${it.status}">${it.statusLabel}</span>
+      <span class="action-arrow">›</span>
+    </${tag}>`;
+  }).join('');
+
+  // Bind onClick handlers
+  list.querySelectorAll('.action-item').forEach(el => {
+    const idx = parseInt(el.dataset.idx);
+    const it  = items[idx];
+    if (it.onClick) {
+      el.addEventListener('click', e => { e.preventDefault(); it.onClick(); });
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ONGLET REVENUS
+// ═══════════════════════════════════════════════════════════════
+
+let _revenusLoaded = false;
+
+function loadRevenus(force) {
+  if (_revenusLoaded && !force) return;
+
+  const now    = new Date();
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  document.getElementById('revenusSub').textContent = `Impact business — ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+  const data   = getRevData();
+  const ym     = currentYM();
+  const mois   = data.filter(e => entryYM(e.ts) === ym);
+  const caTotal = mois.reduce((a, e) => a + (e.valeur || 0), 0);
+  const nbClients = mois.length;
+  const panier    = nbClients > 0 ? Math.round(caTotal / nbClients) : PANIER_MOYEN_DEFAULT;
+
+  document.getElementById('revCaTotal').textContent        = caTotal > 0 ? caTotal + '€' : '—';
+  document.getElementById('revClientsRevenus').textContent = nbClients || '—';
+  document.getElementById('revPanierMoyen').textContent    = nbClients > 0 ? panier + '€' : PANIER_MOYEN_DEFAULT + '€*';
+  document.getElementById('revPanierDefault').textContent  = PANIER_MOYEN_DEFAULT + '€';
+
+  // Tableau
+  const tbody = document.getElementById('revTableBody');
+  if (mois.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px;">Aucun montant saisi ce mois.<br><small>Utilisez le picker dans l'onglet Coupon après chaque validation.</small></td></tr>`;
+  } else {
+    const sorted = [...mois].sort((a,b) => b.ts - a.ts);
+    tbody.innerHTML = sorted.map(e => {
+      const d = new Date(e.ts);
+      const label = d.toLocaleDateString('fr-FR', {day:'numeric',month:'short'}) + ' ' +
+                    d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+      return `<tr><td>${label}</td><td>${e.tranche}</td><td style="font-weight:700;color:var(--green);">${e.valeur}€</td></tr>`;
+    }).join('');
+  }
+
+  // Graphique 7 derniers jours
+  const chart = document.getElementById('revChart');
+  const days  = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const ds = d.toDateString();
+    const entries = data.filter(e => new Date(e.ts).toDateString() === ds);
+    const ca = entries.reduce((a, e) => a + (e.valeur || 0), 0);
+    days.push({ label: d.toLocaleDateString('fr-FR',{weekday:'short'}).slice(0,3), ca });
+  }
+  const maxCa = Math.max(...days.map(d => d.ca), 1);
+  if (days.every(d => d.ca === 0)) {
+    chart.innerHTML = `<div style="font-size:13px;color:var(--muted);text-align:center;padding:20px 0;">Aucune donnée sur les 7 derniers jours.</div>`;
+  } else {
+    chart.innerHTML = days.map(d => `
+      <div class="chart-bar-row">
+        <span class="chart-bar-label">${d.label}</span>
+        <div class="chart-bar-track"><div class="chart-bar-fill" style="width:${Math.round((d.ca/maxCa)*100)}%"></div></div>
+        <span class="chart-bar-val">${d.ca > 0 ? d.ca+'€' : ''}</span>
+      </div>`).join('');
+  }
+
+  _revenusLoaded = true;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  COUPON
+// ═══════════════════════════════════════════════════════════════
+
+const SECRET_KEY = 'OFFLINE123';
+
+function simpleHash(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (h * 31 + str.charCodeAt(i)) % 1000000007;
+  }
+  return h;
+}
+
+function genPin() {
+  const minute = Math.floor(Date.now() / 60000);
+  return (simpleHash(SECRET_KEY + minute) % 10000).toString().padStart(4, '0');
+}
+
+function updatePin() {
+  const now  = Date.now();
+  const secs = Math.floor((60000 - (now % 60000)) / 1000);
+  const pct  = ((60 - secs) / 60) * 100;
+  const pin  = genPin();
+  const timerLegacy = `Nouveau code dans : ${secs}s`;
+  const timerVal    = `00:${String(secs).padStart(2,'0')}`;
+
+  // Legacy (onglet coupon)
+  const ids = [
+    ['pinDisplay',      'text',  pin],
+    ['timerPin',        'text',  timerLegacy],
+    ['pinBarFill',      'width', pct + '%'],
+  ];
+  for (const [id, kind, val] of ids) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (kind === 'text')  el.textContent = val;
+    if (kind === 'width') el.style.width = val;
+  }
+
+  // Dashboard v2 — boxes individuelles
+  const boxes = document.querySelectorAll('#pinBoxesDash .pin-box');
+  if (boxes.length === 4) {
+    for (let i = 0; i < 4; i++) boxes[i].textContent = pin[i];
+  }
+  const tv = document.getElementById('pinTimerVal');
+  if (tv) tv.textContent = timerVal;
+}
+
+// ── Validation PIN désormais 100% côté client (PWA) ──
+// Le dashboard est un outil de suivi uniquement. Voir l'onglet Coupon
+// pour consulter le code en cas de besoin (ex: client sans app).
+
+let couponInitialized = false;
+
+function initCoupon() {
+  const now    = new Date();
+  const year   = now.getFullYear();
+  const month  = now.getMonth(); // 0-indexed
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const mName  = months[month];
+
+  document.getElementById('couponPeriod').textContent      = `Coupon actif — ${mName} ${year}`;
+  document.getElementById('couponMonthDisplay').textContent = `${mName} ${year}`;
+  document.getElementById('couponTitle').textContent        = `Offre Fidelavis — ${mName}`;
+
+  // Statut coupon
+  const couponKey = `coupon_${SITE}_${year}_${month + 1}`;
+  const isUsed    = localStorage.getItem(couponKey) === 'used';
+  const badge     = document.getElementById('couponStatusBadge');
+  badge.className  = 'coupon-badge ' + (isUsed ? 'used' : 'active');
+  badge.textContent = isUsed ? 'Utilisé ce mois' : 'Actif';
+
+  // Dernière validation
+  const lastVal = localStorage.getItem(`last_validation_${SITE}`);
+  if (lastVal) {
+    const d = new Date(parseInt(lastVal));
+    document.getElementById('lastValidation').textContent =
+      d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) + ' à ' +
+      d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // PIN
+  if (!couponInitialized) {
+    if (pinInterval) clearInterval(pinInterval);
+    updatePin();
+    pinInterval = setInterval(updatePin, 1000);
+    couponInitialized = true;
+  }
+
+  // Validations du mois
+  if (!couponInitialized) loadCouponCount();
+  loadCouponCount();
+
+  // QR code installation PWA (réutilise exactement la source de l'admin général)
+  const qrEl    = document.getElementById('couponPwaQr');
+  const qrUrlEl = document.getElementById('couponPwaQrUrl');
+  if (qrEl && !qrEl.getAttribute('data-loaded')) {
+    const nfcUrl = `${location.origin}/${SITE}/indexnfc.html`;
+    qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(nfcUrl)}`;
+    qrEl.setAttribute('data-loaded', '1');
+    if (qrUrlEl) qrUrlEl.textContent = nfcUrl;
+  }
+
+  // Formulaire modification coupon (admin uniquement)
+  if (ROLE === 'admin') loadCouponEditForm();
+}
+
+async function loadCouponCount() {
+  try {
+    const s = await fetchStats(30);
+    document.getElementById('couponValidCount').textContent = s.coupon_validate ?? '—';
+  } catch {
+    document.getElementById('couponValidCount').textContent = '—';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  COUPON DU MOIS — Édition
+// ═══════════════════════════════════════════════════════════════
+
+let _couponEditLoaded = false;
+
+async function loadCouponEditForm() {
+  if (_couponEditLoaded) return;
+  _couponEditLoaded = true;
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  try {
+    const res = await fetch(`/${SITE}/config.json`, { cache: 'no-store' });
+    const cfg = await res.json();
+    const c   = cfg.activeCoupon || {};
+    document.getElementById('couponEditTitle').value = c.title    || '';
+    const _tc = document.getElementById('couponTitleCount');
+    if (_tc) _tc.textContent = (c.title || '').length;
+    document.getElementById('couponEditImage').value = c.imageUrl || '/_template/images/offres/surprise.png';
+    const monthSel = document.getElementById('couponEditMonth');
+    if (c.month) {
+      const opt = Array.from(monthSel.options).find(o => o.value === c.month.toLowerCase());
+      if (opt) monthSel.value = opt.value;
+    } else {
+      monthSel.value = months[new Date().getMonth()];
+    }
+    if (c.title) document.getElementById('couponTitle').textContent = c.title;
+  } catch(e) {
+    // Défaut : mois courant pré-sélectionné
+    const monthSel = document.getElementById('couponEditMonth');
+    if (monthSel) monthSel.value = months[new Date().getMonth()];
+  }
+}
+
+async function saveCouponMoisAdmin() {
+  const titre = document.getElementById('couponEditTitle').value.trim();
+  const fb    = document.getElementById('couponEditFeedback');
+  const btn   = document.getElementById('saveCouponBtn');
+
+  if (!titre) {
+    fb.textContent = '⚠️ Le titre est obligatoire.';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+
+  const coupon = {
+    title:    titre,
+    imageUrl: document.getElementById('couponEditImage').value,
+    month:    document.getElementById('couponEditMonth').value
+  };
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Enregistrement…';
+  fb.className    = 'notif-msg';
+  fb.textContent  = '';
+
+  try {
+    const url  = `${API}?action=save_coupon_mois&resto=${encodeURIComponent(SITE)}&coupon=${encodeURIComponent(JSON.stringify(coupon))}`;
+    const res  = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data?.ok) {
+      fb.textContent    = '✅ Coupon mis à jour avec succès. Visible dans ~1 minute.';
+      fb.className      = 'notif-msg success';
+      _couponEditLoaded = false;
+      document.getElementById('couponTitle').textContent = coupon.title;
+    } else {
+      fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue');
+      fb.className   = 'notif-msg error';
+    }
+  } catch(err) {
+    fb.textContent = '⚠️ ' + (err?.message || 'Erreur réseau');
+    fb.className   = 'notif-msg error';
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '🎫 Mettre à jour le coupon';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  NOTIFICATIONS
+// ═══════════════════════════════════════════════════════════════
+
+document.getElementById('notifTitle').addEventListener('input', function() {
+  document.getElementById('titleCount').textContent = this.value.length;
+});
+document.getElementById('notifMessage').addEventListener('input', function() {
+  document.getElementById('msgCount').textContent = this.value.length;
+});
+
+async function loadPWACount() {
+  try {
+    const s = await fetchStats(365);
+    document.getElementById('pwaCount').textContent = (s.install ?? s.install_confirmed ?? s.install) ?? '—';
+  } catch {
+    document.getElementById('pwaCount').textContent = '—';
+  }
+}
+
+document.getElementById('sendNotifBtn').addEventListener('click', sendNotification);
+
+async function sendNotification() {
+  const title   = document.getElementById('notifTitle').value.trim();
+  const message = document.getElementById('notifMessage').value.trim();
+  const target  = document.getElementById('notifTarget').value;
+  const btn     = document.getElementById('sendNotifBtn');
+  const fb      = document.getElementById('notifFeedback');
+
+  if (!title)   { showNotifFeedback('Veuillez saisir un titre.', 'error');   return; }
+  if (!message) { showNotifFeedback('Veuillez saisir un message.', 'error'); return; }
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Envoi en cours…';
+  fb.className    = 'notif-msg';
+
+  const startUrl = target === 'coupon' ? `/${SITE}/redit.html` : `/${SITE}/index.html`;
+
+  try {
+    // Envoi via Apps Script proxy — brancher action=push_notification côté Apps Script
+    // Si Progressier REST API disponible, remplacer par l'appel direct avec la clé API
+    const proxyUrl = `${API}?action=push_notification` +
+      `&resto=${encodeURIComponent(SITE)}` +
+      `&title=${encodeURIComponent(title)}` +
+      `&body=${encodeURIComponent(message)}` +
+      `&url=${encodeURIComponent(startUrl)}`;
+
+    const res  = await fetch(proxyUrl, { cache: 'no-store' });
+    const data = await res.json();
+    console.log('[NOTIF DEBUG]', JSON.stringify(data));
+
+    if (data?.ok) {
+      showNotifFeedback('✅ Notification envoyée avec succès !', 'success');
+      document.getElementById('notifTitle').value   = '';
+      document.getElementById('notifMessage').value = '';
+      document.getElementById('titleCount').textContent = '0';
+      document.getElementById('msgCount').textContent   = '0';
+    } else {
+      throw new Error(data?.error || 'Erreur API');
+    }
+  } catch (err) {
+    showNotifFeedback('⚠️ ' + (err?.message || 'Erreur inconnue'), 'error');
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '🚀 Envoyer la notification';
+}
+
+function showNotifFeedback(text, type) {
+  const el = document.getElementById('notifFeedback');
+  el.textContent = text;
+  el.className   = `notif-msg ${type}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PARAMÈTRES — Icône & Couleur de marque
+// ═══════════════════════════════════════════════════════════════
+
+let _paramsLoaded = false;
+
+async function loadParametres() {
+  if (_paramsLoaded) return;
+  _paramsLoaded = true;
+
+  // Charger config.json pour afficher les valeurs actuelles
+  try {
+    const res = await fetch(`/${SITE}/config.json`, { cache: 'no-store' });
+    const cfg = await res.json();
+
+    // Icône
+    const iconUrl = cfg.iconUrl || '';
+    document.getElementById('iconUrlInput').value = iconUrl;
+    if (iconUrl) {
+      document.getElementById('iconPreview').src = iconUrl;
+      document.getElementById('iconPreview').style.display = '';
+      document.getElementById('iconPlaceholder').style.display = 'none';
+      document.getElementById('iconStatus').textContent = 'Icône personnalisée';
+      document.getElementById('iconUrlDisplay').textContent = iconUrl;
+    }
+
+    // Couleur
+    const color = cfg.color || '#b8924f';
+    document.getElementById('brandColorInput').value = color;
+    document.getElementById('brandColorLabel').textContent = color;
+
+    // Google Review Place ID
+    const gr = cfg.googleReview || '';
+    if (gr) {
+      const pidMatch = gr.match(/placeid=([^&]+)/);
+      const placeId  = pidMatch ? decodeURIComponent(pidMatch[1]) : gr;
+      document.getElementById('googleReviewInput').value = placeId;
+      document.getElementById('googleReviewCurrentVal').textContent = gr;
+      document.getElementById('googleReviewCurrentWrap').style.display = 'block';
+    }
+  } catch(e) {}
+
+  // Mise à jour label couleur en temps réel
+  document.getElementById('brandColorInput').addEventListener('input', function() {
+    document.getElementById('brandColorLabel').textContent = this.value;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PARAMÈTRES — Lien Google Avis
+// ═══════════════════════════════════════════════════════════════
+
+async function saveGoogleReview() {
+  const placeId = document.getElementById('googleReviewInput').value.trim();
+  const googleReview = placeId
+    ? 'https://search.google.com/local/writereview?placeid=' + encodeURIComponent(placeId)
+    : '';
+
+  const fb  = document.getElementById('googleReviewFeedback');
+  const btn = document.getElementById('saveGoogleReviewBtn');
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Enregistrement…';
+  fb.className    = 'notif-msg';
+
+  try {
+    const url  = `${API}?action=save_google_review&resto=${encodeURIComponent(SITE)}&googleReview=${encodeURIComponent(googleReview)}`;
+    const res  = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data?.ok) {
+      fb.textContent = '✅ Lien avis mis à jour ! Visible dans ~1 minute après déploiement GitHub Pages.';
+      fb.className   = 'notif-msg success';
+      // Rafraîchir l'aperçu
+      document.getElementById('googleReviewCurrentVal').textContent = googleReview;
+      document.getElementById('googleReviewCurrentWrap').style.display = googleReview ? 'block' : 'none';
+      _paramsLoaded = false;
+    } else {
+      fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue — vérifiez que l\'action save_google_review est déployée dans le GAS.');
+      fb.className   = 'notif-msg error';
+    }
+  } catch(err) {
+    fb.textContent = '⚠️ ' + (err?.message || 'Erreur réseau');
+    fb.className   = 'notif-msg error';
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '💾 Enregistrer le lien avis';
+}
+
+async function saveIcon() {
+  const iconUrl = document.getElementById('iconUrlInput').value.trim();
+  const fb      = document.getElementById('iconFeedback');
+  const btn     = document.getElementById('saveIconBtn');
+
+  if (iconUrl && !/^https?:\/\//.test(iconUrl)) {
+    fb.textContent = '⚠️ L\'URL doit commencer par https://';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Enregistrement…';
+  fb.className    = 'notif-msg';
+
+  try {
+    // GET pour éviter le preflight CORS (même pattern que push_notification)
+    const url  = `${API}?action=save_icon&resto=${encodeURIComponent(SITE)}&iconUrl=${encodeURIComponent(iconUrl)}`;
+    const res  = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data?.ok) {
+      fb.textContent = '✅ Icône mise à jour ! Visible dans ~1 minute après déploiement GitHub Pages.';
+      fb.className   = 'notif-msg success';
+
+      // Mise à jour de l'aperçu
+      if (iconUrl) {
+        document.getElementById('iconPreview').src = iconUrl;
+        document.getElementById('iconPreview').style.display = '';
+        document.getElementById('iconPlaceholder').style.display = 'none';
+        document.getElementById('iconStatus').textContent = 'Icône personnalisée';
+        document.getElementById('iconUrlDisplay').textContent = iconUrl;
+      } else {
+        document.getElementById('iconPreview').style.display = 'none';
+        document.getElementById('iconPlaceholder').style.display = '';
+        document.getElementById('iconStatus').textContent = 'Icône par défaut';
+        document.getElementById('iconUrlDisplay').textContent = '';
+      }
+      _paramsLoaded = false; // forcer reload au prochain accès
+    } else {
+      fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue');
+      fb.className   = 'notif-msg error';
+    }
+  } catch(err) {
+    fb.textContent = '⚠️ ' + (err?.message || 'Erreur réseau');
+    fb.className   = 'notif-msg error';
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '💾 Enregistrer l\'icône';
+}
+
+function resetIcon() {
+  document.getElementById('iconUrlInput').value = '';
+  saveIcon();
+}
+
+async function saveColor() {
+  const color = document.getElementById('brandColorInput').value;
+  const fb    = document.getElementById('colorFeedback');
+
+  fb.textContent = '⏳ Fonctionnalité à venir — contactez le support pour modifier la couleur.';
+  fb.className   = 'notif-msg';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  OFFRE DU JOUR
+// ═══════════════════════════════════════════════════════════════
+
+let _offreLoaded = false;
+
+async function loadOffre() {
+  if (_offreLoaded) return;
+  _offreLoaded = true;
+  try {
+    const res = await fetch(`/${SITE}/config.json`, { cache: 'no-store' });
+    const cfg = await res.json();
+    const o = cfg.offre_jour || {};
+    document.getElementById('offreActive').checked  = !!o.active;
+    document.getElementById('offreTitre').value     = o.titre       || '';
+    document.getElementById('offreDesc').value      = o.description || '';
+    document.getElementById('offreImage').value     = o.image       || '';
+    document.getElementById('offreDateFin').value   = o.date_fin    || '';
+    if (o.image) previewOffreImage();
+  } catch(e) {}
+}
+
+function previewOffreImage() {
+  const url = document.getElementById('offreImage').value.trim();
+  const wrap = document.getElementById('offreImagePreview');
+  const img  = document.getElementById('offreImgEl');
+  const urlEl = document.getElementById('offreImgUrl');
+  const reset = document.getElementById('offreImageReset');
+  if (url) {
+    img.src = url;
+    wrap.style.display = '';
+    if (urlEl) urlEl.textContent = url;
+    if (reset) reset.style.display = '';
+  } else {
+    wrap.style.display = 'none';
+    if (reset) reset.style.display = 'none';
+  }
+}
+
+function resetOffreImage() {
+  document.getElementById('offreImage').value = '';
+  const file = document.getElementById('offreImageFile');
+  if (file) file.value = '';
+  previewOffreImage();
+}
+
+// ── Compression côté client (max 1600px, JPEG ~85%) ──
+async function _compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const MAX = 1600;
+      let w = img.naturalWidth, h = img.naturalHeight;
+      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('blob_failed')), 'image/jpeg', 0.85);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('img_load')); };
+    img.src = url;
+  });
+}
+
+async function handleOffreImageFile(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const status = document.getElementById('offreImageStatus');
+  const showStatus = (txt, isErr) => {
+    status.style.display = '';
+    status.textContent = txt;
+    status.style.color = isErr ? '#dc2626' : 'var(--muted)';
+  };
+
+  // Vérification mime côté client (le bucket re-vérifie)
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
+    showStatus('⚠️ Format non supporté (JPG, PNG ou WebP uniquement).', true);
+    input.value = '';
+    return;
+  }
+  if (file.size > 8 * 1024 * 1024) {
+    showStatus('⚠️ Image trop lourde (8 MB max avant compression).', true);
+    input.value = '';
+    return;
+  }
+
+  showStatus('⏳ Compression de l\'image…', false);
+  let blob;
+  try {
+    blob = await _compressImage(file);
+  } catch(e) {
+    showStatus('⚠️ Impossible de traiter cette image — réessayez.', true);
+    return;
+  }
+
+  const sizeKb = Math.round(blob.size / 1024);
+  showStatus(`⏳ Envoi (${sizeKb} KB)…`, false);
+
+  // Path : {slug}/{timestamp}-{rand}.jpg
+  const rand = Math.random().toString(36).slice(2, 8);
+  const path = `${SITE}/${Date.now()}-${rand}.jpg`;
+
+  try {
+    const r = await fetch(`${SUPA_URL}/storage/v1/object/offres-images/${path}`, {
+      method: 'POST',
+      headers: {
+        'apikey':        SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type':  'image/jpeg',
+        'x-upsert':      'true',
+        'cache-control': '3600'
+      },
+      body: blob
+    });
+    if (!r.ok) {
+      const errTxt = await r.text().catch(() => '');
+      throw new Error('upload_' + r.status + ' ' + errTxt);
+    }
+  } catch(e) {
+    console.error('[Fidelavis] upload offre-image fail:', e);
+    showStatus('⚠️ Échec de l\'envoi — vérifiez votre connexion.', true);
+    return;
+  }
+
+  const publicUrl = `${SUPA_URL}/storage/v1/object/public/offres-images/${path}`;
+  document.getElementById('offreImage').value = publicUrl;
+  previewOffreImage();
+  showStatus(`✅ Image prête (${sizeKb} KB) — n'oubliez pas d'enregistrer l'offre.`, false);
+  status.style.color = 'var(--green)';
+  setTimeout(() => { status.style.display = 'none'; }, 4000);
+}
+
+async function saveOffre() {
+  const titre   = document.getElementById('offreTitre').value.trim();
+  const fb      = document.getElementById('offreFeedback');
+  const btn     = document.getElementById('saveOffreBtn');
+
+  if (!titre) {
+    fb.textContent = '⚠️ Le titre est obligatoire.';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+
+  const offre = {
+    active:      document.getElementById('offreActive').checked,
+    titre,
+    description: document.getElementById('offreDesc').value.trim(),
+    image:       document.getElementById('offreImage').value.trim(),
+    date_fin:    document.getElementById('offreDateFin').value.trim()
+  };
+
+  btn.disabled    = true;
+  btn.textContent = '⏳ Enregistrement…';
+  fb.className    = 'notif-msg';
+
+  try {
+    const url  = `${API}?action=save_offre_jour&resto=${encodeURIComponent(SITE)}&offre_jour=${encodeURIComponent(JSON.stringify(offre))}`;
+    const res  = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+
+    if (data?.ok) {
+      fb.textContent = '✅ Offre enregistrée ! Visible dans l\'app dans ~1 minute.';
+      fb.className   = 'notif-msg success';
+      _offreLoaded   = false;
+    } else {
+      fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue');
+      fb.className   = 'notif-msg error';
+    }
+  } catch(err) {
+    fb.textContent = '⚠️ ' + (err?.message || 'Erreur réseau');
+    fb.className   = 'notif-msg error';
+  }
+
+  btn.disabled    = false;
+  btn.textContent = '💾 Enregistrer l\'offre';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ÉQUIPE — Gestion des comptes employés
+// ═══════════════════════════════════════════════════════════════
+
+const TEAM_AUTH_TTL = 30 * 60 * 1000;   // 30 min
+let _teamAdminPwd = null;
+let _teamAuthExpiry = 0;
+
+function teamCachedPwd() {
+  if (_teamAdminPwd && Date.now() < _teamAuthExpiry) return _teamAdminPwd;
+  _teamAdminPwd = null; _teamAuthExpiry = 0;
+  return null;
+}
+
+function teamSupaCall(rpc, body) {
+  return fetch(SUPA_URL + '/rest/v1/rpc/' + rpc, {
+    method: 'POST',
+    headers: {
+      'apikey':        SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+      'Content-Type':  'application/json'
+    },
+    body: JSON.stringify(body)
+  }).then(r => r.ok ? r.json() : Promise.reject(new Error('http_' + r.status)));
+}
+
+async function teamAuth() {
+  const pwd = document.getElementById('teamAdminPwd').value.trim();
+  const fb  = document.getElementById('teamAuthFeedback');
+  if (pwd.length < 6) {
+    fb.textContent = '⚠️ Mot de passe trop court.';
+    fb.className = 'notif-msg error';
+    return;
+  }
+  fb.className = 'notif-msg';
+  fb.textContent = '⏳ Vérification…';
+  try {
+    const j = await teamSupaCall('fv_admin_list_employees', { p_slug: SITE, p_admin_password: pwd });
+    if (j && j.ok) {
+      _teamAdminPwd   = pwd;
+      _teamAuthExpiry = Date.now() + TEAM_AUTH_TTL;
+      document.getElementById('teamAuthStep').style.display = 'none';
+      document.getElementById('teamMainStep').style.display = '';
+      document.getElementById('teamAdminPwd').value = '';
+      teamRenderList(j.employees || []);
+    } else if (j && j.error === 'auth') {
+      fb.textContent = '✗ Mot de passe incorrect.';
+      fb.className = 'notif-msg error';
+    } else {
+      fb.textContent = '⚠️ Erreur ' + (j?.error || 'inconnue');
+      fb.className = 'notif-msg error';
+    }
+  } catch(e) {
+    fb.textContent = '⚠️ Erreur réseau — réessayez.';
+    fb.className = 'notif-msg error';
+  }
+}
+
+async function teamReload() {
+  const pwd = teamCachedPwd();
+  if (!pwd) return teamLogout();
+  try {
+    const j = await teamSupaCall('fv_admin_list_employees', { p_slug: SITE, p_admin_password: pwd });
+    if (j && j.ok) teamRenderList(j.employees || []);
+    else teamLogout();
+  } catch(_) {}
+}
+
+function teamRenderList(employees) {
+  const list = document.getElementById('teamList');
+  if (!list) return;
+  if (employees.length === 0) {
+    list.innerHTML = '<li class="action-item" style="cursor:default;"><span class="action-icon">📭</span><span class="action-label" style="color:var(--muted);">Aucun compte employé pour le moment.</span></li>';
+    return;
+  }
+  list.innerHTML = employees.map(e => {
+    const lastLogin = e.last_login_at
+      ? new Date(e.last_login_at).toLocaleDateString('fr-FR', {day:'numeric', month:'short'})
+      : 'jamais';
+    return `
+      <li class="action-item" style="cursor:default;">
+        <span class="action-icon">👤</span>
+        <span class="action-label">
+          <strong>${e.username}</strong>
+          <div style="font-size:11px;color:var(--muted);font-weight:400;">Dernière connexion : ${lastLogin}</div>
+        </span>
+        <button onclick="teamReset('${e.username.replace(/'/g, "\\'")}')" style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer;color:var(--ink);">🔄 Reset</button>
+        <button onclick="teamDelete('${e.username.replace(/'/g, "\\'")}')" style="background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer;color:#dc2626;">🗑 Supprimer</button>
+      </li>`;
+  }).join('');
+}
+
+async function teamCreate() {
+  const u   = document.getElementById('teamNewUsername').value.trim();
+  const p   = document.getElementById('teamNewPassword').value.trim();
+  const fb  = document.getElementById('teamFeedback');
+  const pwd = teamCachedPwd();
+  if (!pwd) return teamLogout();
+  if (u.length < 3) { fb.textContent = '⚠️ Nom trop court (3 caractères mini).'; fb.className = 'notif-msg error'; return; }
+  if (p.length < 6) { fb.textContent = '⚠️ Mot de passe trop court (6 caractères mini).'; fb.className = 'notif-msg error'; return; }
+  fb.textContent = '⏳ Création…'; fb.className = 'notif-msg';
+  try {
+    const j = await teamSupaCall('fv_admin_create_employee', {
+      p_slug: SITE, p_admin_password: pwd, p_username: u, p_password: p
+    });
+    if (j && j.ok) {
+      fb.textContent = `✅ Compte ${u} créé. Mot de passe : ${p}`;
+      fb.className = 'notif-msg success';
+      document.getElementById('teamNewUsername').value = '';
+      document.getElementById('teamNewPassword').value = '';
+      teamReload();
+    } else if (j && j.error === 'auth')              { _teamAdminPwd = null; teamLogout(); }
+    else if (j && j.error === 'username_taken')      { fb.textContent = '⚠️ Ce nom est déjà utilisé.'; fb.className = 'notif-msg error'; }
+    else if (j && j.error === 'username_too_short')  { fb.textContent = '⚠️ Nom trop court.'; fb.className = 'notif-msg error'; }
+    else if (j && j.error === 'password_too_short')  { fb.textContent = '⚠️ Mot de passe trop court.'; fb.className = 'notif-msg error'; }
+    else                                              { fb.textContent = '⚠️ Erreur ' + (j?.error || 'inconnue'); fb.className = 'notif-msg error'; }
+  } catch(_) {
+    fb.textContent = '⚠️ Erreur réseau.'; fb.className = 'notif-msg error';
+  }
+}
+
+async function teamReset(username) {
+  const pwd = teamCachedPwd();
+  if (!pwd) return teamLogout();
+  const newPwd = prompt(`Nouveau mot de passe pour "${username}" (6+ caractères) :`);
+  if (!newPwd) return;
+  if (newPwd.length < 6) { alert('Mot de passe trop court.'); return; }
+  const fb = document.getElementById('teamFeedback');
+  try {
+    const j = await teamSupaCall('fv_admin_reset_employee_password', {
+      p_slug: SITE, p_admin_password: pwd, p_username: username, p_new_password: newPwd
+    });
+    if (j && j.ok) {
+      fb.textContent = `✅ Mot de passe de ${username} réinitialisé : ${newPwd}`;
+      fb.className = 'notif-msg success';
+    } else if (j && j.error === 'auth') { teamLogout(); }
+    else                                 { fb.textContent = '⚠️ ' + (j?.error || 'Erreur'); fb.className = 'notif-msg error'; }
+  } catch(_) {
+    fb.textContent = '⚠️ Erreur réseau.'; fb.className = 'notif-msg error';
+  }
+}
+
+async function teamDelete(username) {
+  if (!confirm(`Supprimer définitivement le compte "${username}" ?`)) return;
+  const pwd = teamCachedPwd();
+  if (!pwd) return teamLogout();
+  const fb = document.getElementById('teamFeedback');
+  try {
+    const j = await teamSupaCall('fv_admin_delete_employee', {
+      p_slug: SITE, p_admin_password: pwd, p_username: username
+    });
+    if (j && j.ok) {
+      fb.textContent = `✅ ${username} supprimé.`;
+      fb.className = 'notif-msg success';
+      teamReload();
+    } else if (j && j.error === 'auth') { teamLogout(); }
+    else                                 { fb.textContent = '⚠️ ' + (j?.error || 'Erreur'); fb.className = 'notif-msg error'; }
+  } catch(_) {
+    fb.textContent = '⚠️ Erreur réseau.'; fb.className = 'notif-msg error';
+  }
+}
+
+function teamLogout() {
+  _teamAdminPwd = null; _teamAuthExpiry = 0;
+  document.getElementById('teamAuthStep').style.display = '';
+  document.getElementById('teamMainStep').style.display = 'none';
+  const fb = document.getElementById('teamAuthFeedback');
+  if (fb) fb.className = 'notif-msg';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT FINAL — appelé APRÈS toutes les déclarations const/let
+//  (évite le TDZ sur SECRET_KEY, API, etc. depuis loadDashboard)
+// ═══════════════════════════════════════════════════════════════
+initFromHash();
+</script>
+</body>
+</html>
