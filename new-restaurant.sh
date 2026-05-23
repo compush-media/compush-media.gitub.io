@@ -5,6 +5,7 @@
 #  Usage :
 #    ./new-restaurant.sh <slug> "<Nom>" "<#couleur>" [<#couleur2>]
 #      [<phone>] [<address>] [<googleReview>]
+#      [--template <dossier-template>]
 #      [--email <email>]
 #      [--brevo-gas-url <url>] [--brevo-list-id <id>]
 #      [--stripe-customer <cus_xxx>]
@@ -12,10 +13,24 @@
 #      [--plan <essentiel|pro>]
 #      [--billing-email <email>]
 #      [--next-billing <YYYY-MM-DD>]
+#      [--instagram-url <url>]
+#      [--hero-url <url>]
+#      [--tagline <texte>]
+#      [--category <brunch|gastro|coffee>]
 #      [--push]
 #
 #  Exemple minimal :
 #    ./new-restaurant.sh bistro-paris "Le Bistro de Paris" "#B8924F"
+#
+#  Exemple lifestyle brunch :
+#    ./new-restaurant.sh le-brunch-club "Le Brunch Club" "#D4637A" "#C04868" \
+#      "" "" "https://g.page/r/XXX/review" \
+#      --template templates/brunch-resto \
+#      --instagram-url "https://www.instagram.com/lebrunchclub/" \
+#      --hero-url "https://cdn.instagram.com/..." \
+#      --tagline "Instagrammable & gourmand" \
+#      --category brunch \
+#      --plan pro --push
 #
 #  Exemple complet avec Stripe :
 #    ./new-restaurant.sh bistro-paris "Le Bistro de Paris" "#B8924F" "#9E7A3E" \
@@ -56,6 +71,13 @@ PLAN=""
 BILLING_EMAIL=""
 NEXT_BILLING_DATE=""
 
+# Lifestyle template
+TEMPLATE_DIR=""
+INSTAGRAM_URL=""
+HERO_URL=""
+TAGLINE=""
+CATEGORY=""
+
 AUTO_PUSH=false
 
 # -- Parse args -----------------------------------------------
@@ -77,6 +99,11 @@ while [[ $# -gt 0 ]]; do
     --offre-image)         OFFRE_IMAGE="$2";           shift 2 ;;
     --offre-date-fin)      OFFRE_DATE_FIN="$2";        shift 2 ;;
     --offre-active)        OFFRE_ACTIVE="true";        shift ;;
+    --template)            TEMPLATE_DIR="$2";          shift 2 ;;
+    --instagram-url)       INSTAGRAM_URL="$2";         shift 2 ;;
+    --hero-url)            HERO_URL="$2";              shift 2 ;;
+    --tagline)             TAGLINE="$2";               shift 2 ;;
+    --category)            CATEGORY="$2";              shift 2 ;;
     *)
       if   [ -z "$SLUG" ];                          then SLUG="$1"
       elif [ "$NAME" = "Nouveau Restaurant" ];       then NAME="$1"
@@ -108,11 +135,15 @@ fi
 # Slug : minuscules, tirets uniquement
 SLUG=$(echo "$SLUG" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g')
 TARGET="./${SLUG}"
-TEMPLATE="_template"
 
-# Fallback vers le-coreen si _template absent
-if [ ! -d "$TEMPLATE" ] && [ -d "le-coreen" ]; then
-  TEMPLATE="le-coreen"
+# Choix du template : --template > _template > fallback le-coreen
+if [ -n "$TEMPLATE_DIR" ]; then
+  TEMPLATE="$TEMPLATE_DIR"
+else
+  TEMPLATE="_template"
+  if [ ! -d "$TEMPLATE" ] && [ -d "le-coreen" ]; then
+    TEMPLATE="le-coreen"
+  fi
 fi
 
 if [ -d "$TARGET" ]; then
@@ -133,6 +164,9 @@ echo "  Couleur : ${COLOR} / ${COLOR2}"
 [ -n "$RESERVATION_URL"      ] && echo "  Resa    : ${RESERVATION_URL}"
 [ -n "$LOGO_URL"             ] && echo "  Logo    : ${LOGO_URL}"
 [ -n "$OFFRE_TITRE"          ] && echo "  Offre   : ${OFFRE_TITRE}"
+[ -n "$INSTAGRAM_URL"        ] && echo "  Insta   : ${INSTAGRAM_URL}"
+[ -n "$CATEGORY"             ] && echo "  Catég.  : ${CATEGORY}"
+[ -n "$TAGLINE"              ] && echo "  Tagline : ${TAGLINE}"
 [ -n "$EMAIL"                ] && echo "  Email   : ${EMAIL}"
 [ -n "$BREVO_GAS_URL"        ] && echo "  Brevo   : ${BREVO_GAS_URL}"
 [ -n "$BREVO_LIST_ID"        ] && echo "  Liste   : #${BREVO_LIST_ID}"
@@ -167,6 +201,11 @@ if "${ADDRESS}":         cfg["address"]        = """${ADDRESS}"""
 if "${GOOGLE_REVIEW}":   cfg["googleReview"]   = "${GOOGLE_REVIEW}"
 if "${RESERVATION_URL}": cfg["reservationUrl"] = "${RESERVATION_URL}"
 if "${LOGO_URL}":        cfg["logoUrl"]        = "${LOGO_URL}"
+if "${INSTAGRAM_URL}":   cfg["instagramUrl"]   = "${INSTAGRAM_URL}"
+if "${HERO_URL}":        cfg["heroUrl"]        = "${HERO_URL}"
+if "${TAGLINE}":         cfg["tagline"]        = """${TAGLINE}"""
+if "${CATEGORY}":        cfg["category"]       = "${CATEGORY}"
+if "${TEMPLATE_DIR}":    cfg["walletTemplate"] = "${TEMPLATE_DIR}"
 if "${EMAIL}":           cfg["email"]          = """${EMAIL}"""
 if "${BREVO_GAS_URL}":   cfg["brevoGasUrl"]    = "${BREVO_GAS_URL}"
 if "${BREVO_LIST_ID}":   cfg["brevoListId"]    = int("${BREVO_LIST_ID}")
