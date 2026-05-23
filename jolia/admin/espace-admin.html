@@ -1032,10 +1032,19 @@
         <input class="form-input" type="url" id="heroUrlInput"
           placeholder="https://monresto.fr/ambiance.jpg"
           style="margin-bottom:8px;" />
-        <button class="btn" type="button" onclick="previewHero()"
-          style="background:#f3f4f6;color:#555;border:1px solid var(--line);font-size:13px;">
-          👁 Aperçu
-        </button>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <button class="btn" type="button" onclick="previewHero()"
+            style="background:#f3f4f6;color:#555;border:1px solid var(--line);font-size:13px;margin:0;">
+            👁 Aperçu
+          </button>
+          <label for="heroImageFile" class="btn"
+            style="background:#f3f4f6;color:#333;border:1px solid var(--line);font-size:13px;cursor:pointer;margin:0;">
+            📤 Importer une image
+          </label>
+          <input type="file" id="heroImageFile" accept="image/*" style="display:none;" onchange="uploadHeroImage(this)" />
+        </div>
+        <span id="heroUploadStatus" style="display:block;font-size:12px;color:var(--muted);margin-top:8px;"></span>
+        <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0;">Format paysage conseillé (~1200×400 px), sujet au centre.</p>
       </div>
 
       <!-- Tagline — lifestyle uniquement -->
@@ -2166,6 +2175,38 @@ function resizeImageToDataUrl(file, maxDim, quality) {
     reader.onerror = () => reject(new Error('Lecture du fichier échouée'));
     reader.readAsDataURL(file);
   });
+}
+
+// Importe l'image en-tête (hero) depuis l'appareil → l'héberge → renseigne l'URL
+async function uploadHeroImage(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('heroUploadStatus');
+  statusEl.style.color = 'var(--muted)';
+  statusEl.textContent = '⏳ Préparation…';
+  try {
+    const dataUrl = await resizeImageToDataUrl(file, 1400, 0.82);
+    statusEl.textContent = '⏳ Envoi…';
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'upload_image', resto: SITE, slot: 'hero', ext: 'jpg', dataBase64: dataUrl })
+    });
+    const data = await res.json();
+    if (data && data.ok && data.url) {
+      document.getElementById('heroUrlInput').value = data.url;
+      if (typeof previewHero === 'function') previewHero();
+      statusEl.style.color = '#1a8a4a';
+      statusEl.textContent = '✅ Image importée — cliquez « Enregistrer le design »';
+    } else {
+      statusEl.style.color = '#c0392b';
+      statusEl.textContent = '⚠️ ' + ((data && data.error) || 'Échec de l\'upload');
+    }
+  } catch (err) {
+    statusEl.style.color = '#c0392b';
+    statusEl.textContent = '⚠️ ' + (err?.message || 'Erreur');
+  }
+  input.value = '';
 }
 
 // Importe une image depuis l'appareil → l'héberge via le proxy → renseigne l'URL
