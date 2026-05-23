@@ -5,6 +5,7 @@
   "walletTemplate": "templates/brunch-resto",
   "category": "brunch",
   "tagline": "Instagrammable & gourmand",
+  "heroUrl": "https://app.cartefidelavis.com/jolia/hero.jpg",
   "activeCoupon": {
     "title": "Dessert du chef",
     "description": "Sur présentation de votre code en caisse",
