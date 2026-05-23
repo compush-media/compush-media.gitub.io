@@ -4,370 +4,421 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Bienvenue – Fidelavis</title>
-
-  <!-- PWA Manifest -->
   <link rel="manifest" href="progressier.json" />
   <link rel="apple-touch-icon" id="ati" sizes="180x180" href="" />
   <link rel="apple-touch-icon-precomposed" id="atip" sizes="180x180" href="" />
   <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
   <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}</script>
-
-  <!-- Core commun Fidelavis -->
   <script src="../assets/core.js"></script>
-
-  <!-- Fonts lifestyle -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-
-  <!-- Icon cache rapide -->
-  <script>(function(){
-    var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';
-    var FALLBACK_ICON='https://dn721804.ca.archive.org/0/items/512x-512-icon-logo-png/512x512%20icon%20logo%20png.png';
-    var iconUrl=localStorage.getItem('fv_icon_'+s)||FALLBACK_ICON;
-    function enforceIcon(u){
-      document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="apple-touch-icon-precomposed"]').forEach(function(l){
-        if(l.id!=='ati'&&l.id!=='atip')l.parentNode.removeChild(l);
-      });
-      var a=document.getElementById('ati');if(!a){a=document.createElement('link');a.rel='apple-touch-icon';a.id='ati';a.setAttribute('sizes','180x180');document.head.appendChild(a);}a.href=u;
-      var p=document.getElementById('atip');if(!p){p=document.createElement('link');p.rel='apple-touch-icon-precomposed';p.id='atip';p.setAttribute('sizes','180x180');document.head.appendChild(p);}p.href=u;
-    }
-    enforceIcon(iconUrl);
-    var n=0,iv=setInterval(function(){enforceIcon(iconUrl);if(++n>=20)clearInterval(iv);},250);
-  })();</script>
+  <script>(function(){var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';var F='https://dn721804.ca.archive.org/0/items/512x-512-icon-logo-png/512x512%20icon%20logo%20png.png';var u=localStorage.getItem('fv_icon_'+s)||F;function ei(x){document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="apple-touch-icon-precomposed"]').forEach(function(l){if(l.id!=='ati'&&l.id!=='atip')l.parentNode.removeChild(l);});var a=document.getElementById('ati');if(!a){a=document.createElement('link');a.rel='apple-touch-icon';a.id='ati';a.setAttribute('sizes','180x180');document.head.appendChild(a);}a.href=x;var p=document.getElementById('atip');if(!p){p=document.createElement('link');p.rel='apple-touch-icon-precomposed';p.id='atip';p.setAttribute('sizes','180x180');document.head.appendChild(p);}p.href=x;}ei(u);var n=0,iv=setInterval(function(){ei(u);if(++n>=20)clearInterval(iv);},250);})();</script>
 
   <style>
-    /* ── RESET & BASE ── */
+    /* ═══════════════════════════════════════════
+       VARIABLES — overridées par JS depuis config
+    ═══════════════════════════════════════════ */
     :root {
-      --brand:  #4A5240;
-      --brand2: #3D4535;
-      --gold:   #C9962A;
-      --cream:  #F8F3ED;
+      --brand:  #5A6040;
+      --brand2: #454D30;
+      --gold:   #C8973A;
+      --cream:  #F7EFE5;
       --white:  #FFFFFF;
-      --text:   #2A1C12;
-      --muted:  #7A6A58;
-      --line:   #E8E0D4;
-      --shadow: 0 4px 24px rgba(0,0,0,0.09);
-      --r:      20px;
+      --ink:    #2A1A0E;
+      --muted:  #8A7260;
+      --line:   #E4D8CC;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ═══════════════════════════════════════════
+       BASE
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
     body {
-      font-family: 'Lato', sans-serif;
+      font-family: 'Lato', -apple-system, sans-serif;
       background: var(--cream);
+      color: var(--ink);
       max-width: 390px;
       margin: 0 auto;
       min-height: 100vh;
       overflow-x: hidden;
-      color: var(--text);
-      padding-bottom: 40px;
+      padding-bottom: 48px;
+    }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* ═══════════════════════════════════════════
+       PAGE HEADER
+    ═══════════════════════════════════════════ */
+    .pg-head {
+      position: relative;
+      text-align: center;
+      padding: 20px 20px 0;
     }
 
-    /* ── PAGE HEADER ── */
-    .page-top {
-      position: relative;
-      padding: 18px 20px 0;
-      text-align: center;
-    }
+    /* Status pill */
     .status-pill {
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 600;
       color: var(--muted);
-      letter-spacing: .2px;
-      margin-bottom: 12px;
+      letter-spacing: .15px;
+      margin-bottom: 13px;
     }
     .status-dot {
-      width: 8px; height: 8px;
+      width: 9px; height: 9px;
       border-radius: 50%;
       background: #52B788;
-      box-shadow: 0 0 6px rgba(82,183,136,.6);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(82,183,136,.2);
     }
-    .page-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
+
+    /* Main title */
+    .pg-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 24px;
       font-weight: 700;
-      color: var(--text);
-      line-height: 1.25;
-      letter-spacing: -.3px;
+      color: var(--ink);
+      line-height: 1.2;
+      letter-spacing: -.4px;
+      margin-bottom: 10px;
     }
-    .page-divider {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin: 8px 0 14px;
+
+    /* Heart divider */
+    .pg-heart {
       font-size: 13px;
       color: var(--gold);
-      letter-spacing: 2px;
+      letter-spacing: 6px;
+      margin-bottom: 16px;
+      opacity: .85;
     }
-    /* Account button — top right */
-    .account-btn {
+
+    /* Account button — absolute top-right */
+    .acct-btn {
       position: absolute;
-      top: 14px; right: 16px;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
-      background: none;
-      border: none;
-      cursor: pointer;
+      gap: 4px;
+      padding: 0;
     }
-    .account-avatar {
-      width: 44px; height: 44px;
+    .acct-av {
+      width: 48px; height: 48px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid var(--white);
-      box-shadow: 0 2px 8px rgba(0,0,0,.15);
-      background: var(--line);
-    }
-    .account-avatar-init {
-      width: 44px; height: 44px;
-      border-radius: 50%;
+      border: 2.5px solid var(--white);
+      box-shadow: 0 2px 12px rgba(0,0,0,.18);
       background: var(--brand);
-      color: var(--white);
-      font-size: 15px;
-      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid var(--white);
-      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--white);
+      overflow: hidden;
     }
-    .account-label {
+    .acct-av img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .acct-lbl {
       font-size: 11px;
       font-weight: 600;
       color: var(--muted);
+      letter-spacing: .2px;
     }
 
-    /* ── HERO CARD ── */
+    /* ═══════════════════════════════════════════
+       HERO CARD
+    ═══════════════════════════════════════════ */
     .hero-card {
-      margin: 0 14px;
-      border-radius: var(--r);
-      overflow: visible;
       position: relative;
+      margin: 0 14px;
+      /* no overflow:hidden — logo overflows below */
     }
+
+    /* Photo area */
     .hero-img {
-      width: 100%;
-      height: 260px;
-      border-radius: var(--r);
-      background-color: var(--brand);
+      position: relative;
+      height: 256px;
+      border-radius: 22px;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 100%);
       background-size: cover;
       background-position: center;
-      position: relative;
-      overflow: hidden;
     }
-    .hero-img::after {
+
+    /* Dark gradient overlay for text readability */
+    .hero-img::before {
       content: '';
       position: absolute;
       inset: 0;
       background: linear-gradient(
-        180deg,
-        rgba(0,0,0,.25) 0%,
-        rgba(0,0,0,.10) 40%,
-        rgba(0,0,0,.40) 100%
+        160deg,
+        rgba(0,0,0,.42) 0%,
+        rgba(0,0,0,.15) 45%,
+        rgba(0,0,0,.0)  70%
       );
+      z-index: 1;
     }
-    .hero-text {
+
+    /* Restaurant name overlay — top-left */
+    .hero-txt {
       position: absolute;
-      top: 20px; left: 20px;
+      top: 22px;
+      left: 22px;
       z-index: 2;
-      text-shadow: 0 1px 6px rgba(0,0,0,.4);
+      pointer-events: none;
     }
-    .hero-script {
+    .hero-nm {
       font-family: 'Dancing Script', cursive;
       font-size: 30px;
       font-weight: 700;
       color: #fff;
-      line-height: 1.1;
+      line-height: 1;
+      text-shadow: 0 1px 8px rgba(0,0,0,.35);
     }
-    .hero-cat {
-      font-family: 'Lato', sans-serif;
-      font-size: 10px;
+    .hero-sub {
+      font-size: 9.5px;
       font-weight: 300;
       color: rgba(255,255,255,.88);
-      letter-spacing: 2.5px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .hero-city {
+      font-size: 8.5px;
+      font-weight: 400;
+      color: rgba(255,255,255,.7);
+      letter-spacing: 4px;
       text-transform: uppercase;
       margin-top: 2px;
     }
-    .hero-city {
-      font-family: 'Lato', sans-serif;
-      font-size: 9px;
-      font-weight: 400;
-      color: rgba(255,255,255,.7);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-top: 1px;
-    }
-    /* Circular logo at bottom center of hero */
-    .hero-logo-circle {
+
+    /* White wave at the bottom of the photo */
+    .hero-wave {
       position: absolute;
-      bottom: -30px;
+      bottom: -1px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 4;
-      width: 68px; height: 68px;
+      width: 150%;
+      height: 72px;
+      background: var(--cream);
+      border-radius: 50% 50% 0 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* Circular logo — sits on the wave boundary */
+    .hero-logo {
+      position: absolute;
+      bottom: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 74px; height: 74px;
       border-radius: 50%;
       background: var(--white);
-      border: 3px solid var(--white);
-      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      border: 4px solid var(--white);
+      box-shadow: 0 4px 20px rgba(0,0,0,.14);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 5;
     }
-    .hero-logo-circle img {
-      width: 100%;
-      height: 100%;
+    .hero-logo img {
+      width: 100%; height: 100%;
       object-fit: cover;
       border-radius: 50%;
     }
     .hero-logo-init {
       font-family: 'Dancing Script', cursive;
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
       color: var(--brand);
-      line-height: 1;
       text-align: center;
+      line-height: 1;
     }
 
-    /* ── PROFILE SECTION ── */
-    .profile-section {
+    /* ═══════════════════════════════════════════
+       PROFILE SECTION
+    ═══════════════════════════════════════════ */
+    .profile {
       text-align: center;
-      padding: 46px 20px 16px;
+      padding: 48px 24px 18px;
     }
-    .profile-greeting {
-      font-family: 'Playfair Display', serif;
+    .profile-hi {
+      font-family: 'Playfair Display', Georgia, serif;
       font-size: 22px;
       font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
+      color: var(--ink);
+      line-height: 1.25;
+      margin-bottom: 5px;
     }
-    .profile-greeting .name-accent {
+    .profile-hi em {
+      font-style: normal;
       color: var(--brand);
     }
     .profile-since {
       font-size: 13px;
+      font-weight: 400;
       color: var(--muted);
-      margin-bottom: 12px;
+      margin-bottom: 13px;
+      letter-spacing: .1px;
     }
     .profile-badge {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      background: rgba(201,150,42,.12);
-      color: var(--brand);
-      font-size: 12px;
-      font-weight: 700;
-      padding: 5px 14px;
+      padding: 5px 16px;
       border-radius: 999px;
-      border: 1px solid rgba(201,150,42,.25);
-      letter-spacing: .3px;
+      background: rgba(200,151,58,.13);
+      border: 1px solid rgba(200,151,58,.28);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--brand);
+      letter-spacing: .2px;
     }
 
-    /* ── CONTENT PADDING ── */
-    .content {
-      padding: 0 14px;
-    }
+    /* ═══════════════════════════════════════════
+       CONTENT WRAPPER
+    ═══════════════════════════════════════════ */
+    .ct { padding: 0 14px; }
 
-    /* ── OFFER CARD ── */
-    .offer-card {
+    /* ═══════════════════════════════════════════
+       OFFER CARD
+    ═══════════════════════════════════════════ */
+    .offer-c {
       background: var(--white);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      padding: 16px;
+      border-radius: 20px;
+      box-shadow: 0 3px 20px rgba(42,26,14,.09);
+      padding: 14px 14px 14px 14px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 13px;
+      margin-bottom: 22px;
       position: relative;
-      overflow: hidden;
+      min-height: 96px;
     }
-    .offer-img {
-      width: 68px;
-      height: 68px;
+
+    /* Circular offer photo */
+    .offer-photo {
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
-      object-fit: cover;
       flex-shrink: 0;
       background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
+      font-size: 28px;
+      overflow: hidden;
     }
-    .offer-body {
-      flex: 1;
-      min-width: 0;
+    .offer-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
     }
-    .offer-title {
+
+    /* Offer text */
+    .offer-info { flex: 1; min-width: 0; }
+    .offer-ttl {
       font-size: 15px;
       font-weight: 400;
-      color: var(--text);
+      color: var(--ink);
       line-height: 1.3;
       margin-bottom: 1px;
     }
-    .offer-keyword {
-      font-size: 22px;
+    .offer-kw {
+      font-size: 23px;
       font-weight: 900;
       color: var(--brand);
-      line-height: 1.1;
       letter-spacing: .5px;
+      line-height: 1.1;
+      margin-bottom: 3px;
     }
-    .offer-sub {
+    .offer-badge {
       font-size: 11px;
       color: var(--muted);
-      margin-top: 3px;
-    }
-    .offer-label {
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      text-align: center;
-      font-family: 'Dancing Script', cursive;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--gold);
-      line-height: 1.3;
-      max-width: 72px;
-    }
-    .offer-arrow-deco {
-      font-size: 18px;
-      color: var(--gold);
-      transform: scaleX(-1);
-      display: block;
-      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    /* ── CODE SECTION ── */
-    .code-section {
+    /* Handwritten label — right side */
+    .offer-note {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-8deg);
+      font-family: 'Dancing Script', cursive;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
       text-align: center;
-      padding: 4px 0 0;
-      margin-bottom: 20px;
+      line-height: 1.4;
+      pointer-events: none;
+      white-space: nowrap;
     }
-    .code-label {
-      font-size: 14px;
+    .offer-note-arr {
+      display: block;
+      font-size: 20px;
+      transform: scaleX(-1) rotate(10deg);
+      color: var(--gold);
+      margin-top: 2px;
+      opacity: .7;
+    }
+
+    /* ═══════════════════════════════════════════
+       PIN CODE SECTION
+    ═══════════════════════════════════════════ */
+    .code-sec {
+      text-align: center;
+      padding: 2px 0 4px;
+      margin-bottom: 22px;
+    }
+    .code-ttl {
+      font-size: 14.5px;
       font-weight: 700;
-      color: var(--text);
-      margin-bottom: 14px;
+      color: var(--ink);
       letter-spacing: .1px;
+      margin-bottom: 16px;
     }
     .code-row {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      margin-bottom: 10px;
+      gap: 6px;
+      margin-bottom: 11px;
     }
-    .code-dash {
-      font-size: 18px;
-      color: var(--gold);
-      opacity: .6;
-      letter-spacing: -4px;
+
+    /* Decorative dashes */
+    .code-deco {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      opacity: .45;
     }
+    .code-deco span {
+      display: inline-block;
+      width: 2px;
+      height: 22px;
+      background: var(--gold);
+      border-radius: 1px;
+    }
+    .code-deco span:nth-child(1) { transform: rotate(25deg); }
+    .code-deco span:nth-child(2) { transform: rotate(-25deg); }
+
+    /* PIN digit boxes */
     .code-box {
       width: 58px;
-      height: 66px;
+      height: 68px;
       background: var(--white);
       border: 1.5px solid var(--line);
       border-radius: 14px;
@@ -375,11 +426,13 @@
       align-items: center;
       justify-content: center;
       font-family: 'Playfair Display', serif;
-      font-size: 30px;
+      font-size: 32px;
       font-weight: 700;
-      color: var(--text);
-      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      color: var(--ink);
+      box-shadow: 0 2px 10px rgba(42,26,14,.06);
+      letter-spacing: 0;
     }
+
     .code-secure {
       font-size: 12px;
       color: var(--muted);
@@ -388,176 +441,200 @@
       justify-content: center;
       gap: 5px;
     }
-    .code-secure-icon {
+    .code-secure svg {
       width: 14px; height: 14px;
-      opacity: .6;
+      flex-shrink: 0;
+      color: var(--gold);
+      opacity: .8;
     }
 
-    /* ── CTA BUTTON ── */
+    /* ═══════════════════════════════════════════
+       CTA BUTTON
+    ═══════════════════════════════════════════ */
     .cta-btn {
       width: 100%;
       background: var(--brand);
       color: var(--white);
       border: none;
       border-radius: 32px;
-      padding: 18px 24px;
-      font-family: 'Lato', sans-serif;
+      height: 60px;
+      padding: 0 24px;
       font-size: 17px;
       font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      cursor: pointer;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 11px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.2);
       transition: transform .15s, box-shadow .15s;
-      box-shadow: 0 6px 20px rgba(0,0,0,.18);
+      letter-spacing: .1px;
     }
-    .cta-btn:active { transform: scale(.98); }
-    .cta-btn-text {
+    .cta-btn:active { transform: scale(.98); box-shadow: 0 3px 12px rgba(0,0,0,.15); }
+    .cta-inner {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 11px;
     }
-    .cta-arrow {
-      font-size: 20px;
-      opacity: .8;
+    .cta-arr {
+      font-size: 22px;
+      opacity: .75;
+      line-height: 1;
     }
 
-    /* ── TIMER ── */
-    .timer-line {
+    /* Timer */
+    .timer {
       text-align: center;
       font-size: 13px;
       color: var(--muted);
-      margin-bottom: 24px;
+      margin-bottom: 26px;
+      letter-spacing: .1px;
     }
-    .timer-value {
-      font-weight: 700;
+    .timer strong {
       color: var(--brand);
+      font-weight: 700;
     }
 
-    /* ── ACTION GRID ── */
-    .action-grid {
+    /* ═══════════════════════════════════════════
+       ACTION GRID (4 items, no card backgrounds)
+    ═══════════════════════════════════════════ */
+    .acts {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 20px;
+      gap: 6px;
+      margin-bottom: 22px;
     }
-    .action-item {
-      background: var(--white);
+    .act-btn {
+      background: none;
       border: none;
-      border-radius: 16px;
-      padding: 14px 6px 12px;
+      padding: 10px 4px 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 7px;
-      cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0,0,0,.07);
-      transition: transform .15s;
+      transition: opacity .15s;
     }
-    .action-item:active { transform: scale(.96); }
-    .action-item svg {
-      width: 26px; height: 26px;
-      color: var(--brand);
+    .act-btn:active { opacity: .6; }
+    .act-icon {
+      width: 46px; height: 46px;
+      border-radius: 14px;
+      background: var(--white);
+      box-shadow: 0 2px 10px rgba(42,26,14,.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .action-item-label {
+    .act-icon svg {
+      width: 22px; height: 22px;
+      stroke: var(--brand);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .act-lbl {
       font-size: 10px;
       font-weight: 600;
-      color: var(--text);
+      color: var(--ink);
       text-align: center;
-      line-height: 1.3;
+      line-height: 1.35;
     }
 
-    /* ── SHARE BANNER ── */
-    .share-banner {
+    /* ═══════════════════════════════════════════
+       SHARE BANNER
+    ═══════════════════════════════════════════ */
+    .share-btn {
+      width: 100%;
       background: var(--white);
-      border-radius: 18px;
-      padding: 16px 20px;
+      border: none;
+      border-radius: 20px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
       gap: 14px;
-      cursor: pointer;
-      border: none;
-      width: 100%;
-      text-align: left;
-      box-shadow: var(--shadow);
-      margin-bottom: 28px;
+      box-shadow: 0 3px 20px rgba(42,26,14,.08);
+      margin-bottom: 30px;
       transition: transform .15s;
     }
-    .share-banner:active { transform: scale(.99); }
-    .share-icon-circle {
-      width: 42px; height: 42px;
+    .share-btn:active { transform: scale(.99); }
+    .share-ico {
+      width: 44px; height: 44px;
       border-radius: 50%;
-      background: rgba(74,82,64,.1);
+      background: rgba(90,96,64,.1);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
-    .share-icon-circle svg {
+    .share-ico svg {
       width: 20px; height: 20px;
-      color: var(--brand);
+      stroke: var(--brand);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
-    .share-text { flex: 1; }
+    .share-txt { flex: 1; text-align: left; }
     .share-title {
-      font-size: 14px;
+      font-size: 14.5px;
       font-weight: 700;
-      color: var(--text);
+      color: var(--ink);
       margin-bottom: 2px;
     }
     .share-sub {
-      font-size: 11px;
+      font-size: 11.5px;
       color: var(--muted);
     }
-    .share-chev {
-      font-size: 20px;
+    .share-arr {
+      font-size: 22px;
       color: var(--muted);
-      opacity: .5;
+      opacity: .4;
+      line-height: 1;
     }
 
-    /* ── FOOTER ── */
-    .page-footer {
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    .pg-footer {
       text-align: center;
-      padding: 0 20px 8px;
-    }
-    .footer-script {
+      padding: 0 20px 4px;
       font-family: 'Dancing Script', cursive;
       font-size: 18px;
       color: var(--muted);
-      opacity: .8;
+      opacity: .75;
     }
 
-    /* ── TOAST ── */
+    /* ═══════════════════════════════════════════
+       TOAST
+    ═══════════════════════════════════════════ */
     .toast {
       position: fixed;
-      bottom: 32px; left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: #2A1C12;
-      color: #fff;
-      padding: 12px 24px;
+      bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--ink);
+      color: var(--white);
+      padding: 11px 22px;
       border-radius: 999px;
       font-size: 14px;
       font-weight: 600;
       pointer-events: none;
       opacity: 0;
-      transition: all .3s;
+      transition: all .28s cubic-bezier(.4,0,.2,1);
       z-index: 9999;
       white-space: nowrap;
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
 
-<!-- ── PAGE HEADER ── -->
-<div class="page-top">
-  <!-- Account btn top right -->
-  <button class="account-btn" onclick="window.Fidelavis?.go?.('inscription.html')" aria-label="Mon compte">
-    <div class="account-avatar-init" id="accountAvatar">M</div>
-    <span class="account-label">Compte</span>
+<!-- ══════════ PAGE HEADER ══════════ -->
+<div class="pg-head">
+
+  <!-- Account button top-right -->
+  <button class="acct-btn" onclick="window.Fidelavis?.go?.('inscription.html')" aria-label="Mon compte">
+    <div class="acct-av" id="acctAv">M</div>
+    <span class="acct-lbl">Compte</span>
   </button>
 
   <div class="status-pill">
@@ -565,353 +642,313 @@
     Accès client activé
   </div>
 
-  <h1 class="page-title">Votre avantage est prêt ✨</h1>
-  <div class="page-divider">— ♡ —</div>
+  <h1 class="pg-title">Votre avantage est prêt&nbsp;✨</h1>
+  <div class="pg-heart">—&nbsp;♡&nbsp;—</div>
+
 </div>
 
-<!-- ── HERO CARD ── -->
+<!-- ══════════ HERO CARD ══════════ -->
 <div class="hero-card">
+
   <div class="hero-img" id="heroBg">
-    <div class="hero-text">
-      <div class="hero-script" id="heroName">Le Restaurant</div>
-      <div class="hero-cat" id="heroSubtitle">BRUNCH &amp; COFFEE SHOP</div>
+    <!-- Restaurant name overlay -->
+    <div class="hero-txt">
+      <div class="hero-nm"  id="heroName">Le Restaurant</div>
+      <div class="hero-sub" id="heroSub">BRUNCH &amp; COFFEE SHOP</div>
       <div class="hero-city" id="heroCity">PARIS</div>
     </div>
+    <!-- White wave at the bottom -->
+    <div class="hero-wave"></div>
   </div>
-  <div class="hero-logo-circle" id="logoWrap">
-    <div class="hero-logo-init" id="logoInit">F</div>
+
+  <!-- Circular logo sitting on the wave -->
+  <div class="hero-logo" id="logoWrap">
+    <span class="hero-logo-init" id="logoInit">F</span>
   </div>
+
 </div>
 
-<!-- ── PROFILE ── -->
-<div class="profile-section">
-  <div class="profile-greeting">Bonjour <span class="name-accent" id="profileName">Marie</span> ☕</div>
-  <div class="profile-since" id="memberSince">Membre depuis ce mois ✨</div>
-  <div class="profile-badge">👑 <span id="profileBadge">Brunch Lover</span></div>
+<!-- ══════════ PROFILE ══════════ -->
+<div class="profile">
+  <p class="profile-hi">Bonjour <em id="pName">Marie</em>&nbsp;☕</p>
+  <p class="profile-since" id="pSince">Membre depuis ce mois&nbsp;✨</p>
+  <span class="profile-badge">👑&nbsp;<span id="pBadge">Brunch Lover</span></span>
 </div>
 
-<!-- ── CONTENT ── -->
-<div class="content">
+<!-- ══════════ CONTENT ══════════ -->
+<div class="ct">
 
-  <!-- OFFER CARD -->
-  <div class="offer-card">
-    <div class="offer-img" id="offerImg">🎁</div>
-    <div class="offer-body">
-      <div class="offer-title" id="offerTitle">Votre avantage</div>
-      <div class="offer-keyword">OFFERT</div>
-      <div class="offer-sub">💎 Réservé aux membres Fidelavis</div>
+  <!-- ── Offer card ── -->
+  <div class="offer-c">
+    <div class="offer-photo" id="offerPhoto">🎁</div>
+    <div class="offer-info">
+      <p class="offer-ttl" id="offerTtl">Votre avantage</p>
+      <p class="offer-kw">OFFERT</p>
+      <p class="offer-badge">💎&nbsp;Réservé aux membres Fidelavis</p>
     </div>
-    <div class="offer-label">
-      Notre cadeau<br>pour vous ♡
-      <span class="offer-arrow-deco">↩</span>
+    <div class="offer-note">
+      Notre cadeau<br>pour vous&nbsp;♡
+      <span class="offer-note-arr">↩</span>
     </div>
   </div>
 
-  <!-- CODE SECTION -->
-  <div class="code-section">
-    <div class="code-label">Code brunch privé 🔒</div>
+  <!-- ── PIN code ── -->
+  <div class="code-sec">
+    <p class="code-ttl">Code brunch privé&nbsp;🔒</p>
     <div class="code-row">
-      <span class="code-dash">- -</span>
-      <div class="code-box" id="pin0">·</div>
-      <div class="code-box" id="pin1">·</div>
-      <div class="code-box" id="pin2">·</div>
-      <div class="code-box" id="pin3">·</div>
-      <span class="code-dash">- -</span>
+      <div class="code-deco"><span></span><span></span></div>
+      <div class="code-box" id="p0">·</div>
+      <div class="code-box" id="p1">·</div>
+      <div class="code-box" id="p2">·</div>
+      <div class="code-box" id="p3">·</div>
+      <div class="code-deco"><span></span><span></span></div>
     </div>
-    <div class="code-secure">
-      <svg class="code-secure-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
-      </svg>
+    <p class="code-secure">
+      <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" stroke-width="1.8" fill="none" stroke="currentColor"/></svg>
       Code personnel et sécurisé
-    </div>
+    </p>
   </div>
 
-  <!-- CTA -->
+  <!-- ── CTA ── -->
   <button class="cta-btn" onclick="goOffer()">
-    <span class="cta-btn-text">
+    <span class="cta-inner">
       <span>🎁</span>
       <span>Activer mon brunch offert</span>
     </span>
-    <span class="cta-arrow">›</span>
+    <span class="cta-arr">›</span>
   </button>
-  <div class="timer-line">⏰ Nouveau code dans <span class="timer-value" id="timerVal">—</span></div>
+  <p class="timer">⏰ Nouveau code dans&nbsp;<strong id="timerV">—</strong></p>
 
-  <!-- ACTION GRID -->
-  <div class="action-grid">
-    <button class="action-item" id="btnInsta" onclick="goInsta()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="2" width="20" height="20" rx="5"/>
-        <circle cx="12" cy="12" r="5"/>
-        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-      </svg>
-      <span class="action-item-label">Voir notre<br>Instagram</span>
+  <!-- ── Action grid ── -->
+  <div class="acts">
+
+    <button class="act-btn" id="btnInsta" onclick="goInsta()">
+      <div class="act-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="var(--brand)" stroke="none"/></svg>
+      </div>
+      <span class="act-lbl">Voir notre<br>Instagram</span>
     </button>
-    <button class="action-item" id="btnReserver" onclick="goReserver()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="4" width="18" height="18" rx="2"/>
-        <line x1="16" y1="2" x2="16" y2="6"/>
-        <line x1="8" y1="2" x2="8" y2="6"/>
-        <line x1="3" y1="10" x2="21" y2="10"/>
-      </svg>
-      <span class="action-item-label">Réserver<br>ma table</span>
+
+    <button class="act-btn" id="btnResa" onclick="goReserver()">
+      <div class="act-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <span class="act-lbl">Réserver<br>ma table</span>
     </button>
-    <button class="action-item" onclick="goAvis()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
-      </svg>
-      <span class="action-item-label">Laisser un avis<br>sur Google</span>
+
+    <button class="act-btn" onclick="goAvis()">
+      <div class="act-icon">
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+      </div>
+      <span class="act-lbl">Laisser un avis<br>sur Google</span>
     </button>
-    <button class="action-item" onclick="goOffer()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="20,12 20,22 4,22 4,12"/>
-        <rect x="2" y="7" width="20" height="5"/>
-        <line x1="12" y1="22" x2="12" y2="7"/>
-        <path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/>
-        <path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/>
-      </svg>
-      <span class="action-item-label">Nos offres<br>secrètes</span>
+
+    <button class="act-btn" onclick="goOffer()">
+      <div class="act-icon">
+        <svg viewBox="0 0 24 24"><polyline points="20,12 20,22 4,22 4,12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+      </div>
+      <span class="act-lbl">Nos offres<br>secrètes</span>
     </button>
+
   </div>
 
-  <!-- SHARE BANNER -->
-  <button class="share-banner" onclick="goShare()">
-    <div class="share-icon-circle">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="18" cy="5" r="3"/>
-        <circle cx="6" cy="12" r="3"/>
-        <circle cx="18" cy="19" r="3"/>
-        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-      </svg>
+  <!-- ── Share banner ── -->
+  <button class="share-btn" onclick="goShare()">
+    <div class="share-ico">
+      <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
     </div>
-    <div class="share-text">
-      <div class="share-title">Partager ce brunch</div>
-      <div class="share-sub" id="shareSubtext">Faites découvrir ce spot à vos amis !</div>
+    <div class="share-txt">
+      <p class="share-title">Partager ce brunch</p>
+      <p class="share-sub" id="shareSub">Faites découvrir ce spot à vos amis&nbsp;!</p>
     </div>
-    <span class="share-chev">›</span>
+    <span class="share-arr">›</span>
   </button>
 
 </div>
 
-<!-- FOOTER -->
-<div class="page-footer">
-  <div class="footer-script">Merci d'être à nos côtés ♡</div>
-</div>
+<!-- ══════════ FOOTER ══════════ -->
+<p class="pg-footer">Merci d'être à nos côtés&nbsp;♡</p>
 
-<!-- TOAST -->
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-/* ══ GATE : accès client requis ══ */
+/* ══ GATE ══ */
 (function(){
-  function hasAccessSafe(){
-    try{ return window.Fidelavis?.hasAccess?.() === true; }catch(e){ return false; }
-  }
-  function isStandalone(){
-    return window.navigator.standalone===true||window.matchMedia("(display-mode:standalone)").matches;
-  }
-  if(!hasAccessSafe()){
-    setTimeout(()=>{
-      if(!hasAccessSafe()){
-        window.Fidelavis?.go?.(isStandalone()?"indexnfc.html?from=pwa":"indexnfc.html");
-      }
-    },350);
-  }
+  function ok(){try{return window.Fidelavis?.hasAccess?.()===true;}catch(e){return false;}}
+  function sa(){return window.navigator.standalone===true||window.matchMedia('(display-mode:standalone)').matches;}
+  if(!ok()){setTimeout(()=>{if(!ok())window.Fidelavis?.go?.(sa()?'indexnfc.html?from=pwa':'indexnfc.html');},350);}
 })();
 
-/* ══ CONFIG + RENDER ══ */
+/* ══ STATE ══ */
 var _cfg = {};
 
-/* ── PIN mensuel (seed: slug + mois) ── */
-function getMonthlyPin(slug) {
-  const now = new Date();
-  const seed = slug + String(now.getFullYear()) + String(now.getMonth() + 1);
-  let h = 5381;
-  for (let i = 0; i < seed.length; i++) {
-    h = ((h << 5) + h) ^ seed.charCodeAt(i);
-    h = h & 0xFFFF;
-  }
-  return String(1000 + (h % 9000));
+/* ── PIN mensuel (seed = slug + AAAAMM) ── */
+function monthlyPin(slug){
+  var d=new Date(), seed=slug+d.getFullYear()+String(d.getMonth()+1);
+  var h=5381;
+  for(var i=0;i<seed.length;i++){h=((h<<5)+h)^seed.charCodeAt(i);h&=0xFFFF;}
+  return String(1000+(h%9000));
 }
 
 /* ── Timer fin de mois ── */
-function startTimer() {
-  function update() {
-    const now = new Date();
-    const end = new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 0);
-    const diff = Math.max(0, end - now);
-    const days  = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const mins  = Math.floor((diff % 3600000) / 60000);
-    const el = document.getElementById('timerVal');
-    if (el) el.textContent = `${days}j ${String(hours).padStart(2,'0')}h ${String(mins).padStart(2,'0')}m`;
+function startTimer(){
+  function upd(){
+    var now=new Date(), end=new Date(now.getFullYear(),now.getMonth()+1,1);
+    var ms=Math.max(0,end-now);
+    var d=Math.floor(ms/86400000), h=Math.floor((ms%86400000)/3600000), m=Math.floor((ms%3600000)/60000);
+    var el=document.getElementById('timerV');
+    if(el) el.textContent=d+'j '+String(h).padStart(2,'0')+'h '+String(m).padStart(2,'0')+'m';
   }
-  update();
-  setInterval(update, 30000);
+  upd(); setInterval(upd,30000);
 }
 
+/* ══ INIT ══ */
 (async function init(){
   window.Fidelavis?.rememberLastResto?.();
 
-  const slug = window.Fidelavis?.getRestoSlug?.() ||
-               (location.pathname.match(/^\/([^/]+)\//) || [])[1] || '';
+  var slug=(location.pathname.match(/^\/([^/]+)\//))||[,''];
+  slug=slug[1]||'';
 
-  try { _cfg = await window.Fidelavis?.loadConfig?.() || {}; } catch(e){}
+  try{_cfg=await window.Fidelavis?.loadConfig?.()||{};}catch(e){}
 
-  /* ── Brand colors ── */
-  if (_cfg.color)  document.documentElement.style.setProperty('--brand',  _cfg.color);
-  if (_cfg.color2) document.documentElement.style.setProperty('--brand2', _cfg.color2);
+  /* Brand colors */
+  if(_cfg.color)  document.documentElement.style.setProperty('--brand',_cfg.color);
+  if(_cfg.color2) document.documentElement.style.setProperty('--brand2',_cfg.color2);
 
-  /* ── Hero image ── */
-  const heroBg = document.getElementById('heroBg');
-  const heroUrl = _cfg.heroUrl || _cfg.iconUrl || null;
-  if (heroUrl) {
-    heroBg.style.backgroundImage = `url("${heroUrl}")`;
+  /* Hero image */
+  var heroBg=document.getElementById('heroBg');
+  var heroUrl=_cfg.heroUrl||_cfg.iconUrl||null;
+  if(heroUrl){
+    heroBg.style.backgroundImage='url("'+heroUrl+'")';
+    heroBg.style.backgroundSize='cover';
+    heroBg.style.backgroundPosition='center';
+  }
+
+  /* Hero text */
+  var name=_cfg.name||'Le Restaurant';
+  document.getElementById('heroName').textContent=name;
+
+  var cat=(_cfg.category||'').toLowerCase();
+  var sub=cat.includes('coffee')?'COFFEE SHOP':cat.includes('gastro')?'GASTRONOMIQUE':'BRUNCH & COFFEE SHOP';
+  document.getElementById('heroSub').textContent=sub;
+
+  if(_cfg.city){document.getElementById('heroCity').textContent=(_cfg.city||'').toUpperCase();}
+  else{document.getElementById('heroCity').style.display='none';}
+
+  /* Logo */
+  var lw=document.getElementById('logoWrap'), li=document.getElementById('logoInit');
+  if(_cfg.iconUrl){
+    lw.innerHTML='<img src="'+_cfg.iconUrl+'" alt="logo" onerror="this.style.display=\'none\'">';
   } else {
-    heroBg.style.background = `linear-gradient(135deg, var(--brand) 0%, var(--brand2) 100%)`;
+    li.textContent=name.split(' ').slice(0,2).map(function(w){return(w[0]||'').toUpperCase();}).join('');
   }
 
-  /* ── Hero text ── */
-  const fullName = _cfg.name || 'Le Restaurant';
-  document.getElementById('heroName').textContent = fullName;
-
-  const cat = (_cfg.category || '').toLowerCase();
-  const subtitle = cat.includes('coffee') ? 'COFFEE SHOP'
-                 : cat.includes('gastro') ? 'GASTRONOMIQUE'
-                 : 'BRUNCH & COFFEE SHOP';
-  document.getElementById('heroSubtitle').textContent = subtitle;
-
-  if (_cfg.city) document.getElementById('heroCity').textContent = _cfg.city.toUpperCase();
-  else document.getElementById('heroCity').style.display = 'none';
-
-  /* ── Logo ── */
-  const logoWrap = document.getElementById('logoWrap');
-  const logoInit = document.getElementById('logoInit');
-  if (_cfg.iconUrl) {
-    logoWrap.innerHTML = `<img src="${_cfg.iconUrl}" alt="logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.style.display='none'">`;
+  /* Account avatar */
+  var av=document.getElementById('acctAv');
+  var photoUrl=localStorage.getItem('fv_photo_url_'+slug)||localStorage.getItem('fv_photo_url');
+  var fn=localStorage.getItem('fv_firstname')||'M';
+  if(photoUrl){
+    av.innerHTML='<img src="'+photoUrl+'" alt="profil" onerror="this.parentNode.textContent=\''+fn[0].toUpperCase()+'\'">';
   } else {
-    logoInit.textContent = fullName.split(' ').slice(0,2).map(w=>w[0]?.toUpperCase()||'').join('');
+    av.textContent=fn[0]?fn[0].toUpperCase():'M';
   }
 
-  /* ── Profile ── */
-  const savedName = localStorage.getItem('fv_firstname') || 'Marie';
-  document.getElementById('profileName').textContent = savedName;
-  document.getElementById('accountAvatar').textContent = savedName[0]?.toUpperCase() || 'M';
-
-  const registeredAt = localStorage.getItem('fv_registered_at_' + slug);
-  if (registeredAt) {
-    const d = new Date(parseInt(registeredAt));
-    const monthName = d.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
-    document.getElementById('memberSince').textContent = 'Membre depuis ' + monthName.charAt(0).toUpperCase() + monthName.slice(1) + ' ✨';
+  /* Profile */
+  document.getElementById('pName').textContent=fn;
+  var reg=localStorage.getItem('fv_registered_at_'+slug);
+  if(reg){
+    var d=new Date(parseInt(reg));
+    var mstr=d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+    mstr=mstr.charAt(0).toUpperCase()+mstr.slice(1);
+    document.getElementById('pSince').textContent='Membre depuis '+mstr+' ✨';
   }
 
-  /* ── Badge ── */
-  const badge = cat.includes('coffee') ? 'Coffee Lover'
-              : cat.includes('gastro') ? 'Gourmet Club'
-              : 'Brunch Lover';
-  document.getElementById('profileBadge').textContent = badge;
+  /* Badge */
+  var badge=cat.includes('coffee')?'Coffee Lover':cat.includes('gastro')?'Gourmet Club':'Brunch Lover';
+  document.getElementById('pBadge').textContent=badge;
 
-  /* ── Offer card ── */
-  const coupon = _cfg.activeCoupon || {};
-  if (coupon.title) {
-    document.getElementById('offerTitle').textContent =
-      coupon.title.replace(/offert[e]?/gi, '').trim();
+  /* Offer */
+  var coupon=_cfg.activeCoupon||{};
+  if(coupon.title){
+    document.getElementById('offerTtl').textContent=coupon.title.replace(/offert[e]?/gi,'').trim()||coupon.title;
   }
-  if (coupon.imageUrl) {
-    const offerImg = document.getElementById('offerImg');
-    offerImg.innerHTML = `<img src="${coupon.imageUrl}" alt="offre" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.textContent='🎁'">`;
+  if(coupon.imageUrl){
+    var op=document.getElementById('offerPhoto');
+    op.innerHTML='<img src="'+coupon.imageUrl+'" alt="offre" onerror="this.parentNode.textContent=\'🎁\'">';
   }
 
-  /* ── PIN code ── */
-  const pin = getMonthlyPin(slug);
-  ['pin0','pin1','pin2','pin3'].forEach((id, i) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = pin[i];
+  /* PIN */
+  var pin=monthlyPin(slug);
+  ['p0','p1','p2','p3'].forEach(function(id,i){
+    var el=document.getElementById(id);
+    if(el) el.textContent=pin[i]||'·';
   });
 
-  /* ── Share text ── */
-  if (_cfg.name) {
-    document.getElementById('shareSubtext').textContent =
-      `Faites découvrir ${_cfg.name} à vos amis !`;
-  }
+  /* Share subtitle */
+  if(_cfg.name) document.getElementById('shareSub').textContent='Faites découvrir '+_cfg.name+' à vos amis !';
 
-  /* ── Instagram button visibility ── */
-  if (!_cfg.instagramUrl) {
-    const btnInsta = document.getElementById('btnInsta');
-    if (btnInsta) btnInsta.style.opacity = '.4';
-  }
+  /* Action buttons opacity if not configured */
+  if(!_cfg.instagramUrl) document.getElementById('btnInsta').style.opacity='.45';
+  if(!_cfg.reservationUrl) document.getElementById('btnResa').style.opacity='.45';
 
-  /* ── Reservation button visibility ── */
-  if (!_cfg.reservationUrl) {
-    const btnRes = document.getElementById('btnReserver');
-    if (btnRes) btnRes.style.opacity = '.4';
-  }
-
-  /* ── Timer ── */
+  /* Timer */
   startTimer();
 
-  window.Fidelavis?.trackOnce?.('wallet_view', `wallet_view_${slug}`, { src: 'brunch_wallet_v2' });
+  window.Fidelavis?.trackOnce?.('wallet_view','wallet_view_'+slug,{src:'brunch_v2'});
 })();
 
 /* ══ ACTIONS ══ */
-function goOffer() {
-  window.Fidelavis?.track?.('offer_click', { src: 'brunch_wallet_v2' });
+function goOffer(){
+  window.Fidelavis?.track?.('offer_click',{src:'brunch_v2'});
   window.Fidelavis?.go?.('offre-du-jour.html');
 }
-function goReserver() {
-  window.Fidelavis?.track?.('reserve_click', { src: 'brunch_wallet_v2' });
-  if (_cfg.reservationUrl) window.open(_cfg.reservationUrl, '_blank');
+function goReserver(){
+  window.Fidelavis?.track?.('reserve_click',{src:'brunch_v2'});
+  if(_cfg.reservationUrl) window.open(_cfg.reservationUrl,'_blank');
   else showToast('Lien de réservation non configuré');
 }
-function goInsta() {
-  window.Fidelavis?.track?.('instagram_click', { src: 'brunch_wallet_v2' });
-  if (_cfg.instagramUrl) window.open(_cfg.instagramUrl, '_blank');
+function goInsta(){
+  window.Fidelavis?.track?.('instagram_click',{src:'brunch_v2'});
+  if(_cfg.instagramUrl) window.open(_cfg.instagramUrl,'_blank');
   else showToast('Instagram non configuré');
 }
-function goAvis() {
-  window.Fidelavis?.track?.('review_click', { src: 'brunch_wallet_v2' });
-  if (_cfg.googleReview) window.open(_cfg.googleReview, '_blank');
+function goAvis(){
+  window.Fidelavis?.track?.('review_click',{src:'brunch_v2'});
+  if(_cfg.googleReview) window.open(_cfg.googleReview,'_blank');
   else window.Fidelavis?.go?.('avis.html');
 }
-function goShare() {
-  window.Fidelavis?.track?.('share_click', { src: 'brunch_wallet_v2' });
-  if (navigator.share) {
-    navigator.share({
-      title: (_cfg.name || 'Fidelavis'),
-      text: 'Découvrez ce spot 🌿',
-      url: window.location.href
-    }).catch(()=>{});
+function goShare(){
+  window.Fidelavis?.track?.('share_click',{src:'brunch_v2'});
+  if(navigator.share){
+    navigator.share({title:_cfg.name||'Fidelavis',text:'Découvrez ce spot 🌿',url:location.href}).catch(function(){});
   } else {
     window.Fidelavis?.go?.('recommander.html');
   }
 }
-
-/* ══ TOAST ══ */
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2200);
 }
 
 /* ══ PWA TRACKING ══ */
-window.addEventListener('appinstalled', function(){
-  window.Fidelavis?.track?.('install', { src: 'pwa_appinstalled', page: 'brunch_wallet_v2' });
+window.addEventListener('appinstalled',function(){
+  window.Fidelavis?.track?.('install',{src:'pwa_appinstalled',page:'brunch_v2'});
 });
-(function detectFirstStandaloneLaunch(){
-  try {
-    var standalone = window.navigator.standalone===true ||
-                     window.matchMedia("(display-mode:standalone)").matches;
-    if (!standalone) return;
-    var slug = window.Fidelavis?.getRestoSlug?.() || '';
-    var k = 'fv_install_tracked_' + slug;
-    if (localStorage.getItem(k)) return;
-    localStorage.setItem(k, String(Date.now()));
-    localStorage.setItem('fv_registered_' + slug, '1');
-    localStorage.setItem('fv_registered_at_' + slug, String(Date.now()));
+(function detectStandalone(){
+  try{
+    var sa=window.navigator.standalone===true||window.matchMedia('(display-mode:standalone)').matches;
+    if(!sa) return;
+    var sl=(location.pathname.match(/^\/([^/]+)\//)||[,''])[1];
+    var k='fv_install_tracked_'+sl;
+    if(localStorage.getItem(k)) return;
+    localStorage.setItem(k,String(Date.now()));
+    localStorage.setItem('fv_registered_'+sl,'1');
+    localStorage.setItem('fv_registered_at_'+sl,String(Date.now()));
     window.Fidelavis?.setAuthCookie?.();
-    window.Fidelavis?.track?.('install_confirmed', { src: 'standalone_first_launch', page: 'brunch_wallet_v2' });
-  } catch(e){}
+    window.Fidelavis?.track?.('install_confirmed',{src:'standalone_first_launch',page:'brunch_v2'});
+  }catch(e){}
 })();
 </script>
 
