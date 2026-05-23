@@ -427,6 +427,7 @@
     </div>
     <div class="header-right">
       <a class="btn-outline" href="/admin/restaurants.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">🏪 Restaurants</a>
+      <button class="btn-outline" onclick="openImportModal()">📥 Import Excel Lifestyle</button>
       <button class="btn-outline" onclick="exportAmbassadeursExcel()">📤 Exporter</button>
       <button class="btn-outline" onclick="doLogout()">Déconnexion</button>
     </div>
@@ -666,6 +667,88 @@
     <div class="modal-footer">
       <button class="btn-outline" onclick="closePayModal()">Fermer</button>
       <button class="btn-primary" id="pGenBtn" onclick="generatePayLink()">Générer le lien</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODAL IMPORT EXCEL LIFESTYLE ═══════════════ -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal-card" style="max-width:860px">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">📥 Import Excel — Wallets Lifestyle</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">Colonnes requises : <code>Name</code>, <code>Instagram_URL</code> · optionnelles : Logo_URL, First_category, Second_category, Review_URL, Website, Full_Address</div>
+      </div>
+      <button class="modal-close" onclick="closeImportModal()">✕</button>
+    </div>
+
+    <!-- STEP 1 : UPLOAD -->
+    <div class="modal-body" id="importStep1">
+      <div id="dropZone"
+        style="border:2px dashed var(--brand-border);border-radius:14px;padding:52px 24px;text-align:center;cursor:pointer;transition:background .15s"
+        ondragover="event.preventDefault();this.style.background='var(--brand-bg)'"
+        ondragleave="this.style.background=''"
+        ondrop="handleDrop(event)">
+        <div style="font-size:40px;margin-bottom:12px">📊</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:6px">Glissez votre fichier Excel ici</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:18px">ou cliquez pour sélectionner un fichier .xlsx / .xls</div>
+        <button class="btn-primary" onclick="document.getElementById('fileInput').click()">Choisir un fichier</button>
+        <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="handleFile(this.files[0])">
+      </div>
+      <div id="importError" style="display:none;margin-top:14px;padding:12px 16px;background:var(--red-bg);border:1px solid rgba(217,48,37,.2);border-radius:10px;color:var(--red);font-size:13px;font-weight:600"></div>
+    </div>
+
+    <!-- STEP 2 : PREVIEW -->
+    <div class="modal-body" id="importStep2" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div>
+          <span style="font-size:15px;font-weight:700" id="importCount">0 restaurants détectés</span>
+          <span style="font-size:12px;color:var(--muted);margin-left:8px" id="importStyleCount"></span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <label style="font-size:12px;font-weight:700;color:var(--muted)">Ambassadeur :</label>
+          <select class="form-select" id="importAmbCode" style="width:180px;padding:7px 10px;font-size:13px">
+            <option value="">— Aucun —</option>
+          </select>
+          <button class="btn-outline" style="font-size:12px;padding:6px 12px" onclick="toggleSelectAll()">Tout sélectionner</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;border-radius:12px;border:1px solid var(--line)">
+        <table style="width:100%;border-collapse:collapse;min-width:640px">
+          <thead>
+            <tr style="background:var(--bg2)">
+              <th style="padding:10px 12px;text-align:center;font-size:11px;font-weight:700;color:var(--muted);width:36px"><input type="checkbox" id="chkAll" onchange="setAllChecked(this.checked)" style="cursor:pointer"></th>
+              <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--muted)">Restaurant</th>
+              <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--muted)">Style détecté</th>
+              <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--muted)">Instagram</th>
+              <th style="padding:10px 12px;text-align:center;font-size:11px;font-weight:700;color:var(--muted)">Score</th>
+              <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--muted)">Statut</th>
+            </tr>
+          </thead>
+          <tbody id="importTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- STEP 3 : PROGRESS -->
+    <div class="modal-body" id="importStep3" style="display:none">
+      <div style="margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:13px;font-weight:700" id="progressLabel">Création en cours…</span>
+          <span style="font-size:13px;color:var(--muted)" id="progressCount">0 / 0</span>
+        </div>
+        <div style="height:8px;background:var(--bg2);border-radius:99px;overflow:hidden">
+          <div id="progressBar" style="height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2));border-radius:99px;width:0%;transition:width .3s"></div>
+        </div>
+      </div>
+      <div id="progressLog" style="max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+
+    <div class="modal-footer" id="importFooter">
+      <button class="btn-outline" onclick="closeImportModal()">Annuler</button>
+      <button class="btn-primary" id="importCreateBtn" style="display:none" onclick="startImport()">
+        ✨ Créer les restaurants sélectionnés
+      </button>
     </div>
   </div>
 </div>
@@ -1343,6 +1426,375 @@ function exportAmbassadeursExcel() {
   XLSX.writeFile(wb, `fidelavis_ambassadeurs_${date}.xlsx`);
   showToast('Export Excel téléchargé ✓', 'success');
 }
+
+// ══════════════════════════════════════
+//  IMPORT EXCEL LIFESTYLE
+// ══════════════════════════════════════
+
+const STYLE_SIGNALS_JS = {
+  brunch: ['brunch','breakfast','petit-déjeuner','mimosa','pancake','waffle','gaufre','granola','sunday'],
+  gastro: ['gastronomique','bistronomie','fine dining','étoilé','michelin','gourmet','dégustation','gastro'],
+  coffee: ['coffee','coffee shop','barista','espresso','specialty coffee','torréfacteur','roaster','cold brew'],
+};
+const STYLE_COLORS = {
+  brunch: { color: '#D4637A', color2: '#C04868' },
+  gastro: { color: '#C9A84C', color2: '#9A7A2A' },
+  coffee: { color: '#8B7355', color2: '#6B5535' },
+};
+const STYLE_CONTENT = {
+  brunch: { offers:[['Dessert du chef','Sur présentation de votre code en caisse'],['Mimosa à l\'arrivée','Sur réservation, le week-end'],['Granola bowl maison','Pour tout brunch à partir de 2 personnes']], taglines:['Instagrammable & gourmand','Le spot brunch du quartier','Brunch, partage & bonne humeur'] },
+  gastro: { offers:[['Cocktail signature','Sur présentation de votre code en caisse'],['Mignardises','En fin de repas, pour les membres'],['Expérience signature','Pour toute table de 2 personnes']], taglines:['L\'art de recevoir à la française','Une expérience gastronomique','La table des amateurs de bonne cuisine'] },
+  coffee: { offers:[['Café signature','Sur présentation de votre code en caisse'],['Viennoiserie','Avec tout café de spécialité'],['Dégustation découverte','Sélection du mois']], taglines:['Specialty coffee & daily rituals','L\'art du café de spécialité','Le café de vos rituels du matin'] },
+};
+
+function detectStyleJS(name, cat1, cat2) {
+  const text = [name, cat1, cat2].filter(Boolean).join(' ').toLowerCase();
+  const scores = {};
+  for (const [style, kws] of Object.entries(STYLE_SIGNALS_JS))
+    scores[style] = kws.filter(k => text.includes(k)).length;
+  const best = Object.entries(scores).sort((a,b) => b[1]-a[1])[0];
+  return best[1] > 0 ? best[0] : 'brunch';
+}
+
+function slugifyJS(name) {
+  let s = name.toLowerCase()
+    .replace(/[àáâã]/g,'a').replace(/[éèêë]/g,'e').replace(/[îï]/g,'i')
+    .replace(/[ôö]/g,'o').replace(/[ùúûü]/g,'u').replace(/ç/g,'c')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  return s.slice(0,40);
+}
+
+function hashCode(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+
+let _importRows = [];
+
+function openImportModal() {
+  _importRows = [];
+  document.getElementById('importStep1').style.display = 'block';
+  document.getElementById('importStep2').style.display = 'none';
+  document.getElementById('importStep3').style.display = 'none';
+  document.getElementById('importCreateBtn').style.display = 'none';
+  document.getElementById('importError').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+
+  // Remplir le select ambassadeur
+  const sel = document.getElementById('importAmbCode');
+  sel.innerHTML = '<option value="">— Aucun —</option>';
+  ambassadeurs.filter(a => a.statut === 'actif').forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a.id;
+    opt.textContent = `${a.prenom} ${a.nom} (${a.code})`;
+    sel.appendChild(opt);
+  });
+
+  document.getElementById('importModal').classList.add('open');
+}
+
+function closeImportModal() {
+  document.getElementById('importModal').classList.remove('open');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').style.background = '';
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+}
+
+function handleFile(file) {
+  if (!file) return;
+  const allowed = ['.xlsx','.xls'];
+  if (!allowed.some(ext => file.name.toLowerCase().endsWith(ext))) {
+    showImportError('Format non supporté — utilisez un fichier .xlsx ou .xls');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const data = XLSX.utils.sheet_to_json(ws, { defval: '' });
+      if (!data.length) { showImportError('Fichier vide ou illisible.'); return; }
+      if (!data[0].hasOwnProperty('Name')) { showImportError('Colonne "Name" manquante. Vérifiez l\'en-tête du fichier.'); return; }
+      parseImportData(data);
+    } catch(err) {
+      showImportError('Erreur lecture Excel : ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parseImportData(data) {
+  _importRows = data
+    .filter(r => r.Name && String(r.Name).trim())
+    .map(r => {
+      const name = String(r.Name).trim();
+      const style = detectStyleJS(name, r.First_category||'', r.Second_category||'');
+      const content = STYLE_CONTENT[style];
+      const hi = hashCode(name);
+      return {
+        name,
+        slug: slugifyJS(name),
+        style,
+        instagram_url: r.Instagram_URL || '',
+        logo_url: r.Logo_URL || '',
+        review_url: r.Review_URL || '',
+        website: r.Website || '',
+        address: r.Full_Address || '',
+        phone: r.Phone_Standard_format || '',
+        email: r.Email_From_WEBSITE || '',
+        premium_score: r.premium_score || '',
+        statut_contact: r.statut_contact || 'non_contacte',
+        nom_gerant: r.nom_gerant || '',
+        offer_title: content.offers[hi % content.offers.length][0],
+        offer_sub:   content.offers[hi % content.offers.length][1],
+        tagline:     content.taglines[hi % content.taglines.length],
+        selected: true,
+      };
+    });
+
+  if (!_importRows.length) { showImportError('Aucun restaurant valide trouvé (colonne "Name" vide ?).'); return; }
+
+  renderImportPreview();
+}
+
+function renderImportPreview() {
+  const counts = { brunch:0, gastro:0, coffee:0 };
+  _importRows.forEach(r => counts[r.style]++);
+
+  document.getElementById('importCount').textContent = `${_importRows.length} restaurant${_importRows.length>1?'s':''} détecté${_importRows.length>1?'s':''}`;
+  document.getElementById('importStyleCount').textContent =
+    Object.entries(counts).filter(([,n])=>n>0).map(([s,n])=>`${n} ${s}`).join(' · ');
+
+  const STYLE_BADGE = {
+    brunch: 'background:#fff0f3;color:#D4637A',
+    gastro: 'background:#fdf4e7;color:#9A7A2A',
+    coffee: 'background:#f5efe6;color:#8B7355',
+  };
+  const SC_COLORS = {
+    non_contacte:'background:#f0f4ff;color:#4f46e5',abonne:'background:#d1fae5;color:#059669',
+    refus:'background:#fdf0ef;color:#d93025', default:'background:var(--bg2);color:var(--muted)'
+  };
+
+  document.getElementById('importTableBody').innerHTML = _importRows.map((r,i) => `
+    <tr style="border-top:1px solid var(--line)">
+      <td style="padding:10px 12px;text-align:center">
+        <input type="checkbox" ${r.selected?'checked':''} onchange="_importRows[${i}].selected=this.checked;updateImportBtn()" style="cursor:pointer">
+      </td>
+      <td style="padding:10px 12px">
+        <div style="font-weight:700;font-size:13px">${esc(r.name)}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:monospace">/${esc(r.slug)}/</div>
+      </td>
+      <td style="padding:10px 12px">
+        <span style="padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;${STYLE_BADGE[r.style]}">${r.style}_v1</span>
+      </td>
+      <td style="padding:10px 12px;font-size:12px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+        ${r.instagram_url ? `<a href="${esc(r.instagram_url)}" target="_blank" style="color:var(--brand);text-decoration:none">${esc(r.instagram_url.replace('https://www.instagram.com/','@').replace(/\/$/,''))}</a>` : '—'}
+      </td>
+      <td style="padding:10px 12px;text-align:center;font-size:12px;font-weight:700;color:var(--muted)">${r.premium_score || '—'}</td>
+      <td style="padding:10px 12px">
+        <span style="padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;${SC_COLORS[r.statut_contact]||SC_COLORS.default}">${esc(r.statut_contact||'—')}</span>
+      </td>
+    </tr>`).join('');
+
+  document.getElementById('importStep1').style.display = 'none';
+  document.getElementById('importStep2').style.display = 'block';
+  updateImportBtn();
+}
+
+function updateImportBtn() {
+  const n = _importRows.filter(r => r.selected).length;
+  const btn = document.getElementById('importCreateBtn');
+  btn.style.display = n > 0 ? 'inline-flex' : 'none';
+  btn.textContent = `✨ Créer ${n} restaurant${n>1?'s':''}`;
+}
+
+function toggleSelectAll() {
+  const allSelected = _importRows.every(r => r.selected);
+  _importRows.forEach(r => r.selected = !allSelected);
+  document.getElementById('chkAll').checked = !allSelected;
+  document.querySelectorAll('#importTableBody input[type=checkbox]').forEach((cb,i) => cb.checked = _importRows[i].selected);
+  updateImportBtn();
+}
+
+function setAllChecked(checked) {
+  _importRows.forEach(r => r.selected = checked);
+  document.querySelectorAll('#importTableBody input[type=checkbox]').forEach(cb => cb.checked = checked);
+  updateImportBtn();
+}
+
+function showImportError(msg) {
+  const el = document.getElementById('importError');
+  el.textContent = '⚠️ ' + msg;
+  el.style.display = 'block';
+}
+
+// ── GitHub API helpers ─────────────────────────────────────
+async function ghGet(path) {
+  const token = localStorage.getItem(TOKEN_KEY);
+  const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
+    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' }
+  });
+  if (!res.ok) throw new Error(`GitHub GET ${path} → ${res.status}`);
+  return res.json();
+}
+
+async function ghPut(path, content_b64, message, sha) {
+  const token = localStorage.getItem(TOKEN_KEY);
+  const body = { message, content: content_b64, branch: 'main' };
+  if (sha) body.sha = sha;
+  const res = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) { const e = await res.json(); throw new Error(e.message || `GitHub PUT ${path} → ${res.status}`); }
+  return res.json();
+}
+
+function toB64(str) { return btoa(unescape(encodeURIComponent(str))); }
+
+// ── Creation pipeline ─────────────────────────────────────
+async function startImport() {
+  const selected = _importRows.filter(r => r.selected);
+  if (!selected.length) return;
+
+  const ambId = document.getElementById('importAmbCode').value;
+
+  // Switch to progress view
+  document.getElementById('importStep2').style.display = 'none';
+  document.getElementById('importStep3').style.display = 'block';
+  document.getElementById('importCreateBtn').style.display = 'none';
+  document.getElementById('importFooter').querySelector('.btn-outline').textContent = 'Fermer';
+
+  const log = document.getElementById('progressLog');
+  log.innerHTML = '';
+  let done = 0;
+
+  // Fetch template HTML once
+  let templateHtml = '';
+  addLog('info', '⏳ Chargement du template brunch-resto…');
+  try {
+    const tpl = await ghGet('templates/brunch-resto/index.html');
+    templateHtml = atob(tpl.content.replace(/\n/g,''));
+    addLog('success', '✓ Template chargé');
+  } catch(e) {
+    addLog('error', '❌ Template introuvable : ' + e.message);
+    return;
+  }
+
+  // Fetch data/restaurants.json
+  let restoRegistry = {}, restoSha = null;
+  try {
+    const reg = await ghGet('data/restaurants.json');
+    restoRegistry = JSON.parse(atob(reg.content.replace(/\n/g,'')));
+    restoSha = reg.sha;
+  } catch(_) {}
+
+  for (const row of selected) {
+    document.getElementById('progressLabel').textContent = `Création de ${row.name}…`;
+    document.getElementById('progressCount').textContent = `${done} / ${selected.length}`;
+    document.getElementById('progressBar').style.width = `${(done/selected.length)*100}%`;
+
+    addLog('info', `⏳ ${row.name}  (${row.style}_v1)`);
+    try {
+      const colors = STYLE_COLORS[row.style];
+
+      // config.json
+      const cfg = {
+        name: row.name,
+        color: colors.color,
+        color2: colors.color2,
+        walletTemplate: 'templates/brunch-resto',
+        category: row.style,
+        tagline: row.tagline,
+        instagramUrl: row.instagram_url || undefined,
+        logoUrl: row.logo_url || undefined,
+        phone: row.phone || undefined,
+        address: row.address || undefined,
+        googleReview: row.review_url || undefined,
+        reservationUrl: row.website || undefined,
+        email: row.email || undefined,
+        activeCoupon: { title: row.offer_title, description: row.offer_sub, month: new Date().toLocaleDateString('fr-FR',{month:'long'}) },
+        plan: 'terrain',
+        subscriptionStatus: 'active',
+        setupPaid: true,
+        invoices: [],
+        generated_at: new Date().toISOString().slice(0,10),
+      };
+      // Retirer les clés undefined
+      Object.keys(cfg).forEach(k => cfg[k] === undefined && delete cfg[k]);
+
+      // Check if slug already exists
+      let idxSha = null;
+      try { const ex = await ghGet(`${row.slug}/index.html`); idxSha = ex.sha; } catch(_) {}
+
+      // Commit index.html
+      await ghPut(`${row.slug}/index.html`, toB64(templateHtml), `feat: wallet lifestyle ${row.slug}`, idxSha);
+
+      // Commit config.json
+      let cfgSha = null;
+      try { const ex = await ghGet(`${row.slug}/config.json`); cfgSha = ex.sha; } catch(_) {}
+      await ghPut(`${row.slug}/config.json`, toB64(JSON.stringify(cfg, null, 2) + '\n'), `config: ${row.slug} — ${row.style}_v1`, cfgSha);
+
+      // Update registry
+      restoRegistry[row.slug] = { name: row.name, brandColor: colors.color, brandColor2: colors.color2, style: row.style, instagramUrl: row.instagram_url || '' };
+
+      // Track in ambassadeur
+      if (ambId) {
+        const amb = ambassadeurs.find(a => a.id === ambId);
+        if (amb) {
+          if (!amb.restaurants_crees) amb.restaurants_crees = [];
+          if (!amb.restaurants_crees.find(r => (r.slug||r) === row.slug)) {
+            amb.restaurants_crees.push({ slug: row.slug, name: row.name, date: new Date().toISOString().slice(0,10) });
+          }
+        }
+      }
+
+      done++;
+      addLog('success', `✅ ${row.name} → <a href="${BASE_URL}/${row.slug}/" target="_blank" style="color:var(--brand)">app.cartefidelavis.com/${row.slug}/</a>`);
+    } catch(e) {
+      addLog('error', `❌ ${row.name} : ${e.message}`);
+    }
+  }
+
+  // Update data/restaurants.json
+  try {
+    await ghPut('data/restaurants.json', toB64(JSON.stringify(restoRegistry, null, 2) + '\n'), `data: update restaurants.json (+${done} lifestyle)`, restoSha);
+    addLog('success', '✅ data/restaurants.json mis à jour');
+  } catch(e) {
+    addLog('error', '⚠️ restaurants.json non mis à jour : ' + e.message);
+  }
+
+  // Persist ambassadeur changes
+  if (ambId && done > 0) await persist();
+
+  document.getElementById('progressLabel').textContent = done === selected.length ? `✅ ${done} restaurants créés !` : `⚠️ ${done} / ${selected.length} créés`;
+  document.getElementById('progressCount').textContent = `${done} / ${selected.length}`;
+  document.getElementById('progressBar').style.width = '100%';
+
+  renderStats();
+  renderTable();
+  if (done > 0) showToast(`${done} wallet${done>1?'s':''} créé${done>1?'s':''} sur GitHub ✓`, 'success');
+}
+
+function addLog(type, html) {
+  const log = document.getElementById('progressLog');
+  const colors = { success: 'var(--green)', error: 'var(--red)', info: 'var(--muted)' };
+  const div = document.createElement('div');
+  div.style.cssText = `font-size:13px;padding:7px 12px;border-radius:8px;background:var(--bg);color:${colors[type]||colors.info}`;
+  div.innerHTML = html;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+document.getElementById('importModal').addEventListener('click', function(e) {
+  if (e.target === this) closeImportModal();
+});
 
 // ══════════════════════════════════════
 //  UTILS
