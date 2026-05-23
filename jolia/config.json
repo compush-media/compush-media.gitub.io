@@ -1,7 +1,7 @@
 {
   "name": "Jolia",
-  "color": "#d4637a",
-  "color2": "#c04868",
+  "color": "#3f131c",
+  "color2": "#222021",
   "walletTemplate": "templates/brunch-resto",
   "category": "brunch",
   "tagline": "Instagrammable & gourmand",
