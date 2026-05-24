@@ -1,0 +1,14 @@
+{
+  "name": "BROTHER SISTER Brunch Lunch Dinner",
+  "short_name": "BROTHER SISTER",
+  "start_url": "/brother-sister-brunch-lunch-dinner/index.html",
+  "scope": "/brother-sister-brunch-lunch-dinner/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#D4637A",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

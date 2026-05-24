@@ -1191,8 +1191,14 @@ function goInsta(){
 }
 function goAvis(){
   window.Fidelavis?.track?.('review_click',{src:'brunch_v2'});
-  if(_cfg.googleReview) window.open(_cfg.googleReview,'_blank');
-  else window.Fidelavis?.go?.('avis.html');
+  var g=(_cfg.googleReview||'').trim();
+  if(g){
+    // accepte une URL complète OU un Place ID (ChIJ…) → construit le lien d'avis
+    var url=/^https?:\/\//.test(g) ? g : 'https://search.google.com/local/writereview?placeid='+encodeURIComponent(g);
+    window.open(url,'_blank');
+  } else {
+    window.Fidelavis?.go?.('avis.html');
+  }
 }
 function goShare(){
   window.Fidelavis?.track?.('share_click',{src:'brunch_v2'});

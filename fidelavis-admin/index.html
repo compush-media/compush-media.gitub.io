@@ -3606,6 +3606,10 @@ async function confirmImport() {
     const tplDir      = _importIsLifestyle ? IMPORT_TEMPLATE_LIFESTYLE : IMPORT_TEMPLATE;
     const templateFiles = allItems.filter(f => f.type === 'blob' && f.path.startsWith(tplDir + '/'));
     if (!templateFiles.length) throw new Error(`Dossier ${tplDir} introuvable sur GitHub`);
+    // Lifestyle : app complète depuis _template + index.html = wallet brunch
+    const appFiles     = allItems.filter(f => f.type === 'blob' && f.path.startsWith(IMPORT_TEMPLATE + '/'));
+    const brunchIdxSha = (allItems.find(f => f.path === IMPORT_TEMPLATE_LIFESTYLE + '/index.html') || {}).sha;
+    if (_importIsLifestyle && (!appFiles.length || !brunchIdxSha)) throw new Error('Template lifestyle incomplet (_template ou brunch-resto manquant)');
 
     // 3. Charger restaurants.json
     let data = {};
@@ -3654,12 +3658,13 @@ async function confirmImport() {
         added++;
 
         if (isNew) {
-          // Copier index.html du template
-          for (const f of templateFiles) {
-            const rel = f.path.slice(tplDir.length + 1);
-            if (rel === 'config.json' || rel.endsWith('.DS_Store')) continue;
+          // App complète depuis _template, puis index.html = wallet brunch
+          for (const f of appFiles) {
+            const rel = f.path.slice(IMPORT_TEMPLATE.length + 1);
+            if (rel === 'config.json' || rel === 'progressier.json' || rel === 'index.html' || rel.endsWith('.DS_Store')) continue;
             newTreeItems.push({ path: slug + '/' + rel, mode: f.mode, type: 'blob', sha: f.sha });
           }
+          newTreeItems.push({ path: slug + '/index.html', mode: '100644', type: 'blob', sha: brunchIdxSha });
           // config.json lifestyle
           const cfg = {
             name:           row.denomination,
@@ -3688,8 +3693,20 @@ async function confirmImport() {
           if (row.adresse)         cfg.address        = row.adresse;
           if (row.email)           cfg.email          = row.email;
 
+          const manifest = {
+            name: row.denomination, short_name: row.denomination,
+            start_url: `/${slug}/index.html`, scope: `/${slug}/`,
+            display: 'standalone', background_color: '#f6efe5',
+            theme_color: colors.color, orientation: 'portrait',
+            icons: [
+              { src:'icons/icon-512.png',sizes:'512x512',type:'image/png'},
+              { src:'icons/icon-maskable-512.png',sizes:'512x512',type:'image/png',purpose:'maskable'}
+            ]
+          };
           const cfgBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(cfg, null, 2) + '\n', encoding: 'utf-8' });
-          newTreeItems.push({ path: `${slug}/config.json`, mode: '100644', type: 'blob', sha: cfgBlob.sha });
+          const manBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(manifest, null, 2) + '\n', encoding: 'utf-8' });
+          newTreeItems.push({ path: `${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
+          newTreeItems.push({ path: `${slug}/progressier.json`, mode: '100644', type: 'blob', sha: manBlob.sha });
           scaffolded++;
         }
 
