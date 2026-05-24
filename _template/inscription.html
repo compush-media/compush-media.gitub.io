@@ -339,7 +339,11 @@
       localStorage.setItem("fv_onboarding_done",         "1");
       localStorage.setItem("fv_registered_"    + RESTO,  "1");
       localStorage.setItem("fv_registered_at_" + RESTO,  String(now));
-      if (email) localStorage.setItem("user_email", email);
+      if (email)  localStorage.setItem("user_email", email);
+      if (prenom) {
+        localStorage.setItem("fv_firstname",          prenom);   // affiché après « Bonjour »
+        localStorage.setItem("fv_firstname_" + RESTO, prenom);
+      }
     } catch(_) {}
 
     // Cookie PWA iOS standalone (localStorage isolé de Safari)
