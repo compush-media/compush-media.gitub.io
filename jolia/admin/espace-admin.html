@@ -1066,6 +1066,15 @@
           placeholder="https://instagram.com/votre_compte" />
       </div>
 
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;">Lien de réservation</div>
+        <p style="font-size:13px;color:var(--muted);margin:0 0 10px;">
+          Alimente le bouton « Réserver ma table » (TheFork, Google, votre site…).
+        </p>
+        <input class="form-input" type="url" id="reservationInput"
+          placeholder="https://…" />
+      </div>
+
       <button class="btn btn-brand" type="button" onclick="saveDesign()" id="saveDesignBtn" style="margin-top:16px;">
         💾 Enregistrer le design
       </button>
@@ -2423,6 +2432,7 @@ async function loadParametres() {
     }
     document.getElementById('taglineInput').value = cfg.tagline || '';
     var _ig = document.getElementById('instagramInput'); if (_ig) _ig.value = cfg.instagramUrl || '';
+    var _rv = document.getElementById('reservationInput'); if (_rv) _rv.value = cfg.reservationUrl || '';
 
     // Google Review Place ID
     const gr = cfg.googleReview || '';
@@ -2556,7 +2566,8 @@ async function saveDesign() {
   const color2  = document.getElementById('brandColor2Input').value;
   const heroUrl = (document.getElementById('heroUrlInput')?.value  || '').trim();
   const tagline = (document.getElementById('taglineInput')?.value  || '').trim();
-  const instagramUrl = (document.getElementById('instagramInput')?.value || '').trim();
+  const instagramUrl   = (document.getElementById('instagramInput')?.value   || '').trim();
+  const reservationUrl = (document.getElementById('reservationInput')?.value || '').trim();
   const fb      = document.getElementById('designFeedback');
   const btn     = document.getElementById('saveDesignBtn');
 
@@ -2570,6 +2581,11 @@ async function saveDesign() {
     fb.className   = 'notif-msg error';
     return;
   }
+  if (reservationUrl && !/^https?:\/\//.test(reservationUrl)) {
+    fb.textContent = '⚠️ Le lien de réservation doit commencer par https://';
+    fb.className   = 'notif-msg error';
+    return;
+  }
 
   btn.disabled    = true;
   btn.textContent = '⏳ Enregistrement…';
@@ -2577,7 +2593,7 @@ async function saveDesign() {
 
   try {
     const params = new URLSearchParams({ action: 'save_design', resto: SITE,
-      color, color2, heroUrl, tagline, instagramUrl });
+      color, color2, heroUrl, tagline, instagramUrl, reservationUrl });
     const res  = await fetch(`${API}?${params}`, { cache: 'no-store' });
     const data = await res.json();
 
