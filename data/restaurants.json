@@ -27,5 +27,22 @@
     "GMB_URL": "",
     "acces_statut": "non_active",
     "date_creation": "2026-05-23"
+  },
+  "brother-sister-brunch-lunch-dinner": {
+    "name": "BROTHER SISTER Brunch Lunch Dinner",
+    "brandColor": "#D4637A",
+    "brandColor2": "#C04868",
+    "style": "brunch",
+    "instagramUrl": "https://www.instagram.com/brothersister_paris/",
+    "telephone": "0616082888",
+    "adresse": "72 Rue de la Roquette  75011 Paris",
+    "email": "",
+    "site_web": "https://brothersister.fr/",
+    "nom_gerant": "Charlotte Buhler",
+    "statut_commercial": "",
+    "ambassadorCode": "",
+    "acces_statut": "non_active",
+    "date_creation": "2026-05-24",
+    "walletTemplate": "templates/brunch-resto"
   }
 }
