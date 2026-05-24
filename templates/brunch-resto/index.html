@@ -1009,15 +1009,16 @@ function startTimer(){
   /* Account avatar */
   var av=document.getElementById('acctAv');
   var photoUrl=localStorage.getItem('fv_photo_url_'+slug)||localStorage.getItem('fv_photo_url');
-  var fn=localStorage.getItem('fv_firstname')||'M';
+  var fn=localStorage.getItem('fv_firstname_'+slug)||localStorage.getItem('fv_firstname')||'';
+  var initial=(fn||'G').charAt(0).toUpperCase();
   if(photoUrl){
-    av.innerHTML='<img src="'+photoUrl+'" alt="profil" onerror="this.parentNode.textContent=\''+fn[0].toUpperCase()+'\'">';
+    av.innerHTML='<img src="'+photoUrl+'" alt="profil" onerror="this.parentNode.textContent=\''+initial+'\'">';
   } else {
-    av.textContent=fn[0]?fn[0].toUpperCase():'M';
+    av.textContent=initial;
   }
 
   /* Profile */
-  document.getElementById('pName').textContent=fn;
+  document.getElementById('pName').textContent=fn||'gourmand';
   var reg=localStorage.getItem('fv_registered_at_'+slug);
   if(reg){
     var d=new Date(parseInt(reg));
