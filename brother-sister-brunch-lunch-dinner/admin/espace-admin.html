@@ -1022,8 +1022,10 @@
       <div id="heroSection" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
         <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;">Image en-tête</div>
         <p style="font-size:13px;color:var(--muted);margin:0 0 12px;">
-          Photo d'ambiance affichée en grand sur votre carte. Idéalement une belle photo Instagram ou du restaurant.
+          Photo d'ambiance affichée en grand sur votre carte. Choisissez une bannière prête à l'emploi, importez votre photo, ou collez une URL.
         </p>
+        <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;">Bannières prêtes à l'emploi</div>
+        <div id="heroGallery" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;"></div>
         <div id="heroPreviewWrap" style="display:none;margin-bottom:12px;border-radius:12px;overflow:hidden;">
           <img id="heroPreviewImg" src="" alt="Aperçu"
             style="width:100%;height:160px;object-fit:cover;display:block;" />
@@ -2195,6 +2197,39 @@ function resizeImageToDataUrl(file, maxDim, quality) {
   });
 }
 
+// Galerie de bannières prêtes à l'emploi (assets/heros/heros.json)
+let _heroGalleryLoaded = false;
+async function loadHeroGallery() {
+  const wrap = document.getElementById('heroGallery');
+  if (!wrap || _heroGalleryLoaded) return;
+  let list = [];
+  try { const r = await fetch('/assets/heros/heros.json', { cache: 'no-store' }); list = await r.json(); } catch(_) {}
+  if (!Array.isArray(list) || !list.length) { wrap.style.display = 'none'; return; }
+  _heroGalleryLoaded = true;
+  const base = 'https://app.cartefidelavis.com/assets/heros/';
+  wrap.innerHTML = list.map(b => {
+    const url = base + b.file;
+    return `<button type="button" class="hero-thumb" data-url="${url}" title="${b.label}"
+      style="padding:0;border:2px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer;background:none">
+      <img src="${url}" alt="${b.label}" loading="lazy" style="width:100%;height:52px;object-fit:cover;display:block"></button>`;
+  }).join('');
+  wrap.querySelectorAll('.hero-thumb').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const url = btn.dataset.url;
+      document.getElementById('heroUrlInput').value = url;
+      if (typeof previewHero === 'function') previewHero();
+      wrap.querySelectorAll('.hero-thumb').forEach(b => b.style.borderColor = 'var(--line)');
+      btn.style.borderColor = 'var(--brand)';
+      const st = document.getElementById('heroUploadStatus');
+      if (st) { st.style.color = 'var(--muted)'; st.textContent = '⏳ Enregistrement de la bannière…'; }
+      if (typeof saveDesign === 'function') {
+        try { await saveDesign(); if (st) { st.style.color = '#1a8a4a'; st.textContent = '✅ Bannière enregistrée !'; } }
+        catch(_) { if (st) st.textContent = '✅ Bannière sélectionnée — cliquez « Enregistrer le design »'; }
+      }
+    });
+  });
+}
+
 // Importe l'image en-tête (hero) depuis l'appareil → l'héberge → renseigne l'URL
 async function uploadHeroImage(input) {
   const file = input.files && input.files[0];
@@ -2425,6 +2460,7 @@ async function loadParametres() {
     if (cfg.walletTemplate) {
       document.getElementById('heroSection').style.display    = '';
       document.getElementById('taglineSection').style.display = '';
+      loadHeroGallery();
     }
     const heroUrl = cfg.heroUrl || '';
     document.getElementById('heroUrlInput').value = heroUrl;

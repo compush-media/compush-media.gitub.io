@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Bannière terrasse sauge">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ECF0E4"/><stop offset=".55" stop-color="#C3CDB1"/><stop offset="1" stop-color="#8E9E78"/>
+    </linearGradient>
+    <radialGradient id="hl" cx="68%" cy="22%" r="60%">
+      <stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <g id="leaf" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 40 C0 10 30 0 50 0 C50 30 20 40 0 40 Z"/><path d="M8 34 L42 8"/>
+    </g>
+    <g id="branch" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round">
+      <path d="M0 0 q60 20 120 0"/><path d="M30 8 q6 -16 18 -18 M60 12 q4 -18 16 -20 M90 8 q6 -16 18 -16"/>
+    </g>
+    <g id="spark" fill="#fff"><path d="M0 -12 L3 -3 L12 0 L3 3 L0 12 L-3 3 L-12 0 L-3 -3 Z"/></g>
+  </defs>
+  <rect width="1200" height="400" fill="url(#g)"/>
+  <rect width="1200" height="400" fill="url(#hl)"/>
+  <g opacity=".22"><use href="#branch" transform="translate(80,70) scale(1.8)"/></g>
+  <g opacity=".2"><use href="#leaf" transform="translate(150,240) scale(1.6) rotate(-10)"/><use href="#leaf" transform="translate(1000,250) scale(1.7) rotate(170)"/></g>
+  <g opacity=".22"><use href="#branch" transform="translate(880,60) scale(1.4) rotate(8)"/></g>
+  <g opacity=".5"><use href="#spark" transform="translate(700,300) scale(1)"/></g>
+  <rect width="1200" height="400" fill="#000" opacity=".04"/>
+</svg>

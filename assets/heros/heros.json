@@ -1,0 +1,8 @@
+[
+  { "label": "Brunch doré",     "file": "brunch-or.svg" },
+  { "label": "Matcha",          "file": "matcha.svg" },
+  { "label": "Café latte",      "file": "latte.svg" },
+  { "label": "Gastro nuit",     "file": "gastro-nuit.svg" },
+  { "label": "Terrasse sauge",  "file": "terrasse-sauge.svg" },
+  { "label": "Rose tendre",     "file": "rose-tendre.svg" }
+]
