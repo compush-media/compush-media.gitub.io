@@ -155,22 +155,14 @@
       background-position: center;
     }
 
-    /* Dark gradient overlay for text readability */
+    /* Plus de texte sur le hero → pas d'assombrissement, photo nette */
     .hero-img::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        160deg,
-        rgba(0,0,0,.42) 0%,
-        rgba(0,0,0,.15) 45%,
-        rgba(0,0,0,.0)  70%
-      );
-      z-index: 1;
+      content: none;
     }
 
     /* Restaurant name overlay — top-left */
     .hero-txt {
+      display: none;          /* texte du hero retiré — photo seule */
       position: absolute;
       top: 22px;
       left: 22px;
