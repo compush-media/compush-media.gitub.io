@@ -677,7 +677,7 @@
     <div class="modal-header">
       <div>
         <div class="modal-title">📥 Import Excel — Wallets Lifestyle</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:3px">Colonnes requises : <code>Name</code>, <code>Instagram_URL</code> · optionnelles : Logo_URL, First_category, Second_category, Review_URL, Website, Full_Address</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">Colonnes : <code>nom_restaurant</code> (ou Name), <code>Instagram_URL</code>, <code>First_category</code> · optionnelles : Logo_URL · hero_image_url · coupon_titre · coupon_description · site_reservation · google_review_url · Website · adresse · telephone · email</div>
       </div>
       <button class="modal-close" onclick="closeImportModal()">✕</button>
     </div>
@@ -1528,36 +1528,54 @@ function handleFile(file) {
   reader.readAsArrayBuffer(file);
 }
 
+// Récupère la 1re colonne non vide parmi des alias (insensible casse/espaces/underscores)
+function pickField(row, aliases) {
+  const norm = s => String(s).toLowerCase().replace(/[\s_]/g,'');
+  for (const a of aliases) {
+    const target = norm(a);
+    const found = Object.keys(row).find(k => norm(k) === target);
+    if (found && row[found] != null && String(row[found]).trim() !== '') return String(row[found]).trim();
+  }
+  return '';
+}
+
 function parseImportData(data) {
   _importRows = data
-    .filter(r => r.Name && String(r.Name).trim())
     .map(r => {
-      const name = String(r.Name).trim();
-      const style = detectStyleJS(name, r.First_category||'', r.Second_category||'');
+      const name = pickField(r, ['Name','nom_restaurant','denomination','nom','restaurant']);
+      if (!name) return null;
+      const first  = pickField(r, ['First_category','categorie','catégorie','category']);
+      const second = pickField(r, ['Second_category']);
+      const style = detectStyleJS(name, first, second);
       const content = STYLE_CONTENT[style];
       const hi = hashCode(name);
+      const cTitle = pickField(r, ['coupon_titre','coupon_title','offre_titre']);
+      const cDesc  = pickField(r, ['coupon_description','coupon_desc','offre_description']);
       return {
         name,
         slug: slugifyJS(name),
         style,
-        instagram_url: r.Instagram_URL || '',
-        logo_url: r.Logo_URL || '',
-        review_url: r.Review_URL || '',
-        website: r.Website || '',
-        address: r.Full_Address || '',
-        phone: r.Phone_Standard_format || '',
-        email: r.Email_From_WEBSITE || '',
-        premium_score: r.premium_score || '',
-        statut_contact: r.statut_contact || 'non_contacte',
-        nom_gerant: r.nom_gerant || '',
-        offer_title: content.offers[hi % content.offers.length][0],
-        offer_sub:   content.offers[hi % content.offers.length][1],
-        tagline:     content.taglines[hi % content.taglines.length],
+        instagram_url:   pickField(r, ['Instagram_URL','instagram','Instagram']),
+        logo_url:        pickField(r, ['Logo_URL','Logo_url','logo_url','logo']),
+        hero_url:        pickField(r, ['hero_image_url','hero_url','hero','image_hero']),
+        review_url:      pickField(r, ['google_review_url','Review_URL','review_url','review','GMB_URL']),
+        reservation_url: pickField(r, ['site_reservation','reservation_url','reservation','booking','lien_reservation']),
+        website:         pickField(r, ['Website','site_web','site','url']),
+        address:         pickField(r, ['adresse','Full_Address','Street_Address','address']),
+        phone:           pickField(r, ['telephone','téléphone','Phone_Standard_format','tel','phone']),
+        email:           pickField(r, ['Email_From_WEBSITE','email','mail','courriel']),
+        premium_score:   pickField(r, ['premium_score','score']),
+        statut_contact:  pickField(r, ['statut','statut_contact','status']) || 'non_contacte',
+        nom_gerant:      pickField(r, ['nom_gerant','nom_gérant','gerant','manager','dirigeant']),
+        offer_title:     cTitle || content.offers[hi % content.offers.length][0],
+        offer_sub:       cDesc  || content.offers[hi % content.offers.length][1],
+        tagline:         content.taglines[hi % content.taglines.length],
         selected: true,
       };
-    });
+    })
+    .filter(Boolean);
 
-  if (!_importRows.length) { showImportError('Aucun restaurant valide trouvé (colonne "Name" vide ?).'); return; }
+  if (!_importRows.length) { showImportError('Aucun restaurant valide trouvé (colonne nom/Name vide ?).'); return; }
 
   renderImportPreview();
 }
@@ -1714,10 +1732,12 @@ async function startImport() {
         tagline: row.tagline,
         instagramUrl: row.instagram_url || undefined,
         logoUrl: row.logo_url || undefined,
+        iconUrl: row.logo_url || undefined,
+        heroUrl: row.hero_url || undefined,
         phone: row.phone || undefined,
         address: row.address || undefined,
         googleReview: row.review_url || undefined,
-        reservationUrl: row.website || undefined,
+        reservationUrl: row.reservation_url || row.website || undefined,
         email: row.email || undefined,
         activeCoupon: { title: row.offer_title, description: row.offer_sub, month: new Date().toLocaleDateString('fr-FR',{month:'long'}) },
         plan: 'terrain',
