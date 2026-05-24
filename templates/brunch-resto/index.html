@@ -1009,7 +1009,10 @@ function startTimer(){
   /* Account avatar */
   var av=document.getElementById('acctAv');
   var photoUrl=localStorage.getItem('fv_photo_url_'+slug)||localStorage.getItem('fv_photo_url');
-  var fn=localStorage.getItem('fv_firstname_'+slug)||localStorage.getItem('fv_firstname')||'';
+  function _fvCookie(n){try{var m=document.cookie.match("(?:^|;)\\s*"+n+"\\s*=\\s*([^;]+)");return m?decodeURIComponent(m[1]):null;}catch(e){return null;}}
+  var fn=localStorage.getItem('fv_firstname_'+slug)||localStorage.getItem('fv_firstname')||_fvCookie('fv_firstname')||'';
+  // iOS : localStorage PWA ≠ Safari → restaure depuis le cookie partagé
+  if(fn){ try{ localStorage.setItem('fv_firstname',fn); localStorage.setItem('fv_firstname_'+slug,fn); }catch(e){} }
   var initial=(fn||'G').charAt(0).toUpperCase();
   if(photoUrl){
     av.innerHTML='<img src="'+photoUrl+'" alt="profil" onerror="this.parentNode.textContent=\''+initial+'\'">';

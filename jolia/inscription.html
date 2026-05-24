@@ -343,6 +343,8 @@
       if (prenom) {
         localStorage.setItem("fv_firstname",          prenom);   // affiché après « Bonjour »
         localStorage.setItem("fv_firstname_" + RESTO, prenom);
+        // Cookie partagé Safari ↔ PWA standalone (localStorage isolé sur iOS)
+        try { document.cookie = "fv_firstname=" + encodeURIComponent(prenom) + "; path=/; max-age=31536000; SameSite=Lax"; } catch(_) {}
       }
     } catch(_) {}
 
