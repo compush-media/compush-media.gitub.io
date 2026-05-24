@@ -66,12 +66,6 @@
       font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
       color:var(--muted);margin:26px 4px 8px;
     }
-    .logout{
-      width:100%;background:none;border:1px solid var(--line);border-radius:14px;
-      padding:14px;font-size:14px;font-weight:700;color:#B23B3B;margin-top:22px;
-      transition:background .15s;
-    }
-    .logout:active{background:rgba(193,72,72,.06);}
     .foot{text-align:center;font-family:'Dancing Script',cursive;font-size:17px;color:var(--muted);opacity:.75;margin-top:24px;}
   </style>
 </head>
@@ -100,8 +94,6 @@
     <div class="row"><span class="lbl">Email</span><span class="val" id="accEmail">—</span></div>
     <div class="row"><span class="lbl">Membre depuis</span><span class="val" id="accSince">—</span></div>
   </div>
-
-  <button class="logout" onclick="logout()">Se déconnecter</button>
 
   <p class="foot">Merci d'être à nos côtés&nbsp;♡</p>
 
@@ -195,21 +187,6 @@ async function uploadPhoto(input){
     alert('Impossible de charger cette image.');
   }
   input.value='';
-}
-
-function logout(){
-  if(!confirm('Se déconnecter de ce compte sur cet appareil ?')) return;
-  var slug=(location.pathname.match(/^\/([^/]+)\//)||[,''])[1]||'';
-  try{
-    ['fv_onboarding_done','is_registered','fv_registered_'+slug,'fv_registered_at_'+slug,
-     'fv_firstname','fv_firstname_'+slug,'user_email','fv_photo_url','fv_photo_url_'+slug]
-      .forEach(function(k){ localStorage.removeItem(k); });
-  }catch(e){}
-  /* expire les cookies partagés */
-  ['fv_onboarding_done','fv_firstname','fv_email','fv_photo_url'].forEach(function(c){
-    try{ document.cookie=c+'=; path=/; max-age=0; SameSite=Lax'; }catch(e){}
-  });
-  window.Fidelavis?.go?.('indexnfc.html');
 }
 </script>
 </body>
