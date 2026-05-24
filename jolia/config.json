@@ -20,5 +20,12 @@
   "invoices": [],
   "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ_fYMsiVt5kcR_ElRbOjYTRc",
   "instagramUrl": "https://www.instagram.com/jolia.paris",
-  "reservationUrl": "https://bookings.zenchef.com/results?rid=360703&pid=1001"
+  "reservationUrl": "https://bookings.zenchef.com/results?rid=360703&pid=1001",
+  "offre_jour": {
+    "active": true,
+    "titre": "test notification",
+    "description": "Validation",
+    "image": "https://rtdiaeskmyjjwohirhzj.supabase.co/storage/v1/object/public/offres-images/jolia/1779656185484-lf01g5.jpg",
+    "date_fin": "2026-05-24"
+  }
 }
