@@ -1082,7 +1082,7 @@
 
       <div id="importTemplateHint" style="font-size:12px;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:8px;line-height:1.7">
         <strong>Format classique :</strong> denomination · ville · tel · email · GMB_URL · ambassadeur_assigné · statut…
-        <br><strong>Format lifestyle (auto-détecté) :</strong> Name · Instagram_URL · First_category · Second_category · Logo_URL · Review_URL…
+        <br><strong>Format lifestyle (auto-détecté) :</strong> nom_restaurant · Instagram_URL · First_category · Second_category · Logo_URL · hero_image_url · coupon_titre · coupon_description · site_reservation · google_review_url…
         <br><button class="btn-outline" style="font-size:11px;padding:4px 10px;margin-top:6px" onclick="downloadTemplate()">📄 Télécharger le modèle classique</button>
       </div>
 
@@ -3487,6 +3487,17 @@ function slugify(str) {
     .replace(/^-+|-+$/g,'');
 }
 
+// Récupère la 1re colonne non vide parmi des alias (insensible casse/espaces/underscores)
+function pickField(row, aliases) {
+  const norm = s => String(s).toLowerCase().replace(/[\s_]/g,'');
+  for (const a of aliases) {
+    const target = norm(a);
+    const found = Object.keys(row).find(k => norm(k) === target);
+    if (found && row[found] != null && String(row[found]).trim() !== '') return String(row[found]).trim();
+  }
+  return '';
+}
+
 function showImportPreview(rows, filename) {
   // ── Détection automatique du format ──────────────────────
   const firstRow = rows[0] || {};
@@ -3504,35 +3515,42 @@ function showImportPreview(rows, filename) {
   }
 
   if (_importIsLifestyle) {
-    // Format lifestyle : colonnes Name, Instagram_URL, etc.
+    // Format lifestyle — tolérant aux noms de colonnes (restoexemple, Name, etc.)
     _importRows = rows
-      .filter(r => r.Name && String(r.Name).trim())
       .map(r => {
-        const name  = String(r.Name).trim();
-        const style = detectLifestyleStyle(name, r.First_category||'', r.Second_category||'');
-        const hi    = hashInt(name);
-        const cont  = LIFESTYLE_CONTENT[style];
+        const name = pickField(r, ['Name','nom_restaurant','denomination','nom','restaurant']);
+        if (!name) return null;
+        const first  = pickField(r, ['First_category','categorie','catégorie','category']);
+        const second = pickField(r, ['Second_category']);
+        const style  = detectLifestyleStyle(name, first, second);
+        const hi     = hashInt(name);
+        const cont   = LIFESTYLE_CONTENT[style];
+        const cTitle = pickField(r, ['coupon_titre','coupon_title','offre_titre']);
+        const cDesc  = pickField(r, ['coupon_description','coupon_desc','offre_description']);
         return {
           _lifestyle: true,
           denomination: name,
           slug_override: slugify(name),
           style,
-          instagram_url: r.Instagram_URL  || '',
-          logo_url:      r.Logo_URL       || '',
-          review_url:    r.Review_URL     || '',
-          site_web:      r.Website        || '',
-          adresse:       r.Full_Address   || '',
-          tel:           r.Phone_Standard_format || '',
-          email:         r.Email_From_WEBSITE    || '',
-          premium_score: r.premium_score  || '',
-          statut:        r.statut_contact || '',
-          nom_gerant:    r.nom_gerant     || '',
-          ambassadeur:   r.ambassadeur    || '',
-          offer_title:   cont.offers[hi % cont.offers.length][0],
-          offer_sub:     cont.offers[hi % cont.offers.length][1],
-          tagline:       cont.taglines[hi % cont.taglines.length],
+          instagram_url:   pickField(r, ['Instagram_URL','instagram','Instagram']),
+          logo_url:        pickField(r, ['Logo_URL','Logo_url','logo_url','logo']),
+          hero_url:        pickField(r, ['hero_image_url','hero_url','hero','image_hero']),
+          review_url:      pickField(r, ['google_review_url','Review_URL','review_url','review','GMB_URL']),
+          reservation_url: pickField(r, ['site_reservation','reservation_url','reservation','booking','lien_reservation']),
+          site_web:        pickField(r, ['Website','site_web','site','url']),
+          adresse:         pickField(r, ['adresse','Full_Address','Street_Address','address']),
+          tel:             pickField(r, ['telephone','téléphone','Phone_Standard_format','tel','phone']),
+          email:           pickField(r, ['Email_From_WEBSITE','email','mail','courriel']),
+          premium_score:   pickField(r, ['premium_score','score']),
+          statut:          pickField(r, ['statut','statut_contact','status']),
+          nom_gerant:      pickField(r, ['nom_gerant','nom_gérant','gerant','manager','dirigeant']),
+          ambassadeur:     pickField(r, ['ambassadeur_assigné','ambassadeur_assigne','ambassadeur','ambassador']),
+          offer_title:     cTitle || cont.offers[hi % cont.offers.length][0],
+          offer_sub:       cDesc  || cont.offers[hi % cont.offers.length][1],
+          tagline:         cont.taglines[hi % cont.taglines.length],
         };
-      });
+      })
+      .filter(Boolean);
 
     const STYLE_COLOR = { brunch:'#D4637A', gastro:'#b59a3a', coffee:'#8B7355' };
     el('importPreviewTable').innerHTML = `
@@ -3660,13 +3678,15 @@ async function confirmImport() {
             setupPaid: true,
             invoices: [],
           };
-          if (row.instagram_url) cfg.instagramUrl = row.instagram_url;
-          if (row.logo_url)      cfg.logoUrl      = row.logo_url;
-          if (row.review_url)    cfg.googleReview = row.review_url;
-          if (row.site_web)      cfg.reservationUrl = row.site_web;
-          if (row.tel)           cfg.phone        = row.tel;
-          if (row.adresse)       cfg.address      = row.adresse;
-          if (row.email)         cfg.email        = row.email;
+          if (row.instagram_url)   cfg.instagramUrl   = row.instagram_url;
+          if (row.logo_url)      { cfg.logoUrl = row.logo_url; cfg.iconUrl = row.logo_url; } // iconUrl = logo du wallet
+          if (row.hero_url)        cfg.heroUrl        = row.hero_url;
+          if (row.review_url)      cfg.googleReview   = row.review_url;
+          if (row.reservation_url) cfg.reservationUrl = row.reservation_url;
+          else if (row.site_web)   cfg.reservationUrl = row.site_web;
+          if (row.tel)             cfg.phone          = row.tel;
+          if (row.adresse)         cfg.address        = row.adresse;
+          if (row.email)           cfg.email          = row.email;
 
           const cfgBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(cfg, null, 2) + '\n', encoding: 'utf-8' });
           newTreeItems.push({ path: `${slug}/config.json`, mode: '100644', type: 'blob', sha: cfgBlob.sha });
