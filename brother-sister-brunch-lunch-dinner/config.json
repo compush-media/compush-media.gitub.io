@@ -1,7 +1,7 @@
 {
   "name": "BROTHER SISTER Brunch Lunch Dinner",
-  "color": "#d4637a",
-  "color2": "#c04868",
+  "color": "#79d567",
+  "color2": "#49c151",
   "walletTemplate": "templates/brunch-resto",
   "category": "brunch",
   "tagline": "Le spot brunch du quartier",
@@ -21,5 +21,6 @@
   "reservationUrl": "https://brothersister.fr/book-table",
   "phone": "0616082888",
   "address": "72 Rue de la Roquette  75011 Paris",
-  "email": "admin"
+  "email": "admin",
+  "heroUrl": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/hero-1779662402635.jpg"
 }
