@@ -591,11 +591,13 @@ function saveDesign(params) {
   var color2  = (params.color2  || "").trim();
   var heroUrl = (params.heroUrl || "").trim();
   var tagline = (params.tagline || "").trim();
+  var instagramUrl = (params.instagramUrl || "").trim();
 
   if (!resto) return { error: "Paramètre resto manquant." };
   if (color  && !/^#[0-9a-fA-F]{3,6}$/.test(color))  return { error: "Format color invalide." };
   if (color2 && !/^#[0-9a-fA-F]{3,6}$/.test(color2)) return { error: "Format color2 invalide." };
   if (heroUrl && !/^https?:\/\//.test(heroUrl))       return { error: "heroUrl doit commencer par https://" };
+  if (instagramUrl && !/^https?:\/\//.test(instagramUrl)) return { error: "instagramUrl doit commencer par https://" };
 
   var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
   var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
@@ -622,6 +624,8 @@ function saveDesign(params) {
   else         delete existing.heroUrl;
   if (tagline) existing.tagline = tagline;
   else         delete existing.tagline;
+  if (instagramUrl) existing.instagramUrl = instagramUrl;
+  else              delete existing.instagramUrl;
 
   var newB64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(existing, null, 2) + "\n").getBytes());
   var putRes = UrlFetchApp.fetch("https://api.github.com/repos/" + repo + "/contents/" + configPath, {

@@ -801,7 +801,7 @@
       oninput="document.getElementById('couponTitleCount').textContent=this.value.length" />
 
     <label class="form-label" for="couponEditImage">Image du coupon</label>
-    <select class="form-input" id="couponEditImage" style="margin-bottom:14px;">
+    <select class="form-input" id="couponEditImage" style="margin-bottom:14px;" onchange="couponImgPreview()">
       <option value="/_template/images/offres/surprise.png">🎁 Cadeau surprise</option>
       <option value="/_template/images/offres/aperitif.png">🥂 Apéritif</option>
       <option value="/_template/images/offres/cafe.png">☕ Café</option>
@@ -815,6 +815,27 @@
       <option value="/_template/images/offres/menu.png">📋 Menu</option>
       <option value="/_template/images/offres/reduction.png">💸 Réduction</option>
     </select>
+
+    <label class="form-label" for="couponEditImageUrl">
+      Ou collez l'URL d'une vraie photo
+      <span style="font-size:11px;color:var(--muted);font-weight:400;">(optionnel — prioritaire sur l'icône)</span>
+    </label>
+    <input class="form-input" type="url" id="couponEditImageUrl"
+      placeholder="https://… (photo du produit, carré recommandé)"
+      style="margin-bottom:10px;"
+      oninput="couponImgPreview()" />
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+      <label for="couponEditImageFile" class="btn" style="background:#f3f4f6;color:#333;border:1px solid var(--line);cursor:pointer;margin:0;">
+        📤 Importer une image
+      </label>
+      <input type="file" id="couponEditImageFile" accept="image/*" style="display:none;" onchange="uploadCouponImage(this)" />
+      <span id="couponUploadStatus" style="font-size:12px;color:var(--muted);"></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <img id="couponImgPreviewEl" alt="aperçu de l'offre"
+        style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid var(--line);display:none;" />
+      <span style="font-size:12px;color:var(--muted);">Laissez vide pour utiliser l'icône choisie ci-dessus.</span>
+    </div>
 
     <label class="form-label" for="couponEditMonth">Mois concerné</label>
     <select class="form-input" id="couponEditMonth" style="margin-bottom:18px;">
@@ -917,9 +938,10 @@
 
     <!-- Icône -->
     <div class="card" style="margin-bottom:16px;">
-      <div class="card-title"><span class="card-title-icon">🖼️</span> Icône de l'application</div>
+      <div class="card-title"><span class="card-title-icon">🖼️</span> Logo &amp; icône</div>
       <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
-        L'icône apparaît sur l'écran d'accueil de vos clients après installation.<br>
+        Ce logo s'affiche dans le <strong>cercle de votre carte (wallet)</strong> à la place de l'initiale,
+        et sert aussi d'icône de l'app sur l'écran d'accueil après installation.<br>
         Utilisez une image carrée 512×512 px, fond non transparent (JPG ou PNG).
       </p>
 
@@ -955,7 +977,7 @@
         style="margin-bottom:10px;" />
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button class="btn btn-brand" id="saveIconBtn" type="button" onclick="saveIcon()">
-          💾 Enregistrer l'icône
+          💾 Enregistrer le logo
         </button>
         <button class="btn" type="button" onclick="resetIcon()"
           style="background:#f3f4f6;color:#555;border:1px solid var(--line);">
@@ -1010,10 +1032,19 @@
         <input class="form-input" type="url" id="heroUrlInput"
           placeholder="https://monresto.fr/ambiance.jpg"
           style="margin-bottom:8px;" />
-        <button class="btn" type="button" onclick="previewHero()"
-          style="background:#f3f4f6;color:#555;border:1px solid var(--line);font-size:13px;">
-          👁 Aperçu
-        </button>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <button class="btn" type="button" onclick="previewHero()"
+            style="background:#f3f4f6;color:#555;border:1px solid var(--line);font-size:13px;margin:0;">
+            👁 Aperçu
+          </button>
+          <label for="heroImageFile" class="btn"
+            style="background:#f3f4f6;color:#333;border:1px solid var(--line);font-size:13px;cursor:pointer;margin:0;">
+            📤 Importer une image
+          </label>
+          <input type="file" id="heroImageFile" accept="image/*" style="display:none;" onchange="uploadHeroImage(this)" />
+        </div>
+        <span id="heroUploadStatus" style="display:block;font-size:12px;color:var(--muted);margin-top:8px;"></span>
+        <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0;">Format paysage conseillé (~1200×400 px), sujet au centre.</p>
       </div>
 
       <!-- Tagline — lifestyle uniquement -->
@@ -1024,6 +1055,15 @@
         </p>
         <input class="form-input" type="text" id="taglineInput"
           placeholder="Votre accroche…" maxlength="60" />
+      </div>
+
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line);">
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;">Lien Instagram</div>
+        <p style="font-size:13px;color:var(--muted);margin:0 0 10px;">
+          Alimente le bouton « Voir notre Instagram » de votre carte.
+        </p>
+        <input class="form-input" type="url" id="instagramInput"
+          placeholder="https://instagram.com/votre_compte" />
       </div>
 
       <button class="btn btn-brand" type="button" onclick="saveDesign()" id="saveDesignBtn" style="margin-top:16px;">
@@ -2093,7 +2133,12 @@ async function loadCouponEditForm() {
     document.getElementById('couponEditTitle').value = c.title    || '';
     const _tc = document.getElementById('couponTitleCount');
     if (_tc) _tc.textContent = (c.title || '').length;
-    document.getElementById('couponEditImage').value = c.imageUrl || '/_template/images/offres/surprise.png';
+    // Image : preset (dropdown) OU URL personnalisée
+    const _img = c.imageUrl || '';
+    const _isPreset = _img.indexOf('/_template/images/offres/') !== -1;
+    document.getElementById('couponEditImage').value = _isPreset ? _img : '/_template/images/offres/surprise.png';
+    document.getElementById('couponEditImageUrl').value = (_img && !_isPreset) ? _img : '';
+    couponImgPreview();
     const monthSel = document.getElementById('couponEditMonth');
     if (c.month) {
       const opt = Array.from(monthSel.options).find(o => o.value === c.month.toLowerCase());
@@ -2109,6 +2154,102 @@ async function loadCouponEditForm() {
   }
 }
 
+function couponImgPreview() {
+  const custom = (document.getElementById('couponEditImageUrl')?.value || '').trim();
+  const sel    = document.getElementById('couponEditImage')?.value || '';
+  const src    = custom || sel;
+  const img    = document.getElementById('couponImgPreviewEl');
+  if (!img) return;
+  if (src) { img.src = src; img.style.display = ''; img.onerror = () => { img.style.display = 'none'; }; }
+  else     { img.style.display = 'none'; }
+}
+
+// Redimensionne une image (côté navigateur) en data URL JPEG compressé
+function resizeImageToDataUrl(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        const cw = Math.round(img.width * scale), ch = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = cw; canvas.height = ch;
+        canvas.getContext('2d').drawImage(img, 0, 0, cw, ch);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => reject(new Error('Image illisible'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('Lecture du fichier échouée'));
+    reader.readAsDataURL(file);
+  });
+}
+
+// Importe l'image en-tête (hero) depuis l'appareil → l'héberge → renseigne l'URL
+async function uploadHeroImage(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('heroUploadStatus');
+  statusEl.style.color = 'var(--muted)';
+  statusEl.textContent = '⏳ Préparation…';
+  try {
+    const dataUrl = await resizeImageToDataUrl(file, 1400, 0.82);
+    statusEl.textContent = '⏳ Envoi…';
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'upload_image', resto: SITE, slot: 'hero', ext: 'jpg', dataBase64: dataUrl })
+    });
+    const data = await res.json();
+    if (data && data.ok && data.url) {
+      document.getElementById('heroUrlInput').value = data.url;
+      if (typeof previewHero === 'function') previewHero();
+      statusEl.style.color = '#1a8a4a';
+      statusEl.textContent = '✅ Image importée — cliquez « Enregistrer le design »';
+    } else {
+      statusEl.style.color = '#c0392b';
+      statusEl.textContent = '⚠️ ' + ((data && data.error) || 'Échec de l\'upload');
+    }
+  } catch (err) {
+    statusEl.style.color = '#c0392b';
+    statusEl.textContent = '⚠️ ' + (err?.message || 'Erreur');
+  }
+  input.value = '';
+}
+
+// Importe une image depuis l'appareil → l'héberge via le proxy → renseigne l'URL
+async function uploadCouponImage(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('couponUploadStatus');
+  statusEl.style.color = 'var(--muted)';
+  statusEl.textContent = '⏳ Préparation…';
+  try {
+    const dataUrl = await resizeImageToDataUrl(file, 800, 0.82);
+    statusEl.textContent = '⏳ Envoi…';
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },  // requête simple → pas de préflight CORS
+      body: JSON.stringify({ action: 'upload_image', resto: SITE, slot: 'offre', ext: 'jpg', dataBase64: dataUrl })
+    });
+    const data = await res.json();
+    if (data && data.ok && data.url) {
+      document.getElementById('couponEditImageUrl').value = data.url;
+      couponImgPreview();
+      statusEl.style.color = '#1a8a4a';
+      statusEl.textContent = '✅ Image importée — cliquez « Mettre à jour le coupon »';
+    } else {
+      statusEl.style.color = '#c0392b';
+      statusEl.textContent = '⚠️ ' + ((data && data.error) || 'Échec de l\'upload');
+    }
+  } catch (err) {
+    statusEl.style.color = '#c0392b';
+    statusEl.textContent = '⚠️ ' + (err?.message || 'Erreur');
+  }
+  input.value = '';
+}
+
 async function saveCouponMoisAdmin() {
   const titre = document.getElementById('couponEditTitle').value.trim();
   const fb    = document.getElementById('couponEditFeedback');
@@ -2120,9 +2261,16 @@ async function saveCouponMoisAdmin() {
     return;
   }
 
+  const customUrl = (document.getElementById('couponEditImageUrl').value || '').trim();
+  if (customUrl && !/^https?:\/\//.test(customUrl)) {
+    fb.textContent = '⚠️ L\'URL de l\'image doit commencer par https://';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+
   const coupon = {
     title:    titre,
-    imageUrl: document.getElementById('couponEditImage').value,
+    imageUrl: customUrl || document.getElementById('couponEditImage').value,
     month:    document.getElementById('couponEditMonth').value
   };
 
@@ -2274,6 +2422,7 @@ async function loadParametres() {
       document.getElementById('heroPreviewWrap').style.display = '';
     }
     document.getElementById('taglineInput').value = cfg.tagline || '';
+    var _ig = document.getElementById('instagramInput'); if (_ig) _ig.value = cfg.instagramUrl || '';
 
     // Google Review Place ID
     const gr = cfg.googleReview || '';
@@ -2359,7 +2508,7 @@ async function saveIcon() {
     const data = await res.json();
 
     if (data?.ok) {
-      fb.textContent = '✅ Icône mise à jour ! Visible dans ~1 minute après déploiement GitHub Pages.';
+      fb.textContent = '✅ Logo mis à jour ! Visible dans ~1 minute après déploiement GitHub Pages.';
       fb.className   = 'notif-msg success';
 
       // Mise à jour de l'aperçu
@@ -2386,7 +2535,7 @@ async function saveIcon() {
   }
 
   btn.disabled    = false;
-  btn.textContent = '💾 Enregistrer l\'icône';
+  btn.textContent = '💾 Enregistrer le logo';
 }
 
 function resetIcon() {
@@ -2407,11 +2556,17 @@ async function saveDesign() {
   const color2  = document.getElementById('brandColor2Input').value;
   const heroUrl = (document.getElementById('heroUrlInput')?.value  || '').trim();
   const tagline = (document.getElementById('taglineInput')?.value  || '').trim();
+  const instagramUrl = (document.getElementById('instagramInput')?.value || '').trim();
   const fb      = document.getElementById('designFeedback');
   const btn     = document.getElementById('saveDesignBtn');
 
   if (heroUrl && !/^https?:\/\//.test(heroUrl)) {
     fb.textContent = '⚠️ L\'URL de l\'image doit commencer par https://';
+    fb.className   = 'notif-msg error';
+    return;
+  }
+  if (instagramUrl && !/^https?:\/\//.test(instagramUrl)) {
+    fb.textContent = '⚠️ Le lien Instagram doit commencer par https://';
     fb.className   = 'notif-msg error';
     return;
   }
@@ -2422,7 +2577,7 @@ async function saveDesign() {
 
   try {
     const params = new URLSearchParams({ action: 'save_design', resto: SITE,
-      color, color2, heroUrl, tagline });
+      color, color2, heroUrl, tagline, instagramUrl });
     const res  = await fetch(`${API}?${params}`, { cache: 'no-store' });
     const data = await res.json();
 
