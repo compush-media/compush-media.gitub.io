@@ -339,7 +339,10 @@
       localStorage.setItem("fv_onboarding_done",         "1");
       localStorage.setItem("fv_registered_"    + RESTO,  "1");
       localStorage.setItem("fv_registered_at_" + RESTO,  String(now));
-      if (email)  localStorage.setItem("user_email", email);
+      if (email) {
+        localStorage.setItem("user_email", email);
+        try { document.cookie = "fv_email=" + encodeURIComponent(email) + "; path=/; max-age=31536000; SameSite=Lax"; } catch(_) {}
+      }
       if (prenom) {
         localStorage.setItem("fv_firstname",          prenom);   // affiché après « Bonjour »
         localStorage.setItem("fv_firstname_" + RESTO, prenom);

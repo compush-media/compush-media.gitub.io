@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Mon compte – Fidelavis</title>
+  <script src="../assets/core.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#5A6040; --brand2:#454D30; --gold:#C8973A;
+      --cream:#F7EFE5; --white:#fff; --ink:#2A1A0E; --muted:#8A7260; --line:#E4D8CC;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      font-family:'Lato',-apple-system,sans-serif;
+      background:var(--cream); color:var(--ink);
+      max-width:390px; margin:0 auto; min-height:100vh;
+      padding:0 18px 32px;
+    }
+    button{font-family:inherit;cursor:pointer;}
+
+    .topbar{display:flex;align-items:center;padding:16px 0 6px;}
+    .back-btn{
+      background:none;border:none;display:inline-flex;align-items:center;gap:5px;
+      font-size:15px;font-weight:700;color:var(--ink);padding:6px 4px;
+    }
+    .back-btn .chev{font-size:22px;line-height:1;color:var(--brand);}
+
+    .hero{text-align:center;padding:14px 0 6px;}
+    .av{
+      width:96px;height:96px;border-radius:50%;margin:0 auto 14px;
+      background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;
+      font-family:'Playfair Display',serif;font-size:38px;font-weight:700;
+      border:4px solid var(--white);box-shadow:0 6px 22px rgba(0,0,0,.14);overflow:hidden;
+    }
+    .av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+    .hi{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;line-height:1.2;}
+    .hi em{font-style:normal;color:var(--brand);}
+    .badge{
+      display:inline-flex;align-items:center;gap:5px;margin-top:10px;
+      padding:5px 16px;border-radius:999px;font-size:12.5px;font-weight:700;color:var(--brand);
+      background:rgba(200,151,58,.13);border:1px solid rgba(200,151,58,.28);
+    }
+
+    .card{
+      background:var(--white);border-radius:20px;
+      box-shadow:0 3px 20px rgba(42,26,14,.08);
+      padding:6px 18px;margin-top:24px;
+    }
+    .row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 0;}
+    .row + .row{border-top:1px solid var(--line);}
+    .row .lbl{font-size:13px;color:var(--muted);font-weight:600;flex-shrink:0;}
+    .row .val{font-size:14.5px;font-weight:700;color:var(--ink);text-align:right;word-break:break-word;}
+
+    .sec-title{
+      font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+      color:var(--muted);margin:26px 4px 8px;
+    }
+    .logout{
+      width:100%;background:none;border:1px solid var(--line);border-radius:14px;
+      padding:14px;font-size:14px;font-weight:700;color:#B23B3B;margin-top:22px;
+      transition:background .15s;
+    }
+    .logout:active{background:rgba(193,72,72,.06);}
+    .foot{text-align:center;font-family:'Dancing Script',cursive;font-size:17px;color:var(--muted);opacity:.75;margin-top:24px;}
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <button class="back-btn" onclick="window.Fidelavis?.go?.('index.html')" aria-label="Retour">
+      <span class="chev">‹</span> Retour
+    </button>
+  </div>
+
+  <div class="hero">
+    <div class="av" id="accAv">M</div>
+    <p class="hi">Bonjour <em id="accHi">vous</em></p>
+    <span class="badge">👑&nbsp;<span id="accBadge">Brunch Lover</span></span>
+  </div>
+
+  <div class="sec-title">Mes informations</div>
+  <div class="card">
+    <div class="row"><span class="lbl">Prénom</span><span class="val" id="accFirst">—</span></div>
+    <div class="row"><span class="lbl">Email</span><span class="val" id="accEmail">—</span></div>
+    <div class="row"><span class="lbl">Membre depuis</span><span class="val" id="accSince">—</span></div>
+  </div>
+
+  <button class="logout" onclick="logout()">Se déconnecter</button>
+
+  <p class="foot">Merci d'être à nos côtés&nbsp;♡</p>
+
+<script>
+/* cookie helper (partage Safari ↔ PWA standalone iOS) */
+function _ck(n){try{var m=document.cookie.match("(?:^|;)\\s*"+n+"\\s*=\\s*([^;]+)");return m?decodeURIComponent(m[1]):null;}catch(e){return null;}}
+
+(function gate(){
+  function ok(){try{return window.Fidelavis?.hasAccess?.()===true;}catch(e){return false;}}
+  if(!ok()){ setTimeout(function(){ if(!ok()) window.Fidelavis?.go?.('indexnfc.html'); },300); }
+})();
+
+(async function init(){
+  window.Fidelavis?.rememberLastResto?.();
+  var slug=(location.pathname.match(/^\/([^/]+)\//)||[,''])[1]||'';
+
+  var cfg={};
+  try{ cfg=await window.Fidelavis?.loadConfig?.()||{}; }catch(e){}
+  if(cfg.color)  document.documentElement.style.setProperty('--brand',cfg.color);
+  if(cfg.color2) document.documentElement.style.setProperty('--brand2',cfg.color2);
+
+  /* prénom + email (localStorage → cookie en repli) */
+  var fn = localStorage.getItem('fv_firstname_'+slug)||localStorage.getItem('fv_firstname')||_ck('fv_firstname')||'';
+  var em = localStorage.getItem('user_email')||_ck('fv_email')||'';
+
+  document.getElementById('accHi').textContent     = fn || 'vous';
+  document.getElementById('accFirst').textContent  = fn || '—';
+  document.getElementById('accEmail').textContent  = em || '—';
+
+  /* avatar : photo ou initiale */
+  var av=document.getElementById('accAv');
+  var photo=localStorage.getItem('fv_photo_url_'+slug)||localStorage.getItem('fv_photo_url')||_ck('fv_photo_url');
+  var initial=(fn||'G').charAt(0).toUpperCase();
+  if(photo){ av.innerHTML='<img src="'+photo+'" alt="profil" onerror="this.parentNode.textContent=\''+initial+'\'">'; }
+  else     { av.textContent=initial; }
+
+  /* membre depuis */
+  var reg=localStorage.getItem('fv_registered_at_'+slug)||localStorage.getItem('fv_registered_at_'+slug);
+  if(reg){
+    var d=new Date(parseInt(reg));
+    var s=d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+    document.getElementById('accSince').textContent=s.charAt(0).toUpperCase()+s.slice(1);
+  } else {
+    document.getElementById('accSince').textContent='—';
+  }
+
+  /* badge selon catégorie */
+  var cat=(cfg.category||'').toLowerCase();
+  var badge=cat.indexOf('coffee')>-1?'Coffee Lover':cat.indexOf('gastro')>-1?'Gourmet Club':'Brunch Lover';
+  document.getElementById('accBadge').textContent=badge;
+})();
+
+function logout(){
+  if(!confirm('Se déconnecter de ce compte sur cet appareil ?')) return;
+  var slug=(location.pathname.match(/^\/([^/]+)\//)||[,''])[1]||'';
+  try{
+    ['fv_onboarding_done','is_registered','fv_registered_'+slug,'fv_registered_at_'+slug,
+     'fv_firstname','fv_firstname_'+slug,'user_email','fv_photo_url','fv_photo_url_'+slug]
+      .forEach(function(k){ localStorage.removeItem(k); });
+  }catch(e){}
+  /* expire les cookies partagés */
+  ['fv_onboarding_done','fv_firstname','fv_email','fv_photo_url'].forEach(function(c){
+    try{ document.cookie=c+'=; path=/; max-age=0; SameSite=Lax'; }catch(e){}
+  });
+  window.Fidelavis?.go?.('indexnfc.html');
+}
+</script>
+</body>
+</html>
