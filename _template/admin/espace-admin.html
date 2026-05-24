@@ -887,8 +887,8 @@
           <div class="form-group">
             <label class="form-label">Ouvrir sur</label>
             <select class="form-select" id="notifTarget">
-              <option value="index">Page d'accueil</option>
               <option value="coupon">Page Coupon</option>
+              <option value="offre">Offre du jour</option>
             </select>
           </div>
           <button class="btn btn-brand btn-full" id="sendNotifBtn">
@@ -2347,7 +2347,8 @@ async function sendNotification() {
   btn.textContent = '⏳ Envoi en cours…';
   fb.className    = 'notif-msg';
 
-  const startUrl = target === 'coupon' ? `/${SITE}/redit.html` : `/${SITE}/index.html`;
+  // coupon → ouvre la PWA sur la carte (redit gère l'ouverture/installe) ; offre → page offre du jour
+  const startUrl = target === 'offre' ? `/${SITE}/offre-du-jour.html` : `/${SITE}/redit.html`;
 
   try {
     // Envoi via Apps Script proxy — brancher action=push_notification côté Apps Script
