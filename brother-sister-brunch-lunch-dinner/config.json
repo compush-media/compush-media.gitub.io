@@ -1,11 +1,10 @@
 {
   "name": "BROTHER SISTER Brunch Lunch Dinner",
-  "color": "#D4637A",
-  "color2": "#C04868",
+  "color": "#d4637a",
+  "color2": "#c04868",
   "walletTemplate": "templates/brunch-resto",
   "category": "brunch",
   "tagline": "Le spot brunch du quartier",
-  "heroUrl": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/hero-1779661226536.jpg",
   "activeCoupon": {
     "title": "https://brothersister.fr/",
     "description": "Sur réservation, le week-end",
