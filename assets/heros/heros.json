@@ -1,8 +1,8 @@
 [
-  { "label": "Brunch doré",     "file": "brunch-or.svg" },
-  { "label": "Matcha",          "file": "matcha.svg" },
-  { "label": "Café latte",      "file": "latte.svg" },
-  { "label": "Gastro nuit",     "file": "gastro-nuit.svg" },
-  { "label": "Terrasse sauge",  "file": "terrasse-sauge.svg" },
-  { "label": "Rose tendre",     "file": "rose-tendre.svg" }
+  { "label": "Avocado toast & œuf",      "file": "banniere-1.jpg" },
+  { "label": "Pancakes gourmands",       "file": "banniere-2.jpg" },
+  { "label": "Table brunch lumineuse",   "file": "banniere-3.jpg" },
+  { "label": "Toast & café (marbre)",    "file": "banniere-4.jpg" },
+  { "label": "Brunch entre amis",        "file": "banniere-5.jpg" },
+  { "label": "Latte & croissant",        "file": "banniere-6.jpg" }
 ]
