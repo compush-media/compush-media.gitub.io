@@ -3633,6 +3633,27 @@ function showImportPreview(rows, filename) {
 const IMPORT_TEMPLATE          = '_template';
 const IMPORT_TEMPLATE_LIFESTYLE = 'templates/brunch-resto';
 
+// Proxy GAS (fetch_image) — pour ré-héberger les logos externes (Instagram) en permanent
+const FV_PROXY = 'https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec';
+
+// Si url est externe (ex: Instagram), la télécharge via le proxy et l'héberge dans le repo.
+// Ajoute le blob à newTreeItems et renvoie l'URL locale permanente. Sinon renvoie l'url telle quelle.
+async function rehostExternalImage(slug, url, slot, newTreeItems) {
+  if (!url || !/^https?:\/\//.test(url)) return url;
+  if (url.indexOf('app.cartefidelavis.com') > -1) return url; // déjà local
+  try {
+    const res  = await fetch(FV_PROXY, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'fetch_image', url }) });
+    const data = await res.json();
+    if (data && data.ok && data.dataBase64) {
+      const blob = await ghApiD('/git/blobs', 'POST', { content: data.dataBase64, encoding: 'base64' });
+      const path = `${slug}/${slot}.${data.ext || 'jpg'}`;
+      newTreeItems.push({ path, mode: '100644', type: 'blob', sha: blob.sha });
+      return 'https://app.cartefidelavis.com/' + path;
+    }
+  } catch(_) {}
+  return url; // fallback : garde l'URL d'origine
+}
+
 async function confirmImport() {
   if (!_importRows.length) return;
   const btn = el('importConfirmBtn');
@@ -3732,7 +3753,7 @@ async function confirmImport() {
           const _offreImg = resolveOffreImage(row.coupon_image);
           if (_offreImg) cfg.activeCoupon.imageUrl = _offreImg;
           if (row.instagram_url)   cfg.instagramUrl   = row.instagram_url;
-          if (row.logo_url)      { cfg.logoUrl = row.logo_url; cfg.iconUrl = row.logo_url; } // iconUrl = logo du wallet
+          if (row.logo_url) { const _lu = await rehostExternalImage(slug, row.logo_url, 'logo', newTreeItems); cfg.logoUrl = _lu; cfg.iconUrl = _lu; } // logo ré-hébergé en permanent
           if (row.hero_url)      { const _h = resolveHeroImage(row.hero_url); if (_h) cfg.heroUrl = _h; }
           if (row.review_url)      cfg.googleReview   = row.review_url;
           if (row.reservation_url) cfg.reservationUrl = row.reservation_url;

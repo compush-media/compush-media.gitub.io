@@ -77,6 +77,9 @@ function doPost(e) {
       case "upload_image":
         result = uploadImage(body);
         break;
+      case "fetch_image":
+        result = fetchImage(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -704,6 +707,35 @@ function uploadImage(params) {
     return { error: "Erreur GitHub " + code + " : " + putRes.getContentText().substring(0, 200) };
   }
   return { ok: true, url: "https://app.cartefidelavis.com/" + filePath, path: filePath };
+}
+
+// ─── Télécharge une image distante (ex: Instagram CDN) et la renvoie en base64 ───
+// Permet de ré-héberger côté client (le navigateur est bloqué par CORS).
+function fetchImage(params) {
+  var url = (params.url || "").trim();
+  if (!url || !/^https?:\/\//.test(url)) return { error: "url invalide" };
+  try {
+    var resp = UrlFetchApp.fetch(url, {
+      muteHttpExceptions: true,
+      followRedirects: true,
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36",
+        "Referer": "https://www.instagram.com/",
+        "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8"
+      }
+    });
+    var code = resp.getResponseCode();
+    if (code !== 200) return { error: "HTTP " + code };
+    var hdrs = resp.getAllHeaders();
+    var ct = (hdrs["Content-Type"] || hdrs["content-type"] || "").toString().toLowerCase();
+    if (ct.indexOf("image") === -1) return { error: "pas une image (" + ct + ")" };
+    var bytes = resp.getBlob().getBytes();
+    if (bytes.length > 4000000) return { error: "image trop volumineuse" };
+    var ext = ct.indexOf("png") > -1 ? "png" : (ct.indexOf("webp") > -1 ? "webp" : "jpg");
+    return { ok: true, dataBase64: Utilities.base64Encode(bytes), ext: ext };
+  } catch (e) {
+    return { error: "fetch: " + e.message };
+  }
 }
 
 // ─── Action 6 : Lire les ambassadeurs (GitHub) ───────────────

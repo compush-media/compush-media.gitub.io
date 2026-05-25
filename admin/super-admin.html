@@ -1732,6 +1732,23 @@ async function ghData(path, method = 'GET', body) {
   return res.json();
 }
 
+// Ré-héberge une image externe (Instagram) en permanent via le proxy fetch_image
+async function rehostExternalImage(slug, url, slot, newTreeItems) {
+  if (!url || !/^https?:\/\//.test(url)) return url;
+  if (url.indexOf('app.cartefidelavis.com') > -1) return url;
+  try {
+    const res  = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'fetch_image', url }) });
+    const data = await res.json();
+    if (data && data.ok && data.dataBase64) {
+      const blob = await ghData('/git/blobs', 'POST', { content: data.dataBase64, encoding: 'base64' });
+      const path = `${slug}/${slot}.${data.ext || 'jpg'}`;
+      newTreeItems.push({ path, mode: '100644', type: 'blob', sha: blob.sha });
+      return 'https://app.cartefidelavis.com/' + path;
+    }
+  } catch(_) {}
+  return url;
+}
+
 // ── Creation pipeline (app complète, 1 commit tree) ───────
 async function startImport() {
   const selected = _importRows.filter(r => r.selected);
@@ -1772,12 +1789,13 @@ async function startImport() {
         const colors = STYLE_COLORS[row.style];
         const slug   = row.slug;
         const hasApp = allItems.some(f => f.path === slug + '/admin/espace-admin.html');
+        const _logo  = await rehostExternalImage(slug, row.logo_url, 'logo', newTreeItems); // logo permanent
 
         const cfg = {
           name: row.name, color: colors.color, color2: colors.color2,
           walletTemplate: 'templates/brunch-resto', category: row.style, tagline: row.tagline,
           instagramUrl: row.instagram_url || undefined,
-          logoUrl: row.logo_url || undefined, iconUrl: row.logo_url || undefined,
+          logoUrl: _logo || undefined, iconUrl: _logo || undefined,
           heroUrl: resolveHeroImage(row.hero_url) || undefined,
           phone: row.phone || undefined, address: row.address || undefined,
           googleReview: row.review_url || undefined,
