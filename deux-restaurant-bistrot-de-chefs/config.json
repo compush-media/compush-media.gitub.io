@@ -1,7 +1,7 @@
 {
   "name": "Deux Restaurant : Bistrot de chefs",
-  "color": "#D4637A",
-  "color2": "#C04868",
+  "color": "#d4637a",
+  "color2": "#c04868",
   "walletTemplate": "templates/brunch-resto",
   "category": "brunch",
   "tagline": "Le spot brunch du quartier",
