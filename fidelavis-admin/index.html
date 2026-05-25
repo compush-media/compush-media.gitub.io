@@ -1082,7 +1082,7 @@
 
       <div id="importTemplateHint" style="font-size:12px;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:8px;line-height:1.7">
         <strong>Format classique :</strong> denomination · ville · tel · email · GMB_URL · ambassadeur_assigné · statut…
-        <br><strong>Format lifestyle (auto-détecté) :</strong> nom_restaurant · Instagram_URL · First_category · Second_category · Logo_URL · hero_image_url · coupon_titre · coupon_description · site_reservation · google_review_url…
+        <br><strong>Format lifestyle (auto-détecté) :</strong> nom_restaurant · Instagram_URL · First_category · Second_category · Logo_URL · hero_image_url · coupon_titre · coupon_description · coupon_image · site_reservation · google_review_url…
         <br><button class="btn-outline" style="font-size:11px;padding:4px 10px;margin-top:6px" onclick="downloadTemplate()">📄 Télécharger le modèle classique</button>
       </div>
 
@@ -3498,6 +3498,29 @@ function pickField(row, aliases) {
   return '';
 }
 
+// Résout la colonne coupon_image → URL : URL directe, fichier offre-N.jpg, ou mot-clé
+function resolveOffreImage(val) {
+  val = (val || '').trim();
+  if (!val) return '';
+  const BASE = 'https://app.cartefidelavis.com/assets/offres/';
+  if (/^https?:\/\//.test(val)) return val;
+  if (/^offre-\d+\.jpg$/i.test(val)) return BASE + val.toLowerCase();
+  const v = val.toLowerCase();
+  const map = [
+    [/caf[ée]|latt|coffee|cappucc|expresso/, 'offre-1.jpg'],
+    [/dessert|g[âa]teau|p[âa]tiss|tarte/,    'offre-2.jpg'],
+    [/[œo]euf|b[ée]n[ée]dict|brouill/,        'offre-3.jpg'],
+    [/smoothie|bowl|a[çc]a[ïi]/,              'offre-4.jpg'],
+    [/jus|orange|press/,                      'offre-5.jpg'],
+    [/pancake|cr[êe]pe|gaufre/,               'offre-6.jpg'],
+    [/croissant|viennois/,                    'offre-7.jpg'],
+    [/cheesecake/,                            'offre-8.jpg'],
+    [/avocado|avocat|toast/,                  'offre-9.jpg'],
+  ];
+  for (const [re, file] of map) { if (re.test(v)) return BASE + file; }
+  return '';
+}
+
 function showImportPreview(rows, filename) {
   // ── Détection automatique du format ──────────────────────
   const firstRow = rows[0] || {};
@@ -3545,6 +3568,7 @@ function showImportPreview(rows, filename) {
           statut:          pickField(r, ['statut','statut_contact','status']),
           nom_gerant:      pickField(r, ['nom_gerant','nom_gérant','gerant','manager','dirigeant']),
           ambassadeur:     pickField(r, ['ambassadeur_assigné','ambassadeur_assigne','ambassadeur','ambassador']),
+          coupon_image:    pickField(r, ['coupon_image','offre_image','coupon_image_url','image_offre']),
           offer_title:     cTitle || cont.offers[hi % cont.offers.length][0],
           offer_sub:       cDesc  || cont.offers[hi % cont.offers.length][1],
           tagline:         cont.taglines[hi % cont.taglines.length],
@@ -3683,6 +3707,8 @@ async function confirmImport() {
             setupPaid: true,
             invoices: [],
           };
+          const _offreImg = resolveOffreImage(row.coupon_image);
+          if (_offreImg) cfg.activeCoupon.imageUrl = _offreImg;
           if (row.instagram_url)   cfg.instagramUrl   = row.instagram_url;
           if (row.logo_url)      { cfg.logoUrl = row.logo_url; cfg.iconUrl = row.logo_url; } // iconUrl = logo du wallet
           if (row.hero_url)        cfg.heroUrl        = row.hero_url;

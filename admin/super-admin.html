@@ -677,7 +677,7 @@
     <div class="modal-header">
       <div>
         <div class="modal-title">📥 Import Excel — Wallets Lifestyle</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:3px">Colonnes : <code>nom_restaurant</code> (ou Name), <code>Instagram_URL</code>, <code>First_category</code> · optionnelles : Logo_URL · hero_image_url · coupon_titre · coupon_description · site_reservation · google_review_url · Website · adresse · telephone · email</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">Colonnes : <code>nom_restaurant</code> (ou Name), <code>Instagram_URL</code>, <code>First_category</code> · optionnelles : Logo_URL · hero_image_url · coupon_titre · coupon_description · coupon_image · site_reservation · google_review_url · Website · adresse · telephone · email</div>
       </div>
       <button class="modal-close" onclick="closeImportModal()">✕</button>
     </div>
@@ -1539,6 +1539,29 @@ function pickField(row, aliases) {
   return '';
 }
 
+// Résout la colonne coupon_image → URL : URL directe, fichier offre-N.jpg, ou mot-clé
+function resolveOffreImage(val) {
+  val = (val || '').trim();
+  if (!val) return '';
+  const BASE = 'https://app.cartefidelavis.com/assets/offres/';
+  if (/^https?:\/\//.test(val)) return val;
+  if (/^offre-\d+\.jpg$/i.test(val)) return BASE + val.toLowerCase();
+  const v = val.toLowerCase();
+  const map = [
+    [/caf[ée]|latt|coffee|cappucc|expresso/, 'offre-1.jpg'],
+    [/dessert|g[âa]teau|p[âa]tiss|tarte/,    'offre-2.jpg'],
+    [/[œo]euf|b[ée]n[ée]dict|brouill/,        'offre-3.jpg'],
+    [/smoothie|bowl|a[çc]a[ïi]/,              'offre-4.jpg'],
+    [/jus|orange|press/,                      'offre-5.jpg'],
+    [/pancake|cr[êe]pe|gaufre/,               'offre-6.jpg'],
+    [/croissant|viennois/,                    'offre-7.jpg'],
+    [/cheesecake/,                            'offre-8.jpg'],
+    [/avocado|avocat|toast/,                  'offre-9.jpg'],
+  ];
+  for (const [re, file] of map) { if (re.test(v)) return BASE + file; }
+  return '';
+}
+
 function parseImportData(data) {
   _importRows = data
     .map(r => {
@@ -1567,6 +1590,7 @@ function parseImportData(data) {
         premium_score:   pickField(r, ['premium_score','score']),
         statut_contact:  pickField(r, ['statut','statut_contact','status']) || 'non_contacte',
         nom_gerant:      pickField(r, ['nom_gerant','nom_gérant','gerant','manager','dirigeant']),
+        coupon_image:    pickField(r, ['coupon_image','offre_image','coupon_image_url','image_offre']),
         offer_title:     cTitle || content.offers[hi % content.offers.length][0],
         offer_sub:       cDesc  || content.offers[hi % content.offers.length][1],
         tagline:         content.taglines[hi % content.taglines.length],
@@ -1739,7 +1763,7 @@ async function startImport() {
         googleReview: row.review_url || undefined,
         reservationUrl: row.reservation_url || row.website || undefined,
         email: row.email || undefined,
-        activeCoupon: { title: row.offer_title, description: row.offer_sub, month: new Date().toLocaleDateString('fr-FR',{month:'long'}) },
+        activeCoupon: { title: row.offer_title, description: row.offer_sub, imageUrl: resolveOffreImage(row.coupon_image) || undefined, month: new Date().toLocaleDateString('fr-FR',{month:'long'}) },
         plan: 'terrain',
         subscriptionStatus: 'active',
         setupPaid: true,
