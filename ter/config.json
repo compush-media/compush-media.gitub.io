@@ -7,8 +7,9 @@
   "tagline": "Instagrammable & gourmand",
   "activeCoupon": {
     "title": "Café offert après brunch",
-    "description": "Sur présentation de votre code en caisse",
-    "month": "mai"
+    "imageUrl": "https://app.cartefidelavis.com/assets/offres/offre-1.jpg",
+    "month": "mai",
+    "updatedAt": "2026-05-25T14:11:31.252Z"
   },
   "plan": "terrain",
   "subscriptionStatus": "active",
