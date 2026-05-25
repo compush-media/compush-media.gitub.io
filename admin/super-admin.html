@@ -1736,16 +1736,19 @@ async function ghData(path, method = 'GET', body) {
 async function rehostExternalImage(slug, url, slot, newTreeItems) {
   if (!url || !/^https?:\/\//.test(url)) return url;
   if (url.indexOf('app.cartefidelavis.com') > -1) return url;
-  try {
-    const res  = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'fetch_image', url }) });
-    const data = await res.json();
-    if (data && data.ok && data.dataBase64) {
-      const blob = await ghData('/git/blobs', 'POST', { content: data.dataBase64, encoding: 'base64' });
-      const path = `${slug}/${slot}.${data.ext || 'jpg'}`;
-      newTreeItems.push({ path, mode: '100644', type: 'blob', sha: blob.sha });
-      return 'https://app.cartefidelavis.com/' + path;
-    }
-  } catch(_) {}
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res  = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'fetch_image', url }) });
+      const data = await res.json();
+      if (data && data.ok && data.dataBase64) {
+        const blob = await ghData('/git/blobs', 'POST', { content: data.dataBase64, encoding: 'base64' });
+        const path = `${slug}/${slot}.${data.ext || 'jpg'}`;
+        newTreeItems.push({ path, mode: '100644', type: 'blob', sha: blob.sha });
+        return 'https://app.cartefidelavis.com/' + path;
+      }
+      if (data && data.error) break;
+    } catch(_) { await new Promise(r => setTimeout(r, 700)); }
+  }
   return url;
 }
 
