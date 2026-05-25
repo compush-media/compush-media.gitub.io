@@ -1,0 +1,14 @@
+{
+  "name": "Ter.",
+  "short_name": "Ter.",
+  "start_url": "/ter/index.html",
+  "scope": "/ter/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#D4637A",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

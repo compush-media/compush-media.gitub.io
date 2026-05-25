@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Mon compte – Fidelavis</title>
+  <script src="../assets/core.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#5A6040; --brand2:#454D30; --gold:#C8973A;
+      --cream:#F7EFE5; --white:#fff; --ink:#2A1A0E; --muted:#8A7260; --line:#E4D8CC;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      font-family:'Lato',-apple-system,sans-serif;
+      background:var(--cream); color:var(--ink);
+      max-width:390px; margin:0 auto; min-height:100vh;
+      padding:0 18px 32px;
+    }
+    button{font-family:inherit;cursor:pointer;}
+
+    .topbar{display:flex;align-items:center;padding:16px 0 6px;}
+    .back-btn{
+      background:none;border:none;display:inline-flex;align-items:center;gap:5px;
+      font-size:15px;font-weight:700;color:var(--ink);padding:6px 4px;
+    }
+    .back-btn .chev{font-size:22px;line-height:1;color:var(--brand);}
+
+    .hero{text-align:center;padding:14px 0 6px;}
+    .av-wrap{display:block;width:96px;margin:0 auto 6px;position:relative;cursor:pointer;}
+    .av{
+      width:96px;height:96px;border-radius:50%;margin:0;
+      background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;
+      font-family:'Playfair Display',serif;font-size:38px;font-weight:700;
+      border:4px solid var(--white);box-shadow:0 6px 22px rgba(0,0,0,.14);overflow:hidden;
+    }
+    .av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+    .av-cam{
+      position:absolute;right:0;bottom:4px;width:30px;height:30px;border-radius:50%;
+      background:var(--white);border:1px solid var(--line);
+      display:flex;align-items:center;justify-content:center;font-size:14px;
+      box-shadow:0 2px 8px rgba(0,0,0,.14);
+    }
+    .photo-edit{display:inline-block;margin:0 0 2px;font-size:12.5px;font-weight:700;color:var(--brand);text-decoration:underline;cursor:pointer;}
+    .hi{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;line-height:1.2;}
+    .hi em{font-style:normal;color:var(--brand);}
+    .badge{
+      display:inline-flex;align-items:center;gap:5px;margin-top:10px;
+      padding:5px 16px;border-radius:999px;font-size:12.5px;font-weight:700;color:var(--brand);
+      background:rgba(200,151,58,.13);border:1px solid rgba(200,151,58,.28);
+    }
+
+    .card{
+      background:var(--white);border-radius:20px;
+      box-shadow:0 3px 20px rgba(42,26,14,.08);
+      padding:6px 18px;margin-top:24px;
+    }
+    .row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 0;}
+    .row + .row{border-top:1px solid var(--line);}
+    .row .lbl{font-size:13px;color:var(--muted);font-weight:600;flex-shrink:0;}
+    .row .val{font-size:14.5px;font-weight:700;color:var(--ink);text-align:right;word-break:break-word;}
+
+    .sec-title{
+      font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+      color:var(--muted);margin:26px 4px 8px;
+    }
+    .foot{text-align:center;font-family:'Dancing Script',cursive;font-size:17px;color:var(--muted);opacity:.75;margin-top:24px;}
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <button class="back-btn" onclick="window.Fidelavis?.go?.('index.html')" aria-label="Retour">
+      <span class="chev">‹</span> Retour
+    </button>
+  </div>
+
+  <div class="hero">
+    <label class="av-wrap" for="photoFile" title="Changer ma photo">
+      <div class="av" id="accAv">M</div>
+      <span class="av-cam">📷</span>
+    </label>
+    <input type="file" id="photoFile" accept="image/*" style="display:none" onchange="uploadPhoto(this)" />
+    <div><label class="photo-edit" for="photoFile" id="photoEditLbl">Ajouter ma photo</label></div>
+    <p class="hi">Bonjour <em id="accHi">vous</em></p>
+    <span class="badge">👑&nbsp;<span id="accBadge">Brunch Lover</span></span>
+  </div>
+
+  <div class="sec-title">Mes informations</div>
+  <div class="card">
+    <div class="row"><span class="lbl">Prénom</span><span class="val" id="accFirst">—</span></div>
+    <div class="row"><span class="lbl">Email</span><span class="val" id="accEmail">—</span></div>
+    <div class="row"><span class="lbl">Membre depuis</span><span class="val" id="accSince">—</span></div>
+  </div>
+
+  <p class="foot">Merci d'être à nos côtés&nbsp;♡</p>
+
+<script>
+/* cookie helper (partage Safari ↔ PWA standalone iOS) */
+function _ck(n){try{var m=document.cookie.match("(?:^|;)\\s*"+n+"\\s*=\\s*([^;]+)");return m?decodeURIComponent(m[1]):null;}catch(e){return null;}}
+
+(function gate(){
+  function ok(){try{return window.Fidelavis?.hasAccess?.()===true;}catch(e){return false;}}
+  if(!ok()){ setTimeout(function(){ if(!ok()) window.Fidelavis?.go?.('indexnfc.html'); },300); }
+})();
+
+(async function init(){
+  window.Fidelavis?.rememberLastResto?.();
+  var slug=(location.pathname.match(/^\/([^/]+)\//)||[,''])[1]||'';
+
+  var cfg={};
+  try{ cfg=await window.Fidelavis?.loadConfig?.()||{}; }catch(e){}
+  if(cfg.color)  document.documentElement.style.setProperty('--brand',cfg.color);
+  if(cfg.color2) document.documentElement.style.setProperty('--brand2',cfg.color2);
+
+  /* prénom + email (localStorage → cookie en repli) */
+  var fn = localStorage.getItem('fv_firstname_'+slug)||localStorage.getItem('fv_firstname')||_ck('fv_firstname')||'';
+  var em = localStorage.getItem('user_email')||_ck('fv_email')||'';
+
+  document.getElementById('accHi').textContent     = fn || 'vous';
+  document.getElementById('accFirst').textContent  = fn || '—';
+  document.getElementById('accEmail').textContent  = em || '—';
+
+  /* avatar : photo ou initiale */
+  var av=document.getElementById('accAv');
+  var photo=localStorage.getItem('fv_photo_url_'+slug)||localStorage.getItem('fv_photo_url')||_ck('fv_photo_url');
+  var initial=(fn||'G').charAt(0).toUpperCase();
+  if(photo){ av.innerHTML='<img src="'+photo+'" alt="profil" onerror="this.parentNode.textContent=\''+initial+'\'">'; }
+  else     { av.textContent=initial; }
+  var pel=document.getElementById('photoEditLbl');
+  if(pel) pel.textContent = photo ? 'Changer ma photo' : 'Ajouter ma photo';
+
+  /* membre depuis */
+  var reg=localStorage.getItem('fv_registered_at_'+slug)||localStorage.getItem('fv_registered_at_'+slug);
+  if(reg){
+    var d=new Date(parseInt(reg));
+    var s=d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+    document.getElementById('accSince').textContent=s.charAt(0).toUpperCase()+s.slice(1);
+  } else {
+    document.getElementById('accSince').textContent='—';
+  }
+
+  /* badge selon catégorie */
+  var cat=(cfg.category||'').toLowerCase();
+  var badge=cat.indexOf('coffee')>-1?'Coffee Lover':cat.indexOf('gastro')>-1?'Gourmet Club':'Brunch Lover';
+  document.getElementById('accBadge').textContent=badge;
+})();
+
+/* Recadre une image en carré et la compresse en data URL (reste sur l'appareil) */
+function resizePhotoToDataUrl(file, size, quality){
+  return new Promise(function(resolve,reject){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var img=new Image();
+      img.onload=function(){
+        var s=Math.min(img.width,img.height);
+        var sx=(img.width-s)/2, sy=(img.height-s)/2;
+        var c=document.createElement('canvas'); c.width=size; c.height=size;
+        c.getContext('2d').drawImage(img, sx,sy,s,s, 0,0,size,size);
+        resolve(c.toDataURL('image/jpeg', quality));
+      };
+      img.onerror=function(){reject(new Error('Image illisible'));};
+      img.src=e.target.result;
+    };
+    reader.onerror=function(){reject(new Error('Lecture échouée'));};
+    reader.readAsDataURL(file);
+  });
+}
+
+/* Upload photo de profil → stockée localement (data URI), pas de hébergement public */
+async function uploadPhoto(input){
+  var file=input.files && input.files[0];
+  if(!file) return;
+  var slug=(location.pathname.match(/^\/([^/]+)\//)||[,''])[1]||'';
+  try{
+    var dataUrl=await resizePhotoToDataUrl(file, 256, 0.82);
+    try{
+      localStorage.setItem('fv_photo_url', dataUrl);
+      localStorage.setItem('fv_photo_url_'+slug, dataUrl);
+    }catch(e){ alert('Photo trop volumineuse pour être enregistrée. Essayez une image plus petite.'); return; }
+    var av=document.getElementById('accAv');
+    av.innerHTML='<img src="'+dataUrl+'" alt="profil">';
+    var pel=document.getElementById('photoEditLbl'); if(pel) pel.textContent='Changer ma photo';
+  }catch(err){
+    alert('Impossible de charger cette image.');
+  }
+  input.value='';
+}
+</script>
+</body>
+</html>
