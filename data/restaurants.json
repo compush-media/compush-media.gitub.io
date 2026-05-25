@@ -44,5 +44,22 @@
     "acces_statut": "non_active",
     "date_creation": "2026-05-24",
     "walletTemplate": "templates/brunch-resto"
+  },
+  "ter": {
+    "name": "Ter.",
+    "brandColor": "#D4637A",
+    "brandColor2": "#C04868",
+    "style": "brunch",
+    "instagramUrl": "https://www.instagram.com/terparis11/",
+    "telephone": "0745280155",
+    "adresse": "11 Rue Camille Desmoulins  75011 Paris",
+    "email": "",
+    "site_web": "http://www.restaurant-ter.fr/",
+    "nom_gerant": "Guillaume & Thibault",
+    "statut_commercial": "",
+    "ambassadorCode": "",
+    "acces_statut": "non_active",
+    "date_creation": "2026-05-25",
+    "walletTemplate": "templates/brunch-resto"
   }
 }
