@@ -1082,7 +1082,7 @@
 
       <div id="importTemplateHint" style="font-size:12px;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:8px;line-height:1.7">
         <strong>Format classique :</strong> denomination · ville · tel · email · GMB_URL · ambassadeur_assigné · statut…
-        <br><strong>Format lifestyle (auto-détecté) :</strong> nom_restaurant · Instagram_URL · First_category · Second_category · Logo_URL · hero_image_url · coupon_titre · coupon_description · coupon_image · site_reservation · google_review_url…
+        <br><strong>Format lifestyle (auto-détecté) :</strong> nom_restaurant · Instagram_URL · First_category · Second_category · Logo_URL · hero_image · coupon_titre · coupon_description · coupon_image · site_reservation · google_review_url…
         <br><button class="btn-outline" style="font-size:11px;padding:4px 10px;margin-top:6px" onclick="downloadTemplate()">📄 Télécharger le modèle classique</button>
       </div>
 
@@ -3521,6 +3521,28 @@ function resolveOffreImage(val) {
   return '';
 }
 
+// Résout la colonne hero_image → URL : URL directe, banniere-N.jpg, numéro 1-6, ou mot-clé
+function resolveHeroImage(val) {
+  val = (val || '').trim();
+  if (!val) return '';
+  const BASE = 'https://app.cartefidelavis.com/assets/heros/';
+  if (/^https?:\/\//.test(val)) return val;
+  if (/^banniere-\d+\.jpg$/i.test(val)) return BASE + val.toLowerCase();
+  if (/^[1-6]$/.test(val)) return BASE + 'banniere-' + val + '.jpg';
+  const v = val.toLowerCase();
+  const map = [
+    [/avocado|avocat/,                  'banniere-1.jpg'],
+    [/pancake|cr[êe]pe|gaufre/,         'banniere-2.jpg'],
+    [/marbre/,                          'banniere-4.jpg'],
+    [/latte|croissant|caf[ée]|coffee/,  'banniere-6.jpg'],
+    [/amis|groupe|buffet|partage|entre/,'banniere-5.jpg'],
+    [/toast|[œo]euf/,                   'banniere-1.jpg'],
+    [/table|lumineu|terrasse|brunch/,   'banniere-3.jpg'],
+  ];
+  for (const [re, file] of map) { if (re.test(v)) return BASE + file; }
+  return '';
+}
+
 function showImportPreview(rows, filename) {
   // ── Détection automatique du format ──────────────────────
   const firstRow = rows[0] || {};
@@ -3557,7 +3579,7 @@ function showImportPreview(rows, filename) {
           style,
           instagram_url:   pickField(r, ['Instagram_URL','instagram','Instagram']),
           logo_url:        pickField(r, ['Logo_URL','Logo_url','logo_url','logo']),
-          hero_url:        pickField(r, ['hero_image_url','hero_url','hero','image_hero']),
+          hero_url:        pickField(r, ['hero_image_url','hero_image','hero_url','hero','image_hero']),
           review_url:      pickField(r, ['google_review_url','Review_URL','review_url','review','GMB_URL']),
           reservation_url: pickField(r, ['site_reservation','reservation_url','reservation','booking','lien_reservation']),
           site_web:        pickField(r, ['Website','site_web','site','url']),
@@ -3711,7 +3733,7 @@ async function confirmImport() {
           if (_offreImg) cfg.activeCoupon.imageUrl = _offreImg;
           if (row.instagram_url)   cfg.instagramUrl   = row.instagram_url;
           if (row.logo_url)      { cfg.logoUrl = row.logo_url; cfg.iconUrl = row.logo_url; } // iconUrl = logo du wallet
-          if (row.hero_url)        cfg.heroUrl        = row.hero_url;
+          if (row.hero_url)      { const _h = resolveHeroImage(row.hero_url); if (_h) cfg.heroUrl = _h; }
           if (row.review_url)      cfg.googleReview   = row.review_url;
           if (row.reservation_url) cfg.reservationUrl = row.reservation_url;
           else if (row.site_web)   cfg.reservationUrl = row.site_web;

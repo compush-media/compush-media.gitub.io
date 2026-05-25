@@ -677,7 +677,7 @@
     <div class="modal-header">
       <div>
         <div class="modal-title">📥 Import Excel — Wallets Lifestyle</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:3px">Colonnes : <code>nom_restaurant</code> (ou Name), <code>Instagram_URL</code>, <code>First_category</code> · optionnelles : Logo_URL · hero_image_url · coupon_titre · coupon_description · coupon_image · site_reservation · google_review_url · Website · adresse · telephone · email</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">Colonnes : <code>nom_restaurant</code> (ou Name), <code>Instagram_URL</code>, <code>First_category</code> · optionnelles : Logo_URL · hero_image · coupon_titre · coupon_description · coupon_image · site_reservation · google_review_url · Website · adresse · telephone · email</div>
       </div>
       <button class="modal-close" onclick="closeImportModal()">✕</button>
     </div>
@@ -1562,6 +1562,28 @@ function resolveOffreImage(val) {
   return '';
 }
 
+// Résout la colonne hero_image → URL : URL directe, banniere-N.jpg, numéro 1-6, ou mot-clé
+function resolveHeroImage(val) {
+  val = (val || '').trim();
+  if (!val) return '';
+  const BASE = 'https://app.cartefidelavis.com/assets/heros/';
+  if (/^https?:\/\//.test(val)) return val;
+  if (/^banniere-\d+\.jpg$/i.test(val)) return BASE + val.toLowerCase();
+  if (/^[1-6]$/.test(val)) return BASE + 'banniere-' + val + '.jpg';
+  const v = val.toLowerCase();
+  const map = [
+    [/avocado|avocat/,                  'banniere-1.jpg'],
+    [/pancake|cr[êe]pe|gaufre/,         'banniere-2.jpg'],
+    [/marbre/,                          'banniere-4.jpg'],
+    [/latte|croissant|caf[ée]|coffee/,  'banniere-6.jpg'],
+    [/amis|groupe|buffet|partage|entre/,'banniere-5.jpg'],
+    [/toast|[œo]euf/,                   'banniere-1.jpg'],
+    [/table|lumineu|terrasse|brunch/,   'banniere-3.jpg'],
+  ];
+  for (const [re, file] of map) { if (re.test(v)) return BASE + file; }
+  return '';
+}
+
 function parseImportData(data) {
   _importRows = data
     .map(r => {
@@ -1580,7 +1602,7 @@ function parseImportData(data) {
         style,
         instagram_url:   pickField(r, ['Instagram_URL','instagram','Instagram']),
         logo_url:        pickField(r, ['Logo_URL','Logo_url','logo_url','logo']),
-        hero_url:        pickField(r, ['hero_image_url','hero_url','hero','image_hero']),
+        hero_url:        pickField(r, ['hero_image_url','hero_image','hero_url','hero','image_hero']),
         review_url:      pickField(r, ['google_review_url','Review_URL','review_url','review','GMB_URL']),
         reservation_url: pickField(r, ['site_reservation','reservation_url','reservation','booking','lien_reservation']),
         website:         pickField(r, ['Website','site_web','site','url']),
@@ -1757,7 +1779,7 @@ async function startImport() {
         instagramUrl: row.instagram_url || undefined,
         logoUrl: row.logo_url || undefined,
         iconUrl: row.logo_url || undefined,
-        heroUrl: row.hero_url || undefined,
+        heroUrl: resolveHeroImage(row.hero_url) || undefined,
         phone: row.phone || undefined,
         address: row.address || undefined,
         googleReview: row.review_url || undefined,
