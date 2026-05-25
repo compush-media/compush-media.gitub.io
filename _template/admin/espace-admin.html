@@ -978,7 +978,12 @@
       <input class="form-input" type="url" id="iconUrlInput"
         placeholder="https://monresto.fr/logo.png"
         style="margin-bottom:10px;" />
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <label for="logoImageFile" class="btn"
+          style="background:#f3f4f6;color:#333;border:1px solid var(--line);cursor:pointer;margin:0;">
+          📤 Importer le logo
+        </label>
+        <input type="file" id="logoImageFile" accept="image/*" style="display:none;" onchange="uploadLogoImage(this)" />
         <button class="btn btn-brand" id="saveIconBtn" type="button" onclick="saveIcon()">
           💾 Enregistrer le logo
         </button>
@@ -2562,6 +2567,54 @@ async function saveGoogleReview() {
 
   btn.disabled    = false;
   btn.textContent = '💾 Enregistrer le lien avis';
+}
+
+// Recadre en carré + compresse (pour le logo)
+function squareCropDataUrl(file, size, q) {
+  return new Promise((resolve, reject) => {
+    const rd = new FileReader();
+    rd.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const s = Math.min(img.width, img.height);
+        const c = document.createElement('canvas'); c.width = size; c.height = size;
+        c.getContext('2d').drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, size, size);
+        resolve(c.toDataURL('image/jpeg', q));
+      };
+      img.onerror = () => reject(new Error('Image illisible'));
+      img.src = e.target.result;
+    };
+    rd.onerror = () => reject(new Error('Lecture du fichier échouée'));
+    rd.readAsDataURL(file);
+  });
+}
+
+// Importe un logo depuis l'appareil → l'héberge (permanent) → enregistre
+async function uploadLogoImage(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const fb = document.getElementById('iconFeedback');
+  fb.className = 'notif-msg'; fb.textContent = '⏳ Préparation…';
+  try {
+    const dataUrl = await squareCropDataUrl(file, 512, 0.85);
+    fb.textContent = '⏳ Envoi…';
+    const res = await fetch(API, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'upload_image', resto: SITE, slot: 'logo', ext: 'jpg', dataBase64: dataUrl })
+    });
+    const data = await res.json();
+    if (data && data.ok && data.url) {
+      document.getElementById('iconUrlInput').value = data.url;
+      fb.textContent = '⏳ Enregistrement…';
+      if (typeof saveIcon === 'function') { try { await saveIcon(); } catch(_) {} }
+      fb.className = 'notif-msg success'; fb.textContent = '✅ Logo importé et enregistré !';
+    } else {
+      fb.className = 'notif-msg error'; fb.textContent = '⚠️ ' + ((data && data.error) || 'Échec de l\'upload');
+    }
+  } catch(e) {
+    fb.className = 'notif-msg error'; fb.textContent = '⚠️ ' + (e?.message || 'Erreur');
+  }
+  input.value = '';
 }
 
 async function saveIcon() {
