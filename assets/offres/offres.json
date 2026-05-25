@@ -1,0 +1,38 @@
+[
+  {
+    "label": "Café latte",
+    "file": "offre-1.jpg"
+  },
+  {
+    "label": "Dessert du chef",
+    "file": "offre-2.jpg"
+  },
+  {
+    "label": "Œufs bénédicte",
+    "file": "offre-3.jpg"
+  },
+  {
+    "label": "Smoothie",
+    "file": "offre-4.jpg"
+  },
+  {
+    "label": "Jus pressé",
+    "file": "offre-5.jpg"
+  },
+  {
+    "label": "Pancakes",
+    "file": "offre-6.jpg"
+  },
+  {
+    "label": "Croissant",
+    "file": "offre-7.jpg"
+  },
+  {
+    "label": "Cheesecake",
+    "file": "offre-8.jpg"
+  },
+  {
+    "label": "Avocado toast",
+    "file": "offre-9.jpg"
+  }
+]
