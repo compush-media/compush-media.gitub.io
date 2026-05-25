@@ -61,5 +61,39 @@
     "acces_statut": "non_active",
     "date_creation": "2026-05-25",
     "walletTemplate": "templates/brunch-resto"
+  },
+  "kafkaf-paris-11": {
+    "name": "Kafkaf - Paris 11",
+    "brandColor": "#D4637A",
+    "brandColor2": "#C04868",
+    "style": "brunch",
+    "instagramUrl": "https://www.instagram.com/kafkaf.fr",
+    "telephone": "971079436",
+    "adresse": "7 Rue Keller 75011 Paris",
+    "email": "",
+    "site_web": "https://kafkaf.fr/",
+    "nom_gerant": "Nada Tozri",
+    "statut_commercial": "",
+    "ambassadorCode": "",
+    "acces_statut": "non_active",
+    "date_creation": "2026-05-25",
+    "walletTemplate": "templates/brunch-resto"
+  },
+  "deux-restaurant-bistrot-de-chefs": {
+    "name": "Deux Restaurant : Bistrot de chefs",
+    "brandColor": "#D4637A",
+    "brandColor2": "#C04868",
+    "style": "brunch",
+    "instagramUrl": "https://www.instagram.com/deux.ptitdeux/",
+    "telephone": "974974752",
+    "adresse": "58 Rue de la Fontaine au Roi 75011 Paris",
+    "email": "",
+    "site_web": "https://www.deux-restaurant.fr/",
+    "nom_gerant": "Tiphaine Mollard & Romain Casas",
+    "statut_commercial": "",
+    "ambassadorCode": "",
+    "acces_statut": "non_active",
+    "date_creation": "2026-05-25",
+    "walletTemplate": "templates/brunch-resto"
   }
 }

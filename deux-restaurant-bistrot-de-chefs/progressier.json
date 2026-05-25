@@ -1,0 +1,23 @@
+{
+  "name": "Deux Restaurant : Bistrot de chefs",
+  "short_name": "Deux Restaurant : Bistrot de chefs",
+  "start_url": "/deux-restaurant-bistrot-de-chefs/index.html",
+  "scope": "/deux-restaurant-bistrot-de-chefs/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#D4637A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
