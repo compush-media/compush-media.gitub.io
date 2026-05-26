@@ -15,7 +15,7 @@
     "updatedAt": "2026-05-24T00:39:52.363Z"
   },
   "plan": "terrain",
-  "subscriptionStatus": "active",
+  "subscriptionStatus": "trialing",
   "setupPaid": true,
   "invoices": [],
   "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ_fYMsiVt5kcR_ElRbOjYTRc",
@@ -78,5 +78,9 @@
       "title": "",
       "image": ""
     }
-  ]
+  ],
+  "nextBillingDate": "2026-06-25",
+  "stripeCustomerId": "cus_UaYVg2rRB3bfqF",
+  "stripeSubscriptionId": "sub_1TbNOxDpSXl9Whzr3dUr9FzX",
+  "trialEndDate": "2026-06-09"
 }
