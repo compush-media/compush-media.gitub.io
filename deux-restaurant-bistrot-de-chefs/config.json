@@ -22,5 +22,55 @@
   "googleReview": "ChIJSQwPxwdt5kcRbleMxeNvh1Y",
   "reservationUrl": "https://www.deux-restaurant.fr/reservations",
   "phone": "974974752",
-  "address": "58 Rue de la Fontaine au Roi 75011 Paris"
+  "address": "58 Rue de la Fontaine au Roi 75011 Paris",
+  "monthlyOffers": [
+    {
+      "title": "",
+      "image": "offre-9.jpg"
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "Votre offre un Smoothie se mois ci",
+      "image": "offre-4.jpg"
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    }
+  ]
 }
