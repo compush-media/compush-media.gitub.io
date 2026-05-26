@@ -28,5 +28,55 @@
     "image": "https://rtdiaeskmyjjwohirhzj.supabase.co/storage/v1/object/public/offres-images/jolia/1779656185484-lf01g5.jpg",
     "date_fin": "2026-05-24"
   },
-  "email": "axou.v@aliceadsl.fr"
+  "email": "axou.v@aliceadsl.fr",
+  "monthlyOffers": [
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "test juin",
+      "image": "offre-3.jpg"
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    }
+  ]
 }
