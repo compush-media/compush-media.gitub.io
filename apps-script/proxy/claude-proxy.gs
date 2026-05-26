@@ -86,6 +86,9 @@ function doPost(e) {
       case "brevo_diag":
         result = brevoDiag(body);
         break;
+      case "activateRestaurateur":
+        result = activateRestaurateur(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -2113,6 +2116,105 @@ function brevoDiag(params) {
   }
 
   return out;
+}
+
+/**
+ * activateRestaurateur(params)
+ * Active l'espace restaurateur après clic sur le lien d'invitation :
+ *   1. Valide le token + l'expiration via data/restaurants.json
+ *   2. Provisionne le restaurant + le compte admin dans Supabase (mot de passe choisi)
+ *   3. Passe acces_statut à "active" et purge le token d'invitation
+ *
+ * Paramètres (POST JSON) :
+ *   token         — jeton d'invitation reçu par email
+ *   restaurantId  — slug du restaurant
+ *   newAdminPass  — mot de passe choisi par le restaurateur
+ *
+ * Retourne { success:true } ou { error:"..." } (le mot "invalide"/"expiré"
+ * déclenche l'écran "lien invalide" côté client).
+ */
+function activateRestaurateur(params) {
+  var token   = (params.token || "").trim();
+  var slug    = (params.restaurantId || params.slug || "").trim().toLowerCase();
+  var newPass = (params.newAdminPass || "").trim();
+
+  if (!slug || !token) return { error: "Lien d'activation invalide." };
+  if (!newPass || newPass.length < 8) return { error: "Le mot de passe doit contenir au moins 8 caractères." };
+
+  var ghToken = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo    = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!ghToken) return { error: "Configuration serveur manquante (GITHUB_TOKEN)." };
+
+  var headers = { Authorization: "token " + ghToken, Accept: "application/vnd.github.v3+json" };
+  var apiUrl  = "https://api.github.com/repos/" + repo + "/contents/data/restaurants.json";
+
+  // 1) Lire le registre
+  var getRes = UrlFetchApp.fetch(apiUrl + "?ref=main", { headers: headers, muteHttpExceptions: true });
+  if (getRes.getResponseCode() !== 200) return { error: "Impossible de vérifier le lien (registre indisponible)." };
+
+  var fd  = JSON.parse(getRes.getContentText());
+  var sha = fd.sha;
+  var registry;
+  try {
+    registry = JSON.parse(Utilities.newBlob(Utilities.base64Decode(fd.content.replace(/\n/g, ""))).getDataAsString());
+  } catch (e) { return { error: "Registre illisible." }; }
+
+  var r = registry[slug];
+  if (!r) return { error: "Lien invalide (restaurant introuvable)." };
+
+  // Déjà activé → idempotent
+  if (r.acces_statut === "active") return { success: true, alreadyActive: true };
+
+  // 2) Valider le token + l'expiration
+  if (!r.invite_token || r.invite_token !== token) return { error: "Lien d'activation invalide." };
+  if (r.invite_expires && new Date(r.invite_expires) < new Date()) return { error: "Lien d'activation expiré." };
+
+  // 3) Provisionner Supabase (restaurant + admin avec le mot de passe choisi)
+  var prov;
+  try {
+    prov = _provisionRestaurantInSupabase(
+      slug,
+      r.name || slug,
+      r.brandColor  || "#B8924F",
+      r.brandColor2 || "#9E7A3E",
+      r.telephone   || r.phone || null,
+      r.email       || null,
+      newPass,
+      r.GMB_URL     || r.googleReview || r.note_google || null,
+      r.ambassadorCode || null
+    );
+  } catch (e) {
+    return { error: "Activation du compte impossible : " + e.message };
+  }
+  if (!prov || prov.ok !== true) {
+    return { error: "Activation du compte impossible (" + ((prov && prov.reason) || "Supabase") + ")." };
+  }
+
+  // 4) Mettre à jour le registre : actif + purge du token
+  r.acces_statut    = "active";
+  r.date_activation = new Date().toISOString();
+  delete r.invite_token;
+  delete r.invite_expires;
+  registry[slug] = r;
+
+  var b64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(registry, null, 2) + "\n").getBytes());
+  var putRes = UrlFetchApp.fetch(apiUrl, {
+    method:             "put",
+    headers:            { Authorization: "token " + ghToken, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload:            JSON.stringify({ message: "activation: " + slug + " (espace restaurateur actif)", content: b64, sha: sha, branch: "main" }),
+    muteHttpExceptions: true
+  });
+  // Le compte Supabase est créé : même si le commit registre échoue, l'accès fonctionne.
+  if (putRes.getResponseCode() >= 300) {
+    Logger.log("activateRestaurateur: registre non mis à jour HTTP " + putRes.getResponseCode());
+  }
+
+  return {
+    success: true,
+    slug: slug,
+    loginUrl: "https://app.cartefidelavis.com/" + slug + "/admin/login.html"
+  };
 }
 
 // ─── Email d'invitation restaurateur (création de mot de passe) ───
