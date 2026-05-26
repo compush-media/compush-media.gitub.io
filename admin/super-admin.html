@@ -1784,6 +1784,7 @@ async function startImport() {
     if (regItem) { try { const b = await ghData(`/git/blobs/${regItem.sha}`); restoRegistry = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b.content.replace(/\s/g,'')), c => c.charCodeAt(0)))); } catch(_) {} }
 
     const newTreeItems = [];
+    const provisionList = [];   // restos à provisionner dans Supabase après le commit
     for (const row of selected) {
       document.getElementById('progressLabel').textContent = `Préparation de ${row.name}…`;
       document.getElementById('progressCount').textContent = `${done} / ${selected.length}`;
@@ -1842,6 +1843,7 @@ async function startImport() {
           }
         }
 
+        provisionList.push({ slug, name: row.name, color: colors.color, color2: colors.color2, phone: row.phone || '', email: row.email || '', googleReview: row.review_url || '', ambCode: ambId || '' });
         done++;
         addLog('success', `✅ ${row.name}${hasApp?' (maj)':''} → <a href="${BASE_URL}/${slug}/" target="_blank" style="color:var(--brand)">app.cartefidelavis.com/${slug}/</a>`);
       } catch(e) { addLog('error', `❌ ${row.name} : ${e.message}`); }
@@ -1855,6 +1857,17 @@ async function startImport() {
     const newTree   = await ghData('/git/trees', 'POST', { base_tree: treeSha, tree: newTreeItems });
     const newCommit = await ghData('/git/commits', 'POST', { message: `feat: import ${done} restaurants lifestyle (app complète)`, tree: newTree.sha, parents: [commitSha] });
     await ghData('/git/refs/heads/main', 'PATCH', { sha: newCommit.sha });
+
+    // Provisionner les nouveaux restos dans Supabase (capter les inscriptions
+    // clients dès maintenant, avant l'activation restaurateur)
+    if (provisionList.length) {
+      document.getElementById('progressLabel').textContent = '⏳ Activation base de données…';
+      for (const p of provisionList) {
+        try {
+          await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'provision_supabase', ...p }) });
+        } catch(_) { /* non-bloquant */ }
+      }
+    }
 
     if (ambId && done > 0) await persist();
 

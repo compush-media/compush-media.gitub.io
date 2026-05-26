@@ -3702,6 +3702,7 @@ async function confirmImport() {
     }
 
     const newTreeItems = [];
+    const provisionList = [];   // restos à provisionner dans Supabase après le commit
     let added = 0, scaffolded = 0, skipped = 0;
     btn.textContent = '⏳ Génération des fiches…';
 
@@ -3789,6 +3790,7 @@ async function confirmImport() {
           const manBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(manifest, null, 2) + '\n', encoding: 'utf-8' });
           newTreeItems.push({ path: `${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
           newTreeItems.push({ path: `${slug}/progressier.json`, mode: '100644', type: 'blob', sha: manBlob.sha });
+          provisionList.push({ slug, name: row.denomination, color: colors.color, color2: colors.color2, phone: row.tel || '', email: row.email || '', googleReview: row.review_url || '', ambCode: row.ambassadeur || '' });
           scaffolded++;
         }
 
@@ -3850,6 +3852,7 @@ async function confirmImport() {
           const manBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(manifest, null, 2) + '\n', encoding: 'utf-8' });
           newTreeItems.push({ path: `${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
           newTreeItems.push({ path: `${slug}/progressier.json`, mode: '100644', type: 'blob', sha: manBlob.sha });
+          provisionList.push({ slug, name: row.denomination, color, color2, phone: row.tel || '', email: row.email || '', googleReview: row.GMB_URL || '', ambCode: row['ambassadeur_assigné'] || '' });
           scaffolded++;
         }
       }
@@ -3870,6 +3873,21 @@ async function confirmImport() {
       tree: newTree.sha, parents: [commitSha]
     });
     await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: newCommit.sha });
+
+    // 6. Provisionner les nouveaux restos dans Supabase (pour capter les
+    //    inscriptions clients dès maintenant, avant l'activation restaurateur)
+    if (provisionList.length) {
+      btn.textContent = '⏳ Activation base de données…';
+      for (const p of provisionList) {
+        try {
+          await fetch(FV_PROXY, {
+            method:  'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body:    JSON.stringify({ action: 'provision_supabase', ...p })
+          });
+        } catch(_) { /* non-bloquant : l'activation re-provisionnera si besoin */ }
+      }
+    }
 
     window._restoData = data;
     closeImportModal();

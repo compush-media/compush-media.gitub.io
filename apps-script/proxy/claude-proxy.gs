@@ -89,6 +89,16 @@ function doPost(e) {
       case "activateRestaurateur":
         result = activateRestaurateur(body);
         break;
+      case "provision_supabase":
+        result = provisionSupabaseForResto(body);
+        break;
+      case "send_monthly_rewards":
+        result = _sendMonthlyRewardEmails({
+          reminder:  body.reminder === true || body.phase === "reminder",
+          onlySlug:  body.slug || null,
+          testEmail: body.testEmail || null
+        });
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -2215,6 +2225,209 @@ function activateRestaurateur(params) {
     slug: slug,
     loginUrl: "https://app.cartefidelavis.com/" + slug + "/admin/login.html"
   };
+}
+
+/**
+ * provisionSupabaseForResto(params)
+ * Crée (ou met à jour) le restaurant dans Supabase dès sa création, avec un
+ * mot de passe admin temporaire aléatoire (réécrit lors de l'activation).
+ * Objectif : permettre l'enregistrement des clients AVANT que le restaurateur
+ * active son espace (sinon registerClient échoue avec restaurant_not_found).
+ *
+ * Paramètres : slug, name, color, color2, phone, email, googleReview, ambCode
+ */
+function provisionSupabaseForResto(params) {
+  var slug = (params.slug || params.restaurantId || "").trim().toLowerCase();
+  if (!slug) return { error: "slug manquant" };
+
+  var tempPass = "fvtmp_" + Utilities.getUuid().replace(/-/g, "").slice(0, 18);
+  var r;
+  try {
+    r = _provisionRestaurantInSupabase(
+      slug,
+      params.name  || slug,
+      params.color || "#B8924F",
+      params.color2 || "#9E7A3E",
+      params.phone || null,
+      params.email || null,
+      tempPass,
+      params.googleReview || null,
+      params.ambCode || null
+    );
+  } catch (e) {
+    return { error: "provision: " + e.message };
+  }
+  if (r && r.ok === true) return { ok: true, slug: slug, resto_id: r.resto_id };
+  return { error: "provision Supabase échouée (" + ((r && r.reason) || "inconnu") + ")" };
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  Emails mensuels « votre récompense vous attend »
+//
+//  Déclencheur quotidien GAS sur _dailyRewardCheck :
+//    Apps Script → Déclencheurs → + Ajouter
+//    Fonction : _dailyRewardCheck — Source : Horaire — Daily — ~9h-10h
+//
+//  Le 1er du mois  → envoi à TOUS les clients de chaque resto actif
+//  Le 15 du mois   → rappel aux clients qui n'ont PAS encore utilisé
+//                    leur récompense ce mois-ci
+//
+//  ⚠️ Brevo plan gratuit = 300 emails/jour. Au-delà, passer en payant.
+// ═══════════════════════════════════════════════════════════════
+
+var FV_REWARD_MAX_PER_RUN = 250; // garde-fou sous la limite Brevo gratuite
+
+/** Point d'entrée du trigger quotidien. */
+function _dailyRewardCheck() {
+  var day = new Date().getDate();
+  if (day === 1)  return _sendMonthlyRewardEmails({ reminder: false });
+  if (day === 15) return _sendMonthlyRewardEmails({ reminder: true });
+  Logger.log("_dailyRewardCheck: jour " + day + " — rien à envoyer.");
+  return { ok: true, skipped: "not a send day", day: day };
+}
+
+/** Récupère les clients d'un resto via la RPC SECURITY DEFINER. */
+function _fvClientsForReward(slug, onlyPending) {
+  var SUPA_URL = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+  var SUPA_KEY = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
+  try {
+    var res = UrlFetchApp.fetch(SUPA_URL + "/rest/v1/rpc/fv_clients_for_reward", {
+      method:  "post",
+      headers: { "apikey": SUPA_KEY, "Authorization": "Bearer " + SUPA_KEY, "Content-Type": "application/json" },
+      payload: JSON.stringify({ p_slug: slug, p_only_pending: !!onlyPending, p_secret: "fv_gas_provision_2025" }),
+      muteHttpExceptions: true
+    });
+    if (res.getResponseCode() !== 200) {
+      Logger.log("_fvClientsForReward " + slug + " HTTP " + res.getResponseCode() + " : " + res.getContentText().slice(0, 200));
+      return [];
+    }
+    var arr = JSON.parse(res.getContentText());
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) {
+    Logger.log("_fvClientsForReward " + slug + " exception : " + e.message);
+    return [];
+  }
+}
+
+/**
+ * _sendMonthlyRewardEmails(opts)
+ *   opts.reminder  — true = rappel mi-mois (clients sans récompense utilisée)
+ *   opts.onlySlug  — limiter à un seul resto (test)
+ *   opts.testEmail — n'envoyer qu'à cette adresse (test, sans dédup)
+ */
+function _sendMonthlyRewardEmails(opts) {
+  opts = opts || {};
+  var isReminder = !!opts.reminder;
+  var onlySlug   = opts.onlySlug ? String(opts.onlySlug).toLowerCase() : null;
+  var testEmail  = opts.testEmail || null;
+  var phase      = isReminder ? "reminder" : "main";
+  var monthKey   = Utilities.formatDate(new Date(), "Europe/Paris", "yyyy-MM");
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN manquant" };
+  var headers = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+
+  // Lire le registre
+  var listUrl = "https://api.github.com/repos/" + repo + "/contents/data/restaurants.json?ref=main";
+  var listRes = UrlFetchApp.fetch(listUrl, { headers: headers, muteHttpExceptions: true });
+  if (listRes.getResponseCode() !== 200) return { error: "registre illisible" };
+  var registry;
+  try {
+    registry = JSON.parse(Utilities.newBlob(Utilities.base64Decode(JSON.parse(listRes.getContentText()).content.replace(/\n/g, ""))).getDataAsString());
+  } catch (e) { return { error: "registre invalide" }; }
+
+  var slugs = onlySlug ? [onlySlug] : Object.keys(registry);
+  var sentTotal = 0, restos = 0, skipped = 0, details = [];
+
+  for (var i = 0; i < slugs.length && sentTotal < FV_REWARD_MAX_PER_RUN; i++) {
+    var slug = slugs[i];
+    try {
+      // Lire config.json
+      var cfgUrl = "https://api.github.com/repos/" + repo + "/contents/" + slug + "/config.json?ref=main";
+      var cfgRes = UrlFetchApp.fetch(cfgUrl, { headers: headers, muteHttpExceptions: true });
+      if (cfgRes.getResponseCode() !== 200) { skipped++; continue; }
+      var cfgFile = JSON.parse(cfgRes.getContentText());
+      var cfgSha  = cfgFile.sha;
+      var cfg;
+      try {
+        cfg = JSON.parse(Utilities.newBlob(Utilities.base64Decode(cfgFile.content.replace(/\n/g, ""))).getDataAsString());
+      } catch (e) { skipped++; continue; }
+
+      // Resto actif uniquement (sauf test ciblé)
+      if (!testEmail && cfg.subscriptionStatus !== "active") { skipped++; continue; }
+
+      // Dédup mensuelle par phase
+      var dedupKey = monthKey + "-" + phase;
+      var sentArr  = cfg.rewardEmailsSent || [];
+      if (!testEmail && sentArr.indexOf(dedupKey) !== -1) { skipped++; continue; }
+
+      // Contenu = offre active
+      var coupon    = cfg.activeCoupon || {};
+      var offerTtl  = (coupon.title || "").trim() || "Votre récompense du mois";
+      var offerImg  = (coupon.imageUrl || cfg.heroUrl || "").trim();
+      var restoName = cfg.name || slug;
+      var walletUrl = "https://app.cartefidelavis.com/" + slug + "/";
+
+      // Destinataires
+      var clients = testEmail
+        ? [{ email: testEmail, first_name: "" }]
+        : _fvClientsForReward(slug, isReminder);
+      if (!clients.length) { skipped++; continue; }
+
+      var sentResto = 0;
+      for (var c = 0; c < clients.length && sentTotal < FV_REWARD_MAX_PER_RUN; c++) {
+        var cl = clients[c];
+        if (!cl || !cl.email) continue;
+        var subject = isReminder
+          ? "⏳ Votre récompense vous attend encore chez " + restoName
+          : "🎁 Votre récompense du mois vous attend chez " + restoName;
+        var html = _rewardEmailHtml(cl.first_name, restoName, offerTtl, offerImg, walletUrl, isReminder, cfg.color);
+        var text = (cl.first_name ? "Bonjour " + cl.first_name + ",\n\n" : "Bonjour,\n\n") +
+                   "Ce mois-ci chez " + restoName + " : " + offerTtl + ".\n" +
+                   "Présentez votre carte en caisse pour en profiter.\n\n" + walletUrl;
+        var r = _sendEmailFromProxy(cl.email, subject, html, text);
+        if (r && r.ok) { sentResto++; sentTotal++; }
+      }
+
+      if (!testEmail && sentResto > 0) {
+        sentArr.push(dedupKey);
+        cfg.rewardEmailsSent = sentArr;
+        try { _saveConfigJson(token, repo, slug, cfg, cfgSha, "rewards: envoi mensuel " + dedupKey + " (" + sentResto + ")"); } catch (e) {}
+      }
+      if (sentResto > 0) { restos++; details.push(slug + ":" + sentResto); }
+    } catch (err) {
+      Logger.log("_sendMonthlyRewardEmails " + slug + " : " + err.message);
+    }
+  }
+
+  Logger.log("_sendMonthlyRewardEmails [" + phase + "] " + sentTotal + " emails, " + restos + " restos.");
+  return { ok: true, phase: phase, monthKey: monthKey, sent: sentTotal, restos: restos, skipped: skipped, details: details };
+}
+
+/** Gabarit HTML de l'email de récompense mensuelle. */
+function _rewardEmailHtml(firstName, restoName, offerTitle, offerImg, walletUrl, isReminder, brand) {
+  var accent  = brand || "#B8924F";
+  var hello   = firstName ? ("Bonjour " + firstName + ",") : "Bonjour,";
+  var lead    = isReminder
+    ? "Petit rappel : votre récompense de ce mois-ci n'attend que vous chez <strong>" + restoName + "</strong>."
+    : "Bonne nouvelle ! Une nouvelle récompense vous attend ce mois-ci chez <strong>" + restoName + "</strong>.";
+  var imgHtml = offerImg
+    ? '<img src="' + offerImg + '" alt="" style="width:100%;max-width:480px;border-radius:14px;margin:18px 0;display:block">'
+    : "";
+  return '' +
+    '<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:auto;color:#2A1A0E">' +
+      '<h2 style="margin:0 0 10px">' + hello + '</h2>' +
+      '<p style="font-size:15px;line-height:1.5">' + lead + '</p>' +
+      imgHtml +
+      '<p style="font-size:18px;font-weight:700;color:' + accent + ';margin:6px 0 4px">🎁 ' + offerTitle + '</p>' +
+      '<p style="font-size:14px;color:#6b5a48">Présentez votre carte en caisse pour en profiter.</p>' +
+      '<p style="text-align:center;margin:26px 0">' +
+        '<a href="' + walletUrl + '" style="background:' + accent + ';color:#fff;padding:14px 30px;border-radius:10px;text-decoration:none;font-weight:700;display:inline-block">Voir ma récompense</a>' +
+      '</p>' +
+      '<p style="font-size:12px;color:#9a8a78">Vous recevez cet email car vous êtes membre du programme de fidélité de ' + restoName + '.</p>' +
+    '</div>';
 }
 
 // ─── Email d'invitation restaurateur (création de mot de passe) ───
