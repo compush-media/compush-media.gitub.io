@@ -882,6 +882,13 @@ function couponKey(){ return 'coupon_'+RESTO+'_'+ACTIVE_YEAR+'_'+ACTIVE_MONTH; }
 function reviewKey(){ return 'review_'+RESTO+'_'+ACTIVE_YEAR+'_'+ACTIVE_MONTH; }
 
 /* Emoji de repli pour la photo d'offre (jamais le hero) selon l'intitulé */
+/* Résout l'image d'offre du calendrier : URL complète OU offre-N.jpg */
+function resolveOffreImg(v){
+  v=(v||'').trim(); if(!v) return '';
+  if(/^https?:\/\//.test(v)) return v;
+  if(/^offre-\d+\.jpg$/i.test(v)) return 'https://app.cartefidelavis.com/assets/offres/'+v.toLowerCase();
+  return '';
+}
 function offerEmoji(t){
   t=(t||'').toLowerCase();
   if(/dessert|g[âa]teau|p[âa]tiss|tarte|brownie/.test(t)) return '🍰';
@@ -1014,17 +1021,20 @@ function startTimer(){
   var badge=cat.includes('coffee')?'Coffee Lover':cat.includes('gastro')?'Gourmet Club':'Brunch Lover';
   document.getElementById('pBadge').textContent=badge;
 
-  /* Offer */
+  /* Offer — calendrier mensuel : offre du mois en cours si défini, sinon activeCoupon */
   var coupon=_cfg.activeCoupon||{};
-  if(coupon.title){
-    document.getElementById('offerTtl').textContent=coupon.title.replace(/offert[e]?/gi,'').trim()||coupon.title;
+  var mo=(Array.isArray(_cfg.monthlyOffers)?_cfg.monthlyOffers[new Date().getMonth()]:null)||null;
+  var offTitle=(mo && mo.title) ? mo.title : (coupon.title||'');
+  var offImg  =(mo && mo.image) ? resolveOffreImg(mo.image) : (coupon.imageUrl||'');
+  if(offTitle){
+    document.getElementById('offerTtl').textContent=offTitle.replace(/offert[e]?/gi,'').trim()||offTitle;
   }
   /* Photo de l'offre : image DÉDIÉE uniquement (jamais le hero) */
   var op=document.getElementById('offerPhoto');
-  var emj=offerEmoji(coupon.title||'');
+  var emj=offerEmoji(offTitle||'');
   op.textContent=emj;
-  if(coupon.imageUrl){
-    op.innerHTML='<img src="'+coupon.imageUrl+'" alt="offre" onerror="this.parentNode.textContent=\''+emj+'\'">';
+  if(offImg){
+    op.innerHTML='<img src="'+offImg+'" alt="offre" onerror="this.parentNode.textContent=\''+emj+'\'">';
   }
 
   /* PIN — saisie + verrou mensuel */

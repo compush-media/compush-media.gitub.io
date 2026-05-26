@@ -864,6 +864,20 @@
       ⏱️ Après enregistrement, le coupon est mis à jour sur GitHub Pages en ~1 minute.
     </p>
   </div>
+
+  <!-- Calendrier d'offres (12 mois, auto) -->
+  <div class="card admin-only" style="margin-top:24px;">
+    <div class="card-title"><span class="card-title-icon">📅</span> Calendrier d'offres (automatique)</div>
+    <p style="font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.6;">
+      Définissez une offre par mois : le wallet affiche <strong>automatiquement</strong> celle du mois en cours.
+      Laissez une ligne vide pour utiliser le « coupon du mois » ci-dessus à la place.
+    </p>
+    <div id="monthlyOffersEditor" style="display:flex;flex-direction:column;gap:8px;"></div>
+    <button class="btn btn-brand" id="saveMonthlyBtn" type="button" onclick="saveMonthlyOffersAdmin()" style="margin-top:16px;">
+      📅 Enregistrer le calendrier
+    </button>
+    <div class="notif-msg" id="monthlyFeedback" style="margin-top:12px;"></div>
+  </div>
   </div>
 
   <!-- ═══════════════════════════ NOTIFICATIONS ═══════════════════════════ -->
@@ -2143,6 +2157,7 @@ let _couponEditLoaded = false;
 
 async function loadCouponEditForm() {
   loadOffreGallery();
+  loadMonthlyOffers();
   if (_couponEditLoaded) return;
   _couponEditLoaded = true;
   const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
@@ -2172,6 +2187,46 @@ async function loadCouponEditForm() {
     const monthSel = document.getElementById('couponEditMonth');
     if (monthSel) monthSel.value = months[new Date().getMonth()];
   }
+}
+
+// Calendrier d'offres (12 mois) — affiché automatiquement selon le mois courant
+const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+let _monthlyLoaded = false;
+async function loadMonthlyOffers() {
+  const wrap = document.getElementById('monthlyOffersEditor');
+  if (!wrap || _monthlyLoaded) return;
+  _monthlyLoaded = true;
+  let offs = [];
+  try { offs = await (await fetch('/assets/offres/offres.json', { cache: 'no-store' })).json(); } catch(_) {}
+  let existing = [];
+  try { const c = await (await fetch(`/${SITE}/config.json`, { cache: 'no-store' })).json(); existing = Array.isArray(c.monthlyOffers) ? c.monthlyOffers : []; } catch(_) {}
+  const cur = new Date().getMonth();
+  wrap.innerHTML = MONTHS_FR.map((m, i) => {
+    const e = existing[i] || {};
+    const optsSel = `<option value="">— icône / aucune —</option>` + offs.map(o => `<option value="${o.file}"${o.file === (e.image||'') ? ' selected' : ''}>${o.label}</option>`).join('');
+    const hot = i === cur;
+    return `<div style="display:flex;gap:8px;align-items:center;${hot?'background:rgba(200,151,58,.12);border-radius:8px;padding:5px;':'padding:0 5px;'}">
+      <span style="width:80px;flex-shrink:0;font-size:12.5px;font-weight:700;color:${hot?'var(--brand)':'var(--muted)'}">${m}${hot?' •':''}</span>
+      <input class="form-input mo-title" data-i="${i}" maxlength="40" placeholder="Titre de l'offre" value="${(e.title||'').replace(/"/g,'&quot;')}" style="flex:1;margin:0;padding:7px 10px;font-size:13px;">
+      <select class="form-input mo-img" data-i="${i}" style="width:140px;margin:0;padding:7px 8px;font-size:12px;">${optsSel}</select>
+    </div>`;
+  }).join('');
+}
+async function saveMonthlyOffersAdmin() {
+  const fb = document.getElementById('monthlyFeedback');
+  const btn = document.getElementById('saveMonthlyBtn');
+  const titles = document.querySelectorAll('#monthlyOffersEditor .mo-title');
+  const imgs   = document.querySelectorAll('#monthlyOffersEditor .mo-img');
+  const offers = [];
+  for (let i = 0; i < 12; i++) offers.push({ title: (titles[i]?.value || '').trim(), image: (imgs[i]?.value || '') });
+  btn.disabled = true; btn.textContent = '⏳ Enregistrement…'; fb.className = 'notif-msg';
+  try {
+    const url = `${API}?action=save_monthly_offers&resto=${encodeURIComponent(SITE)}&offers=${encodeURIComponent(JSON.stringify(offers))}`;
+    const data = await (await fetch(url, { cache: 'no-store' })).json();
+    if (data?.ok) { fb.className = 'notif-msg success'; fb.textContent = '✅ Calendrier enregistré ! Visible dans ~1 minute.'; }
+    else { fb.className = 'notif-msg error'; fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue'); }
+  } catch(e) { fb.className = 'notif-msg error'; fb.textContent = '⚠️ ' + (e?.message || 'Erreur réseau'); }
+  btn.disabled = false; btn.textContent = '📅 Enregistrer le calendrier';
 }
 
 // Galerie de photos d'offre prêtes à l'emploi (assets/offres/offres.json)

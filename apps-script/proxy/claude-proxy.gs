@@ -110,6 +110,7 @@ function doGet(e) {
         case "analyze_website":    result = analyzeWebsite(e.parameter); break;
         case "save_offre_jour":    result = saveOffreJour(e.parameter); break;
         case "save_coupon_mois":   result = saveCouponMois(e.parameter); break;
+        case "save_monthly_offers": result = saveMonthlyOffers(e.parameter); break;
         case "save_design":        result = saveDesign(e.parameter); break;
         default: result = { error: "Action GET inconnue : " + e.parameter.action };
       }
@@ -2271,6 +2272,49 @@ function saveCouponMois(params) {
     return { error: "Erreur GitHub " + putCode + " : " + putRes.getContentText().slice(0, 200) };
   }
   return { ok: true, resto: resto, activeCoupon: cfg.activeCoupon };
+}
+
+// ─── Calendrier d'offres : 12 offres (une par mois) dans config.monthlyOffers ───
+function saveMonthlyOffers(params) {
+  var resto = (params.resto || "").trim().toLowerCase();
+  var raw   = params.offers || "";
+  if (!resto) return { error: "Paramètre resto manquant." };
+  if (!raw)   return { error: "Paramètre offers manquant." };
+  var offers;
+  try { offers = JSON.parse(raw); } catch(e) { return { error: "offers JSON invalide : " + e.message }; }
+  if (!(offers instanceof Array)) return { error: "offers doit être un tableau" };
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO") || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré." };
+
+  var configPath = resto + "/config.json";
+  var apiUrl  = "https://api.github.com/repos/" + repo + "/contents/" + configPath + "?ref=main";
+  var headers = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+  var getRes  = UrlFetchApp.fetch(apiUrl, { headers: headers, muteHttpExceptions: true });
+  if (getRes.getResponseCode() !== 200) return { error: "config.json introuvable : " + resto };
+  var fileData = JSON.parse(getRes.getContentText());
+  var cfg;
+  try { cfg = JSON.parse(Utilities.newBlob(Utilities.base64Decode(fileData.content.replace(/\n/g,""))).getDataAsString()); }
+  catch(e) { return { error: "config.json illisible : " + e.message }; }
+
+  var clean = [];
+  for (var i = 0; i < 12; i++) {
+    var o = offers[i] || {};
+    clean.push({ title: (o.title || "").toString().slice(0, 60), image: (o.image || "").toString().slice(0, 300) });
+  }
+  cfg.monthlyOffers = clean;
+
+  var b64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(cfg, null, 2) + "\n").getBytes());
+  var putRes = UrlFetchApp.fetch("https://api.github.com/repos/" + repo + "/contents/" + configPath, {
+    method:             "put",
+    headers:            { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload:            JSON.stringify({ message: "coupon: calendrier d'offres pour " + resto, content: b64, sha: fileData.sha }),
+    muteHttpExceptions: true
+  });
+  var code = putRes.getResponseCode();
+  if (code !== 200 && code !== 201) return { error: "Erreur GitHub " + code + " : " + putRes.getContentText().slice(0, 200) };
+  return { ok: true, resto: resto, count: clean.length };
 }
 
 // ─── Constructeur de réponse HTTP ────────────────────────────
