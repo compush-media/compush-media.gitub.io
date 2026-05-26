@@ -83,6 +83,9 @@ function doPost(e) {
       case "send_activation":
         result = sendActivationInvite(body);
         break;
+      case "brevo_diag":
+        result = brevoDiag(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -2044,6 +2047,72 @@ function _sendEmailFromProxy(to, subject, html, text) {
     Logger.log("_sendEmailFromProxy MailApp error : " + e.message);
     return { ok: false, error: (brevoNote ? brevoNote + " | " : "") + "MailApp: " + e.message };
   }
+}
+
+/**
+ * brevoDiag(params)
+ * Diagnostic de délivrabilité Brevo : compte, expéditeurs vérifiés,
+ * et journal d'événements pour un destinataire (delivered / blocked / spam / bounce...).
+ * Paramètre : email (destinataire à inspecter)
+ */
+function brevoDiag(params) {
+  var apiKey = PropertiesService.getScriptProperties().getProperty("BREVO_API_KEY");
+  var sender = PropertiesService.getScriptProperties().getProperty("BREVO_SENDER") || "support@fidelavis.com";
+  if (!apiKey) return { error: "BREVO_API_KEY absente dans les propriétés du script" };
+  var email = (params.email || "").trim();
+  var headers = { "api-key": apiKey, "accept": "application/json" };
+  var out = { sender: sender };
+
+  function call(url) {
+    try {
+      var r = UrlFetchApp.fetch(url, { method: "get", headers: headers, muteHttpExceptions: true });
+      var code = r.getResponseCode();
+      var txt = r.getContentText();
+      try { return { code: code, data: JSON.parse(txt) }; }
+      catch (e) { return { code: code, raw: txt.slice(0, 400) }; }
+    } catch (e) { return { error: e.message }; }
+  }
+
+  // 1) Compte (confirme que la clé est valide)
+  var acc = call("https://api.brevo.com/v3/account");
+  out.account = acc.code === 200
+    ? { ok: true, email: acc.data && acc.data.email, plan: acc.data && acc.data.plan }
+    : acc;
+
+  // 2) Expéditeurs (le sender est-il vérifié ?)
+  var snd = call("https://api.brevo.com/v3/senders");
+  if (snd.data && snd.data.senders) {
+    out.senders = snd.data.senders.map(function (s) {
+      return { email: s.email, name: s.name, active: s.active };
+    });
+    var match = out.senders.filter(function (s) { return (s.email || "").toLowerCase() === sender.toLowerCase(); })[0];
+    out.senderVerified = match ? !!match.active : false;
+    out.senderFound = !!match;
+  } else {
+    out.sendersError = snd;
+  }
+
+  // 3) Authentification du domaine (DKIM/SPF)
+  var dom = call("https://api.brevo.com/v3/senders/domains");
+  if (dom.data && dom.data.domains) {
+    out.domains = dom.data.domains.map(function (d) {
+      return { domain: d.domain, authenticated: d.authenticated, verified: d.verified };
+    });
+  }
+
+  // 4) Journal d'événements pour le destinataire
+  if (email) {
+    var ev = call("https://api.brevo.com/v3/smtp/statistics/events?limit=30&email=" + encodeURIComponent(email));
+    if (ev.data && ev.data.events) {
+      out.events = ev.data.events.map(function (e) {
+        return { date: e.date, event: e.event, subject: e.subject, reason: e.reason || "" };
+      });
+    } else {
+      out.eventsRaw = ev;
+    }
+  }
+
+  return out;
 }
 
 // ─── Email d'invitation restaurateur (création de mot de passe) ───
