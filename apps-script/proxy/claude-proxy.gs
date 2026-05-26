@@ -80,6 +80,9 @@ function doPost(e) {
       case "fetch_image":
         result = fetchImage(body);
         break;
+      case "send_activation":
+        result = sendActivationInvite(body);
+        break;
       default:
         result = { error: "Action inconnue : " + action };
     }
@@ -2033,6 +2036,43 @@ function _sendEmailFromProxy(to, subject, html, text) {
     Logger.log("_sendEmailFromProxy MailApp OK → " + to);
   } catch(e) {
     Logger.log("_sendEmailFromProxy MailApp error : " + e.message);
+  }
+}
+
+// ─── Email d'invitation restaurateur (création de mot de passe) ───
+function sendActivationInvite(params) {
+  var email     = (params.email || "").trim();
+  var slug      = (params.slug || "").trim();
+  var restoName = (params.restoName || slug || "votre restaurant").trim();
+  var link      = (params.link || "").trim();
+  var expires   = (params.expires || "").trim();
+  if (!email) return { error: "email manquant" };
+  if (!link)  return { error: "lien manquant" };
+
+  var subject = "Activez votre espace Fidelavis — " + restoName;
+  var html =
+    '<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:auto;color:#2A1A0E">' +
+      '<h2 style="color:#5A6040;margin:0 0 12px">Bienvenue sur Fidelavis 🎉</h2>' +
+      '<p>Bonjour,</p>' +
+      '<p>Votre espace restaurateur pour <strong>' + restoName + '</strong> est prêt. ' +
+      'Cliquez ci-dessous pour <strong>créer votre mot de passe</strong> et accéder à votre tableau de bord.</p>' +
+      '<p style="text-align:center;margin:28px 0">' +
+        '<a href="' + link + '" style="background:#5A6040;color:#ffffff;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;display:inline-block">Créer mon mot de passe</a>' +
+      '</p>' +
+      '<p style="font-size:13px;color:#8A7260">Ce lien est valable 48h' + (expires ? '.' : '.') + '<br>' +
+        'Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :<br>' +
+        '<span style="word-break:break-all;color:#5A6040">' + link + '</span></p>' +
+      '<p style="font-size:13px;color:#8A7260">Une question ? support@fidelavis.com</p>' +
+      '<p style="margin-top:18px">L\'équipe Fidelavis</p>' +
+    '</div>';
+  var text = "Bienvenue sur Fidelavis !\n\nCréez votre mot de passe pour " + restoName + " :\n" + link +
+             "\n\nCe lien est valable 48h.\nUne question ? support@fidelavis.com\n\nL'équipe Fidelavis";
+
+  try {
+    _sendEmailFromProxy(email, subject, html, text);
+    return { ok: true, email: email };
+  } catch (e) {
+    return { error: "envoi: " + e.message };
   }
 }
 

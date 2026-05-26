@@ -3308,29 +3308,39 @@ async function sendActivationEmail() {
     });
     await ghApiD(`/git/refs/heads/${GH_BRANCH_D}`, 'PATCH', { sha: newCommit.sha });
 
-    // 2. Envoyer email via GAS Brevo
-    const gasUrl = regData[slug].brevoGasUrl || (getSettings().gas_reply_url || '');
-    if (gasUrl) {
-      const link = el('activationLinkPreview').textContent;
-      await fetch(gasUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          action: 'sendActivationEmail',
-          email, slug,
-          restoName: r.name || slug,
-          link, expires
-        })
-      }).catch(() => {});
+    // 2. Envoyer l'email via le proxy (Brevo + fallback MailApp) — avec vérification réelle
+    const link = el('activationLinkPreview').textContent;
+    let sent = false, sendErr = 'envoi impossible';
+    for (let attempt = 0; attempt < 3 && !sent; attempt++) {
+      try {
+        const r2 = await fetch(FV_PROXY, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'send_activation', email, slug, restoName: r.name || slug, link, expires })
+        });
+        const d2 = await r2.json();
+        if (d2 && d2.ok) { sent = true; break; }
+        sendErr = (d2 && d2.error) || 'réponse inattendue';
+        break; // erreur métier → pas de retry
+      } catch(e) { sendErr = e.message; await new Promise(rs => setTimeout(rs, 700)); }
     }
 
-    res.style.display    = 'block';
-    res.style.background = 'var(--green-bg)';
-    res.style.color      = 'var(--green)';
-    res.textContent      = `✅ Invitation envoyée à ${email}. Expire le ${new Date(expires).toLocaleString('fr-FR')}.`;
-    btn.textContent      = '✅ Envoyé';
-    addLog('activation.invite', slug, email);
-    toast(`✅ Invitation envoyée à ${email}`, 'success');
+    res.style.display = 'block';
+    if (sent) {
+      res.style.background = 'var(--green-bg)';
+      res.style.color      = 'var(--green)';
+      res.textContent      = `✅ Invitation envoyée à ${email}. Expire le ${new Date(expires).toLocaleString('fr-FR')}.`;
+      btn.textContent      = '✅ Envoyé';
+      addLog('activation.invite', slug, email);
+      toast(`✅ Invitation envoyée à ${email}`, 'success');
+    } else {
+      res.style.background = '#fff7e6';
+      res.style.color      = '#9a6f1e';
+      res.textContent      = `⚠️ Lien créé, mais l'email n'a pas pu être envoyé (${sendErr}). Copiez le lien ci-dessus et transmettez-le au restaurateur.`;
+      btn.disabled         = false;
+      btn.textContent      = '📧 Réessayer l\'envoi';
+      toast('⚠️ Email non envoyé — lien à transmettre manuellement', 'error');
+    }
   } catch(e) {
     res.style.display    = 'block';
     res.style.background = 'var(--red-bg)';
