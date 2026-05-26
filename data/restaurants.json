@@ -77,11 +77,10 @@
     "nom_gerant": "Nada Tozri",
     "statut_commercial": "",
     "ambassadorCode": "",
-    "acces_statut": "invite_envoye",
+    "acces_statut": "active",
     "date_creation": "2026-05-25",
     "walletTemplate": "templates/brunch-resto",
-    "invite_token": "fvt_0nq172bh2vvk83nd",
-    "invite_expires": "2026-05-28T16:19:54.032Z"
+    "date_activation": "2026-05-26T18:06:50.968Z"
   },
   "deux-restaurant-bistrot-de-chefs": {
     "name": "Deux Restaurant : Bistrot de chefs",
