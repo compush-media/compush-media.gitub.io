@@ -541,6 +541,9 @@
   <a class="tab-btn admin-only" href="billing.html" id="linkBilling">
     <span class="tab-icon">💳</span> Compte
   </a>
+  <button class="tab-btn admin-only" data-tab="clients">
+    <span class="tab-icon">📇</span> Mes clients
+  </button>
   <button class="tab-btn admin-only" data-tab="parametres">
     <span class="tab-icon">⚙️</span> Paramètres
   </button>
@@ -1192,6 +1195,60 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════ MES CLIENTS ═══════════════════════════ -->
+  <div id="clients" class="tab-panel">
+    <div class="section-title">Mes clients</div>
+    <div class="section-sub">Les membres inscrits au programme de fidélité de votre établissement.</div>
+
+    <!-- Étape 1 : Authentification admin (cachée 30 min, partagée avec l'équipe) -->
+    <div class="card" id="clientsAuthStep">
+      <div style="background:var(--brand-light);border:1px solid var(--brand-border);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;">
+        🔒 Vos clients sont des données personnelles. Confirmez votre mot de passe administrateur pour y accéder.
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="clientsAdminPwd">Votre mot de passe admin</label>
+        <input class="form-input" id="clientsAdminPwd" type="password" autocomplete="current-password" placeholder="••••••••" />
+      </div>
+      <button class="btn btn-brand" type="button" onclick="clientsAuth()">🔓 Afficher mes clients</button>
+      <div class="notif-msg" id="clientsAuthFeedback" style="margin-top:12px;"></div>
+    </div>
+
+    <!-- Étape 2 : Liste + export (révélée après auth) -->
+    <div class="card" id="clientsMainStep" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+        <div class="card-title" style="margin:0;"><span class="card-title-icon">📇</span> <span id="clientsCount">—</span></div>
+        <button class="btn btn-brand" type="button" onclick="clientsExportCSV()" id="clientsExportBtn">⬇️ Exporter CSV</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="fv-table" id="clientsTable" style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="text-align:left;border-bottom:2px solid var(--line);color:var(--muted);">
+              <th style="padding:8px 10px;">Prénom</th>
+              <th style="padding:8px 10px;">Email</th>
+              <th style="padding:8px 10px;">Inscrit le</th>
+              <th style="padding:8px 10px;text-align:center;">Coupons utilisés</th>
+              <th style="padding:8px 10px;">Dernière récompense</th>
+              <th style="padding:8px 10px;">Consentement email</th>
+              <th style="padding:8px 10px;"></th>
+            </tr>
+          </thead>
+          <tbody id="clientsBody">
+            <tr><td colspan="7" style="padding:14px;color:var(--muted);">⏳ Chargement…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:11.5px;color:var(--muted);margin-top:12px;line-height:1.5;">
+        🔐 Conformité RGPD : seules les données nécessaires au programme de fidélité sont affichées.
+        La date de consentement est conservée comme preuve. La désinscription stoppe les emails sans
+        effacer cette preuve ; la suppression définitive (droit à l'effacement) retire toutes les données du client.
+      </div>
+      <div style="margin-top:12px;">
+        <a href="#" onclick="clientsLogout();return false;" style="font-size:12px;color:var(--muted);text-decoration:underline;">🔐 Verrouiller l'accès aux clients</a>
+      </div>
+      <div class="notif-msg" id="clientsFeedback" style="margin-top:12px;"></div>
+    </div>
+  </div>
+
   <!-- ═══════════════════════════ OFFRE DU JOUR ═══════════════════════════ -->
   <div id="offre" class="tab-panel">
     <div class="section-title">🔥 Offre du jour</div>
@@ -1444,7 +1501,7 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 //  NAVIGATION PAR HASH
 // ═══════════════════════════════════════════════════════════════
 
-const INLINE_TABS = ['dashboard', 'coupon', 'notifications', 'parametres', 'offre', 'revenus'];
+const INLINE_TABS = ['dashboard', 'coupon', 'notifications', 'clients', 'parametres', 'offre', 'revenus'];
 let kpisLoaded = false;
 let pinInterval = null;   // ⚠️ doit être déclaré AVANT initFromHash() (qui appelle loadDashboard)
 
@@ -1452,6 +1509,7 @@ function switchTab(tabId) {
   if (!INLINE_TABS.includes(tabId)) return;
   if (tabId === 'dashboard'     && ROLE !== 'admin') return;
   if (tabId === 'notifications' && ROLE !== 'admin') return;
+  if (tabId === 'clients'       && ROLE !== 'admin') return;
   if (tabId === 'parametres'    && ROLE !== 'admin') return;
   if (tabId === 'offre'         && ROLE !== 'admin') return;
   if (tabId === 'revenus'       && ROLE !== 'admin') return;
@@ -1469,6 +1527,7 @@ function switchTab(tabId) {
   if (tabId === 'dashboard')     loadDashboard();
   if (tabId === 'coupon')        initCoupon();
   if (tabId === 'notifications') loadPWACount();
+  if (tabId === 'clients')       loadClients();
   if (tabId === 'parametres')    loadParametres();
   if (tabId === 'offre')         loadOffre();
   if (tabId === 'revenus')       loadRevenus(false);
@@ -3139,6 +3198,140 @@ function teamLogout() {
   document.getElementById('teamAuthStep').style.display = '';
   document.getElementById('teamMainStep').style.display = 'none';
   const fb = document.getElementById('teamAuthFeedback');
+  if (fb) fb.className = 'notif-msg';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MES CLIENTS — liste + export CSV + désinscription (RGPD)
+//  Réservé à l'admin du resto connecté (mot de passe vérifié côté serveur,
+//  partagé avec la gestion d'équipe via _teamAdminPwd / teamCachedPwd).
+// ═══════════════════════════════════════════════════════════════
+let _clientsData = [];
+
+function loadClients() {
+  const pwd = teamCachedPwd();
+  if (pwd) {
+    document.getElementById('clientsAuthStep').style.display = 'none';
+    document.getElementById('clientsMainStep').style.display = '';
+    clientsReload();
+  } else {
+    document.getElementById('clientsAuthStep').style.display = '';
+    document.getElementById('clientsMainStep').style.display = 'none';
+  }
+}
+
+async function clientsAuth() {
+  const pwd = document.getElementById('clientsAdminPwd').value.trim();
+  const fb  = document.getElementById('clientsAuthFeedback');
+  if (pwd.length < 6) { fb.textContent = '⚠️ Mot de passe trop court.'; fb.className = 'notif-msg error'; return; }
+  fb.className = 'notif-msg'; fb.textContent = '⏳ Vérification…';
+  try {
+    const j = await teamSupaCall('fv_admin_list_clients', { p_slug: SITE, p_admin_password: pwd });
+    if (j && j.ok) {
+      _teamAdminPwd = pwd; _teamAuthExpiry = Date.now() + TEAM_AUTH_TTL;
+      document.getElementById('clientsAdminPwd').value = '';
+      document.getElementById('clientsAuthStep').style.display = 'none';
+      document.getElementById('clientsMainStep').style.display = '';
+      clientsRender(j.clients || []);
+    } else if (j && j.error === 'auth') {
+      fb.textContent = '✗ Mot de passe incorrect.'; fb.className = 'notif-msg error';
+    } else {
+      fb.textContent = '⚠️ Erreur ' + (j?.error || 'inconnue'); fb.className = 'notif-msg error';
+    }
+  } catch(e) {
+    fb.textContent = '⚠️ Erreur réseau — réessayez.'; fb.className = 'notif-msg error';
+  }
+}
+
+async function clientsReload() {
+  const pwd = teamCachedPwd();
+  if (!pwd) return clientsLogout();
+  try {
+    const j = await teamSupaCall('fv_admin_list_clients', { p_slug: SITE, p_admin_password: pwd });
+    if (j && j.ok) clientsRender(j.clients || []);
+    else clientsLogout();
+  } catch(_) {}
+}
+
+function _esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function _fmtDate(d) { return d ? new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' }) : '—'; }
+
+function clientsRender(list) {
+  _clientsData = list || [];
+  document.getElementById('clientsCount').textContent =
+    _clientsData.length + ' client' + (_clientsData.length > 1 ? 's' : '');
+  const body = document.getElementById('clientsBody');
+  document.getElementById('clientsExportBtn').disabled = _clientsData.length === 0;
+  if (!_clientsData.length) {
+    body.innerHTML = '<tr><td colspan="7" style="padding:14px;color:var(--muted);">📭 Aucun client inscrit pour le moment.</td></tr>';
+    return;
+  }
+  body.innerHTML = _clientsData.map(c => {
+    const consent = c.email_consent
+      ? `<span style="color:#1a9e5c;">✅ Opt-in</span><br><span style="font-size:11px;color:var(--muted);">${_fmtDate(c.consent_at)}</span>`
+      : `<span style="color:#d93025;">❌ Désinscrit</span><br><span style="font-size:11px;color:var(--muted);">${_fmtDate(c.unsubscribed_at)}</span>`;
+    const action = c.email_consent
+      ? `<button class="btn-link-danger" type="button" onclick="clientsUnsubscribe('${_esc(c.email)}')" style="background:none;border:none;color:#d93025;cursor:pointer;font-size:12px;text-decoration:underline;">Désinscrire</button>`
+      : `<button class="btn-link-danger" type="button" onclick="clientsDelete('${_esc(c.email)}')" style="background:none;border:none;color:#d93025;cursor:pointer;font-size:12px;text-decoration:underline;">Supprimer (RGPD)</button>`;
+    return `<tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:8px 10px;">${_esc(c.prenom) || '—'}</td>
+      <td style="padding:8px 10px;">${_esc(c.email)}</td>
+      <td style="padding:8px 10px;">${_fmtDate(c.inscrit_le)}</td>
+      <td style="padding:8px 10px;text-align:center;font-weight:700;">${c.coupons_used || 0}</td>
+      <td style="padding:8px 10px;">${_fmtDate(c.last_reward_at)}</td>
+      <td style="padding:8px 10px;">${consent}</td>
+      <td style="padding:8px 10px;">${action}</td>
+    </tr>`;
+  }).join('');
+}
+
+function clientsExportCSV() {
+  if (!_clientsData.length) return;
+  const headers = ['Prénom','Email','Inscrit le','Coupons utilisés','Dernière récompense','Consentement email','Date consentement'];
+  const esc = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const rows = _clientsData.map(c => [
+    c.prenom || '', c.email || '', _fmtDate(c.inscrit_le), c.coupons_used || 0,
+    _fmtDate(c.last_reward_at), c.email_consent ? 'Opt-in' : 'Désinscrit', _fmtDate(c.consent_at)
+  ].map(esc).join(','));
+  const csv = '﻿' + [headers.map(esc).join(','), ...rows].join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'clients_' + SITE + '_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function clientsUnsubscribe(email) {
+  if (!confirm(`Désinscrire ${email} des emails ? Le client ne recevra plus d'emails mais ses données et la preuve de consentement sont conservées.`)) return;
+  const pwd = teamCachedPwd(); if (!pwd) return clientsLogout();
+  const fb = document.getElementById('clientsFeedback');
+  try {
+    const j = await teamSupaCall('fv_admin_unsubscribe_client', { p_slug: SITE, p_admin_password: pwd, p_email: email });
+    if (j && j.ok) { fb.textContent = '✅ Client désinscrit.'; fb.className = 'notif-msg'; clientsReload(); }
+    else if (j && j.error === 'auth') { clientsLogout(); }
+    else { fb.textContent = '⚠️ ' + (j?.error || 'Erreur'); fb.className = 'notif-msg error'; }
+  } catch(_) { fb.textContent = '⚠️ Erreur réseau.'; fb.className = 'notif-msg error'; }
+}
+
+async function clientsDelete(email) {
+  if (!confirm(`SUPPRIMER DÉFINITIVEMENT ${email} ?\n\nDroit à l'effacement (RGPD) : toutes les données de ce client seront retirées. Cette action est irréversible.`)) return;
+  const pwd = teamCachedPwd(); if (!pwd) return clientsLogout();
+  const fb = document.getElementById('clientsFeedback');
+  try {
+    const j = await teamSupaCall('fv_admin_delete_client', { p_slug: SITE, p_admin_password: pwd, p_email: email });
+    if (j && j.ok) { fb.textContent = '✅ Client supprimé définitivement.'; fb.className = 'notif-msg'; clientsReload(); }
+    else if (j && j.error === 'auth') { clientsLogout(); }
+    else { fb.textContent = '⚠️ ' + (j?.error || 'Erreur'); fb.className = 'notif-msg error'; }
+  } catch(_) { fb.textContent = '⚠️ Erreur réseau.'; fb.className = 'notif-msg error'; }
+}
+
+function clientsLogout() {
+  _teamAdminPwd = null; _teamAuthExpiry = 0;
+  document.getElementById('clientsAuthStep').style.display = '';
+  document.getElementById('clientsMainStep').style.display = 'none';
+  const fb = document.getElementById('clientsAuthFeedback');
   if (fb) fb.className = 'notif-msg';
 }
 
