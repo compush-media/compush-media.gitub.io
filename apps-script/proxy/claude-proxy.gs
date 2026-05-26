@@ -1992,16 +1992,18 @@ function _sendAmbassadeurConfirmationEmail(to, ambName, restoName, slug, loginUr
  * Fallback MailApp si Brevo échoue.
  */
 function _sendEmailFromProxy(to, subject, html, text) {
-  if (!to) return;
+  if (!to) return { ok: false, error: "destinataire manquant" };
   var apiKey = PropertiesService.getScriptProperties().getProperty("BREVO_API_KEY");
+  var sender = PropertiesService.getScriptProperties().getProperty("BREVO_SENDER") || "support@fidelavis.com";
+  var brevoNote = "";
 
   if (apiKey) {
     try {
       var res = UrlFetchApp.fetch("https://api.brevo.com/v3/smtp/email", {
         method:             "post",
-        headers:            { "api-key": apiKey, "Content-Type": "application/json" },
+        headers:            { "api-key": apiKey, "Content-Type": "application/json", "accept": "application/json" },
         payload:            JSON.stringify({
-          sender:      { name: "Fidelavis", email: "support@fidelavis.com" },
+          sender:      { name: "Fidelavis", email: sender },
           to:          [{ email: to }],
           subject:     subject,
           htmlContent: html,
@@ -2012,14 +2014,17 @@ function _sendEmailFromProxy(to, subject, html, text) {
       var code = res.getResponseCode();
       if (code >= 200 && code < 300) {
         Logger.log("_sendEmailFromProxy Brevo OK → " + to + " (HTTP " + code + ")");
-        return;
+        return { ok: true, channel: "brevo", code: code };
       }
-      Logger.log("_sendEmailFromProxy Brevo failed (HTTP " + code + ") : " + res.getContentText().slice(0, 300));
+      brevoNote = "Brevo HTTP " + code + " : " + res.getContentText().slice(0, 250);
+      Logger.log("_sendEmailFromProxy " + brevoNote);
     } catch(e) {
-      Logger.log("_sendEmailFromProxy Brevo exception : " + e.message);
+      brevoNote = "Brevo exception : " + e.message;
+      Logger.log("_sendEmailFromProxy " + brevoNote);
     }
   } else {
-    Logger.log("_sendEmailFromProxy : BREVO_API_KEY manquant — fallback MailApp");
+    brevoNote = "BREVO_API_KEY absente";
+    Logger.log("_sendEmailFromProxy : " + brevoNote + " — fallback MailApp");
   }
 
   // Fallback : MailApp (envoie depuis l'email Google du compte GAS)
@@ -2034,8 +2039,10 @@ function _sendEmailFromProxy(to, subject, html, text) {
       replyTo:  "support@fidelavis.com"
     });
     Logger.log("_sendEmailFromProxy MailApp OK → " + to);
+    return { ok: true, channel: "mailapp", brevoNote: brevoNote };
   } catch(e) {
     Logger.log("_sendEmailFromProxy MailApp error : " + e.message);
+    return { ok: false, error: (brevoNote ? brevoNote + " | " : "") + "MailApp: " + e.message };
   }
 }
 
@@ -2069,8 +2076,9 @@ function sendActivationInvite(params) {
              "\n\nCe lien est valable 48h.\nUne question ? support@fidelavis.com\n\nL'équipe Fidelavis";
 
   try {
-    _sendEmailFromProxy(email, subject, html, text);
-    return { ok: true, email: email };
+    var r = _sendEmailFromProxy(email, subject, html, text);
+    if (r && r.ok) return { ok: true, email: email, channel: r.channel, brevoNote: r.brevoNote || "" };
+    return { error: (r && r.error) || "envoi échoué" };
   } catch (e) {
     return { error: "envoi: " + e.message };
   }
