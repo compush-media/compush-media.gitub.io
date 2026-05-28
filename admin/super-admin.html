@@ -1812,8 +1812,9 @@ async function startImport() {
         Object.keys(cfg).forEach(k => cfg[k] === undefined && delete cfg[k]);
         Object.keys(cfg.activeCoupon).forEach(k => cfg.activeCoupon[k] === undefined && delete cfg.activeCoupon[k]);
 
-        // index.html (wallet brunch) + config.json — toujours
-        newTreeItems.push({ path: `${slug}/index.html`, mode: '100644', type: 'blob', sha: brunchIdxSha });
+        // index.html (wallet brunch) + démo + config.json — toujours
+        newTreeItems.push({ path: `${slug}/index.html`,      mode: '100644', type: 'blob', sha: brunchIdxSha });
+        newTreeItems.push({ path: `${slug}/demo/index.html`, mode: '100644', type: 'blob', sha: brunchIdxSha });
         const cfgBlob = await ghData('/git/blobs', 'POST', { content: JSON.stringify(cfg, null, 2) + '\n', encoding: 'utf-8' });
         newTreeItems.push({ path: `${slug}/config.json`, mode: '100644', type: 'blob', sha: cfgBlob.sha });
 

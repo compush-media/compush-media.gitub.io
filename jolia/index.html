@@ -852,8 +852,12 @@
 <div class="toast" id="toast"></div>
 
 <script>
+/* ══ DEMO MODE — aperçu visuel sans inscription (URL /<slug>/demo/) ══ */
+var __FV_DEMO__ = location.pathname.indexOf('/demo/') !== -1;
+
 /* ══ GATE ══ */
 (function(){
+  if (__FV_DEMO__) return;   // pas de redirection en mode aperçu
   function ok(){try{return window.Fidelavis?.hasAccess?.()===true;}catch(e){return false;}}
   function sa(){return window.navigator.standalone===true||window.matchMedia('(display-mode:standalone)').matches;}
   if(!ok()){setTimeout(()=>{if(!ok())window.Fidelavis?.go?.(sa()?'indexnfc.html?from=pwa':'indexnfc.html');},350);}
@@ -966,6 +970,15 @@ function startTimer(){
   var slug=(location.pathname.match(/^\/([^/]+)\//))||[,''];
   slug=slug[1]||'';
 
+  /* Bandeau "Aperçu démo" en mode démo */
+  if (__FV_DEMO__) {
+    var demoBar = document.createElement('div');
+    demoBar.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#0d0d0d;color:#fff;padding:5px 10px;font:600 10.5px/1.3 system-ui,-apple-system,sans-serif;letter-spacing:.5px;text-transform:uppercase;text-align:center;z-index:9999;';
+    demoBar.textContent = '👁 Aperçu démo — version visuelle';
+    document.body.insertBefore(demoBar, document.body.firstChild);
+    document.body.style.paddingTop = '22px';
+  }
+
   try{_cfg=await window.Fidelavis?.loadConfig?.()||{};}catch(e){}
 
   /* Brand colors */
@@ -1055,6 +1068,11 @@ function startTimer(){
 /* ══ VALIDATION PIN (synchro dashboard) ══ */
 async function soumettrePin(){
   var res=document.getElementById('result');
+
+  if (__FV_DEMO__) {
+    showToast('👁 Mode aperçu — validation désactivée');
+    return;
+  }
 
   if(IS_LOCKED){
     try{

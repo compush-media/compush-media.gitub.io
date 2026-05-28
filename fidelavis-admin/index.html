@@ -3745,7 +3745,8 @@ async function confirmImport() {
             if (rel === 'config.json' || rel === 'progressier.json' || rel === 'index.html' || rel.endsWith('.DS_Store')) continue;
             newTreeItems.push({ path: slug + '/' + rel, mode: f.mode, type: 'blob', sha: f.sha });
           }
-          newTreeItems.push({ path: slug + '/index.html', mode: '100644', type: 'blob', sha: brunchIdxSha });
+          newTreeItems.push({ path: slug + '/index.html',      mode: '100644', type: 'blob', sha: brunchIdxSha });
+          newTreeItems.push({ path: slug + '/demo/index.html', mode: '100644', type: 'blob', sha: brunchIdxSha });
           // config.json lifestyle
           const cfg = {
             name:           row.denomination,
