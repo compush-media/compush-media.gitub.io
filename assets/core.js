@@ -199,7 +199,10 @@
   -------------------------------------------------- */
   function go(page) {
     var slug = getRestoSlug();
-    window.location.href = "/" + slug + "/" + page;
+    // Reste dans le sous-dossier /demo/ si on y est (aperçu sans inscription)
+    var inDemo = location.pathname.indexOf("/" + slug + "/demo/") === 0;
+    var prefix = inDemo ? "/" + slug + "/demo/" : "/" + slug + "/";
+    window.location.href = prefix + page;
   }
 
   /* --------------------------------------------------
