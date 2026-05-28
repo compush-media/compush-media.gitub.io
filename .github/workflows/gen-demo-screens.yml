@@ -55,20 +55,22 @@ jobs:
           playwright install --with-deps chromium
 
       - name: Attendre que GitHub Pages publie le nouveau contenu
-        # Polling de la page démo jusqu'à ce qu'elle contienne le marqueur __FV_DEMO__
-        # (présent uniquement dans la version à jour du template). Max ~4 min.
+        # Compare le hash de la page démo en ligne avec celui du repo : on ne
+        # capture que quand Pages sert vraiment la version de ce commit. Max ~6 min.
         run: |
-          echo "Attente du déploiement Pages (jusqu'à 4 min)…"
-          for i in $(seq 1 24); do
-            body="$(curl -fsSL https://app.cartefidelavis.com/jolia/demo/ 2>/dev/null || true)"
-            if echo "$body" | grep -q '__FV_DEMO__'; then
-              echo "✓ Pages publiée (après ${i} tentatives)"
-              sleep 12   # marge supplémentaire pour le cache CDN
+          target="$(md5sum jolia/demo/index.html | cut -d' ' -f1)"
+          echo "Hash attendu pour jolia/demo/index.html : $target"
+          for i in $(seq 1 36); do
+            live="$(curl -fsSL "https://app.cartefidelavis.com/jolia/demo/index.html?cb=$(date +%s)" 2>/dev/null | md5sum | cut -d' ' -f1 || true)"
+            echo "Tentative ${i} → $live"
+            if [ "$live" = "$target" ]; then
+              echo "✓ Pages publiée pour ce commit"
+              sleep 8   # marge CDN
               exit 0
             fi
             sleep 10
           done
-          echo "⚠ Pages n'a pas publié à temps — on tente quand même la capture."
+          echo "⚠ Pages n'a pas publié ce commit à temps — on tente quand même la capture."
 
       - name: Générer les aperçus
         run: python3 scripts/gen_demo_screens.py
