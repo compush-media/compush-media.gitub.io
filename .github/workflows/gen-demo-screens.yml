@@ -1,0 +1,82 @@
+# ──────────────────────────────────────────────────────────────
+# Régénère automatiquement les aperçus PNG (<slug>/demo/screen.png)
+# après chaque déploiement qui touche le wallet, la config d'un resto,
+# un logo ou une image hero. Utilise Playwright pour capturer la page
+# /<slug>/demo/ une fois GitHub Pages publiée.
+# ──────────────────────────────────────────────────────────────
+name: Aperçus démo
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**/demo/screen.png'    # évite la boucle (les commits du bot)
+      - 'apps-script/**'        # n'affecte pas le rendu wallet
+      - 'data/**'               # registre / ambassadeurs
+      - 'scripts/**'            # le script lui-même
+      - '.github/**'            # workflows
+      - 'fidelavis-admin/**'    # outils agence
+      - 'admin/**'              # super-admin
+  workflow_dispatch:             # bouton manuel "Run workflow"
+
+permissions:
+  contents: write                # nécessaire pour pousser les PNG
+
+concurrency:
+  group: gen-demo-screens
+  cancel-in-progress: true        # un nouveau push annule l'exécution en cours
+
+jobs:
+  generate:
+    # n'exécute pas la job si le dernier commit vient du bot (ceinture + bretelles)
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Playwright + Chromium
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install --with-deps chromium
+
+      - name: Attendre que GitHub Pages publie le nouveau contenu
+        # Polling de la page démo jusqu'à ce qu'elle contienne le marqueur __FV_DEMO__
+        # (présent uniquement dans la version à jour du template). Max ~4 min.
+        run: |
+          echo "Attente du déploiement Pages (jusqu'à 4 min)…"
+          for i in $(seq 1 24); do
+            body="$(curl -fsSL https://app.cartefidelavis.com/jolia/demo/ 2>/dev/null || true)"
+            if echo "$body" | grep -q '__FV_DEMO__'; then
+              echo "✓ Pages publiée (après ${i} tentatives)"
+              sleep 12   # marge supplémentaire pour le cache CDN
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "⚠ Pages n'a pas publié à temps — on tente quand même la capture."
+
+      - name: Générer les aperçus
+        run: python3 scripts/gen_demo_screens.py
+
+      - name: Commit & push si des PNG ont changé
+        run: |
+          if git diff --quiet -- '*/demo/screen.png'; then
+            echo "Aucun PNG modifié — rien à pousser."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add '*/demo/screen.png'
+          git commit -m "chore(demo): rafraîchissement auto des aperçus PNG [skip ci]"
+          git push
