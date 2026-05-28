@@ -925,6 +925,7 @@
           </select>
           <button class="btn-outline" onclick="openImportModal()" style="font-size:13px">📥 Importer</button>
           <button class="btn-outline" onclick="exportRestosExcel()" style="font-size:13px">📤 Exporter</button>
+          <button class="btn-outline" onclick="openRegenAperçusModal()" title="Comment rafraîchir les images d'aperçu" style="font-size:13px">📸 Aperçus</button>
         </div>
       </div>
 
@@ -2276,6 +2277,55 @@ function openRestoAdmin(slug) {
   window.open(`https://app.cartefidelavis.com/${slug}/admin/espace-admin.html`, '_blank');
 }
 
+// ── Démo : ouvre l'aperçu sans inscription + copie l'URL pour DM ─────
+async function openDemoLink(slug) {
+  if (!slug) return;
+  const url = `https://app.cartefidelavis.com/${slug}/demo/`;
+  // ouvre la démo (lien direct utilisable en DM)
+  window.open(url, '_blank', 'noopener,width=420,height=860');
+  // copie l'URL dans le presse-papier
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(url);
+      toast('📋 Lien démo copié — prêt à coller en DM', 'success');
+      return;
+    }
+  } catch(_) {}
+  // fallback sans Clipboard API
+  const ta = document.createElement('textarea');
+  ta.value = url; ta.style.position = 'fixed'; ta.style.top = '-1000px';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); toast('📋 Lien démo copié', 'success'); }
+  catch (_) { toast('Démo ouverte (copie auto indisponible)', 'info'); }
+  ta.remove();
+}
+
+// ── Aide : comment régénérer les screenshots d'aperçu ────────────────
+function openRegenAperçusModal() {
+  const html = `
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:99999" onclick="if(event.target===this)this.remove()">
+      <div style="background:#fff;border-radius:14px;max-width:520px;width:92%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.3);font-family:system-ui,-apple-system,sans-serif">
+        <h2 style="margin:0 0 12px;font-size:18px;color:#1a1a1a">📸 Régénérer les aperçus PNG</h2>
+        <p style="font-size:13px;line-height:1.6;color:#444;margin:0 0 14px">
+          Les pages d'aperçu (<code style="background:#f3f4f6;padding:1px 5px;border-radius:4px;font-size:12px">/&lt;resto&gt;/demo/</code>) sont
+          générées automatiquement à l'import. Les images PNG (pour les DM Instagram) se rafraîchissent par un petit script local :
+        </p>
+        <div style="background:#0d1117;color:#e6edf3;padding:12px 14px;border-radius:8px;font:13px/1.5 'SF Mono',Menlo,monospace;display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <code id="regenCmd" style="white-space:nowrap;overflow:auto">python3 scripts/gen_demo_screens.py</code>
+          <button onclick="(async()=>{try{await navigator.clipboard.writeText(document.getElementById('regenCmd').textContent);toast('📋 Commande copiée','success');}catch(_){toast('Copie indisponible','error');}})()" style="background:#22c55e;border:none;color:#fff;padding:5px 10px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;flex-shrink:0">📋</button>
+        </div>
+        <p style="font-size:12px;color:#6b7280;margin:12px 0 0;line-height:1.5">
+          Sans argument → tous les restos. Pour un seul : <code style="background:#f3f4f6;padding:1px 4px;border-radius:3px">… gen_demo_screens.py jolia</code>.
+          Nécessite Playwright (<code style="background:#f3f4f6;padding:1px 4px;border-radius:3px">pip install playwright &amp;&amp; playwright install chromium</code>).
+        </p>
+        <div style="text-align:right;margin-top:18px">
+          <button onclick="this.closest('div[style*=\\'fixed\\']').remove()" style="background:#1a1a1a;color:#fff;border:none;padding:9px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">Fermer</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
 // ============================================================
 //  SUPABASE
 // ============================================================
@@ -2720,6 +2770,7 @@ function renderRestoGrid(data) {
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
           <a href="${BASE}/${slug}/index.html" target="_blank" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">🏠 Site</a>
+          <button onclick="openDemoLink('${slug}')" title="Ouvre l'aperçu et copie le lien (pour DM)" style="font-size:11px;font-weight:700;padding:4px 9px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;color:#166534;cursor:pointer">📱 Démo</button>
           <button onclick="openRestoAdmin('${slug}')" style="font-size:11px;font-weight:700;padding:4px 9px;background:#fff8e1;border:1px solid #f0c75e;border-radius:6px;color:#8b6914;cursor:pointer">🔓 Espace</button>
           <a href="${BASE}/${slug}/admin/state.html" target="_blank" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">📊 Stats</a>
           <a href="${BASE}/${slug}/admin/reputation-google.html" target="_blank" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">⭐ Réputation</a>
