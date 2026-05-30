@@ -16,6 +16,9 @@ Usage :
   python3 scripts/gen_dm_videos.py                       # tous les restos
   python3 scripts/gen_dm_videos.py jolia kafkaf-paris-11 # ciblés
   python3 scripts/gen_dm_videos.py --dry-run             # n'appelle aucune API
+  python3 scripts/gen_dm_videos.py jolia                 # PHASE PILOTE : un resto unique
+                                                         # → produit <slug>-video-production-report.md
+                                                         #   + scènes capturées dans dm_videos/<slug>_scenes/
 """
 from __future__ import annotations
 import argparse, json, os, sys, time, traceback, urllib.parse, urllib.request
@@ -222,7 +225,141 @@ def process_one(record: dict, heygen_cfg: dict, creato_source: dict,
     entry["output_file"]    = str(out_path.relative_to(ROOT))
     entry["output_size_mb"] = round(size_bytes / (1024 * 1024), 2)
     entry["total_elapsed_s"] = round(time.time() - started, 1)
+
+    # 4. Extraction des scènes clés (si imageio_ffmpeg dispo)
+    entry["scenes"] = extract_scene_frames(out_path, record["slug"])
     return entry
+
+
+# ── Frame extraction (pilote / report) ───────────────────────────────
+SCENE_TIMESTAMPS = [1.0, 5.0, 12.0, 20.0, 25.0, 29.0]   # s — flow narratif
+
+def extract_scene_frames(video_path: Path, slug: str) -> list[dict]:
+    """Extrait quelques frames clés. Renvoie [{t, path}] ou [] si outil indispo."""
+    try:
+        import imageio_ffmpeg
+        ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        print("  ⚠ imageio-ffmpeg non installé — pip install 'imageio[ffmpeg]' pour les scènes.")
+        return []
+    import subprocess
+    scenes_dir = video_path.parent / f"{slug}_scenes"
+    scenes_dir.mkdir(parents=True, exist_ok=True)
+    out = []
+    for t in SCENE_TIMESTAMPS:
+        png = scenes_dir / f"scene_{int(t*10):04d}.png"
+        try:
+            subprocess.run(
+                [ffmpeg, "-y", "-ss", str(t), "-i", str(video_path),
+                 "-vframes", "1", "-q:v", "2", str(png)],
+                check=True, capture_output=True, timeout=30,
+            )
+            out.append({"t": t, "path": str(png.relative_to(ROOT))})
+        except Exception as e:
+            print(f"  ⚠ scène t={t}s non extraite : {e}")
+    return out
+
+
+def write_production_report(slug: str, entry: dict, heygen_cfg: dict, creato_tpl: dict) -> Path:
+    """Génère <slug>-video-production-report.md (phase pilote)."""
+    report = ROOT / f"{slug}-video-production-report.md"
+    script = heygen_cfg["script_template"].replace("{{restaurant_name}}", entry["restaurant_name"])
+    words  = len(script.split())
+    spoken_s = round(words / 2.5, 1)
+
+    md = [
+        f"# Rapport de production vidéo — **{entry['restaurant_name']}**",
+        f"_Généré le {time.strftime('%Y-%m-%d à %H:%M')}_",
+        "",
+        "## ✅ Vidéo produite",
+        "",
+        f"- **Fichier local** : `{entry['output_file']}`",
+        f"- **Poids** : {entry['output_size_mb']} MB",
+        f"- **Durée totale du pipeline** : {entry['total_elapsed_s']} s",
+        f"- **URL Creatomate (CDN)** : {entry.get('creatomate_video_url', '—')}",
+        "",
+        "## ⏱ Durées",
+        "",
+        f"- Script parlé estimé : **~{spoken_s} s** ({words} mots)",
+        f"- Vidéo finale : **{creato_tpl['duration']} s** ({creato_tpl['width']}×{creato_tpl['height']}, {creato_tpl['frame_rate']} fps)",
+        f"- Rendu HeyGen : ~{entry.get('heygen_elapsed_s','?')} s",
+        f"- Rendu Creatomate : ~{entry.get('total_elapsed_s',0) - (entry.get('heygen_elapsed_s') or 0):.1f} s",
+        "",
+        "## 💰 Coût",
+        "",
+        f"_(Vérifier les chiffres exacts dans les dashboards HeyGen et Creatomate.)_",
+        "",
+        f"- **HeyGen** (durée parlée ≈ {spoken_s} s) : ~${spoken_s/60*0.30:.2f}-{spoken_s/60*0.80:.2f} USD",
+        f"- **Creatomate** ({creato_tpl['duration']} s rendus) : ~${creato_tpl['duration']/60*0.20:.2f}-{creato_tpl['duration']/60*0.50:.2f} USD",
+        f"- **Total estimé** : **~${spoken_s/60*0.30 + creato_tpl['duration']/60*0.20:.2f}-{spoken_s/60*0.80 + creato_tpl['duration']/60*0.50:.2f} USD**",
+        "",
+        "## 🔑 Identifiants techniques",
+        "",
+        f"- HeyGen `video_id` : `{entry.get('heygen_video_id','—')}`",
+        f"- HeyGen `video_url` : {entry.get('heygen_video_url','—')}",
+        f"- Creatomate `render_id` : `{entry.get('creatomate_render_id','—')}`",
+        "",
+        "## 🎬 Scènes clés",
+        "",
+    ]
+
+    if entry.get("scenes"):
+        for s in entry["scenes"]:
+            md.append(f"### t = {s['t']} s")
+            md.append(f"![scène {s['t']}s]({s['path']})")
+            md.append("")
+    else:
+        md += [
+            "_Captures de scènes non extraites (imageio-ffmpeg manquant)._",
+            "",
+            "Pour les générer ensuite :",
+            "```bash",
+            "pip install 'imageio[ffmpeg]'",
+            f"python3 -c \"from scripts.gen_dm_videos import extract_scene_frames; from pathlib import Path; extract_scene_frames(Path('{entry['output_file']}'), '{slug}')\"",
+            "```",
+            "",
+        ]
+
+    md += [
+        "## 🔗 Liens utiles",
+        "",
+        f"- Wallet live : {PUBLIC_BASE}/{slug}/",
+        f"- Démo (sans inscription) : {PUBLIC_BASE}/{slug}/demo/",
+        f"- Mockup PNG : {PUBLIC_BASE}/mockups/{slug}-iphone.png",
+        "",
+        "## 📋 Message DM prêt à coller",
+        "",
+        "```",
+        load_dm_message(slug, entry),
+        "```",
+        "",
+        "## ➡️ Suite",
+        "",
+        "Si la vidéo est validée :",
+        "```bash",
+        "# Générer pour les autres restos",
+        "python3 scripts/gen_dm_videos.py brother-sister-brunch-lunch-dinner",
+        "python3 scripts/gen_dm_videos.py ter kafkaf-paris-11 deux-restaurant-bistrot-de-chefs",
+        "# Ou tous d'un coup",
+        "python3 scripts/gen_dm_videos.py",
+        "```",
+        "",
+    ]
+    report.write_text("\n".join(md) + "\n", encoding="utf-8")
+    return report
+
+
+def load_dm_message(slug: str, entry: dict) -> str:
+    """Lit le template DM et remplace les variables. Retombe sur un fallback si manquant."""
+    tpl = ROOT / "pipeline" / "dm_message_template.txt"
+    if not tpl.exists():
+        return f"(template manquant — voir pipeline/dm_message_template.txt)"
+    text = tpl.read_text(encoding="utf-8")
+    return (text
+            .replace("{restaurant_name}", entry["restaurant_name"])
+            .replace("{demo_url}",        entry.get("demo_url", f"{PUBLIC_BASE}/{slug}/demo/"))
+            .replace("{wallet_url}",      entry.get("wallet_url", f"{PUBLIC_BASE}/{slug}/"))
+            .strip())
 
 
 def main(argv=None) -> int:
@@ -276,6 +413,14 @@ def main(argv=None) -> int:
 
     REPORT.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")
     print(f"\nRésumé : {ok} succès, {err} erreurs — rapport : {REPORT.relative_to(ROOT)}")
+
+    # Phase pilote : un seul resto et un seul succès → produire le rapport
+    # markdown détaillé avec scènes capturées.
+    if not args.dry_run and len(report) == 1 and report[0].get("status") == "success":
+        entry      = report[0]
+        report_md  = write_production_report(entry["slug"], entry, heygen_cfg, creato_source)
+        print(f"📝 Rapport pilote : {report_md.relative_to(ROOT)}")
+
     return 0 if err == 0 else 1
 
 

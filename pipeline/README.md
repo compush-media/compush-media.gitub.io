@@ -61,30 +61,76 @@ Script HeyGen (~22 s parlés) :
 L'avatar est **toujours identique** (même femme, même voix, même fond) — seul
 le script change via `{{restaurant_name}}`.
 
-## Setup (à faire une seule fois)
+## Setup — récupérer les 5 valeurs (où exactement)
 
-### 1. HeyGen
-1. Créer un compte sur [heygen.com](https://www.heygen.com) (plan API requis).
-2. Choisir un avatar et une voix dans le dashboard → noter `avatar_id` + `voice_id`.
-3. Générer une API key (Settings → API).
-4. Mettre les IDs dans `pipeline/heygen_config.json` (champs `avatar_id`, `voice_id`).
+À renseigner une seule fois. **2 IDs** vont dans `pipeline/heygen_config.json` et **3 clés** dans des variables d'environnement.
 
-### 2. Creatomate
-1. Créer un compte sur [creatomate.com](https://creatomate.com).
-2. Dashboard → **Templates** → **Import JSON** → coller `pipeline/creatomate_template.json`.
-3. Sauvegarder → noter le `template_id` affiché en haut.
-4. Générer une API key (Project Settings → API Keys).
+### 🟣 1. HEYGEN_API_KEY
+1. Créer un compte sur https://app.heygen.com (un plan avec accès API est requis : **Creator $24/mo** ou pay-as-you-go pour l'API).
+2. En haut à droite : **avatar → Settings** → onglet **Subscriptions** : vérifier que l'**API access** est inclus.
+3. Toujours dans Settings → onglet **API** ([direct](https://app.heygen.com/settings/api)).
+4. Cliquer **Generate API Token** → copier la chaîne `hg_…`.
 
-### 3. Variables d'environnement
-Ajouter à ton shell (`~/.zshrc` ou `~/.bashrc`) :
+→ `export HEYGEN_API_KEY="hg_..."` dans `~/.zshrc`.
+
+### 🟣 2. avatar_id (HeyGen)
+1. Aller dans https://app.heygen.com/avatars.
+2. Choisir l'avatar visuel pour Fidelavis (une femme souriante en français → filtrer langage **French**).
+3. Sur la fiche avatar, cliquer le **menu trois points** → **Copy API ID**. C'est une chaîne du style `Daisy-inskirt-20220818` ou un UUID.
+4. Alternative en CLI une fois la clé HeyGen exportée :
+   ```bash
+   curl -s -H "X-Api-Key: $HEYGEN_API_KEY" https://api.heygen.com/v2/avatars | jq '.data.avatars[] | {avatar_id: .avatar_id, name: .avatar_name, gender, language}'
+   ```
+
+→ Mettre dans `pipeline/heygen_config.json` → champ `"avatar_id"`.
+
+### 🟣 3. voice_id (HeyGen)
+1. Aller dans https://app.heygen.com/voices.
+2. Filtrer **Language : French** → écouter quelques voix féminines naturelles.
+3. Cliquer la voix retenue → bouton **API ID** / icône `⋮` → **Copy API ID** (chaîne hex).
+4. Alternative en CLI :
+   ```bash
+   curl -s -H "X-Api-Key: $HEYGEN_API_KEY" https://api.heygen.com/v2/voices | jq '.data.voices[] | select(.language=="French" and .gender=="female") | {voice_id, name, support_pause}'
+   ```
+
+→ Mettre dans `pipeline/heygen_config.json` → champ `"voice_id"`.
+
+### 🟢 4. CREATOMATE_API_KEY
+1. Créer un compte sur https://creatomate.com.
+2. En haut à droite : **avatar → Project Settings** → onglet **API keys** ([direct](https://creatomate.com/account/project/api-keys)).
+3. Cliquer **Add API Key** → copier la chaîne (commence par `ct_…`).
+
+→ `export CREATOMATE_API_KEY="ct_..."` dans `~/.zshrc`.
+
+### 🟢 5. CREATOMATE_TEMPLATE_ID
+1. Dans le dashboard Creatomate → menu **Templates** → **+ New template** → **Import from JSON**.
+2. Coller **tout le contenu** de `pipeline/creatomate_template.json` → **Create**.
+3. Une fois ouvert, regarder l'URL → format `https://creatomate.com/projects/.../templates/<UUID>` → copier le `<UUID>`.
+4. (Ou onglet **Details** du template à droite → champ `Template ID`.)
+
+→ `export CREATOMATE_TEMPLATE_ID="<UUID>"` dans `~/.zshrc`.
+
+### ⚙️ Récap variables d'environnement
 
 ```bash
+# À ajouter à ~/.zshrc puis `source ~/.zshrc`
 export HEYGEN_API_KEY="hg_xxx…"
 export CREATOMATE_API_KEY="ct_xxx…"
-export CREATOMATE_TEMPLATE_ID="tpl_xxx…"   # optionnel — sinon le JSON est envoyé inline
+export CREATOMATE_TEMPLATE_ID="<UUID>"  # facultatif — sinon le JSON est envoyé inline
 ```
 
-Puis `source ~/.zshrc` (ou nouvel onglet de terminal).
+### ✅ Vérification rapide
+
+```bash
+# Vérifier que les 3 vars sont définies
+echo "HG=$HEYGEN_API_KEY  CT=$CREATOMATE_API_KEY  TPL=$CREATOMATE_TEMPLATE_ID"
+
+# Vérifier que les IDs HeyGen sont renseignés dans le JSON
+python3 -c "import json; c=json.load(open('pipeline/heygen_config.json')); print('avatar_id:', c['avatar_id']); print('voice_id :', c['voice_id'])"
+
+# Dry-run final (zéro crédit) pour confirmer le payload prêt
+python3 scripts/test_jolia.py
+```
 
 ## Utilisation
 
