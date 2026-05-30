@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "brother-sister-brunch-lunch-dinner",
+    "restaurant_name": "BROTHER SISTER Brunch Lunch Dinner",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/brother-sister-brunch-lunch-dinner-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/",
+    "demo_url": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/demo/",
+    "status": "dry-run",
+    "script_preview": "Bonjour. J'ai préparé une démonstration personnalisée pour BROTHER SISTER Brunch Lunch Dinner. Vos clients scannent simplement un QR code ou une carte NFC. Ils reçoivent immédiatement une offre et reviennent plus souvent.",
+    "modifications": {
+      "restaurant_name": "BROTHER SISTER Brunch Lunch Dinner",
+      "avatar_video_url": "<<HeyGen MP4 — généré au runtime>>",
+      "mockup_url": "https://app.cartefidelavis.com/mockups/brother-sister-brunch-lunch-dinner-iphone.png"
+    }
+  },
+  {
+    "slug": "deux-restaurant-bistrot-de-chefs",
+    "restaurant_name": "Deux Restaurant : Bistrot de chefs",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/deux-restaurant-bistrot-de-chefs-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/",
+    "demo_url": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/demo/",
+    "status": "dry-run",
+    "script_preview": "Bonjour. J'ai préparé une démonstration personnalisée pour Deux Restaurant : Bistrot de chefs. Vos clients scannent simplement un QR code ou une carte NFC. Ils reçoivent immédiatement une offre et reviennent plus souvent.",
+    "modifications": {
+      "restaurant_name": "Deux Restaurant : Bistrot de chefs",
+      "avatar_video_url": "<<HeyGen MP4 — généré au runtime>>",
+      "mockup_url": "https://app.cartefidelavis.com/mockups/deux-restaurant-bistrot-de-chefs-iphone.png"
+    }
+  },
+  {
+    "slug": "jolia",
+    "restaurant_name": "Jolia",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/jolia-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/jolia/",
+    "demo_url": "https://app.cartefidelavis.com/jolia/demo/",
+    "status": "dry-run",
+    "script_preview": "Bonjour. J'ai préparé une démonstration personnalisée pour Jolia. Vos clients scannent simplement un QR code ou une carte NFC. Ils reçoivent immédiatement une offre et reviennent plus souvent.",
+    "modifications": {
+      "restaurant_name": "Jolia",
+      "avatar_video_url": "<<HeyGen MP4 — généré au runtime>>",
+      "mockup_url": "https://app.cartefidelavis.com/mockups/jolia-iphone.png"
+    }
+  },
+  {
+    "slug": "kafkaf-paris-11",
+    "restaurant_name": "Kafkaf - Paris 11",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/kafkaf-paris-11-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/kafkaf-paris-11/",
+    "demo_url": "https://app.cartefidelavis.com/kafkaf-paris-11/demo/",
+    "status": "dry-run",
+    "script_preview": "Bonjour. J'ai préparé une démonstration personnalisée pour Kafkaf - Paris 11. Vos clients scannent simplement un QR code ou une carte NFC. Ils reçoivent immédiatement une offre et reviennent plus souvent.",
+    "modifications": {
+      "restaurant_name": "Kafkaf - Paris 11",
+      "avatar_video_url": "<<HeyGen MP4 — généré au runtime>>",
+      "mockup_url": "https://app.cartefidelavis.com/mockups/kafkaf-paris-11-iphone.png"
+    }
+  },
+  {
+    "slug": "ter",
+    "restaurant_name": "Ter.",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/ter-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/ter/",
+    "demo_url": "https://app.cartefidelavis.com/ter/demo/",
+    "status": "dry-run",
+    "script_preview": "Bonjour. J'ai préparé une démonstration personnalisée pour Ter.. Vos clients scannent simplement un QR code ou une carte NFC. Ils reçoivent immédiatement une offre et reviennent plus souvent.",
+    "modifications": {
+      "restaurant_name": "Ter.",
+      "avatar_video_url": "<<HeyGen MP4 — généré au runtime>>",
+      "mockup_url": "https://app.cartefidelavis.com/mockups/ter-iphone.png"
+    }
+  }
+]

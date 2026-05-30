@@ -1,0 +1,25 @@
+{
+  "_comment": "Configuration HeyGen pour la génération des avatars personnalisés. À remplacer : avatar_id et voice_id (récupérés depuis le dashboard HeyGen). L'avatar reste IDENTIQUE pour tous les restaurants — seul le script change via {{restaurant_name}}.",
+
+  "avatar_id": "REPLACE_WITH_YOUR_AVATAR_ID",
+  "voice_id":  "REPLACE_WITH_YOUR_VOICE_ID",
+  "avatar_style": "normal",
+
+  "dimension": { "width": 720, "height": 1280 },
+  "aspect_ratio": "9:16",
+
+  "background": {
+    "type":  "color",
+    "value": "#000000"
+  },
+
+  "_script_comment": "Texte que l'avatar va prononcer. Durée parlée ≈ 22 secondes. Utilise {{restaurant_name}} comme variable. Le script est concaténé en un seul take (la vidéo HeyGen sera placée sur la timeline Creatomate à t=2s).",
+  "script_template": "Bonjour. J'ai préparé une démonstration personnalisée pour {{restaurant_name}}. Vos clients scannent simplement un QR code ou une carte NFC. Ils reçoivent immédiatement une offre et reviennent plus souvent.",
+
+  "_api_comment": "Endpoints HeyGen v2 utilisés par le script orchestrateur.",
+  "api": {
+    "generate":  "https://api.heygen.com/v2/video/generate",
+    "status":    "https://api.heygen.com/v1/video_status.get",
+    "auth_header": "X-Api-Key"
+  }
+}
