@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
 """
-Génère des mockups iPhone premium pour DM Instagram à partir des screenshots
-de wallets dans /screenshots/. Sortie dans /mockups/ + report.json.
+Génère des mockups iPhone premium pour DM Instagram.
 
-Étape isolée du pipeline : ne touche pas à HeyGen, Creatomate, ni aux DM.
+Trois modes :
+  --demo            Auto-découvre <slug>/demo/screen.png pour chaque resto
+                    → mockups/<slug>-iphone.png (utilisé par le workflow CI).
+  (sans argument)   Lit /screenshots/*.png (déposés manuellement).
+  fichiers ciblés   Traite uniquement les PNG passés en arguments.
+
+Sortie : /mockups/ + report.json (restaurant, source, generated, status, error).
+Étape isolée — pas de HeyGen, Creatomate ni DM.
 Fonctionne en lot pour 50 à 500 fichiers.
 
-Usage :
-  python3 scripts/gen_iphone_mockups.py              # tous les *.png
-  python3 scripts/gen_iphone_mockups.py img1 img2    # chemins ciblés
+Exemples :
+  python3 scripts/gen_iphone_mockups.py
+  python3 scripts/gen_iphone_mockups.py --demo
+  python3 scripts/gen_iphone_mockups.py img1.png img2.png
   python3 scripts/gen_iphone_mockups.py --transparent
 """
 from __future__ import annotations
@@ -82,14 +89,6 @@ def fit_cover(src: Image.Image, target: Tuple[int, int]) -> Image.Image:
     return src.resize(target, Image.LANCZOS)
 
 
-def out_filename(stem: str) -> str:
-    return (stem[:-7] if stem.endswith("-wallet") else stem) + "-iphone.png"
-
-
-def restaurant_name(stem: str) -> str:
-    return stem[:-7] if stem.endswith("-wallet") else stem
-
-
 # ── Compositing ──────────────────────────────────────────────────────
 def build_mockup(src_path: Path, dst_path: Path, transparent_bg: bool = False) -> None:
     bg = (0, 0, 0, 0) if transparent_bg else BG_WHITE
@@ -161,52 +160,93 @@ def build_mockup(src_path: Path, dst_path: Path, transparent_bg: bool = False) -
 
 
 # ── Pipeline principal ───────────────────────────────────────────────
-def collect_sources(paths_arg) -> list[Path]:
-    if paths_arg:
-        return [Path(p) for p in paths_arg]
+# Dossiers à exclure de l'auto-découverte des démos.
+EXCLUDED_DIRS = {
+    "assets", "data", "fidelavis-admin", "admin", "apps-script",
+    "images", "scripts", "templates", "screenshots", "mockups",
+    ".github", ".git",
+}
+
+
+def _name_from_filename(stem: str) -> str:
+    """`<base>-wallet` → `<base>` ; sinon stem inchangé."""
+    return stem[:-7] if stem.endswith("-wallet") else stem
+
+
+def items_from_screenshots() -> list[dict]:
+    """Fichiers déposés manuellement dans /screenshots/."""
     if not SRC_DIR.exists():
         SRC_DIR.mkdir(parents=True)
         print(f"Dossier source créé : {SRC_DIR.relative_to(ROOT)}")
         return []
-    return sorted(
-        p for p in SRC_DIR.glob("*.png")
+    return [
+        {"path": p, "name": _name_from_filename(p.stem)}
+        for p in sorted(SRC_DIR.glob("*.png"))
         if not p.name.startswith(".")
-    )
+    ]
+
+
+def items_from_demos() -> list[dict]:
+    """Auto-découverte des démos : <slug>/demo/screen.png pour chaque resto."""
+    items = []
+    for p in sorted(ROOT.iterdir()):
+        if not p.is_dir() or p.name.startswith((".", "_")) or p.name in EXCLUDED_DIRS:
+            continue
+        scr = p / "demo" / "screen.png"
+        if scr.exists():
+            items.append({"path": scr, "name": p.name})
+    return items
+
+
+def items_from_args(paths) -> list[dict]:
+    return [{"path": Path(p), "name": _name_from_filename(Path(p).stem)} for p in paths]
+
+
+def collect_sources(paths_arg, demo: bool) -> list[dict]:
+    if demo:
+        return items_from_demos()
+    if paths_arg:
+        return items_from_args(paths_arg)
+    return items_from_screenshots()
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Génère des mockups iPhone à partir de screenshots wallet.")
     parser.add_argument("paths", nargs="*", help="Fichiers PNG (par défaut : screenshots/*.png)")
+    parser.add_argument("--demo", action="store_true",
+                        help="Auto-découvre <slug>/demo/screen.png pour chaque resto et produit mockups/<slug>-iphone.png.")
     parser.add_argument("--transparent", action="store_true", help="Fond transparent au lieu de blanc.")
     args = parser.parse_args(argv)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    sources = collect_sources(args.paths)
-    if not sources:
-        print("Aucun screenshot à traiter — déposez des fichiers .png dans /screenshots/.")
+    items = collect_sources(args.paths, args.demo)
+    if not items:
+        msg = "Aucune démo trouvée." if args.demo else "Aucun screenshot à traiter — déposez des fichiers .png dans /screenshots/."
+        print(msg)
         REPORT.write_text("[]\n")
         return 0
 
     report = []
     ok = err = 0
-    for src in sources:
-        out_name = out_filename(src.stem)
+    for it in items:
+        src      = it["path"]
+        out_name = it["name"] + "-iphone.png"
         dst      = OUT_DIR / out_name
         entry = {
-            "restaurant": restaurant_name(src.stem),
-            "source":     src.name,
+            "restaurant": it["name"],
+            "source":     str(src.relative_to(ROOT)) if src.is_relative_to(ROOT) else src.name,
             "generated":  out_name,
             "status":     "success",
         }
         try:
             build_mockup(src, dst, transparent_bg=args.transparent)
             ok += 1
-            print(f"✓ {src.name} → mockups/{out_name}")
+            print(f"✓ {entry['source']} → mockups/{out_name}")
         except Exception as e:
             entry["status"] = "error"
             entry["error"]  = f"{type(e).__name__}: {e}"
             err += 1
-            print(f"✗ {src.name} : {e}", file=sys.stderr)
+            print(f"✗ {entry['source']} : {e}", file=sys.stderr)
             traceback.print_exc(file=sys.stderr)
         report.append(entry)
 

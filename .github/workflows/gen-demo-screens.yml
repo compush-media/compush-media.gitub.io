@@ -1,8 +1,12 @@
 # ──────────────────────────────────────────────────────────────
-# Régénère automatiquement les aperçus PNG (<slug>/demo/screen.png)
-# après chaque déploiement qui touche le wallet, la config d'un resto,
-# un logo ou une image hero. Utilise Playwright pour capturer la page
-# /<slug>/demo/ une fois GitHub Pages publiée.
+# Sur chaque push qui touche le wallet, la config d'un resto, un logo
+# ou un hero :
+#   1. Attend que GitHub Pages publie le nouveau contenu (hash check).
+#   2. Capture <slug>/demo/screen.png + screen-compte.png (Playwright).
+#   3. Régénère mockups/<slug>-iphone.png (Pillow).
+#   4. Commit & push tout ce qui a réellement changé.
+#
+# Boucle évitée via paths-ignore (les chemins du bot) + bot-skip.
 # ──────────────────────────────────────────────────────────────
 name: Aperçus démo
 
@@ -10,18 +14,20 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - '**/demo/screen.png'         # évite la boucle (les commits du bot)
-      - '**/demo/screen-compte.png'  # idem pour la page Compte
-      - 'apps-script/**'        # n'affecte pas le rendu wallet
-      - 'data/**'               # registre / ambassadeurs
-      - 'scripts/**'            # le script lui-même
-      - '.github/**'            # workflows
-      - 'fidelavis-admin/**'    # outils agence
-      - 'admin/**'              # super-admin
-  workflow_dispatch:             # bouton manuel "Run workflow"
+      - '**/demo/screen.png'         # évite la boucle (commits du bot)
+      - '**/demo/screen-compte.png'
+      - 'mockups/**'                 # outputs auto, idem
+      - 'screenshots/**'             # zone manuelle locale, hors CI
+      - 'apps-script/**'             # n'affecte pas le rendu wallet
+      - 'data/**'                    # registre / ambassadeurs
+      - 'scripts/**'                 # scripts eux-mêmes
+      - '.github/**'                 # workflows
+      - 'fidelavis-admin/**'         # outils agence
+      - 'admin/**'                   # super-admin
+  workflow_dispatch:                  # bouton manuel "Run workflow"
 
 permissions:
-  contents: write                # nécessaire pour pousser les PNG
+  contents: write                     # nécessaire pour pousser les PNG
 
 env:
   # opt-in Node 24 (Node 20 sera retiré le 16/09/2026)
@@ -29,14 +35,14 @@ env:
 
 concurrency:
   group: gen-demo-screens
-  cancel-in-progress: true        # un nouveau push annule l'exécution en cours
+  cancel-in-progress: true            # un nouveau push annule l'exécution en cours
 
 jobs:
   generate:
     # n'exécute pas la job si le dernier commit vient du bot (ceinture + bretelles)
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,10 +55,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Playwright + Chromium
+      - name: Install Playwright + Chromium + Pillow
         run: |
           python -m pip install --upgrade pip
-          pip install playwright
+          pip install playwright Pillow
           playwright install --with-deps chromium
 
       - name: Attendre que GitHub Pages publie le nouveau contenu
@@ -73,17 +79,20 @@ jobs:
           done
           echo "⚠ Pages n'a pas publié ce commit à temps — on tente quand même la capture."
 
-      - name: Générer les aperçus
+      - name: Capturer les aperçus démo (wallet + Compte)
         run: python3 scripts/gen_demo_screens.py
+
+      - name: Régénérer les mockups iPhone
+        run: python3 scripts/gen_iphone_mockups.py --demo
 
       - name: Commit & push si des PNG ont changé
         run: |
-          if git diff --quiet -- '*/demo/screen.png' '*/demo/screen-compte.png'; then
+          if git diff --quiet -- '*/demo/screen.png' '*/demo/screen-compte.png' 'mockups/'; then
             echo "Aucun PNG modifié — rien à pousser."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add '*/demo/screen.png' '*/demo/screen-compte.png'
-          git commit -m "chore(demo): rafraîchissement auto des aperçus PNG [skip ci]"
+          git add '*/demo/screen.png' '*/demo/screen-compte.png' 'mockups/'
+          git commit -m "chore(demo): rafraîchissement auto aperçus + mockups iPhone [skip ci]"
           git push
