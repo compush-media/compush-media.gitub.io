@@ -54,6 +54,13 @@ def list_slugs():
         and (p / "demo" / "index.html").exists()
     ]
 
+HIDE_DEMO_BAR_JS = (
+    "() => { const b=document.getElementById('fv-demo-bar');"
+    " if (b) b.style.display='none';"
+    " document.body.style.paddingTop='0'; }"
+)
+
+
 async def shoot(ctx, slug, page_spec):
     url = f"{BASE}/{slug}/demo/{page_spec['path']}"
     out = ROOT / slug / "demo" / page_spec["out"]
@@ -65,6 +72,9 @@ async def shoot(ctx, slug, page_spec):
         except Exception:
             pass
         await page.wait_for_timeout(2500)
+        # Masque le bandeau "Aperçu démo" pour un mockup propre
+        # (le bandeau reste visible pour les visiteurs réels de la page)
+        await page.evaluate(HIDE_DEMO_BAR_JS)
         await page.screenshot(path=str(out), full_page=False)
         print(f"✓ {slug}/{page_spec['out']}")
     except Exception as e:
