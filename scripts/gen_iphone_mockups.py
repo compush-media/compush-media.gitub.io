@@ -12,11 +12,14 @@ Sortie : /mockups/ + report.json (restaurant, source, generated, status, error).
 Étape isolée — pas de HeyGen, Creatomate ni DM.
 Fonctionne en lot pour 50 à 500 fichiers.
 
+Style : iPhone titane argenté sur fond noir avec halo lumineux (défaut),
+        ou fond blanc (--white) ou transparent (--transparent).
+
 Exemples :
   python3 scripts/gen_iphone_mockups.py
   python3 scripts/gen_iphone_mockups.py --demo
+  python3 scripts/gen_iphone_mockups.py --white
   python3 scripts/gen_iphone_mockups.py img1.png img2.png
-  python3 scripts/gen_iphone_mockups.py --transparent
 """
 from __future__ import annotations
 import argparse, json, sys, traceback
@@ -36,26 +39,37 @@ PHONE_W,  PHONE_H  = 612, 1296       # ratio ≈ 2.118 (iPhone 15 ≈ 2.166)
 PHONE_X            = (CANVAS_W - PHONE_W) // 2
 PHONE_Y            = (CANVAS_H - PHONE_H) // 2
 
-# ── Style téléphone ──────────────────────────────────────────────────
-PHONE_RADIUS    = 96                 # rayon corps
-FRAME_THICKNESS = 12                 # épaisseur bordure noire
-SCREEN_RADIUS   = PHONE_RADIUS - FRAME_THICKNESS  # rayon écran (intérieur)
-FRAME_COLOR     = (24, 24, 26, 255)  # noir graphite mat
-BG_WHITE        = (255, 255, 255, 255)
+# ── Style téléphone (titane argenté, signature Apple keynote) ────────
+PHONE_RADIUS     = 96                       # rayon corps
+FRAME_THICKNESS  = 12                       # épaisseur bordure
+SCREEN_RADIUS    = PHONE_RADIUS - FRAME_THICKNESS  # rayon écran (intérieur)
 
-# Dynamic Island (encoche modernes iPhone)
+# Dégradé vertical du corps (haut → bas) pour effet titane brossé
+FRAME_TOP        = (220, 220, 224, 255)     # argent clair en haut
+FRAME_BOTTOM     = (178, 178, 184, 255)     # argent moyen en bas
+
+# Fonds disponibles
+BG_BLACK         = (0, 0, 0, 255)           # défaut (fait ressortir le téléphone)
+BG_WHITE         = (255, 255, 255, 255)
+
+# Dynamic Island (encoche)
 ISLAND_W, ISLAND_H = 138, 38
-ISLAND_TOP_OFFSET  = 18              # depuis le haut de l'écran
+ISLAND_TOP_OFFSET  = 18
 
-# Boutons latéraux (détail premium)
-BTN_COLOR        = (18, 18, 20, 255)
-BTN_W            = 4                 # épaisseur visible (déborde un peu)
+# Boutons latéraux (un peu plus foncés que le corps pour la profondeur)
+BTN_COLOR        = (150, 150, 158, 255)
+BTN_W            = 4
 SIDE_BTN_RADIUS  = 2
 
-# Ombre portée
-SHADOW_BLUR     = 38
-SHADOW_OFFSET_Y = 18
-SHADOW_OPACITY  = 70                 # 0-255
+# Halo lumineux derrière le téléphone (remplace l'ombre sur fond noir)
+GLOW_BLUR        = 60
+GLOW_OPACITY     = 38                        # 0-255
+GLOW_INSET       = -14                       # halo légèrement plus large que le corps
+
+# Ombre portée (utilisée seulement sur fond blanc)
+SHADOW_BLUR      = 38
+SHADOW_OFFSET_Y  = 18
+SHADOW_OPACITY   = 70
 
 # ── Helpers ──────────────────────────────────────────────────────────
 def rounded_mask(size: Tuple[int, int], radius: int) -> Image.Image:
@@ -63,6 +77,18 @@ def rounded_mask(size: Tuple[int, int], radius: int) -> Image.Image:
     mask = Image.new("L", size, 0)
     ImageDraw.Draw(mask).rounded_rectangle((0, 0, size[0], size[1]), radius=radius, fill=255)
     return mask
+
+
+def vertical_gradient(size: Tuple[int, int], color_top, color_bottom) -> Image.Image:
+    """Image RGBA avec dégradé vertical linéaire (haut → bas)."""
+    w, h = size
+    strip = Image.new("RGB", (1, h))
+    for y in range(h):
+        t = y / max(h - 1, 1)
+        strip.putpixel((0, y), tuple(
+            int(round(color_top[i] * (1 - t) + color_bottom[i] * t)) for i in range(3)
+        ))
+    return strip.resize(size, Image.BILINEAR).convert("RGBA")
 
 
 def fit_cover(src: Image.Image, target: Tuple[int, int]) -> Image.Image:
@@ -90,25 +116,38 @@ def fit_cover(src: Image.Image, target: Tuple[int, int]) -> Image.Image:
 
 
 # ── Compositing ──────────────────────────────────────────────────────
-def build_mockup(src_path: Path, dst_path: Path, transparent_bg: bool = False) -> None:
-    bg = (0, 0, 0, 0) if transparent_bg else BG_WHITE
-    canvas = Image.new("RGBA", (CANVAS_W, CANVAS_H), bg)
+def build_mockup(src_path: Path, dst_path: Path, bg_style: str = "black") -> None:
+    """bg_style : 'black' (défaut, halo lumineux), 'white' (ombre portée), 'transparent'."""
+    if bg_style == "transparent":
+        canvas = Image.new("RGBA", (CANVAS_W, CANVAS_H), (0, 0, 0, 0))
+    elif bg_style == "white":
+        canvas = Image.new("RGBA", (CANVAS_W, CANVAS_H), BG_WHITE)
+    else:
+        canvas = Image.new("RGBA", (CANVAS_W, CANVAS_H), BG_BLACK)
 
-    # 1. Ombre portée — calque flouté placé sous le téléphone
-    shadow = Image.new("RGBA", (CANVAS_W, CANVAS_H), (0, 0, 0, 0))
-    ImageDraw.Draw(shadow).rounded_rectangle(
-        (PHONE_X, PHONE_Y + SHADOW_OFFSET_Y,
-         PHONE_X + PHONE_W, PHONE_Y + PHONE_H + SHADOW_OFFSET_Y),
-        radius=PHONE_RADIUS, fill=(0, 0, 0, SHADOW_OPACITY),
-    )
-    shadow = shadow.filter(ImageFilter.GaussianBlur(SHADOW_BLUR))
-    canvas.alpha_composite(shadow)
+    # 1. Halo / ombre selon le fond
+    fx = Image.new("RGBA", (CANVAS_W, CANVAS_H), (0, 0, 0, 0))
+    if bg_style == "white":
+        # Ombre portée sombre vers le bas
+        ImageDraw.Draw(fx).rounded_rectangle(
+            (PHONE_X, PHONE_Y + SHADOW_OFFSET_Y,
+             PHONE_X + PHONE_W, PHONE_Y + PHONE_H + SHADOW_OFFSET_Y),
+            radius=PHONE_RADIUS, fill=(0, 0, 0, SHADOW_OPACITY),
+        )
+        fx = fx.filter(ImageFilter.GaussianBlur(SHADOW_BLUR))
+    else:
+        # Halo lumineux blanc autour du téléphone (fond noir / transparent)
+        ImageDraw.Draw(fx).rounded_rectangle(
+            (PHONE_X + GLOW_INSET, PHONE_Y + GLOW_INSET,
+             PHONE_X + PHONE_W - GLOW_INSET, PHONE_Y + PHONE_H - GLOW_INSET),
+            radius=PHONE_RADIUS - GLOW_INSET, fill=(255, 255, 255, GLOW_OPACITY),
+        )
+        fx = fx.filter(ImageFilter.GaussianBlur(GLOW_BLUR))
+    canvas.alpha_composite(fx)
 
-    # 2. Corps de l'iPhone (rectangle arrondi noir mat)
-    body = Image.new("RGBA", (PHONE_W, PHONE_H), (0, 0, 0, 0))
-    ImageDraw.Draw(body).rounded_rectangle(
-        (0, 0, PHONE_W, PHONE_H), radius=PHONE_RADIUS, fill=FRAME_COLOR,
-    )
+    # 2. Corps de l'iPhone — dégradé titane masqué aux coins arrondis
+    body = vertical_gradient((PHONE_W, PHONE_H), FRAME_TOP, FRAME_BOTTOM)
+    body.putalpha(rounded_mask((PHONE_W, PHONE_H), PHONE_RADIUS))
     canvas.alpha_composite(body, (PHONE_X, PHONE_Y))
 
     # 3. Boutons latéraux (silencieux + volume gauche, power droite)
@@ -215,7 +254,10 @@ def main(argv=None) -> int:
     parser.add_argument("paths", nargs="*", help="Fichiers PNG (par défaut : screenshots/*.png)")
     parser.add_argument("--demo", action="store_true",
                         help="Auto-découvre <slug>/demo/screen.png pour chaque resto et produit mockups/<slug>-iphone.png.")
-    parser.add_argument("--transparent", action="store_true", help="Fond transparent au lieu de blanc.")
+    bg = parser.add_mutually_exclusive_group()
+    bg.add_argument("--white",       dest="bg", action="store_const", const="white",       help="Fond blanc (ombre portée).")
+    bg.add_argument("--transparent", dest="bg", action="store_const", const="transparent", help="Fond transparent (halo).")
+    parser.set_defaults(bg="black")  # défaut : fond noir + halo
     args = parser.parse_args(argv)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -239,7 +281,7 @@ def main(argv=None) -> int:
             "status":     "success",
         }
         try:
-            build_mockup(src, dst, transparent_bg=args.transparent)
+            build_mockup(src, dst, bg_style=args.bg)
             ok += 1
             print(f"✓ {entry['source']} → mockups/{out_name}")
         except Exception as e:
