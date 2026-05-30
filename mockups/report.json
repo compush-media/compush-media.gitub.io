@@ -1,0 +1,32 @@
+[
+  {
+    "restaurant": "brother-sister-brunch-lunch-dinner",
+    "source": "brother-sister-brunch-lunch-dinner-wallet.png",
+    "generated": "brother-sister-brunch-lunch-dinner-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "deux-restaurant-bistrot-de-chefs",
+    "source": "deux-restaurant-bistrot-de-chefs-wallet.png",
+    "generated": "deux-restaurant-bistrot-de-chefs-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "jolia",
+    "source": "jolia-wallet.png",
+    "generated": "jolia-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "kafkaf-paris-11",
+    "source": "kafkaf-paris-11-wallet.png",
+    "generated": "kafkaf-paris-11-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "ter",
+    "source": "ter-wallet.png",
+    "generated": "ter-iphone.png",
+    "status": "success"
+  }
+]
