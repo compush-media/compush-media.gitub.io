@@ -135,13 +135,56 @@ Sortie :
   HeyGen). Si tu veux paralléliser, lancer plusieurs instances avec des sous-listes
   de slugs.
 
-## Et après ?
+## Dispatch — du `.mp4` au DM envoyé
 
-Cette étape produit les vidéos MP4 finales. **Les DM Instagram ne sont pas envoyées
-automatiquement** (interdit par la TOS Meta sans Business API). Workflow recommandé :
+Pour passer des fichiers `.mp4` aux envois ciblés, sans automatiser l'envoi
+côté Meta (interdit hors Business API) :
 
-1. `python3 scripts/gen_dm_videos.py` → `dm_videos/*.mp4`
-2. Ouvrir Instagram (Mac app ou Direct.com)
-3. Glisser-déposer chaque MP4 dans la conversation du restaurant correspondant.
+### 1. Construire la file de dispatch
+```bash
+python3 scripts/gen_dm_queue.py
+```
+Produit deux fichiers :
+- `dm_videos/dispatch_queue.json` (utilisé par le dashboard)
+- `dm_videos/dispatch_queue.csv` (utilisable en CRM / Excel)
 
-Pour automatiser l'envoi DM, voir Meta Business Suite + Graph API (compte Pro requis).
+Contenu par ligne : `slug`, `restaurant_name`, `instagram_handle`,
+`instagram_url`, `demo_url`, `wallet_url`, chemin du mockup, chemin de la
+vidéo, **message personnalisé prêt à coller** (basé sur
+`pipeline/dm_message_template.txt`).
+
+Filtre : `--only-with-video` pour ne garder que les restos déjà rendus.
+
+### 2. Ouvrir le dashboard de pilotage
+```bash
+python3 serve.py
+# puis http://localhost:3000/pipeline/dispatch.html
+```
+
+Le dashboard `pipeline/dispatch.html` affiche **une carte par restaurant** :
+- 🎬 Aperçu de la vidéo (ou du mockup si vidéo pas encore prête)
+- @handle Instagram cliquable
+- Message texte éditable + bouton **📋 Copier message**
+- Bouton **🌐 Ouvrir IG** (ouvre le compte du resto dans un nouvel onglet)
+- Bouton **✓ Marquer envoyé** (persiste dans le localStorage du navigateur)
+
+Filtres : recherche libre, **À envoyer / Déjà envoyés / Avec vidéo prête /
+Sans handle IG**. Stats en haut (total / envoyés / reste / sans handle).
+
+### 3. Le workflow réel
+Pour chaque carte :
+1. Clic **📋 Copier message**
+2. Clic **🌐 Ouvrir IG** → onglet Instagram du resto
+3. Lancer la DM, glisser-déposer le `.mp4`, coller le message, envoyer
+4. Retour sur le dashboard, clic **✓ Marquer envoyé**
+
+Le statut est conservé dans le navigateur — tu peux fermer / rouvrir, ça
+reprend où tu en étais. Bouton **Réinitialiser ✓ envoyés** dans le header
+pour repartir de zéro.
+
+> ⚠ **Anti-spam** : pour ne pas déclencher les filtres Instagram, espace
+> les envois (max ~20-30 / jour par compte). Les sessions trop rapides
+> peuvent entraîner une suspension temporaire.
+
+Pour automatiser l'envoi DM, voir Meta Business Suite + Graph API
+(compte Instagram Business requis, processus d'approbation à prévoir).
