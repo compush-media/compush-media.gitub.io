@@ -1,143 +1,228 @@
 {
-  "_comment": "Template Creatomate — composition vidéo DM Fidelavis (1080×1920, 30s). Importer depuis le dashboard Creatomate (Templates → Import) puis noter le template_id pour l'orchestrateur. Trois variables : restaurant_name (texte), avatar_video_url (mp4 HeyGen), mockup_url (PNG iPhone).",
+  "_comment": "Template v12 — vidéo DM Fidelavis 18s, 3 scènes propres pour Instagram. Toutes les variables {{...}} sont substituées par scripts/gen_dm_videos.py avant envoi. Importable tel quel dans Creatomate (Templates → Import JSON).",
 
   "output_format": "mp4",
-  "frame_rate": 30,
-  "width":  1080,
-  "height": 1920,
-  "duration": 30,
-  "fill_color": "#0A0A0C",
+  "frame_rate":    30,
+  "width":         1080,
+  "height":        1920,
+  "duration":      18,
+  "fill_color":    "#000000",
 
   "elements": [
 
     {
-      "name": "Background_Gradient",
+      "name": "Background",
       "type": "shape",
       "track": 1,
-      "time": 0, "duration": 30,
+      "time": 0, "duration": 18,
       "x": "50%", "y": "50%", "width": "100%", "height": "100%",
       "x_alignment": "50%", "y_alignment": "50%",
-      "fill_color": "#0A0A0C",
-      "_comment": "Fond noir profond, met en valeur le mockup titane et l'avatar."
+      "fill_color": "#000000"
     },
 
     {
-      "name": "Top_title",
+      "name": "S1_title",
       "type": "text",
-      "track": 3,
-      "time": 0, "duration": 30,
-      "x": "50%", "y": "6%",
+      "track": 2,
+      "time": 0, "duration": 3,
+      "x": "50%", "y": "10%",
       "width": "92%", "height": "auto",
       "x_alignment": "50%", "y_alignment": "50%",
-      "text": "Démo personnalisée — {{restaurant_name}}",
+      "text": "Démo personnalisée\n{{restaurant_name}}",
       "font_family": "Inter",
       "font_weight": "800",
-      "font_size":   "44",
+      "font_size":   "62",
       "line_height": "120%",
       "fill_color":  "#FFFFFF",
       "text_alignment": "center",
       "animations": [
-        { "time": 0,    "duration": 0.5, "type": "fade", "easing": "quadratic-out" }
-      ],
-      "_comment": "Titre permanent en haut (toute la durée)."
+        { "time": 0,   "duration": 0.5, "type": "fade", "easing": "quadratic-out" },
+        { "time": 2.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
+      ]
     },
 
     {
-      "name": "Avatar_circle",
+      "name": "S1_avatar_big",
       "type": "video",
-      "track": 4,
-      "time": 2, "duration": 22,
-      "x": "14%", "y": "18%",
-      "width": "200px", "height": "200px",
+      "track": 3,
+      "time": 0, "duration": 3,
+      "x": "50%", "y": "32%",
+      "width": "280px", "height": "280px",
       "x_alignment": "50%", "y_alignment": "20%",
-      "border_radius": "200px",
+      "border_radius": "280px",
       "fit": "cover",
       "source": "{{avatar_video_url}}",
       "audio_track": 1,
-      "shadow_blur": "24px",
-      "shadow_color": "rgba(0,0,0,0.55)",
+      "shadow_blur": "32px",
+      "shadow_color": "rgba(255,80,80,0.25)",
       "animations": [
-        { "time": 0,    "duration": 0.5,  "type": "fade", "easing": "quadratic-out" },
-        { "time": 21.5, "duration": 0.5,  "type": "fade", "reversed": true, "easing": "quadratic-in" }
-      ],
-      "_comment": "Anna en CERCLE (200×200) en HAUT-GAUCHE. y_alignment=20% centre la source sur son visage."
+        { "time": 0,   "duration": 0.5, "type": "fade", "easing": "quadratic-out" },
+        { "time": 2.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
+      ]
     },
 
     {
-      "name": "Subtitle_template",
+      "name": "S1_pitch",
+      "type": "text",
+      "track": 4,
+      "time": 0.4, "duration": 2.6,
+      "x": "50%", "y": "55%",
+      "width": "82%", "height": "auto",
+      "x_alignment": "50%", "y_alignment": "50%",
+      "text": "J'ai préparé une démonstration personnalisée pour {{restaurant_name}}.",
+      "font_family": "Inter",
+      "font_weight": "600",
+      "font_size":   "44",
+      "line_height": "130%",
+      "fill_color":  "#E8E6E2",
+      "text_alignment": "center",
+      "animations": [
+        { "time": 0,   "duration": 0.4, "type": "fade", "easing": "quadratic-out" },
+        { "time": 2.2, "duration": 0.4, "type": "fade", "reversed": true, "easing": "quadratic-in" }
+      ]
+    },
+
+    {
+      "name": "S2_label",
       "type": "text",
       "track": 5,
-      "time": 0, "duration": 0,
-      "x": "60%", "y": "18%",
-      "width": "62%", "height": "auto",
+      "time": 3, "duration": 9,
+      "x": "50%", "y": "9%",
+      "width": "92%", "height": "auto",
       "x_alignment": "50%", "y_alignment": "50%",
-      "text": "",
+      "text": "Votre exemple est déjà prêt",
       "font_family": "Inter",
       "font_weight": "700",
-      "font_size":   "40",
-      "line_height": "125%",
-      "fill_color":  "#FFFFFF",
-      "text_alignment": "left",
+      "font_size":   "48",
+      "fill_color":  "#FF5050",
+      "text_alignment": "center",
       "animations": [
-        { "time": 0, "duration": 0.25, "type": "fade", "easing": "quadratic-out" }
-      ],
-      "_comment": "Gabarit : dupliqué et timé phrase par phrase par l'orchestrateur Python (substitution dynamique du script HeyGen)."
+        { "time": 0,   "duration": 0.5, "type": "fade", "easing": "quadratic-out" },
+        { "time": 8.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
+      ]
     },
 
     {
-      "name": "Mockup_right",
+      "name": "S2_mockup",
       "type": "image",
       "track": 6,
-      "time": 2, "duration": 22,
-      "x": "50%", "y": "62%",
-      "width": "100%", "height": "75%",
+      "time": 3, "duration": 9,
+      "x": "50%", "y": "57%",
+      "width": "92%", "height": "78%",
       "x_alignment": "50%", "y_alignment": "50%",
       "fit": "contain",
       "source": "{{mockup_url}}",
       "animations": [
-        { "time": 0,    "duration": 0.6, "type": "fade", "easing": "quadratic-out" },
-        { "time": 0,    "duration": 0.8, "type": "scale", "scope": "element", "start_scale": "96%", "end_scale": "100%", "easing": "quadratic-out" },
-        { "time": 21.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
-      ],
-      "_comment": "Mockup principal — décalé à gauche (62% largeur) pour laisser place au Coupon_zoom."
+        { "time": 0,   "duration": 0.6, "type": "fade", "easing": "quadratic-out" },
+        { "time": 0,   "duration": 9.0, "type": "scale", "scope": "element", "start_scale": "98%", "end_scale": "103%", "easing": "linear" },
+        { "time": 8.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
+      ]
     },
 
-
     {
-      "name": "CTA_text",
+      "name": "S3_hook",
       "type": "text",
-      "track": 8,
-      "time": 24, "duration": 6,
-      "x": "50%", "y": "50%",
+      "track": 7,
+      "time": 12, "duration": 6,
+      "x": "50%", "y": "22%",
       "width": "84%", "height": "auto",
       "x_alignment": "50%", "y_alignment": "50%",
-      "text": "Votre démonstration est déjà prête.",
+      "text": "Je vous ai préparé l'exemple ici :",
       "font_family": "Inter",
-      "font_weight": "800",
-      "font_size":   "72",
-      "line_height": "120%",
+      "font_weight": "600",
+      "font_size":   "46",
       "fill_color":  "#FFFFFF",
       "text_alignment": "center",
       "animations": [
         { "time": 0, "duration": 0.5, "type": "fade", "easing": "quadratic-out" }
-      ],
-      "_comment": "CTA final, 6 dernières secondes en fullscreen (les étapes intermédiaires retirées)."
+      ]
     },
 
     {
-      "name": "Watermark_Fidelavis",
+      "name": "S3_wallet_url",
       "type": "text",
+      "track": 8,
+      "time": 12, "duration": 6,
+      "x": "50%", "y": "34%",
+      "width": "92%", "height": "auto",
+      "x_alignment": "50%", "y_alignment": "50%",
+      "text": "{{wallet_url}}",
+      "font_family": "Inter",
+      "font_weight": "800",
+      "font_size":   "42",
+      "fill_color":  "#FF5050",
+      "text_alignment": "center",
+      "animations": [
+        { "time": 0,   "duration": 0.5, "type": "fade", "easing": "quadratic-out" },
+        { "time": 0.5, "duration": 5.0, "type": "scale", "scope": "element", "start_scale": "100%", "end_scale": "104%", "easing": "linear" }
+      ]
+    },
+
+    {
+      "name": "S3_avatar_small",
+      "type": "video",
       "track": 9,
-      "time": 0, "duration": 30,
+      "time": 12, "duration": 6,
+      "x": "18%", "y": "58%",
+      "width": "180px", "height": "180px",
+      "x_alignment": "50%", "y_alignment": "20%",
+      "border_radius": "180px",
+      "fit": "cover",
+      "source": "{{avatar_video_url}}",
+      "audio_track": 1,
+      "animations": [
+        { "time": 0, "duration": 0.5, "type": "fade", "easing": "quadratic-out" }
+      ]
+    },
+
+    {
+      "name": "S3_mockup_small",
+      "type": "image",
+      "track": 10,
+      "time": 12, "duration": 6,
+      "x": "62%", "y": "62%",
+      "width": "60%", "height": "66%",
+      "x_alignment": "50%", "y_alignment": "50%",
+      "fit": "contain",
+      "source": "{{mockup_url}}",
+      "animations": [
+        { "time": 0, "duration": 0.5, "type": "fade", "easing": "quadratic-out" }
+      ]
+    },
+
+    {
+      "name": "S3_outro",
+      "type": "text",
+      "track": 11,
+      "time": 14, "duration": 4,
+      "x": "50%", "y": "93%",
+      "width": "84%", "height": "auto",
+      "x_alignment": "50%", "y_alignment": "50%",
+      "text": "Vous pouvez le tester directement.",
+      "font_family": "Inter",
+      "font_weight": "600",
+      "font_size":   "36",
+      "fill_color":  "#E8E6E2",
+      "text_alignment": "center",
+      "animations": [
+        { "time": 0, "duration": 0.5, "type": "fade", "easing": "quadratic-out" }
+      ]
+    },
+
+    {
+      "name": "Watermark",
+      "type": "text",
+      "track": 12,
+      "time": 0, "duration": 18,
       "x": "50%", "y": "97%",
-      "width": "80%",
+      "width": "80%", "height": "auto",
       "x_alignment": "50%", "y_alignment": "50%",
       "text": "Fidelavis",
       "font_family": "Inter",
       "font_weight": "600",
       "font_size":   "24",
       "letter_spacing": "8%",
-      "fill_color":  "rgba(255,255,255,0.55)",
+      "fill_color":  "rgba(255,255,255,0.4)",
       "text_alignment": "center"
     }
 

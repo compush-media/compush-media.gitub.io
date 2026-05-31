@@ -338,6 +338,9 @@ def process_one(record: dict, heygen_cfg: dict, creato_source: dict,
         "restaurant_name":  record["restaurant_name"],
         "avatar_video_url": avatar_url,
         "mockup_url":       record["mockup_url"],
+        "wallet_url":       record.get("wallet_url", f"{PUBLIC_BASE}/{record['slug']}/"),
+        "demo_url":         record.get("demo_url",   f"{PUBLIC_BASE}/{record['slug']}/demo/"),
+        "first_name":       record.get("restaurant_name", ""),
     }
     if creato_template_id:
         source_to_send = None
@@ -434,7 +437,7 @@ def sharpen_mp4(video_path: Path) -> Path | None:
 
 
 # ── Frame extraction (pilote / report) ───────────────────────────────
-SCENE_TIMESTAMPS = [1.0, 5.0, 12.0, 20.0, 25.0, 29.0]   # s — flow narratif
+SCENE_TIMESTAMPS = [1.5, 4.5, 7.5, 11.0, 14.0, 17.0]    # s — 3 scènes × 2 captures
 
 def extract_scene_frames(video_path: Path, slug: str) -> list[dict]:
     """Extrait quelques frames clés. Renvoie [{t, path}] ou [] si outil indispo."""

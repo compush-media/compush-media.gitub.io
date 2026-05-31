@@ -6,39 +6,39 @@
     "wallet_url": "https://app.cartefidelavis.com/jolia/",
     "demo_url": "https://app.cartefidelavis.com/jolia/demo/",
     "status": "success",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/5f1c268c304e40e7b0c45bcedf09971c.mp4?Expires=1780849758&Signature=cCoA8M3s8Ay2xuG66zAt87NH8xMgksHtbdi-Ttg7HqbaF~H6~76oXDZqPSd18YdF8dkHRQIjS1voiDul9h0cL1icQY324AYF2jGfh6TevYrGhFoOla89QLTV5-n1MC5ffXlzXH2G3XTm2q9qUT-qmFFsj4c3i-UxcmoGi8-ZRYx4BGoZohlt96dDzTflUnuZ10hZhiXt-uWFALCGZYaOEDW3195TIghJa6Q1-B~-oB~4-Fu9H-inbAWBo0TWP5t~pdlrcORe1G4QAcSKqVhG8C0Ucb5CxqzgtHawRN9u5Q7b~56j~XIy1irXIGIUynHoZZGn340NsQRDzJCt~Ofhcw__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/f93303fcaafe4ccea96390742e157d63.mp4?Expires=1780869998&Signature=K6TLZedZBSw3j9PfV~Gi6IUjeiydjhJBh8zwmd5AtjXvbrOfkDyCQ1n6swZh67GGz2y~eaU1ghbqaDX2MhXiuSOxcQIRTNCXhlg~h7EolO6E~w1zTmv05D~8QShErCoP8tcRQRfAdfMo4Cxd2JDGe5gPNKWcdf1JxHIJNQxZZbtb~i9xr879KAH1f8E3z6Q69xPTKE1lBJLSD1vq8tFGc~XT-lIun9AsRwHl8bLVKB8NIc1do7Ih4LzSRT3sFpYGD6vm0XdWuVMT2~FyJn8c0dY6~XFJIrAgB-iZVYSwXMDBmW6TFR4zp4RzE4BUQ8HVrVzSGH8JmXd-7shdQa2hFw__&Key-Pair-Id=K38HBHX5LX3X2H",
     "heygen_video_id": "<reused>",
     "heygen_elapsed_s": 0,
-    "creatomate_render_id": "a5c3cee1-eef7-4b75-9a68-8c1f7cd9a997",
-    "creatomate_video_url": "https://f002.backblazeb2.com/file/creatomate-c8xg3hsxdu/a5c3cee1-eef7-4b75-9a68-8c1f7cd9a997.mp4",
+    "creatomate_render_id": "7b0600f9-8fc3-426d-b3c4-8005c3698deb",
+    "creatomate_video_url": "https://f002.backblazeb2.com/file/creatomate-c8xg3hsxdu/7b0600f9-8fc3-426d-b3c4-8005c3698deb.mp4",
     "output_file": "dm_videos/jolia-dm.mp4",
-    "output_size_mb": 0.47,
-    "output_size_mb_hq": 3.83,
-    "total_elapsed_s": 17.3,
+    "output_size_mb": 0.42,
+    "output_size_mb_hq": 6.34,
+    "total_elapsed_s": 23.5,
     "scenes": [
       {
-        "t": 1.0,
-        "path": "dm_videos/jolia_scenes/scene_0010.png"
+        "t": 1.5,
+        "path": "dm_videos/jolia_scenes/scene_0015.png"
       },
       {
-        "t": 5.0,
-        "path": "dm_videos/jolia_scenes/scene_0050.png"
+        "t": 4.5,
+        "path": "dm_videos/jolia_scenes/scene_0045.png"
       },
       {
-        "t": 12.0,
-        "path": "dm_videos/jolia_scenes/scene_0120.png"
+        "t": 7.5,
+        "path": "dm_videos/jolia_scenes/scene_0075.png"
       },
       {
-        "t": 20.0,
-        "path": "dm_videos/jolia_scenes/scene_0200.png"
+        "t": 11.0,
+        "path": "dm_videos/jolia_scenes/scene_0110.png"
       },
       {
-        "t": 25.0,
-        "path": "dm_videos/jolia_scenes/scene_0250.png"
+        "t": 14.0,
+        "path": "dm_videos/jolia_scenes/scene_0140.png"
       },
       {
-        "t": 29.0,
-        "path": "dm_videos/jolia_scenes/scene_0290.png"
+        "t": 17.0,
+        "path": "dm_videos/jolia_scenes/scene_0170.png"
       }
     ]
   }
