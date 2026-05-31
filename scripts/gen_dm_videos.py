@@ -290,11 +290,50 @@ def process_one(record: dict, heygen_cfg: dict, creato_source: dict,
     size_bytes = http_download(final_url, out_path)
     entry["output_file"]    = str(out_path.relative_to(ROOT))
     entry["output_size_mb"] = round(size_bytes / (1024 * 1024), 2)
+
+    # 4. Post-process ffmpeg : sharpen + CRF 18 → vidéo plus nette
+    sharpened = sharpen_mp4(out_path)
+    if sharpened:
+        entry["output_size_mb_hq"] = round(sharpened.stat().st_size / (1024 * 1024), 2)
+
     entry["total_elapsed_s"] = round(time.time() - started, 1)
 
-    # 4. Extraction des scènes clés (si imageio_ffmpeg dispo)
+    # 5. Extraction des scènes clés (si imageio_ffmpeg dispo)
     entry["scenes"] = extract_scene_frames(out_path, record["slug"])
     return entry
+
+
+# ── Post-process : ré-encode net (CRF 18 + unsharp) ──────────────────
+def sharpen_mp4(video_path: Path) -> Path | None:
+    """Re-encode l'mp4 téléchargé en CRF 18 avec un filtre unsharp pour gommer
+    le flou de compression Creatomate. Remplace le fichier d'origine en place.
+    Sans imageio-ffmpeg : retourne None et garde l'original tel quel."""
+    try:
+        import imageio_ffmpeg
+        ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        print("  ⚠ imageio-ffmpeg manquant — pas de post-process net.")
+        return None
+    import subprocess
+    tmp = video_path.with_suffix(".sharp.mp4")
+    try:
+        subprocess.run(
+            [ffmpeg, "-y", "-i", str(video_path),
+             "-vf", "unsharp=lx=5:ly=5:la=1.1:cx=3:cy=3:ca=0.0",
+             "-c:v", "libx264", "-preset", "slow", "-crf", "18",
+             "-c:a", "copy", "-movflags", "+faststart",
+             str(tmp)],
+            check=True, capture_output=True, timeout=180,
+        )
+        tmp.replace(video_path)
+        print(f"  ✓ sharpen OK → {video_path.stat().st_size/(1024*1024):.2f} MB")
+        return video_path
+    except subprocess.CalledProcessError as e:
+        print(f"  ⚠ sharpen échoué : {e.stderr.decode()[:200] if e.stderr else e}")
+        return None
+    except Exception as e:
+        print(f"  ⚠ sharpen exception : {e}")
+        return None
 
 
 # ── Frame extraction (pilote / report) ───────────────────────────────

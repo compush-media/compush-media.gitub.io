@@ -44,14 +44,32 @@
     },
 
     {
-      "name": "Avatar_left",
-      "type": "video",
+      "name": "Mockup_right",
+      "type": "image",
       "track": 4,
       "time": 2, "duration": 22,
-      "x": "20%", "y": "52%",
-      "width": "37%", "height": "70%",
+      "x": "58%", "y": "50%",
+      "width": "72%", "height": "92%",
       "x_alignment": "50%", "y_alignment": "50%",
-      "border_radius": "32px",
+      "fit": "contain",
+      "source": "{{mockup_url}}",
+      "animations": [
+        { "time": 0,    "duration": 0.6, "type": "fade", "easing": "quadratic-out" },
+        { "time": 0,    "duration": 0.8, "type": "scale", "scope": "element", "start_scale": "94%", "end_scale": "100%", "easing": "quadratic-out" },
+        { "time": 21.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
+      ],
+      "_comment": "Mockup iPhone DOMINANT (72% largeur × 92% hauteur), centré-droit."
+    },
+
+    {
+      "name": "Avatar_left",
+      "type": "video",
+      "track": 5,
+      "time": 2, "duration": 22,
+      "x": "16%", "y": "78%",
+      "width": "26%", "height": "36%",
+      "x_alignment": "50%", "y_alignment": "50%",
+      "border_radius": "20px",
       "fit": "cover",
       "source": "{{avatar_video_url}}",
       "audio_track": 1,
@@ -59,75 +77,14 @@
         { "time": 0,    "duration": 0.5,  "type": "fade", "easing": "quadratic-out" },
         { "time": 21.5, "duration": 0.5,  "type": "fade", "reversed": true, "easing": "quadratic-in" }
       ],
-      "_comment": "Vidéo HeyGen ~22s, débute à t=2s. Coin gauche, ~37% de la largeur."
-    },
-
-    {
-      "name": "Mockup_right",
-      "type": "image",
-      "track": 5,
-      "time": 2, "duration": 22,
-      "x": "70%", "y": "52%",
-      "width": "58%", "height": "88%",
-      "x_alignment": "50%", "y_alignment": "50%",
-      "fit": "contain",
-      "source": "{{mockup_url}}",
-      "animations": [
-        { "time": 0,    "duration": 0.6, "type": "fade", "easing": "quadratic-out" },
-        { "time": 0,    "duration": 0.8, "type": "scale", "scope": "element", "start_scale": "92%", "end_scale": "100%", "easing": "quadratic-out" },
-        { "time": 21.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
-      ],
-      "_comment": "Mockup iPhone à droite, visible 2-24s (sort en fade pour libérer la scène aux Steps + CTA fullscreen)."
-    },
-
-    {
-      "name": "Restaurant_caption",
-      "type": "text",
-      "track": 6,
-      "time": 2.5, "duration": 21.5,
-      "x": "20%", "y": "92%",
-      "width": "37%",
-      "x_alignment": "50%", "y_alignment": "50%",
-      "text": "{{restaurant_name}}",
-      "font_family": "Inter",
-      "font_weight": "600",
-      "font_size":   "32",
-      "line_height": "120%",
-      "fill_color":  "#E8E6E2",
-      "text_alignment": "center",
-      "animations": [
-        { "time": 0, "duration": 0.4, "type": "fade" }
-      ],
-      "_comment": "Petit caption sous l'avatar avec le nom du resto."
-    },
-
-    {
-      "name": "Steps_text",
-      "type": "text",
-      "track": 7,
-      "time": 24, "duration": 4,
-      "x": "50%", "y": "50%",
-      "width": "90%", "height": "auto",
-      "x_alignment": "50%", "y_alignment": "50%",
-      "text": "Scan  →  Offre activée  →  Client fidélisé",
-      "font_family": "Inter",
-      "font_weight": "700",
-      "font_size":   "62",
-      "line_height": "120%",
-      "fill_color":  "#FFFFFF",
-      "text_alignment": "center",
-      "animations": [
-        { "time": 0,   "duration": 0.5, "type": "fade", "easing": "quadratic-out" },
-        { "time": 3.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
-      ],
-      "_comment": "Carte récap (le mockup reste affiché à droite en arrière-plan)."
+      "_comment": "Anna PETITE en bas-gauche (26% largeur × 36% hauteur), nettement plus petite que l'iPhone."
     },
 
     {
       "name": "CTA_text",
       "type": "text",
       "track": 8,
-      "time": 28, "duration": 2,
+      "time": 24, "duration": 6,
       "x": "50%", "y": "50%",
       "width": "84%", "height": "auto",
       "x_alignment": "50%", "y_alignment": "50%",
@@ -141,7 +98,7 @@
       "animations": [
         { "time": 0, "duration": 0.5, "type": "fade", "easing": "quadratic-out" }
       ],
-      "_comment": "CTA final 2 dernières secondes."
+      "_comment": "CTA final, 6 dernières secondes en fullscreen (les étapes intermédiaires retirées)."
     },
 
     {
