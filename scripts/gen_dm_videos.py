@@ -353,14 +353,9 @@ def process_one(record: dict, heygen_cfg: dict, creato_source: dict,
                 start_t=avatar_el.get("time", 2),
                 total_dur=avatar_el.get("duration", 22),
             )
-        # Coupon zoom : remplace Coupon_zoom.source par un crop local en base64
-        # (évite un upload externe et reste cohérent par resto).
-        mockup_local = ROOT / "mockups" / f"{record['slug']}-iphone.png"
-        zoom_uri = _coupon_zoom_data_uri(mockup_local)
-        if zoom_uri:
-            for el in source_to_send["elements"]:
-                if el.get("name") == "Coupon_zoom":
-                    el["source"] = zoom_uri
+        # Coupon zoom : on garde l'URL publique définie dans le template
+        # (data: URIs refusées par Creatomate ; PNG cropé committé dans
+        # /mockups/<slug>-coupon-zoom.png et servi par GitHub Pages).
         modifications  = {}
     ct = creatomate_render(creato_key, creato_template_id, source_to_send, modifications)
     entry["creatomate_render_id"] = ct["id"]
