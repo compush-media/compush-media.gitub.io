@@ -64,25 +64,24 @@
     },
 
     {
-      "name": "Avatar_subtitle",
+      "name": "Subtitle_template",
       "type": "text",
       "track": 5,
-      "time": 2, "duration": 22,
+      "time": 0, "duration": 0,
       "x": "60%", "y": "18%",
       "width": "62%", "height": "auto",
       "x_alignment": "50%", "y_alignment": "50%",
-      "text": "Découvrez votre wallet\nde fidélité personnalisé",
+      "text": "",
       "font_family": "Inter",
       "font_weight": "700",
-      "font_size":   "42",
-      "line_height": "120%",
-      "fill_color":  "#E8E6E2",
+      "font_size":   "40",
+      "line_height": "125%",
+      "fill_color":  "#FFFFFF",
       "text_alignment": "left",
       "animations": [
-        { "time": 0,    "duration": 0.5,  "type": "fade", "easing": "quadratic-out" },
-        { "time": 21.5, "duration": 0.5,  "type": "fade", "reversed": true, "easing": "quadratic-in" }
+        { "time": 0, "duration": 0.25, "type": "fade", "easing": "quadratic-out" }
       ],
-      "_comment": "Sous-titre à droite d'Anna, mêmes timings."
+      "_comment": "Gabarit : dupliqué et timé phrase par phrase par l'orchestrateur Python (substitution dynamique du script HeyGen)."
     },
 
     {
@@ -100,8 +99,9 @@
         { "time": 0,    "duration": 0.8, "type": "scale", "scope": "element", "start_scale": "96%", "end_scale": "100%", "easing": "quadratic-out" },
         { "time": 21.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
       ],
-      "_comment": "Mockup iPhone dans la moitié basse, taille préservée pour lire le coupon."
+      "_comment": "Mockup principal — décalé à gauche (62% largeur) pour laisser place au Coupon_zoom."
     },
+
 
     {
       "name": "CTA_text",

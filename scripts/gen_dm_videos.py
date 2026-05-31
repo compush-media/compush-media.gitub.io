@@ -206,6 +206,68 @@ def _substitute_vars(source: dict, vars: dict) -> dict:
     return json.loads(s)
 
 
+def _coupon_zoom_data_uri(mockup_path: Path) -> str | None:
+    """Crop la zone du coupon dans le mockup PNG, upscale 2× pour la netteté,
+    encode en data: URI pour injection directe dans Creatomate."""
+    try:
+        from PIL import Image
+        import base64, io
+    except Exception:
+        return None
+    if not mockup_path.exists():
+        return None
+    img = Image.open(mockup_path)
+    w, h = img.size
+    # Bornes de la carte offre dans le mockup (proportions du wallet brunch).
+    # À ajuster si le wallet est restructuré.
+    crop = img.crop((int(w*0.12), int(h*0.39), int(w*0.88), int(h*0.56)))
+    # Upscale 2× lanczos pour rendre le texte plus net après recompression.
+    crop = crop.resize((crop.width * 2, crop.height * 2), Image.LANCZOS)
+    buf = io.BytesIO()
+    crop.save(buf, "PNG", optimize=True)
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+
+
+def _inject_timed_subtitles(source: dict, script: str,
+                            start_t: float, total_dur: float) -> dict:
+    """Trouve l'élément 'Subtitle_template' dans la source et le remplace par
+    une série d'éléments timés issus du script HeyGen (1 par phrase).
+
+    Le timing est proportionnel à la longueur de chaque phrase (≈ vitesse de
+    parole constante). Pas exact à la milliseconde mais cohérent avec la voix.
+    """
+    import re
+    elements = source.get("elements", [])
+    template = next((e for e in elements if e.get("name") == "Subtitle_template"), None)
+    if not template:
+        return source  # rien à faire
+
+    # Découpe par ponctuation forte (. ! ?) puis nettoie
+    parts = [p.strip() for p in re.split(r'(?<=[.!?])\s+', script.strip()) if p.strip()]
+    if not parts:
+        elements.remove(template)
+        source["elements"] = elements
+        return source
+
+    total_chars = sum(len(p) for p in parts) or 1
+    speech = max(2.0, total_dur - 1.0)   # buffer 1 s pour les fades
+
+    new_elements = [e for e in elements if e.get("name") != "Subtitle_template"]
+    t = start_t
+    for i, text in enumerate(parts):
+        dur = max(1.2, round((len(text) / total_chars) * speech, 2))
+        el = json.loads(json.dumps(template))   # copie profonde
+        el["name"]     = f"Subtitle_{i+1}"
+        el["text"]     = text
+        el["time"]     = round(t, 2)
+        el["duration"] = dur
+        new_elements.append(el)
+        t += dur
+
+    source["elements"] = new_elements
+    return source
+
+
 def _previous_heygen_url(slug: str) -> str | None:
     """Si un run précédent a obtenu une URL HeyGen, on la réutilise pour ne
     pas reconsommer de crédits sur une erreur Creatomate à corriger."""
@@ -279,6 +341,26 @@ def process_one(record: dict, heygen_cfg: dict, creato_source: dict,
         modifications  = template_vars
     else:
         source_to_send = _substitute_vars(creato_source, template_vars)
+        # Sous-titres dynamiques : transforme Subtitle_template en N éléments
+        # timés synchrones avec la voix générée par HeyGen.
+        script = heygen_cfg["script_template"].replace(
+            "{{restaurant_name}}", record["restaurant_name"]
+        )
+        avatar_el = next((e for e in source_to_send["elements"] if e.get("name") == "Avatar_circle"), None)
+        if avatar_el:
+            source_to_send = _inject_timed_subtitles(
+                source_to_send, script,
+                start_t=avatar_el.get("time", 2),
+                total_dur=avatar_el.get("duration", 22),
+            )
+        # Coupon zoom : remplace Coupon_zoom.source par un crop local en base64
+        # (évite un upload externe et reste cohérent par resto).
+        mockup_local = ROOT / "mockups" / f"{record['slug']}-iphone.png"
+        zoom_uri = _coupon_zoom_data_uri(mockup_local)
+        if zoom_uri:
+            for el in source_to_send["elements"]:
+                if el.get("name") == "Coupon_zoom":
+                    el["source"] = zoom_uri
         modifications  = {}
     ct = creatomate_render(creato_key, creato_template_id, source_to_send, modifications)
     entry["creatomate_render_id"] = ct["id"]
