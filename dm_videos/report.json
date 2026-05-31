@@ -1,72 +1,44 @@
 [
   {
-    "slug": "brother-sister-brunch-lunch-dinner",
-    "restaurant_name": "BROTHER SISTER Brunch Lunch Dinner",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/brother-sister-brunch-lunch-dinner-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/",
-    "demo_url": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/demo/",
-    "status": "dry-run",
-    "script_preview": "Bonjour. J'ai préparé une démonstration personnalisée pour BROTHER SISTER Brunch Lunch Dinner. Vos clients scannent simplement un QR code ou une carte NFC. Ils reçoivent immédiatement une offre et reviennent plus souvent.",
-    "modifications": {
-      "restaurant_name": "BROTHER SISTER Brunch Lunch Dinner",
-      "avatar_video_url": "<<HeyGen MP4 — généré au runtime>>",
-      "mockup_url": "https://app.cartefidelavis.com/mockups/brother-sister-brunch-lunch-dinner-iphone.png"
-    }
-  },
-  {
-    "slug": "deux-restaurant-bistrot-de-chefs",
-    "restaurant_name": "Deux Restaurant : Bistrot de chefs",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/deux-restaurant-bistrot-de-chefs-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/",
-    "demo_url": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/demo/",
-    "status": "dry-run",
-    "script_preview": "Bonjour. J'ai préparé une démonstration personnalisée pour Deux Restaurant : Bistrot de chefs. Vos clients scannent simplement un QR code ou une carte NFC. Ils reçoivent immédiatement une offre et reviennent plus souvent.",
-    "modifications": {
-      "restaurant_name": "Deux Restaurant : Bistrot de chefs",
-      "avatar_video_url": "<<HeyGen MP4 — généré au runtime>>",
-      "mockup_url": "https://app.cartefidelavis.com/mockups/deux-restaurant-bistrot-de-chefs-iphone.png"
-    }
-  },
-  {
     "slug": "jolia",
     "restaurant_name": "Jolia",
     "mockup_url": "https://app.cartefidelavis.com/mockups/jolia-iphone.png",
     "wallet_url": "https://app.cartefidelavis.com/jolia/",
     "demo_url": "https://app.cartefidelavis.com/jolia/demo/",
-    "status": "dry-run",
-    "script_preview": "Bonjour. J'ai préparé une démonstration personnalisée pour Jolia. Vos clients scannent simplement un QR code ou une carte NFC. Ils reçoivent immédiatement une offre et reviennent plus souvent.",
-    "modifications": {
-      "restaurant_name": "Jolia",
-      "avatar_video_url": "<<HeyGen MP4 — généré au runtime>>",
-      "mockup_url": "https://app.cartefidelavis.com/mockups/jolia-iphone.png"
-    }
-  },
-  {
-    "slug": "kafkaf-paris-11",
-    "restaurant_name": "Kafkaf - Paris 11",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/kafkaf-paris-11-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/kafkaf-paris-11/",
-    "demo_url": "https://app.cartefidelavis.com/kafkaf-paris-11/demo/",
-    "status": "dry-run",
-    "script_preview": "Bonjour. J'ai préparé une démonstration personnalisée pour Kafkaf - Paris 11. Vos clients scannent simplement un QR code ou une carte NFC. Ils reçoivent immédiatement une offre et reviennent plus souvent.",
-    "modifications": {
-      "restaurant_name": "Kafkaf - Paris 11",
-      "avatar_video_url": "<<HeyGen MP4 — généré au runtime>>",
-      "mockup_url": "https://app.cartefidelavis.com/mockups/kafkaf-paris-11-iphone.png"
-    }
-  },
-  {
-    "slug": "ter",
-    "restaurant_name": "Ter.",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/ter-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/ter/",
-    "demo_url": "https://app.cartefidelavis.com/ter/demo/",
-    "status": "dry-run",
-    "script_preview": "Bonjour. J'ai préparé une démonstration personnalisée pour Ter.. Vos clients scannent simplement un QR code ou une carte NFC. Ils reçoivent immédiatement une offre et reviennent plus souvent.",
-    "modifications": {
-      "restaurant_name": "Ter.",
-      "avatar_video_url": "<<HeyGen MP4 — généré au runtime>>",
-      "mockup_url": "https://app.cartefidelavis.com/mockups/ter-iphone.png"
-    }
+    "status": "success",
+    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/871a7e07f6d240f6819af60a43965692.mp4?Expires=1780798678&Signature=byhc2st95-0Q~Vn1RT6eklv~eu8g3dE7ucYWoU2U-TK9YGiDvP8K8hA6NDdmD42TYQjNEjBQX3cWLN13~a0aBAz4PcBwenQvrVQIeOph8al1e2MXuLpxuQxaCo-4joS-FU5uTG358BXRTpjdKG0qLr-Y9a0jGTW8mwJWW5aolPCEuf-z4JSrBiZjLgRWPOC4Dmtj765S865WwYtcSABSiRfiA-aV7UgljM91lC2Y0MaXIC26mpMb3qexTdnPwODi5GE5Q6vS3Gb2WuysF5BDjjtIohkQqM3IEFMNlZsOYj3tGEu57f6d4Q3jK5RIa0WLdwvM89z41K01lMYzZ1NbjA__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "heygen_video_id": "<reused>",
+    "heygen_elapsed_s": 0,
+    "creatomate_render_id": "316ee4d4-56e1-4c4e-8903-9bc8cc20898b",
+    "creatomate_video_url": "https://f002.backblazeb2.com/file/creatomate-c8xg3hsxdu/316ee4d4-56e1-4c4e-8903-9bc8cc20898b.mp4",
+    "output_file": "dm_videos/jolia-dm.mp4",
+    "output_size_mb": 0.48,
+    "total_elapsed_s": 11.0,
+    "scenes": [
+      {
+        "t": 1.0,
+        "path": "dm_videos/jolia_scenes/scene_0010.png"
+      },
+      {
+        "t": 5.0,
+        "path": "dm_videos/jolia_scenes/scene_0050.png"
+      },
+      {
+        "t": 12.0,
+        "path": "dm_videos/jolia_scenes/scene_0120.png"
+      },
+      {
+        "t": 20.0,
+        "path": "dm_videos/jolia_scenes/scene_0200.png"
+      },
+      {
+        "t": 25.0,
+        "path": "dm_videos/jolia_scenes/scene_0250.png"
+      },
+      {
+        "t": 29.0,
+        "path": "dm_videos/jolia_scenes/scene_0290.png"
+      }
+    ]
   }
 ]

@@ -22,19 +22,6 @@
     },
 
     {
-      "name": "Subtle_Glow",
-      "type": "shape",
-      "track": 2,
-      "time": 0, "duration": 30,
-      "x": "50%", "y": "50%", "width": "120%", "height": "80%",
-      "x_alignment": "50%", "y_alignment": "50%",
-      "fill_color": "rgba(255,255,255,0.04)",
-      "border_radius": "50%",
-      "shadow_blur": "120px",
-      "_comment": "Halo central doux pour profondeur."
-    },
-
-    {
       "name": "Title_intro",
       "type": "text",
       "track": 3,
@@ -42,7 +29,7 @@
       "x": "50%", "y": "50%",
       "width": "84%", "height": "auto",
       "x_alignment": "50%", "y_alignment": "50%",
-      "text": "Démo personnalisée\\npour {{restaurant_name}}",
+      "text": "Démo personnalisée\npour {{restaurant_name}}",
       "font_family": "Inter",
       "font_weight": "700",
       "font_size":   "78",
@@ -79,7 +66,7 @@
       "name": "Mockup_right",
       "type": "image",
       "track": 5,
-      "time": 2, "duration": 28,
+      "time": 2, "duration": 22,
       "x": "70%", "y": "52%",
       "width": "58%", "height": "88%",
       "x_alignment": "50%", "y_alignment": "50%",
@@ -87,9 +74,10 @@
       "source": "{{mockup_url}}",
       "animations": [
         { "time": 0,    "duration": 0.6, "type": "fade", "easing": "quadratic-out" },
-        { "time": 0,    "duration": 0.8, "type": "scale", "scope": "element", "start_scale": "92%", "end_scale": "100%", "easing": "quadratic-out" }
+        { "time": 0,    "duration": 0.8, "type": "scale", "scope": "element", "start_scale": "92%", "end_scale": "100%", "easing": "quadratic-out" },
+        { "time": 21.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
       ],
-      "_comment": "Mockup iPhone à droite, visible de t=2 à t=30 (continuité visuelle)."
+      "_comment": "Mockup iPhone à droite, visible 2-24s (sort en fade pour libérer la scène aux Steps + CTA fullscreen)."
     },
 
     {

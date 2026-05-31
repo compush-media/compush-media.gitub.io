@@ -1,8 +1,8 @@
 {
   "_comment": "Configuration HeyGen pour la génération des avatars personnalisés. À remplacer : avatar_id et voice_id (récupérés depuis le dashboard HeyGen). L'avatar reste IDENTIQUE pour tous les restaurants — seul le script change via {{restaurant_name}}.",
 
-  "avatar_id": "REPLACE_WITH_YOUR_AVATAR_ID",
-  "voice_id":  "REPLACE_WITH_YOUR_VOICE_ID",
+  "avatar_id": "Annie_Business_Casual_Standing_Front_public",
+  "voice_id":  "73dbbd240e794b28943ec8dfa28f3e16",
   "avatar_style": "normal",
 
   "dimension": { "width": 720, "height": 1280 },

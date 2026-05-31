@@ -21,7 +21,7 @@ Usage :
                                                          #   + scènes capturées dans dm_videos/<slug>_scenes/
 """
 from __future__ import annotations
-import argparse, json, os, sys, time, traceback, urllib.parse, urllib.request
+import argparse, json, os, sys, time, traceback, urllib.error, urllib.parse, urllib.request
 from pathlib import Path
 from typing import Iterable
 
@@ -47,14 +47,28 @@ EXCLUDED_DIRS = {
 
 
 # ── Utilitaires HTTP ─────────────────────────────────────────────────
+# Creatomate est derrière Cloudflare et refuse les User-Agent vides
+# (erreur 1010). On en envoie un explicite à TOUTES les requêtes.
+DEFAULT_UA = "FidelavisPipeline/1.0 (Python; +https://app.cartefidelavis.com)"
+
 def http_json(url: str, method: str = "GET", headers: dict | None = None,
               body: dict | None = None, timeout: int = 60) -> dict:
     data = json.dumps(body).encode("utf-8") if body is not None else None
-    req  = urllib.request.Request(url, data=data, method=method,
-                                  headers={"Content-Type": "application/json", **(headers or {})})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        raw = resp.read().decode("utf-8")
-    return json.loads(raw) if raw else {}
+    final_headers = {
+        "Content-Type": "application/json",
+        "Accept":       "application/json",
+        "User-Agent":   DEFAULT_UA,
+        **(headers or {}),
+    }
+    req  = urllib.request.Request(url, data=data, method=method, headers=final_headers)
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            raw = resp.read().decode("utf-8")
+        return json.loads(raw) if raw else {}
+    except urllib.error.HTTPError as e:
+        # Lève une erreur enrichie pour le diagnostic
+        body_text = e.read().decode("utf-8", errors="replace")[:400]
+        raise RuntimeError(f"HTTP {e.code} {method} {url} → {body_text}") from e
 
 
 def http_download(url: str, out: Path, timeout: int = 300) -> int:
@@ -183,11 +197,47 @@ def restaurant_record(slug: str, registry: dict) -> dict:
 
 
 # ── Pipeline principal ───────────────────────────────────────────────
+def _substitute_vars(source: dict, vars: dict) -> dict:
+    """Remplace toutes les chaînes `{{nom}}` par leur valeur dans la source
+    Creatomate envoyée inline (substitution récursive via sérialisation)."""
+    s = json.dumps(source, ensure_ascii=False)
+    for k, v in vars.items():
+        s = s.replace("{{" + k + "}}", str(v))
+    return json.loads(s)
+
+
+def _previous_heygen_url(slug: str) -> str | None:
+    """Si un run précédent a obtenu une URL HeyGen, on la réutilise pour ne
+    pas reconsommer de crédits sur une erreur Creatomate à corriger."""
+    if not REPORT.exists():
+        return None
+    try:
+        prev = json.loads(REPORT.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    for e in prev:
+        if e.get("slug") == slug and e.get("heygen_video_url"):
+            url = e["heygen_video_url"]
+            # Vérifie HEAD que l'URL HeyGen est encore valide (les liens ont une TTL).
+            try:
+                req = urllib.request.Request(url, method="HEAD",
+                                             headers={"User-Agent": DEFAULT_UA})
+                with urllib.request.urlopen(req, timeout=15) as r:
+                    if r.status == 200:
+                        return url
+            except Exception:
+                pass
+    return None
+
+
 def process_one(record: dict, heygen_cfg: dict, creato_source: dict,
                 heygen_key: str, creato_key: str, creato_template_id: str | None,
-                dry_run: bool) -> dict:
+                dry_run: bool, partial: dict | None = None) -> dict:
     started = time.time()
-    entry = {**record, "status": "success"}
+    # `partial` permet à main() d'observer l'avancement même en cas d'exception
+    # (notamment de garder heygen_video_url si Creatomate plante après).
+    entry = partial if partial is not None else {**record, "status": "success"}
+    entry["status"] = "success"
 
     if dry_run:
         entry["status"] = "dry-run"
@@ -201,20 +251,36 @@ def process_one(record: dict, heygen_cfg: dict, creato_source: dict,
         }
         return entry
 
-    # 1. HeyGen
-    hg = heygen_generate(heygen_cfg, heygen_key, record["restaurant_name"])
-    entry["heygen_video_id"] = hg["video_id"]
-    avatar_url = heygen_wait(heygen_cfg, heygen_key, hg["video_id"])
-    entry["heygen_video_url"] = avatar_url
-    entry["heygen_elapsed_s"] = round(time.time() - started, 1)
+    # 1. HeyGen — réutilise une vidéo déjà générée si on en a une (économise crédits)
+    cached_url = _previous_heygen_url(record["slug"])
+    if cached_url:
+        print(f"  ↺ Réutilisation de la vidéo HeyGen précédente (zéro crédit)")
+        entry["heygen_video_url"] = cached_url
+        entry["heygen_video_id"]  = entry.get("heygen_video_id") or "<reused>"
+        entry["heygen_elapsed_s"] = 0
+        avatar_url = cached_url
+    else:
+        hg = heygen_generate(heygen_cfg, heygen_key, record["restaurant_name"])
+        entry["heygen_video_id"] = hg["video_id"]
+        avatar_url = heygen_wait(heygen_cfg, heygen_key, hg["video_id"])
+        entry["heygen_video_url"] = avatar_url
+        entry["heygen_elapsed_s"] = round(time.time() - started, 1)
 
-    # 2. Creatomate
-    modifications = {
+    # 2. Creatomate — `modifications` ne fonctionne qu'avec un template_id
+    # enregistré côté Creatomate. Quand on envoie le template inline (source),
+    # on substitue les variables `{{...}}` côté Python AVANT l'envoi.
+    template_vars = {
         "restaurant_name":  record["restaurant_name"],
         "avatar_video_url": avatar_url,
         "mockup_url":       record["mockup_url"],
     }
-    ct = creatomate_render(creato_key, creato_template_id, creato_source, modifications)
+    if creato_template_id:
+        source_to_send = None
+        modifications  = template_vars
+    else:
+        source_to_send = _substitute_vars(creato_source, template_vars)
+        modifications  = {}
+    ct = creatomate_render(creato_key, creato_template_id, source_to_send, modifications)
     entry["creatomate_render_id"] = ct["id"]
     final_url = creatomate_wait(creato_key, ct["id"])
     entry["creatomate_video_url"] = final_url
@@ -398,14 +464,20 @@ def main(argv=None) -> int:
     for slug in slugs:
         record = restaurant_record(slug, registry)
         print(f"→ {slug} : {record['restaurant_name']}")
+        # Pré-remplit l'entry avec le record ; process_one() la mutera au fur
+        # et à mesure pour préserver l'avancement (notamment l'URL HeyGen
+        # acquise avant un éventuel échec côté Creatomate).
+        entry: dict = {**record, "status": "in_progress"}
         try:
             entry = process_one(record, heygen_cfg, creato_source,
-                                heygen_key, creato_key, creato_template_id, args.dry_run)
+                                heygen_key, creato_key, creato_template_id, args.dry_run,
+                                partial=entry)
             ok += 1
             tag = "dry-run" if args.dry_run else f"{entry.get('output_size_mb','?')} MB en {entry.get('total_elapsed_s','?')}s"
             print(f"  ✓ {tag}")
         except Exception as e:
-            entry = {**record, "status": "error", "error": f"{type(e).__name__}: {e}"}
+            entry["status"] = "error"
+            entry["error"]  = f"{type(e).__name__}: {e}"
             err += 1
             print(f"  ✗ {e}", file=sys.stderr)
             traceback.print_exc(file=sys.stderr)
