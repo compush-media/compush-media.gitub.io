@@ -1,0 +1,137 @@
+# ──────────────────────────────────────────────────────────────
+#  Génère les vidéos DM manquantes — un MP4 par resto qui a une démo + un
+#  mockup mais pas encore de vidéo committée.
+#
+#  Déclencheur : manuel (workflow_dispatch) — consomme des crédits HeyGen
+#  + Creatomate, donc volontairement non auto sur push.
+#
+#  Secrets requis (Repository → Settings → Secrets → Actions) :
+#    - HEYGEN_API_KEY
+#    - CREATOMATE_API_KEY
+#    - CREATOMATE_TEMPLATE_ID  (optionnel)
+# ──────────────────────────────────────────────────────────────
+name: Vidéos DM (HeyGen + Creatomate)
+
+on:
+  workflow_dispatch:
+    inputs:
+      slugs:
+        description: 'Slugs séparés par espace (vide = tous les restos sans MP4)'
+        required: false
+        default: ''
+      force_regen:
+        description: 'Régénérer même si MP4 déjà présent'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+concurrency:
+  group: gen-dm-videos
+  cancel-in-progress: false   # ne pas annuler — les renders consomment des crédits
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Vérifier les secrets HeyGen / Creatomate
+        run: |
+          if [ -z "${{ secrets.HEYGEN_API_KEY }}" ]; then
+            echo "::error::HEYGEN_API_KEY manquant — Settings → Secrets → Actions."
+            exit 1
+          fi
+          if [ -z "${{ secrets.CREATOMATE_API_KEY }}" ]; then
+            echo "::error::CREATOMATE_API_KEY manquant — Settings → Secrets → Actions."
+            exit 1
+          fi
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Pillow + imageio-ffmpeg + openpyxl
+        run: |
+          python -m pip install --upgrade pip
+          pip install Pillow 'imageio[ffmpeg]' openpyxl
+
+      - name: Calculer la liste à traiter
+        id: pick
+        run: |
+          set -e
+          if [ -n "${{ github.event.inputs.slugs }}" ]; then
+            echo "slugs=${{ github.event.inputs.slugs }}" >> "$GITHUB_OUTPUT"
+            echo "Slugs fournis : ${{ github.event.inputs.slugs }}"
+          else
+            # Tous les restos qui ont demo/ + mockup mais pas de MP4 (ou force_regen=true)
+            FORCE='${{ github.event.inputs.force_regen }}'
+            SLUGS=""
+            for d in */; do
+              s="${d%/}"
+              case "$s" in
+                assets|data|fidelavis-admin|admin|apps-script|images|scripts|templates|screenshots|mockups|pipeline|dm_videos|.github) continue;;
+              esac
+              [[ "$s" =~ ^[._] ]] && continue
+              [ -f "$s/demo/index.html" ] || continue
+              [ -f "mockups/${s}-iphone.png" ] || continue
+              if [ "$FORCE" != "true" ] && [ -f "dm_videos/${s}-dm.mp4" ]; then
+                continue
+              fi
+              SLUGS="$SLUGS $s"
+            done
+            SLUGS="${SLUGS# }"
+            echo "slugs=$SLUGS" >> "$GITHUB_OUTPUT"
+            echo "Slugs détectés : ${SLUGS:-(aucun)}"
+          fi
+
+      - name: Générer les vidéos DM
+        if: steps.pick.outputs.slugs != ''
+        env:
+          HEYGEN_API_KEY:          ${{ secrets.HEYGEN_API_KEY }}
+          CREATOMATE_API_KEY:      ${{ secrets.CREATOMATE_API_KEY }}
+          CREATOMATE_TEMPLATE_ID:  ${{ secrets.CREATOMATE_TEMPLATE_ID }}
+        run: python3 scripts/gen_dm_videos.py ${{ steps.pick.outputs.slugs }}
+
+      - name: Régénérer le crop coupon pour chaque resto traité
+        if: steps.pick.outputs.slugs != ''
+        run: |
+          for s in ${{ steps.pick.outputs.slugs }}; do
+            if [ -f "mockups/${s}-iphone.png" ]; then
+              python3 - <<PY
+from PIL import Image
+import os
+src = Image.open("mockups/${s}-iphone.png")
+w, h = src.size
+crop = src.crop((int(w*0.12), int(h*0.39), int(w*0.88), int(h*0.56)))
+crop = crop.resize((crop.width*2, crop.height*2), Image.LANCZOS)
+crop.save("mockups/${s}-coupon-zoom.png", "PNG", optimize=True)
+print("✓ mockups/${s}-coupon-zoom.png")
+PY
+            fi
+          done
+
+      - name: Rafraîchir l'export CSV/XLSX
+        run: python3 scripts/export_demos.py
+
+      - name: Commit & push
+        run: |
+          if git diff --quiet -- 'dm_videos/' 'mockups/' ; then
+            echo "Aucun changement à committer."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add 'dm_videos/' 'mockups/'
+          git commit -m "chore(dm): vidéos générées + export rafraîchi [skip ci]"
+          git push

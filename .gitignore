@@ -1,4 +1,1 @@
 .DS_Store
-
-# Vidéos DM générées (potentiellement volumineuses, on garde seulement report.json)
-dm_videos/*.mp4

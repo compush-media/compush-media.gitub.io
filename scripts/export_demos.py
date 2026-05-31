@@ -59,14 +59,19 @@ def collect_demos() -> list[dict]:
             cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
         except Exception:
             continue
+
+        # video_link : URL publique du MP4 généré si présent
+        video_mp4 = ROOT / "dm_videos" / f"{p.name}-dm.mp4"
+        video_link = f"{PUBLIC}/dm_videos/{p.name}-dm.mp4" if video_mp4.exists() else ""
+
         rows.append({
             "restaurant":  cfg.get("name") or p.name,
             "instagram":   normalize_instagram(cfg.get("instagramUrl", "")),
             "wallet_link": f"{PUBLIC}/{p.name}/demo/",
-            "video_link":  "",
+            "video_link":  video_link,
             "offer":       (cfg.get("activeCoupon") or {}).get("title", "").strip(),
             "code_table":  "",
-            "status":      "ready",
+            "status":      "ready" if video_link else "pending_video",
             "notes":       "",
         })
     return rows
@@ -94,6 +99,8 @@ def write_xlsx(rows: list[dict]) -> Path:
     body_font     = Font(size=11)
     ready_fill    = PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid")
     ready_font    = Font(bold=True, color="166534", size=11)
+    pending_fill  = PatternFill(start_color="FEF3C7", end_color="FEF3C7", fill_type="solid")
+    pending_font  = Font(bold=True, color="92400E", size=11)
     border_thin   = Border(left=Side(style="thin", color="E5E5E5"),
                            right=Side(style="thin", color="E5E5E5"),
                            top=Side(style="thin", color="E5E5E5"),
@@ -121,6 +128,10 @@ def write_xlsx(rows: list[dict]) -> Path:
             if col == "status" and row[col] == "ready":
                 cell.fill = ready_fill
                 cell.font = ready_font
+                cell.alignment = align_center
+            elif col == "status" and row[col] == "pending_video":
+                cell.fill = pending_fill
+                cell.font = pending_font
                 cell.alignment = align_center
             # Liens cliquables
             if col in ("instagram", "wallet_link", "video_link") and row[col]:
