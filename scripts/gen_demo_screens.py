@@ -90,7 +90,7 @@ async def capture(slugs):
                 # Contexte vierge par resto : pas de fuite localStorage / cache / SW
                 ctx = await browser.new_context(
                     viewport={"width": 390, "height": 844},
-                    device_scale_factor=2,
+                    device_scale_factor=3,
                     service_workers="block",
                 )
                 try:

@@ -22,7 +22,7 @@ Exemples :
   python3 scripts/gen_iphone_mockups.py img1.png img2.png
 """
 from __future__ import annotations
-import argparse, json, sys, traceback
+import argparse, json, os, sys, traceback
 from pathlib import Path
 from typing import Tuple
 from PIL import Image, ImageDraw, ImageFilter
@@ -34,14 +34,19 @@ OUT_DIR    = ROOT / "mockups"
 REPORT     = OUT_DIR / "report.json"
 
 # ── Composition (canvas final) ───────────────────────────────────────
-CANVAS_W, CANVAS_H = 1080, 1350      # format Instagram portrait 4:5
-PHONE_W,  PHONE_H  = 612, 1296       # ratio ≈ 2.118 (iPhone 15 ≈ 2.166)
+# HD_SCALE permet de doubler toutes les dimensions sans modifier la mise en
+# page (1× = 1080×1350, 2× = 2160×2700). Le rendu vidéo Creatomate apprécie
+# une source plus dense pour préserver la netteté du texte du wallet.
+HD_SCALE = int(os.environ.get("MOCKUP_HD_SCALE", "1"))
+
+CANVAS_W, CANVAS_H = 1080*HD_SCALE, 1350*HD_SCALE      # format Instagram portrait 4:5
+PHONE_W,  PHONE_H  = 612*HD_SCALE, 1296*HD_SCALE       # ratio ≈ 2.118 (iPhone 15 ≈ 2.166)
 PHONE_X            = (CANVAS_W - PHONE_W) // 2
 PHONE_Y            = (CANVAS_H - PHONE_H) // 2
 
 # ── Style téléphone (titane argenté, signature Apple keynote) ────────
-PHONE_RADIUS     = 96                       # rayon corps
-FRAME_THICKNESS  = 12                       # épaisseur bordure
+PHONE_RADIUS     = 96*HD_SCALE                       # rayon corps
+FRAME_THICKNESS  = 12*HD_SCALE                       # épaisseur bordure
 SCREEN_RADIUS    = PHONE_RADIUS - FRAME_THICKNESS  # rayon écran (intérieur)
 
 # Dégradé vertical du corps (haut → bas) pour effet titane brossé
@@ -53,22 +58,22 @@ BG_BLACK         = (0, 0, 0, 255)           # défaut (fait ressortir le télép
 BG_WHITE         = (255, 255, 255, 255)
 
 # Dynamic Island (encoche)
-ISLAND_W, ISLAND_H = 138, 38
-ISLAND_TOP_OFFSET  = 18
+ISLAND_W, ISLAND_H = 138*HD_SCALE, 38*HD_SCALE
+ISLAND_TOP_OFFSET  = 18*HD_SCALE
 
 # Boutons latéraux (un peu plus foncés que le corps pour la profondeur)
 BTN_COLOR        = (150, 150, 158, 255)
-BTN_W            = 4
-SIDE_BTN_RADIUS  = 2
+BTN_W            = 4*HD_SCALE
+SIDE_BTN_RADIUS  = 2*HD_SCALE
 
 # Halo lumineux derrière le téléphone (remplace l'ombre sur fond noir)
-GLOW_BLUR        = 60
+GLOW_BLUR        = 60*HD_SCALE
 GLOW_OPACITY     = 38                        # 0-255
-GLOW_INSET       = -14                       # halo légèrement plus large que le corps
+GLOW_INSET       = -14*HD_SCALE              # halo légèrement plus large que le corps
 
 # Ombre portée (utilisée seulement sur fond blanc)
-SHADOW_BLUR      = 38
-SHADOW_OFFSET_Y  = 18
+SHADOW_BLUR      = 38*HD_SCALE
+SHADOW_OFFSET_Y  = 18*HD_SCALE
 SHADOW_OPACITY   = 70
 
 # ── Helpers ──────────────────────────────────────────────────────────
