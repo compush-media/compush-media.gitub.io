@@ -134,9 +134,12 @@ def heygen_wait(cfg: dict, api_key: str, video_id: str) -> str:
 CREATOMATE_RENDERS = "https://api.creatomate.com/v1/renders"
 
 def creatomate_render(api_key: str, template_id: str | None, source: dict | None,
-                      modifications: dict) -> dict:
-    """Lance un rendu. Renvoie {id, status, url?}."""
+                      modifications: dict, render_scale: float = 1.0) -> dict:
+    """Lance un rendu. `render_scale` > 1 active le supersample (qualité HD,
+    coût × scale²). Renvoie {id, status, url?}."""
     payload: dict = {"modifications": modifications, "output_format": "mp4"}
+    if render_scale and render_scale != 1.0:
+        payload["render_scale"] = render_scale
     if template_id:
         payload["template_id"] = template_id
     elif source is not None:
@@ -357,7 +360,13 @@ def process_one(record: dict, heygen_cfg: dict, creato_source: dict,
         # (data: URIs refusées par Creatomate ; PNG cropé committé dans
         # /mockups/<slug>-coupon-zoom.png et servi par GitHub Pages).
         modifications  = {}
-    ct = creatomate_render(creato_key, creato_template_id, source_to_send, modifications)
+    # render_scale=2 → Creatomate rend en 2160×3840 puis ffmpeg downsample en
+    # lanczos vers 1080×1920 = "supersample" → texte + lignes nettement plus
+    # piqués qu'un rendu natif 1080p. Coût Creatomate ~× (scale²) mais qualité
+    # incomparablement meilleure pour les DM. Override par RENDER_SCALE env.
+    rscale = float(os.environ.get("RENDER_SCALE", "2"))
+    ct = creatomate_render(creato_key, creato_template_id, source_to_send,
+                           modifications, render_scale=rscale)
     entry["creatomate_render_id"] = ct["id"]
     final_url = creatomate_wait(creato_key, ct["id"])
     entry["creatomate_video_url"] = final_url
@@ -394,10 +403,15 @@ def sharpen_mp4(video_path: Path) -> Path | None:
     import subprocess
     tmp = video_path.with_suffix(".sharp.mp4")
     # Pipeline visuel :
-    #   unsharp léger pour relever les bords, puis cas (Content Adaptive
-    #   Sharpen) qui suit la complexité locale → moins d'artéfacts qu'avec
-    #   un simple unsharp à fort gain.
-    vf = "unsharp=lx=5:ly=5:la=1.2:cx=3:cy=3:ca=0.0,cas=strength=0.6"
+    #   1. hqdn3d → réduit les artefacts de compression Creatomate (denoise)
+    #   2. scale lanczos vers 1080×1920 (downsample propre si source HD)
+    #   3. unsharp léger pour les bords
+    #   4. cas (Content Adaptive Sharpen) pour les détails locaux
+    # CRF 14 = quasi visuellement lossless.
+    vf = ("hqdn3d=2:1:3:3,"
+          "scale=1080:1920:flags=lanczos+accurate_rnd+full_chroma_int,"
+          "unsharp=lx=5:ly=5:la=1.2:cx=3:cy=3:ca=0.0,"
+          "cas=strength=0.7")
     try:
         subprocess.run(
             [ffmpeg, "-y", "-i", str(video_path),
