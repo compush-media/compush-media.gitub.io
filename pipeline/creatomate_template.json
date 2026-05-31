@@ -22,34 +22,76 @@
     },
 
     {
-      "name": "Title_intro",
+      "name": "Top_title",
       "type": "text",
       "track": 3,
-      "time": 0, "duration": 2.5,
-      "x": "50%", "y": "50%",
-      "width": "84%", "height": "auto",
+      "time": 0, "duration": 30,
+      "x": "50%", "y": "6%",
+      "width": "92%", "height": "auto",
       "x_alignment": "50%", "y_alignment": "50%",
-      "text": "Démo personnalisée\npour {{restaurant_name}}",
+      "text": "Démo personnalisée — {{restaurant_name}}",
       "font_family": "Inter",
-      "font_weight": "700",
-      "font_size":   "78",
-      "line_height": "110%",
+      "font_weight": "800",
+      "font_size":   "44",
+      "line_height": "120%",
       "fill_color":  "#FFFFFF",
       "text_alignment": "center",
       "animations": [
-        { "time": 0,   "duration": 0.5, "type": "fade", "easing": "quadratic-out" },
-        { "time": 2.0, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
+        { "time": 0,    "duration": 0.5, "type": "fade", "easing": "quadratic-out" }
       ],
-      "_comment": "Titre plein écran les 2 premières secondes, fade in/out."
+      "_comment": "Titre permanent en haut (toute la durée)."
+    },
+
+    {
+      "name": "Avatar_circle",
+      "type": "video",
+      "track": 4,
+      "time": 2, "duration": 22,
+      "x": "14%", "y": "18%",
+      "width": "200px", "height": "200px",
+      "x_alignment": "50%", "y_alignment": "20%",
+      "border_radius": "200px",
+      "fit": "cover",
+      "source": "{{avatar_video_url}}",
+      "audio_track": 1,
+      "shadow_blur": "24px",
+      "shadow_color": "rgba(0,0,0,0.55)",
+      "animations": [
+        { "time": 0,    "duration": 0.5,  "type": "fade", "easing": "quadratic-out" },
+        { "time": 21.5, "duration": 0.5,  "type": "fade", "reversed": true, "easing": "quadratic-in" }
+      ],
+      "_comment": "Anna en CERCLE (200×200) en HAUT-GAUCHE. y_alignment=20% centre la source sur son visage."
+    },
+
+    {
+      "name": "Avatar_subtitle",
+      "type": "text",
+      "track": 5,
+      "time": 2, "duration": 22,
+      "x": "60%", "y": "18%",
+      "width": "62%", "height": "auto",
+      "x_alignment": "50%", "y_alignment": "50%",
+      "text": "Découvrez votre wallet\nde fidélité personnalisé",
+      "font_family": "Inter",
+      "font_weight": "700",
+      "font_size":   "42",
+      "line_height": "120%",
+      "fill_color":  "#E8E6E2",
+      "text_alignment": "left",
+      "animations": [
+        { "time": 0,    "duration": 0.5,  "type": "fade", "easing": "quadratic-out" },
+        { "time": 21.5, "duration": 0.5,  "type": "fade", "reversed": true, "easing": "quadratic-in" }
+      ],
+      "_comment": "Sous-titre à droite d'Anna, mêmes timings."
     },
 
     {
       "name": "Mockup_right",
       "type": "image",
-      "track": 4,
+      "track": 6,
       "time": 2, "duration": 22,
-      "x": "50%", "y": "50%",
-      "width": "100%", "height": "100%",
+      "x": "50%", "y": "62%",
+      "width": "100%", "height": "75%",
       "x_alignment": "50%", "y_alignment": "50%",
       "fit": "contain",
       "source": "{{mockup_url}}",
@@ -58,28 +100,7 @@
         { "time": 0,    "duration": 0.8, "type": "scale", "scope": "element", "start_scale": "96%", "end_scale": "100%", "easing": "quadratic-out" },
         { "time": 21.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
       ],
-      "_comment": "Mockup iPhone PLEIN ÉCRAN — fit contain à 100%×100% (wallet + logo bien lisibles)."
-    },
-
-    {
-      "name": "Avatar_circle",
-      "type": "video",
-      "track": 5,
-      "time": 2, "duration": 22,
-      "x": "16%", "y": "86%",
-      "width": "260px", "height": "260px",
-      "x_alignment": "50%", "y_alignment": "50%",
-      "border_radius": "260px",
-      "fit": "cover",
-      "source": "{{avatar_video_url}}",
-      "audio_track": 1,
-      "shadow_blur": "30px",
-      "shadow_color": "rgba(0,0,0,0.6)",
-      "animations": [
-        { "time": 0,    "duration": 0.5,  "type": "fade", "easing": "quadratic-out" },
-        { "time": 21.5, "duration": 0.5,  "type": "fade", "reversed": true, "easing": "quadratic-in" }
-      ],
-      "_comment": "Anna en CERCLE (260×260px) bas-gauche, overlay sur le mockup avec ombre douce."
+      "_comment": "Mockup iPhone dans la moitié basse, taille préservée pour lire le coupon."
     },
 
     {
