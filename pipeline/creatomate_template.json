@@ -48,36 +48,38 @@
       "type": "image",
       "track": 4,
       "time": 2, "duration": 22,
-      "x": "58%", "y": "50%",
-      "width": "72%", "height": "92%",
+      "x": "50%", "y": "50%",
+      "width": "100%", "height": "100%",
       "x_alignment": "50%", "y_alignment": "50%",
       "fit": "contain",
       "source": "{{mockup_url}}",
       "animations": [
         { "time": 0,    "duration": 0.6, "type": "fade", "easing": "quadratic-out" },
-        { "time": 0,    "duration": 0.8, "type": "scale", "scope": "element", "start_scale": "94%", "end_scale": "100%", "easing": "quadratic-out" },
+        { "time": 0,    "duration": 0.8, "type": "scale", "scope": "element", "start_scale": "96%", "end_scale": "100%", "easing": "quadratic-out" },
         { "time": 21.5, "duration": 0.5, "type": "fade", "reversed": true, "easing": "quadratic-in" }
       ],
-      "_comment": "Mockup iPhone DOMINANT (72% largeur × 92% hauteur), centré-droit."
+      "_comment": "Mockup iPhone PLEIN ÉCRAN — fit contain à 100%×100% (wallet + logo bien lisibles)."
     },
 
     {
-      "name": "Avatar_left",
+      "name": "Avatar_circle",
       "type": "video",
       "track": 5,
       "time": 2, "duration": 22,
-      "x": "16%", "y": "78%",
-      "width": "26%", "height": "36%",
+      "x": "16%", "y": "86%",
+      "width": "260px", "height": "260px",
       "x_alignment": "50%", "y_alignment": "50%",
-      "border_radius": "20px",
+      "border_radius": "260px",
       "fit": "cover",
       "source": "{{avatar_video_url}}",
       "audio_track": 1,
+      "shadow_blur": "30px",
+      "shadow_color": "rgba(0,0,0,0.6)",
       "animations": [
         { "time": 0,    "duration": 0.5,  "type": "fade", "easing": "quadratic-out" },
         { "time": 21.5, "duration": 0.5,  "type": "fade", "reversed": true, "easing": "quadratic-in" }
       ],
-      "_comment": "Anna PETITE en bas-gauche (26% largeur × 36% hauteur), nettement plus petite que l'iPhone."
+      "_comment": "Anna en CERCLE (260×260px) bas-gauche, overlay sur le mockup avec ombre douce."
     },
 
     {

@@ -316,14 +316,20 @@ def sharpen_mp4(video_path: Path) -> Path | None:
         return None
     import subprocess
     tmp = video_path.with_suffix(".sharp.mp4")
+    # Pipeline visuel :
+    #   unsharp léger pour relever les bords, puis cas (Content Adaptive
+    #   Sharpen) qui suit la complexité locale → moins d'artéfacts qu'avec
+    #   un simple unsharp à fort gain.
+    vf = "unsharp=lx=5:ly=5:la=1.2:cx=3:cy=3:ca=0.0,cas=strength=0.6"
     try:
         subprocess.run(
             [ffmpeg, "-y", "-i", str(video_path),
-             "-vf", "unsharp=lx=5:ly=5:la=1.1:cx=3:cy=3:ca=0.0",
-             "-c:v", "libx264", "-preset", "slow", "-crf", "18",
+             "-vf", vf,
+             "-c:v", "libx264", "-preset", "slow", "-crf", "14",
+             "-pix_fmt", "yuv420p",
              "-c:a", "copy", "-movflags", "+faststart",
              str(tmp)],
-            check=True, capture_output=True, timeout=180,
+            check=True, capture_output=True, timeout=240,
         )
         tmp.replace(video_path)
         print(f"  ✓ sharpen OK → {video_path.stat().st_size/(1024*1024):.2f} MB")
