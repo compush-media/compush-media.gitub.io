@@ -104,6 +104,20 @@ def tw(draw, text, fnt):
     return draw.textlength(text, font=fnt)
 
 
+def wrap(draw, text, fnt, max_w):
+    """Découpe `text` en lignes qui tiennent dans max_w (px)."""
+    words, lines, cur = text.split(), [], ""
+    for w in words:
+        t = (cur + " " + w).strip()
+        if draw.textlength(t, font=fnt) <= max_w or not cur:
+            cur = t
+        else:
+            lines.append(cur); cur = w
+    if cur:
+        lines.append(cur)
+    return lines
+
+
 def rounded(draw, box, radius, fill):
     draw.rounded_rectangle(box, radius=radius, fill=fill)
 
@@ -182,22 +196,32 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
     paste_emoji(img, "🎁", gift, px+34, py+(pill_h-gift)//2)
     d.text((px+34+gift+14, py+pill_h//2), badge_txt, font=fb, fill=WHITE, anchor="lm")
 
-    # ── Nom du restaurant — TRÈS GRAND (premier élément après le badge) ──
+    # ── Nom du restaurant — TRÈS GRAND, wrap si long (1er élément) ──
     ft = SERIF(176)
-    title = name
-    tw_title = tw(d, title, ft)
-    while tw_title > W - 150 and ft.size > 90:
-        ft = SERIF(ft.size - 6); tw_title = tw(d, title, ft)
+    max_w = W - 150
+    # Réduit la police jusqu'à tenir sur 2 lignes maximum
+    while ft.size > 78:
+        lines = wrap(d, name, ft, max_w)
+        if len(lines) <= 2 and all(tw(d, ln, ft) <= max_w for ln in lines):
+            break
+        ft = SERIF(ft.size - 6)
+    lines = wrap(d, name, ft, max_w)
     ty = 130
+    line_h = int(ft.size * 1.02)
     cup = int(ft.size * 0.55)
-    total = tw_title + 22 + cup
-    tx = W//2 - total//2
-    d.text((tx, ty), title, font=ft, fill=DARKGREEN)
-    paste_emoji(img, "☕", cup, tx + tw_title + 22, ty + ft.size*0.20)
+    for i, ln in enumerate(lines):
+        lw = tw(d, ln, ft)
+        # ☕ seulement après la dernière ligne
+        if i == len(lines) - 1:
+            tx = W//2 - (lw + 22 + cup)//2
+            d.text((tx, ty + i*line_h), ln, font=ft, fill=DARKGREEN)
+            paste_emoji(img, "☕", cup, tx + lw + 22, ty + i*line_h + ft.size*0.20)
+        else:
+            d.text((W//2 - lw//2, ty + i*line_h), ln, font=ft, fill=DARKGREEN)
 
     # ── Sous-titre court « Votre exemple est déjà prêt ✨ » ──
     fs = SANS_B(52)
-    y = ty + ft.size + 34
+    y = ty + len(lines)*line_h + 26
     sub = "Votre exemple est déjà prêt"
     ws = tw(d, sub, fs); spark = 46
     sx = W//2 - (ws + 14 + spark)//2
@@ -246,8 +270,11 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
     hx = W//2 - (hw + 16 + hand)//2
     paste_emoji(img, "👇", hand, hx, blk_y0+34)
     d.text((hx+hand+16, blk_y0+40), hint, font=fhint, fill=INK)
-    flink = SANS_B(50)
+    # Lien : réduit la police pour tenir dans le bloc blanc (slugs longs)
     link = f"{PUBLIC}/{slug}"
+    flink = SANS_B(50)
+    while tw(d, link, flink) > (blk_x1 - blk_x0) - 60 and flink.size > 26:
+        flink = SANS_B(flink.size - 2)
     lw = tw(d, link, flink)
     d.text((W//2 - lw//2, blk_y0+112), link, font=flink, fill=RED)
 
