@@ -105,7 +105,7 @@ jobs:
           python3 scripts/gen_dm_queue.py || true
           python3 scripts/export_demos.py || true
 
-      - name: Commit & push
+      - name: Commit & push (avec rebase + retry anti-collision)
         run: |
           if git diff --quiet -- 'dm_videos/' 'assets/dm-bg/'; then
             echo "Rien à committer."
@@ -115,4 +115,11 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add 'dm_videos/' 'assets/dm-bg/'
           git commit -m "chore(dm): vidéos DM générées (validation manuelle) [skip ci]"
-          git push
+          # Le remote peut avoir bougé pendant le render → rebase + retry
+          for i in 1 2 3 4 5; do
+            if git push; then echo "✓ poussé"; exit 0; fi
+            echo "push rejeté (tentative $i) → pull --rebase"
+            git pull --rebase --autostash origin main || true
+            sleep 3
+          done
+          echo "::error::push impossible après 5 tentatives"; exit 1
