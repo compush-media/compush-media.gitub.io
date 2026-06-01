@@ -14,7 +14,7 @@
   },
 
   "_script_comment": "Texte que l'avatar va prononcer. Durée parlée ≈ 22 secondes. Utilise {{restaurant_name}} comme variable. Le script est concaténé en un seul take (la vidéo HeyGen sera placée sur la timeline Creatomate à t=2s).",
-  "script_template": "Bonjour. J'ai préparé une démonstration personnalisée pour {{restaurant_name}}. Vos clients scannent un code, reçoivent leur offre, et reviennent plus souvent. Testez-la directement.",
+  "script_template": "Bonjour {{restaurant_name}}. J'ai déjà préparé votre exemple. Vos clients passent simplement leur téléphone sur votre carte NFC, découvrent leur avantage du mois et reviennent plus souvent. Votre démonstration est déjà prête.",
 
   "_api_comment": "Endpoints HeyGen v2 utilisés par le script orchestrateur.",
   "api": {

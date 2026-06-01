@@ -204,12 +204,14 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
         ImageDraw.Draw(ring).ellipse((0,0,av_d+24,av_d+24), fill=WHITE+(255,))
         img.alpha_composite(ring, (ax-12, ay-12))
     elif AVATAR.exists():
-        av_d = 230
-        ax, ay = -30, 1330      # plus petit + plus bas à gauche
+        av_d = 196                       # encore réduit (~15 %)
+        ax, ay = 44, 1372                # coin inférieur gauche, sur le bas du téléphone
         av = circle_crop(Image.open(AVATAR), av_d)
-        ring = Image.new("RGBA", (av_d+22, av_d+22), (0,0,0,0))
-        ImageDraw.Draw(ring).ellipse((0,0,av_d+22,av_d+22), fill=WHITE+(255,))
-        img.alpha_composite(ring, (ax-11, ay-11))
+        # Bordure blanche FINE et propre
+        bord = 8
+        ring = Image.new("RGBA", (av_d+2*bord, av_d+2*bord), (0,0,0,0))
+        ImageDraw.Draw(ring).ellipse((0,0,av_d+2*bord,av_d+2*bord), fill=WHITE+(255,))
+        img.alpha_composite(ring, (ax-bord, ay-bord))
         img.alpha_composite(av, (ax, ay))
 
     # (Aucune bulle — supprimée.)
