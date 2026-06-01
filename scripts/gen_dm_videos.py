@@ -413,18 +413,25 @@ def sharpen_mp4(video_path: Path) -> Path | None:
     #   2. scale lanczos vers 1080×1920 (downsample propre si source HD)
     #   3. unsharp léger pour les bords
     #   4. cas (Content Adaptive Sharpen) pour les détails locaux
-    # CRF 14 = quasi visuellement lossless.
-    vf = ("hqdn3d=2:1:3:3,"
+    # Bitrate FORCÉ (ABR) au lieu de CRF : sur fond noir, le CRF affame la
+    # zone du texte/wallet en bits (l'encodeur croit l'image "simple").
+    # On impose ~10 Mbps → Instagram reçoit une source riche avant SA propre
+    # recompression. Override possible via VIDEO_BITRATE env (ex: "12M").
+    bitrate = os.environ.get("VIDEO_BITRATE", "10M")
+    maxrate = os.environ.get("VIDEO_MAXRATE", "14M")
+    vf = ("hqdn3d=1.5:1:2:2,"
           "scale=1080:1920:flags=lanczos+accurate_rnd+full_chroma_int,"
-          "unsharp=lx=5:ly=5:la=1.2:cx=3:cy=3:ca=0.0,"
-          "cas=strength=0.7")
+          "unsharp=lx=5:ly=5:la=1.0:cx=3:cy=3:ca=0.0,"
+          "cas=strength=0.6")
     try:
         subprocess.run(
             [ffmpeg, "-y", "-i", str(video_path),
              "-vf", vf,
-             "-c:v", "libx264", "-preset", "slow", "-crf", "14",
+             "-c:v", "libx264", "-preset", "slow",
+             "-b:v", bitrate, "-maxrate", maxrate, "-bufsize", "20M",
+             "-profile:v", "high", "-level", "4.2",
              "-pix_fmt", "yuv420p",
-             "-c:a", "copy", "-movflags", "+faststart",
+             "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart",
              str(tmp)],
             check=True, capture_output=True, timeout=240,
         )
