@@ -196,18 +196,18 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
     paste_emoji(img, "🎁", gift, px+34, py+(pill_h-gift)//2)
     d.text((px+34+gift+14, py+pill_h//2), badge_txt, font=fb, fill=WHITE, anchor="lm")
 
-    # ── Nom du restaurant — TRÈS GRAND, wrap si long (1er élément) ──
-    ft = SERIF(176)
+    # ── Nom du restaurant — grand sur 1 ligne, plus modéré si 2 lignes ──
     max_w = W - 150
-    # Réduit la police jusqu'à tenir sur 2 lignes maximum
-    while ft.size > 78:
-        lines = wrap(d, name, ft, max_w)
-        if len(lines) <= 2 and all(tw(d, ln, ft) <= max_w for ln in lines):
-            break
-        ft = SERIF(ft.size - 6)
+    ft = SERIF(168)
     lines = wrap(d, name, ft, max_w)
-    ty = 130
-    line_h = int(ft.size * 1.02)
+    if len(lines) > 1:
+        # 2 lignes → police plus petite pour ne pas écraser la mise en page
+        ft = SERIF(112)
+        lines = wrap(d, name, ft, max_w)
+        while (len(lines) > 2 or any(tw(d, ln, ft) > max_w for ln in lines)) and ft.size > 74:
+            ft = SERIF(ft.size - 6); lines = wrap(d, name, ft, max_w)
+    ty = 120
+    line_h = int(ft.size * 1.04)
     cup = int(ft.size * 0.55)
     for i, ln in enumerate(lines):
         lw = tw(d, ln, ft)
@@ -231,8 +231,10 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
     # ── iPhone mockup (screenshot intact) — ÉLÉMENT DOMINANT ──
     # Plus grand + centré, marges latérales réduites. Le bas du téléphone se
     # glisse derrière le bloc CTA (dessiné après, opaque).
-    phone_top = y + 90
-    draw_phone(img, shot, cx=W//2, top=phone_top, screen_w=620)
+    # Téléphone : largeur réduite pour que TOUT le wallet (dont les 4 icônes
+    # sociales + « Merci ») reste au-dessus du bloc CTA (1648).
+    phone_top = y + 72
+    draw_phone(img, shot, cx=W//2, top=phone_top, screen_w=548)
 
     # ── Avatar bas-gauche — PETIT, ne masque pas le wallet ──
     if video_bg:
