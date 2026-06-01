@@ -143,7 +143,10 @@ def paste_emoji(canvas, char, size, x, y):
     return (e.width if e else 0)
 
 
-def build_story(slug: str, name: str, wallet_url: str) -> Path:
+def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -> Path:
+    """video_bg=True → fond pour la VIDÉO HeyGen : pas d'Anna statique
+    (l'avatar animé sera composé par HeyGen dans le cercle blanc), pas de
+    bloc lien (HeyGen rend tout en un passage, le bas reste libre)."""
     shot = SCR_DIR / f"{slug}-wallet.png"
     if not shot.exists():
         raise SystemExit(f"Screenshot manquant : {shot} — lance d'abord `node scripts/capture_wallets.js {slug}`")
@@ -196,26 +199,32 @@ def build_story(slug: str, name: str, wallet_url: str) -> Path:
     # ── iPhone mockup (screenshot intact) — élément DOMINANT ──
     draw_phone(img, shot, cx=W//2 + 25, top=470, screen_w=560)
 
-    # ── Avatar Anna cercle bas-gauche + anneau blanc ──
-    if AVATAR.exists():
-        av_d = 360
+    # ── Avatar bas-gauche ──
+    av_d = 360
+    ax, ay = -46, 1170
+    if video_bg:
+        # Cercle blanc VIDE : HeyGen posera l'avatar animé par-dessus.
+        ring = Image.new("RGBA", (av_d+26, av_d+26), (0,0,0,0))
+        ImageDraw.Draw(ring).ellipse((0,0,av_d+26,av_d+26), fill=WHITE+(255,))
+        img.alpha_composite(ring, (ax-13, ay-13))
+    elif AVATAR.exists():
         av = circle_crop(Image.open(AVATAR), av_d)
-        ax, ay = -46, 1170          # déborde légèrement à gauche
         ring = Image.new("RGBA", (av_d+26, av_d+26), (0,0,0,0))
         ImageDraw.Draw(ring).ellipse((0,0,av_d+26,av_d+26), fill=WHITE+(255,))
         img.alpha_composite(ring, (ax-13, ay-13))
         img.alpha_composite(av, (ax, ay))
-        # bulle de texte (au-dessus du bloc lien, jamais chevauchée)
-        fbub = SANS_B(27)
-        bub_lines = ["Regardez la démo vidéo", "que j'ai préparée pour vous !"]
-        bw_max = max(tw(d, l, fbub) for l in bub_lines)
-        pad, lh = 22, 36
-        bx0 = ax + av_d - 80
-        bh  = 2*pad + len(bub_lines)*lh
-        by0 = 1560 - bh             # ancré au-dessus du bloc lien (1620)
-        rounded(d, (bx0, by0, bx0+bw_max+2*pad, by0+bh), 26, DARKGREEN+(255,))
-        for i, l in enumerate(bub_lines):
-            d.text((bx0+pad, by0+pad+i*lh), l, font=fbub, fill=WHITE)
+
+    # ── Bulle de texte (commune story + vidéo) ──
+    fbub = SANS_B(27)
+    bub_lines = ["Regardez la démo vidéo", "que j'ai préparée pour vous !"]
+    bw_max = max(tw(d, l, fbub) for l in bub_lines)
+    pad, lh = 22, 36
+    bx0 = ax + av_d - 80
+    bh  = 2*pad + len(bub_lines)*lh
+    by0 = 1560 - bh
+    rounded(d, (bx0, by0, bx0+bw_max+2*pad, by0+bh), 26, DARKGREEN+(255,))
+    for i, l in enumerate(bub_lines):
+        d.text((bx0+pad, by0+pad+i*lh), l, font=fbub, fill=WHITE)
 
     # ── Bloc blanc bas : lien ──
     blk_x0, blk_x1 = 70, W-70
@@ -229,7 +238,13 @@ def build_story(slug: str, name: str, wallet_url: str) -> Path:
     d.text((blk_x0+44, blk_y0+102), f"{PUBLIC}/{slug}", font=flink, fill=RED)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    out = OUT_DIR / f"{slug}-story.png"
+    if video_bg:
+        # Fond consommé par l'API HeyGen (--heygen-only)
+        bg_dir = ROOT / "assets" / "dm-bg"
+        bg_dir.mkdir(parents=True, exist_ok=True)
+        out = bg_dir / f"{slug}-bg.png"
+    else:
+        out = OUT_DIR / f"{slug}-story.png"
     img.convert("RGB").save(out, "PNG", optimize=True)
     return out
 
@@ -242,8 +257,11 @@ def list_slugs():
 
 
 def main():
+    args = sys.argv[1:]
+    video_bg = "--video-bg" in args
+    slugs = [a for a in args if not a.startswith("--")]
     reg = json.loads(REGISTRY.read_text(encoding="utf-8")) if REGISTRY.exists() else {}
-    slugs = sys.argv[1:] or list_slugs()
+    slugs = slugs or list_slugs()
     if not slugs:
         sys.exit("Aucun screenshot wallet trouvé (lance `node scripts/capture_wallets.js`).")
     for slug in slugs:
@@ -254,8 +272,8 @@ def main():
             except Exception: pass
         elif slug in reg:
             name = reg[slug].get("name", slug)
-        out = build_story(slug, name, f"{PUBLIC}/{slug}")
-        print(f"✓ {slug} → {out.relative_to(ROOT)}")
+        out = build_story(slug, name, f"{PUBLIC}/{slug}", video_bg=video_bg)
+        print(f"✓ {slug} → {out.relative_to(ROOT)}" + ("  (fond vidéo)" if video_bg else ""))
 
 
 if __name__ == "__main__":
