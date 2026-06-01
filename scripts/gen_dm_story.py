@@ -200,31 +200,38 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
     draw_phone(img, shot, cx=W//2 + 25, top=470, screen_w=560)
 
     # ── Avatar bas-gauche ──
-    av_d = 360
-    ax, ay = -46, 1170
+    # video_bg : cercle blanc calé sur la position RÉELLE de l'avatar HeyGen
+    #            (centre ≈ (150,1390), Ø~460 observé), bulle à DROITE de l'avatar.
+    # story    : photo Anna statique, cercle plus haut + bulle au-dessus du bloc.
     if video_bg:
-        # Cercle blanc VIDE : HeyGen posera l'avatar animé par-dessus.
-        ring = Image.new("RGBA", (av_d+26, av_d+26), (0,0,0,0))
-        ImageDraw.Draw(ring).ellipse((0,0,av_d+26,av_d+26), fill=WHITE+(255,))
-        img.alpha_composite(ring, (ax-13, ay-13))
-    elif AVATAR.exists():
-        av = circle_crop(Image.open(AVATAR), av_d)
-        ring = Image.new("RGBA", (av_d+26, av_d+26), (0,0,0,0))
-        ImageDraw.Draw(ring).ellipse((0,0,av_d+26,av_d+26), fill=WHITE+(255,))
-        img.alpha_composite(ring, (ax-13, ay-13))
-        img.alpha_composite(av, (ax, ay))
+        av_d = 470
+        cx_av, cy_av = 150, 1390
+        ax, ay = cx_av - av_d//2, cy_av - av_d//2
+        ring = Image.new("RGBA", (av_d+28, av_d+28), (0,0,0,0))
+        ImageDraw.Draw(ring).ellipse((0,0,av_d+28,av_d+28), fill=WHITE+(255,))
+        img.alpha_composite(ring, (ax-14, ay-14))
+        bub_x0, bub_y0 = cx_av + av_d//2 - 20, 1250
+    else:
+        av_d = 360
+        ax, ay = -46, 1170
+        if AVATAR.exists():
+            av = circle_crop(Image.open(AVATAR), av_d)
+            ring = Image.new("RGBA", (av_d+26, av_d+26), (0,0,0,0))
+            ImageDraw.Draw(ring).ellipse((0,0,av_d+26,av_d+26), fill=WHITE+(255,))
+            img.alpha_composite(ring, (ax-13, ay-13))
+            img.alpha_composite(av, (ax, ay))
+        bub_x0 = ax + av_d - 80
 
-    # ── Bulle de texte (commune story + vidéo) ──
+    # ── Bulle de texte ──
     fbub = SANS_B(27)
     bub_lines = ["Regardez la démo vidéo", "que j'ai préparée pour vous !"]
     bw_max = max(tw(d, l, fbub) for l in bub_lines)
     pad, lh = 22, 36
-    bx0 = ax + av_d - 80
     bh  = 2*pad + len(bub_lines)*lh
-    by0 = 1560 - bh
-    rounded(d, (bx0, by0, bx0+bw_max+2*pad, by0+bh), 26, DARKGREEN+(255,))
+    by0 = bub_y0 if video_bg else (1560 - bh)
+    rounded(d, (bub_x0, by0, bub_x0+bw_max+2*pad, by0+bh), 26, DARKGREEN+(255,))
     for i, l in enumerate(bub_lines):
-        d.text((bx0+pad, by0+pad+i*lh), l, font=fbub, fill=WHITE)
+        d.text((bub_x0+pad, by0+pad+i*lh), l, font=fbub, fill=WHITE)
 
     # ── Bloc blanc bas : lien ──
     blk_x0, blk_x1 = 70, W-70
