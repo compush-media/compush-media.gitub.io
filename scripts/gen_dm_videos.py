@@ -85,22 +85,35 @@ def http_download(url: str, out: Path, timeout: int = 300) -> int:
 
 
 # ── HeyGen ───────────────────────────────────────────────────────────
-def heygen_generate(cfg: dict, api_key: str, restaurant_name: str) -> dict:
+def heygen_generate(cfg: dict, api_key: str, restaurant_name: str,
+                    bg_image_url: str | None = None) -> dict:
     """Lance la génération de la vidéo avatar. Renvoie {video_id}."""
     script = cfg["script_template"].replace("{{restaurant_name}}", restaurant_name)
+
+    character = {
+        "type":         "avatar",
+        "avatar_id":    cfg["avatar_id"],
+        "avatar_style": cfg.get("avatar_style", "normal"),
+    }
+    background = cfg.get("background", {"type": "color", "value": "#000000"})
+
+    # Mode HeyGen-only : fond = image (mockup composé) + avatar en cercle
+    # positionné en bas-gauche. Un seul render, pas de Creatomate.
+    if bg_image_url:
+        background = {"type": "image", "url": bg_image_url, "fit": "cover"}
+        character["avatar_style"] = "circle"
+        character["scale"]  = 0.42                 # petit cercle
+        character["offset"] = {"x": -0.32, "y": 0.34}  # bas-gauche (x,y ∈ -1..1)
+
     payload = {
         "video_inputs": [{
-            "character": {
-                "type":         "avatar",
-                "avatar_id":    cfg["avatar_id"],
-                "avatar_style": cfg.get("avatar_style", "normal"),
-            },
+            "character": character,
             "voice": {
                 "type":       "text",
                 "input_text": script,
                 "voice_id":   cfg["voice_id"],
             },
-            "background": cfg.get("background", {"type": "color", "value": "#000000"}),
+            "background": background,
         }],
         "dimension":    cfg.get("dimension", {"width": 720, "height": 1280}),
         "aspect_ratio": cfg.get("aspect_ratio", "9:16"),
@@ -297,12 +310,31 @@ def _previous_heygen_url(slug: str) -> str | None:
 
 def process_one(record: dict, heygen_cfg: dict, creato_source: dict,
                 heygen_key: str, creato_key: str, creato_template_id: str | None,
-                dry_run: bool, partial: dict | None = None) -> dict:
+                dry_run: bool, partial: dict | None = None,
+                heygen_only: bool = False) -> dict:
     started = time.time()
     # `partial` permet à main() d'observer l'avancement même en cas d'exception
     # (notamment de garder heygen_video_url si Creatomate plante après).
     entry = partial if partial is not None else {**record, "status": "success"}
     entry["status"] = "success"
+
+    # ── Mode HeyGen-only : un seul render (avatar cercle + fond mockup) ──
+    if heygen_only and not dry_run:
+        bg_url = f"{PUBLIC_BASE}/assets/dm-bg/{record['slug']}-bg.png?v={int(time.time())}"
+        hg = heygen_generate(heygen_cfg, heygen_key, record["restaurant_name"], bg_image_url=bg_url)
+        entry["heygen_video_id"] = hg["video_id"]
+        entry["mode"] = "heygen_only"
+        final_url = heygen_wait(heygen_cfg, heygen_key, hg["video_id"])
+        entry["heygen_video_url"]    = final_url
+        entry["creatomate_video_url"] = None
+        out_path = OUT_DIR / f"{record['slug']}-dm.mp4"
+        size = http_download(final_url, out_path)
+        sharpen_mp4(out_path)
+        entry["output_file"]    = str(out_path.relative_to(ROOT))
+        entry["output_size_mb"] = round(out_path.stat().st_size / (1024*1024), 2)
+        entry["total_elapsed_s"] = round(time.time() - started, 1)
+        entry["scenes"] = extract_scene_frames(out_path, record["slug"])
+        return entry
 
     if dry_run:
         entry["status"] = "dry-run"
@@ -582,6 +614,8 @@ def main(argv=None) -> int:
     parser.add_argument("slugs", nargs="*", help="Slugs de restos (défaut : tous ceux avec mockup + démo).")
     parser.add_argument("--dry-run", action="store_true",
                         help="N'appelle aucune API : affiche juste ce qui serait envoyé.")
+    parser.add_argument("--heygen-only", action="store_true",
+                        help="Vidéo en un seul render HeyGen (avatar cercle + fond mockup), sans Creatomate.")
     args = parser.parse_args(argv)
 
     heygen_cfg    = json.loads(HEYGEN_CFG.read_text(encoding="utf-8"))
@@ -591,8 +625,11 @@ def main(argv=None) -> int:
     if not args.dry_run:
         heygen_key = os.environ.get("HEYGEN_API_KEY")
         creato_key = os.environ.get("CREATOMATE_API_KEY")
-        missing = [k for k, v in {"HEYGEN_API_KEY": heygen_key,
-                                  "CREATOMATE_API_KEY": creato_key}.items() if not v]
+        # En mode HeyGen-only, la clé Creatomate n'est pas requise.
+        required = {"HEYGEN_API_KEY": heygen_key}
+        if not args.heygen_only:
+            required["CREATOMATE_API_KEY"] = creato_key
+        missing = [k for k, v in required.items() if not v]
         if missing:
             sys.exit(f"Variables manquantes : {', '.join(missing)} — voir pipeline/README.md.")
         if heygen_cfg["avatar_id"].startswith("REPLACE_") or heygen_cfg["voice_id"].startswith("REPLACE_"):
@@ -620,7 +657,7 @@ def main(argv=None) -> int:
         try:
             entry = process_one(record, heygen_cfg, creato_source,
                                 heygen_key, creato_key, creato_template_id, args.dry_run,
-                                partial=entry)
+                                partial=entry, heygen_only=args.heygen_only)
             ok += 1
             tag = "dry-run" if args.dry_run else f"{entry.get('output_size_mb','?')} MB en {entry.get('total_elapsed_s','?')}s"
             print(f"  ✓ {tag}")
