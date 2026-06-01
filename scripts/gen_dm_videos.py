@@ -334,10 +334,13 @@ def process_one(record: dict, heygen_cfg: dict, creato_source: dict,
     # 2. Creatomate — `modifications` ne fonctionne qu'avec un template_id
     # enregistré côté Creatomate. Quand on envoie le template inline (source),
     # on substitue les variables `{{...}}` côté Python AVANT l'envoi.
+    # Cache-bust : Creatomate cache les URLs identiques même quand le contenu
+    # change côté GitHub Pages → on suffixe un ?v=epoch pour forcer un fetch.
+    cb = int(time.time())
     template_vars = {
         "restaurant_name":  record["restaurant_name"],
         "avatar_video_url": avatar_url,
-        "mockup_url":       record["mockup_url"],
+        "mockup_url":       f"{record['mockup_url']}?v={cb}",
         "wallet_url":       record.get("wallet_url", f"{PUBLIC_BASE}/{record['slug']}/"),
         "demo_url":         record.get("demo_url",   f"{PUBLIC_BASE}/{record['slug']}/demo/"),
         "first_name":       record.get("restaurant_name", ""),

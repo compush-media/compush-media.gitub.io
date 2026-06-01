@@ -82,7 +82,9 @@ jobs:
       - name: Capturer les aperçus démo (wallet + Compte)
         run: python3 scripts/gen_demo_screens.py
 
-      - name: Régénérer les mockups iPhone
+      - name: Régénérer les mockups iPhone (HD 2×)
+        env:
+          MOCKUP_HD_SCALE: '2'
         run: python3 scripts/gen_iphone_mockups.py --demo
 
       - name: Commit & push si des PNG ont changé
