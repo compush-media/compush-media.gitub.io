@@ -102,10 +102,10 @@ def heygen_generate(cfg: dict, api_key: str, restaurant_name: str,
     if bg_image_url:
         background = {"type": "image", "url": bg_image_url, "fit": "cover"}
         character["avatar_style"] = "circle"
-        # Avatar PETIT (le wallet doit dominer), bas-gauche. Aligné sur le
-        # cercle blanc du fond beige (centre ~ (120,1470), Ø~300).
-        character["scale"]  = 0.24
-        character["offset"] = {"x": -0.40, "y": 0.32}
+        # Avatar PETIT (le wallet doit dominer), coin inférieur gauche.
+        # Aligné sur le cercle blanc du fond beige (centre ~ (130,1450), Ø~260).
+        character["scale"]  = 0.20
+        character["offset"] = {"x": -0.42, "y": 0.30}
 
     payload = {
         "video_inputs": [{

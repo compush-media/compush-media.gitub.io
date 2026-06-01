@@ -195,14 +195,15 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
 
     # ── Avatar bas-gauche — PETIT, ne masque pas le wallet ──
     if video_bg:
-        # Cercle blanc vide calé sur la position réelle de l'avatar HeyGen
-        # (réduit ~35 % vs avant : Ø~300, plus bas-gauche).
-        av_d = 300
-        cx_av, cy_av = 120, 1470
+        # Cercle blanc vide (bordure fine) calé sur la position réelle de
+        # l'avatar HeyGen (Ø~260, coin inférieur gauche).
+        av_d = 260
+        cx_av, cy_av = 130, 1450
         ax, ay = cx_av - av_d//2, cy_av - av_d//2
-        ring = Image.new("RGBA", (av_d+24, av_d+24), (0,0,0,0))
-        ImageDraw.Draw(ring).ellipse((0,0,av_d+24,av_d+24), fill=WHITE+(255,))
-        img.alpha_composite(ring, (ax-12, ay-12))
+        bord = 8
+        ring = Image.new("RGBA", (av_d+2*bord, av_d+2*bord), (0,0,0,0))
+        ImageDraw.Draw(ring).ellipse((0,0,av_d+2*bord,av_d+2*bord), fill=WHITE+(255,))
+        img.alpha_composite(ring, (ax-bord, ay-bord))
     elif AVATAR.exists():
         av_d = 196                       # encore réduit (~15 %)
         ax, ay = 44, 1372                # coin inférieur gauche, sur le bas du téléphone
