@@ -1,0 +1,18 @@
+{
+  "name": "fidelavis-wallet-capture",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Captures HD des wallets Fidelavis via Playwright + Chromium pour injection dans les mockups iPhone.",
+  "type": "module",
+  "scripts": {
+    "capture": "node scripts/capture_wallets.js",
+    "capture:jolia": "node scripts/capture_wallets.js jolia",
+    "capture:all": "node scripts/capture_wallets.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "playwright": "^1.60.0"
+  }
+}
