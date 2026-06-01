@@ -6,13 +6,13 @@
     "wallet_url": "https://app.cartefidelavis.com/jolia/",
     "demo_url": "https://app.cartefidelavis.com/jolia/demo/",
     "status": "success",
-    "heygen_video_id": "2f91dacab0af4f70b6fb04abeaf726a1",
+    "heygen_video_id": "dea82f852c414b7287f7f9f3a5c301fd",
     "mode": "heygen_only",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/2f91dacab0af4f70b6fb04abeaf726a1.mp4?Expires=1780930627&Signature=HhxWkCx~9zmTMFPHquTOEoW5NTFw~zuslP7zagByhJF8R7J4K3xgjwT1S2SK5m9IrKZzkL46j2CVB6Hp3sd~uNR905sbCCikXIsZIKsQvOtazCkEjsOztcWlIWqo~PnEJENfeQ2evz7gzygW1-AfS0Gba-fwuMtTtdtAndVaIVrHN3qd19UGwixQACWuEpfHgmEP9U4lpP43RFG-3w6aiEY0zY6WcvugI4omoKRNjtr7esbLylM7xH3-1F99X-5RMq388hMOzJj~rMdQUs9djbf5TUYCHMH-1jScS-Umg4BakEwHGafjnHlHx-RHUuKwPmg3iBnVX6-SwMZF0acS7g__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/dea82f852c414b7287f7f9f3a5c301fd.mp4?Expires=1780931800&Signature=D2cTocZvjNpEG5~t17p~FbafQkZlrMwbpAJc7G3Wf9CEnh9VqB09~xMTrWV7iG4R7SB~WM7jXBSpXoiOOtfaxAAlGVKgrbbGvQ6Ia2SB32FR-~ziMGGdH5sim1BvkWwknwvJQSHd~7MBSH9OLiGk3KgFBth5iIkw8uhQbv8Ku59ygdsNy8JZIxZRbeR-tyx3Ko0srmZT5CRc3qTRpuB6F0vrVfLauCJnUDT0aucmy6tfFyCAR7Jp9EgiCY9X8uz5BhU7SoApS8RKJaBeNNRcw5JGEKyNGp7tRmnmQgYA4oOx0pMaoNhfNb9dbJgzir5p4~WEK7NxmqHKFdLwhHM-wQ__&Key-Pair-Id=K38HBHX5LX3X2H",
     "creatomate_video_url": null,
     "output_file": "dm_videos/jolia-dm.mp4",
-    "output_size_mb": 12.95,
-    "total_elapsed_s": 73.1,
+    "output_size_mb": 10.81,
+    "total_elapsed_s": 122.1,
     "scenes": [
       {
         "t": 1.5,
