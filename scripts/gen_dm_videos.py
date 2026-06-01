@@ -102,8 +102,9 @@ def heygen_generate(cfg: dict, api_key: str, restaurant_name: str,
     if bg_image_url:
         background = {"type": "image", "url": bg_image_url, "fit": "cover"}
         character["avatar_style"] = "circle"
-        character["scale"]  = 0.42                 # petit cercle
-        character["offset"] = {"x": -0.32, "y": 0.34}  # bas-gauche (x,y ∈ -1..1)
+        # Aligné sur le cercle blanc du fond beige (centre ~ (150,1320), Ø~370).
+        character["scale"]  = 0.34
+        character["offset"] = {"x": -0.34, "y": 0.22}
 
     payload = {
         "video_inputs": [{
