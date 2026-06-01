@@ -33,6 +33,10 @@ PUBLIC   = "app.cartefidelavis.com"
 
 W, H = 1080, 1920
 
+# Géométrie PARTAGÉE de l'avatar (story + cercle vidéo + compositing HeyGen).
+# Le compositeur ffmpeg place Anna exactement à AV_CX/AV_CY, diamètre AV_D.
+AV_CX, AV_CY, AV_D, AV_BORDER = 178, 1452, 300, 9
+
 # Palette (échantillonnée sur le template de référence)
 BEIGE     = (245, 236, 221)
 DARKGREEN = (30, 42, 24)       # titre serif
@@ -195,15 +199,13 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
 
     # ── Avatar bas-gauche — PETIT, ne masque pas le wallet ──
     if video_bg:
-        # Cercle blanc vide (bordure fine) calé sur la position réelle de
-        # l'avatar HeyGen (Ø~260, coin inférieur gauche).
-        av_d = 260
-        cx_av, cy_av = 130, 1450
-        ax, ay = cx_av - av_d//2, cy_av - av_d//2
-        bord = 8
-        ring = Image.new("RGBA", (av_d+2*bord, av_d+2*bord), (0,0,0,0))
-        ImageDraw.Draw(ring).ellipse((0,0,av_d+2*bord,av_d+2*bord), fill=WHITE+(255,))
-        img.alpha_composite(ring, (ax-bord, ay-bord))
+        # Anneau blanc fin à la géométrie PARTAGÉE (AV_CX/AV_CY/AV_D).
+        # L'intérieur reste beige : le compositeur ffmpeg y posera Anna
+        # (chroma-key + masque circulaire) exactement au même endroit/taille.
+        outer = AV_D + 2*AV_BORDER
+        ring = Image.new("RGBA", (outer, outer), (0,0,0,0))
+        ImageDraw.Draw(ring).ellipse((0,0,outer,outer), fill=WHITE+(255,))
+        img.alpha_composite(ring, (AV_CX - outer//2, AV_CY - outer//2))
     elif AVATAR.exists():
         av_d = 196                       # encore réduit (~15 %)
         ax, ay = 44, 1372                # coin inférieur gauche, sur le bas du téléphone

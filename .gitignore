@@ -3,3 +3,6 @@
 # Node
 node_modules/
 package-lock.json
+
+# Intermédiaires green-screen (régénérables)
+dm_videos/*-green.mp4

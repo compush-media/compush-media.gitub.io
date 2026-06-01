@@ -86,7 +86,8 @@ def http_download(url: str, out: Path, timeout: int = 300) -> int:
 
 # ── HeyGen ───────────────────────────────────────────────────────────
 def heygen_generate(cfg: dict, api_key: str, restaurant_name: str,
-                    bg_image_url: str | None = None) -> dict:
+                    bg_image_url: str | None = None,
+                    green_screen: bool = False) -> dict:
     """Lance la génération de la vidéo avatar. Renvoie {video_id}."""
     script = cfg["script_template"].replace("{{restaurant_name}}", restaurant_name)
 
@@ -97,13 +98,17 @@ def heygen_generate(cfg: dict, api_key: str, restaurant_name: str,
     }
     background = cfg.get("background", {"type": "color", "value": "#000000"})
 
-    # Mode HeyGen-only : fond = image (mockup composé) + avatar en cercle
-    # positionné en bas-gauche. Un seul render, pas de Creatomate.
-    if bg_image_url:
+    # Mode GREEN SCREEN : avatar plein cadre sur fond vert pur → composité
+    # localement (chroma-key + masque circulaire) dans le cercle blanc beige.
+    # Alignement/Taille déterministes (plus de devinette d'offset HeyGen).
+    if green_screen:
+        background = {"type": "color", "value": "#00B140"}
+        character["avatar_style"] = "normal"
+    # Mode HeyGen-only image : fond = image + avatar cercle (déprécié, garde
+    # pour compat — le green screen donne un alignement parfait).
+    elif bg_image_url:
         background = {"type": "image", "url": bg_image_url, "fit": "cover"}
         character["avatar_style"] = "circle"
-        # Avatar PETIT (le wallet doit dominer), coin inférieur gauche.
-        # Aligné sur le cercle blanc du fond beige (centre ~ (130,1450), Ø~260).
         character["scale"]  = 0.20
         character["offset"] = {"x": -0.42, "y": 0.30}
 
@@ -320,18 +325,26 @@ def process_one(record: dict, heygen_cfg: dict, creato_source: dict,
     entry = partial if partial is not None else {**record, "status": "success"}
     entry["status"] = "success"
 
-    # ── Mode HeyGen-only : un seul render (avatar cercle + fond mockup) ──
+    # ── Mode HeyGen-only : avatar GREEN SCREEN composité localement ──
+    # HeyGen rend Anna sur fond vert ; on chroma-key + masque circulaire et on
+    # la pose EXACTEMENT dans le cercle blanc du fond beige (alignement parfait).
     if heygen_only and not dry_run:
-        bg_url = f"{PUBLIC_BASE}/assets/dm-bg/{record['slug']}-bg.png?v={int(time.time())}"
-        hg = heygen_generate(heygen_cfg, heygen_key, record["restaurant_name"], bg_image_url=bg_url)
-        entry["heygen_video_id"] = hg["video_id"]
-        entry["mode"] = "heygen_only"
-        final_url = heygen_wait(heygen_cfg, heygen_key, hg["video_id"])
-        entry["heygen_video_url"]    = final_url
-        entry["creatomate_video_url"] = None
+        cached = _previous_heygen_url(record["slug"])
+        if cached:
+            print("  ↺ Réutilisation de la vidéo HeyGen green (zéro crédit)")
+            green_url = cached
+        else:
+            hg = heygen_generate(heygen_cfg, heygen_key, record["restaurant_name"],
+                                 green_screen=True)
+            entry["heygen_video_id"] = hg["video_id"]
+            green_url = heygen_wait(heygen_cfg, heygen_key, hg["video_id"])
+        entry["heygen_video_url"] = green_url
+        entry["mode"] = "heygen_green_composite"
+        green_path = OUT_DIR / f"{record['slug']}-green.mp4"
+        http_download(green_url, green_path)
+        bg_png = ROOT / "assets" / "dm-bg" / f"{record['slug']}-bg.png"
         out_path = OUT_DIR / f"{record['slug']}-dm.mp4"
-        size = http_download(final_url, out_path)
-        sharpen_mp4(out_path)
+        composite_avatar(green_path, bg_png, out_path)
         entry["output_file"]    = str(out_path.relative_to(ROOT))
         entry["output_size_mb"] = round(out_path.stat().st_size / (1024*1024), 2)
         entry["total_elapsed_s"] = round(time.time() - started, 1)
@@ -478,6 +491,63 @@ def sharpen_mp4(video_path: Path) -> Path | None:
     except Exception as e:
         print(f"  ⚠ sharpen exception : {e}")
         return None
+
+
+# ── Compositing avatar green-screen → cercle blanc du fond beige ──────
+# Géométrie partagée avec gen_dm_story.py (--video-bg).
+AV_CX, AV_CY, AV_D = 178, 1452, 300
+
+def composite_avatar(green_mp4: Path, bg_png: Path, out_path: Path) -> Path:
+    """Compose la vidéo finale :
+       fond beige fixe (bg_png) + Anna (green_mp4 chroma-keyé, masquée en
+       cercle Ø AV_D) posée pile dans le cercle blanc à (AV_CX, AV_CY).
+    Audio = piste de la vidéo HeyGen. Encodage ABR 10 Mbps.
+    """
+    try:
+        import imageio_ffmpeg
+        ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception as e:
+        raise RuntimeError(f"imageio-ffmpeg requis pour le compositing : {e}")
+    import subprocess
+    from PIL import Image as _Img, ImageDraw as _Dr
+
+    # Masque circulaire blanc sur noir (AV_D × AV_D)
+    mask_path = out_path.parent / "_circle_mask.png"
+    m = _Img.new("L", (AV_D, AV_D), 0)
+    _Dr.Draw(m).ellipse((0, 0, AV_D, AV_D), fill=255)
+    m.save(mask_path)
+
+    x = AV_CX - AV_D // 2
+    y = AV_CY - AV_D // 2
+    # 0 = fond beige (image bouclée) · 1 = avatar green · 2 = masque cercle
+    filtergraph = (
+        "[1:v]chromakey=0x00B140:0.12:0.05,"
+        f"scale={AV_D}:{AV_D},format=yuva420p,split[av1][av2];"
+        "[av2]alphaextract[aa];"
+        "[2:v]format=gray[cm];"
+        "[aa][cm]blend=all_mode=darken[fa];"   # intersection key ∩ cercle
+        "[av1][fa]alphamerge[anna];"
+        f"[0:v][anna]overlay={x}:{y}:shortest=1,format=yuv420p[outv]"
+    )
+    cmd = [
+        ffmpeg, "-y",
+        "-loop", "1", "-i", str(bg_png),
+        "-i", str(green_mp4),
+        "-loop", "1", "-i", str(mask_path),
+        "-filter_complex", filtergraph,
+        "-map", "[outv]", "-map", "1:a?",
+        "-c:v", "libx264", "-preset", "slow",
+        "-b:v", "10M", "-maxrate", "14M", "-bufsize", "20M",
+        "-pix_fmt", "yuv420p", "-r", "30",
+        "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart",
+        "-shortest", str(out_path),
+    ]
+    r = subprocess.run(cmd, capture_output=True, timeout=300)
+    mask_path.unlink(missing_ok=True)
+    if r.returncode != 0:
+        raise RuntimeError("ffmpeg composite: " + r.stderr.decode()[-400:])
+    print(f"  ✓ composite OK → {out_path.stat().st_size/(1024*1024):.2f} MB")
+    return out_path
 
 
 # ── Frame extraction (pilote / report) ───────────────────────────────
