@@ -113,8 +113,12 @@ def build_bg(slug: str, name: str) -> Path:
         my = int(H * 0.50) - target_h // 2
         img.paste(mk, (mx, my), mk)
 
-    # wallet_url + watermark
-    text_centered(d, W/2, H - 170, f"{PUBLIC}/{slug}/", f_url, RED)
+    # wallet_url : décalé à DROITE + remonté pour ne PAS être masqué par le
+    # cercle de l'avatar (qui occupe le coin bas-gauche).
+    url_txt = f"{PUBLIC}/{slug}/"
+    url_w = d.textlength(url_txt, font=f_url)
+    d.text((W - url_w - 70, H - 230), url_txt, font=f_url, fill=RED)
+    # watermark centré tout en bas
     text_centered(d, W/2, H - 70, "Fidelavis", f_wm, (150, 150, 150))
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
