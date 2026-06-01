@@ -165,84 +165,73 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
     paste_emoji(img, "🎁", gift, px+34, py+(pill_h-gift)//2)
     d.text((px+34+gift+14, py+pill_h//2), badge_txt, font=fb, fill=WHITE, anchor="lm")
 
-    # ── Titre serif (nom resto) + ☕ ──
-    ft = SERIF(132)
+    # ── Nom du restaurant — TRÈS GRAND (premier élément après le badge) ──
+    ft = SERIF(176)
     title = name
     tw_title = tw(d, title, ft)
-    # réduire si trop large
-    while tw_title > W - 230 and ft.size > 70:
+    while tw_title > W - 150 and ft.size > 90:
         ft = SERIF(ft.size - 6); tw_title = tw(d, title, ft)
-    ty = 150
-    cup = int(ft.size * 0.62)
-    total = tw_title + 24 + cup
+    ty = 130
+    cup = int(ft.size * 0.55)
+    total = tw_title + 22 + cup
     tx = W//2 - total//2
     d.text((tx, ty), title, font=ft, fill=DARKGREEN)
-    paste_emoji(img, "☕", cup, tx + tw_title + 24, ty + ft.size*0.18)
+    paste_emoji(img, "☕", cup, tx + tw_title + 22, ty + ft.size*0.20)
 
-    # ── Sous-titre (programme fidélité en rouge) ──
-    fs = SANS_B(46)
-    y = ty + ft.size + 40
-    seg1, seg2, seg3 = "J'ai déjà préparé votre ", "programme fidélité.", " ✨"
-    w1 = tw(d, seg1, fs); w2 = tw(d, seg2, fs)
-    spark = 40
-    sx = W//2 - (w1 + w2 + 12 + spark)//2
-    d.text((sx, y), seg1, font=fs, fill=INK)
-    d.text((sx+w1, y), seg2, font=fs, fill=RED)
-    paste_emoji(img, "✨", spark, sx+w1+w2+10, y-2)
+    # ── Sous-titre court « Votre exemple est déjà prêt ✨ » ──
+    fs = SANS_B(52)
+    y = ty + ft.size + 34
+    sub = "Votre exemple est déjà prêt"
+    ws = tw(d, sub, fs); spark = 46
+    sx = W//2 - (ws + 14 + spark)//2
+    d.text((sx, y), sub, font=fs, fill=INK)
+    paste_emoji(img, "✨", spark, sx+ws+14, y-2)
 
-    # ── Ligne script ──
-    fsc = SCRIPT(64)
-    line = "Voici à quoi pourrait ressembler votre Brunch Club ♡"
-    y2 = y + 64
-    d.text((W//2, y2), line, font=fsc, fill=BROWN, anchor="ma")
+    # ── iPhone mockup (screenshot intact) — ÉLÉMENT DOMINANT ──
+    # Plus grand + centré, marges latérales réduites. Le bas du téléphone se
+    # glisse derrière le bloc CTA (dessiné après, opaque).
+    phone_top = y + 90
+    draw_phone(img, shot, cx=W//2, top=phone_top, screen_w=620)
 
-    # ── iPhone mockup (screenshot intact) — élément DOMINANT ──
-    draw_phone(img, shot, cx=W//2 + 25, top=470, screen_w=560)
-
-    # ── Avatar bas-gauche ──
-    # video_bg : cercle blanc calé sur la position RÉELLE de l'avatar HeyGen
-    #            (centre ≈ (150,1390), Ø~460 observé), bulle à DROITE de l'avatar.
-    # story    : photo Anna statique, cercle plus haut + bulle au-dessus du bloc.
+    # ── Avatar bas-gauche — PETIT, ne masque pas le wallet ──
     if video_bg:
-        av_d = 470
-        cx_av, cy_av = 150, 1390
+        # Cercle blanc vide calé sur la position réelle de l'avatar HeyGen
+        # (réduit ~35 % vs avant : Ø~300, plus bas-gauche).
+        av_d = 300
+        cx_av, cy_av = 120, 1470
         ax, ay = cx_av - av_d//2, cy_av - av_d//2
-        ring = Image.new("RGBA", (av_d+28, av_d+28), (0,0,0,0))
-        ImageDraw.Draw(ring).ellipse((0,0,av_d+28,av_d+28), fill=WHITE+(255,))
-        img.alpha_composite(ring, (ax-14, ay-14))
-        bub_x0, bub_y0 = cx_av + av_d//2 - 20, 1250
-    else:
-        av_d = 360
-        ax, ay = -46, 1170
-        if AVATAR.exists():
-            av = circle_crop(Image.open(AVATAR), av_d)
-            ring = Image.new("RGBA", (av_d+26, av_d+26), (0,0,0,0))
-            ImageDraw.Draw(ring).ellipse((0,0,av_d+26,av_d+26), fill=WHITE+(255,))
-            img.alpha_composite(ring, (ax-13, ay-13))
-            img.alpha_composite(av, (ax, ay))
-        bub_x0 = ax + av_d - 80
+        ring = Image.new("RGBA", (av_d+24, av_d+24), (0,0,0,0))
+        ImageDraw.Draw(ring).ellipse((0,0,av_d+24,av_d+24), fill=WHITE+(255,))
+        img.alpha_composite(ring, (ax-12, ay-12))
+    elif AVATAR.exists():
+        av_d = 230
+        ax, ay = -30, 1330      # plus petit + plus bas à gauche
+        av = circle_crop(Image.open(AVATAR), av_d)
+        ring = Image.new("RGBA", (av_d+22, av_d+22), (0,0,0,0))
+        ImageDraw.Draw(ring).ellipse((0,0,av_d+22,av_d+22), fill=WHITE+(255,))
+        img.alpha_composite(ring, (ax-11, ay-11))
+        img.alpha_composite(av, (ax, ay))
 
-    # ── Bulle de texte ──
-    fbub = SANS_B(27)
-    bub_lines = ["Regardez la démo vidéo", "que j'ai préparée pour vous !"]
-    bw_max = max(tw(d, l, fbub) for l in bub_lines)
-    pad, lh = 22, 36
-    bh  = 2*pad + len(bub_lines)*lh
-    by0 = bub_y0 if video_bg else (1560 - bh)
-    rounded(d, (bub_x0, by0, bub_x0+bw_max+2*pad, by0+bh), 26, DARKGREEN+(255,))
-    for i, l in enumerate(bub_lines):
-        d.text((bub_x0+pad, by0+pad+i*lh), l, font=fbub, fill=WHITE)
+    # (Aucune bulle — supprimée.)
 
-    # ── Bloc blanc bas : lien ──
-    blk_x0, blk_x1 = 70, W-70
-    blk_y0, blk_y1 = 1620, 1855
-    rounded(d, (blk_x0, blk_y0, blk_x1, blk_y1), 38, WHITE+(255,))
-    fhint = SANS_B(34)
-    paste_emoji(img, "👇", 40, blk_x0+44, blk_y0+34)
-    d.text((blk_x0+44+52, blk_y0+38), "J'ai déjà préparé votre exemple ici",
-           font=fhint, fill=INK)
-    flink = SANS_B(48)
-    d.text((blk_x0+44, blk_y0+102), f"{PUBLIC}/{slug}", font=flink, fill=RED)
+    # ── Bloc blanc bas (CTA) — toujours entièrement visible ──
+    blk_x0, blk_x1 = 60, W-60
+    blk_y0, blk_y1 = 1648, 1858
+    # Légère ombre pour décoller du fond beige
+    sh = Image.new("RGBA", img.size, (0,0,0,0))
+    ImageDraw.Draw(sh).rounded_rectangle((blk_x0, blk_y0+10, blk_x1, blk_y1+10), 40, fill=(0,0,0,45))
+    img.alpha_composite(sh.filter(__import__("PIL.ImageFilter", fromlist=["GaussianBlur"]).GaussianBlur(18)))
+    rounded(d, (blk_x0, blk_y0, blk_x1, blk_y1), 40, WHITE+(255,))
+    fhint = SANS_B(40)
+    hint = "Voir votre démo"
+    hw = tw(d, hint, fhint); hand = 46
+    hx = W//2 - (hw + 16 + hand)//2
+    paste_emoji(img, "👇", hand, hx, blk_y0+34)
+    d.text((hx+hand+16, blk_y0+40), hint, font=fhint, fill=INK)
+    flink = SANS_B(50)
+    link = f"{PUBLIC}/{slug}"
+    lw = tw(d, link, flink)
+    d.text((W//2 - lw//2, blk_y0+112), link, font=flink, fill=RED)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     if video_bg:
