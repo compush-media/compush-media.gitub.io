@@ -270,8 +270,8 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
     hx = W//2 - (hw + 16 + hand)//2
     paste_emoji(img, "👇", hand, hx, blk_y0+34)
     d.text((hx+hand+16, blk_y0+40), hint, font=fhint, fill=INK)
-    # Lien : réduit la police pour tenir dans le bloc blanc (slugs longs)
-    link = f"{PUBLIC}/{slug}"
+    # Lien : pointe vers la DÉMO (sans inscription), pas la prod
+    link = f"{PUBLIC}/{slug}/demo"
     flink = SANS_B(50)
     while tw(d, link, flink) > (blk_x1 - blk_x0) - 60 and flink.size > 26:
         flink = SANS_B(flink.size - 2)
