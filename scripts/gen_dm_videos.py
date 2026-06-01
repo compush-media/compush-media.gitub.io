@@ -495,7 +495,7 @@ def sharpen_mp4(video_path: Path) -> Path | None:
 
 # ── Compositing avatar green-screen → cercle blanc du fond beige ──────
 # Géométrie partagée avec gen_dm_story.py (--video-bg).
-AV_CX, AV_CY, AV_D = 178, 1452, 300
+AV_CX, AV_CY, AV_D = 132, 1486, 232
 
 def composite_avatar(green_mp4: Path, bg_png: Path, out_path: Path) -> Path:
     """Compose la vidéo finale :
@@ -522,7 +522,7 @@ def composite_avatar(green_mp4: Path, bg_png: Path, out_path: Path) -> Path:
     # 0 = fond beige (image bouclée) · 1 = avatar green · 2 = masque cercle
     # Recadrage VISAGE (tête + épaules) dans la vidéo HeyGen 1080×1920 avant
     # le masque circulaire → portrait serré (pas le corps entier).
-    FACE_X, FACE_Y, FACE_S = 230, 40, 620   # x, y, côté du carré
+    FACE_X, FACE_Y, FACE_S = 250, 70, 560   # x, y, côté — visage bien centré
     filtergraph = (
         "[1:v]chromakey=0x00B140:0.14:0.06,despill=type=green:mix=0.5:expand=0.3,"
         f"crop={FACE_S}:{FACE_S}:{FACE_X}:{FACE_Y},"

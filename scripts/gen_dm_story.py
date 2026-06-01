@@ -35,7 +35,7 @@ W, H = 1080, 1920
 
 # Géométrie PARTAGÉE de l'avatar (story + cercle vidéo + compositing HeyGen).
 # Le compositeur ffmpeg place Anna exactement à AV_CX/AV_CY, diamètre AV_D.
-AV_CX, AV_CY, AV_D, AV_BORDER = 178, 1452, 300, 9
+AV_CX, AV_CY, AV_D, AV_BORDER = 132, 1486, 232, 9
 
 # Palette (échantillonnée sur le template de référence)
 BEIGE     = (245, 236, 221)
