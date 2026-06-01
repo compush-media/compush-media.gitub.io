@@ -1,26 +1,28 @@
 # ──────────────────────────────────────────────────────────────
-#  Génère les vidéos DM manquantes — un MP4 par resto qui a une démo + un
-#  mockup mais pas encore de vidéo committée.
+#  Génère les VIDÉOS DM (style beige) à la demande, pour les restos choisis.
 #
-#  Déclencheur : manuel (workflow_dispatch) — consomme des crédits HeyGen
-#  + Creatomate, donc volontairement non auto sur push.
+#  Pipeline HeyGen-only : avatar sur fond vert → chroma-key + masque
+#  circulaire → composité (ffmpeg) dans le cercle blanc du fond beige.
+#  Pas de Creatomate. ffmpeg fourni par imageio-ffmpeg (pip).
 #
-#  Secrets requis (Repository → Settings → Secrets → Actions) :
-#    - HEYGEN_API_KEY
-#    - CREATOMATE_API_KEY
-#    - CREATOMATE_TEMPLATE_ID  (optionnel)
+#  Déclencheur :
+#    • Bouton « 🎬 Vidéo DM » du dashboard agence (via le proxy GAS)
+#    • Onglet Actions → Run workflow (manuel)
+#
+#  Secret requis (Settings → Secrets → Actions) : HEYGEN_API_KEY
+#  ⚠ Consomme des crédits HeyGen → déclenché uniquement sur validation.
 # ──────────────────────────────────────────────────────────────
-name: Vidéos DM (HeyGen + Creatomate)
+name: Vidéos DM (HeyGen)
 
 on:
   workflow_dispatch:
     inputs:
       slugs:
-        description: 'Slugs séparés par espace (vide = tous les restos sans MP4)'
+        description: 'Slugs séparés par espace (vide = tous ceux avec une démo, sans MP4)'
         required: false
         default: ''
       force_regen:
-        description: 'Régénérer même si MP4 déjà présent'
+        description: 'Régénérer même si MP4 déjà présent (true/false)'
         required: false
         default: 'false'
 
@@ -32,7 +34,7 @@ env:
 
 concurrency:
   group: gen-dm-videos
-  cancel-in-progress: false   # ne pas annuler — les renders consomment des crédits
+  cancel-in-progress: false   # ne pas annuler — un render consomme des crédits
 
 jobs:
   generate:
@@ -45,14 +47,10 @@ jobs:
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Vérifier les secrets HeyGen / Creatomate
+      - name: Vérifier le secret HeyGen
         run: |
           if [ -z "${{ secrets.HEYGEN_API_KEY }}" ]; then
             echo "::error::HEYGEN_API_KEY manquant — Settings → Secrets → Actions."
-            exit 1
-          fi
-          if [ -z "${{ secrets.CREATOMATE_API_KEY }}" ]; then
-            echo "::error::CREATOMATE_API_KEY manquant — Settings → Secrets → Actions."
             exit 1
           fi
 
@@ -61,77 +59,60 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Pillow + imageio-ffmpeg + openpyxl
+      - name: Install deps (Pillow, imageio-ffmpeg, polices)
         run: |
           python -m pip install --upgrade pip
-          pip install Pillow 'imageio[ffmpeg]' openpyxl
+          pip install Pillow "imageio[ffmpeg]"
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu fonts-noto-color-emoji || true
 
-      - name: Calculer la liste à traiter
+      - name: Calculer la liste des restos à traiter
         id: pick
         run: |
           set -e
           if [ -n "${{ github.event.inputs.slugs }}" ]; then
             echo "slugs=${{ github.event.inputs.slugs }}" >> "$GITHUB_OUTPUT"
-            echo "Slugs fournis : ${{ github.event.inputs.slugs }}"
           else
-            # Tous les restos qui ont demo/ + mockup mais pas de MP4 (ou force_regen=true)
             FORCE='${{ github.event.inputs.force_regen }}'
-            SLUGS=""
+            S=""
             for d in */; do
               s="${d%/}"
               case "$s" in
-                assets|data|fidelavis-admin|admin|apps-script|images|scripts|templates|screenshots|mockups|pipeline|dm_videos|.github) continue;;
+                assets|data|fidelavis-admin|admin|apps-script|images|scripts|templates|screenshots|mockups|pipeline|dm_videos|.github|node_modules) continue;;
               esac
               [[ "$s" =~ ^[._] ]] && continue
-              [ -f "$s/demo/index.html" ] || continue
-              [ -f "mockups/${s}-iphone.png" ] || continue
-              if [ "$FORCE" != "true" ] && [ -f "dm_videos/${s}-dm.mp4" ]; then
-                continue
-              fi
-              SLUGS="$SLUGS $s"
+              [ -f "$s/demo/screen.png" ] || [ -f "screenshots/${s}-wallet.png" ] || continue
+              if [ "$FORCE" != "true" ] && [ -f "dm_videos/${s}-dm.mp4" ]; then continue; fi
+              S="$S $s"
             done
-            SLUGS="${SLUGS# }"
-            echo "slugs=$SLUGS" >> "$GITHUB_OUTPUT"
-            echo "Slugs détectés : ${SLUGS:-(aucun)}"
+            echo "slugs=$(echo $S | xargs)" >> "$GITHUB_OUTPUT"
           fi
+          echo "→ ${{ steps.pick.outputs.slugs }}"
 
-      - name: Générer les vidéos DM
+      - name: Générer les fonds vidéo beige
+        if: steps.pick.outputs.slugs != ''
+        run: python3 scripts/gen_dm_story.py --video-bg ${{ steps.pick.outputs.slugs }}
+
+      - name: Générer les vidéos (HeyGen green + compositing ffmpeg)
         if: steps.pick.outputs.slugs != ''
         env:
-          HEYGEN_API_KEY:          ${{ secrets.HEYGEN_API_KEY }}
-          CREATOMATE_API_KEY:      ${{ secrets.CREATOMATE_API_KEY }}
-          CREATOMATE_TEMPLATE_ID:  ${{ secrets.CREATOMATE_TEMPLATE_ID }}
-        run: python3 scripts/gen_dm_videos.py ${{ steps.pick.outputs.slugs }}
+          HEYGEN_API_KEY: ${{ secrets.HEYGEN_API_KEY }}
+        run: python3 scripts/gen_dm_videos.py --heygen-only ${{ steps.pick.outputs.slugs }}
 
-      - name: Régénérer le crop coupon pour chaque resto traité
+      - name: Rafraîchir l'export + la file de dispatch
         if: steps.pick.outputs.slugs != ''
         run: |
-          for s in ${{ steps.pick.outputs.slugs }}; do
-            if [ -f "mockups/${s}-iphone.png" ]; then
-              python3 - <<PY
-from PIL import Image
-import os
-src = Image.open("mockups/${s}-iphone.png")
-w, h = src.size
-crop = src.crop((int(w*0.12), int(h*0.39), int(w*0.88), int(h*0.56)))
-crop = crop.resize((crop.width*2, crop.height*2), Image.LANCZOS)
-crop.save("mockups/${s}-coupon-zoom.png", "PNG", optimize=True)
-print("✓ mockups/${s}-coupon-zoom.png")
-PY
-            fi
-          done
-
-      - name: Rafraîchir l'export CSV/XLSX
-        run: python3 scripts/export_demos.py
+          python3 scripts/gen_dm_queue.py || true
+          python3 scripts/export_demos.py || true
 
       - name: Commit & push
         run: |
-          if git diff --quiet -- 'dm_videos/' 'mockups/' ; then
-            echo "Aucun changement à committer."
+          if git diff --quiet -- 'dm_videos/' 'assets/dm-bg/'; then
+            echo "Rien à committer."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add 'dm_videos/' 'mockups/'
-          git commit -m "chore(dm): vidéos générées + export rafraîchi [skip ci]"
+          git add 'dm_videos/' 'assets/dm-bg/'
+          git commit -m "chore(dm): vidéos DM générées (validation manuelle) [skip ci]"
           git push

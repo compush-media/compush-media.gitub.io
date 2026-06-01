@@ -2300,6 +2300,30 @@ async function openDemoLink(slug) {
   ta.remove();
 }
 
+// ── Génération vidéo DM (validation manuelle, sans commande) ─────────
+// Déclenche le workflow GitHub Actions via le proxy GAS (qui détient le
+// GITHUB_TOKEN). Consomme des crédits HeyGen → confirmation explicite.
+async function genDmVideo(slug, name) {
+  if (!confirm(`Générer la vidéo DM pour « ${name} » ?\n\n` +
+               `Cela déclenche HeyGen (≈ 0,10 $ de crédits) et publie la vidéo ` +
+               `dans ~3-4 min sur app.cartefidelavis.com/dm_videos/${slug}-dm.mp4.`)) return;
+  try {
+    const res = await fetch(FV_PROXY, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify({ action: 'dispatch_dm_video', slug, force: true })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      toast(`🎬 Vidéo « ${name} » en cours de génération (~3-4 min)`, 'success');
+    } else {
+      toast('Erreur : ' + (data.error || 'inconnue'), 'error');
+    }
+  } catch (e) {
+    toast('Erreur réseau : ' + e.message, 'error');
+  }
+}
+
 // ── Aide : comment régénérer les screenshots d'aperçu ────────────────
 function openRegenAperçusModal() {
   const html = `
@@ -2771,6 +2795,7 @@ function renderRestoGrid(data) {
         <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
           <a href="${BASE}/${slug}/index.html" target="_blank" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">🏠 Site</a>
           <button onclick="openDemoLink('${slug}')" title="Ouvre l'aperçu et copie le lien (pour DM)" style="font-size:11px;font-weight:700;padding:4px 9px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;color:#166534;cursor:pointer">📱 Démo</button>
+          <button onclick="genDmVideo('${slug}','${escHtml(r.name || slug)}')" title="Génère la vidéo DM (HeyGen) — validation manuelle" style="font-size:11px;font-weight:700;padding:4px 9px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:6px;color:#4338ca;cursor:pointer">🎬 Vidéo DM</button>
           <button onclick="openRestoAdmin('${slug}')" style="font-size:11px;font-weight:700;padding:4px 9px;background:#fff8e1;border:1px solid #f0c75e;border-radius:6px;color:#8b6914;cursor:pointer">🔓 Espace</button>
           <a href="${BASE}/${slug}/admin/state.html" target="_blank" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">📊 Stats</a>
           <a href="${BASE}/${slug}/admin/reputation-google.html" target="_blank" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">⭐ Réputation</a>

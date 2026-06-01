@@ -92,6 +92,9 @@ function doPost(e) {
       case "provision_supabase":
         result = provisionSupabaseForResto(body);
         break;
+      case "dispatch_dm_video":
+        result = dispatchDmVideo(body);
+        break;
       case "send_monthly_rewards":
         result = _sendMonthlyRewardEmails({
           reminder:  body.reminder === true || body.phase === "reminder",
@@ -2259,6 +2262,50 @@ function provisionSupabaseForResto(params) {
   }
   if (r && r.ok === true) return { ok: true, slug: slug, resto_id: r.resto_id };
   return { error: "provision Supabase échouée (" + ((r && r.reason) || "inconnu") + ")" };
+}
+
+/**
+ * dispatchDmVideo(params)
+ * Déclenche le workflow GitHub Actions « Vidéos DM (HeyGen) » pour générer
+ * la vidéo DM d'un (ou plusieurs) restaurant — depuis le bouton du dashboard,
+ * sans aucune commande locale.
+ *
+ * Paramètres : slug (ou slugs séparés par espace), force (bool, défaut true)
+ */
+function dispatchDmVideo(params) {
+  var slugs = (params.slugs || params.slug || "").trim();
+  if (!slugs) return { error: "slug manquant" };
+  var force = (params.force === false || params.force === "false") ? "false" : "true";
+
+  var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!token) return { error: "GITHUB_TOKEN non configuré." };
+
+  var url = "https://api.github.com/repos/" + repo +
+            "/actions/workflows/gen-dm-videos.yml/dispatches";
+  var payload = {
+    ref: "main",
+    inputs: { slugs: slugs, force_regen: force }
+  };
+  var res = UrlFetchApp.fetch(url, {
+    method:  "post",
+    headers: {
+      Authorization: "token " + token,
+      Accept:        "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    contentType:        "application/json",
+    payload:            JSON.stringify(payload),
+    muteHttpExceptions: true
+  });
+  var code = res.getResponseCode();
+  // 204 = workflow déclenché avec succès (pas de corps)
+  if (code === 204) {
+    return { ok: true, slugs: slugs,
+             actions_url: "https://github.com/" + repo + "/actions/workflows/gen-dm-videos.yml" };
+  }
+  return { error: "GitHub dispatch HTTP " + code + " : " + res.getContentText().slice(0, 250) };
 }
 
 // ═══════════════════════════════════════════════════════════════
