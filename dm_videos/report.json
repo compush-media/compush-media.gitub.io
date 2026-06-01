@@ -9,8 +9,8 @@
     "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/ada2266c51754317983d2599e8e464f0.mp4?Expires=1780936526&Signature=MXirV9gXvk59fP7WdNs6231Twykrx0qDK0Q0uaAIX6S8jx9fFXwFjXLLWc1pzBIH45s-KDAP-u9plD2t8hlDGSxkNaiB1~tfW5UhCO5rawii6hudFLRVtRIgrziEKn2be3Hn139Rmyl6d~ZPMO9m3WzjqJX7BkjvPp8AR8HoxehfoPbdPy47EEU2JyC9T5wUP~tllC5nFJGot~ORITucJeiJvwXSM468eAtbaF8eh5v8Gdt3m~mVeBD9MHQgJKGhtRlBM6GKw8ZWxKathgDJ~kbE~B6GXADahsGQEAd6M4XA6xdvuEKq-N7kuODkuXBHsJSo9ELLkWCePdzpF6CPew__&Key-Pair-Id=K38HBHX5LX3X2H",
     "mode": "heygen_green_composite",
     "output_file": "dm_videos/jolia-dm.mp4",
-    "output_size_mb": 6.53,
-    "total_elapsed_s": 10.9,
+    "output_size_mb": 5.9,
+    "total_elapsed_s": 12.0,
     "scenes": [
       {
         "t": 1.5,

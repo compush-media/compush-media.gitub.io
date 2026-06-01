@@ -520,8 +520,12 @@ def composite_avatar(green_mp4: Path, bg_png: Path, out_path: Path) -> Path:
     x = AV_CX - AV_D // 2
     y = AV_CY - AV_D // 2
     # 0 = fond beige (image bouclée) · 1 = avatar green · 2 = masque cercle
+    # Recadrage VISAGE (tête + épaules) dans la vidéo HeyGen 1080×1920 avant
+    # le masque circulaire → portrait serré (pas le corps entier).
+    FACE_X, FACE_Y, FACE_S = 230, 40, 620   # x, y, côté du carré
     filtergraph = (
-        "[1:v]chromakey=0x00B140:0.12:0.05,"
+        "[1:v]chromakey=0x00B140:0.14:0.06,despill=type=green:mix=0.5:expand=0.3,"
+        f"crop={FACE_S}:{FACE_S}:{FACE_X}:{FACE_Y},"
         f"scale={AV_D}:{AV_D},format=yuva420p,split[av1][av2];"
         "[av2]alphaextract[aa];"
         "[2:v]format=gray[cm];"

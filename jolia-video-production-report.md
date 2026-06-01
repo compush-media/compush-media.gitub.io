@@ -1,11 +1,11 @@
 # Rapport de production vidéo — **Jolia**
-_Généré le 2026-06-01 à 18:36_
+_Généré le 2026-06-01 à 19:01_
 
 ## ✅ Vidéo produite
 
 - **Fichier local** : `dm_videos/jolia-dm.mp4`
-- **Poids** : 6.53 MB
-- **Durée totale du pipeline** : 10.9 s
+- **Poids** : 5.9 MB
+- **Durée totale du pipeline** : 12.0 s
 - **URL Creatomate (CDN)** : —
 
 ## ⏱ Durées
@@ -13,7 +13,7 @@ _Généré le 2026-06-01 à 18:36_
 - Script parlé estimé : **~12.4 s** (31 mots)
 - Vidéo finale : **18 s** (1080×1920, 30 fps)
 - Rendu HeyGen : ~? s
-- Rendu Creatomate : ~10.9 s
+- Rendu Creatomate : ~12.0 s
 
 ## 💰 Coût
 
