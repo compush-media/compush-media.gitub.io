@@ -1,11 +1,11 @@
 # Rapport de production vidéo — **Jolia**
-_Généré le 2026-06-01 à 13:50_
+_Généré le 2026-06-01 à 14:10_
 
 ## ✅ Vidéo produite
 
 - **Fichier local** : `dm_videos/jolia-dm.mp4`
-- **Poids** : 14.41 MB
-- **Durée totale du pipeline** : 128.8 s
+- **Poids** : 14.42 MB
+- **Durée totale du pipeline** : 49.9 s
 - **URL Creatomate (CDN)** : None
 
 ## ⏱ Durées
@@ -13,7 +13,7 @@ _Généré le 2026-06-01 à 13:50_
 - Script parlé estimé : **~8.8 s** (22 mots)
 - Vidéo finale : **18 s** (1080×1920, 30 fps)
 - Rendu HeyGen : ~? s
-- Rendu Creatomate : ~128.8 s
+- Rendu Creatomate : ~49.9 s
 
 ## 💰 Coût
 
@@ -25,8 +25,8 @@ _(Vérifier les chiffres exacts dans les dashboards HeyGen et Creatomate.)_
 
 ## 🔑 Identifiants techniques
 
-- HeyGen `video_id` : `c25eadeac5ba4d308d2a591f85f3f75c`
-- HeyGen `video_url` : https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/c25eadeac5ba4d308d2a591f85f3f75c.mp4?Expires=1780919434&Signature=HJQgu1lhXzod8OwDVf~XyMiddw-1YVpGi4Ppu9YIVQszmBXPgBSfleaAoKjryqEmP~R60JpQ-ZoG5drw~avYt~IaKPrwHTF0jIhwDRXg-z2Uwl25rMXb0VfDWpcyF350iRSkdlGakVoxNFlayws~VcFY73AhPlja1Ya0GnzVKx1C9BeAGfVd3go0NG2OIil3b1THgGk~A5geVA4u3KvcJBLZhRR3aYHN01SFNgt3Orlacwpuo9DOKy9d6ehfBv2xOhyUYJPlZuSp9rI3QkxL73TiWLwiJio1q~NWgyh2f2S0M0VqULP5CmTNahNAuEI-7TFzGB~IQJmSKYyIbCwISg__&Key-Pair-Id=K38HBHX5LX3X2H
+- HeyGen `video_id` : `b417a107fb6b41e788ae74a9b0b1202b`
+- HeyGen `video_url` : https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/b417a107fb6b41e788ae74a9b0b1202b.mp4?Expires=1780920591&Signature=ArhjS~vHAgj3W2PoL-X3BRGQfksD5eZ2V~x-EBJwEZfwQ6BS7VY~DSipyTmOV4~BizeE4~2VeeBBC~pdK4fctzIaTH~2AYejvgfO47q6T~WeASy9fnCva4iLQ7XsnwPha6F4FDzwCu65chnJXSluj6moC-zBhXaAO2NTJjdnlbVY4fnXv3Af7b5so62ZYBqb0Lnbzq5ApgRZ8RLOHEvMjigZGyLoQ52J4~t5Tqdtajfbxl~HKTwMjIHP-rlarRDTbbTx3l~7bPwOwadTVhSoJq-gFz8uuunQdqTrtLsM8QpZhBg1b3b1X60nvMSuQG7ythiu1bYTOOfo7MVooswCzQ__&Key-Pair-Id=K38HBHX5LX3X2H
 - Creatomate `render_id` : `—`
 
 ## 🎬 Scènes clés
