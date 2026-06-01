@@ -55,11 +55,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Playwright + Chromium + Pillow
+      - name: Install Playwright + Chromium + Pillow + polices Story
         run: |
           python -m pip install --upgrade pip
           pip install playwright Pillow
           playwright install --with-deps chromium
+          # Polices pour la Story beige (serif + emoji couleur sous Linux)
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu fonts-noto-color-emoji || true
 
       - name: Attendre que GitHub Pages publie le nouveau contenu
         # Compare le hash de la page démo en ligne avec celui du repo : on ne
@@ -87,14 +90,19 @@ jobs:
           MOCKUP_HD_SCALE: '2'
         run: python3 scripts/gen_iphone_mockups.py --demo
 
-      - name: Commit & push si des PNG ont changé
+      - name: Générer les Stories DM beige (statiques, gratuit)
+        # Utilise <slug>/demo/screen.png en source (fallback intégré).
+        # La vidéo HeyGen reste manuelle (build_dm.sh) pour maîtriser les coûts.
+        run: python3 scripts/gen_dm_story.py || echo "⚠ story: certains restos sans screenshot"
+
+      - name: Commit & push si des fichiers ont changé
         run: |
-          if git diff --quiet -- '*/demo/screen.png' '*/demo/screen-compte.png' 'mockups/'; then
-            echo "Aucun PNG modifié — rien à pousser."
+          if git diff --quiet -- '*/demo/screen.png' '*/demo/screen-compte.png' 'mockups/' 'assets/dm-story/'; then
+            echo "Aucun fichier modifié — rien à pousser."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add '*/demo/screen.png' '*/demo/screen-compte.png' 'mockups/'
-          git commit -m "chore(demo): rafraîchissement auto aperçus + mockups iPhone [skip ci]"
+          git add '*/demo/screen.png' '*/demo/screen-compte.png' 'mockups/' 'assets/dm-story/'
+          git commit -m "chore(demo): aperçus + mockups + stories DM auto [skip ci]"
           git push

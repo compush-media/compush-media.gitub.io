@@ -53,7 +53,12 @@ EXCLUDED = {
     "node_modules",".github",".git",
 }
 
-EMOJI_FONT = "/System/Library/Fonts/Apple Color Emoji.ttc"
+# Polices emoji couleur : macOS (Apple, 160px) puis Linux/CI (Noto, 136px).
+EMOJI_FONTS = [
+    ("/System/Library/Fonts/Apple Color Emoji.ttc", 160),
+    ("/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf", 136),
+    ("/usr/share/fonts/truetype/noto/NotoColorEmoji-Regular.ttf", 136),
+]
 
 
 def font(paths, size):
@@ -76,19 +81,23 @@ SCRIPT  = lambda s: font([("/System/Library/Fonts/SnellRoundhand.ttc", 0),
 
 
 def emoji(char, size):
-    """Rend un emoji couleur (Apple ne supporte que 160px → resize)."""
-    if not Path(EMOJI_FONT).exists():
-        return None
-    try:
-        f = ImageFont.truetype(EMOJI_FONT, 160)
-        layer = Image.new("RGBA", (180, 180), (0, 0, 0, 0))
-        ImageDraw.Draw(layer).text((10, 10), char, font=f, embedded_color=True)
-        bbox = layer.getbbox()
-        if bbox: layer = layer.crop(bbox)
-        r = size / max(layer.size)
-        return layer.resize((max(1,int(layer.width*r)), max(1,int(layer.height*r))), Image.LANCZOS)
-    except Exception:
-        return None
+    """Rend un emoji couleur (polices bitmap = taille native fixe → resize)."""
+    for path, native in EMOJI_FONTS:
+        if not Path(path).exists():
+            continue
+        try:
+            f = ImageFont.truetype(path, native)
+            layer = Image.new("RGBA", (native+40, native+40), (0, 0, 0, 0))
+            ImageDraw.Draw(layer).text((10, 10), char, font=f, embedded_color=True)
+            bbox = layer.getbbox()
+            if not bbox:
+                continue
+            layer = layer.crop(bbox)
+            r = size / max(layer.size)
+            return layer.resize((max(1,int(layer.width*r)), max(1,int(layer.height*r))), Image.LANCZOS)
+        except Exception:
+            continue
+    return None
 
 
 def tw(draw, text, fnt):
@@ -151,9 +160,13 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
     """video_bg=True → fond pour la VIDÉO HeyGen : pas d'Anna statique
     (l'avatar animé sera composé par HeyGen dans le cercle blanc), pas de
     bloc lien (HeyGen rend tout en un passage, le bas reste libre)."""
+    # Source du screenshot : capture HD Node si présente, sinon la capture
+    # CI <slug>/demo/screen.png (gen_demo_screens.py).
     shot = SCR_DIR / f"{slug}-wallet.png"
     if not shot.exists():
-        raise SystemExit(f"Screenshot manquant : {shot} — lance d'abord `node scripts/capture_wallets.js {slug}`")
+        shot = ROOT / slug / "demo" / "screen.png"
+    if not shot.exists():
+        raise SystemExit(f"Screenshot manquant pour {slug} (ni screenshots/{slug}-wallet.png ni {slug}/demo/screen.png)")
 
     img = Image.new("RGBA", (W, H), BEIGE + (255,))
     d = ImageDraw.Draw(img)
@@ -251,10 +264,13 @@ def build_story(slug: str, name: str, wallet_url: str, video_bg: bool = False) -
 
 
 def list_slugs():
-    return [p.name for p in sorted(ROOT.iterdir())
-            if p.is_dir() and not p.name.startswith((".","_"))
-            and p.name not in EXCLUDED
-            and (SCR_DIR / f"{p.name}-wallet.png").exists()]
+    out = []
+    for p in sorted(ROOT.iterdir()):
+        if not p.is_dir() or p.name.startswith((".","_")) or p.name in EXCLUDED:
+            continue
+        if (SCR_DIR / f"{p.name}-wallet.png").exists() or (p / "demo" / "screen.png").exists():
+            out.append(p.name)
+    return out
 
 
 def main():
