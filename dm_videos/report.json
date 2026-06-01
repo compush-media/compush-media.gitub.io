@@ -1,41 +1,81 @@
 [
   {
-    "slug": "ter",
-    "restaurant_name": "Ter.",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/ter-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/ter/",
-    "demo_url": "https://app.cartefidelavis.com/ter/demo/",
+    "slug": "jolia",
+    "restaurant_name": "Jolia",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/jolia-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/jolia/",
+    "demo_url": "https://app.cartefidelavis.com/jolia/demo/",
     "status": "success",
-    "heygen_video_id": "14da2bcc2e1c40758fe0f62023ef6580",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/14da2bcc2e1c40758fe0f62023ef6580.mp4?Expires=1780947083&Signature=PNc~Q~EthdqNkPjWqKTOqNccPkLqGnypt7MTPuDkVjVc~WhotkapUdvS-5RkwQ612Qh67i6XRfk9iY7XzIDkEA8k5~h0pDvt1jk--wxwKX62oUO6nUZJhp8aQuchv5a1450nCKZbiDHWzmrEZkDWXGC~MaH4tQr4IxmntdodFZdNOx7xv2gm8iIa75txbF6zSLhqrsUkkLFojUOW0lgRFKoMvzpX8fHhT1OvownJZQ2v81ABcAb6cbW3lI0pSBxrb3DJPnhfSaixyjIBVzdQYASp3e0GdMblPsu40fx3LXN-NP-4Ow18BgAMcVTSaZcn9ypBvH8Y2jz8opeIZshbCw__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "heygen_video_id": "29b1651173ec43de94f9876bc3898d98",
+    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/29b1651173ec43de94f9876bc3898d98.mp4?Expires=1780948217&Signature=kWx0UdMQ8DUpar3bgPF9U1DwX13-4ceBY05lHEvEGgben~mS4Gcqg0hZ2b-ojTxW6aO3gUbEm3ktMffyWOcKGX3B165lH3KuGG8ElBL2BCWZxMJO73gCRieMrNLPbPV6k~hNmRHderjC8VeTurp2e-60bAftr95Np3ul20Ugr4voE4mjUvUwACw7-wDr4~LI7MUy4gcaLFv~8QRQeCPD~6vJfNE7Q65wrPpZO7Br9j4YrxcWa5~M8336qdQj-R13i7fezehVfYqyCapAMNnLHEUAuEMAFMuhkMGiRilsUNLXdW8EZ6kUD9PgBal2wYR-rmZH5IDKhcBi7HL-PVTGGQ__&Key-Pair-Id=K38HBHX5LX3X2H",
     "mode": "heygen_green_composite",
-    "output_file": "dm_videos/ter-dm.mp4",
-    "output_size_mb": 4.4,
-    "total_elapsed_s": 123.6,
+    "output_file": "dm_videos/jolia-dm.mp4",
+    "output_size_mb": 4.43,
+    "total_elapsed_s": 82.1,
     "scenes": [
       {
         "t": 1.5,
-        "path": "dm_videos/ter_scenes/scene_0015.png"
+        "path": "dm_videos/jolia_scenes/scene_0015.png"
       },
       {
         "t": 4.5,
-        "path": "dm_videos/ter_scenes/scene_0045.png"
+        "path": "dm_videos/jolia_scenes/scene_0045.png"
       },
       {
         "t": 7.5,
-        "path": "dm_videos/ter_scenes/scene_0075.png"
+        "path": "dm_videos/jolia_scenes/scene_0075.png"
       },
       {
         "t": 11.0,
-        "path": "dm_videos/ter_scenes/scene_0110.png"
+        "path": "dm_videos/jolia_scenes/scene_0110.png"
       },
       {
         "t": 14.0,
-        "path": "dm_videos/ter_scenes/scene_0140.png"
+        "path": "dm_videos/jolia_scenes/scene_0140.png"
       },
       {
         "t": 17.0,
-        "path": "dm_videos/ter_scenes/scene_0170.png"
+        "path": "dm_videos/jolia_scenes/scene_0170.png"
+      }
+    ]
+  },
+  {
+    "slug": "brother-sister-brunch-lunch-dinner",
+    "restaurant_name": "BROTHER SISTER Brunch Lunch Dinner",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/brother-sister-brunch-lunch-dinner-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/",
+    "demo_url": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/demo/",
+    "status": "success",
+    "heygen_video_id": "a79a6ca17fb84a2b809c9703440e1f92",
+    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/a79a6ca17fb84a2b809c9703440e1f92.mp4?Expires=1780948307&Signature=E18sPuBsCObcluo3IkdvhupfPzKx5XFjZUAPpVpmoKKOVUDiqJU4PqvxlN4h597kI~djzuYnlmHs83aA~HE5u6QmUvdC0ohiX3HXSPEz~d60mKF3uk7ZwIWZM55FvJQd7dkATTVdQkSjoDHaXQ4zABnpNhfr6m8oHY8uMkWxrSCYGDOWdcBCClSe~NgosLVoRqixvui7pOcKFRplNFWGTMOXSMXtT5MNdwa0Xo8Gcp5I0ilfRqcJaKUU3zY1Sp~TKO-Rc4JvxA0yGjysJGb7SDjAIMsXiWjlVvo3Y3XG5KgYO9B3iXsIheQQqVxq72LnOCTxxCl2ReYNufpZdl4q8Q__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "mode": "heygen_green_composite",
+    "output_file": "dm_videos/brother-sister-brunch-lunch-dinner-dm.mp4",
+    "output_size_mb": 5.03,
+    "total_elapsed_s": 92.1,
+    "scenes": [
+      {
+        "t": 1.5,
+        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0015.png"
+      },
+      {
+        "t": 4.5,
+        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0045.png"
+      },
+      {
+        "t": 7.5,
+        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0075.png"
+      },
+      {
+        "t": 11.0,
+        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0110.png"
+      },
+      {
+        "t": 14.0,
+        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0140.png"
+      },
+      {
+        "t": 17.0,
+        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0170.png"
       }
     ]
   }
