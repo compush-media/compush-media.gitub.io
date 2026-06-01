@@ -92,6 +92,8 @@ def build_entry(slug: str, registry: dict, template: str) -> dict:
         wallet_url=wallet_url,
     ).strip()
 
+    has_mockup = (MOCKUPS / f"{slug}-iphone.png").exists()
+    has_video  = (VIDEOS  / f"{slug}-dm.mp4").exists()
     return {
         "slug":              slug,
         "restaurant_name":   name,
@@ -99,8 +101,12 @@ def build_entry(slug: str, registry: dict, template: str) -> dict:
         "instagram_url":     canonical_ig,
         "demo_url":          demo_url,
         "wallet_url":        wallet_url,
-        "mockup":            mockup_path if (MOCKUPS / f"{slug}-iphone.png").exists() else "",
-        "video":             video_path  if (VIDEOS  / f"{slug}-dm.mp4").exists() else "",
+        "mockup":            mockup_path if has_mockup else "",
+        # URL publique de la photo nette du mockup (reste net sur Instagram,
+        # à envoyer en PHOTO après la vidéo)
+        "photo_url":         f"{PUBLIC}/mockups/{slug}-iphone.png" if has_mockup else "",
+        "video":             video_path  if has_video else "",
+        "video_url":         f"{PUBLIC}/dm_videos/{slug}-dm.mp4" if has_video else "",
         "message":           message,
         # statut suivi par le dashboard côté navigateur (localStorage), pas par le script
     }

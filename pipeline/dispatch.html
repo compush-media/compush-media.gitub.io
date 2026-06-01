@@ -109,6 +109,15 @@
     border: 1.5px dashed var(--line); border-radius: var(--r);
   }
   .empty code { color: var(--brand); }
+
+  /* Étapes du workflow trio */
+  .step { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 11px; }
+  .step-h { font-size: 12.5px; font-weight: 700; color: var(--ink); display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+  .step-n { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 999px; background: var(--brand); color: #1a1a1a; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+  .step-tag { font-size: 10.5px; font-weight: 600; color: var(--ink-mute); text-transform: uppercase; letter-spacing: .4px; }
+  .step-tag.green { color: var(--green); }
+  .step-actions { display: flex; gap: 6px; }
+  .body { gap: 12px !important; }
 </style>
 </head>
 <body>
@@ -176,16 +185,16 @@ function publicPath(rel) {
 }
 
 function cardHTML(it) {
-  const sent     = _sent.has(it.slug);
-  const hasVideo = !!it.video;
-  const hasIG    = !!it.instagram_handle;
-  const mockupUrl = publicPath(it.mockup);
-  const videoUrl  = publicPath(it.video);
+  const sent      = _sent.has(it.slug);
+  const hasVideo  = !!(it.video_url || it.video);
+  const hasPhoto  = !!(it.photo_url || it.mockup);
+  const hasIG     = !!it.instagram_handle;
+  const mockupUrl = it.photo_url || publicPath(it.mockup);
+  const videoUrl  = it.video_url || publicPath(it.video);
 
-  const preview = hasVideo
-    ? `<video controls preload="metadata" poster="${esc(mockupUrl)}"><source src="${esc(videoUrl)}" type="video/mp4"></video>`
-    : (mockupUrl ? `<img src="${esc(mockupUrl)}" alt="${esc(it.restaurant_name)}">`
-                 : `<div style="color:#666;font-size:13px">— pas de visuel —</div>`);
+  const preview = hasPhoto
+    ? `<img src="${esc(mockupUrl)}" alt="${esc(it.restaurant_name)}">`
+    : `<div style="color:#666;font-size:13px">— pas de visuel —</div>`;
 
   const handleBlock = hasIG
     ? `<a class="handle" href="${esc(it.instagram_url)}" target="_blank" rel="noopener">@${esc(it.instagram_handle)} ↗</a>`
@@ -200,23 +209,61 @@ function cardHTML(it) {
           ${handleBlock}
         </div>
 
+        <!-- Étape 0 : ouvrir la conversation -->
+        <button class="btn primary" data-act="ig" ${hasIG ? '' : 'disabled'} style="width:100%">
+          🌐 Ouvrir le DM Instagram
+        </button>
+
+        <!-- Workflow trio : 3 messages à envoyer dans l'ordre -->
+        <div class="step">
+          <div class="step-h"><span class="step-n">1</span> Vidéo <span class="step-tag">accroche + voix</span></div>
+          <div class="step-actions">
+            <button class="btn ${hasVideo ? '' : 'disabled'}" data-act="dl-video">⬇️ Télécharger la vidéo</button>
+            <button class="btn ${hasVideo ? '' : 'disabled'}" data-act="open-video">▶ Aperçu</button>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-h"><span class="step-n">2</span> Photo du wallet <span class="step-tag green">reste NET sur IG</span></div>
+          <div class="step-actions">
+            <button class="btn ${hasPhoto ? '' : 'disabled'}" data-act="dl-photo">⬇️ Télécharger la photo</button>
+            <button class="btn ${hasPhoto ? '' : 'disabled'}" data-act="open-photo">🖼 Aperçu</button>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-h"><span class="step-n">3</span> Message <span class="step-tag">texte + lien démo</span></div>
+          <textarea class="msg" id="msg-${esc(it.slug)}" rows="5" spellcheck="false">${esc(it.message)}</textarea>
+          <button class="btn primary" data-act="copy" style="width:100%;margin-top:6px">📋 Copier le message</button>
+        </div>
+
         <div class="meta">
-          <span class="badge ${hasVideo ? 'ok' : 'no'}">${hasVideo ? '🎬 vidéo OK' : '⏳ vidéo manquante'}</span>
-          <span class="badge ${it.mockup ? 'ok' : 'no'}">${it.mockup ? '🖼 mockup OK' : '🖼 mockup manquant'}</span>
           <a href="${esc(it.demo_url)}" target="_blank" rel="noopener">démo ↗</a>
           <a href="${esc(it.wallet_url)}" target="_blank" rel="noopener">wallet ↗</a>
         </div>
 
-        <textarea class="msg" id="msg-${esc(it.slug)}" rows="6" spellcheck="false">${esc(it.message)}</textarea>
-
-        <div class="actions">
-          <button class="btn primary" data-act="copy">📋 Copier message</button>
-          <button class="btn ${hasIG ? '' : 'disabled'}" data-act="ig">🌐 Ouvrir IG</button>
-          ${hasVideo ? `<button class="btn" data-act="open-video">▶ Voir vidéo</button>` : ''}
-          <button class="btn ${sent ? 'sent' : ''}" data-act="sent">${sent ? '✓ Envoyé' : 'Marquer envoyé'}</button>
-        </div>
+        <button class="btn ${sent ? 'sent' : ''}" data-act="sent" style="width:100%">
+          ${sent ? '✓ Envoyé — cliquer pour annuler' : '✓ Marquer comme envoyé'}
+        </button>
       </div>
     </article>`;
+}
+
+/** Force le téléchargement d'un fichier distant (sinon le navigateur l'ouvre). */
+async function downloadFile(url, filename) {
+  try {
+    const r = await fetch(url, { cache: 'no-store' });
+    const b = await r.blob();
+    const u = URL.createObjectURL(b);
+    const a = document.createElement('a');
+    a.href = u; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(u);
+    toast('⬇️ Téléchargé : ' + filename);
+  } catch (e) {
+    window.open(url, '_blank', 'noopener');
+    toast('Ouvert dans un onglet (téléchargement bloqué)');
+  }
 }
 
 function render() {
@@ -254,13 +301,21 @@ document.addEventListener('click', (e) => {
   const it   = _queue.find(x => x.slug === slug);
   if (!it) return;
   const act  = btn.dataset.act;
+  const videoUrl = it.video_url || publicPath(it.video);
+  const photoUrl = it.photo_url || publicPath(it.mockup);
   if (act === 'copy') {
     const ta = document.getElementById('msg-' + slug);
     copy(ta.value);
   } else if (act === 'ig') {
     if (it.instagram_url) window.open(it.instagram_url, '_blank', 'noopener');
   } else if (act === 'open-video') {
-    window.open(publicPath(it.video), '_blank', 'noopener');
+    if (videoUrl) window.open(videoUrl, '_blank', 'noopener');
+  } else if (act === 'open-photo') {
+    if (photoUrl) window.open(photoUrl, '_blank', 'noopener');
+  } else if (act === 'dl-video') {
+    if (videoUrl) downloadFile(videoUrl, `${slug}-dm.mp4`);
+  } else if (act === 'dl-photo') {
+    if (photoUrl) downloadFile(photoUrl, `${slug}-wallet.png`);
   } else if (act === 'sent') {
     if (_sent.has(slug)) _sent.delete(slug); else _sent.add(slug);
     saveSent(); render();
