@@ -1,32 +1,32 @@
 # Rapport de production vidéo — **Jolia**
-_Généré le 2026-06-01 à 17:18_
+_Généré le 2026-06-01 à 18:19_
 
 ## ✅ Vidéo produite
 
 - **Fichier local** : `dm_videos/jolia-dm.mp4`
-- **Poids** : 10.81 MB
-- **Durée totale du pipeline** : 122.1 s
+- **Poids** : 9.36 MB
+- **Durée totale du pipeline** : 117.0 s
 - **URL Creatomate (CDN)** : None
 
 ## ⏱ Durées
 
-- Script parlé estimé : **~8.8 s** (22 mots)
+- Script parlé estimé : **~12.4 s** (31 mots)
 - Vidéo finale : **18 s** (1080×1920, 30 fps)
 - Rendu HeyGen : ~? s
-- Rendu Creatomate : ~122.1 s
+- Rendu Creatomate : ~117.0 s
 
 ## 💰 Coût
 
 _(Vérifier les chiffres exacts dans les dashboards HeyGen et Creatomate.)_
 
-- **HeyGen** (durée parlée ≈ 8.8 s) : ~$0.04-0.12 USD
+- **HeyGen** (durée parlée ≈ 12.4 s) : ~$0.06-0.17 USD
 - **Creatomate** (18 s rendus) : ~$0.06-0.15 USD
-- **Total estimé** : **~$0.10-0.27 USD**
+- **Total estimé** : **~$0.12-0.32 USD**
 
 ## 🔑 Identifiants techniques
 
-- HeyGen `video_id` : `dea82f852c414b7287f7f9f3a5c301fd`
-- HeyGen `video_url` : https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/dea82f852c414b7287f7f9f3a5c301fd.mp4?Expires=1780931800&Signature=D2cTocZvjNpEG5~t17p~FbafQkZlrMwbpAJc7G3Wf9CEnh9VqB09~xMTrWV7iG4R7SB~WM7jXBSpXoiOOtfaxAAlGVKgrbbGvQ6Ia2SB32FR-~ziMGGdH5sim1BvkWwknwvJQSHd~7MBSH9OLiGk3KgFBth5iIkw8uhQbv8Ku59ygdsNy8JZIxZRbeR-tyx3Ko0srmZT5CRc3qTRpuB6F0vrVfLauCJnUDT0aucmy6tfFyCAR7Jp9EgiCY9X8uz5BhU7SoApS8RKJaBeNNRcw5JGEKyNGp7tRmnmQgYA4oOx0pMaoNhfNb9dbJgzir5p4~WEK7NxmqHKFdLwhHM-wQ__&Key-Pair-Id=K38HBHX5LX3X2H
+- HeyGen `video_id` : `e410d6cfcd7245c09fd6f931473d8b10`
+- HeyGen `video_url` : https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/e410d6cfcd7245c09fd6f931473d8b10.mp4?Expires=1780935535&Signature=IajotLttvs6I2HP0kS-RPwkwlTX-F8XAs21UfZZ79eCfvIi5o90QHB0k4f8aj74FhaCGatRlY~BBjopt5PMCNk5ICX1vLB41054cn3A~jTwfkp1fWktJMCPBsH44bkeI7N00V0URwVK-C~Xe2wxAzzAvI3l4b7jGtHr-Db62awogQP7qVjOWVGstgYflHhdpTNGPXQBIfSpH~3c77u1UGQYsEd-dxZjcTZwzBhnL73JXNMfnhFYQAZhluFY8QkZwFk9kiOXyX1dyfa0HWFVOpDxO8jv5rzVUgqnQbnMIFnNhzgkwITFSX-h7UIuPqRsKrxAzrPiX-ZB3XW6lu~83tw__&Key-Pair-Id=K38HBHX5LX3X2H
 - Creatomate `render_id` : `—`
 
 ## 🎬 Scènes clés
