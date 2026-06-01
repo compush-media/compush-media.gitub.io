@@ -1,40 +1,41 @@
 [
   {
-    "slug": "brother-sister-brunch-lunch-dinner",
-    "restaurant_name": "BROTHER SISTER Brunch Lunch Dinner",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/brother-sister-brunch-lunch-dinner-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/",
-    "demo_url": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/demo/",
+    "slug": "ter",
+    "restaurant_name": "Ter.",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/ter-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/ter/",
+    "demo_url": "https://app.cartefidelavis.com/ter/demo/",
     "status": "success",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/43b12288fecb4e9994a87bc2d06535a9.mp4?Expires=1780944730&Signature=Sld9Hpt8T8-wgLxGzJAQQ3tHJA0Dj~OSFPkKqfWC1KDcBY~CR4OyLUTgTfPZHz4JSqTSzkyvKIIO4S6KX9m8io~ZB75GAIxWcPG0IamDhyOZ8uED7qjhs6UY3oQTRdzWTyetEoExplonc1Oem5PTautlAk0e118Dm7Gn165-fOho-z5gCfaQC0k2LxNpM2OUsc0-xAMHPb279TW4m0vLIT8miedUjMAOf~zhzm0TqbUjd2vVXu8oU1QCnYth887kieFnbkBLrKGERKoEt77wnJ-aVXHHOw-XNRxF88C3LpuahyuDf54HKYOLX7C4oK7F3M~N-OswfuWWAit5hRrqLA__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "heygen_video_id": "14da2bcc2e1c40758fe0f62023ef6580",
+    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/14da2bcc2e1c40758fe0f62023ef6580.mp4?Expires=1780947083&Signature=PNc~Q~EthdqNkPjWqKTOqNccPkLqGnypt7MTPuDkVjVc~WhotkapUdvS-5RkwQ612Qh67i6XRfk9iY7XzIDkEA8k5~h0pDvt1jk--wxwKX62oUO6nUZJhp8aQuchv5a1450nCKZbiDHWzmrEZkDWXGC~MaH4tQr4IxmntdodFZdNOx7xv2gm8iIa75txbF6zSLhqrsUkkLFojUOW0lgRFKoMvzpX8fHhT1OvownJZQ2v81ABcAb6cbW3lI0pSBxrb3DJPnhfSaixyjIBVzdQYASp3e0GdMblPsu40fx3LXN-NP-4Ow18BgAMcVTSaZcn9ypBvH8Y2jz8opeIZshbCw__&Key-Pair-Id=K38HBHX5LX3X2H",
     "mode": "heygen_green_composite",
-    "output_file": "dm_videos/brother-sister-brunch-lunch-dinner-dm.mp4",
-    "output_size_mb": 5.03,
-    "total_elapsed_s": 37.2,
+    "output_file": "dm_videos/ter-dm.mp4",
+    "output_size_mb": 4.4,
+    "total_elapsed_s": 123.6,
     "scenes": [
       {
         "t": 1.5,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0015.png"
+        "path": "dm_videos/ter_scenes/scene_0015.png"
       },
       {
         "t": 4.5,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0045.png"
+        "path": "dm_videos/ter_scenes/scene_0045.png"
       },
       {
         "t": 7.5,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0075.png"
+        "path": "dm_videos/ter_scenes/scene_0075.png"
       },
       {
         "t": 11.0,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0110.png"
+        "path": "dm_videos/ter_scenes/scene_0110.png"
       },
       {
         "t": 14.0,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0140.png"
+        "path": "dm_videos/ter_scenes/scene_0140.png"
       },
       {
         "t": 17.0,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0170.png"
+        "path": "dm_videos/ter_scenes/scene_0170.png"
       }
     ]
   }
