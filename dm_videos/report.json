@@ -1,41 +1,41 @@
 [
   {
-    "slug": "ter",
-    "restaurant_name": "Ter.",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/ter-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/ter/",
-    "demo_url": "https://app.cartefidelavis.com/ter/demo/",
+    "slug": "kafkaf-paris-11",
+    "restaurant_name": "Kafkaf - Paris 11",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/kafkaf-paris-11-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/kafkaf-paris-11/",
+    "demo_url": "https://app.cartefidelavis.com/kafkaf-paris-11/demo/",
     "status": "success",
-    "heygen_video_id": "dd6b0a18a47d4d088e7072876b979083",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/dd6b0a18a47d4d088e7072876b979083.mp4?Expires=1780948748&Signature=dkeGZlxlT2cI-48ov~7K535oWiy4vQwqNXIjcLsJwVTY4nflWkMcZ3AkTQJiDJh9M1WiCsHQF6NcddimFbFpo~svp7FnQGLGC2Q~tPVshibrFleRfUkSHGnOyLrwiRHjz5z9yHKOyV6oRk575B7cVwCFByVZLVqiMUdfp~VTVOYP-CvOvEidaT0Axu71tKf5-b9ksiE1koik01nzW53vnV34c2nAWjFVenZWTD~qCjHKKC8mADtOQinw-gbTzFFMcL986-9XSFkqluA3UB6~f5bsvRMqFhb~hqnkjs24dQlTypQ2HdqqC8jryVTAA0ZCqEYsdzDGK~dsh2w7HXk-qw__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "heygen_video_id": "3040596a884e437a8a6f1b920139b95e",
+    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/3040596a884e437a8a6f1b920139b95e.mp4?Expires=1780949288&Signature=abvMgRBeNiDEczquZJ0KenVSv~037o0I3Gu-ETkVHcUUnhqcA7lBiIk3a-hNq~wDzBDa-W2FQkiudsGfQzSiGlU65R3IGpbNak2Ma6rX9-Tjklg2Z51fhJsSaDFUNlpJ~zldyliqmucEaA16XLgmhyJoRCSVpCETEi8ZM7j-vSohpWfUOj01~pnI55WiO0yq117-6x9alrK70lgSl1ygFdVjYhucJpqr0-wmLvuMLpeEOn9W6SPOyWA-Ruhb4dqUJS9-0xO51JVWyyhQYhziZNAIPlERgCf7oHAkshxFvdTYfmHCciR2AI4QOfbzIlEKqbC0M9Ib8V9YqlH0IiKpBQ__&Key-Pair-Id=K38HBHX5LX3X2H",
     "mode": "heygen_green_composite",
-    "output_file": "dm_videos/ter-dm.mp4",
-    "output_size_mb": 4.4,
-    "total_elapsed_s": 89.1,
+    "output_file": "dm_videos/kafkaf-paris-11-dm.mp4",
+    "output_size_mb": 4.73,
+    "total_elapsed_s": 163.4,
     "scenes": [
       {
         "t": 1.5,
-        "path": "dm_videos/ter_scenes/scene_0015.png"
+        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0015.png"
       },
       {
         "t": 4.5,
-        "path": "dm_videos/ter_scenes/scene_0045.png"
+        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0045.png"
       },
       {
         "t": 7.5,
-        "path": "dm_videos/ter_scenes/scene_0075.png"
+        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0075.png"
       },
       {
         "t": 11.0,
-        "path": "dm_videos/ter_scenes/scene_0110.png"
+        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0110.png"
       },
       {
         "t": 14.0,
-        "path": "dm_videos/ter_scenes/scene_0140.png"
+        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0140.png"
       },
       {
         "t": 17.0,
-        "path": "dm_videos/ter_scenes/scene_0170.png"
+        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0170.png"
       }
     ]
   }
