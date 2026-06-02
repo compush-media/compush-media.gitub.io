@@ -82,5 +82,8 @@
   "nextBillingDate": "2026-06-25",
   "stripeCustomerId": "cus_UaYVg2rRB3bfqF",
   "stripeSubscriptionId": "sub_1TbNOxDpSXl9Whzr3dUr9FzX",
-  "trialEndDate": "2026-06-09"
+  "trialEndDate": "2026-06-09",
+  "remindersSent": [
+    "j-7"
+  ]
 }
