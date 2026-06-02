@@ -1,160 +1,41 @@
 [
   {
-    "slug": "jolia",
-    "restaurant_name": "Jolia",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/jolia-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/jolia/",
-    "demo_url": "https://app.cartefidelavis.com/jolia/demo/",
+    "slug": "deux-restaurant-bistrot-de-chefs",
+    "restaurant_name": "Deux Restaurant : Bistrot de chefs",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/deux-restaurant-bistrot-de-chefs-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/",
+    "demo_url": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/demo/",
     "status": "success",
-    "heygen_video_id": "73fa74b1e6c0482291a38fecbba552ae",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/73fa74b1e6c0482291a38fecbba552ae.mp4?Expires=1780950625&Signature=h1hgMTVDdAfBw3wmbteBaXh-oR9qUj6y4fIB1S0ZucKK1GgILHjd35S8rXNnZ2oCDXnTjBsYbnurrdm8YLaeqN1GXgRu9c9xxYDP1AM0suA1AHvBuslaGl2Su9TRWNHBx1On277LwAa6vbTxhgRmbf3Z5DEzCOfcrCe6tOUWs0LwMt8ezPYTfPj8tuEkqbfcFN5120JATbYsnrEQTutqmnZbY5OAaSAPAS52uU3S-dqyHSQHg-ITozYetuXjBH2OWkf6pvwe2WKiGxSxcsl-ZgtxbgFCoQcfVC3CXl6dwkXWeZXIhrzqQnbi-azfYWk3fHrsu8rL14grgSo2D96tyA__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "heygen_video_id": "b43a260a6063401caa1e8dffb994eac8",
+    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/b43a260a6063401caa1e8dffb994eac8.mp4?Expires=1781019618&Signature=eNQgky5~QyFWToRf4sGkqtxwM4wYSt3DsrF0rXVv-yW3QHdjgzvPmNj43QnR8HbTKZCEMbseTc7H5ro6gs8ctuZTfgGOXhhziwarPu0ffDee3k2lqnbFZwA034pdxsSWOMGIaxmf7hBR8Bc8JnO3moqHSQkK~MFLfd8MnB-Y6RBQiUtjl~4uMhSWjJrSbd5rqrk23LmSuTNbc9qjhixoVe9lRIIDPDjovKGpJ0X2a8YrmEHXg5YFAlPifxT6BCcB0En~jcg8tygkGNUersGS~1AKD-3FNlYbTaNoGv5ShX3Flbfv9MvAiygoJgV9hj7MC2InC7OG37qh5xfwsUhtWw__&Key-Pair-Id=K38HBHX5LX3X2H",
     "mode": "heygen_green_composite",
-    "output_file": "dm_videos/jolia-dm.mp4",
-    "output_size_mb": 4.39,
-    "total_elapsed_s": 90.7,
+    "output_file": "dm_videos/deux-restaurant-bistrot-de-chefs-dm.mp4",
+    "output_size_mb": 5.13,
+    "total_elapsed_s": 200.9,
     "scenes": [
       {
         "t": 1.5,
-        "path": "dm_videos/jolia_scenes/scene_0015.png"
+        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0015.png"
       },
       {
         "t": 4.5,
-        "path": "dm_videos/jolia_scenes/scene_0045.png"
+        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0045.png"
       },
       {
         "t": 7.5,
-        "path": "dm_videos/jolia_scenes/scene_0075.png"
+        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0075.png"
       },
       {
         "t": 11.0,
-        "path": "dm_videos/jolia_scenes/scene_0110.png"
+        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0110.png"
       },
       {
         "t": 14.0,
-        "path": "dm_videos/jolia_scenes/scene_0140.png"
+        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0140.png"
       },
       {
         "t": 17.0,
-        "path": "dm_videos/jolia_scenes/scene_0170.png"
-      }
-    ]
-  },
-  {
-    "slug": "brother-sister-brunch-lunch-dinner",
-    "restaurant_name": "BROTHER SISTER Brunch Lunch Dinner",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/brother-sister-brunch-lunch-dinner-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/",
-    "demo_url": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/demo/",
-    "status": "success",
-    "heygen_video_id": "0ccc2a56ed0a492da6b2c76ee970ba58",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/0ccc2a56ed0a492da6b2c76ee970ba58.mp4?Expires=1780950727&Signature=bN4ZvlsiA2C03Z3kQSs0q-T~DwcOHfaOC2~e2MGnpdlDn5ALTqSs-PtbWBQ9gaDhGXMD-0GUInvv-zdENfm7kneevLuCbLq-c-Y7haNrIi~g2LZbWO5F5mRUGS9ouHi4GmADgVrTUguESSlviesIoZR1VFODruv9eXm27NGLvyejq3cxlFU1eeuZ85cSpzuG~csNGCVxQS8tcknFAfs34mKK1XQtTjjq6w3jQfMusjzYBx0oSTezCqlrZvLoRaANUIp8TA3w5GMuKFCnWTKjlFt847hubco665vD7oWmCr0ASbk4g5YI9BHF8Icv7JfD0zcO3o3U1joZMvPgGSXgtw__&Key-Pair-Id=K38HBHX5LX3X2H",
-    "mode": "heygen_green_composite",
-    "output_file": "dm_videos/brother-sister-brunch-lunch-dinner-dm.mp4",
-    "output_size_mb": 4.98,
-    "total_elapsed_s": 103.9,
-    "scenes": [
-      {
-        "t": 1.5,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0015.png"
-      },
-      {
-        "t": 4.5,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0045.png"
-      },
-      {
-        "t": 7.5,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0075.png"
-      },
-      {
-        "t": 11.0,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0110.png"
-      },
-      {
-        "t": 14.0,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0140.png"
-      },
-      {
-        "t": 17.0,
-        "path": "dm_videos/brother-sister-brunch-lunch-dinner_scenes/scene_0170.png"
-      }
-    ]
-  },
-  {
-    "slug": "ter",
-    "restaurant_name": "Ter.",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/ter-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/ter/",
-    "demo_url": "https://app.cartefidelavis.com/ter/demo/",
-    "status": "success",
-    "heygen_video_id": "96fed9dbfe314794857982654553cba8",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/96fed9dbfe314794857982654553cba8.mp4?Expires=1780950824&Signature=SDaez07~DDc1SDPr8R4PRRxL6k17Hq2366y~Hr5lt7S52gk6IoKO12MJOjy5h4YCHVdBBVUU0o3FDJlAjOn0aTICT8oFNTqhwY2EeDbILdWnIZikqQoyXvmqwXiifEsSGrt~8vf8YMBwabPcn30D9ZSkCpstK3eInInlnEseWMfopQZWr9W2eFw8C1~03k0ZIvny7567KBTKjTILKPSttXp951n6umJ8YTcapvTUlV2P29xkcgY0IBJoiTeao3NFPyTOf0J1lJFfH2PTbAktCYn1M6NRYlb0pKev5~jZ2LZfco~IWj1zcFFNGIst45w8Eetff-ToF7OaybYj-P7uzA__&Key-Pair-Id=K38HBHX5LX3X2H",
-    "mode": "heygen_green_composite",
-    "output_file": "dm_videos/ter-dm.mp4",
-    "output_size_mb": 4.35,
-    "total_elapsed_s": 90.5,
-    "scenes": [
-      {
-        "t": 1.5,
-        "path": "dm_videos/ter_scenes/scene_0015.png"
-      },
-      {
-        "t": 4.5,
-        "path": "dm_videos/ter_scenes/scene_0045.png"
-      },
-      {
-        "t": 7.5,
-        "path": "dm_videos/ter_scenes/scene_0075.png"
-      },
-      {
-        "t": 11.0,
-        "path": "dm_videos/ter_scenes/scene_0110.png"
-      },
-      {
-        "t": 14.0,
-        "path": "dm_videos/ter_scenes/scene_0140.png"
-      },
-      {
-        "t": 17.0,
-        "path": "dm_videos/ter_scenes/scene_0170.png"
-      }
-    ]
-  },
-  {
-    "slug": "kafkaf-paris-11",
-    "restaurant_name": "Kafkaf - Paris 11",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/kafkaf-paris-11-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/kafkaf-paris-11/",
-    "demo_url": "https://app.cartefidelavis.com/kafkaf-paris-11/demo/",
-    "status": "success",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/3040596a884e437a8a6f1b920139b95e.mp4?Expires=1780949288&Signature=abvMgRBeNiDEczquZJ0KenVSv~037o0I3Gu-ETkVHcUUnhqcA7lBiIk3a-hNq~wDzBDa-W2FQkiudsGfQzSiGlU65R3IGpbNak2Ma6rX9-Tjklg2Z51fhJsSaDFUNlpJ~zldyliqmucEaA16XLgmhyJoRCSVpCETEi8ZM7j-vSohpWfUOj01~pnI55WiO0yq117-6x9alrK70lgSl1ygFdVjYhucJpqr0-wmLvuMLpeEOn9W6SPOyWA-Ruhb4dqUJS9-0xO51JVWyyhQYhziZNAIPlERgCf7oHAkshxFvdTYfmHCciR2AI4QOfbzIlEKqbC0M9Ib8V9YqlH0IiKpBQ__&Key-Pair-Id=K38HBHX5LX3X2H",
-    "mode": "heygen_green_composite",
-    "output_file": "dm_videos/kafkaf-paris-11-dm.mp4",
-    "output_size_mb": 4.71,
-    "total_elapsed_s": 34.4,
-    "scenes": [
-      {
-        "t": 1.5,
-        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0015.png"
-      },
-      {
-        "t": 4.5,
-        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0045.png"
-      },
-      {
-        "t": 7.5,
-        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0075.png"
-      },
-      {
-        "t": 11.0,
-        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0110.png"
-      },
-      {
-        "t": 14.0,
-        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0140.png"
-      },
-      {
-        "t": 17.0,
-        "path": "dm_videos/kafkaf-paris-11_scenes/scene_0170.png"
+        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0170.png"
       }
     ]
   }
