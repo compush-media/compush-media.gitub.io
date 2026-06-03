@@ -98,5 +98,32 @@
     "acces_statut": "non_active",
     "date_creation": "2026-05-25",
     "walletTemplate": "templates/brunch-resto"
+  },
+  "inavoue": {
+    "name": "inavoué",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "adresse": "4 Imp. Gomboust",
+    "ville": "Paris",
+    "code_postal": 75001,
+    "telephone": "",
+    "email": "",
+    "nom_gerant": "Jean-Philippe Plaza",
+    "site_web": "https://inavoue.com/",
+    "Place_ID_Google": "https://search.google.com/local/writereview?placeid=ChIJcwbSyjFu5kcRug6RvZpzlWs",
+    "googleReview": "https://search.google.com/local/writereview?placeid=https%3A%2F%2Fsearch.google.com%2Flocal%2Fwritereview%3Fplaceid%3DChIJcwbSyjFu5kcRug6RvZpzlWs",
+    "reservationUrl": "https://www.google.com/maps/reserve/v/dine/c/7Tu5oInoxyk?source=pa&opi=79508299&hl=fr-FR&gei=8vweaojrKNrW7M8PqK2G6QY&ahbb=1",
+    "instagramUrl": "https://www.instagram.com/inavoue_restaurant",
+    "logoUrl": "https://scontent-ord5-2.cdninstagram.com/v/t51.2885-19/459099556_1488480765120639_6284078656088853266_n.jpg?stp=dst-jpg_s320x320_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=scontent-ord5-2.cdninstagram.com&_nc_cat=103&_nc_oc=Q6cZ2gHtVDD0QUlPtN5M2DESy3IyETzYFjkQDxEYoqsb9p4f5YNMgLuTm-XpMUb1ZBsgXFU&_nc_ohc=LcuGz7YaSyIQ7kNvwEJz43c&_nc_gid=ABEHoiU6YW8d1updLoV30Q&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_Af_5P_WkO0YM_JJxF07yxZhpuDT_zt_weeb9efjB5PPuZQ&oe=6A264A51&_nc_sid=8b3546",
+    "heroUrl": "https://scontent-ord5-2.cdninstagram.com/v/t51.71878-15/688683143_1681903849789587_5167590159622177016_n.jpg?stp=dst-jpg_e15_tt6&_nc_ht=scontent-ord5-2.cdninstagram.com&_nc_cat=103&_nc_oc=Q6cZ2gHtVDD0QUlPtN5M2DESy3IyETzYFjkQDxEYoqsb9p4f5YNMgLuTm-XpMUb1ZBsgXFU&_nc_ohc=k_tC0ur9gr8Q7kNvwFzGkYk&_nc_gid=ABEHoiU6YW8d1updLoV30Q&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_Af9vcgr-DzOdMbuqSmvZfm4Z4uIB4YVVnYV0lccEBgb1IA&oe=6A265881&_nc_sid=8b3546",
+    "note_google": 4.4,
+    "nombre_avis_google": 1481,
+    "ambassadorCode": "",
+    "statut_commercial": "",
+    "instagram_followers": 4975,
+    "instagram_fullname": "inavoué restaurant",
+    "instagram_external_url": "https://inavoue.com/",
+    "acces_statut": "non_active",
+    "date_creation": "2026-06-03"
   }
 }
