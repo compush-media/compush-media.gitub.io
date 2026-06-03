@@ -1082,9 +1082,9 @@
       </div>
 
       <div id="importTemplateHint" style="font-size:12px;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:var(--bg2);border-radius:8px;line-height:1.7">
-        <strong>Format classique :</strong> denomination · ville · tel · email · GMB_URL · ambassadeur_assigné · statut…
-        <br><strong>Format lifestyle (auto-détecté) :</strong> nom_restaurant · Instagram_URL · First_category · Second_category · Logo_URL · hero_image · coupon_titre · coupon_description · coupon_image · site_reservation · google_review_url…
-        <br><button class="btn-outline" style="font-size:11px;padding:4px 10px;margin-top:6px" onclick="downloadTemplate()">📄 Télécharger le modèle classique</button>
+        <strong>Modèle officiel</strong> (onglet <code>Filtre Instagram</code>) — colonnes requises :<br>
+        <code>restaurant_name</code> · <code>dirigeant</code> · <code>rue</code> · <code>code_postal</code> · <code>ville</code> · <code>tel</code> · <code>site_web</code> · <code>email</code> · <code>Place_ID_Google</code> · <code>Reservation</code> · <code>Instagram_URL</code> · <code>Logo_url</code> · <code>hero_image_url</code> · <code>note_google</code> · <code>nombre_avis_google</code> · <code>ambassadeur_assigné</code> · <code>statut</code> · <code>instagram_followers</code> · <code>instagram_fullname</code> · <code>instagram_external_url</code>
+        <br><button class="btn-outline" style="font-size:11px;padding:4px 10px;margin-top:6px" onclick="downloadTemplate()">📄 Télécharger le modèle officiel</button>
       </div>
 
       <div id="importPreview" style="display:none">
@@ -2751,10 +2751,17 @@ function renderRestoGrid(data) {
       : accesStatut === 'invite_envoye'
         ? `<span class="acces-badge acces-invite">⏳ Invitation envoyée</span>`
         : `<span class="acces-badge acces-non">✗ Non activé</span>`;
+    const logoUrl = r.logoUrl || r.iconUrl || '';
+    const heroUrl = r.heroUrl || '';
     return `
-      <div class="stat-card" style="border-top:4px solid ${color}" data-slug="${slug}" data-sc="${sc}">
-        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
-          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,${color},${color2});flex-shrink:0"></div>
+      <div class="stat-card" style="border-top:4px solid ${color};padding-top:0" data-slug="${slug}" data-sc="${sc}">
+        ${heroUrl
+          ? `<div style="margin:0 -20px 12px;height:90px;background-image:url('${escHtml(heroUrl)}');background-size:cover;background-position:center;border-bottom:1px solid var(--line)"></div>`
+          : `<div style="margin:0 -20px 12px;height:90px;background:linear-gradient(135deg,${color}22,${color2}22);border-bottom:1px solid var(--line)"></div>`}
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;margin-top:12px">
+          ${logoUrl
+            ? `<img src="${escHtml(logoUrl)}" alt="" style="width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--line);background:#fff" onerror="this.outerHTML='<div style=\\'width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,${color},${color2});flex-shrink:0\\'></div>'">`
+            : `<div style="width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,${color},${color2});flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px">${escHtml((r.name||slug)[0].toUpperCase())}</div>`}
           <div style="flex:1;min-width:0">
             <div style="font-weight:900;font-size:15px">${escHtml(r.name || slug)}</div>
             <div style="font-size:11px;color:var(--muted);font-family:monospace">/${escHtml(slug)}/</div>
@@ -2763,8 +2770,11 @@ function renderRestoGrid(data) {
         </div>
         ${r.address || r.adresse ? `<div style="font-size:12px;color:var(--muted);margin-bottom:3px">📍 ${escHtml(r.address || r.adresse)}</div>` : ''}
         ${r.phone || r.telephone ? `<div style="font-size:12px;color:var(--muted);margin-bottom:3px">📞 ${escHtml(r.phone || r.telephone)}</div>` : ''}
+        ${r.email ? `<div style="font-size:12px;color:var(--muted);margin-bottom:3px">✉️ ${escHtml(r.email)}</div>` : ''}
         ${r.nom_gerant ? `<div style="font-size:12px;color:var(--muted);margin-bottom:3px">👤 ${escHtml(r.nom_gerant)}</div>` : ''}
+        ${r.site_web ? `<div style="font-size:12px;color:var(--muted);margin-bottom:3px">🌐 <a href="${escHtml(r.site_web)}" target="_blank" style="color:inherit">${escHtml(r.site_web)}</a></div>` : ''}
         ${r.note_google ? `<div style="font-size:12px;color:var(--muted);margin-bottom:3px">⭐ ${r.note_google} / 5 — ${r.nombre_avis_google || 0} avis</div>` : ''}
+        ${r.instagramUrl || r.instagram_followers ? `<div style="font-size:12px;color:var(--muted);margin-bottom:3px">📸 ${r.instagramUrl ? `<a href="${escHtml(r.instagramUrl)}" target="_blank" style="color:inherit">${escHtml(r.instagram_fullname || r.instagramUrl.replace(/^https?:\/\/(www\.)?instagram\.com\//,'@').replace(/\/$/,''))}</a>` : ''}${r.instagram_followers ? ` · ${escHtml(r.instagram_followers)} abonnés` : ''}</div>` : ''}
         <div style="display:flex;align-items:center;gap:6px;margin:8px 0;flex-wrap:wrap">
           ${accesBadge}
           ${accesStatut !== 'active' ? `<button onclick="openActivationModal('${slug}')" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--brand);color:#fff;border:none;border-radius:6px;cursor:pointer">🔐 Activer accès</button>` : ''}
@@ -2793,8 +2803,9 @@ function renderRestoGrid(data) {
           </select>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
-          <a href="${BASE}/${slug}/index.html" target="_blank" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">🏠 Site</a>
-          <button onclick="openDemoLink('${slug}')" title="Ouvre l'aperçu et copie le lien (pour DM)" style="font-size:11px;font-weight:700;padding:4px 9px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;color:#166534;cursor:pointer">📱 Démo</button>
+          <a href="${BASE}/${slug}/index.html" target="_blank" title="Wallet production" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">🏠 Prod</a>
+          <a href="${BASE}/demo/${slug}/index.html" target="_blank" title="Wallet démo" style="font-size:11px;font-weight:700;padding:4px 9px;background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;text-decoration:none;color:#9a3412">🎭 Démo</a>
+          <button onclick="openDemoLink('${slug}')" title="Ouvre l'aperçu et copie le lien (pour DM)" style="font-size:11px;font-weight:700;padding:4px 9px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;color:#166534;cursor:pointer">📱 Aperçu</button>
           <button onclick="genDmVideo('${slug}','${escHtml(r.name || slug)}')" title="Génère la vidéo DM (HeyGen) — validation manuelle" style="font-size:11px;font-weight:700;padding:4px 9px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:6px;color:#4338ca;cursor:pointer">🎬 Vidéo DM</button>
           <button onclick="openRestoAdmin('${slug}')" style="font-size:11px;font-weight:700;padding:4px 9px;background:#fff8e1;border:1px solid #f0c75e;border-radius:6px;color:#8b6914;cursor:pointer">🔓 Espace</button>
           <a href="${BASE}/${slug}/admin/state.html" target="_blank" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">📊 Stats</a>
@@ -3489,20 +3500,57 @@ function handleImportFile(file) {
   reader.onload = function(e) {
     try {
       let rows = [];
+      let sheetUsed = null;
       if (ext === 'csv') {
         rows = parseCSV(e.target.result);
       } else {
         const wb = XLSX.read(e.target.result, { type: 'array' });
-        const ws = wb.Sheets[wb.SheetNames[0]];
+        if (!wb.SheetNames.length) throw new Error('Le fichier ne contient aucun onglet.');
+        // Chercher l'onglet "Filtre Instagram" en priorité, sinon le premier
+        sheetUsed = wb.SheetNames.find(n => n.trim().toLowerCase() === SHEET_NAME.toLowerCase()) || wb.SheetNames[0];
+        const ws = wb.Sheets[sheetUsed];
         rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
       }
-      showImportPreview(rows, file.name);
+      if (!rows.length) throw new Error('Le fichier ne contient aucune ligne de données.');
+
+      // Validation stricte des colonnes obligatoires
+      const presentCols = Object.keys(rows[0] || {});
+      const missing = REQUIRED_COLS.filter(req => {
+        const aliases = COL_MAP[req] || [req];
+        return !aliases.some(a => presentCols.some(p => p.toLowerCase().replace(/\s/g,'') === a.toLowerCase().replace(/\s/g,'')));
+      });
+      if (missing.length) {
+        showImportBlockedModal(missing, file.name, sheetUsed);
+        return;
+      }
+
+      showImportPreview(rows, file.name, sheetUsed);
     } catch(err) {
       toast('Erreur lecture fichier : ' + err.message, 'error');
     }
   };
   if (ext === 'csv') reader.readAsText(file, 'UTF-8');
   else               reader.readAsArrayBuffer(file);
+}
+
+// Affiche un message d'erreur clair quand des colonnes obligatoires manquent
+function showImportBlockedModal(missing, filename, sheetUsed) {
+  const previewEl = el('importPreview');
+  previewEl.style.display = 'block';
+  el('importConfirmBtn').style.display = 'none';
+  el('importPreviewTitle').textContent = `❌ Import impossible — fichier « ${filename} »${sheetUsed ? ` · onglet « ${sheetUsed} »` : ''}`;
+  el('importPreviewTable').innerHTML = '';
+  const expected = MODEL_COLS.map(c => `<code style="background:var(--bg2);padding:1px 6px;border-radius:4px;font-size:11px">${c}</code>`).join(' · ');
+  const missingList = missing.map(c => `<li style="margin-bottom:3px"><strong>${c}</strong></li>`).join('');
+  el('importWarnings').innerHTML = `
+    <div style="background:var(--red-bg);border:1.5px solid rgba(217,48,37,.25);border-radius:10px;padding:14px 16px;color:#b52819;line-height:1.6">
+      <div style="font-weight:800;margin-bottom:8px">Colonne(s) obligatoire(s) manquante(s) :</div>
+      <ul style="margin:0 0 10px 18px;padding:0;font-size:13px">${missingList}</ul>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px">
+        <strong>Colonnes attendues (modèle officiel) :</strong><br>${expected}
+      </div>
+    </div>`;
+  el('importWarnings').style.color = 'inherit';
 }
 
 function parseCSV(text) {
@@ -3518,40 +3566,41 @@ function parseCSV(text) {
   });
 }
 
-// Colonnes officielles du modèle model1.xlsx — ordre exact à conserver
+// Colonnes officielles du modèle exemplaire.xlsx (onglet "Filtre Instagram") — ordre exact
 const MODEL_COLS = [
-  'denomination','nom_enseigne','forme_juridique','dirigeant','dirigeant_role',
-  'dirigeant_date_naissance','libelle_ape','rue','code_postal','ville',
-  'employes_dernier','employes_dernier_annee','tel','site_web','email',
-  'twitter','facebook','linkedin','GMB_URL','note_google',
-  'nombre_avis_google','ambassadeur_assigné','statut'
+  'restaurant_name','dirigeant','rue','code_postal','ville','tel','site_web','email',
+  'Place_ID_Google','Reservation','Instagram_URL','Logo_url','hero_image_url',
+  'note_google','nombre_avis_google','ambassadeur_assigné','statut',
+  'instagram_followers','instagram_fullname','instagram_external_url'
 ];
 
-// Alias acceptés à l'import (clés = noms officiels du modèle)
+// Colonnes obligatoires — l'import est bloqué si une seule manque
+const REQUIRED_COLS = MODEL_COLS;
+
+const SHEET_NAME = 'Filtre Instagram';
+
+// Alias acceptés à l'import (clés = noms officiels du modèle, fallback = anciens noms)
 const COL_MAP = {
-  denomination:             ['denomination','nom_restaurant','nom','name','restaurant'],
-  nom_enseigne:             ['nom_enseigne','enseigne'],
-  forme_juridique:          ['forme_juridique'],
-  dirigeant:                ['dirigeant','nom_gérant','nom_gerant','gerant','manager'],
-  dirigeant_role:           ['dirigeant_role','role'],
-  dirigeant_date_naissance: ['dirigeant_date_naissance'],
-  libelle_ape:              ['libelle_ape','catégorie','categorie','category','type','ape'],
-  rue:                      ['rue','adresse','address','adresse_complete'],
-  code_postal:              ['code_postal','cp','postal'],
-  ville:                    ['ville','city'],
-  employes_dernier:         ['employes_dernier'],
-  employes_dernier_annee:   ['employes_dernier_annee'],
-  tel:                      ['tel','telephone','téléphone','phone'],
-  site_web:                 ['site_web','site','website','url'],
-  email:                    ['email','mail','courriel'],
-  twitter:                  ['twitter','instagram'],
-  facebook:                 ['facebook'],
-  linkedin:                 ['linkedin'],
-  GMB_URL:                  ['GMB_URL','gmb','google_business','lien_google'],
-  note_google:              ['note_google','note','rating'],
-  nombre_avis_google:       ['nombre_avis_google','nb_avis','avis','reviews'],
-  'ambassadeur_assigné':    ['ambassadeur_assigné','ambassadeur_assigne','ambassadeur','ambassador'],
-  statut:                   ['statut','status','statut_commercial']
+  restaurant_name:         ['restaurant_name','denomination','nom_restaurant','nom','name','restaurant'],
+  dirigeant:               ['dirigeant','nom_gérant','nom_gerant','gerant','manager'],
+  rue:                     ['rue','adresse','address','adresse_complete'],
+  code_postal:             ['code_postal','cp','postal'],
+  ville:                   ['ville','city'],
+  tel:                     ['tel','telephone','téléphone','phone'],
+  site_web:                ['site_web','site','website','url'],
+  email:                   ['email','mail','courriel'],
+  Place_ID_Google:         ['Place_ID_Google','place_id','placeid','place_id_google'],
+  Reservation:             ['Reservation','reservation','reservation_url','reserve_a_table'],
+  Instagram_URL:           ['Instagram_URL','instagram_url','instagram'],
+  Logo_url:                ['Logo_url','logo_url','logo','iconurl','icon_url'],
+  hero_image_url:          ['hero_image_url','hero','herourl','hero_url','cover','cover_image'],
+  note_google:             ['note_google','note','rating'],
+  nombre_avis_google:      ['nombre_avis_google','nb_avis','avis','reviews'],
+  'ambassadeur_assigné':   ['ambassadeur_assigné','ambassadeur_assigne','ambassadeur','ambassador'],
+  statut:                  ['statut','status','statut_commercial'],
+  instagram_followers:     ['instagram_followers','followers','ig_followers'],
+  instagram_fullname:      ['instagram_fullname','ig_fullname','fullname'],
+  instagram_external_url:  ['instagram_external_url','ig_external_url','external_url']
 };
 
 function normalizeRow(row) {
@@ -3629,11 +3678,17 @@ function resolveHeroImage(val) {
   return '';
 }
 
-function showImportPreview(rows, filename) {
-  // ── Détection automatique du format ──────────────────────
+function showImportPreview(rows, filename, sheetUsed) {
+  // ── Détection du format ───────────────────────────────────
+  // Le mode lifestyle ne se déclenche que pour des fichiers qui ne sont PAS le modèle officiel.
+  // Le modèle officiel (exemplaire.xlsx) est déjà validé en amont par handleImportFile.
   const firstRow = rows[0] || {};
   const keys = Object.keys(firstRow).map(k => k.toLowerCase());
-  _importIsLifestyle = keys.includes('instagram_url') || keys.includes('first_category');
+  const hasOfficialModel = REQUIRED_COLS.every(req => {
+    const aliases = COL_MAP[req] || [req];
+    return aliases.some(a => keys.includes(a.toLowerCase()));
+  });
+  _importIsLifestyle = !hasOfficialModel && (keys.includes('first_category') || keys.includes('second_category'));
 
   // ── Afficher le badge de mode ─────────────────────────────
   const badge = el('importModeBadge');
@@ -3696,18 +3751,37 @@ function showImportPreview(rows, filename) {
         <td style="font-size:11px">${escHtml(r.statut||'—')}</td>
       </tr>`).join('')}</tbody>`;
   } else {
-    // Format classique
-    const normalized = rows.map(normalizeRow).filter(r => r.denomination);
+    // Format officiel (exemplaire.xlsx — onglet "Filtre Instagram")
+    const normalized = rows.map(normalizeRow).filter(r => r.restaurant_name);
     _importRows = normalized;
-    const cols = ['denomination','ville','tel','email','dirigeant','statut','ambassadeur_assigné'];
+    const cols = ['restaurant_name','ville','tel','email','dirigeant','statut','ambassadeur_assigné'];
     el('importPreviewTable').innerHTML = `
       <thead><tr>${cols.map(c => `<th>${c.replace(/_/g,' ')}</th>`).join('')}</tr></thead>
       <tbody>${normalized.slice(0,20).map(r => `<tr>${cols.map(c => `<td>${escHtml(r[c]||'')}</td>`).join('')}</tr>`).join('')}</tbody>`;
+
+    // Détection des doublons (slug déjà existant)
+    const existingSlugs = new Set(Object.keys(window._restoData || {}));
+    const dupes = normalized.filter(r => existingSlugs.has(slugify(r.restaurant_name)));
+    let warn = '';
     if (normalized.length < rows.length)
-      el('importWarnings').textContent = `⚠️ ${rows.length - normalized.length} ligne(s) ignorée(s) (colonne denomination vide).`;
+      warn += `⚠️ ${rows.length - normalized.length} ligne(s) ignorée(s) (colonne restaurant_name vide). `;
+    if (dupes.length) {
+      warn += `⚠️ ${dupes.length} doublon(s) détecté(s) : `;
+      warn += dupes.slice(0,5).map(r => r.restaurant_name).join(', ') + (dupes.length > 5 ? '…' : '');
+    }
+    el('importWarnings').innerHTML = `
+      ${warn ? `<div style="margin-bottom:8px">${escHtml(warn).replace(/&lt;|&gt;/g,'')}</div>` : ''}
+      ${dupes.length ? `
+        <div style="background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12px">
+          <div style="font-weight:700;color:var(--ink);margin-bottom:6px">Action sur les doublons :</div>
+          <label style="display:block;margin-bottom:4px;cursor:pointer"><input type="radio" name="dupAction" value="skip" checked> Ignorer les doublons (n'importer que les nouveaux)</label>
+          <label style="display:block;margin-bottom:4px;cursor:pointer"><input type="radio" name="dupAction" value="overwrite"> Écraser les doublons (mise à jour des fiches existantes)</label>
+          <label style="display:block;cursor:pointer"><input type="radio" name="dupAction" value="suffix"> Créer en double avec suffixe <code>-2</code></label>
+        </div>` : ''}
+    `;
   }
 
-  el('importPreviewTitle').textContent = `${_importRows.length} restaurant(s) détecté(s) dans « ${filename} »`;
+  el('importPreviewTitle').textContent = `${_importRows.length} restaurant(s) détecté(s) dans « ${filename} »${sheetUsed ? ` · onglet « ${sheetUsed} »` : ''}`;
   el('importPreview').style.display    = 'block';
   el('importConfirmBtn').style.display = _importRows.length ? 'inline-flex' : 'none';
   el('importConfirmCount').textContent = _importRows.length;
@@ -3782,9 +3856,25 @@ async function confirmImport() {
     let added = 0, scaffolded = 0, skipped = 0;
     btn.textContent = '⏳ Génération des fiches…';
 
+    // Stratégie de gestion des doublons (mode officiel uniquement)
+    const dupAction = (document.querySelector('input[name="dupAction"]:checked') || {}).value || 'skip';
+
     for (const row of _importRows) {
-      const slug = row.slug_override || slugify(row.denomination);
+      // Nom source selon le mode
+      const sourceName = _importIsLifestyle ? row.denomination : (row.restaurant_name || row.denomination);
+      let slug = row.slug_override || slugify(sourceName);
       if (!slug) { skipped++; continue; }
+
+      // Gestion des doublons (mode officiel uniquement)
+      if (!_importIsLifestyle && data[slug]) {
+        if (dupAction === 'skip') { skipped++; continue; }
+        if (dupAction === 'suffix') {
+          let n = 2;
+          while (data[slug + '-' + n]) n++;
+          slug = slug + '-' + n;
+        }
+        // dupAction === 'overwrite' → on garde le slug, on écrase
+      }
 
       const existing = data[slug] || {};
       const isNew    = !allItems.some(f => f.path === slug + '/index.html');
@@ -3872,64 +3962,104 @@ async function confirmImport() {
         }
 
       } else {
-        // ── MODE CLASSIQUE ────────────────────────────────────
+        // ── MODE OFFICIEL (exemplaire.xlsx — onglet "Filtre Instagram") ───────
         const color  = existing.brandColor  || '#B8924F';
         const color2 = existing.brandColor2 || '#9E7A3E';
 
+        // Lien Google avis depuis le Place ID
+        const placeId      = (row.Place_ID_Google || '').trim();
+        const googleReview = placeId
+          ? `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`
+          : (existing.googleReview || '');
+
         data[slug] = {
           ...existing,
-          name:                     row.denomination,
-          brandColor:               color,
-          brandColor2:              color2,
-          adresse:                  row.rue                || existing.adresse || '',
-          ville:                    row.ville              || existing.ville   || '',
-          code_postal:              row.code_postal        || existing.code_postal || '',
-          telephone:                row.tel                || existing.telephone || '',
-          email:                    row.email              || existing.email   || '',
-          nom_gerant:               row.dirigeant          || existing.nom_gerant || '',
-          categorie:                row.libelle_ape        || existing.categorie || '',
-          site_web:                 row.site_web           || existing.site_web || '',
-          note_google:              row.note_google        ? parseFloat(row.note_google) : (existing.note_google || null),
-          nombre_avis_google:       row.nombre_avis_google ? parseInt(row.nombre_avis_google) : (existing.nombre_avis_google || null),
-          facebook:                 row.facebook           || existing.facebook || '',
-          ambassadorCode:           row['ambassadeur_assigné'] || existing.ambassadorCode || '',
-          statut_commercial:        row.statut             || existing.statut_commercial || '',
-          nom_enseigne:             row.nom_enseigne             || existing.nom_enseigne || '',
-          forme_juridique:          row.forme_juridique          || existing.forme_juridique || '',
-          dirigeant_role:           row.dirigeant_role           || existing.dirigeant_role || '',
-          dirigeant_date_naissance: row.dirigeant_date_naissance || existing.dirigeant_date_naissance || '',
-          employes_dernier:         row.employes_dernier         || existing.employes_dernier || '',
-          employes_dernier_annee:   row.employes_dernier_annee   || existing.employes_dernier_annee || '',
-          twitter:                  row.twitter                  || existing.twitter || '',
-          linkedin:                 row.linkedin                 || existing.linkedin || '',
-          GMB_URL:                  row.GMB_URL                  || existing.GMB_URL || '',
-          acces_statut:             existing.acces_statut  || 'non_active',
-          date_creation:            existing.date_creation || new Date().toISOString().slice(0,10),
+          name:                    row.restaurant_name,
+          brandColor:              color,
+          brandColor2:             color2,
+          adresse:                 row.rue                || existing.adresse || '',
+          ville:                   row.ville              || existing.ville   || '',
+          code_postal:             row.code_postal        || existing.code_postal || '',
+          telephone:               row.tel                || existing.telephone || '',
+          email:                   row.email              || existing.email   || '',
+          nom_gerant:              row.dirigeant          || existing.nom_gerant || '',
+          site_web:                row.site_web           || existing.site_web || '',
+          Place_ID_Google:         placeId                || existing.Place_ID_Google || '',
+          googleReview:            googleReview,
+          reservationUrl:          row.Reservation        || existing.reservationUrl || '',
+          instagramUrl:            row.Instagram_URL      || existing.instagramUrl || '',
+          logoUrl:                 row.Logo_url           || existing.logoUrl || '',
+          heroUrl:                 row.hero_image_url     || existing.heroUrl || '',
+          note_google:             row.note_google        ? parseFloat(row.note_google) : (existing.note_google || null),
+          nombre_avis_google:      row.nombre_avis_google ? parseInt(row.nombre_avis_google) : (existing.nombre_avis_google || null),
+          ambassadorCode:          row['ambassadeur_assigné'] || existing.ambassadorCode || '',
+          statut_commercial:       row.statut             || existing.statut_commercial || '',
+          instagram_followers:     row.instagram_followers     || existing.instagram_followers || '',
+          instagram_fullname:      row.instagram_fullname      || existing.instagram_fullname || '',
+          instagram_external_url:  row.instagram_external_url  || existing.instagram_external_url || '',
+          acces_statut:            existing.acces_statut  || 'non_active',
+          date_creation:           existing.date_creation || new Date().toISOString().slice(0,10),
         };
         added++;
 
         if (isNew) {
-          for (const f of templateFiles) {
-            const rel = f.path.slice(tplDir.length + 1);
-            if (rel === 'config.json' || rel === 'progressier.json' || rel.endsWith('.DS_Store')) continue;
-            newTreeItems.push({ path: slug + '/' + rel, mode: f.mode, type: 'blob', sha: f.sha });
+          // config.json (commun prod + demo)
+          const cfg = {
+            name:   row.restaurant_name,
+            color, color2,
+            plan:               'terrain',
+            subscriptionStatus: 'trialing',
+            setupPaid:          false,
+            invoices:           [],
+          };
+          if (row.tel)            cfg.phone          = row.tel;
+          if (row.rue || row.ville || row.code_postal) cfg.address = [row.rue, row.code_postal, row.ville].filter(Boolean).join(', ');
+          if (row.email)          cfg.email          = row.email;
+          if (googleReview)       cfg.googleReview   = googleReview;
+          if (row.Reservation)    cfg.reservationUrl = row.Reservation;
+          if (row.Instagram_URL)  cfg.instagramUrl   = row.Instagram_URL;
+          if (row.ville)          cfg.city           = row.ville;
+
+          // Logo : ré-hébergé en permanent si externe (sinon placeholder dans le wallet)
+          if (row.Logo_url) {
+            const _lu = await rehostExternalImage(slug, row.Logo_url, 'logo', newTreeItems);
+            cfg.logoUrl = _lu; cfg.iconUrl = _lu;
           }
-          const cfg = { name: row.denomination, color, color2 };
-          if (row.tel)     cfg.phone        = row.tel;
-          if (row.rue)     cfg.address      = [row.rue, row.code_postal, row.ville].filter(Boolean).join(', ');
-          if (row.GMB_URL) cfg.googleReview = row.GMB_URL;
+          // Image hero : URL directe (fallback dégradé dans le wallet si manquante)
+          if (row.hero_image_url) cfg.heroUrl = row.hero_image_url;
+
           const manifest = {
-            name: row.denomination, short_name: row.denomination,
+            name: row.restaurant_name, short_name: row.restaurant_name,
             start_url: `/${slug}/index.html`, scope: `/${slug}/`,
             display: 'standalone', background_color: '#f6efe5',
             theme_color: color, orientation: 'portrait',
             icons: [{ src:'icon-192.png',sizes:'192x192',type:'image/png'},{ src:'icon-512.png',sizes:'512x512',type:'image/png'}]
           };
+
           const cfgBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(cfg, null, 2) + '\n', encoding: 'utf-8' });
           const manBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(manifest, null, 2) + '\n', encoding: 'utf-8' });
+
+          // ─── Wallet PRODUCTION : /{slug}/ ───
+          for (const f of templateFiles) {
+            const rel = f.path.slice(tplDir.length + 1);
+            if (rel === 'config.json' || rel === 'progressier.json' || rel.endsWith('.DS_Store')) continue;
+            newTreeItems.push({ path: slug + '/' + rel, mode: f.mode, type: 'blob', sha: f.sha });
+          }
           newTreeItems.push({ path: `${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
           newTreeItems.push({ path: `${slug}/progressier.json`, mode: '100644', type: 'blob', sha: manBlob.sha });
-          provisionList.push({ slug, name: row.denomination, color, color2, phone: row.tel || '', email: row.email || '', googleReview: row.GMB_URL || '', ambCode: row['ambassadeur_assigné'] || '' });
+
+          // ─── Wallet DEMO : /demo/{slug}/ ───
+          const demoManifest = { ...manifest, start_url: `/demo/${slug}/index.html`, scope: `/demo/${slug}/` };
+          const demoManBlob  = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(demoManifest, null, 2) + '\n', encoding: 'utf-8' });
+          for (const f of templateFiles) {
+            const rel = f.path.slice(tplDir.length + 1);
+            if (rel === 'config.json' || rel === 'progressier.json' || rel.endsWith('.DS_Store')) continue;
+            newTreeItems.push({ path: `demo/${slug}/` + rel, mode: f.mode, type: 'blob', sha: f.sha });
+          }
+          newTreeItems.push({ path: `demo/${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
+          newTreeItems.push({ path: `demo/${slug}/progressier.json`, mode: '100644', type: 'blob', sha: demoManBlob.sha });
+
+          provisionList.push({ slug, name: row.restaurant_name, color, color2, phone: row.tel || '', email: row.email || '', googleReview, ambCode: row['ambassadeur_assigné'] || '' });
           scaffolded++;
         }
       }
@@ -3982,17 +4112,32 @@ async function confirmImport() {
 }
 
 function downloadTemplate() {
+  // Ordre = MODEL_COLS (officiel)
   const example = [
-    'ICHIRYU','KAZ','SASU Société par actions simplifiée à associé unique',
-    'Kazunari KANO','Président','','Restauration traditionnelle',
-    '11 RUE DE MONTYON','75009','PARIS','7','2022','01 45 80 26 98',
-    'http://www.sumibi-kaz.com/','ichiryu0111@gmail.com','',
-    'https://www.facebook.com/WixFrancais','','','4.5','150',
-    'AMB-JEN-MAR-001','test_actif'
+    'Jolia Brunch Paris',                                 // restaurant_name
+    'Marie Dupont',                                       // dirigeant
+    '12 rue de Rivoli',                                   // rue
+    '75001',                                              // code_postal
+    'Paris',                                              // ville
+    '01 23 45 67 89',                                     // tel
+    'https://jolia.fr',                                   // site_web
+    'contact@jolia.fr',                                   // email
+    'ChIJ_fYMsiVt5kcR_ElRbOjYTRc',                        // Place_ID_Google
+    'https://reservation.fr/jolia',                       // Reservation
+    'https://www.instagram.com/jolia.paris',              // Instagram_URL
+    'https://example.com/jolia-logo.jpg',                 // Logo_url
+    'https://example.com/jolia-hero.jpg',                 // hero_image_url
+    '4.7',                                                // note_google
+    '215',                                                // nombre_avis_google
+    'AMB-JEN-MAR-001',                                    // ambassadeur_assigné
+    'demo',                                               // statut
+    '12500',                                              // instagram_followers
+    'Jolia Brunch & Coffee',                              // instagram_fullname
+    'https://jolia.fr'                                    // instagram_external_url
   ];
   const ws = XLSX.utils.aoa_to_sheet([MODEL_COLS, example]);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Restaurants');
+  XLSX.utils.book_append_sheet(wb, ws, SHEET_NAME);
   XLSX.writeFile(wb, 'modele_import_fidelavis.xlsx');
 }
 
@@ -4008,35 +4153,32 @@ async function exportRestosExcel() {
   const rows = Object.keys(data).map(slug => {
     const r = data[slug];
     return {
-      denomination:             r.name || '',
-      nom_enseigne:             r.nom_enseigne || '',
-      forme_juridique:          r.forme_juridique || '',
-      dirigeant:                r.nom_gerant || '',
-      dirigeant_role:           r.dirigeant_role || '',
-      dirigeant_date_naissance: r.dirigeant_date_naissance || '',
-      libelle_ape:              r.libelle_ape || r.categorie || '',
-      rue:                      r.adresse || r.address || '',
-      code_postal:              r.code_postal || '',
-      ville:                    r.ville || '',
-      employes_dernier:         r.employes_dernier || '',
-      employes_dernier_annee:   r.employes_dernier_annee || '',
-      tel:                      r.telephone || r.phone || '',
-      site_web:                 r.site_web || '',
-      email:                    r.email || '',
-      twitter:                  r.twitter || r.instagram || '',
-      facebook:                 r.facebook || '',
-      linkedin:                 r.linkedin || '',
-      GMB_URL:                  r.GMB_URL || '',
-      note_google:              r.note_google || '',
-      nombre_avis_google:       r.nombre_avis_google || '',
-      'ambassadeur_assigné':    r.ambassadorCode || '',
-      statut:                   r.statut_commercial || ''
+      restaurant_name:        r.name || '',
+      dirigeant:              r.nom_gerant || '',
+      rue:                    r.adresse || r.address || '',
+      code_postal:            r.code_postal || '',
+      ville:                  r.ville || '',
+      tel:                    r.telephone || r.phone || '',
+      site_web:               r.site_web || '',
+      email:                  r.email || '',
+      Place_ID_Google:        r.Place_ID_Google || '',
+      Reservation:            r.reservationUrl || '',
+      Instagram_URL:          r.instagramUrl || '',
+      Logo_url:               r.logoUrl || r.iconUrl || '',
+      hero_image_url:         r.heroUrl || '',
+      note_google:            r.note_google || '',
+      nombre_avis_google:     r.nombre_avis_google || '',
+      'ambassadeur_assigné':  r.ambassadorCode || '',
+      statut:                 r.statut_commercial || '',
+      instagram_followers:    r.instagram_followers || '',
+      instagram_fullname:     r.instagram_fullname || '',
+      instagram_external_url: r.instagram_external_url || ''
     };
   });
 
   const ws = XLSX.utils.json_to_sheet(rows, { header: MODEL_COLS });
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Restaurants');
+  XLSX.utils.book_append_sheet(wb, ws, SHEET_NAME);
   const date = new Date().toISOString().slice(0,10);
   XLSX.writeFile(wb, `fidelavis_restaurants_${date}.xlsx`);
   toast('✅ Export Excel téléchargé !', 'success');
