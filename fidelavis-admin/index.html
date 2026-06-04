@@ -2280,7 +2280,14 @@ function openRestoAdmin(slug) {
 // ── Démo : ouvre l'aperçu sans inscription + copie l'URL pour DM ─────
 async function openDemoLink(slug) {
   if (!slug) return;
-  const url = `https://app.cartefidelavis.com/${slug}/demo/`;
+  // Choix du chemin selon le mode de scaffolding :
+  //  - Mode officiel (nouveau modèle exemplaire.xlsx) → /demo/{slug}/
+  //  - Mode lifestyle (legacy) → /{slug}/demo/
+  const r = (window._restoData || {})[slug] || {};
+  const isLifestyle = !!r.walletTemplate;
+  const url = isLifestyle
+    ? `https://app.cartefidelavis.com/${slug}/demo/`
+    : `https://app.cartefidelavis.com/demo/${slug}/`;
   // ouvre la démo (lien direct utilisable en DM)
   window.open(url, '_blank', 'noopener,width=420,height=860');
   // copie l'URL dans le presse-papier
@@ -2753,6 +2760,10 @@ function renderRestoGrid(data) {
         : `<span class="acces-badge acces-non">✗ Non activé</span>`;
     const logoUrl = r.logoUrl || r.iconUrl || '';
     const heroUrl = r.heroUrl || '';
+    // Lifestyle (legacy) : démo dans /{slug}/demo/ — nouveau modèle officiel : /demo/{slug}/
+    const demoUrl = r.walletTemplate
+      ? `${BASE}/${slug}/demo/`
+      : `${BASE}/demo/${slug}/index.html`;
     return `
       <div class="stat-card" style="border-top:4px solid ${color};padding-top:0" data-slug="${slug}" data-sc="${sc}">
         ${heroUrl
@@ -2804,7 +2815,7 @@ function renderRestoGrid(data) {
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
           <a href="${BASE}/${slug}/index.html" target="_blank" title="Wallet production" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">🏠 Prod</a>
-          <a href="${BASE}/demo/${slug}/index.html" target="_blank" title="Wallet démo" style="font-size:11px;font-weight:700;padding:4px 9px;background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;text-decoration:none;color:#9a3412">🎭 Démo</a>
+          <a href="${demoUrl}" target="_blank" title="Wallet démo" style="font-size:11px;font-weight:700;padding:4px 9px;background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;text-decoration:none;color:#9a3412">🎭 Démo</a>
           <button onclick="openDemoLink('${slug}')" title="Ouvre l'aperçu et copie le lien (pour DM)" style="font-size:11px;font-weight:700;padding:4px 9px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;color:#166534;cursor:pointer">📱 Aperçu</button>
           <button onclick="genDmVideo('${slug}','${escHtml(r.name || slug)}')" title="Génère la vidéo DM (HeyGen) — validation manuelle" style="font-size:11px;font-weight:700;padding:4px 9px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:6px;color:#4338ca;cursor:pointer">🎬 Vidéo DM</button>
           <button onclick="openRestoAdmin('${slug}')" style="font-size:11px;font-weight:700;padding:4px 9px;background:#fff8e1;border:1px solid #f0c75e;border-radius:6px;color:#8b6914;cursor:pointer">🔓 Espace</button>
