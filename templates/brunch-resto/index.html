@@ -719,7 +719,7 @@
 <div class="pg-head">
 
   <!-- Account button top-right -->
-  <button class="acct-btn" onclick="window.Fidelavis?.go?.('compte.html')" aria-label="Mon compte">
+  <button class="acct-btn" id="acctBtn" onclick="window.Fidelavis?.go?.('compte.html')" aria-label="Mon compte">
     <div class="acct-av" id="acctAv">M</div>
     <span class="acct-lbl">Compte</span>
   </button>
@@ -978,6 +978,9 @@ function startTimer(){
     demoBar.textContent = '👁 Aperçu démo — version visuelle';
     document.body.insertBefore(demoBar, document.body.firstChild);
     document.body.style.paddingTop = '22px';
+    /* En démo (aperçu sans inscription) le bouton Compte ne mène nulle part → masqué */
+    var _ab = document.getElementById('acctBtn');
+    if (_ab) _ab.style.display = 'none';
   }
 
   try{_cfg=await window.Fidelavis?.loadConfig?.()||{};}catch(e){}
