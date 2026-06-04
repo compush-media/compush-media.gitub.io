@@ -2280,14 +2280,13 @@ function openRestoAdmin(slug) {
 // ── Démo : ouvre l'aperçu sans inscription + copie l'URL pour DM ─────
 async function openDemoLink(slug) {
   if (!slug) return;
-  // Choix du chemin selon le mode de scaffolding :
-  //  - Mode officiel (nouveau modèle exemplaire.xlsx) → /demo/{slug}/
-  //  - Mode lifestyle (legacy) → /{slug}/demo/
+  // Choix du chemin selon la disposition de la démo :
+  //  - demoLayout = 'separate' (nouveau modèle officiel) → /demo/{slug}/
+  //  - sinon (lifestyle legacy) → /{slug}/demo/
   const r = (window._restoData || {})[slug] || {};
-  const isLifestyle = !!r.walletTemplate;
-  const url = isLifestyle
-    ? `https://app.cartefidelavis.com/${slug}/demo/`
-    : `https://app.cartefidelavis.com/demo/${slug}/`;
+  const url = r.demoLayout === 'separate'
+    ? `https://app.cartefidelavis.com/demo/${slug}/`
+    : `https://app.cartefidelavis.com/${slug}/demo/`;
   // ouvre la démo (lien direct utilisable en DM)
   window.open(url, '_blank', 'noopener,width=420,height=860');
   // copie l'URL dans le presse-papier
@@ -2760,10 +2759,10 @@ function renderRestoGrid(data) {
         : `<span class="acces-badge acces-non">✗ Non activé</span>`;
     const logoUrl = r.logoUrl || r.iconUrl || '';
     const heroUrl = r.heroUrl || '';
-    // Lifestyle (legacy) : démo dans /{slug}/demo/ — nouveau modèle officiel : /demo/{slug}/
-    const demoUrl = r.walletTemplate
-      ? `${BASE}/${slug}/demo/`
-      : `${BASE}/demo/${slug}/index.html`;
+    // Disposition démo : 'separate' (nouveau modèle) → /demo/{slug}/ — sinon legacy /{slug}/demo/
+    const demoUrl = r.demoLayout === 'separate'
+      ? `${BASE}/demo/${slug}/index.html`
+      : `${BASE}/${slug}/demo/`;
     return `
       <div class="stat-card" style="border-top:4px solid ${color};padding-top:0" data-slug="${slug}" data-sc="${sc}">
         ${heroUrl
@@ -4008,20 +4007,33 @@ async function confirmImport() {
           instagram_followers:     row.instagram_followers     || existing.instagram_followers || '',
           instagram_fullname:      row.instagram_fullname      || existing.instagram_fullname || '',
           instagram_external_url:  row.instagram_external_url  || existing.instagram_external_url || '',
+          walletTemplate:          IMPORT_TEMPLATE_LIFESTYLE,    // wallet design = brunch-resto
+          demoLayout:              'separate',                   // démo dans /demo/{slug}/
           acces_statut:            existing.acces_statut  || 'non_active',
           date_creation:           existing.date_creation || new Date().toISOString().slice(0,10),
         };
         added++;
 
         if (isNew) {
-          // config.json (commun prod + demo)
+          // Vérifier que brunch-resto est disponible
+          if (!brunchIdxSha) throw new Error('Template templates/brunch-resto/index.html introuvable');
+
+          // ── config.json : adapté au template brunch-resto ──
           const cfg = {
-            name:   row.restaurant_name,
+            name:               row.restaurant_name,
             color, color2,
+            walletTemplate:     IMPORT_TEMPLATE_LIFESTYLE,
+            category:           'brunch',                       // → badge "Brunch Lover" + sous-titre
+            tagline:            row.instagram_fullname || '',
             plan:               'terrain',
             subscriptionStatus: 'trialing',
             setupPaid:          false,
             invoices:           [],
+            activeCoupon: {
+              title:       'Café offert',
+              description: 'Réservé aux membres Fidelavis',
+              month:       new Date().toLocaleDateString('fr-FR', { month: 'long' })
+            }
           };
           if (row.tel)            cfg.phone          = row.tel;
           if (row.rue || row.ville || row.code_postal) cfg.address = [row.rue, row.code_postal, row.ville].filter(Boolean).join(', ');
@@ -4031,12 +4043,12 @@ async function confirmImport() {
           if (row.Instagram_URL)  cfg.instagramUrl   = row.Instagram_URL;
           if (row.ville)          cfg.city           = row.ville;
 
-          // Logo : ré-hébergé en permanent si externe (sinon placeholder dans le wallet)
+          // Logo : ré-hébergé si externe (sinon initiales dans le template)
           if (row.Logo_url) {
             const _lu = await rehostExternalImage(slug, row.Logo_url, 'logo', newTreeItems);
             cfg.logoUrl = _lu; cfg.iconUrl = _lu;
           }
-          // Image hero : URL directe (fallback dégradé dans le wallet si manquante)
+          // Hero : URL directe (fallback dégradé dans le template si vide)
           if (row.hero_image_url) cfg.heroUrl = row.hero_image_url;
 
           const manifest = {
@@ -4044,29 +4056,32 @@ async function confirmImport() {
             start_url: `/${slug}/index.html`, scope: `/${slug}/`,
             display: 'standalone', background_color: '#f6efe5',
             theme_color: color, orientation: 'portrait',
-            icons: [{ src:'icon-192.png',sizes:'192x192',type:'image/png'},{ src:'icon-512.png',sizes:'512x512',type:'image/png'}]
+            icons: [
+              { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+              { src: 'icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+            ]
           };
 
           const cfgBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(cfg, null, 2) + '\n', encoding: 'utf-8' });
           const manBlob = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(manifest, null, 2) + '\n', encoding: 'utf-8' });
 
           // ─── Wallet PRODUCTION : /{slug}/ ───
+          // 1. Fichiers utilitaires depuis _template (admin, indexnfc, inscription…) — index.html exclu
           for (const f of templateFiles) {
             const rel = f.path.slice(tplDir.length + 1);
-            if (rel === 'config.json' || rel === 'progressier.json' || rel.endsWith('.DS_Store')) continue;
+            if (rel === 'config.json' || rel === 'progressier.json' || rel === 'index.html' || rel.endsWith('.DS_Store')) continue;
             newTreeItems.push({ path: slug + '/' + rel, mode: f.mode, type: 'blob', sha: f.sha });
           }
+          // 2. index.html = template brunch-resto (design lifestyle)
+          newTreeItems.push({ path: `${slug}/index.html`,       mode: '100644', type: 'blob', sha: brunchIdxSha });
           newTreeItems.push({ path: `${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
           newTreeItems.push({ path: `${slug}/progressier.json`, mode: '100644', type: 'blob', sha: manBlob.sha });
 
           // ─── Wallet DEMO : /demo/{slug}/ ───
+          // Démo = aperçu minimal — index.html (brunch-resto) + config + manifest
           const demoManifest = { ...manifest, start_url: `/demo/${slug}/index.html`, scope: `/demo/${slug}/` };
           const demoManBlob  = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(demoManifest, null, 2) + '\n', encoding: 'utf-8' });
-          for (const f of templateFiles) {
-            const rel = f.path.slice(tplDir.length + 1);
-            if (rel === 'config.json' || rel === 'progressier.json' || rel.endsWith('.DS_Store')) continue;
-            newTreeItems.push({ path: `demo/${slug}/` + rel, mode: f.mode, type: 'blob', sha: f.sha });
-          }
+          newTreeItems.push({ path: `demo/${slug}/index.html`,       mode: '100644', type: 'blob', sha: brunchIdxSha });
           newTreeItems.push({ path: `demo/${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
           newTreeItems.push({ path: `demo/${slug}/progressier.json`, mode: '100644', type: 'blob', sha: demoManBlob.sha });
 
