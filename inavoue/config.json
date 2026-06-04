@@ -1,0 +1,25 @@
+{
+  "name": "inavoué",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "walletTemplate": "templates/brunch-resto",
+  "category": "brunch",
+  "tagline": "inavoué restaurant",
+  "plan": "terrain",
+  "subscriptionStatus": "trialing",
+  "setupPaid": false,
+  "invoices": [],
+  "activeCoupon": {
+    "title": "Café offert",
+    "description": "Réservé aux membres Fidelavis",
+    "month": "juin"
+  },
+  "address": "4 Imp. Gomboust, 75001, Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJcwbSyjFu5kcRug6RvZpzlWs",
+  "reservationUrl": "https://www.google.com/maps/reserve/v/dine/c/7Tu5oInoxyk?source=pa&opi=79508299&hl=fr-FR&gei=8vweaojrKNrW7M8PqK2G6QY&ahbb=1",
+  "instagramUrl": "https://www.instagram.com/inavoue_restaurant",
+  "city": "Paris",
+  "logoUrl": "https://app.cartefidelavis.com/inavoue/logo.jpg",
+  "iconUrl": "https://app.cartefidelavis.com/inavoue/logo.jpg",
+  "heroUrl": "https://app.cartefidelavis.com/inavoue/hero.jpg"
+}
