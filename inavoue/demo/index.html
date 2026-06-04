@@ -978,9 +978,6 @@ function startTimer(){
     demoBar.textContent = '👁 Aperçu démo — version visuelle';
     document.body.insertBefore(demoBar, document.body.firstChild);
     document.body.style.paddingTop = '22px';
-    /* En démo (aperçu sans inscription) le bouton Compte ne mène nulle part → masqué */
-    var _ab = document.getElementById('acctBtn');
-    if (_ab) _ab.style.display = 'none';
   }
 
   try{_cfg=await window.Fidelavis?.loadConfig?.()||{};}catch(e){}

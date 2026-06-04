@@ -4099,6 +4099,9 @@ async function confirmImport() {
           // détecte le bon slug (1er segment du chemin) et charge /{slug}/config.json.
           // Le mode démo est activé par la présence de "/demo/" dans le chemin.
           newTreeItems.push({ path: `${slug}/demo/index.html`,  mode: '100644', type: 'blob', sha: brunchIdxSha });
+          // compte.html : page « Mon compte » en mode démo → identité Axelle commune à tous les aperçus
+          const compteTpl = templateFiles.find(f => f.path === `${IMPORT_TEMPLATE}/compte.html`);
+          if (compteTpl) newTreeItems.push({ path: `${slug}/demo/compte.html`, mode: '100644', type: 'blob', sha: compteTpl.sha });
 
           provisionList.push({ slug, name: row.restaurant_name, color, color2, phone: row.tel || '', email: row.email || '', googleReview, ambCode: row['ambassadeur_assigné'] || '' });
           scaffolded++;
