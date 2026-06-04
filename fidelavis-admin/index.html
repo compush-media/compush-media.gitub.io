@@ -2280,9 +2280,8 @@ function openRestoAdmin(slug) {
 // ── Démo : ouvre l'aperçu sans inscription + copie l'URL pour DM ─────
 async function openDemoLink(slug) {
   if (!slug) return;
-  // Choix du chemin selon la disposition de la démo :
-  //  - demoLayout = 'separate' (nouveau modèle officiel) → /demo/{slug}/
-  //  - sinon (lifestyle legacy) → /{slug}/demo/
+  // Démo toujours imbriquée sous /{slug}/demo/ (le template détecte le slug
+  // comme 1er segment du chemin). Compat ancien layout 'separate' éventuel.
   const r = (window._restoData || {})[slug] || {};
   const url = r.demoLayout === 'separate'
     ? `https://app.cartefidelavis.com/demo/${slug}/`
@@ -3976,11 +3975,24 @@ async function confirmImport() {
         const color  = existing.brandColor  || '#B8924F';
         const color2 = existing.brandColor2 || '#9E7A3E';
 
-        // Lien Google avis depuis le Place ID
-        const placeId      = (row.Place_ID_Google || '').trim();
-        const googleReview = placeId
-          ? `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`
-          : (existing.googleReview || '');
+        // Lien Google avis depuis le Place ID.
+        // La colonne peut contenir soit un Place ID brut (ChIJ…), soit déjà une URL complète.
+        const placeRaw  = (row.Place_ID_Google || '').trim();
+        let   placeId   = placeRaw;
+        let   googleReview;
+        if (!placeRaw) {
+          googleReview = existing.googleReview || '';
+          placeId      = existing.Place_ID_Google || '';
+        } else if (/^https?:\/\//i.test(placeRaw)) {
+          // URL complète fournie → on l'utilise telle quelle, on extrait le Place ID si possible
+          googleReview = placeRaw;
+          const m = placeRaw.match(/placeid=([^&]+)/i);
+          placeId = m ? decodeURIComponent(m[1]) : '';
+        } else {
+          // Place ID brut → on construit l'URL
+          googleReview = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeRaw)}`;
+          placeId      = placeRaw;
+        }
 
         data[slug] = {
           ...existing,
@@ -4008,7 +4020,7 @@ async function confirmImport() {
           instagram_fullname:      row.instagram_fullname      || existing.instagram_fullname || '',
           instagram_external_url:  row.instagram_external_url  || existing.instagram_external_url || '',
           walletTemplate:          IMPORT_TEMPLATE_LIFESTYLE,    // wallet design = brunch-resto
-          demoLayout:              'separate',                   // démo dans /demo/{slug}/
+          demoLayout:              'nested',                     // démo dans /{slug}/demo/
           acces_statut:            existing.acces_statut  || 'non_active',
           date_creation:           existing.date_creation || new Date().toISOString().slice(0,10),
         };
@@ -4047,9 +4059,14 @@ async function confirmImport() {
           if (row.Logo_url) {
             const _lu = await rehostExternalImage(slug, row.Logo_url, 'logo', newTreeItems);
             cfg.logoUrl = _lu; cfg.iconUrl = _lu;
+            data[slug].logoUrl = _lu;   // registre = URL permanente
           }
-          // Hero : URL directe (fallback dégradé dans le template si vide)
-          if (row.hero_image_url) cfg.heroUrl = row.hero_image_url;
+          // Hero : ré-hébergé en permanent (les URLs Instagram CDN expirent rapidement)
+          if (row.hero_image_url) {
+            const _hu = await rehostExternalImage(slug, row.hero_image_url, 'hero', newTreeItems);
+            cfg.heroUrl = _hu;
+            data[slug].heroUrl = _hu;   // registre = URL permanente
+          }
 
           const manifest = {
             name: row.restaurant_name, short_name: row.restaurant_name,
@@ -4077,13 +4094,11 @@ async function confirmImport() {
           newTreeItems.push({ path: `${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
           newTreeItems.push({ path: `${slug}/progressier.json`, mode: '100644', type: 'blob', sha: manBlob.sha });
 
-          // ─── Wallet DEMO : /demo/{slug}/ ───
-          // Démo = aperçu minimal — index.html (brunch-resto) + config + manifest
-          const demoManifest = { ...manifest, start_url: `/demo/${slug}/index.html`, scope: `/demo/${slug}/` };
-          const demoManBlob  = await ghApiD('/git/blobs', 'POST', { content: JSON.stringify(demoManifest, null, 2) + '\n', encoding: 'utf-8' });
-          newTreeItems.push({ path: `demo/${slug}/index.html`,       mode: '100644', type: 'blob', sha: brunchIdxSha });
-          newTreeItems.push({ path: `demo/${slug}/config.json`,      mode: '100644', type: 'blob', sha: cfgBlob.sha });
-          newTreeItems.push({ path: `demo/${slug}/progressier.json`, mode: '100644', type: 'blob', sha: demoManBlob.sha });
+          // ─── Wallet DEMO : /{slug}/demo/ ───
+          // IMPORTANT : la démo DOIT être imbriquée sous /{slug}/ pour que le template
+          // détecte le bon slug (1er segment du chemin) et charge /{slug}/config.json.
+          // Le mode démo est activé par la présence de "/demo/" dans le chemin.
+          newTreeItems.push({ path: `${slug}/demo/index.html`,  mode: '100644', type: 'blob', sha: brunchIdxSha });
 
           provisionList.push({ slug, name: row.restaurant_name, color, color2, phone: row.tel || '', email: row.email || '', googleReview, ambCode: row['ambassadeur_assigné'] || '' });
           scaffolded++;
