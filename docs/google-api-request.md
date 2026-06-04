@@ -1,10 +1,14 @@
 # Google Business Profile API — Demande d'accès Fidelavis
 
-**Dossier n° : `1-4847000040165`**
-**Soumis le : 2026-04-19 / Refusé le : 2026-05-07**
-**Motif du refus : email demandeur non propriétaire d'une fiche vérifiée depuis 60+ jours**
-**Action : répondre à l'email [1-4847000040165] le 24/05/2026 depuis `l'email propriétaire de la fiche GBP` (propriétaire de la fiche GBP vérifiée le 25/03/2026)**
-**Statut : en attente — réponse à envoyer le 24/05/2026**
+**Historique des dossiers :**
+- `1-4847000040165` — soumis 19/04/2026, refusé 06/05 (email non propriétaire 60j)
+- `7-9678000040261` — refusé 14/05 (contrôles qualité internes / branding non validé)
+- `6-8745000041091` — **soumis 04/06/2026** ✅ via tirakountech@gmail.com + fiche COMPUSH MÉDIA validée
+
+**Dossier actif : `6-8745000041091`**
+**Soumis le : 2026-06-04**
+**Délai annoncé : 7 à 10 jours ouvrés**
+**Statut : en cours d'examen**
 
 Lien du formulaire : https://support.google.com/business/contact/api_default
 Contact Google (après soumission) : réponds à l'email reçu, en citant le n° de dossier.
