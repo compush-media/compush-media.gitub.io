@@ -1,41 +1,41 @@
 [
   {
-    "slug": "deux-restaurant-bistrot-de-chefs",
-    "restaurant_name": "Deux Restaurant : Bistrot de chefs",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/deux-restaurant-bistrot-de-chefs-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/",
-    "demo_url": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/demo/",
+    "slug": "inavoue",
+    "restaurant_name": "inavoué",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/inavoue-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/inavoue/",
+    "demo_url": "https://app.cartefidelavis.com/inavoue/demo/",
     "status": "success",
-    "heygen_video_id": "b43a260a6063401caa1e8dffb994eac8",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/b43a260a6063401caa1e8dffb994eac8.mp4?Expires=1781019618&Signature=eNQgky5~QyFWToRf4sGkqtxwM4wYSt3DsrF0rXVv-yW3QHdjgzvPmNj43QnR8HbTKZCEMbseTc7H5ro6gs8ctuZTfgGOXhhziwarPu0ffDee3k2lqnbFZwA034pdxsSWOMGIaxmf7hBR8Bc8JnO3moqHSQkK~MFLfd8MnB-Y6RBQiUtjl~4uMhSWjJrSbd5rqrk23LmSuTNbc9qjhixoVe9lRIIDPDjovKGpJ0X2a8YrmEHXg5YFAlPifxT6BCcB0En~jcg8tygkGNUersGS~1AKD-3FNlYbTaNoGv5ShX3Flbfv9MvAiygoJgV9hj7MC2InC7OG37qh5xfwsUhtWw__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "heygen_video_id": "6fa041c5d7d9448ebbb70b4624847c8e",
+    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/6fa041c5d7d9448ebbb70b4624847c8e.mp4?Expires=1781303635&Signature=keihulF~F1IwK9a~25S17MAFtdlh77S5fNK10iJmnsKa9bc3YOXd9R29auHFidOJjL~8ICIMuGXMvC0cN2SLQSrQ1C3foWQYhtHx5EQSeeY5ZBE9G3siBIv8zoeKPucDYdleJLDSYJgtiLkP3Od9kz2XNLpu~2RtqWxzpjpoqgsMZOFJ-R6fsFfWorWSfN6DYNUq95WZeeXJVOxz4WTjC1fQIsSI94D6x-FLbXe4HpYJyVrZ9SqyZAFU0G~dV17T6KT8v~JTtD0SYeVwbEHlkbNVEAZrWu9nujVvnPVwd7-1Lc00ilx87vmJ8CilK1jr5Gsvat0wOupwg8FjuDK6FA__&Key-Pair-Id=K38HBHX5LX3X2H",
     "mode": "heygen_green_composite",
-    "output_file": "dm_videos/deux-restaurant-bistrot-de-chefs-dm.mp4",
-    "output_size_mb": 5.13,
-    "total_elapsed_s": 200.9,
+    "output_file": "dm_videos/inavoue-dm.mp4",
+    "output_size_mb": 4.46,
+    "total_elapsed_s": 272.1,
     "scenes": [
       {
         "t": 1.5,
-        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0015.png"
+        "path": "dm_videos/inavoue_scenes/scene_0015.png"
       },
       {
         "t": 4.5,
-        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0045.png"
+        "path": "dm_videos/inavoue_scenes/scene_0045.png"
       },
       {
         "t": 7.5,
-        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0075.png"
+        "path": "dm_videos/inavoue_scenes/scene_0075.png"
       },
       {
         "t": 11.0,
-        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0110.png"
+        "path": "dm_videos/inavoue_scenes/scene_0110.png"
       },
       {
         "t": 14.0,
-        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0140.png"
+        "path": "dm_videos/inavoue_scenes/scene_0140.png"
       },
       {
         "t": 17.0,
-        "path": "dm_videos/deux-restaurant-bistrot-de-chefs_scenes/scene_0170.png"
+        "path": "dm_videos/inavoue_scenes/scene_0170.png"
       }
     ]
   }
