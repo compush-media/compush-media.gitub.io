@@ -2320,7 +2320,25 @@ async function genDmVideo(slug, name) {
     });
     const data = await res.json();
     if (data.ok) {
-      toast(`🎬 Vidéo « ${name} » en cours de génération (~3-4 min)`, 'success');
+      toast(`🎬 Vidéo « ${name} » en génération (~3-4 min). Le bouton ▶ Voir vidéo apparaîtra automatiquement.`, 'success');
+      const gen = document.getElementById('genvid-' + slug);
+      if (gen) gen.textContent = '⏳ En cours…';
+      // Re-vérifie périodiquement jusqu'à ce que la vidéo soit publiée
+      let tries = 0;
+      const poll = setInterval(async () => {
+        tries++;
+        try {
+          const h = await fetch(`${BASE}/dm_videos/${slug}-dm.mp4?cb=${Date.now()}`, { method: 'HEAD', cache: 'no-store' });
+          if (h.ok) {
+            clearInterval(poll);
+            const see = document.getElementById('seevid-' + slug);
+            if (see) see.style.display = '';
+            if (gen) { gen.textContent = '🎬 Régénérer'; }
+            toast(`✅ Vidéo « ${name} » prête !`, 'success');
+          }
+        } catch(_) {}
+        if (tries >= 60) { clearInterval(poll); if (gen) gen.textContent = '🎬 Vidéo DM'; }
+      }, 15000);   // toutes les 15 s, max 15 min
     } else {
       toast('Erreur : ' + (data.error || 'inconnue'), 'error');
     }
@@ -2718,6 +2736,22 @@ async function loadAmbassadeursList() {
   }
 }
 
+// ── Détecte quels restos ont déjà une vidéo DM publiée ───────────────
+// HEAD sur l'URL publique : si 200 → révèle « ▶ Voir vidéo » + marque le
+// bouton de génération comme « régénérer ».
+async function checkDmVideos(slugs) {
+  for (const slug of slugs) {
+    try {
+      const r = await fetch(`${BASE}/dm_videos/${slug}-dm.mp4`, { method: 'HEAD', cache: 'no-store' });
+      if (!r.ok) continue;
+      const see = document.getElementById('seevid-' + slug);
+      const gen = document.getElementById('genvid-' + slug);
+      if (see) see.style.display = '';
+      if (gen) { gen.textContent = '🎬 Régénérer'; gen.title = 'Régénérer la vidéo DM'; }
+    } catch(_) {}
+  }
+}
+
 function ambassadeurOptions(selectedCode) {
   const list = window._ambassadeurs || [];
   let html = `<option value="" ${!selectedCode ? 'selected' : ''}>— Aucun —</option>`;
@@ -2815,7 +2849,8 @@ function renderRestoGrid(data) {
           <a href="${BASE}/${slug}/index.html" target="_blank" title="Wallet production" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">🏠 Prod</a>
           <a href="${demoUrl}" target="_blank" title="Wallet démo" style="font-size:11px;font-weight:700;padding:4px 9px;background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;text-decoration:none;color:#9a3412">🎭 Démo</a>
           <button onclick="openDemoLink('${slug}')" title="Ouvre l'aperçu et copie le lien (pour DM)" style="font-size:11px;font-weight:700;padding:4px 9px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;color:#166534;cursor:pointer">📱 Aperçu</button>
-          <button onclick="genDmVideo('${slug}','${escHtml(r.name || slug)}')" title="Génère la vidéo DM (HeyGen) — validation manuelle" style="font-size:11px;font-weight:700;padding:4px 9px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:6px;color:#4338ca;cursor:pointer">🎬 Vidéo DM</button>
+          <button id="genvid-${slug}" onclick="genDmVideo('${slug}','${escHtml(r.name || slug)}')" title="Génère la vidéo DM (HeyGen) — validation manuelle" style="font-size:11px;font-weight:700;padding:4px 9px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:6px;color:#4338ca;cursor:pointer">🎬 Vidéo DM</button>
+          <a id="seevid-${slug}" href="${BASE}/dm_videos/${slug}-dm.mp4" target="_blank" rel="noopener" style="display:none;font-size:11px;font-weight:700;padding:4px 9px;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:6px;color:#047857;text-decoration:none">▶ Voir vidéo</a>
           <button onclick="openRestoAdmin('${slug}')" style="font-size:11px;font-weight:700;padding:4px 9px;background:#fff8e1;border:1px solid #f0c75e;border-radius:6px;color:#8b6914;cursor:pointer">🔓 Espace</button>
           <a href="${BASE}/${slug}/admin/state.html" target="_blank" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">📊 Stats</a>
           <a href="${BASE}/${slug}/admin/reputation-google.html" target="_blank" style="font-size:11px;font-weight:700;padding:4px 9px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink)">⭐ Réputation</a>
@@ -2833,6 +2868,9 @@ function renderRestoGrid(data) {
         </div>
       </div>`;
   }).join('');
+
+  // Révèle « ▶ Voir vidéo » pour les restos dont la vidéo est déjà publiée
+  checkDmVideos(slugs);
 }
 
 // ── Sauvegarde URL GAS Brevo ──────────────────────────────────
