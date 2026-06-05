@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact</title>
+
+  <!-- 🔐 PROTECTION ACCÈS (INSCRIPTION OBLIGATOIRE) -->
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('email');
+      const localEmail = localStorage.getItem('user_email');
+
+      if (email) {
+        localStorage.setItem('user_email', email);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
+      if (!email && !localEmail) {
+        const pathParts = window.location.pathname.split('/');
+        const basePath = '/' + pathParts[1] + '/';
+        window.location.href = basePath + 'inscription.html';
+      }
+    })();
+  </script>
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:wght@400;700" />
+
+  <style>
+    :root {
+      --brand: #B48C4A;
+      --topbar-h: 56px;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: #fafafa;
+      text-align: center;
+      color: #333;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      background: transparent;
+      z-index: 9999;
+    }
+
+    .back-btn {
+      display: inline-grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(180, 140, 74, 0.15);
+      color: var(--brand);
+      text-decoration: none;
+      font-size: 24px;
+    }
+
+    .content {
+      margin-top: calc(var(--topbar-h) + 20px);
+      padding: 20px;
+    }
+
+    h1 {
+      color: var(--brand);
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      max-width: 420px;
+      margin: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      text-align: left;
+    }
+
+    .line {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 15px 0;
+      font-size: 15px;
+    }
+
+    .icon {
+      font-size: 26px;
+      color: var(--brand);
+    }
+
+    .social-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .social-icon {
+      font-size: 28px;
+      color: var(--brand);
+      text-decoration: none;
+    }
+
+    .go-btn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 20px;
+      background: var(--brand);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <a id="backLink" class="back-btn">
+    <span class="material-symbols-rounded">arrow_back</span>
+  </a>
+</header>
+
+<div class="content">
+  <h1>Contact</h1>
+
+  <div class="card">
+    <div class="line">
+      <span class="material-symbols-rounded icon">store</span>
+      <span><strong>Nom :</strong> <span id="nom"></span></span>
+    </div>
+
+    <div class="line">
+      <span class="material-symbols-rounded icon">call</span>
+      <span><strong>Téléphone :</strong> <span id="tel"></span></span>
+    </div>
+
+    <div class="line">
+      <span class="material-symbols-rounded icon">mail</span>
+      <span><strong>Email :</strong> <span id="email"></span></span>
+    </div>
+
+    <div class="line">
+      <span class="material-symbols-rounded icon">pin_drop</span>
+      <span><strong>Adresse :</strong> <span id="adresse"></span></span>
+    </div>
+
+    <div class="line">
+      <span class="material-symbols-rounded icon">schedule</span>
+      <span><strong>Horaires :</strong> <span id="horaires"></span></span>
+    </div>
+
+    <div style="margin-top:15px; font-weight:600;">Réseaux sociaux :</div>
+
+    <div class="social-row">
+      <a id="instagram" target="_blank" class="social-icon">
+        <span class="material-symbols-rounded">photo_camera</span>
+      </a>
+      <a id="facebook" target="_blank" class="social-icon">
+        <span class="material-symbols-rounded">thumb_up</span>
+      </a>
+    </div>
+
+    <button class="go-btn" onclick="allerAEtablissement()">Y aller</button>
+  </div>
+</div>
+
+<!-- 🔒 ACCÈS ADMIN DISCRET -->
+<div id="admin-access-button"
+     style="position:fixed;bottom:12px;right:12px;width:18px;height:18px;
+            background:#B48C4A;border-radius:50%;opacity:.5;z-index:9999;">
+</div>
+
+<script>
+function getRestoSlug() {
+  const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
+  return path.split("/")[0] || "voltaire";
+}
+const RESTO = getRestoSlug();
+document.getElementById("backLink").href = `/${RESTO}`;
+
+const restoData = {
+  voltaire: {
+    nom: "Le Voltaire",
+    tel: "01 43 33 22 11",
+    email: "contact@voltaire.fr",
+    adresse: "5 rue des Morand, Neuilly-Plaisance",
+    horaires: "Lun–Dim : 11h – 22h",
+    instagram: "https://instagram.com/voltaire",
+    facebook: "https://facebook.com/voltaire"
+  }
+};
+
+const resto = restoData[RESTO] || restoData.voltaire;
+
+document.getElementById("nom").innerText = resto.nom;
+document.getElementById("tel").innerText = resto.tel;
+document.getElementById("email").innerText = resto.email;
+document.getElementById("adresse").innerText = resto.adresse;
+document.getElementById("horaires").innerText = resto.horaires;
+document.getElementById("instagram").href = resto.instagram;
+document.getElementById("facebook").href = resto.facebook;
+
+function allerAEtablissement() {
+  const dest = encodeURIComponent(resto.adresse);
+  window.open(`https://www.google.com/maps/dir/?api=1&destination=${dest}`, "_blank");
+}
+
+/* 🔐 ACCÈS ADMIN SECRET */
+let clicks = 0;
+document.getElementById("admin-access-button").onclick = () => {
+  if (++clicks === 3) window.location.href = `/${RESTO}/admin-login`;
+  setTimeout(() => clicks = 0, 1500);
+};
+</script>
+
+</body>
+</html>
