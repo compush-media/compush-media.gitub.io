@@ -1,41 +1,41 @@
 [
   {
-    "slug": "kraft",
-    "restaurant_name": "KRAFT",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/kraft-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/kraft/",
-    "demo_url": "https://app.cartefidelavis.com/kraft/demo/",
+    "slug": "casa-loca",
+    "restaurant_name": "Casa Loca",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/casa-loca-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/casa-loca/",
+    "demo_url": "https://app.cartefidelavis.com/casa-loca/demo/",
     "status": "success",
-    "heygen_video_id": "ae3d8c6715e648feb73e281d5e6cb07b",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/ae3d8c6715e648feb73e281d5e6cb07b.mp4?Expires=1781304258&Signature=HNCDtBd5whzmzpON4RLjF53LPzDTRQus1r-qB-TDMNdOmu~nszxu4TjsxpR~4moQ1YqsGjpWrE4sUZ~-QHIksf2BOi8QRp6LZAheTsh72aWKA90C7rGu~tRBVwXvC2VPQ2LcbqWDLh8BMZdeMpOrYsn8q6T-YE3g2eOlAVsQVEBAUemOhdd7m8UwwtdyNchmSYZQPflZ976xnFWxORIoka-vElzkr1SpjgBRFxch1lard1QHPAiGa12Ko8RnOd366oseqW8A-SzYTfjTxsueHx-PJ6q-tSkutsnmHqKEVKhEUoTb3t7nreLpwpu2Q5XE9lU78C0DMjbiBW3V7-F0rA__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "heygen_video_id": "c8cb8e5f138c426e894357bb5f31b2c4",
+    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/c8cb8e5f138c426e894357bb5f31b2c4.mp4?Expires=1781304587&Signature=CPmD2FOv4ibxIs8wpfneSiNUHDprPQEYjQTwb5MBCv1j0OntQr7TkTZe9Yc69KQfUH0bOse4pxx-iXTV1UIxaQisdR35fqaQN0Jtu1ajenAMn4HyvRhGnYuz5DIafoK2YWEvbpxyw95uNr0ENHzH-Zjv42aV2BswMgW~7R4hI5pPE1jzSF~SJvoaLDkCk2EZhdaAsKSQcrEb4RUssbboQ1AZ8V3nG5DmOxfoYflu4ik~ECExarPC8L3Vl645D9TyXj0ZwBiJdm4sGQiY90hITZlc-dHYXuJ8QVcQDhXh8~aedlSEg4aP0bUxaNgOzSyxBhnD~K3A54F6-AgzwsnaNQ__&Key-Pair-Id=K38HBHX5LX3X2H",
     "mode": "heygen_green_composite",
-    "output_file": "dm_videos/kraft-dm.mp4",
-    "output_size_mb": 4.44,
-    "total_elapsed_s": 130.9,
+    "output_file": "dm_videos/casa-loca-dm.mp4",
+    "output_size_mb": 4.56,
+    "total_elapsed_s": 141.2,
     "scenes": [
       {
         "t": 1.5,
-        "path": "dm_videos/kraft_scenes/scene_0015.png"
+        "path": "dm_videos/casa-loca_scenes/scene_0015.png"
       },
       {
         "t": 4.5,
-        "path": "dm_videos/kraft_scenes/scene_0045.png"
+        "path": "dm_videos/casa-loca_scenes/scene_0045.png"
       },
       {
         "t": 7.5,
-        "path": "dm_videos/kraft_scenes/scene_0075.png"
+        "path": "dm_videos/casa-loca_scenes/scene_0075.png"
       },
       {
         "t": 11.0,
-        "path": "dm_videos/kraft_scenes/scene_0110.png"
+        "path": "dm_videos/casa-loca_scenes/scene_0110.png"
       },
       {
         "t": 14.0,
-        "path": "dm_videos/kraft_scenes/scene_0140.png"
+        "path": "dm_videos/casa-loca_scenes/scene_0140.png"
       },
       {
         "t": 17.0,
-        "path": "dm_videos/kraft_scenes/scene_0170.png"
+        "path": "dm_videos/casa-loca_scenes/scene_0170.png"
       }
     ]
   }
