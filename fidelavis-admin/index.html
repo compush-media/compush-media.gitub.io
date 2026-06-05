@@ -2364,8 +2364,8 @@ async function genAllDmVideos() {
     const res = await fetch(FV_PROXY, {
       method:  'POST',
       headers: { 'Content-Type': 'text/plain' },
-      // all:true → le workflow traite tous les restos sans MP4
-      body:    JSON.stringify({ action: 'dispatch_dm_video', all: true })
+      // all:true + force:false → uniquement les restos SANS vidéo (manquants)
+      body:    JSON.stringify({ action: 'dispatch_dm_video', all: true, force: false })
     });
     const data = await res.json();
     if (data.ok) {
