@@ -2273,8 +2273,12 @@ function provisionSupabaseForResto(params) {
  * Paramètres : slug (ou slugs séparés par espace), force (bool, défaut true)
  */
 function dispatchDmVideo(params) {
+  var all   = (params.all === true || params.all === "true");
   var slugs = (params.slugs || params.slug || "").trim();
-  if (!slugs) return { error: "slug manquant" };
+  // Mode batch : all=true → slugs vide → le workflow traite tous les restos
+  // sans MP4. Sinon un slug est requis.
+  if (!all && !slugs) return { error: "slug manquant" };
+  if (all) slugs = "";
   var force = (params.force === false || params.force === "false") ? "false" : "true";
 
   var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");

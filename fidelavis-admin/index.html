@@ -926,6 +926,7 @@
           <button class="btn-outline" onclick="openImportModal()" style="font-size:13px">📥 Importer</button>
           <button class="btn-outline" onclick="exportRestosExcel()" style="font-size:13px">📤 Exporter</button>
           <button class="btn-outline" onclick="openRegenAperçusModal()" title="Comment rafraîchir les images d'aperçu" style="font-size:13px">📸 Aperçus</button>
+          <button class="btn-outline" onclick="genAllDmVideos()" title="Génère en 1 fois toutes les vidéos DM manquantes" style="font-size:13px;background:#eef2ff;border-color:#c7d2fe;color:#4338ca">🎬 Générer toutes les vidéos</button>
         </div>
       </div>
 
@@ -2339,6 +2340,36 @@ async function genDmVideo(slug, name) {
         } catch(_) {}
         if (tries >= 60) { clearInterval(poll); if (gen) gen.textContent = '🎬 Vidéo DM'; }
       }, 15000);   // toutes les 15 s, max 15 min
+    } else {
+      toast('Erreur : ' + (data.error || 'inconnue'), 'error');
+    }
+  } catch (e) {
+    toast('Erreur réseau : ' + e.message, 'error');
+  }
+}
+
+// ── Batch : générer TOUTES les vidéos manquantes en 1 seul run ───────
+// Déclenche le workflow avec slugs vide → il boucle sur tous les restos
+// sans MP4, séquentiellement, en committant après chacun. Évite le piège
+// des 100 clics individuels (concurrence GitHub qui annulerait les runs).
+async function genAllDmVideos() {
+  if (!confirm(
+    'Générer TOUTES les vidéos DM manquantes ?\n\n' +
+    'Un seul traitement séquentiel côté serveur : chaque resto sans vidéo ' +
+    'est généré puis publié un par un (~3-4 min/resto). ' +
+    'Consomme des crédits HeyGen (~0,10 $ par vidéo).\n\n' +
+    'Tu peux fermer cette page — ça continue côté GitHub. Les boutons ' +
+    '▶ Voir vidéo apparaîtront au fur et à mesure (recharge la page).')) return;
+  try {
+    const res = await fetch(FV_PROXY, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      // all:true → le workflow traite tous les restos sans MP4
+      body:    JSON.stringify({ action: 'dispatch_dm_video', all: true })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      toast('🎬 Génération de toutes les vidéos manquantes lancée. Suivez sur GitHub Actions ; rechargez pour voir les ▶ apparaître.', 'success');
     } else {
       toast('Erreur : ' + (data.error || 'inconnue'), 'error');
     }

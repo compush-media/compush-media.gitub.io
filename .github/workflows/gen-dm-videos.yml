@@ -39,7 +39,7 @@ concurrency:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 350   # large : permet un gros batch (jusqu'à ~100 restos)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -90,60 +90,53 @@ jobs:
           fi
           echo "→ ${{ steps.pick.outputs.slugs }}"
 
-      - name: Capturer les screenshots manquants (nouveaux restos)
+      - name: Générer les vidéos resto par resto (commit après chacun)
         if: steps.pick.outputs.slugs != ''
-        # Pour un resto fraîchement importé, le screenshot n'existe pas encore.
-        # On attend que sa page démo soit publiée sur Pages, puis on capture.
-        run: |
-          set -e
-          for s in ${{ steps.pick.outputs.slugs }}; do
-            if [ -f "$s/demo/screen.png" ] || [ -f "screenshots/${s}-wallet.png" ]; then
-              echo "✓ $s : screenshot déjà présent"
-              continue
-            fi
-            echo "⏳ $s : attente de la page démo sur Pages…"
-            for i in $(seq 1 30); do
-              if curl -fsSL "https://app.cartefidelavis.com/$s/demo/index.html?cb=$(date +%s)" 2>/dev/null | grep -q '__FV_DEMO__'; then
-                echo "  ✓ démo publiée (tentative $i)"; sleep 6; break
-              fi
-              sleep 10
-            done
-            python3 scripts/gen_demo_screens.py "$s" || echo "⚠ capture $s échouée"
-            MOCKUP_HD_SCALE=2 python3 scripts/gen_iphone_mockups.py --demo "$s" 2>/dev/null || \
-              MOCKUP_HD_SCALE=2 python3 scripts/gen_iphone_mockups.py || true
-          done
-
-      - name: Générer les fonds vidéo beige
-        if: steps.pick.outputs.slugs != ''
-        run: python3 scripts/gen_dm_story.py --video-bg ${{ steps.pick.outputs.slugs }}
-
-      - name: Générer les vidéos (HeyGen green + compositing ffmpeg)
-        if: steps.pick.outputs.slugs != ''
+        # Boucle scalable (jusqu'à ~100 restos) : pour chaque resto, capture le
+        # screenshot si absent, génère fond + vidéo, puis COMMIT immédiatement.
+        # Ainsi un échec/timeout ne perd que le resto en cours ; un re-déclenchement
+        # reprend là où ça s'est arrêté (les restos avec MP4 sont déjà skippés).
         env:
           HEYGEN_API_KEY: ${{ secrets.HEYGEN_API_KEY }}
-        run: python3 scripts/gen_dm_videos.py --heygen-only ${{ steps.pick.outputs.slugs }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          ok=0; ko=0
+          for s in ${{ steps.pick.outputs.slugs }}; do
+            echo "════════ $s ════════"
+            # 1. Screenshot si absent (resto fraîchement importé)
+            if [ ! -f "$s/demo/screen.png" ] && [ ! -f "screenshots/${s}-wallet.png" ]; then
+              echo "⏳ attente page démo sur Pages…"
+              for i in $(seq 1 24); do
+                curl -fsSL "https://app.cartefidelavis.com/$s/demo/index.html?cb=$(date +%s)" 2>/dev/null | grep -q '__FV_DEMO__' && { sleep 5; break; }
+                sleep 10
+              done
+              python3 scripts/gen_demo_screens.py "$s" || { echo "⚠ capture $s échouée"; ko=$((ko+1)); continue; }
+            fi
+            # 2. Fond + vidéo
+            if ! python3 scripts/gen_dm_story.py --video-bg "$s"; then echo "⚠ fond $s"; ko=$((ko+1)); continue; fi
+            if ! python3 scripts/gen_dm_videos.py --heygen-only "$s"; then echo "⚠ vidéo $s"; ko=$((ko+1)); continue; fi
+            # 3. Commit immédiat de CE resto (push avec rebase + retry)
+            git add "dm_videos/${s}-dm.mp4" "dm_videos/${s}_scenes" "assets/dm-bg/${s}-bg.png" 2>/dev/null || true
+            if git diff --cached --quiet; then echo "rien pour $s"; continue; fi
+            git commit -m "chore(dm): vidéo $s [skip ci]" >/dev/null
+            for i in 1 2 3 4 5; do
+              git push && break
+              git pull --rebase --autostash origin main || true
+              sleep 3
+            done
+            ok=$((ok+1))
+            echo "✓ $s poussé ($ok ok / $ko ko)"
+          done
+          echo "── Bilan : $ok vidéos, $ko échecs ──"
 
       - name: Rafraîchir l'export + la file de dispatch
         if: steps.pick.outputs.slugs != ''
         run: |
           python3 scripts/gen_dm_queue.py || true
           python3 scripts/export_demos.py || true
-
-      - name: Commit & push (avec rebase + retry anti-collision)
-        run: |
-          if git diff --quiet -- 'dm_videos/' 'assets/dm-bg/'; then
-            echo "Rien à committer."
-            exit 0
-          fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add 'dm_videos/' 'assets/dm-bg/'
-          git commit -m "chore(dm): vidéos DM générées (validation manuelle) [skip ci]"
-          # Le remote peut avoir bougé pendant le render → rebase + retry
-          for i in 1 2 3 4 5; do
-            if git push; then echo "✓ poussé"; exit 0; fi
-            echo "push rejeté (tentative $i) → pull --rebase"
-            git pull --rebase --autostash origin main || true
-            sleep 3
-          done
-          echo "::error::push impossible après 5 tentatives"; exit 1
+          git add dm_videos/dispatch_queue.* dm_videos/restaurants_demo.* 2>/dev/null || true
+          git diff --cached --quiet || {
+            git commit -m "chore(dm): export rafraîchi [skip ci]" >/dev/null
+            for i in 1 2 3 4 5; do git push && break; git pull --rebase --autostash origin main || true; sleep 3; done
+          }
