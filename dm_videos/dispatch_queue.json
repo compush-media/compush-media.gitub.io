@@ -110,8 +110,8 @@
     "instagram_url": "https://www.instagram.com/inavoue_restaurant/",
     "demo_url": "https://app.cartefidelavis.com/inavoue/demo/",
     "wallet_url": "https://app.cartefidelavis.com/inavoue/",
-    "mockup": "mockups/inavoue-iphone.png",
-    "photo_url": "https://app.cartefidelavis.com/mockups/inavoue-iphone.png",
+    "mockup": "",
+    "photo_url": "",
     "video": "dm_videos/inavoue-dm.mp4",
     "video_url": "https://app.cartefidelavis.com/dm_videos/inavoue-dm.mp4",
     "message": "Bonjour inavoué 👋\n\nJ'ai préparé une démonstration personnalisée du programme de fidélité Fidelavis pour votre établissement (la vidéo ci-dessus 👆).\n\nLe principe est simple :\n• Vos clients scannent un QR code ou une carte NFC\n• Ils reçoivent immédiatement une récompense exclusive\n• Ils reviennent plus souvent — sans appli à télécharger\n\n🎁 Voir l'aperçu live du wallet : https://app.cartefidelavis.com/inavoue/demo/\n\nSi ça vous parle, on peut en discuter en 10 minutes ✨\n\n— L'équipe Fidelavis"
@@ -149,10 +149,10 @@
     "instagram_url": "https://www.instagram.com/kraft.paris/",
     "demo_url": "https://app.cartefidelavis.com/kraft/demo/",
     "wallet_url": "https://app.cartefidelavis.com/kraft/",
-    "mockup": "",
-    "photo_url": "",
-    "video": "",
-    "video_url": "",
+    "mockup": "mockups/kraft-iphone.png",
+    "photo_url": "https://app.cartefidelavis.com/mockups/kraft-iphone.png",
+    "video": "dm_videos/kraft-dm.mp4",
+    "video_url": "https://app.cartefidelavis.com/dm_videos/kraft-dm.mp4",
     "message": "Bonjour KRAFT 👋\n\nJ'ai préparé une démonstration personnalisée du programme de fidélité Fidelavis pour votre établissement (la vidéo ci-dessus 👆).\n\nLe principe est simple :\n• Vos clients scannent un QR code ou une carte NFC\n• Ils reçoivent immédiatement une récompense exclusive\n• Ils reviennent plus souvent — sans appli à télécharger\n\n🎁 Voir l'aperçu live du wallet : https://app.cartefidelavis.com/kraft/demo/\n\nSi ça vous parle, on peut en discuter en 10 minutes ✨\n\n— L'équipe Fidelavis"
   },
   {
