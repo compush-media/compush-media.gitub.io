@@ -53,8 +53,10 @@ INK     = (40, 38, 36)
 GREY    = (128, 116, 104)
 WHITE   = (255, 255, 255)
 
-# Géométrie avatar pour le fond VIDÉO (cercle composité par HeyGen)
-AV_CX, AV_CY, AV_D, AV_BORDER = 132, 1486, 232, 9
+# Géométrie de l'avatar LIVE pour le fond VIDÉO : rectangle arrondi haut-gauche
+# (l'avatar parlant HeyGen y est composité par ffmpeg, façon poster).
+# x, y, w, h, radius — DOIT rester synchro avec gen_dm_videos.py (VID_AV).
+VID_AV = (58, 96, 496, 560, 30)
 
 EXCLUDED = {
     "assets","data","fidelavis-admin","admin","apps-script","images",
@@ -210,40 +212,120 @@ def draw_phone(canvas, shot_path, cx, top, screen_w):
     d.rounded_rectangle((cx-iw//2,by+frame+12,cx+iw//2,by+frame+12+ih),radius=ih//2,fill=(0,0,0,255))
     return by+bh
 
-# ── Fond VIDÉO (beige simple, cercle Anna composité par HeyGen) ──────
+# ── Helpers partagés poster ↔ fond vidéo ─────────────────────────────
+def _warm_rect(w, h, radius):
+    """Rectangle arrondi : dégradé RADIAL café chaud (même fond que l'avatar
+    statique du poster) → l'avatar HeyGen composité par-dessus se fond dedans."""
+    import math
+    cen,edg = (247,235,221),(196,172,148)
+    cx,cy = w*0.5, h*0.42; maxd = math.hypot(w*0.5, h*0.6)
+    im = Image.new("RGB",(w,h)); px = im.load()
+    for yy in range(h):
+        row=(yy-cy)**2
+        for xx in range(w):
+            t=min(1.0, math.sqrt((xx-cx)**2+row)/maxd)
+            px[xx,yy]=(int(cen[0]+(edg[0]-cen[0])*t),int(cen[1]+(edg[1]-cen[1])*t),int(cen[2]+(edg[2]-cen[2])*t))
+    im=im.convert("RGBA")
+    mask=Image.new("L",(w,h),0); ImageDraw.Draw(mask).rounded_rectangle((0,0,w,h),radius=radius,fill=255)
+    im.putalpha(mask); return im
+
+def _pitch_column(img, d, name, rx0, RX1, y0):
+    """Colonne droite : Bonjour + nom (♥) + pastille + bouton vert + bandeau vidéo."""
+    d.text((rx0,y0),"Bonjour",font=SANS_B(38),fill=INK)
+    ft=SERIF(74); nm=wrap(d,name,ft,RX1-rx0)
+    while len(nm)>2 and ft.size>40: ft=SERIF(ft.size-4); nm=wrap(d,name,ft,RX1-rx0)
+    ny=y0+46; lh=int(ft.size*1.0)
+    for i,l in enumerate(nm):
+        d.text((rx0,ny+i*lh),l,font=ft,fill=GREEN)
+        if i==len(nm)-1: paste_emoji(img,"🩷",int(ft.size*0.46),rx0+tw(d,l,ft)+12,ny+i*lh+ft.size*0.24)
+    py=ny+len(nm)*lh+14
+    line_w=RX1-rx0-48
+    seg=[("J'ai déjà préparé une",INK),("démonstration",INK),("personnalisée",PINK),("pour votre établissement.",INK)]
+    def pill_rows(fp):
+        words=[]
+        for txt,col in seg:
+            for w in txt.split(" "):
+                if w: words.append((w,col))
+        rows=[]; cur=[]
+        for w,c in words:
+            test=sum(tw(d,ww,fp)+tw(d," ",fp) for ww,_ in cur)+tw(d,w,fp)
+            if test>line_w and cur: rows.append(cur); cur=[]
+            cur.append((w,c))
+        if cur: rows.append(cur)
+        return rows
+    fp=SANS_B(29); rows=pill_rows(fp)
+    while len(rows)>3 and fp.size>22: fp=SANS_B(fp.size-1); rows=pill_rows(fp)
+    lh2=40; pill_h=20+len(rows)*lh2+16
+    rounded(d,(rx0,py,RX1,py+pill_h),24,WHITE+(255,))
+    for ri,row in enumerate(rows):
+        xx=rx0+24; yy=py+18+ri*lh2
+        for w,c in row:
+            d.text((xx,yy),w,font=fp,fill=c); xx+=tw(d,w,fp)+tw(d," ",fp)
+    gy=py+pill_h+14; gh=68
+    rounded(d,(rx0,gy,RX1,gy+gh),18,GREEN+(255,))
+    gt="Vos clients vont adorer !"; fg=SANS_B(33); gico=46
+    while tw(d,gt,fg)+gico+24 > (RX1-rx0)-40 and fg.size>20: fg=SANS_B(fg.size-1)
+    gtw=tw(d,gt,fg); gstart=rx0+((RX1-rx0)-(gtw+gico+18))//2
+    paste_emoji(img,"🎁",gico,gstart,gy+(gh-gico)//2)
+    d.text((gstart+gico+18,gy+gh//2),gt,font=fg,fill=WHITE,anchor="lm")
+    bvy=gy+gh+12; bvh=84
+    rounded(d,(rx0,bvy,RX1,bvy+bvh),18,PINK+(255,))
+    paste_emoji(img,"🎥",44,rx0+22,bvy+23)
+    btx=rx0+22+58; bmax=RX1-btx-16
+    fb1=SANS_B(27)
+    while tw(d,"VIDÉO PERSONNALISÉE · 30 SECONDES",fb1)>bmax and fb1.size>17: fb1=SANS_B(fb1.size-1)
+    d.text((btx,bvy+18),"VIDÉO PERSONNALISÉE · 30 SECONDES",font=fb1,fill=WHITE)
+    d.text((btx,bvy+54),"Appuyez pour lire",font=SANS(25),fill=WHITE)
+    return bvy+bvh
+
+def _middle_card(img, d, shot, card_top, card_bottom, heading_y, phone_top, phone_w, ben_y0, row_h, RX1=1012):
+    """Carte milieu : titre + téléphone wallet + 4 bénéfices (sans débordement)."""
+    rounded(d,(36,card_top,1044,card_bottom),40,MIDBG+(255,))
+    fh=SERIF(56); ht="Votre exemple est déjà prêt"
+    d.text((540-tw(d,ht,fh)//2,heading_y),ht,font=fh,fill=GREEN)
+    draw_phone(img, shot, cx=300, top=phone_top, screen_w=phone_w)
+    benefits=[("👥","Fidélisez vos clients","et faites-les revenir plus souvent"),
+              ("⭐","Augmentez vos avis","Google & votre visibilité"),
+              ("☕","Offres exclusives","simples à activer"),
+              ("📈","Augmentez votre panier","moyen facilement")]
+    bx=566; bw_av=76; txt_x=bx+bw_av+22; txt_max=RX1-txt_x
+    for i,(ic,tit,sub) in enumerate(benefits):
+        cy=ben_y0+i*row_h
+        d.ellipse((bx,cy,bx+bw_av,cy+bw_av),fill=PINK_BG+(255,))
+        paste_emoji(img,ic,44,bx+16,cy+16)
+        ftit=SANS_B(35)
+        while tw(d,tit,ftit)>txt_max and ftit.size>22: ftit=SANS_B(ftit.size-1)
+        d.text((txt_x,cy+2),tit,font=ftit,fill=GREEN)
+        fsub=SANS(28)
+        for j,sl in enumerate(wrap(d,sub,fsub,txt_max)[:2]):
+            d.text((txt_x,cy+44+j*34),sl,font=fsub,fill=GREY)
+
+def _cta_card(img, d, slug, top):
+    """Carte CTA : 🎁 Voir votre démo + lien + chevron."""
+    rounded(d,(60,top,1020,top+136),34,WHITE+(255,))
+    paste_emoji(img,"🎁",54,104,top+32)
+    d.text((188,top+16),"Voir votre démo",font=SANS_B(42),fill=INK)
+    link=f"{PUBLIC}/{slug}/demo"; fl=SANS_B(34)
+    while tw(d,link,fl)>760 and fl.size>22: fl=SANS_B(fl.size-2)
+    d.text((188,top+70),link,font=fl,fill=PINK)
+    d.text((958,top+62),"›",font=SANS_B(60),fill=GREY,anchor="mm")
+
+# ── Fond VIDÉO (même style que le poster ; avatar parlant HeyGen dans le
+#    rectangle arrondi haut-gauche, composité ensuite par ffmpeg) ────────
 def build_video_bg(slug, name) -> Path:
     shot = best_shot(slug)
-    img = Image.new("RGBA",(1080,1920),(245,236,221,255)); d = ImageDraw.Draw(img)
-    # badge
-    fb = SANS_B(30); bt="DÉMO PERSONNALISÉE"; bw=tw(d,bt,fb); g=44
-    pw=int(bw+g+90); ph=68; px=540-pw//2
-    rounded(d,(px,44,px+pw,44+ph),ph//2,(224,60,52,255))
-    paste_emoji(img,"🎁",g,px+34,44+(ph-g)//2)
-    d.text((px+34+g+14,44+ph//2),bt,font=fb,fill=WHITE,anchor="lm")
-    # nom + sous-titre
-    ft=SERIF(168); lines=wrap(d,name,ft,1080-150)
-    if len(lines)>1:
-        ft=SERIF(112); lines=wrap(d,name,ft,1080-150)
-        while (len(lines)>2 or any(tw(d,l,ft)>1080-150 for l in lines)) and ft.size>74:
-            ft=SERIF(ft.size-6); lines=wrap(d,name,ft,1080-150)
-    ty=120; lh=int(ft.size*1.04)
-    for i,l in enumerate(lines):
-        d.text((540-tw(d,l,ft)//2, ty+i*lh), l, font=ft, fill=GREEN)
-    y=ty+len(lines)*lh+26
-    fs=SANS_B(52); sub="Votre exemple est déjà prêt"; ws=tw(d,sub,fs); sp=46
-    sx=540-(ws+14+sp)//2; d.text((sx,y),sub,font=fs,fill=INK); paste_emoji(img,"✨",sp,sx+ws+14,y-2)
-    draw_phone(img, shot, cx=540, top=y+72, screen_w=548)
-    # cercle blanc (avatar HeyGen)
-    outer=AV_D+2*AV_BORDER; ring=Image.new("RGBA",(outer,outer),(0,0,0,0))
-    ImageDraw.Draw(ring).ellipse((0,0,outer,outer),fill=WHITE+(255,))
-    img.alpha_composite(ring,(AV_CX-outer//2,AV_CY-outer//2))
-    # bloc CTA
-    rounded(d,(60,1648,1020,1858),40,WHITE+(255,))
-    fh=SANS_B(40); hint="Voir votre démo"; hw=tw(d,hint,fh); hand=46
-    hx=540-(hw+16+hand)//2; paste_emoji(img,"👇",hand,hx,1648+34); d.text((hx+hand+16,1648+40),hint,font=fh,fill=INK)
-    link=f"{PUBLIC}/{slug}/demo"; fl=SANS_B(46)
-    while tw(d,link,fl)>900 and fl.size>26: fl=SANS_B(fl.size-2)
-    d.text((540-tw(d,link,fl)//2,1648+112),link,font=fl,fill=PINK)
+    if not shot: raise SystemExit(f"Screenshot manquant pour {slug}")
+    img = Image.new("RGBA",(1080,1920),BG+(255,)); d = ImageDraw.Draw(img)
+    RX1 = 1012
+    # CARTE HAUT (36..724) — zone avatar live à gauche + pitch à droite
+    rounded(d,(36,36,1044,724),40,TOPBG+(255,))
+    ax,ay,aw,ah,ar = VID_AV
+    img.alpha_composite(_warm_rect(aw,ah,ar),(ax,ay))
+    _pitch_column(img, d, name, 588, RX1, 108)
+    # CARTE MILIEU (748..1632)
+    _middle_card(img, d, shot, 748, 1632, 788, 858, 340, 902, row_h=176)
+    # CTA (1660..1796)
+    _cta_card(img, d, slug, 1660)
     bg=ROOT/"assets"/"dm-bg"; bg.mkdir(parents=True,exist_ok=True)
     out=bg/f"{slug}-bg.png"; img.convert("RGB").save(out,"PNG",optimize=True); return out
 
@@ -268,91 +350,10 @@ def build_poster(slug, name) -> Path:
     img.alpha_composite(psh.filter(ImageFilter.GaussianBlur(22)))
     d.ellipse((pcx-pr,pcy-pr,pcx+pr,pcy+pr),fill=WHITE+(255,))
     d.polygon([(pcx-26,pcy-44),(pcx-26,pcy+44),(pcx+46,pcy)],fill=GREEN+(255,))
-    # colonne droite
-    rx0=588
-    d.text((rx0,64),"Bonjour",font=SANS_B(38),fill=INK)
-    ft=SERIF(74); nm=wrap(d,name,ft,RX1-rx0)
-    while len(nm)>2 and ft.size>40:           # titre : 2 lignes max (évite le débordement bas)
-        ft=SERIF(ft.size-4); nm=wrap(d,name,ft,RX1-rx0)
-    ny=110; lh=int(ft.size*1.0)
-    for i,l in enumerate(nm):
-        d.text((rx0,ny+i*lh),l,font=ft,fill=GREEN)
-        if i==len(nm)-1: paste_emoji(img,"🩷",int(ft.size*0.46),rx0+tw(d,l,ft)+12,ny+i*lh+ft.size*0.24)
-    py=ny+len(nm)*lh+14
-    # pill présentation (≤3 lignes, police auto-fit)
-    line_w=RX1-rx0-48
-    seg=[("J'ai déjà préparé une",INK),("démonstration",INK),("personnalisée",PINK),("pour votre établissement.",INK)]
-    def pill_rows(fp):
-        words=[]
-        for txt,col in seg:
-            for w in txt.split(" "):
-                if w: words.append((w,col))
-        rows=[]; cur=[]
-        for w,c in words:
-            test=sum(tw(d,ww,fp)+tw(d," ",fp) for ww,_ in cur)+tw(d,w,fp)
-            if test>line_w and cur: rows.append(cur); cur=[]
-            cur.append((w,c))
-        if cur: rows.append(cur)
-        return rows
-    fp=SANS_B(29); rows=pill_rows(fp)
-    while len(rows)>3 and fp.size>22: fp=SANS_B(fp.size-1); rows=pill_rows(fp)
-    lh2=40; pill_h=20+len(rows)*lh2+16
-    rounded(d,(rx0,py,RX1,py+pill_h),24,WHITE+(255,))
-    for ri,row in enumerate(rows):
-        xx=rx0+24; yy=py+18+ri*lh2
-        for w,c in row:
-            d.text((xx,yy),w,font=fp,fill=c); xx+=tw(d,w,fp)+tw(d," ",fp)
-    # bouton vert (police auto-fit)
-    gy=py+pill_h+14; gh=68
-    rounded(d,(rx0,gy,RX1,gy+gh),18,GREEN+(255,))
-    gt="Vos clients vont adorer !"; fg=SANS_B(33)
-    gico=46
-    while tw(d,gt,fg)+gico+24 > (RX1-rx0)-40 and fg.size>20: fg=SANS_B(fg.size-1)
-    gtw=tw(d,gt,fg); gstart=rx0+((RX1-rx0)-(gtw+gico+18))//2
-    paste_emoji(img,"🎁",gico,gstart,gy+(gh-gico)//2)
-    d.text((gstart+gico+18,gy+gh//2),gt,font=fg,fill=WHITE,anchor="lm")
-    # bandeau rose vidéo (sous le bouton, pleine largeur droite)
-    bvy=gy+gh+12; bvh=84
-    rounded(d,(rx0,bvy,RX1,bvy+bvh),18,PINK+(255,))
-    paste_emoji(img,"🎥",44,rx0+22,bvy+23)
-    btx=rx0+22+58; bmax=RX1-btx-16
-    fb1=SANS_B(27)
-    while tw(d,"VIDÉO PERSONNALISÉE · 30 SECONDES",fb1)>bmax and fb1.size>17: fb1=SANS_B(fb1.size-1)
-    d.text((btx,bvy+18),"VIDÉO PERSONNALISÉE · 30 SECONDES",font=fb1,fill=WHITE)
-    d.text((btx,bvy+54),"Appuyez pour lire",font=SANS(25),fill=WHITE)
-
-    # ════════ CARTE MILIEU (696..1588) ════════
-    rounded(d,(36,696,1044,1588),40,MIDBG+(255,))
-    fh=SERIF(56); ht="Votre exemple est déjà prêt"
-    d.text((540-tw(d,ht,fh)//2,728),ht,font=fh,fill=GREEN)
-    draw_phone(img, shot, cx=300, top=796, screen_w=336)   # téléphone agrandi
-    benefits=[("👥","Fidélisez vos clients","et faites-les revenir plus souvent"),
-              ("⭐","Augmentez vos avis","Google & votre visibilité"),
-              ("☕","Offres exclusives","simples à activer"),
-              ("📈","Augmentez votre panier","moyen facilement")]
-    bx=566; bw_av=76; row_h=180; y0=856
-    txt_x=bx+bw_av+22; txt_max=RX1-txt_x          # largeur dispo (anti-débordement)
-    for i,(ic,tit,sub) in enumerate(benefits):
-        cy=y0+i*row_h
-        d.ellipse((bx,cy,bx+bw_av,cy+bw_av),fill=PINK_BG+(255,))
-        paste_emoji(img,ic,44,bx+16,cy+16)
-        # titre : auto-fit sur une ligne
-        ftit=SANS_B(35)
-        while tw(d,tit,ftit)>txt_max and ftit.size>22: ftit=SANS_B(ftit.size-1)
-        d.text((txt_x,cy+2),tit,font=ftit,fill=GREEN)
-        # sous-titre : retour à la ligne (max 2 lignes)
-        fsub=SANS(28); slines=wrap(d,sub,fsub,txt_max)[:2]
-        for j,sl in enumerate(slines):
-            d.text((txt_x,cy+44+j*34),sl,font=fsub,fill=GREY)
-
-    # ════════ CTA (1612..1748) ════════
-    rounded(d,(60,1612,1020,1748),34,WHITE+(255,))
-    paste_emoji(img,"🎁",54,104,1644)
-    d.text((188,1628),"Voir votre démo",font=SANS_B(42),fill=INK)
-    link=f"{PUBLIC}/{slug}/demo"; fl=SANS_B(34)
-    while tw(d,link,fl)>760 and fl.size>22: fl=SANS_B(fl.size-2)
-    d.text((188,1682),link,font=fl,fill=PINK)
-    d.text((958,1674),"›",font=SANS_B(60),fill=GREY,anchor="mm")
+    # colonne droite (pitch) + carte milieu + CTA — helpers partagés
+    _pitch_column(img, d, name, 588, RX1, 64)
+    _middle_card(img, d, shot, 696, 1588, 728, 796, 336, 856, row_h=180)
+    _cta_card(img, d, slug, 1612)
 
     OUT_DIR.mkdir(parents=True,exist_ok=True)
     out=OUT_DIR/f"{slug}-story.png"; img.convert("RGB").save(out,"PNG",optimize=True); return out

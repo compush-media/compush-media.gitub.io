@@ -493,14 +493,14 @@ def sharpen_mp4(video_path: Path) -> Path | None:
         return None
 
 
-# ── Compositing avatar green-screen → cercle blanc du fond beige ──────
-# Géométrie partagée avec gen_dm_story.py (--video-bg).
-AV_CX, AV_CY, AV_D = 132, 1486, 232
+# ── Compositing avatar green-screen → rectangle arrondi (style poster) ──
+# Géométrie partagée avec gen_dm_story.py (VID_AV). x, y, w, h, radius.
+AV_RX, AV_RY, AV_RW, AV_RH, AV_RR = 58, 96, 496, 560, 30
 
 def composite_avatar(green_mp4: Path, bg_png: Path, out_path: Path) -> Path:
     """Compose la vidéo finale :
-       fond beige fixe (bg_png) + Anna (green_mp4 chroma-keyé, masquée en
-       cercle Ø AV_D) posée pile dans le cercle blanc à (AV_CX, AV_CY).
+       fond façon poster (bg_png) + Anna (green_mp4 chroma-keyé, masquée en
+       rectangle arrondi) posée dans la zone avatar haut-gauche (AV_R*).
     Audio = piste de la vidéo HeyGen. Encodage ABR 10 Mbps.
     """
     try:
@@ -511,25 +511,24 @@ def composite_avatar(green_mp4: Path, bg_png: Path, out_path: Path) -> Path:
     import subprocess
     from PIL import Image as _Img, ImageDraw as _Dr
 
-    # Masque circulaire blanc sur noir (AV_D × AV_D)
-    mask_path = out_path.parent / "_circle_mask.png"
-    m = _Img.new("L", (AV_D, AV_D), 0)
-    _Dr.Draw(m).ellipse((0, 0, AV_D, AV_D), fill=255)
+    # Masque rectangle arrondi blanc sur noir (AV_RW × AV_RH)
+    mask_path = out_path.parent / "_rect_mask.png"
+    m = _Img.new("L", (AV_RW, AV_RH), 0)
+    _Dr.Draw(m).rounded_rectangle((0, 0, AV_RW, AV_RH), radius=AV_RR, fill=255)
     m.save(mask_path)
 
-    x = AV_CX - AV_D // 2
-    y = AV_CY - AV_D // 2
-    # 0 = fond beige (image bouclée) · 1 = avatar green · 2 = masque cercle
-    # Recadrage VISAGE (tête + épaules) dans la vidéo HeyGen 1080×1920 avant
-    # le masque circulaire → portrait serré (pas le corps entier).
-    FACE_X, FACE_Y, FACE_S = 250, 70, 560   # x, y, côté — visage bien centré
+    x, y = AV_RX, AV_RY
+    # 0 = fond (image bouclée) · 1 = avatar green · 2 = masque rect arrondi
+    # Recadrage buste (tête + épaules) en portrait (ratio AV_RW/AV_RH) dans la
+    # vidéo HeyGen 1080×1920 avant le masque → cadrage façon poster.
+    CROP_X, CROP_Y, CROP_W, CROP_H = 250, 70, 560, 632   # portrait ≈0.886
     filtergraph = (
         "[1:v]chromakey=0x00B140:0.14:0.06,despill=type=green:mix=0.5:expand=0.3,"
-        f"crop={FACE_S}:{FACE_S}:{FACE_X}:{FACE_Y},"
-        f"scale={AV_D}:{AV_D},format=yuva420p,split[av1][av2];"
+        f"crop={CROP_W}:{CROP_H}:{CROP_X}:{CROP_Y},"
+        f"scale={AV_RW}:{AV_RH},format=yuva420p,split[av1][av2];"
         "[av2]alphaextract[aa];"
         "[2:v]format=gray[cm];"
-        "[aa][cm]blend=all_mode=darken[fa];"   # intersection key ∩ cercle
+        "[aa][cm]blend=all_mode=darken[fa];"   # intersection key ∩ rectangle
         "[av1][fa]alphamerge[anna];"
         f"[0:v][anna]overlay={x}:{y}:shortest=1,format=yuv420p[outv]"
     )
