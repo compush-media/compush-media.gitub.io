@@ -141,21 +141,32 @@ def circle_crop(im, size, y_align=0.18):
     im.putalpha(mask); return im
 
 def avatar_cell(w, h, radius):
-    """Avatar Anna : le fond noir devient un dégradé chaleureux via fusion
-    « screen » (0,0,0 → couleur chaude) — donc PAS de détourage, PAS de frange
-    autour des cheveux. Puis cadrage buste + coins arrondis."""
+    """Avatar Anna : pose un fond chaleureux propre, SANS détourage dur
+    (donc sans frange autour des cheveux). Détecte automatiquement si la
+    source est sur fond clair ou foncé puis cadre sur le buste."""
     from PIL import ImageChops
     av = Image.open(AVATAR).convert("RGB")
-    # dégradé chaleureux (café flou) ; screen(noir, c) = c, screen(clair, c) ≈ clair
-    grad = Image.new("RGB", av.size); gd = ImageDraw.Draw(grad)
-    ctop, cbot = (50, 34, 26), (24, 16, 12)   # chaud mais foncé : masque le bruit du fond
-    for yy in range(av.height):
-        t = yy/av.height
-        gd.line([(0,yy),(av.width,yy)],
-                fill=(int(ctop[0]+(cbot[0]-ctop[0])*t),
-                      int(ctop[1]+(cbot[1]-ctop[1])*t),
-                      int(ctop[2]+(cbot[2]-ctop[2])*t)))
-    av = ImageChops.screen(av, grad)
+    # luminance moyenne des 4 coins → type de fond
+    cs = [av.getpixel(p) for p in [(2,2),(av.width-3,2),(2,av.height-3),(av.width-3,av.height-3)]]
+    bg_lum = sum(sum(c)/3 for c in cs)/len(cs)
+
+    def grad(ctop, cbot):
+        g = Image.new("RGB", av.size); gd = ImageDraw.Draw(g)
+        for yy in range(av.height):
+            t = yy/av.height
+            gd.line([(0,yy),(av.width,yy)],
+                    fill=(int(ctop[0]+(cbot[0]-ctop[0])*t),
+                          int(ctop[1]+(cbot[1]-ctop[1])*t),
+                          int(ctop[2]+(cbot[2]-ctop[2])*t)))
+        return g
+
+    if bg_lum > 140:
+        # fond CLAIR : multiply → le blanc devient crème chaude, pas de frange
+        av = ImageChops.multiply(av, grad((238,224,208),(214,193,170)))
+    else:
+        # fond FONCÉ : screen → le noir devient brun chaud foncé
+        av = ImageChops.screen(av, grad((50,34,26),(24,16,12)))
+
     # cadrage buste : tête haute + épaules (région supérieure centrée)
     dr = w/h
     crop_h = int(av.height*0.62); crop_w = int(crop_h*dr)
