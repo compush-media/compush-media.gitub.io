@@ -2798,6 +2798,9 @@ async function exportDmExcel() {
 
   const allSlugs = Object.keys(data);
 
+  // S'assurer que la liste des ambassadeurs est chargée (pour résoudre les noms)
+  await loadAmbassadeursList();
+
   // Re-scanner les vidéos pour avoir un état à jour (au cas où des vidéos
   // viennent d'être générées sans recharger la page).
   toast('⏳ Vérification des vidéos DM…', 'info');
@@ -2812,17 +2815,24 @@ async function exportDmExcel() {
     slugs = allSlugs;
   }
 
+  // Résolution du nom d'ambassadeur depuis son code
+  const ambList = window._ambassadeurs || [];
+  const ambByCode = {};
+  ambList.forEach(a => { if (a.code) ambByCode[a.code] = `${a.prenom || ''} ${a.nom || ''}`.trim(); });
+
   const rows = slugs.map(slug => {
     const r = data[slug];
+    const code = r.ambassadorCode || '';
     return {
       'Restaurant':          r.name || slug,
-      'adresse Wallet':      `${BASE}/${slug}/`,
+      'lien Instagram':      r.instagramUrl || '',
+      'nom ambassadeur':     ambByCode[code] || code || '',
       'lien adresse Vidéo':  `${BASE}/dm_videos/${slug}-dm.mp4`
     };
   });
 
-  const ws = XLSX.utils.json_to_sheet(rows, { header: ['Restaurant', 'adresse Wallet', 'lien adresse Vidéo'] });
-  ws['!cols'] = [{ wch: 32 }, { wch: 48 }, { wch: 54 }];
+  const ws = XLSX.utils.json_to_sheet(rows, { header: ['Restaurant', 'lien Instagram', 'nom ambassadeur', 'lien adresse Vidéo'] });
+  ws['!cols'] = [{ wch: 32 }, { wch: 40 }, { wch: 22 }, { wch: 54 }];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Fidelavis DM');
   const date = new Date().toISOString().slice(0, 10);
