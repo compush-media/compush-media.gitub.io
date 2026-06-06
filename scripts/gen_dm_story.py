@@ -82,11 +82,15 @@ SANS   = lambda s: font([("/System/Library/Fonts/Supplemental/Arial.ttf", 0),
                          ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 0)], s)
 
 def best_shot(slug):
-    """Screenshot wallet le plus FRAIS : capture HD manuelle (screenshots/)
-    ou aperçu démo auto (CI). On prend le plus récemment modifié pour
-    refléter le dernier greeting « Bonjour {resto} »."""
-    cands=[p for p in (SCR_DIR/f"{slug}-wallet.png", ROOT/slug/"demo"/"screen.png") if p.exists()]
-    return max(cands, key=lambda p: p.stat().st_mtime) if cands else None
+    """Screenshot wallet pour le rendu. Priorité DÉTERMINISTE à l'aperçu démo
+    `<slug>/demo/screen.png` : maintenu par la CI, il reflète toujours le
+    dernier greeting « Bonjour {resto} ». La capture HD manuelle
+    `screenshots/<slug>-wallet.png` n'est qu'un secours (peut être périmée,
+    et en CI tous les mtimes sont égalisés par le checkout → pas fiable)."""
+    demo = ROOT/slug/"demo"/"screen.png"
+    if demo.exists(): return demo
+    hd = SCR_DIR/f"{slug}-wallet.png"
+    return hd if hd.exists() else None
 
 def tw(d, t, f): return d.textlength(t, font=f)
 
