@@ -140,38 +140,50 @@ def circle_crop(im, size, y_align=0.18):
     mask = Image.new("L",(size,size),0); ImageDraw.Draw(mask).ellipse((0,0,size,size),fill=255)
     im.putalpha(mask); return im
 
+from functools import lru_cache
+
+@lru_cache(maxsize=8)
 def avatar_cell(w, h, radius):
     """Avatar Anna : pose un fond chaleureux propre, SANS détourage dur
     (donc sans frange autour des cheveux). Détecte automatiquement si la
-    source est sur fond clair ou foncé puis cadre sur le buste."""
+    source est sur fond clair ou foncé puis cadre sur le buste.
+    Mémoïsé : l'avatar est identique pour tous les restos (calculé 1 fois)."""
+    import math
     from PIL import ImageChops
-    av = Image.open(AVATAR).convert("RGB")
+    av = Image.open(AVATAR).convert("RGB"); W2,H2 = av.size
     # luminance moyenne des 4 coins → type de fond
-    cs = [av.getpixel(p) for p in [(2,2),(av.width-3,2),(2,av.height-3),(av.width-3,av.height-3)]]
+    cs = [av.getpixel(p) for p in [(2,2),(W2-3,2),(2,H2-3),(W2-3,H2-3)]]
     bg_lum = sum(sum(c)/3 for c in cs)/len(cs)
 
-    def grad(ctop, cbot):
-        g = Image.new("RGB", av.size); gd = ImageDraw.Draw(g)
-        for yy in range(av.height):
-            t = yy/av.height
-            gd.line([(0,yy),(av.width,yy)],
-                    fill=(int(ctop[0]+(cbot[0]-ctop[0])*t),
-                          int(ctop[1]+(cbot[1]-ctop[1])*t),
-                          int(ctop[2]+(cbot[2]-ctop[2])*t)))
-        return g
-
     if bg_lum > 140:
-        # fond CLAIR : multiply → le blanc devient crème chaude, pas de frange
-        av = ImageChops.multiply(av, grad((238,224,208),(214,193,170)))
+        # fond CLAIR : dégradé RADIAL chaleureux (halo derrière la tête, coins
+        # plus profonds) appliqué en multiply → crème café, profondeur, 0 frange
+        cen,edg = (247,235,221),(196,172,148)
+        cx,cy = W2*0.5, H2*0.42; maxd = math.hypot(W2*0.5, H2*0.6)
+        rad = Image.new("RGB",(W2,H2)); px = rad.load()
+        for yy in range(H2):
+            row = (yy-cy)**2
+            for xx in range(W2):
+                t = min(1.0, math.sqrt((xx-cx)**2+row)/maxd)
+                px[xx,yy] = (int(cen[0]+(edg[0]-cen[0])*t),
+                             int(cen[1]+(edg[1]-cen[1])*t),
+                             int(cen[2]+(edg[2]-cen[2])*t))
+        av = ImageChops.multiply(av, rad)
     else:
         # fond FONCÉ : screen → le noir devient brun chaud foncé
-        av = ImageChops.screen(av, grad((50,34,26),(24,16,12)))
+        g = Image.new("RGB",(W2,H2)); gd = ImageDraw.Draw(g)
+        ctop,cbot = (50,34,26),(24,16,12)
+        for yy in range(H2):
+            t = yy/H2
+            gd.line([(0,yy),(W2,yy)],fill=(int(ctop[0]+(cbot[0]-ctop[0])*t),
+                    int(ctop[1]+(cbot[1]-ctop[1])*t),int(ctop[2]+(cbot[2]-ctop[2])*t)))
+        av = ImageChops.screen(av, g)
 
     # cadrage buste : tête haute + épaules (région supérieure centrée)
     dr = w/h
-    crop_h = int(av.height*0.62); crop_w = int(crop_h*dr)
-    if crop_w > av.width: crop_w = av.width; crop_h = int(crop_w/dr)
-    x0 = (av.width-crop_w)//2; y0 = int(av.height*0.04)
+    crop_h = int(H2*0.62); crop_w = int(crop_h*dr)
+    if crop_w > W2: crop_w = W2; crop_h = int(crop_w/dr)
+    x0 = (W2-crop_w)//2; y0 = int(H2*0.04)
     base = av.crop((x0,y0,x0+crop_w,y0+crop_h)).resize((w,h), Image.LANCZOS).convert("RGBA")
     mask = Image.new("L",(w,h),0)
     ImageDraw.Draw(mask).rounded_rectangle((0,0,w,h),radius=radius,fill=255)
