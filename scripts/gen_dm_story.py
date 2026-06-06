@@ -141,37 +141,27 @@ def circle_crop(im, size, y_align=0.18):
     im.putalpha(mask); return im
 
 def avatar_cell(w, h, radius):
-    """Avatar Anna : retire le fond noir, pose un dégradé chaleureux,
-    cadre sur le buste (tête + épaules) puis arrondit les coins."""
+    """Avatar Anna : le fond noir devient un dégradé chaleureux via fusion
+    « screen » (0,0,0 → couleur chaude) — donc PAS de détourage, PAS de frange
+    autour des cheveux. Puis cadrage buste + coins arrondis."""
     from PIL import ImageChops
     av = Image.open(AVATAR).convert("RGB")
-    # 1) détourer le fond noir (flood-fill depuis les bords → couleur clé magenta)
-    KEY = (255, 0, 255)
-    for seed in [(1,1),(av.width-2,1),(1,av.height-2),(av.width-2,av.height-2),(av.width//2,1)]:
-        try: ImageDraw.floodfill(av, seed, KEY, thresh=48)
-        except Exception: pass
-    r,g,b = av.split()
-    keymask = ImageChops.multiply(ImageChops.multiply(
-        r.point(lambda v:255 if v>225 else 0),
-        g.point(lambda v:255 if v<45 else 0)),
-        b.point(lambda v:255 if v>225 else 0))
-    # 2) dégradé chaleureux (café flou) sous l'avatar
-    grad = Image.new("RGBA", av.size); gd = ImageDraw.Draw(grad)
-    ctop,cbot = (96,66,50),(44,30,24)
+    # dégradé chaleureux (café flou) ; screen(noir, c) = c, screen(clair, c) ≈ clair
+    grad = Image.new("RGB", av.size); gd = ImageDraw.Draw(grad)
+    ctop, cbot = (50, 34, 26), (24, 16, 12)   # chaud mais foncé : masque le bruit du fond
     for yy in range(av.height):
         t = yy/av.height
         gd.line([(0,yy),(av.width,yy)],
                 fill=(int(ctop[0]+(cbot[0]-ctop[0])*t),
                       int(ctop[1]+(cbot[1]-ctop[1])*t),
-                      int(ctop[2]+(cbot[2]-ctop[2])*t),255))
-    grad.putalpha(keymask)
-    base = av.convert("RGBA"); base.alpha_composite(grad)
-    # 3) cadrage buste : tête haute, épaules — région supérieure centrée
+                      int(ctop[2]+(cbot[2]-ctop[2])*t)))
+    av = ImageChops.screen(av, grad)
+    # cadrage buste : tête haute + épaules (région supérieure centrée)
     dr = w/h
     crop_h = int(av.height*0.62); crop_w = int(crop_h*dr)
     if crop_w > av.width: crop_w = av.width; crop_h = int(crop_w/dr)
     x0 = (av.width-crop_w)//2; y0 = int(av.height*0.04)
-    base = base.crop((x0,y0,x0+crop_w,y0+crop_h)).resize((w,h), Image.LANCZOS)
+    base = av.crop((x0,y0,x0+crop_w,y0+crop_h)).resize((w,h), Image.LANCZOS).convert("RGBA")
     mask = Image.new("L",(w,h),0)
     ImageDraw.Draw(mask).rounded_rectangle((0,0,w,h),radius=radius,fill=255)
     base.putalpha(mask); return base
@@ -253,36 +243,40 @@ def build_poster(slug, name) -> Path:
     d.polygon([(pcx-26,pcy-44),(pcx-26,pcy+44),(pcx+46,pcy)],fill=GREEN+(255,))
     # colonne droite
     rx0=588
-    d.text((rx0,68),"Bonjour",font=SANS_B(40),fill=INK)
-    ft=SERIF(80); nm=wrap(d,name,ft,RX1-rx0)
+    d.text((rx0,64),"Bonjour",font=SANS_B(38),fill=INK)
+    ft=SERIF(74); nm=wrap(d,name,ft,RX1-rx0)
     while len(nm)>2 and ft.size>40:           # titre : 2 lignes max (évite le débordement bas)
-        ft=SERIF(ft.size-5); nm=wrap(d,name,ft,RX1-rx0)
-    ny=118; lh=int(ft.size*1.02)
+        ft=SERIF(ft.size-4); nm=wrap(d,name,ft,RX1-rx0)
+    ny=110; lh=int(ft.size*1.0)
     for i,l in enumerate(nm):
         d.text((rx0,ny+i*lh),l,font=ft,fill=GREEN)
-        if i==len(nm)-1: paste_emoji(img,"🩷",int(ft.size*0.5),rx0+tw(d,l,ft)+14,ny+i*lh+ft.size*0.20)
-    py=ny+len(nm)*lh+16
-    # pill présentation (hauteur auto)
-    fp=SANS_B(30); line_w=RX1-rx0-48
+        if i==len(nm)-1: paste_emoji(img,"🩷",int(ft.size*0.46),rx0+tw(d,l,ft)+12,ny+i*lh+ft.size*0.24)
+    py=ny+len(nm)*lh+14
+    # pill présentation (≤3 lignes, police auto-fit)
+    line_w=RX1-rx0-48
     seg=[("J'ai déjà préparé une",INK),("démonstration",INK),("personnalisée",PINK),("pour votre établissement.",INK)]
-    words=[]
-    for txt,col in seg:
-        for w in txt.split(" "):
-            if w: words.append((w,col))
-    rows=[]; cur=[]
-    for w,c in words:
-        test=sum(tw(d,ww,fp)+tw(d," ",fp) for ww,_ in cur)+tw(d,w,fp)
-        if test>line_w and cur: rows.append(cur); cur=[]
-        cur.append((w,c))
-    if cur: rows.append(cur)
-    lh2=42; pill_h=24+len(rows)*lh2+20
+    def pill_rows(fp):
+        words=[]
+        for txt,col in seg:
+            for w in txt.split(" "):
+                if w: words.append((w,col))
+        rows=[]; cur=[]
+        for w,c in words:
+            test=sum(tw(d,ww,fp)+tw(d," ",fp) for ww,_ in cur)+tw(d,w,fp)
+            if test>line_w and cur: rows.append(cur); cur=[]
+            cur.append((w,c))
+        if cur: rows.append(cur)
+        return rows
+    fp=SANS_B(29); rows=pill_rows(fp)
+    while len(rows)>3 and fp.size>22: fp=SANS_B(fp.size-1); rows=pill_rows(fp)
+    lh2=40; pill_h=20+len(rows)*lh2+16
     rounded(d,(rx0,py,RX1,py+pill_h),24,WHITE+(255,))
     for ri,row in enumerate(rows):
-        xx=rx0+24; yy=py+22+ri*lh2
+        xx=rx0+24; yy=py+18+ri*lh2
         for w,c in row:
             d.text((xx,yy),w,font=fp,fill=c); xx+=tw(d,w,fp)+tw(d," ",fp)
     # bouton vert (police auto-fit)
-    gy=py+pill_h+16; gh=72
+    gy=py+pill_h+14; gh=68
     rounded(d,(rx0,gy,RX1,gy+gh),18,GREEN+(255,))
     gt="Vos clients vont adorer !"; fg=SANS_B(33)
     gico=46
@@ -291,7 +285,7 @@ def build_poster(slug, name) -> Path:
     paste_emoji(img,"🎁",gico,gstart,gy+(gh-gico)//2)
     d.text((gstart+gico+18,gy+gh//2),gt,font=fg,fill=WHITE,anchor="lm")
     # bandeau rose vidéo (sous le bouton, pleine largeur droite)
-    bvy=gy+gh+14; bvh=90
+    bvy=gy+gh+12; bvh=84
     rounded(d,(rx0,bvy,RX1,bvy+bvh),18,PINK+(255,))
     paste_emoji(img,"🎥",44,rx0+22,bvy+23)
     btx=rx0+22+58; bmax=RX1-btx-16
