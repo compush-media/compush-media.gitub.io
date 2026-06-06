@@ -521,17 +521,19 @@ def composite_avatar(green_mp4: Path, bg_png: Path, out_path: Path) -> Path:
 
     # Bouton play semi-transparent, incrusté APRÈS l'avatar (sinon recouvert) :
     # signale clairement « c'est une vidéo » sans cacher le visage.
-    PR, PAD = 70, 8; PBs = 2*(PR+PAD)
+    PR, PAD = 84, 8; PBs = 2*(PR+PAD)
     play_path = out_path.parent / "_play.png"
     PB = _Img.new("RGBA", (PBs, PBs), (0,0,0,0)); pdr = _Dr.Draw(PB)
     cc = PBs//2
-    pdr.ellipse((cc-PR-3,cc-PR-3,cc+PR+3,cc+PR+3), fill=(0,0,0,65))      # ombre douce
-    pdr.ellipse((cc-PR,cc-PR,cc+PR,cc+PR), fill=(255,255,255,150), outline=(255,255,255,235), width=6)
-    pdr.polygon([(cc-22,cc-34),(cc-22,cc+34),(cc+38,cc)], fill=(31,61,43,240))  # triangle vert
+    pdr.ellipse((cc-PR-3,cc-PR-3,cc+PR+3,cc+PR+3), fill=(0,0,0,80))       # ombre douce
+    pdr.ellipse((cc-PR,cc-PR,cc+PR,cc+PR), fill=(255,255,255,210), outline=(255,255,255,255), width=7)
+    pdr.polygon([(cc-26,cc-40),(cc-26,cc+40),(cc+46,cc)], fill=(31,61,43,255))  # triangle vert
     PB.save(play_path)
-    # placé un peu plus bas que le centre → laisse les yeux/visage visibles
-    pcx, pcy = AV_RX+AV_RW//2, AV_RY+int(AV_RH*0.60)
+    pcx, pcy = AV_RX+AV_RW//2, AV_RY+AV_RH//2   # centré sur l'avatar
     ovx, ovy = pcx-PBs//2, pcy-PBs//2
+    # Le bouton ne s'affiche que les ~1,2 premières s puis disparaît en fondu
+    # (comme un vrai « tap to play » : visible sur la miniature, absent ensuite).
+    PLAY_HOLD, PLAY_FADE = 1.2, 0.6
 
     # 0 = fond · 1 = avatar green · 2 = masque rect arrondi · 3 = bouton play
     # Recadrage buste (tête + épaules) en portrait (ratio AV_RW/AV_RH) dans la
@@ -546,7 +548,9 @@ def composite_avatar(green_mp4: Path, bg_png: Path, out_path: Path) -> Path:
         "[aa][cm]blend=all_mode=darken[fa];"   # intersection key ∩ rectangle
         "[av1][fa]alphamerge[anna];"
         f"[0:v][anna]overlay={x}:{y}:shortest=1[stage];"
-        f"[stage][3:v]overlay={ovx}:{ovy}:shortest=1,format=yuv420p[outv]"
+        f"[3:v]format=rgba,fade=t=out:st={PLAY_HOLD}:d={PLAY_FADE}:alpha=1[play];"
+        f"[stage][play]overlay={ovx}:{ovy}:enable='lte(t,{PLAY_HOLD+PLAY_FADE+0.1:.1f})':shortest=1,"
+        "format=yuv420p[outv]"
     )
     cmd = [
         ffmpeg, "-y",
