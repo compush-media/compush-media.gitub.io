@@ -518,7 +518,22 @@ def composite_avatar(green_mp4: Path, bg_png: Path, out_path: Path) -> Path:
     m.save(mask_path)
 
     x, y = AV_RX, AV_RY
-    # 0 = fond (image bouclée) · 1 = avatar green · 2 = masque rect arrondi
+
+    # Bouton play semi-transparent, incrusté APRÈS l'avatar (sinon recouvert) :
+    # signale clairement « c'est une vidéo » sans cacher le visage.
+    PR, PAD = 70, 8; PBs = 2*(PR+PAD)
+    play_path = out_path.parent / "_play.png"
+    PB = _Img.new("RGBA", (PBs, PBs), (0,0,0,0)); pdr = _Dr.Draw(PB)
+    cc = PBs//2
+    pdr.ellipse((cc-PR-3,cc-PR-3,cc+PR+3,cc+PR+3), fill=(0,0,0,65))      # ombre douce
+    pdr.ellipse((cc-PR,cc-PR,cc+PR,cc+PR), fill=(255,255,255,150), outline=(255,255,255,235), width=6)
+    pdr.polygon([(cc-22,cc-34),(cc-22,cc+34),(cc+38,cc)], fill=(31,61,43,240))  # triangle vert
+    PB.save(play_path)
+    # placé un peu plus bas que le centre → laisse les yeux/visage visibles
+    pcx, pcy = AV_RX+AV_RW//2, AV_RY+int(AV_RH*0.60)
+    ovx, ovy = pcx-PBs//2, pcy-PBs//2
+
+    # 0 = fond · 1 = avatar green · 2 = masque rect arrondi · 3 = bouton play
     # Recadrage buste (tête + épaules) en portrait (ratio AV_RW/AV_RH) dans la
     # vidéo HeyGen 1080×1920 avant le masque → cadrage façon poster.
     CROP_X, CROP_Y, CROP_W, CROP_H = 250, 70, 560, 632   # portrait ≈0.886
@@ -530,13 +545,15 @@ def composite_avatar(green_mp4: Path, bg_png: Path, out_path: Path) -> Path:
         "[2:v]format=gray[cm];"
         "[aa][cm]blend=all_mode=darken[fa];"   # intersection key ∩ rectangle
         "[av1][fa]alphamerge[anna];"
-        f"[0:v][anna]overlay={x}:{y}:shortest=1,format=yuv420p[outv]"
+        f"[0:v][anna]overlay={x}:{y}:shortest=1[stage];"
+        f"[stage][3:v]overlay={ovx}:{ovy}:shortest=1,format=yuv420p[outv]"
     )
     cmd = [
         ffmpeg, "-y",
         "-loop", "1", "-i", str(bg_png),
         "-i", str(green_mp4),
         "-loop", "1", "-i", str(mask_path),
+        "-loop", "1", "-i", str(play_path),
         "-filter_complex", filtergraph,
         "-map", "[outv]", "-map", "1:a?",
         "-c:v", "libx264", "-preset", "slow",
@@ -546,7 +563,7 @@ def composite_avatar(green_mp4: Path, bg_png: Path, out_path: Path) -> Path:
         "-shortest", str(out_path),
     ]
     r = subprocess.run(cmd, capture_output=True, timeout=300)
-    mask_path.unlink(missing_ok=True)
+    mask_path.unlink(missing_ok=True); play_path.unlink(missing_ok=True)
     if r.returncode != 0:
         raise RuntimeError("ffmpeg composite: " + r.stderr.decode()[-400:])
     print(f"  ✓ composite OK → {out_path.stat().st_size/(1024*1024):.2f} MB")
