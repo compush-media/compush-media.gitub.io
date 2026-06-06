@@ -2820,6 +2820,10 @@ async function exportDmExcel() {
   const ambByCode = {};
   ambList.forEach(a => { if (a.code) ambByCode[a.code] = `${a.prenom || ''} ${a.nom || ''}`.trim(); });
 
+  // URL raw GitHub : servie en application/octet-stream → force le téléchargement
+  // (contrairement à app.cartefidelavis.com qui lit la vidéo dans le navigateur)
+  const dlBase = `https://raw.githubusercontent.com/${GH_OWNER_D}/${GH_REPO_D}/${GH_BRANCH_D}/dm_videos`;
+
   const rows = slugs.map(slug => {
     const r = data[slug];
     const code = r.ambassadorCode || '';
@@ -2827,7 +2831,7 @@ async function exportDmExcel() {
       'Restaurant':          r.name || slug,
       'lien Instagram':      r.instagramUrl || '',
       'nom ambassadeur':     ambByCode[code] || code || '',
-      'lien adresse Vidéo':  `${BASE}/dm_videos/${slug}-dm.mp4`
+      'lien adresse Vidéo':  `${dlBase}/${slug}-dm.mp4`
     };
   });
 
