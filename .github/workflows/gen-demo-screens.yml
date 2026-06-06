@@ -93,7 +93,8 @@ jobs:
       - name: Générer les Stories DM beige (statiques, gratuit)
         # Utilise <slug>/demo/screen.png en source (fallback intégré).
         # La vidéo HeyGen reste manuelle (build_dm.sh) pour maîtriser les coûts.
-        run: python3 scripts/gen_dm_story.py || echo "⚠ story: certains restos sans screenshot"
+        run: |
+          python3 scripts/gen_dm_story.py || echo "story: certains restos sans screenshot"
 
       - name: Commit & push si des fichiers ont changé
         run: |
