@@ -6,9 +6,21 @@
     "status": "success"
   },
   {
+    "restaurant": "casa-loca",
+    "source": "casa-loca/demo/screen.png",
+    "generated": "casa-loca-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "deux-restaurant-bistrot-de-chefs",
     "source": "deux-restaurant-bistrot-de-chefs/demo/screen.png",
     "generated": "deux-restaurant-bistrot-de-chefs-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "inavoue",
+    "source": "inavoue/demo/screen.png",
+    "generated": "inavoue-iphone.png",
     "status": "success"
   },
   {
@@ -21,6 +33,12 @@
     "restaurant": "kafkaf-paris-11",
     "source": "kafkaf-paris-11/demo/screen.png",
     "generated": "kafkaf-paris-11-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "kraft",
+    "source": "kraft/demo/screen.png",
+    "generated": "kraft-iphone.png",
     "status": "success"
   },
   {
