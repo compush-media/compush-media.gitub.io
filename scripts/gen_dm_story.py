@@ -40,7 +40,7 @@ AVATAR   = ROOT / "assets" / "dm-story" / "avatar-anna.png"
 REGISTRY = ROOT / "data" / "restaurants.json"
 PUBLIC   = "app.cartefidelavis.com"
 
-W, H = 1080, 1700
+W, H = 1080, 1760
 
 # Palette (échantillonnée sur le template de référence)
 BG      = (250, 247, 242)
@@ -80,6 +80,13 @@ SANS_B = lambda s: font([("/System/Library/Fonts/Supplemental/Arial Bold.ttf", 0
                          ("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 0)], s)
 SANS   = lambda s: font([("/System/Library/Fonts/Supplemental/Arial.ttf", 0),
                          ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 0)], s)
+
+def best_shot(slug):
+    """Screenshot wallet le plus FRAIS : capture HD manuelle (screenshots/)
+    ou aperçu démo auto (CI). On prend le plus récemment modifié pour
+    refléter le dernier greeting « Bonjour {resto} »."""
+    cands=[p for p in (SCR_DIR/f"{slug}-wallet.png", ROOT/slug/"demo"/"screen.png") if p.exists()]
+    return max(cands, key=lambda p: p.stat().st_mtime) if cands else None
 
 def tw(d, t, f): return d.textlength(t, font=f)
 
@@ -133,6 +140,42 @@ def circle_crop(im, size, y_align=0.18):
     mask = Image.new("L",(size,size),0); ImageDraw.Draw(mask).ellipse((0,0,size,size),fill=255)
     im.putalpha(mask); return im
 
+def avatar_cell(w, h, radius):
+    """Avatar Anna : retire le fond noir, pose un dégradé chaleureux,
+    cadre sur le buste (tête + épaules) puis arrondit les coins."""
+    from PIL import ImageChops
+    av = Image.open(AVATAR).convert("RGB")
+    # 1) détourer le fond noir (flood-fill depuis les bords → couleur clé magenta)
+    KEY = (255, 0, 255)
+    for seed in [(1,1),(av.width-2,1),(1,av.height-2),(av.width-2,av.height-2),(av.width//2,1)]:
+        try: ImageDraw.floodfill(av, seed, KEY, thresh=48)
+        except Exception: pass
+    r,g,b = av.split()
+    keymask = ImageChops.multiply(ImageChops.multiply(
+        r.point(lambda v:255 if v>225 else 0),
+        g.point(lambda v:255 if v<45 else 0)),
+        b.point(lambda v:255 if v>225 else 0))
+    # 2) dégradé chaleureux (café flou) sous l'avatar
+    grad = Image.new("RGBA", av.size); gd = ImageDraw.Draw(grad)
+    ctop,cbot = (96,66,50),(44,30,24)
+    for yy in range(av.height):
+        t = yy/av.height
+        gd.line([(0,yy),(av.width,yy)],
+                fill=(int(ctop[0]+(cbot[0]-ctop[0])*t),
+                      int(ctop[1]+(cbot[1]-ctop[1])*t),
+                      int(ctop[2]+(cbot[2]-ctop[2])*t),255))
+    grad.putalpha(keymask)
+    base = av.convert("RGBA"); base.alpha_composite(grad)
+    # 3) cadrage buste : tête haute, épaules — région supérieure centrée
+    dr = w/h
+    crop_h = int(av.height*0.62); crop_w = int(crop_h*dr)
+    if crop_w > av.width: crop_w = av.width; crop_h = int(crop_w/dr)
+    x0 = (av.width-crop_w)//2; y0 = int(av.height*0.04)
+    base = base.crop((x0,y0,x0+crop_w,y0+crop_h)).resize((w,h), Image.LANCZOS)
+    mask = Image.new("L",(w,h),0)
+    ImageDraw.Draw(mask).rounded_rectangle((0,0,w,h),radius=radius,fill=255)
+    base.putalpha(mask); return base
+
 def draw_phone(canvas, shot_path, cx, top, screen_w):
     ratio = 19.5/9; screen_h = int(screen_w*ratio); frame = 13
     bw, bh = screen_w+2*frame, screen_h+2*frame
@@ -152,8 +195,7 @@ def draw_phone(canvas, shot_path, cx, top, screen_w):
 
 # ── Fond VIDÉO (beige simple, cercle Anna composité par HeyGen) ──────
 def build_video_bg(slug, name) -> Path:
-    shot = SCR_DIR / f"{slug}-wallet.png"
-    if not shot.exists(): shot = ROOT / slug / "demo" / "screen.png"
+    shot = best_shot(slug)
     img = Image.new("RGBA",(1080,1920),(245,236,221,255)); d = ImageDraw.Draw(img)
     # badge
     fb = SANS_B(30); bt="DÉMO PERSONNALISÉE"; bw=tw(d,bt,fb); g=44
@@ -190,9 +232,8 @@ def build_video_bg(slug, name) -> Path:
 
 # ── POSTER riche (statique) ──────────────────────────────────────────
 def build_poster(slug, name) -> Path:
-    shot = SCR_DIR / f"{slug}-wallet.png"
-    if not shot.exists(): shot = ROOT / slug / "demo" / "screen.png"
-    if not shot.exists():
+    shot = best_shot(slug)
+    if not shot:
         raise SystemExit(f"Screenshot manquant pour {slug}")
 
     img = Image.new("RGBA",(W,H),BG+(255,)); d = ImageDraw.Draw(img)
@@ -201,21 +242,21 @@ def build_poster(slug, name) -> Path:
     # ════════ CARTE HAUT (36..672) ════════
     rounded(d,(36,36,1044,672),40,TOPBG+(255,))
     if AVATAR.exists():
-        av = cover_rounded(Image.open(AVATAR), 496, 540, 30)
+        av = avatar_cell(496, 540, 30)
         img.alpha_composite(av,(58,58))
-    # bouton play (anneau rose + ombre → plus visible)
-    pcx,pcy,pr = 452,316,90
+    # bouton play blanc (style image 1 : cercle blanc + triangle vert + ombre)
+    pcx,pcy,pr = 466,328,92
     psh=Image.new("RGBA",img.size,(0,0,0,0))
-    ImageDraw.Draw(psh).ellipse((pcx-pr,pcy-pr+8,pcx+pr,pcy+pr+8),fill=(0,0,0,80))
-    img.alpha_composite(psh.filter(ImageFilter.GaussianBlur(18)))
-    d.ellipse((pcx-pr-8,pcy-pr-8,pcx+pr+8,pcy+pr+8),fill=PINK+(255,))
+    ImageDraw.Draw(psh).ellipse((pcx-pr,pcy-pr+10,pcx+pr,pcy+pr+10),fill=(0,0,0,90))
+    img.alpha_composite(psh.filter(ImageFilter.GaussianBlur(22)))
     d.ellipse((pcx-pr,pcy-pr,pcx+pr,pcy+pr),fill=WHITE+(255,))
-    d.polygon([(pcx-28,pcy-42),(pcx-28,pcy+42),(pcx+42,pcy)],fill=GREEN+(255,))
+    d.polygon([(pcx-26,pcy-44),(pcx-26,pcy+44),(pcx+46,pcy)],fill=GREEN+(255,))
     # colonne droite
     rx0=588
     d.text((rx0,68),"Bonjour",font=SANS_B(40),fill=INK)
     ft=SERIF(80); nm=wrap(d,name,ft,RX1-rx0)
-    if len(nm)>2: ft=SERIF(60); nm=wrap(d,name,ft,RX1-rx0)
+    while len(nm)>2 and ft.size>40:           # titre : 2 lignes max (évite le débordement bas)
+        ft=SERIF(ft.size-5); nm=wrap(d,name,ft,RX1-rx0)
     ny=118; lh=int(ft.size*1.02)
     for i,l in enumerate(nm):
         d.text((rx0,ny+i*lh),l,font=ft,fill=GREEN)
@@ -243,48 +284,54 @@ def build_poster(slug, name) -> Path:
     # bouton vert (police auto-fit)
     gy=py+pill_h+16; gh=72
     rounded(d,(rx0,gy,RX1,gy+gh),18,GREEN+(255,))
-    gt="Votre démonstration est prête"; fg=SANS_B(31)
-    gico=44
+    gt="Vos clients vont adorer !"; fg=SANS_B(33)
+    gico=46
     while tw(d,gt,fg)+gico+24 > (RX1-rx0)-40 and fg.size>20: fg=SANS_B(fg.size-1)
     gtw=tw(d,gt,fg); gstart=rx0+((RX1-rx0)-(gtw+gico+18))//2
     paste_emoji(img,"🎁",gico,gstart,gy+(gh-gico)//2)
     d.text((gstart+gico+18,gy+gh//2),gt,font=fg,fill=WHITE,anchor="lm")
     # bandeau rose vidéo (sous le bouton, pleine largeur droite)
-    bvy=gy+gh+14; bvh=86
+    bvy=gy+gh+14; bvh=90
     rounded(d,(rx0,bvy,RX1,bvy+bvh),18,PINK+(255,))
-    paste_emoji(img,"🎬",42,rx0+22,bvy+22)
-    btx=rx0+22+56; bmax=RX1-btx-16
-    fb1=SANS_B(25)
-    while tw(d,"Message vidéo préparé pour vous",fb1)>bmax and fb1.size>18: fb1=SANS_B(fb1.size-1)
-    d.text((btx,bvy+16),"Message vidéo préparé pour vous",font=fb1,fill=WHITE)
-    d.text((btx,bvy+50),"▶ Regardez votre démo",font=SANS(24),fill=WHITE)
+    paste_emoji(img,"🎥",44,rx0+22,bvy+23)
+    btx=rx0+22+58; bmax=RX1-btx-16
+    fb1=SANS_B(27)
+    while tw(d,"VIDÉO PERSONNALISÉE · 30 SECONDES",fb1)>bmax and fb1.size>17: fb1=SANS_B(fb1.size-1)
+    d.text((btx,bvy+18),"VIDÉO PERSONNALISÉE · 30 SECONDES",font=fb1,fill=WHITE)
+    d.text((btx,bvy+54),"Appuyez pour lire",font=SANS(25),fill=WHITE)
 
-    # ════════ CARTE MILIEU (696..1500) ════════
-    rounded(d,(36,696,1044,1500),40,MIDBG+(255,))
+    # ════════ CARTE MILIEU (696..1588) ════════
+    rounded(d,(36,696,1044,1588),40,MIDBG+(255,))
     fh=SERIF(56); ht="Votre exemple est déjà prêt"
     d.text((540-tw(d,ht,fh)//2,728),ht,font=fh,fill=GREEN)
-    draw_phone(img, shot, cx=270, top=820, screen_w=300)
+    draw_phone(img, shot, cx=300, top=796, screen_w=336)   # téléphone agrandi
     benefits=[("👥","Fidélisez vos clients","et faites-les revenir plus souvent"),
               ("⭐","Augmentez vos avis","Google & votre visibilité"),
               ("☕","Offres exclusives","simples à activer"),
               ("📈","Augmentez votre panier","moyen facilement")]
-    bx=540; bw_av=84; row_h=168; y0=856
-    ftit=SANS_B(35); fsub=SANS(29)
+    bx=566; bw_av=76; row_h=180; y0=856
+    txt_x=bx+bw_av+22; txt_max=RX1-txt_x          # largeur dispo (anti-débordement)
     for i,(ic,tit,sub) in enumerate(benefits):
         cy=y0+i*row_h
         d.ellipse((bx,cy,bx+bw_av,cy+bw_av),fill=PINK_BG+(255,))
-        paste_emoji(img,ic,46,bx+19,cy+19)
-        d.text((bx+bw_av+24,cy+6),tit,font=ftit,fill=GREEN)
-        d.text((bx+bw_av+24,cy+50),sub,font=fsub,fill=GREY)
+        paste_emoji(img,ic,44,bx+16,cy+16)
+        # titre : auto-fit sur une ligne
+        ftit=SANS_B(35)
+        while tw(d,tit,ftit)>txt_max and ftit.size>22: ftit=SANS_B(ftit.size-1)
+        d.text((txt_x,cy+2),tit,font=ftit,fill=GREEN)
+        # sous-titre : retour à la ligne (max 2 lignes)
+        fsub=SANS(28); slines=wrap(d,sub,fsub,txt_max)[:2]
+        for j,sl in enumerate(slines):
+            d.text((txt_x,cy+44+j*34),sl,font=fsub,fill=GREY)
 
-    # ════════ CTA (1524..1660) ════════
-    rounded(d,(60,1524,1020,1660),34,WHITE+(255,))
-    paste_emoji(img,"🎁",54,104,1556)
-    d.text((188,1540),"Voir votre démo",font=SANS_B(42),fill=INK)
+    # ════════ CTA (1612..1748) ════════
+    rounded(d,(60,1612,1020,1748),34,WHITE+(255,))
+    paste_emoji(img,"🎁",54,104,1644)
+    d.text((188,1628),"Voir votre démo",font=SANS_B(42),fill=INK)
     link=f"{PUBLIC}/{slug}/demo"; fl=SANS_B(34)
     while tw(d,link,fl)>760 and fl.size>22: fl=SANS_B(fl.size-2)
-    d.text((188,1594),link,font=fl,fill=PINK)
-    d.text((958,1586),"›",font=SANS_B(60),fill=GREY,anchor="mm")
+    d.text((188,1682),link,font=fl,fill=PINK)
+    d.text((958,1674),"›",font=SANS_B(60),fill=GREY,anchor="mm")
 
     OUT_DIR.mkdir(parents=True,exist_ok=True)
     out=OUT_DIR/f"{slug}-story.png"; img.convert("RGB").save(out,"PNG",optimize=True); return out
