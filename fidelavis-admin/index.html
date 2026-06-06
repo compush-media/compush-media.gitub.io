@@ -927,6 +927,7 @@
           <button class="btn-outline" onclick="exportRestosExcel()" style="font-size:13px">📤 Exporter</button>
           <button class="btn-outline" onclick="openRegenAperçusModal()" title="Comment rafraîchir les images d'aperçu" style="font-size:13px">📸 Aperçus</button>
           <button class="btn-outline" onclick="genAllDmVideos()" title="Génère en 1 fois toutes les vidéos DM manquantes" style="font-size:13px;background:#eef2ff;border-color:#c7d2fe;color:#4338ca">🎬 Générer toutes les vidéos</button>
+          <button class="btn-outline" onclick="exportDmExcel()" title="Exporte un Excel (Restaurant, adresse Wallet, lien Vidéo) pour Fidelavis DM" style="font-size:13px;background:#ecfdf5;border-color:#6ee7b7;color:#047857">📤 Export DM</button>
         </div>
       </div>
 
@@ -2771,16 +2772,62 @@ async function loadAmbassadeursList() {
 // HEAD sur l'URL publique : si 200 → révèle « ▶ Voir vidéo » + marque le
 // bouton de génération comme « régénérer ».
 async function checkDmVideos(slugs) {
+  window._dmVideoSlugs = window._dmVideoSlugs || new Set();
   for (const slug of slugs) {
     try {
       const r = await fetch(`${BASE}/dm_videos/${slug}-dm.mp4`, { method: 'HEAD', cache: 'no-store' });
-      if (!r.ok) continue;
+      if (!r.ok) { window._dmVideoSlugs.delete(slug); continue; }
+      window._dmVideoSlugs.add(slug);
       const see = document.getElementById('seevid-' + slug);
       const gen = document.getElementById('genvid-' + slug);
       if (see) see.style.display = '';
       if (gen) { gen.textContent = '🎬 Régénérer'; gen.title = 'Régénérer la vidéo DM'; }
     } catch(_) {}
   }
+}
+
+// ── Export Excel pour Fidelavis DM ───────────────────────────────────
+// Colonnes : Restaurant | adresse Wallet | lien adresse Vidéo
+// Par défaut : uniquement les restaurants dont la vidéo DM existe.
+async function exportDmExcel() {
+  const data = window._restoData;
+  if (!data || !Object.keys(data).length) {
+    toast('Chargez d\'abord la liste des restaurants.', 'error');
+    return;
+  }
+
+  const allSlugs = Object.keys(data);
+
+  // Re-scanner les vidéos pour avoir un état à jour (au cas où des vidéos
+  // viennent d'être générées sans recharger la page).
+  toast('⏳ Vérification des vidéos DM…', 'info');
+  await checkDmVideos(allSlugs);
+  const withVideo = window._dmVideoSlugs || new Set();
+
+  let slugs = allSlugs.filter(s => withVideo.has(s));
+
+  // Si aucune vidéo détectée, proposer d'exporter quand même tous les restos
+  if (!slugs.length) {
+    if (!confirm('Aucune vidéo DM détectée pour le moment.\n\nExporter quand même tous les restaurants (les liens vidéo pointeront vers l\'emplacement attendu) ?')) return;
+    slugs = allSlugs;
+  }
+
+  const rows = slugs.map(slug => {
+    const r = data[slug];
+    return {
+      'Restaurant':          r.name || slug,
+      'adresse Wallet':      `${BASE}/${slug}/`,
+      'lien adresse Vidéo':  `${BASE}/dm_videos/${slug}-dm.mp4`
+    };
+  });
+
+  const ws = XLSX.utils.json_to_sheet(rows, { header: ['Restaurant', 'adresse Wallet', 'lien adresse Vidéo'] });
+  ws['!cols'] = [{ wch: 32 }, { wch: 48 }, { wch: 54 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Fidelavis DM');
+  const date = new Date().toISOString().slice(0, 10);
+  XLSX.writeFile(wb, `fidelavis_dm_${date}.xlsx`);
+  toast(`✅ Export DM : ${rows.length} restaurant(s)`, 'success');
 }
 
 function ambassadeurOptions(selectedCode) {
