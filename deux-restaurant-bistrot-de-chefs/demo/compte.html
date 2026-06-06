@@ -132,7 +132,7 @@ var __FV_DEMO__ = location.pathname.indexOf('/demo/') !== -1;
   /* prénom + email + photo (ou faux client en mode démo) */
   var fn, em, photo, sinceLabel;
   if (__FV_DEMO__) {
-    fn         = 'Axelle';
+    fn         = (cfg.name || 'vous');
     em         = 'axelle.membre@gmail.com';
     photo      = '/assets/demo/axelle.jpg';
     sinceLabel = 'Mai 2026';

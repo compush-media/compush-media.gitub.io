@@ -1020,7 +1020,7 @@ function startTimer(){
   var photoUrl, fn;
   if (__FV_DEMO__) {
     // Faux client identique sur tous les aperçus démo
-    fn = 'Axelle';
+    fn = (_cfg.name || 'vous');
     photoUrl = '/assets/demo/axelle.jpg';
   } else {
     photoUrl = localStorage.getItem('fv_photo_url_'+slug)||localStorage.getItem('fv_photo_url');

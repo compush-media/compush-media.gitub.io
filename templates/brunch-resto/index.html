@@ -1019,8 +1019,8 @@ function startTimer(){
   function _fvCookie(n){try{var m=document.cookie.match("(?:^|;)\\s*"+n+"\\s*=\\s*([^;]+)");return m?decodeURIComponent(m[1]):null;}catch(e){return null;}}
   var photoUrl, fn;
   if (__FV_DEMO__) {
-    // Faux client identique sur tous les aperçus démo
-    fn = 'Axelle';
+    // Démo DM : on salue le RESTAURANT par son nom (pas un prénom générique)
+    fn = (_cfg.name || 'vous');
     photoUrl = '/assets/demo/axelle.jpg';
   } else {
     photoUrl = localStorage.getItem('fv_photo_url_'+slug)||localStorage.getItem('fv_photo_url');
