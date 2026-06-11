@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Activez votre test gratuit — Fidelavis</title>
+<meta name="robots" content="noindex" />
+<style>
+  :root{
+    --red:#E0463E; --red-d:#c63a33; --ink:#241a12; --muted:#6f6256;
+    --line:#ece5dc; --bg:#f6f1ea; --green:#1f9d57; --green-bg:#e8f6ee;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    background:var(--bg);color:var(--ink);min-height:100vh;padding:0 16px 40px;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:480px;margin:0 auto;}
+  .top{display:flex;align-items:center;justify-content:center;gap:8px;padding:22px 0 6px;
+    font-weight:800;letter-spacing:.5px;font-size:13px;text-transform:uppercase;color:#9a8b7c;}
+  .top b{color:var(--red);}
+  .card{background:#fff;border-radius:22px;box-shadow:0 8px 34px rgba(36,26,18,.10);
+    padding:24px 22px;margin-top:14px;}
+  .badge{display:inline-flex;align-items:center;gap:7px;background:var(--green-bg);color:var(--green);
+    font-weight:800;font-size:12px;padding:6px 13px;border-radius:999px;margin-bottom:14px;}
+  h1{font-size:24px;line-height:1.22;font-weight:800;margin-bottom:8px;}
+  .lead{font-size:15px;line-height:1.5;color:var(--muted);margin-bottom:18px;}
+  .adv{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+  .adv li{display:flex;align-items:center;gap:6px;background:#faf6f0;border:1px solid var(--line);
+    border-radius:999px;padding:7px 12px;font-size:13px;font-weight:700;color:#3f352c;}
+  .adv .c{color:var(--green);font-weight:800;}
+  label{display:block;font-size:13px;font-weight:700;color:#4a4038;margin:14px 0 6px;}
+  label .req{color:var(--red);}
+  input{width:100%;border:1.5px solid var(--line);border-radius:13px;padding:13px 14px;
+    font-size:16px;font-family:inherit;color:var(--ink);background:#fff;transition:border-color .15s;}
+  input:focus{outline:none;border-color:var(--red);}
+  .row{display:flex;gap:10px;}
+  .row .col{flex:1;}
+  .err{color:var(--red);font-size:13.5px;font-weight:600;margin-top:12px;display:none;}
+  .submit{width:100%;margin-top:22px;border:none;background:var(--red);color:#fff;font-size:17px;
+    font-weight:800;padding:16px;border-radius:14px;cursor:pointer;font-family:inherit;
+    box-shadow:0 8px 22px rgba(224,70,62,.30);transition:transform .12s,filter .15s;}
+  .submit:hover{filter:brightness(1.04);}
+  .submit:active{transform:scale(.99);}
+  .submit:disabled{opacity:.6;cursor:default;filter:none;transform:none;}
+  .fine{font-size:12.5px;color:#a99c8d;text-align:center;margin-top:14px;line-height:1.5;}
+  /* Confirmation */
+  .ok{display:none;text-align:center;padding:14px 6px 6px;}
+  .ok .ic{width:84px;height:84px;border-radius:50%;background:var(--green-bg);color:var(--green);
+    font-size:44px;display:flex;align-items:center;justify-content:center;margin:6px auto 18px;}
+  .ok h2{font-size:23px;font-weight:800;margin-bottom:10px;}
+  .ok p{font-size:15.5px;color:var(--muted);line-height:1.55;max-width:360px;margin:0 auto 6px;}
+  .ok .meta{margin-top:18px;display:inline-flex;align-items:center;gap:8px;background:#faf6f0;
+    border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-weight:700;font-size:14px;}
+  .ok .meta b{color:var(--red);}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top"><b>Fidelavis</b> · Test gratuit</div>
+
+    <!-- FORMULAIRE -->
+    <div class="card" id="formCard">
+      <span class="badge">🎁 Offre de lancement</span>
+      <h1>Activez votre test gratuit Fidelavis</h1>
+      <p class="lead">Jusqu’à 30 clients inclus pour tester le système dans votre établissement.</p>
+      <ul class="adv">
+        <li><span class="c">✓</span> 30 clients offerts</li>
+        <li><span class="c">✓</span> 3 cartes NFC</li>
+        <li><span class="c">✓</span> QR code inclus</li>
+        <li><span class="c">✓</span> Sans engagement</li>
+      </ul>
+
+      <form id="form" novalidate>
+        <label for="resto">Nom du restaurant <span class="req">*</span></label>
+        <input id="resto" name="resto" type="text" autocomplete="organization" required />
+
+        <label for="gerant">Nom du gérant <span class="req">*</span></label>
+        <input id="gerant" name="gerant" type="text" autocomplete="name" required />
+
+        <label for="email">Email <span class="req">*</span></label>
+        <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required />
+
+        <label for="phone">Téléphone <span class="req">*</span></label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+
+        <label for="addr">Adresse d’envoi <span class="req">*</span></label>
+        <input id="addr" name="addr" type="text" autocomplete="street-address" required />
+
+        <div class="row">
+          <div class="col">
+            <label for="cp">Code postal <span class="req">*</span></label>
+            <input id="cp" name="cp" type="text" autocomplete="postal-code" inputmode="numeric" required />
+          </div>
+          <div class="col">
+            <label for="ville">Ville <span class="req">*</span></label>
+            <input id="ville" name="ville" type="text" autocomplete="address-level2" required />
+          </div>
+        </div>
+
+        <div class="err" id="err"></div>
+        <button type="submit" class="submit" id="submitBtn">Valider mon test gratuit</button>
+        <p class="fine">🔒 Données utilisées uniquement pour préparer votre test. Sans engagement, résiliable à tout moment.</p>
+      </form>
+    </div>
+
+    <!-- CONFIRMATION -->
+    <div class="card ok" id="okCard">
+      <div class="ic">✓</div>
+      <h2>Votre test gratuit est activé.</h2>
+      <p>Nous préparons vos cartes NFC. Vous recevrez un email avec les prochaines étapes.</p>
+      <div class="meta">Clients recrutés : <b id="counter">0&nbsp;/&nbsp;30</b></div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+  var PROXY = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
+
+  var params = new URLSearchParams(location.search);
+  var slug = (params.get("restaurant") || "").trim();
+
+  // Pré-remplit le nom du restaurant depuis sa config (sinon depuis le slug)
+  function prettySlug(s){ return s ? s.replace(/-/g," ").replace(/\b\w/g,function(c){return c.toUpperCase();}) : ""; }
+  var restoInput = document.getElementById("resto");
+  if (slug) {
+    restoInput.value = prettySlug(slug);
+    fetch("/" + slug + "/config.json", {cache:"no-store"})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(c){ if (c && c.name) restoInput.value = c.name; })
+      .catch(function(){});
+  }
+
+  var form = document.getElementById("form");
+  var err  = document.getElementById("err");
+  var btn  = document.getElementById("submitBtn");
+
+  function showErr(m){ err.textContent = m; err.style.display = "block"; }
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    err.style.display = "none";
+
+    var data = {
+      resto:  restoInput.value.trim(),
+      gerant: document.getElementById("gerant").value.trim(),
+      email:  document.getElementById("email").value.trim(),
+      phone:  document.getElementById("phone").value.trim(),
+      addr:   document.getElementById("addr").value.trim(),
+      cp:     document.getElementById("cp").value.trim(),
+      ville:  document.getElementById("ville").value.trim()
+    };
+
+    if (!data.resto || !data.gerant || !data.email || !data.phone || !data.addr || !data.cp || !data.ville) {
+      return showErr("Merci de compléter tous les champs.");
+    }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) {
+      return showErr("Veuillez saisir un email valide.");
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Activation en cours…";
+
+    // 1) Envoi de la demande au backend (fire-and-forget, sans CORS preflight)
+    try {
+      var sp = new URLSearchParams();
+      sp.append("data", JSON.stringify({
+        action:        "test_gratuit_request",
+        restaurant_slug: slug,
+        restaurant:    data.resto,
+        gerant:        data.gerant,
+        email:         data.email,
+        phone:         data.phone,
+        address:       data.addr,
+        cp:            data.cp,
+        ville:         data.ville,
+        status:        "test_gratuit_actif",
+        clients:       0,
+        clients_max:   30,
+        ts:            Date.now()
+      }));
+      navigator.sendBeacon(PROXY, sp);
+    } catch(_) {}
+
+    // 2) État local : test actif + compteur 0/30 (évite la réouverture du pop-up)
+    try {
+      if (slug) {
+        localStorage.setItem("fidelavis_test_actif_"   + slug, "1");
+        localStorage.setItem("fidelavis_test_clients_" + slug, "0");
+      }
+      sessionStorage.setItem("fidelavis_demo_popup_closed", "true");
+    } catch(_) {}
+
+    // 3) Confirmation
+    setTimeout(function(){
+      document.getElementById("formCard").style.display = "none";
+      document.getElementById("okCard").style.display = "block";
+      window.scrollTo({top:0, behavior:"smooth"});
+    }, 450);
+  });
+})();
+</script>
+</body>
+</html>
