@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Mon essai gratuit — Fidelavis</title>
+<meta name="robots" content="noindex" />
+<style>
+  :root{
+    --red:#E0463E; --ink:#241a12; --muted:#6f6256; --line:#ece5dc;
+    --bg:#f6f1ea; --green:#1f9d57; --green-bg:#e8f6ee; --track:#e7e0d6;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    background:var(--bg);color:var(--ink);min-height:100vh;padding:0 16px 40px;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:460px;margin:0 auto;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:22px 2px 8px;}
+  .title{font-size:24px;font-weight:800;}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);
+    font-weight:800;font-size:13px;padding:7px 14px;border-radius:999px;}
+  .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
+  .card{background:#fff;border-radius:22px;box-shadow:0 8px 30px rgba(36,26,18,.08);padding:26px 22px;margin-top:14px;}
+  .hero{text-align:center;}
+  .gift{font-size:52px;line-height:1;margin-bottom:8px;}
+  .count{font-size:52px;font-weight:800;letter-spacing:-1px;line-height:1.05;}
+  .count .max{color:var(--muted);}
+  .count.loading{color:var(--muted);font-size:34px;}
+  .sub{font-size:18px;font-weight:700;color:#3f352c;margin-top:2px;}
+  .track{height:14px;border-radius:999px;background:var(--track);margin:20px 0 10px;overflow:hidden;}
+  .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#27ae60,#1f9d57);width:0;
+    transition:width .8s cubic-bezier(.22,1,.36,1);}
+  .hint{font-size:14px;color:var(--muted);font-weight:600;}
+  .rows{margin-top:16px;display:flex;flex-direction:column;gap:12px;}
+  .row{display:flex;align-items:center;gap:14px;background:#fff;border-radius:18px;
+    box-shadow:0 4px 18px rgba(36,26,18,.06);padding:17px 18px;text-decoration:none;color:inherit;}
+  .row .ic{width:42px;height:42px;border-radius:12px;background:#faf3ee;display:flex;align-items:center;
+    justify-content:center;font-size:21px;flex-shrink:0;}
+  .row .lbl{flex:1;font-size:16px;font-weight:700;}
+  .row .meta{font-size:13px;font-weight:700;color:var(--muted);}
+  .row .pill{font-size:11px;font-weight:800;color:#b3a596;background:#f1ece4;border-radius:999px;padding:4px 9px;text-transform:uppercase;letter-spacing:.4px;}
+  .row .chev{color:#c9bcae;font-size:22px;font-weight:700;}
+  .foot{text-align:center;font-size:12.5px;color:#a99c8d;margin-top:22px;line-height:1.5;}
+  .foot b{color:var(--red);}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">Mon essai gratuit</div>
+      <span class="badge"><span class="dot"></span>Actif</span>
+    </div>
+
+    <div class="card hero">
+      <div class="gift">🎁</div>
+      <div class="count loading" id="count">…</div>
+      <div class="sub">clients recrutés</div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+      <div class="hint" id="hint">Chargement de votre suivi…</div>
+    </div>
+
+    <div class="rows">
+      <div class="row">
+        <span class="ic">👥</span>
+        <span class="lbl">Mes clients</span>
+        <span class="meta" id="rowClients">—</span>
+        <span class="chev">›</span>
+      </div>
+      <div class="row">
+        <span class="ic">📊</span>
+        <span class="lbl">Mes statistiques</span>
+        <span class="pill">Bientôt</span>
+        <span class="chev">›</span>
+      </div>
+      <div class="row">
+        <span class="ic">📣</span>
+        <span class="lbl">Mes outils marketing</span>
+        <span class="pill">Bientôt</span>
+        <span class="chev">›</span>
+      </div>
+    </div>
+
+    <p class="foot">Test gratuit Fidelavis · jusqu’à <b>30 clients</b> offerts, sans engagement.</p>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+  var SUPA = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+  var KEY  = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
+  var MAX  = 30;
+
+  var slug = (new URLSearchParams(location.search).get("restaurant") || "").trim();
+
+  var elCount = document.getElementById("count");
+  var elFill  = document.getElementById("fill");
+  var elHint  = document.getElementById("hint");
+  var elRowC  = document.getElementById("rowClients");
+
+  function render(n){
+    var c = Math.max(0, n|0);
+    elCount.classList.remove("loading");
+    elCount.innerHTML = c + ' <span class="max">/ ' + MAX + '</span>';
+    var pct = Math.min(100, Math.round(c / MAX * 100));
+    requestAnimationFrame(function(){ elFill.style.width = pct + "%"; });
+    elRowC.textContent = c;
+    if (c >= MAX) {
+      elHint.innerHTML = "🎉 Objectif atteint — vos 30 clients sont recrutés !";
+    } else {
+      var left = MAX - c;
+      elHint.textContent = "Plus que " + left + " client" + (left>1?"s":"") + " avant la fin de l’essai";
+    }
+  }
+
+  function fail(msg){
+    elCount.classList.remove("loading");
+    elCount.innerHTML = '0 <span class="max">/ ' + MAX + '</span>';
+    elFill.style.width = "0%";
+    elRowC.textContent = "0";
+    elHint.textContent = msg || "Suivi indisponible pour le moment.";
+  }
+
+  if (!slug) { fail("Lien incomplet : restaurant non précisé."); return; }
+
+  fetch(SUPA + "/rest/v1/rpc/fv_trial_count", {
+    method:"POST",
+    headers:{ "apikey":KEY, "Authorization":"Bearer "+KEY, "Content-Type":"application/json" },
+    body: JSON.stringify({ p_slug: slug })
+  })
+  .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+  .then(function(n){ render(typeof n === "number" ? n : parseInt(n,10) || 0); })
+  .catch(function(){ fail("Impossible de charger le compteur."); });
+})();
+</script>
+</body>
+</html>

@@ -109,6 +109,7 @@
       <h2>Votre test gratuit est activé.</h2>
       <p>Nous préparons vos cartes NFC. Vous recevrez un email avec les prochaines étapes.</p>
       <div class="meta">Clients recrutés : <b id="counter">0&nbsp;/&nbsp;30</b></div>
+      <a id="goEssai" href="#" class="submit" style="display:inline-block;text-decoration:none;width:auto;padding:14px 26px;margin-top:20px;">Voir mon espace essai →</a>
     </div>
   </div>
 
@@ -172,6 +173,8 @@
         }
         sessionStorage.setItem("fidelavis_demo_popup_closed", "true");
       } catch(_) {}
+      var goEssai = document.getElementById("goEssai");
+      if (goEssai) goEssai.href = "/mon-essai/?restaurant=" + encodeURIComponent(slug);
       document.getElementById("formCard").style.display = "none";
       document.getElementById("okCard").style.display = "block";
       window.scrollTo({ top:0, behavior:"smooth" });
