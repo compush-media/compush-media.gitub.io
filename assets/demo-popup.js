@@ -18,6 +18,10 @@
   const SS_CLOSED_KEY = "fidelavis_demo_popup_closed";
   const PATH = location.pathname;
 
+  // 0) Jamais dans un navigateur automatisé (captures Playwright : screenshots
+  //    wallet, mockups, posters, fonds vidéo) → n'apparaît pas dans ces rendus.
+  if (navigator.webdriver) return;
+
   // 1) Uniquement sur les pages démo wallet (.../demo/, pas la page compte)
   if (PATH.indexOf("/demo/") === -1) return;
   if (/compte\.html$/i.test(PATH)) return;
