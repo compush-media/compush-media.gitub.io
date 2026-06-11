@@ -37,11 +37,11 @@
   /* ── Images du parcours (déposer les vraies photos à ces chemins ;
         fallback illustration automatique si le fichier est absent) ── */
   const IMG = {
-    1: "/assets/demo-tour/etape-1-carte-nfc.jpg",
-    2: "/assets/demo-tour/etape-2-inscription.jpg",
-    3: "/assets/demo-tour/etape-3-installation.jpg",
-    4: "/assets/demo-tour/etape-4-cadeau.jpg",
-    5: "/assets/demo-tour/etape-5-dashboard.jpg"
+    1: "/assets/demo/1.png",   // serveur pose la carte NFC
+    2: "/assets/demo/2.png",   // formulaire d'inscription
+    3: "/assets/demo/3.png",   // installation de l'app
+    4: "/assets/demo/4.png",   // wallet + cadeau
+    5: "/assets/demo/5.png"    // dashboard / suivi essai
   };
   const FALLBACK = { 1: "🪧", 2: "📝", 3: "📲", 4: "🎁", 5: "📊" };
 
