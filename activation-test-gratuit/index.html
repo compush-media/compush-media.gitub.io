@@ -115,7 +115,9 @@
 <script>
 (function(){
   "use strict";
-  var PROXY = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
+  // Réception des demandes par email via FormSubmit (comme le site marketing).
+  // Pour changer l'adresse : remplace l'email ci-dessous.
+  var FORMSUBMIT = "https://formsubmit.co/ajax/support@fidelavis.com";
 
   var params = new URLSearchParams(location.search);
   var slug = (params.get("restaurant") || "").trim();
@@ -161,48 +163,39 @@
     btn.disabled = true;
     btn.textContent = "Activation en cours…";
 
-    // 1) Envoi de la demande au backend (fire-and-forget).
-    //    JSON brut en text/plain → lu côté GAS via e.postData.contents,
-    //    et text/plain évite tout preflight CORS.
-    var payload = JSON.stringify({
-      action:          "test_gratuit_request",
-      restaurant_slug: slug,
-      restaurant:      data.resto,
-      gerant:          data.gerant,
-      email:           data.email,
-      phone:           data.phone,
-      address:         data.addr,
-      cp:              data.cp,
-      ville:           data.ville,
-      ts:              Date.now()
-    });
-    var sent = false;
-    try {
-      var blob = new Blob([payload], { type: "text/plain;charset=UTF-8" });
-      sent = navigator.sendBeacon(PROXY, blob);
-    } catch(_) {}
-    if (!sent) {
+    function finish() {
+      // État local : test actif + compteur 0/30 (évite la réouverture du pop-up)
       try {
-        fetch(PROXY, { method:"POST", mode:"no-cors", keepalive:true,
-          headers:{ "Content-Type":"text/plain;charset=UTF-8" }, body:payload }).catch(function(){});
+        if (slug) {
+          localStorage.setItem("fidelavis_test_actif_"   + slug, "1");
+          localStorage.setItem("fidelavis_test_clients_" + slug, "0");
+        }
+        sessionStorage.setItem("fidelavis_demo_popup_closed", "true");
       } catch(_) {}
-    }
-
-    // 2) État local : test actif + compteur 0/30 (évite la réouverture du pop-up)
-    try {
-      if (slug) {
-        localStorage.setItem("fidelavis_test_actif_"   + slug, "1");
-        localStorage.setItem("fidelavis_test_clients_" + slug, "0");
-      }
-      sessionStorage.setItem("fidelavis_demo_popup_closed", "true");
-    } catch(_) {}
-
-    // 3) Confirmation
-    setTimeout(function(){
       document.getElementById("formCard").style.display = "none";
       document.getElementById("okCard").style.display = "block";
-      window.scrollTo({top:0, behavior:"smooth"});
-    }, 450);
+      window.scrollTo({ top:0, behavior:"smooth" });
+    }
+
+    // Envoi de la demande par email via FormSubmit (endpoint AJAX, réponse lisible).
+    fetch(FORMSUBMIT, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        _subject:     "🎁 Test gratuit — " + data.resto,
+        _template:    "table",
+        "Restaurant": data.resto,
+        "Slug":       slug,
+        "Gérant":     data.gerant,
+        "Email":      data.email,
+        "Téléphone":  data.phone,
+        "Adresse":    data.addr + ", " + data.cp + " " + data.ville,
+        "Statut":     "test_gratuit_actif — 0/30 clients"
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(){ finish(); })
+    .catch(function(){ finish(); });   // l'UX confirme dans tous les cas
   });
 })();
 </script>
