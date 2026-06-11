@@ -95,6 +95,9 @@ function doPost(e) {
       case "dispatch_dm_video":
         result = dispatchDmVideo(body);
         break;
+      case "test_gratuit_request":
+        result = handleTestGratuitRequest(body);
+        break;
       case "send_monthly_rewards":
         result = _sendMonthlyRewardEmails({
           reminder:  body.reminder === true || body.phase === "reminder",
@@ -2798,6 +2801,74 @@ function saveMonthlyOffers(params) {
   var code = putRes.getResponseCode();
   if (code !== 200 && code !== 201) return { error: "Erreur GitHub " + code + " : " + putRes.getContentText().slice(0, 200) };
   return { ok: true, resto: resto, count: clean.length };
+}
+
+// ─── Demande de TEST GRATUIT (depuis /activation-test-gratuit/) ──────
+// Envoyée par la page d'activation (action "test_gratuit_request").
+//   • email de notification à l'agence (aucune demande perdue)
+//   • email de confirmation au gérant
+//   • log optionnel dans un Google Sheet si TEST_REQUESTS_SHEET_ID est défini
+// Propriétés de script optionnelles :
+//   TEST_NOTIF_EMAIL       → destinataire des notifs (def. BREVO_SENDER/support)
+//   TEST_REQUESTS_SHEET_ID → ID d'un Google Sheet pour journaliser les demandes
+function handleTestGratuitRequest(body) {
+  var props  = PropertiesService.getScriptProperties();
+  var notify = props.getProperty("TEST_NOTIF_EMAIL")
+            || props.getProperty("BREVO_SENDER")
+            || "support@fidelavis.com";
+
+  var d = {
+    slug:    String(body.restaurant_slug || "").trim(),
+    resto:   String(body.restaurant || "").trim(),
+    gerant:  String(body.gerant || "").trim(),
+    email:   String(body.email || "").trim(),
+    phone:   String(body.phone || "").trim(),
+    address: String(body.address || "").trim(),
+    cp:      String(body.cp || "").trim(),
+    ville:   String(body.ville || "").trim()
+  };
+  if (!d.email || !d.resto) return { ok: false, error: "resto ou email manquant" };
+
+  // 1) Journalisation Sheet (optionnelle)
+  var sheetId = props.getProperty("TEST_REQUESTS_SHEET_ID");
+  if (sheetId) {
+    try {
+      var sh = SpreadsheetApp.openById(sheetId).getSheets()[0];
+      sh.appendRow([ new Date(), d.slug, d.resto, d.gerant, d.email, d.phone,
+                     d.address, d.cp, d.ville, "test_gratuit_actif", "0/30" ]);
+    } catch (e) { Logger.log("test_gratuit sheet error: " + e.message); }
+  }
+
+  // 2) Notification à l'agence
+  var adminHtml =
+    "<h2 style='font-family:Arial'>🎁 Nouvelle demande de test gratuit</h2>" +
+    "<table cellpadding='6' style='font:14px Arial;border-collapse:collapse'>" +
+    "<tr><td><b>Restaurant</b></td><td>" + d.resto + " (" + d.slug + ")</td></tr>" +
+    "<tr><td><b>Gérant</b></td><td>" + d.gerant + "</td></tr>" +
+    "<tr><td><b>Email</b></td><td>" + d.email + "</td></tr>" +
+    "<tr><td><b>Téléphone</b></td><td>" + d.phone + "</td></tr>" +
+    "<tr><td><b>Adresse d'envoi</b></td><td>" + d.address + ", " + d.cp + " " + d.ville + "</td></tr>" +
+    "</table><p>Statut : <b>test_gratuit_actif</b> · Clients : <b>0/30</b></p>";
+  var notifRes = _sendEmailFromProxy(
+    notify, "🎁 Test gratuit — " + d.resto, adminHtml,
+    "Test gratuit: " + d.resto + " | " + d.gerant + " | " + d.email + " | " + d.phone +
+    " | " + d.address + " " + d.cp + " " + d.ville);
+
+  // 3) Confirmation au gérant
+  if (d.email) {
+    var clientHtml =
+      "<div style='font-family:Arial;font-size:15px;color:#241a12'>" +
+      "<p>Bonjour " + (d.gerant || "") + ",</p>" +
+      "<p>Votre <b>test gratuit Fidelavis</b> est bien enregistré pour <b>" + d.resto + "</b>.</p>" +
+      "<p>Nous préparons vos <b>3 cartes NFC offertes</b> + QR code, et nous revenons vers vous très vite " +
+      "avec les étapes pour démarrer.</p>" +
+      "<p>Vous pourrez recruter jusqu'à <b>30 clients offerts</b>, sans engagement.</p>" +
+      "<p style='color:#8a7a6c'>— L'équipe Fidelavis</p></div>";
+    _sendEmailFromProxy(d.email, "Votre test gratuit Fidelavis est activé 🎁", clientHtml,
+      "Votre test gratuit Fidelavis est activé pour " + d.resto + ". Nous préparons vos cartes NFC.");
+  }
+
+  return { ok: true, status: "test_gratuit_actif", clients: "0/30", notif: notifRes };
 }
 
 // ─── Constructeur de réponse HTTP ────────────────────────────
