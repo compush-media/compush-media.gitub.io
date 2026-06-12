@@ -12,7 +12,7 @@
     "updatedAt": "2026-05-25T00:24:25.206Z"
   },
   "plan": "terrain",
-  "subscriptionStatus": "active",
+  "subscriptionStatus": "trialing",
   "setupPaid": true,
   "invoices": [],
   "instagramUrl": "https://www.instagram.com/brothersister_paris/",
@@ -23,8 +23,7 @@
   "phone": "0616082888",
   "address": "72 Rue de la Roquette  75011 Paris",
   "email": "danydrumonde@gmail.com",
-  "heroUrl": "https://bo.brothersister.fr/assets/73074d05-83b0-4e5f-9a61-330c490d110b"
+  "heroUrl": "https://bo.brothersister.fr/assets/73074d05-83b0-4e5f-9a61-330c490d110b",
+  "trialType": "clients",
+  "trialEndDate": "2026-07-12"
 }
-"subscriptionStatus": "trialing",
-"trialType": "clients",
-"trialEndDate": "2026-07-12"   ← date du jour + 30 jours
