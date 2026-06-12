@@ -25,3 +25,6 @@
   "email": "danydrumonde@gmail.com",
   "heroUrl": "https://bo.brothersister.fr/assets/73074d05-83b0-4e5f-9a61-330c490d110b"
 }
+"subscriptionStatus": "trialing",
+"trialType": "clients",
+"trialEndDate": "2026-07-12"   ← date du jour + 30 jours
