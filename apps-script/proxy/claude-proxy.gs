@@ -2146,6 +2146,52 @@ function brevoDiag(params) {
  * Retourne { success:true } ou { error:"..." } (le mot "invalide"/"expiré"
  * déclenche l'écran "lien invalide" côté client).
  */
+// ─── Démarrage de l'essai « 30 clients / 30 jours » ──────────
+// Pose subscriptionStatus/trialType/trialEndDate dans /{slug}/config.json
+// au moment de l'activation du compte restaurateur. Best-effort :
+// un échec n'empêche jamais l'activation (juste loggé).
+//   • ne touche JAMAIS un statut payant (active / past_due / canceled)
+//   • idempotent : si l'essai clients est déjà posé, ne le prolonge pas
+function _startClientsTrial(slug) {
+  try {
+    var token = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+    var repo  = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+                || "compush-media/compush-media.gitub.io";
+    if (!token) return { ok: false, reason: "GITHUB_TOKEN manquant" };
+
+    var apiUrl  = "https://api.github.com/repos/" + repo + "/contents/" + slug + "/config.json";
+    var headers = { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" };
+
+    var getRes = UrlFetchApp.fetch(apiUrl + "?ref=main", { headers: headers, muteHttpExceptions: true });
+    if (getRes.getResponseCode() !== 200) return { ok: false, reason: "config.json HTTP " + getRes.getResponseCode() };
+
+    var fd  = JSON.parse(getRes.getContentText());
+    var cfg = JSON.parse(Utilities.newBlob(Utilities.base64Decode(fd.content.replace(/\n/g, ""))).getDataAsString());
+
+    var status = cfg.subscriptionStatus || "";
+    if (status && status !== "trialing") return { ok: true, skipped: "statut " + status };  // payant : ne pas toucher
+    if (cfg.trialType === "clients" && cfg.trialEndDate) return { ok: true, skipped: "essai déjà actif" };
+
+    var end = new Date(); end.setDate(end.getDate() + 30);
+    cfg.subscriptionStatus = "trialing";
+    cfg.trialType          = "clients";
+    cfg.trialEndDate       = end.toISOString().slice(0, 10);
+
+    var b64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(cfg, null, 2) + "\n").getBytes());
+    var putRes = UrlFetchApp.fetch(apiUrl, {
+      method:  "put",
+      headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+      payload: JSON.stringify({ message: "essai clients: " + slug + " (30 clients / 30 jours, fin " + cfg.trialEndDate + ")",
+                                content: b64, sha: fd.sha, branch: "main" }),
+      muteHttpExceptions: true
+    });
+    if (putRes.getResponseCode() >= 300) return { ok: false, reason: "PUT HTTP " + putRes.getResponseCode() };
+    return { ok: true, trialEndDate: cfg.trialEndDate };
+  } catch (e) {
+    return { ok: false, reason: e.message };
+  }
+}
+
 function activateRestaurateur(params) {
   var token   = (params.token || "").trim();
   var slug    = (params.restaurantId || params.slug || "").trim().toLowerCase();
@@ -2223,9 +2269,15 @@ function activateRestaurateur(params) {
     Logger.log("activateRestaurateur: registre non mis à jour HTTP " + putRes.getResponseCode());
   }
 
+  // 5) Démarrer l'essai « 30 clients / 30 jours » dans le config.json du resto
+  //    (best-effort, ne bloque jamais l'activation ; respecte les statuts payants)
+  var trial = _startClientsTrial(slug);
+  if (!trial.ok) Logger.log("activateRestaurateur: essai non posé pour " + slug + " — " + trial.reason);
+
   return {
     success: true,
     slug: slug,
+    trial: trial,
     loginUrl: "https://app.cartefidelavis.com/" + slug + "/admin/login.html"
   };
 }
