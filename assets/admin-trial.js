@@ -1,7 +1,23 @@
 /* =====================================================
    Fidelavis — admin-trial.js
-   Détection fin d'essai + popup bloquant avec choix de plan.
-   Chargé sur toutes les pages admin restaurant.
+   Gestion de l'essai + paywall. Chargé sur toutes les pages admin restaurant.
+
+   DEUX MODES (selon config.json du resto) :
+
+   • LEGACY (par défaut — restos existants, comportement inchangé) :
+     essai temporel (subscriptionStatus "trialing" + trialEndDate) →
+     à expiration, modal BLOQUANT 129€/mois.
+
+   • "CLIENTS" (nouveau — test gratuit 30 clients) : config.json contient
+       "trialType":   "clients",
+       "trialEndDate": "YYYY-MM-DD"   ← filet temporel (30 jours après création)
+     Essai terminé au PREMIER atteint : 30 clients recrutés OU date dépassée.
+       - Pendant l'essai : jauge verte « X/30 clients · N jours restants ».
+       - Approche de la fin (≥ NUDGE_CLIENTS ou ≤ NUDGE_DAYS jours) :
+         la jauge devient un nudge orange avec CTA.
+       - Essai terminé : PAYWALL DOUX — bandeau rouge persistant + modal
+         FERMABLE (1×/session). Le dashboard reste consultable :
+         le restaurateur voit ses clients (ce qu'il perdrait en partant).
    ===================================================== */
 
 (function() {
@@ -12,6 +28,16 @@
     terrain: "price_1TQUurDpSXl9WhzrrhjhA9WC"
   };
 
+  /* ---- Réglages du mode "clients" ---- */
+  var SUPA_URL          = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+  var SUPA_KEY          = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
+  var TRIAL_MAX_CLIENTS = 30;   // surchageable par cfg.trialMaxClients
+  var NUDGE_CLIENTS     = 25;   // nudge à partir de X clients…
+  var NUDGE_DAYS        = 7;    // …ou quand il reste ≤ N jours
+  // Ligne promo du nudge (ex. "🎁 1er mois -50 % avec le code ESSAI50").
+  // Laisser vide tant que le coupon n'existe pas dans Stripe.
+  var PROMO_LINE        = "";
+
   /* --------------------------------------------------
      _getSlug()
   -------------------------------------------------- */
@@ -20,9 +46,19 @@
     return (m && m[1] !== "assets" && m[1] !== "fidelavis-admin") ? m[1] : "";
   }
 
+  function _isClientsTrial(cfg) {
+    return !!cfg && cfg.trialType === "clients" &&
+           (cfg.subscriptionStatus === "trialing" || !cfg.subscriptionStatus);
+  }
+
+  function _daysLeft(cfg) {
+    if (!cfg || !cfg.trialEndDate) return null;
+    var ms = new Date(cfg.trialEndDate + "T23:59:59") - new Date();
+    return Math.max(0, Math.ceil(ms / 86400000));
+  }
+
   /* --------------------------------------------------
-     _isExpired(cfg)
-     Renvoie true si l'essai est terminé ou le compte désactivé.
+     _isExpired(cfg)  — mode LEGACY (temporel) uniquement
   -------------------------------------------------- */
   function _isExpired(cfg) {
     if (!cfg) return false;
@@ -40,7 +76,6 @@
     }
 
     // Pas encore d'abonnement (restaurant créé par ambassadeur sans billing)
-    // On vérifie uniquement si trialEndDate est passée
     if (!status) {
       var trialEnd2 = cfg.trialEndDate || "";
       if (!trialEnd2) return false;
@@ -53,21 +88,40 @@
   }
 
   /* --------------------------------------------------
-     _showModal(cfg)
-     Affiche le popup plein-écran avec sélection de plan.
+     _trialCount(slug) — nb de clients recrutés (RPC publique, juste un entier)
   -------------------------------------------------- */
-  function _showModal(cfg) {
-    // Styles inline (pas de dépendance CSS externe)
+  function _trialCount(slug) {
+    return fetch(SUPA_URL + "/rest/v1/rpc/fv_trial_count", {
+      method:  "POST",
+      headers: { "apikey": SUPA_KEY, "Authorization": "Bearer " + SUPA_KEY,
+                 "Content-Type": "application/json" },
+      body: JSON.stringify({ p_slug: slug })
+    })
+    .then(function(r) { if (!r.ok) throw new Error("rpc " + r.status); return r.json(); })
+    .then(function(n) { return Math.max(0, parseInt(n, 10) || 0); });
+  }
+
+  /* --------------------------------------------------
+     _showModal(cfg, dismissible)
+     Popup plein-écran avec sélection de plan.
+     dismissible=true (paywall doux) → croix + clic fond pour fermer.
+  -------------------------------------------------- */
+  function _showModal(cfg, dismissible) {
+    if (document.getElementById("fv-trial-modal")) return;
     var el = document.createElement("div");
     el.id = "fv-trial-modal";
     el.innerHTML = [
-      '<div style="position:fixed;inset:0;z-index:99999;background:rgba(15,15,35,.88);',
+      '<div id="fv-trial-ov" style="position:fixed;inset:0;z-index:99999;background:rgba(15,15,35,.88);',
            'display:flex;align-items:center;justify-content:center;padding:20px;',
            'backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)">',
 
         '<div style="background:#fff;border-radius:22px;padding:36px 28px 28px;',
               'max-width:580px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.3);',
-              'max-height:90vh;overflow-y:auto">',
+              'max-height:90vh;overflow-y:auto;position:relative">',
+
+          (dismissible
+            ? '<button id="fv-trial-close" aria-label="Fermer" style="position:absolute;top:14px;right:14px;width:34px;height:34px;border:none;border-radius:50%;background:#f3f4f6;color:#4b5563;font-size:19px;line-height:1;cursor:pointer">×</button>'
+            : ''),
 
           // Header
           '<div style="text-align:center;margin-bottom:24px">',
@@ -142,16 +196,24 @@
 
     document.body.appendChild(el);
 
-    // Attacher le bouton CTA
     var btnTerrain = document.getElementById("fv-btn-terrain");
     if (btnTerrain) btnTerrain.addEventListener("click", function() { _subscribe("terrain", cfg, btnTerrain); });
+
+    if (dismissible) {
+      var dismiss = function() {
+        try { sessionStorage.setItem("fv_soft_paywall_seen", "1"); } catch(_) {}
+        if (el.parentNode) el.parentNode.removeChild(el);
+      };
+      var x = document.getElementById("fv-trial-close");
+      if (x) x.addEventListener("click", dismiss);
+      var ov = document.getElementById("fv-trial-ov");
+      if (ov) ov.addEventListener("click", function(e) { if (e.target === ov) dismiss(); });
+    }
   }
 
   /* --------------------------------------------------
      _subscribe(planId, cfg, btn)
      Crée une Stripe Setup Session → redirige vers Stripe.
-     successUrl = billing.html?chosen_plan=xxx
-     (Stripe ajoute setup_intent=xxx&redirect_status=succeeded)
   -------------------------------------------------- */
   async function _subscribe(planId, cfg, btn) {
     var slug = _getSlug();
@@ -159,7 +221,6 @@
     btn.disabled = true;
     btn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:fv-spin .7s linear infinite;vertical-align:middle;margin-right:6px"></span>Préparation…';
 
-    // Ajouter l'animation si pas encore présente
     if (!document.getElementById("fv-spin-style")) {
       var st = document.createElement("style");
       st.id = "fv-spin-style";
@@ -176,8 +237,6 @@
         body: JSON.stringify({
           action:     "createSetupSession",
           email:      cfg.billingEmail || cfg.email || "",
-          // Stripe remplace {CHECKOUT_SESSION_ID} par l'ID de la session
-          // (en mode=setup, Stripe n'ajoute PAS automatiquement setup_intent)
           successUrl: window.location.origin + "/" + slug + "/admin/billing.html?chosen_plan=" + planId + "&session_id={CHECKOUT_SESSION_ID}",
           cancelUrl:  window.location.href,
           metadata: {
@@ -202,6 +261,113 @@
   }
 
   /* --------------------------------------------------
+     MODE "CLIENTS" — jauge / nudge / paywall doux
+  -------------------------------------------------- */
+
+  // Jauge (verte) ou nudge (orange) pendant l'essai. Insérée en haut du
+  // contenu principal si présent (espace-admin), sinon ignorée.
+  function _renderGauge(cfg, count, max, days, nudge) {
+    var host = document.querySelector("main.content");
+    if (!host || document.getElementById("fv-trial-gauge")) return;
+
+    var left    = Math.max(0, max - count);
+    var pct     = Math.min(100, Math.round(count / max * 100));
+    var daysTxt = (days == null) ? "" :
+      ' · <span style="white-space:nowrap">⏳ ' + days + " jour" + (days > 1 ? "s" : "") + " restant" + (days > 1 ? "s" : "") + "</span>";
+
+    var border = nudge ? "#f4c98a" : "#ece5dc";
+    var bg     = nudge ? "linear-gradient(135deg,#fff8ef,#fdf1e0)" : "linear-gradient(135deg,#ffffff,#fbf7f1)";
+    var fillBg = nudge ? "linear-gradient(90deg,#f59e0b,#ea7d10)" : "linear-gradient(90deg,#27ae60,#1f9d57)";
+    var numCol = nudge ? "#ea7d10" : "#1f9d57";
+
+    // Le nudge met en avant la rareté qui l'a déclenché (clients ou jours)
+    var scarcity = (count >= NUDGE_CLIENTS || days == null)
+      ? left + " client" + (left > 1 ? "s" : "")
+      : days + " jour" + (days > 1 ? "s" : "");
+    var sub = nudge
+      ? "<strong>Plus que " + scarcity + " !</strong> Activez maintenant et gardez votre élan." +
+        (PROMO_LINE ? "<br>" + PROMO_LINE : "")
+      : "Plus que " + left + " client" + (left > 1 ? "s" : "") + " avant la fin de l’essai" + daysTxt;
+
+    var cta = nudge
+      ? '<button id="fv-gauge-cta" style="border:none;background:#b6152b;color:#fff;font-weight:800;font-size:13.5px;padding:10px 16px;border-radius:10px;cursor:pointer;white-space:nowrap">👉 Activer mon abonnement</button>'
+      : '<div style="font-weight:800;font-size:22px;color:' + numCol + ';white-space:nowrap">' + count + '<span style="color:#b3a596;font-size:15px">&nbsp;/&nbsp;' + max + "</span></div>";
+
+    var el = document.createElement("div");
+    el.id = "fv-trial-gauge";
+    el.style.cssText = "background:" + bg + ";border:1.5px solid " + border + ";border-radius:18px;padding:16px 18px;margin:14px 0 18px;box-shadow:0 4px 16px rgba(36,26,18,.05);";
+    el.innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">' +
+        '<div style="display:flex;align-items:center;gap:11px;min-width:0">' +
+          '<span style="font-size:24px;line-height:1">' + (nudge ? "🔥" : "🎁") + "</span>" +
+          '<div style="min-width:0">' +
+            '<div style="font-weight:800;font-size:15px;color:#241a12">Essai gratuit' +
+              (nudge ? "" : ' · <span style="color:' + numCol + '">' + count + "/" + max + " clients</span>") +
+            "</div>" +
+            '<div style="font-size:13px;color:#6f6256;font-weight:600;line-height:1.45">' + sub + "</div>" +
+          "</div>" +
+        "</div>" + cta +
+      "</div>" +
+      '<div style="height:10px;border-radius:999px;background:#ece5dc;margin-top:12px;overflow:hidden">' +
+        '<div style="height:100%;width:' + pct + '%;border-radius:999px;background:' + fillBg + ';transition:width .8s cubic-bezier(.22,1,.36,1)"></div>' +
+      "</div>";
+
+    host.insertBefore(el, host.firstChild);
+    // Le dashboard arrive parfois pré-scrollé (comportement historique de la
+    // page) : on remonte pour que la jauge soit vue — uniquement sur l'onglet
+    // par défaut, jamais si l'utilisateur visait un onglet précis (#coupon…).
+    if ((!location.hash || location.hash === "#dashboard") && window.scrollY > 0) {
+      window.scrollTo(0, 0);
+    }
+    var btn = document.getElementById("fv-gauge-cta");
+    if (btn) btn.addEventListener("click", function() { _showModal(cfg, true); });
+  }
+
+  // Paywall doux : bandeau rouge persistant (toutes pages admin) + modal
+  // fermable une fois par session. Le dashboard reste consultable.
+  function _renderSoftPaywall(cfg, count) {
+    if (!document.getElementById("fv-trial-bar")) {
+      var bar = document.createElement("div");
+      bar.id = "fv-trial-bar";
+      bar.style.cssText = "position:sticky;top:0;z-index:9998;background:#b6152b;color:#fff;padding:11px 16px;font:600 13.5px/1.4 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;box-shadow:0 3px 14px rgba(182,21,43,.3)";
+      var barMsg = count > 0
+        ? "vos " + count + " client" + (count > 1 ? "s" : "") + " fidélisé" + (count > 1 ? "s" : "") + " vous attend" + (count > 1 ? "ent" : "") + "."
+        : "réactivez votre accès pour continuer à fidéliser.";
+      bar.innerHTML =
+        "<span>⏰ <strong>Essai terminé</strong> — " + barMsg + "</span>" +
+        '<button id="fv-bar-cta" style="border:none;background:#fff;color:#b6152b;font-weight:800;font-size:13px;padding:8px 14px;border-radius:9px;cursor:pointer;white-space:nowrap">Activer mon abonnement →</button>';
+      document.body.insertBefore(bar, document.body.firstChild);
+      var b = document.getElementById("fv-bar-cta");
+      if (b) b.addEventListener("click", function() { _showModal(cfg, true); });
+    }
+    var seen = false;
+    try { seen = sessionStorage.getItem("fv_soft_paywall_seen") === "1"; } catch(_) {}
+    if (!seen) _showModal(cfg, true);
+  }
+
+  function _runClientsTrial(cfg, slug) {
+    var max  = parseInt(cfg.trialMaxClients, 10) || TRIAL_MAX_CLIENTS;
+    var days = _daysLeft(cfg);
+    // Neutralise le bandeau d'essai TEMPOREL du dashboard (#subBanner) :
+    // en mode clients, la jauge X/30 le remplace (évite le double message).
+    var st = document.createElement("style");
+    st.textContent = "#subBanner{display:none !important}";
+    document.head.appendChild(st);
+    _trialCount(slug).then(function(count) {
+      var expired = (count >= max) || (days !== null && days <= 0);
+      if (expired)       _renderSoftPaywall(cfg, count);
+      else {
+        var nudge = (count >= NUDGE_CLIENTS) || (days !== null && days <= NUDGE_DAYS);
+        _renderGauge(cfg, count, max, days, nudge);
+      }
+    }).catch(function(e) {
+      console.warn("[Fidelavis/trial] compteur indisponible :", e.message);
+      // Filet : si le compteur est KO, on retombe sur le critère temporel seul.
+      if (days !== null && days <= 0) _renderSoftPaywall(cfg, 0);
+    });
+  }
+
+  /* --------------------------------------------------
      Init — DOMContentLoaded
   -------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function() {
@@ -212,7 +378,11 @@
     fetch("/" + slug + "/config.json?t=" + Date.now(), { cache: "no-store" })
       .then(function(r) { return r.json(); })
       .then(function(cfg) {
-        if (_isExpired(cfg)) _showModal(cfg);
+        if (_isClientsTrial(cfg)) {
+          _runClientsTrial(cfg, slug);          // nouveau mode : 30 clients / 30 jours
+        } else if (_isExpired(cfg)) {
+          _showModal(cfg, false);               // legacy : modal bloquant inchangé
+        }
       })
       .catch(function() {});
   });
