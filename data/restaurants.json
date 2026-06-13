@@ -184,9 +184,8 @@
     "instagram_external_url": "https://linktr.ee/casalocaparis",
     "walletTemplate": "templates/brunch-resto",
     "demoLayout": "nested",
-    "acces_statut": "invite_envoye",
+    "acces_statut": "active",
     "date_creation": "2026-06-05",
-    "invite_token": "4a45f3a17bf94daa99e888f5afd5020a",
-    "invite_expires": "2026-06-20T17:09:07.610Z"
+    "date_activation": "2026-06-13T18:28:14.503Z"
   }
 }
