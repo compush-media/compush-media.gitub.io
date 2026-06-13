@@ -21,5 +21,7 @@
   "city": "Paris",
   "logoUrl": "https://app.cartefidelavis.com/casa-loca/logo.jpg",
   "iconUrl": "https://app.cartefidelavis.com/casa-loca/logo.jpg",
-  "heroUrl": "https://app.cartefidelavis.com/casa-loca/hero.jpg"
+  "heroUrl": "https://app.cartefidelavis.com/casa-loca/hero.jpg",
+  "trialType": "clients",
+  "trialEndDate": "2026-07-13"
 }
