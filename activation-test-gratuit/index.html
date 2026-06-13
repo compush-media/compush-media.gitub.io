@@ -119,9 +119,9 @@
   "use strict";
   // Notif agence via FormSubmit (proven). Pour changer : remplace l'email.
   var FORMSUBMIT = "https://formsubmit.co/ajax/support@fidelavis.com";
-  // Proxy GAS : génère le lien d'activation + envoie l'email "magic link"
-  // au restaurateur (→ il crée son mot de passe → accède à son dashboard).
-  var PROXY = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
+  // Proxy GAS (FV_PROXY — le déploiement à jour, même que create-password).
+  // génère le lien d'activation + envoie l'email "magic link" au restaurateur.
+  var PROXY = "https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec";
 
   var params = new URLSearchParams(location.search);
   var slug = (params.get("restaurant") || "").trim();
