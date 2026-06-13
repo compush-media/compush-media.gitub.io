@@ -60,12 +60,10 @@
     "nom_gerant": "Guillaume & Thibault",
     "statut_commercial": "",
     "ambassadorCode": "",
-    "acces_statut": "invite_envoye",
+    "acces_statut": "active",
     "date_creation": "2026-05-25",
     "walletTemplate": "templates/brunch-resto",
-    "date_activation": "2026-06-12T20:12:33.440Z",
-    "invite_token": "wFUGAga0EjDDNSjm4mvv8cJkhe8M3VD5",
-    "invite_expires": "2026-06-14T15:52:25.000Z"
+    "date_activation": "2026-06-13T15:52:45.549Z"
   },
   "kafkaf-paris-11": {
     "name": "Kafkaf - Paris 11",
