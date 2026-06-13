@@ -152,30 +152,36 @@
       }
     },
 
-    // Inscrit un client (double-write : Brevo reste actif en parallèle)
-    // Utilise .insert() (Prefer: return=minimal) — pas de SELECT post-insert
-    // → compatible avec RLS qui n'autorise pas la lecture de la table clients en anon.
-    // Les doublons (même email + même resto) renvoient code 23505, traités comme succès idempotent.
+    // Inscrit un client via la RPC fv_register_client (REST direct).
+    // NE dépend PLUS du SDK supabase-js (CDN) : ne nécessite que l'URL + la clé
+    // → fiable même si le SDK n'est pas (encore) chargé. Dédup par email côté SQL.
+    // (Bugfix : avant, registerClient sortait en 'sdk_not_ready' tant que le CDN
+    //  n'était pas chargé → l'event signup partait mais aucun client n'était créé,
+    //  d'où la jauge d'essai sous-comptée.)
     registerClient: async function (restaurantSlug, email, firstName, deviceId, src) {
-      if (!this.isSdkReady()) return { ok: false, reason: 'sdk_not_ready' };
+      if (!this.isReady()) return { ok: false, reason: 'not_configured' };
       try {
-        var resto = await this.getRestaurantBySlug(restaurantSlug);
-        if (!resto) return { ok: false, reason: 'restaurant_not_found' };
-
-        var res = await window.fvSupabase.from('clients').insert({
-          restaurant_id: resto.id,
-          email:         email,
-          first_name:    firstName || null,
-          device_id:     deviceId  || null,
-          src:           src       || null,
-          user_agent:    navigator.userAgent
+        var res = await fetch(SUPABASE_URL + '/rest/v1/rpc/fv_register_client', {
+          method:  'POST',
+          headers: {
+            'apikey':        SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+            'Content-Type':  'application/json'
+          },
+          body: JSON.stringify({
+            p_slug:       restaurantSlug,
+            p_email:      email,
+            p_first_name: firstName || null,
+            p_device_id:  deviceId  || null,
+            p_src:        src       || null
+          })
         });
-
-        // 23505 = unique violation (déjà inscrit) → on considère comme succès
-        if (res.error && res.error.code !== '23505') {
-          return { ok: false, error: res.error };
+        if (!res.ok) return { ok: false, error: 'http ' + res.status };
+        var n = await res.json();   // >=0 ok · -1 resto introuvable · -2 email manquant
+        if (typeof n !== 'number' || n < 0) {
+          return { ok: false, reason: (n === -1 ? 'restaurant_not_found' : 'email_missing') };
         }
-        return { ok: true, duplicate: !!res.error };
+        return { ok: true, count: n };
       } catch (e) {
         return { ok: false, error: e.message };
       }
