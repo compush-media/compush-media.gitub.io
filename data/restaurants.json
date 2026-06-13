@@ -165,8 +165,8 @@
     "adresse": "12 Bd de Sébastopol",
     "ville": "Paris",
     "code_postal": 75004,
-    "telephone": "",
-    "email": "",
+    "telephone": "0600000000",
+    "email": "support@fidelavis.com",
     "nom_gerant": "Manuel De Sousa",
     "site_web": "https://www.casa-loca.fr/",
     "Place_ID_Google": "ChIJl3oCHk5v5kcRtQMbU4O25Tc",
@@ -184,7 +184,9 @@
     "instagram_external_url": "https://linktr.ee/casalocaparis",
     "walletTemplate": "templates/brunch-resto",
     "demoLayout": "nested",
-    "acces_statut": "non_active",
-    "date_creation": "2026-06-05"
+    "acces_statut": "invite_envoye",
+    "date_creation": "2026-06-05",
+    "invite_token": "4a45f3a17bf94daa99e888f5afd5020a",
+    "invite_expires": "2026-06-20T17:09:07.610Z"
   }
 }
