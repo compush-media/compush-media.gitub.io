@@ -105,20 +105,23 @@
 
     <!-- CONFIRMATION -->
     <div class="card ok" id="okCard">
-      <div class="ic">✓</div>
-      <h2>Votre test gratuit est activé.</h2>
-      <p>Nous préparons vos cartes NFC. Vous recevrez un email avec les prochaines étapes.</p>
-      <div class="meta">Clients recrutés : <b id="counter">0&nbsp;/&nbsp;30</b></div>
-      <a id="goEssai" href="#" class="submit" style="display:inline-block;text-decoration:none;width:auto;padding:14px 26px;margin-top:20px;">Voir mon espace essai →</a>
+      <div class="ic">📧</div>
+      <h2>Vérifiez votre email</h2>
+      <p>Un email vient d’être envoyé à <b id="okEmail">votre adresse</b>.<br>
+         Cliquez sur le lien pour <b>créer votre mot de passe</b> et accéder à votre tableau de bord.</p>
+      <p class="fine" style="margin-top:14px">Pensez à vérifier vos spams. Votre essai démarre dès la connexion : jusqu’à <b>30 clients offerts</b>.</p>
+      <a id="goEssai" href="#" class="submit" style="display:inline-block;text-decoration:none;width:auto;padding:13px 24px;margin-top:18px;background:#f3efea;color:#4a4038;box-shadow:none;">Suivre mon essai →</a>
     </div>
   </div>
 
 <script>
 (function(){
   "use strict";
-  // Réception des demandes par email via FormSubmit (comme le site marketing).
-  // Pour changer l'adresse : remplace l'email ci-dessous.
+  // Notif agence via FormSubmit (proven). Pour changer : remplace l'email.
   var FORMSUBMIT = "https://formsubmit.co/ajax/support@fidelavis.com";
+  // Proxy GAS : génère le lien d'activation + envoie l'email "magic link"
+  // au restaurateur (→ il crée son mot de passe → accède à son dashboard).
+  var PROXY = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
 
   var params = new URLSearchParams(location.search);
   var slug = (params.get("restaurant") || "").trim();
@@ -173,6 +176,8 @@
         }
         sessionStorage.setItem("fidelavis_demo_popup_closed", "true");
       } catch(_) {}
+      var okEmail = document.getElementById("okEmail");
+      if (okEmail) okEmail.textContent = data.email;
       var goEssai = document.getElementById("goEssai");
       if (goEssai) goEssai.href = "/mon-essai/?restaurant=" + encodeURIComponent(slug);
       document.getElementById("formCard").style.display = "none";
@@ -180,7 +185,23 @@
       window.scrollTo({ top:0, behavior:"smooth" });
     }
 
-    // Envoi de la demande par email via FormSubmit (endpoint AJAX, réponse lisible).
+    // 1) Lien d'accès au tableau de bord → email "magic link" au restaurateur
+    //    (proxy GAS : génère le token + envoie l'email). Fire-and-forget.
+    var trialPayload = JSON.stringify({
+      action: "start_free_trial",
+      slug:    slug, restaurant: data.resto, gerant: data.gerant,
+      email:   data.email, phone: data.phone,
+      address: data.addr, cp: data.cp, ville: data.ville, ts: Date.now()
+    });
+    try {
+      var blob = new Blob([trialPayload], { type: "text/plain;charset=UTF-8" });
+      if (!navigator.sendBeacon(PROXY, blob)) throw new Error("beacon");
+    } catch(_) {
+      try { fetch(PROXY, { method:"POST", mode:"no-cors", keepalive:true,
+        headers:{ "Content-Type":"text/plain;charset=UTF-8" }, body:trialPayload }).catch(function(){}); } catch(__) {}
+    }
+
+    // 2) Notif agence via FormSubmit (canal éprouvé) + confirmation UX.
     fetch(FORMSUBMIT, {
       method:  "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },

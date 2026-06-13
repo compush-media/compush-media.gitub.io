@@ -95,6 +95,9 @@ function doPost(e) {
       case "dispatch_dm_video":
         result = dispatchDmVideo(body);
         break;
+      case "start_free_trial":
+        result = startFreeTrial(body);
+        break;
       case "send_monthly_rewards":
         result = _sendMonthlyRewardEmails({
           reminder:  body.reminder === true || body.phase === "reminder",
@@ -2146,6 +2149,76 @@ function brevoDiag(params) {
  * Retourne { success:true } ou { error:"..." } (le mot "invalide"/"expiré"
  * déclenche l'écran "lien invalide" côté client).
  */
+// ─── Test gratuit en self-service (depuis /activation-test-gratuit/) ──
+// Génère un lien d'activation pour le restaurateur et le lui envoie par email
+// → il crée son mot de passe (create-password) → accède direct à son dashboard
+// (l'essai 30 clients/30 jours démarre automatiquement à l'activation).
+//   • génère invite_token (7 jours) dans data/restaurants.json
+//   • email "magic link" au restaurateur (réutilise sendActivationInvite)
+//   • si déjà actif : renvoie simplement le lien de connexion
+function startFreeTrial(params) {
+  var slug   = (params.slug || params.restaurant_slug || "").trim().toLowerCase();
+  var email  = (params.email  || "").trim();
+  var gerant = (params.gerant || "").trim();
+  var phone  = (params.phone  || "").trim();
+  var address = [params.address, params.cp, params.ville].filter(function(x){return x;}).join(", ");
+  if (!slug)  return { error: "slug manquant" };
+  if (!email) return { error: "email manquant" };
+
+  var ghToken = PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  var repo    = PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")
+              || "compush-media/compush-media.gitub.io";
+  if (!ghToken) return { error: "Configuration serveur manquante." };
+
+  var base    = "https://app.cartefidelavis.com";
+  var apiUrl  = "https://api.github.com/repos/" + repo + "/contents/data/restaurants.json";
+  var headers = { Authorization: "token " + ghToken, Accept: "application/vnd.github.v3+json" };
+
+  var getRes = UrlFetchApp.fetch(apiUrl + "?ref=main", { headers: headers, muteHttpExceptions: true });
+  if (getRes.getResponseCode() !== 200) return { error: "Registre indisponible." };
+  var fd  = JSON.parse(getRes.getContentText());
+  var sha = fd.sha;
+  var reg = JSON.parse(Utilities.newBlob(Utilities.base64Decode(fd.content.replace(/\n/g, ""))).getDataAsString());
+
+  var r = reg[slug] || {};
+  var restoName = r.name || slug;
+  var loginUrl  = base + "/" + slug + "/admin/login.html";
+
+  // Déjà activé → on n'écrase rien, on renvoie juste un lien de connexion
+  if (r.acces_statut === "active") {
+    sendActivationInvite({ email: email, slug: slug, restoName: restoName, link: loginUrl });
+    return { ok: true, alreadyActive: true };
+  }
+
+  // Génère le token d'activation (valable 7 jours)
+  var inviteTok = Utilities.getUuid().replace(/-/g, "");
+  var exp = new Date(); exp.setDate(exp.getDate() + 7);
+  r.invite_token   = inviteTok;
+  r.invite_expires = exp.toISOString();
+  r.acces_statut   = "invite_envoye";
+  if (!r.name && gerant)  r.name = restoName;
+  if (!r.email)      r.email      = email;
+  if (!r.nom_gerant && gerant) r.nom_gerant = gerant;
+  if (!r.telephone && phone)   r.telephone  = phone;
+  if (!r.adresse   && address) r.adresse    = address;
+  reg[slug] = r;
+
+  var b64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(reg, null, 2) + "\n").getBytes());
+  var put = UrlFetchApp.fetch(apiUrl, {
+    method:  "put",
+    headers: { Authorization: "token " + ghToken, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+    payload: JSON.stringify({ message: "test gratuit: invitation " + slug, content: b64, sha: sha, branch: "main" }),
+    muteHttpExceptions: true
+  });
+  if (put.getResponseCode() >= 300) return { error: "Écriture registre HTTP " + put.getResponseCode() };
+
+  // Email "magic link" au restaurateur
+  var link = base + "/fidelavis-admin/create-password.html?slug=" + encodeURIComponent(slug) + "&token=" + inviteTok;
+  var mail = sendActivationInvite({ email: email, slug: slug, restoName: restoName, link: link });
+
+  return { ok: true, slug: slug, emailSent: !!(mail && mail.ok) };
+}
+
 // ─── Démarrage de l'essai « 30 clients / 30 jours » ──────────
 // Pose subscriptionStatus/trialType/trialEndDate dans /{slug}/config.json
 // au moment de l'activation du compte restaurateur. Best-effort :
