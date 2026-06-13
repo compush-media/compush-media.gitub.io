@@ -186,20 +186,19 @@
     }
 
     // 1) Lien d'accès au tableau de bord → email "magic link" au restaurateur
-    //    (proxy GAS : génère le token + envoie l'email). Fire-and-forget.
-    var trialPayload = JSON.stringify({
-      action: "start_free_trial",
-      slug:    slug, restaurant: data.resto, gerant: data.gerant,
-      email:   data.email, phone: data.phone,
-      address: data.addr, cp: data.cp, ville: data.ville, ts: Date.now()
-    });
-    try {
-      var blob = new Blob([trialPayload], { type: "text/plain;charset=UTF-8" });
-      if (!navigator.sendBeacon(PROXY, blob)) throw new Error("beacon");
-    } catch(_) {
-      try { fetch(PROXY, { method:"POST", mode:"no-cors", keepalive:true,
-        headers:{ "Content-Type":"text/plain;charset=UTF-8" }, body:trialPayload }).catch(function(){}); } catch(__) {}
-    }
+    //    (proxy GAS : génère le token + envoie l'email). Même pattern fiable
+    //    que create-password : fetch POST text/plain (le sendBeacon ne
+    //    transmettait pas le corps à GAS).
+    fetch(PROXY, {
+      method:  "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({
+        action: "start_free_trial",
+        slug:    slug, restaurant: data.resto, gerant: data.gerant,
+        email:   data.email, phone: data.phone,
+        address: data.addr, cp: data.cp, ville: data.ville, ts: Date.now()
+      })
+    }).catch(function(){});
 
     // 2) Notif agence via FormSubmit (canal éprouvé) + confirmation UX.
     fetch(FORMSUBMIT, {
