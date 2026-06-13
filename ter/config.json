@@ -12,7 +12,7 @@
     "updatedAt": "2026-05-25T14:11:31.252Z"
   },
   "plan": "terrain",
-  "subscriptionStatus": "active",
+  "subscriptionStatus": "trialing",
   "setupPaid": true,
   "invoices": [],
   "instagramUrl": "https://www.instagram.com/terparis11/",
@@ -22,5 +22,7 @@
   "reservationUrl": "http://www.restaurant-ter.fr/",
   "phone": "0745280155",
   "address": "11 Rue Camille Desmoulins  75011 Paris",
-  "heroUrl": "https://app.cartefidelavis.com/assets/heros/banniere-1.jpg"
+  "heroUrl": "https://app.cartefidelavis.com/assets/heros/banniere-1.jpg",
+  "trialType": "clients",
+  "trialEndDate": "2026-07-13"
 }
