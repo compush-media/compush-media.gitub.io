@@ -2169,7 +2169,12 @@ function _startClientsTrial(slug) {
     var cfg = JSON.parse(Utilities.newBlob(Utilities.base64Decode(fd.content.replace(/\n/g, ""))).getDataAsString());
 
     var status = cfg.subscriptionStatus || "";
-    if (status && status !== "trialing") return { ok: true, skipped: "statut " + status };  // payant : ne pas toucher
+    // Ne JAMAIS toucher un vrai abonné Stripe ni un compte en gestion de
+    // facturation. NB : un "active" SANS abonnement Stripe = simple valeur par
+    // défaut à la création → éligible à l'essai clients.
+    if (cfg.stripeSubscriptionId || status === "past_due" || status === "canceled") {
+      return { ok: true, skipped: "abonné/facturation (" + (status || "stripe") + ")" };
+    }
     if (cfg.trialType === "clients" && cfg.trialEndDate) return { ok: true, skipped: "essai déjà actif" };
 
     var end = new Date(); end.setDate(end.getDate() + 30);
