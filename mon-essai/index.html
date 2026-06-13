@@ -30,16 +30,14 @@
   .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#27ae60,#1f9d57);width:0;
     transition:width .8s cubic-bezier(.22,1,.36,1);}
   .hint{font-size:14px;color:var(--muted);font-weight:600;}
-  .rows{margin-top:16px;display:flex;flex-direction:column;gap:12px;}
-  .row{display:flex;align-items:center;gap:14px;background:#fff;border-radius:18px;
-    box-shadow:0 4px 18px rgba(36,26,18,.06);padding:17px 18px;text-decoration:none;color:inherit;}
-  .row .ic{width:42px;height:42px;border-radius:12px;background:#faf3ee;display:flex;align-items:center;
-    justify-content:center;font-size:21px;flex-shrink:0;}
-  .row .lbl{flex:1;font-size:16px;font-weight:700;}
-  .row .meta{font-size:13px;font-weight:700;color:var(--muted);}
-  .row .pill{font-size:11px;font-weight:800;color:#b3a596;background:#f1ece4;border-radius:999px;padding:4px 9px;text-transform:uppercase;letter-spacing:.4px;}
-  .row .chev{color:#c9bcae;font-size:22px;font-weight:700;}
-  .foot{text-align:center;font-size:12.5px;color:#a99c8d;margin-top:22px;line-height:1.5;}
+  .next{background:#fff;border-radius:18px;box-shadow:0 4px 18px rgba(36,26,18,.06);padding:18px 20px;margin-top:16px;}
+  .next-title{font-size:13px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:#b3a596;margin-bottom:12px;}
+  .next-list{list-style:none;display:flex;flex-direction:column;gap:12px;}
+  .next-list li{display:flex;align-items:flex-start;gap:11px;font-size:15px;line-height:1.45;color:#3f352c;font-weight:600;}
+  .next-list .ni{font-size:19px;line-height:1.2;flex-shrink:0;}
+  .dashbtn{display:block;text-align:center;text-decoration:none;margin-top:16px;background:var(--red);color:#fff;
+    font-size:16px;font-weight:800;padding:15px 18px;border-radius:14px;box-shadow:0 8px 22px rgba(224,70,62,.30);}
+  .foot{text-align:center;font-size:12.5px;color:#a99c8d;margin-top:18px;line-height:1.5;}
   .foot b{color:var(--red);}
 </style>
 </head>
@@ -58,26 +56,16 @@
       <div class="hint" id="hint">Chargement de votre suivi…</div>
     </div>
 
-    <div class="rows">
-      <div class="row">
-        <span class="ic">👥</span>
-        <span class="lbl">Mes clients</span>
-        <span class="meta" id="rowClients">—</span>
-        <span class="chev">›</span>
-      </div>
-      <div class="row">
-        <span class="ic">📊</span>
-        <span class="lbl">Mes statistiques</span>
-        <span class="pill">Bientôt</span>
-        <span class="chev">›</span>
-      </div>
-      <div class="row">
-        <span class="ic">📣</span>
-        <span class="lbl">Mes outils marketing</span>
-        <span class="pill">Bientôt</span>
-        <span class="chev">›</span>
-      </div>
+    <div class="next">
+      <div class="next-title">Ce qui arrive ensuite</div>
+      <ul class="next-list">
+        <li><span class="ni">📦</span> Nous préparons vos <b>3 cartes NFC</b> + votre QR code</li>
+        <li><span class="ni">✉️</span> Vous recevez un email avec les étapes pour démarrer</li>
+        <li><span class="ni">📈</span> Chaque client inscrit fait grimper votre compteur</li>
+      </ul>
     </div>
+
+    <a id="goDash" class="dashbtn" href="#" style="display:none">Accéder à mon tableau de bord →</a>
 
     <p class="foot">Test gratuit Fidelavis · jusqu’à <b>30 clients</b> offerts, sans engagement.</p>
   </div>
@@ -94,7 +82,6 @@
   var elCount = document.getElementById("count");
   var elFill  = document.getElementById("fill");
   var elHint  = document.getElementById("hint");
-  var elRowC  = document.getElementById("rowClients");
 
   function render(n){
     var c = Math.max(0, n|0);
@@ -102,7 +89,6 @@
     elCount.innerHTML = c + ' <span class="max">/ ' + MAX + '</span>';
     var pct = Math.min(100, Math.round(c / MAX * 100));
     requestAnimationFrame(function(){ elFill.style.width = pct + "%"; });
-    elRowC.textContent = c;
     if (c >= MAX) {
       elHint.innerHTML = "🎉 Objectif atteint — vos 30 clients sont recrutés !";
     } else {
@@ -115,8 +101,14 @@
     elCount.classList.remove("loading");
     elCount.innerHTML = '0 <span class="max">/ ' + MAX + '</span>';
     elFill.style.width = "0%";
-    elRowC.textContent = "0";
     elHint.textContent = msg || "Suivi indisponible pour le moment.";
+  }
+
+  // Bouton vers le vrai tableau de bord (visible si un resto est précisé)
+  var goDash = document.getElementById("goDash");
+  if (slug && goDash) {
+    goDash.href = "/" + encodeURIComponent(slug) + "/admin/login.html";
+    goDash.style.display = "block";
   }
 
   if (!slug) { fail("Lien incomplet : restaurant non précisé."); return; }
