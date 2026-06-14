@@ -73,6 +73,9 @@ function doPost(e) {
       brevoFetch('POST', '/contacts/lists/' + uListId + '/contacts/remove', { emails: [uEmail] });
       Logger.log('[Unsub] ' + uEmail + ' retiré de la liste #' + uListId);
       output.setContent(JSON.stringify({ success: true }));
+    } else if (action === 'resetSharedTemplates') {
+      _resetSharedTemplateIds();
+      output.setContent(JSON.stringify({ success: true, message: 'IDs templates partagés effacés — relancer setup pour recréer' }));
     } else if (action === 'deleteRestaurant') {
       output.setContent(JSON.stringify(deleteRestaurant(body)));
     } else if (action === 'passwordReset') {
@@ -312,12 +315,19 @@ function _getSharedTemplateIds() {
   });
 }
 
+function _resetSharedTemplateIds() {
+  var props = PropertiesService.getScriptProperties();
+  for (var i = 0; i <= 11; i++) props.deleteProperty(SHARED_TMPL_PREFIX + i);
+  Logger.log('[Brevo] IDs templates partagés réinitialisés');
+}
+
 function _ensureSharedTemplates() {
   var props = PropertiesService.getScriptProperties();
-  // Vérifier si les 12 templates existent déjà
+  // Vérifier si les 12 templates valides (id > 0) existent déjà
   var allExist = true;
   for (var i = 0; i <= 11; i++) {
-    if (!props.getProperty(SHARED_TMPL_PREFIX + i)) { allExist = false; break; }
+    var val = parseInt(props.getProperty(SHARED_TMPL_PREFIX + i), 10);
+    if (!val || val <= 0) { allExist = false; break; }
   }
   if (allExist) {
     Logger.log('[Brevo] Templates partagés déjà en place');
@@ -329,7 +339,7 @@ function _ensureSharedTemplates() {
 
   var months = [
     { label: 'Bienvenue',
-      subject: 'Bienvenue chez {{ contact.RESTAURANT_NAME }} ! 🎁',
+      subject: 'Bienvenue chez {{ contact.RESTAURANT_NAME }} !',
       headline: 'Votre avantage fidélité est activé !',
       body: 'Merci de rejoindre le programme de fidélité de {{ contact.RESTAURANT_NAME }}. Votre avantage de bienvenue est maintenant disponible dans votre espace.' },
     { label: 'Mois 1',
@@ -379,27 +389,30 @@ function _ensureSharedTemplates() {
   ];
 
   var ids = [];
+  var errors = [];
   months.forEach(function(m, i) {
     try {
       var html = _buildSharedTemplateHtml(m.headline, m.body);
       var result = brevoFetch('POST', '/smtp/templates', {
-        templateName: 'Fidelavis — ' + m.label + ' (partagé)',
+        templateName: 'Fidelavis ' + m.label + ' partage',
         subject:      m.subject,
         htmlContent:  html,
         sender:       { name: 'Fidelavis', email: SENDER_EMAIL },
         replyTo:      'noreply@fidelavis.com',
         isActive:     true
       });
-      var id = result.id || 0;
-      props.setProperty(SHARED_TMPL_PREFIX + i, String(id));
+      var id = parseInt(result.id, 10) || 0;
+      if (id > 0) props.setProperty(SHARED_TMPL_PREFIX + i, String(id));
       ids.push(id);
-      Logger.log('[Brevo] Template partagé #' + i + ' (' + m.label + ') créé → id=' + id);
+      Logger.log('[Brevo] Template partage #' + i + ' (' + m.label + ') cree id=' + id);
     } catch(e) {
-      Logger.log('[Brevo] Erreur template partagé #' + i + ' : ' + e.message);
+      Logger.log('[Brevo] Erreur template #' + i + ' : ' + e.message);
+      errors.push('tmpl' + i + ': ' + e.message);
       ids.push(0);
     }
   });
-  return ids;
+  if (errors.length) Logger.log('[Brevo] Erreurs creation templates : ' + JSON.stringify(errors));
+  return { ids: ids, errors: errors };
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -434,7 +447,9 @@ function setupRestaurant(body) {
   var listId = createContactList(name);
 
   // 2. Templates partagés — créés une seule fois pour tous les restaurants
-  var sharedIds = _ensureSharedTemplates();
+  var sharedResult = _ensureSharedTemplates();
+  var sharedIds  = Array.isArray(sharedResult) ? sharedResult : (sharedResult.ids || []);
+  var sharedErrs = Array.isArray(sharedResult) ? [] : (sharedResult.errors || []);
   var welcomeId  = sharedIds[0] || 0;
   var monthlyIds = sharedIds.slice(1);
 
@@ -485,7 +500,8 @@ function setupRestaurant(body) {
     listId:              listId,
     formUrl:             formUrl,
     workflowId:          workflowId,
-    sharedTemplateIds:   sharedIds
+    sharedTemplateIds:   sharedIds,
+    templateErrors:      sharedErrs
   };
 }
 
