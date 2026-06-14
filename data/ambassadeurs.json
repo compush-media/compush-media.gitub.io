@@ -63,6 +63,11 @@
         "slug": "ichiryu",
         "name": "ICHIRYU",
         "date": "2026-05-17"
+      },
+      {
+        "slug": "test",
+        "name": "test",
+        "date": "2026-06-14"
       }
     ],
     "date_creation": "2026-04-26",
