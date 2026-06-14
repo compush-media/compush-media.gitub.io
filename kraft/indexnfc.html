@@ -63,7 +63,7 @@
       var scanDedupKey = "scan_" + RESTO + "_" + new Date().toISOString().slice(0, 10);
       if (!sessionStorage.getItem(scanDedupKey)) {
         sessionStorage.setItem(scanDedupKey, "1");
-        var TRACK_URL = "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
+        var TRACK_URL = "https://script.google.com/macros/s/AKfycbymE_s4YOfYR4fiG0oSQZJqzDrN-grr4EMrena-YOc0WU5xk3qf6hHNV96lVKknncDnqA/exec";
         var payload = JSON.stringify({
           resto:     RESTO,
           event:     "scan",

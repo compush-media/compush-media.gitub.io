@@ -950,7 +950,7 @@ function createRestaurantForAmbassador(params) {
 
     // ─── Setup Brevo (liste + 12 templates + workflow) ─────────────
     var brevoGasUrl = PropertiesService.getScriptProperties().getProperty("BREVO_GAS_URL")
-                     || "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
+                     || "https://script.google.com/macros/s/AKfycbymE_s4YOfYR4fiG0oSQZJqzDrN-grr4EMrena-YOc0WU5xk3qf6hHNV96lVKknncDnqA/exec";
     try {
       var brevoSetupResp = UrlFetchApp.fetch(brevoGasUrl, {
         method:             "post",
