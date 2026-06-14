@@ -948,6 +948,35 @@ function createRestaurantForAmbassador(params) {
     if (logoUrl)        cfg.logoUrl        = logoUrl;
     cfg.offre_jour = { active: false, titre: "", description: "", image: "", date_fin: "" };
 
+    // ─── Setup Brevo (liste + 12 templates + workflow) ─────────────
+    var brevoGasUrl = PropertiesService.getScriptProperties().getProperty("BREVO_GAS_URL")
+                     || "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
+    try {
+      var brevoSetupResp = UrlFetchApp.fetch(brevoGasUrl, {
+        method:             "post",
+        contentType:        "text/plain",
+        payload:            JSON.stringify({
+          action:          "setup",
+          restaurantName:  name,
+          restaurantEmail: email || "",
+          restaurantId:    sl,
+          adminPass:       ""
+        }),
+        muteHttpExceptions: true
+      });
+      var brevoSetupData = JSON.parse(brevoSetupResp.getContentText());
+      if (brevoSetupData && brevoSetupData.listId) {
+        cfg.brevoListId = brevoSetupData.listId;
+        cfg.brevoGasUrl = brevoGasUrl;
+        Logger.log("[Brevo] Setup OK — listId=" + brevoSetupData.listId + " workflowId=" + brevoSetupData.workflowId);
+      } else {
+        Logger.log("[Brevo] Setup sans listId — " + brevoSetupResp.getContentText().slice(0, 200));
+      }
+    } catch(brevoErr) {
+      Logger.log("[Brevo] Erreur setup (non bloquant) : " + brevoErr.message);
+    }
+    // ───────────────────────────────────────────────────────────────
+
     // Générer progressier.json
     var manifest = {
       name: name, short_name: name,
