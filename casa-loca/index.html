@@ -9,6 +9,25 @@
   <link rel="apple-touch-icon-precomposed" id="atip" sizes="180x180" href="" />
   <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
   <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}</script>
+
+  <!-- ✅ Redirection post-installation (lien depuis email → coupon) -->
+  <script>(function(){
+    try {
+      var m = location.pathname.match(/^\/([^\/]+)\//);
+      var slug = m ? m[1] : '';
+      if (!slug) return;
+      var key = 'fidelavis_pending_redirect_' + slug;
+      var dest = localStorage.getItem(key);
+      if (!dest) return;
+      try {
+        var h = new URL(dest).hostname;
+        if (h !== 'app.cartefidelavis.com') return;
+      } catch(_) { return; }
+      if (location.href === dest || location.pathname === new URL(dest).pathname) return;
+      localStorage.removeItem(key);
+      location.replace(dest);
+    } catch(_) {}
+  })();</script>
   <script src="/assets/core.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">

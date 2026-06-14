@@ -36,6 +36,7 @@
 var BREVO_BASE = 'https://api.brevo.com/v3';
 var SENDER_EMAIL = 'contact@fidelavis.com';
 var GAS_BASE_URL = 'https://script.google.com/macros/s/'; // sera surchargé par getGasUrl()
+var SHARED_TMPL_PREFIX = 'SHARED_TMPL_'; // clé de propriété pour les 12 templates partagés
 
 function getGasUrl() {
   try {
@@ -202,6 +203,207 @@ function deleteRestaurant(body) {
   return { success: true, errors: errors };
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  TEMPLATES PARTAGÉS — un seul jeu de 12 pour tous les restaurants
+//  Variables Brevo : {{ contact.PRENOM }} {{ contact.RESTAURANT_NAME }}
+//                   {{ contact.RESTAURANT_SLUG }} {{ params.UNSUBSCRIBE_URL }}
+// ═══════════════════════════════════════════════════════════════
+
+function _ensureContactAttributes() {
+  try {
+    var existing = brevoFetch('GET', '/contacts/attributes/normal');
+    var names = (existing.attributes || []).map(function(a) { return a.name; });
+    ['PRENOM', 'RESTAURANT_NAME', 'RESTAURANT_SLUG'].forEach(function(attr) {
+      if (names.indexOf(attr) === -1) {
+        try {
+          brevoFetch('POST', '/contacts/attributes/normal/' + attr, { type: 'text' });
+          Logger.log('[Brevo] Attribut contact créé : ' + attr);
+        } catch(e) {
+          Logger.log('[Brevo] Attribut ' + attr + ' (déjà existant ou erreur) : ' + e.message);
+        }
+      }
+    });
+  } catch(e) {
+    Logger.log('[Brevo] _ensureContactAttributes : ' + e.message);
+  }
+}
+
+function _buildSharedTemplateHtml(headline, bodyText) {
+  var btn = 'https://app.cartefidelavis.com/{{ contact.RESTAURANT_SLUG }}/ouvrir-fidelite';
+  return (
+    '<!DOCTYPE html><html lang="fr"><head>' +
+    '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '</head>' +
+    '<body style="margin:0;padding:0;background:#f7f0e8;font-family:\'Helvetica Neue\',Arial,sans-serif;">' +
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f7f0e8;">' +
+    '<tr><td align="center" style="padding:24px 12px;">' +
+    '<table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">' +
+
+    // Pill header
+    '<tr><td align="center" style="padding:0 0 14px;">' +
+    '<span style="display:inline-block;background:linear-gradient(135deg,#B8924F,#9E7A3E);' +
+    'color:#fff;font-weight:900;font-size:11px;letter-spacing:.6px;padding:6px 18px;border-radius:999px;">' +
+    '{{ contact.RESTAURANT_NAME }} &times; Fidelavis' +
+    '</span></td></tr>' +
+
+    // Card
+    '<tr><td style="background:#ffffff;border-radius:20px;padding:32px 28px;' +
+    'box-shadow:0 4px 24px rgba(0,0,0,.07);">' +
+
+    // Greeting
+    '<p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 14px;">' +
+    'Bonjour{% if contact.PRENOM is not empty %} <strong>{{ contact.PRENOM }}</strong>{% endif %},</p>' +
+
+    // Headline
+    '<h1 style="font-size:21px;font-weight:900;margin:0 0 14px;color:#1d1d1d;line-height:1.3;">' +
+    headline + '</h1>' +
+
+    // Body
+    '<p style="font-size:15px;line-height:1.7;color:#444;margin:0 0 22px;">' + bodyText + '</p>' +
+
+    // Avantage box
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0" ' +
+    'style="background:#fdf8f0;border:1px solid #e8d8bb;border-radius:12px;margin:0 0 22px;">' +
+    '<tr><td style="padding:18px 22px;text-align:center;">' +
+    '<p style="margin:0 0 5px;font-size:11px;font-weight:800;color:#B8924F;' +
+    'letter-spacing:.7px;text-transform:uppercase;">Espace fidélité</p>' +
+    '<p style="margin:0;font-size:15px;font-weight:700;color:#1d1d1d;line-height:1.4;">' +
+    'Votre avantage fidélité est disponible.</p>' +
+    '</td></tr></table>' +
+
+    // CTA button
+    '<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>' +
+    '<td align="center" style="padding:0 0 22px;">' +
+    '<a href="' + btn + '" target="_blank" rel="noopener noreferrer" ' +
+    'style="display:inline-block;padding:16px 32px;' +
+    'background:linear-gradient(135deg,#B8924F,#9E7A3E);' +
+    'color:#ffffff;text-decoration:none;border-radius:12px;' +
+    'font-size:15px;font-weight:700;letter-spacing:.1px;">' +
+    'Consulter mon espace fid&eacute;lit&eacute;' +
+    '</a></td></tr></table>' +
+
+    // Signature
+    '<p style="font-size:14px;color:#777;margin:0;' +
+    'border-top:1px solid #f0ebe3;padding-top:18px;">' +
+    'L\'&eacute;quipe de {{ contact.RESTAURANT_NAME }}</p>' +
+
+    // Footer
+    '<div style="margin-top:20px;padding-top:14px;border-top:1px solid #eee;' +
+    'font-size:11px;color:#aaa;text-align:center;line-height:1.8;">' +
+    '<p style="margin:0 0 4px;">Vous recevez cet e-mail car vous &ecirc;tes inscrit au programme ' +
+    'de fid&eacute;lit&eacute; de <strong>{{ contact.RESTAURANT_NAME }}</strong> via Fidelavis.<br>' +
+    'Adresse enregistr&eacute;e&nbsp;: {{ contact.EMAIL }}</p>' +
+    '<p style="margin:0;">' +
+    '<a href="{{ params.UNSUBSCRIBE_URL }}" ' +
+    'style="color:#B8924F;text-decoration:underline;font-weight:600;">Se d&eacute;sinscrire</a>' +
+    '&nbsp;&nbsp;|&nbsp;&nbsp;&copy; ' + new Date().getFullYear() + ' Fidelavis' +
+    '</p></div>' +
+
+    '</td></tr>' + // end card
+    '</table></td></tr></table>' +
+    '</body></html>'
+  );
+}
+
+function _getSharedTemplateIds() {
+  var props = PropertiesService.getScriptProperties();
+  return [0,1,2,3,4,5,6,7,8,9,10,11].map(function(i) {
+    return parseInt(props.getProperty(SHARED_TMPL_PREFIX + i), 10) || 0;
+  });
+}
+
+function _ensureSharedTemplates() {
+  var props = PropertiesService.getScriptProperties();
+  // Vérifier si les 12 templates existent déjà
+  var allExist = true;
+  for (var i = 0; i <= 11; i++) {
+    if (!props.getProperty(SHARED_TMPL_PREFIX + i)) { allExist = false; break; }
+  }
+  if (allExist) {
+    Logger.log('[Brevo] Templates partagés déjà en place');
+    return _getSharedTemplateIds();
+  }
+
+  Logger.log('[Brevo] Création des 12 templates partagés...');
+  var sender = getVerifiedSender('Fidelavis', SENDER_EMAIL);
+
+  var months = [
+    { label: 'Bienvenue',
+      subject: 'Bienvenue chez {{ contact.RESTAURANT_NAME }} ! 🎁',
+      headline: 'Votre avantage fidélité est activé !',
+      body: 'Merci de rejoindre le programme de fidélité de {{ contact.RESTAURANT_NAME }}. Votre avantage de bienvenue est maintenant disponible dans votre espace.' },
+    { label: 'Mois 1',
+      subject: '{% if contact.PRENOM is not empty %}{{ contact.PRENOM }}, une{% else %}Une{% endif %} attention vous attend chez {{ contact.RESTAURANT_NAME }}',
+      headline: 'Un mois déjà — votre avantage est là',
+      body: 'Un mois que vous faites partie de notre communauté. Toute l\'équipe de {{ contact.RESTAURANT_NAME }} pense à ses clients fidèles et votre avantage du mois est disponible dans votre espace.' },
+    { label: 'Mois 2',
+      subject: 'Une attention vous attend chez {{ contact.RESTAURANT_NAME }}',
+      headline: 'Merci pour votre fidélité',
+      body: '2 mois de bons moments ensemble. Une nouvelle attention est disponible dans votre espace fidélité. Venez en profiter lors de votre prochaine visite chez {{ contact.RESTAURANT_NAME }}.' },
+    { label: 'Mois 3',
+      subject: 'Les beaux jours reviennent chez {{ contact.RESTAURANT_NAME }}',
+      headline: 'Votre avantage du mois vous attend',
+      body: 'C\'est l\'occasion idéale de venir partager un nouveau moment chez {{ contact.RESTAURANT_NAME }}. Votre avantage fidélité du mois est disponible dans votre espace.' },
+    { label: 'Mois 4',
+      subject: 'Une surprise fidélité vous attend chez {{ contact.RESTAURANT_NAME }}',
+      headline: 'Votre espace fidélité vient d\'être actualisé',
+      body: 'Une nouvelle attention vous attend chez {{ contact.RESTAURANT_NAME }}. Consultez votre espace fidélité et présentez votre avantage lors de votre prochaine visite.' },
+    { label: 'Mois 5',
+      subject: 'Accordez-vous une pause chez {{ contact.RESTAURANT_NAME }}',
+      headline: 'Votre avantage fidélité de mai est disponible',
+      body: 'Les beaux jours sont là et toutes les occasions sont bonnes pour se faire plaisir. Votre nouvel avantage fidélité est disponible. Pensez à consulter votre espace avant votre visite chez {{ contact.RESTAURANT_NAME }}.' },
+    { label: 'Mois 6',
+      subject: '{% if contact.PRENOM is not empty %}{{ contact.PRENOM }}, votre{% else %}Votre{% endif %} rendez-vous fidélité chez {{ contact.RESTAURANT_NAME }}',
+      headline: 'Votre avantage du mois est disponible',
+      body: '{{ contact.RESTAURANT_NAME }} continue de penser à ses clients fidèles. Une nouvelle attention est disponible dans votre espace. Venez partager un moment agréable, seul, en famille ou entre amis.' },
+    { label: 'Mois 7',
+      subject: 'Votre rendez-vous fidélité de l\'été chez {{ contact.RESTAURANT_NAME }}',
+      headline: 'Une nouvelle attention vous attend',
+      body: 'Cet été, {{ contact.RESTAURANT_NAME }} continue de penser à ses clients fidèles. Votre nouvel avantage est maintenant disponible dans votre espace. Consultez-le avant votre prochaine visite.' },
+    { label: 'Mois 8',
+      subject: 'Et si vous faisiez une pause chez {{ contact.RESTAURANT_NAME }} ?',
+      headline: 'Votre avantage fidélité du mois vous attend',
+      body: 'Que vous soyez en vacances ou à la recherche d\'un bon moment, toute l\'équipe de {{ contact.RESTAURANT_NAME }} sera heureuse de vous accueillir. Votre avantage fidélité du mois est disponible.' },
+    { label: 'Mois 9',
+      subject: 'Une rentrée plus agréable chez {{ contact.RESTAURANT_NAME }}',
+      headline: 'Votre nouvel avantage fidélité est disponible',
+      body: 'La rentrée est arrivée, mais les bonnes habitudes restent. Votre nouvel avantage fidélité est disponible dans votre espace. Venez profiter d\'un agréable moment chez {{ contact.RESTAURANT_NAME }}.' },
+    { label: 'Mois 10',
+      subject: 'Une bonne raison de revenir chez {{ contact.RESTAURANT_NAME }}',
+      headline: 'Votre avantage d\'automne est disponible',
+      body: 'Les températures baissent, mais l\'accueil reste chaleureux chez {{ contact.RESTAURANT_NAME }}. Votre nouvel avantage fidélité est disponible dans votre espace. Venez nous rendre visite prochainement.' },
+    { label: 'Mois 11',
+      subject: '{% if contact.PRENOM is not empty %}{{ contact.PRENOM }}, merci{% else %}Merci{% endif %} pour votre fidélité à {{ contact.RESTAURANT_NAME }}',
+      headline: 'Merci pour cette belle année',
+      body: 'À l\'approche des fêtes, toute l\'équipe de {{ contact.RESTAURANT_NAME }} souhaite vous remercier pour votre confiance et votre fidélité. Une nouvelle attention vous attend dans votre espace fidélité.' }
+  ];
+
+  var ids = [];
+  months.forEach(function(m, i) {
+    try {
+      var html = _buildSharedTemplateHtml(m.headline, m.body);
+      var result = brevoFetch('POST', '/smtp/templates', {
+        templateName: 'Fidelavis — ' + m.label + ' (partagé)',
+        subject:      m.subject,
+        htmlContent:  html,
+        sender:       { name: 'Fidelavis', email: SENDER_EMAIL },
+        replyTo:      'noreply@fidelavis.com',
+        isActive:     true
+      });
+      var id = result.id || 0;
+      props.setProperty(SHARED_TMPL_PREFIX + i, String(id));
+      ids.push(id);
+      Logger.log('[Brevo] Template partagé #' + i + ' (' + m.label + ') créé → id=' + id);
+    } catch(e) {
+      Logger.log('[Brevo] Erreur template partagé #' + i + ' : ' + e.message);
+      ids.push(0);
+    }
+  });
+  return ids;
+}
+
+// ═══════════════════════════════════════════════════════════════
+
 function setupRestaurant(body) {
   var name      = (body.restaurantName  || 'Restaurant').trim();
   var email     = (body.restaurantEmail || '').trim();
@@ -211,66 +413,42 @@ function setupRestaurant(body) {
 
   Logger.log('[Brevo] ═══ Setup : ' + name + ' (' + id + ') ═══');
 
-  // 0a. Stocker l'email admin immédiatement (avant tout appel API qui pourrait échouer)
+  var props = PropertiesService.getScriptProperties();
+
+  // 0a. Stocker email admin + nom restaurant
   if (id && email && !email.startsWith('noreply@')) {
-    PropertiesService.getScriptProperties().setProperty('ADMIN_EMAIL_' + id, email.toLowerCase());
-    Logger.log('[Brevo] ADMIN_EMAIL_' + id + ' stocké : ' + email);
+    props.setProperty('ADMIN_EMAIL_' + id, email.toLowerCase());
+  }
+  if (id && name) {
+    props.setProperty('RESTO_NAME_' + id, name);
   }
 
-  // 0b. Récupérer l'expéditeur vérifié du compte (évite "Sender is invalid")
+  // 0b. Récupérer l'expéditeur vérifié
   var sender = getVerifiedSender(name, email);
   Logger.log('[Brevo] Expéditeur utilisé : ' + sender.email);
 
-  // 1. Créer la liste contacts
+  // 0c. Créer les attributs contact Brevo si nécessaire
+  _ensureContactAttributes();
+
+  // 1. Créer la liste contacts (spécifique au restaurant)
   var listId = createContactList(name);
 
-  // 2. Créer le template d'email de bienvenue (J+0)
-  var welcomeId = createTemplate(name, sender, 0, {
-    subject: 'Bienvenue chez ' + name + ' ! 🎁',
-    headline: 'Votre -10% est activé !',
-    body:     'Merci d\'avoir rejoint le programme de fidélité Fidelavis de ' + name +
-              '. Votre réduction de bienvenue est désormais disponible lors de votre prochaine visite.'
-  });
+  // 2. Templates partagés — créés une seule fois pour tous les restaurants
+  var sharedIds = _ensureSharedTemplates();
+  var welcomeId  = sharedIds[0] || 0;
+  var monthlyIds = sharedIds.slice(1);
 
-  // 3. Créer les 11 templates mensuels (J+30 à J+330)
-  var monthlyData = [
-    { m:1,  subject:'Un mois déjà !',        headline:'Votre offre du mois',       body:'Déjà un mois que vous faites partie de notre communauté ! Retrouvez notre offre exclusive ce mois-ci.' },
-    { m:2,  subject:'Votre fidélité payante', headline:'Merci pour votre fidélité', body:'2 mois de bons moments ensemble. Un cadeau vous attend ce mois-ci chez ' + name + '.' },
-    { m:3,  subject:'3 mois gourmands',       headline:'3 mois ensemble',           body:'3 mois de délices partagés ! Revenez profiter de nos nouvelles créations.' },
-    { m:4,  subject:'Nouvelles saveurs',      headline:'Découvrez nos nouveautés',  body:'Notre chef a concocté de nouvelles créations rien que pour vous. Venez les découvrir !' },
-    { m:5,  subject:'Votre récompense',       headline:'Offre exclusive 5 mois',    body:'5 mois de fidélité méritent une récompense ! Voici votre offre exclusive du mois.' },
-    { m:6,  subject:'6 mois — Merci !',       headline:'Déjà 6 mois ensemble',      body:'Un semestre de fidélité, ça se fête ! Nous vous offrons une surprise ce mois-ci.' },
-    { m:7,  subject:'Rentrée gourmande',      headline:'La rentrée chez ' + name,   body:'La rentrée est là et nos cuisiniers vous réservent de belles surprises. À table !' },
-    { m:8,  subject:'Cadeau d\'automne',      headline:'L\'automne chez ' + name,   body:'Les saveurs automnales inspirent notre cuisine. Venez découvrir notre menu de saison.' },
-    { m:9,  subject:'9 mois — Bravo !',       headline:'9 mois de fidélité',        body:'Quelle belle aventure gustative ! Votre fidélité nous touche. Voici votre cadeau du mois.' },
-    { m:10, subject:'Bientôt les fêtes !',    headline:'Préparez les fêtes',        body:'Les fêtes approchent ! Réservez dès maintenant pour nos menus de fin d\'année.' },
-    { m:11, subject:'Un an ensemble bientôt', headline:'Merci pour cette année',    body:'Presque un an ensemble — quelle aventure ! Nous vous réservons une belle surprise pour marquer l\'occasion.' }
-  ];
-  var monthlyIds = monthlyData.map(function(d) {
-    return createTemplate(name, sender, d.m, {
-      subject:  '[' + name + '] ' + d.subject,
-      headline: d.headline,
-      body:     d.body
-    });
-  });
-
-  // 4. Tenter la création du workflow automation
+  // 3. Workflow automation avec les templates partagés
   var workflowId = createAutomationWorkflow(name, listId, welcomeId, monthlyIds);
 
-  // 5. Stocker les 12 IDs de templates + expéditeur dans les propriétés du script
-  //    → utilisé par subscribeContact et sendDailyCampaign
-  if (id) {
-    var props = PropertiesService.getScriptProperties();
-    var allTemplateIds = [welcomeId].concat(monthlyIds);
-    props.setProperty('TEMPLATES_'    + id, JSON.stringify(allTemplateIds));
-    props.setProperty('SENDER_NAME_'  + id, sender.name);
-    props.setProperty('SENDER_EMAIL_' + id, sender.email);
-    props.setProperty('LIST_ID_'      + id, String(listId));
-    if (email) props.setProperty('ADMIN_EMAIL_' + id, email);
-    Logger.log('[Brevo] Propriétés stockées pour ' + id + ' : ' + allTemplateIds.length + ' templates');
-  }
+  // 4. Stocker les propriétés du restaurant
+  props.setProperty('SENDER_NAME_'  + id, name);
+  props.setProperty('SENDER_EMAIL_' + id, sender.email);
+  props.setProperty('LIST_ID_'      + id, String(listId));
+  if (email) props.setProperty('ADMIN_EMAIL_' + id, email);
+  Logger.log('[Brevo] Propriétés stockées pour ' + id + ' (templates partagés)');
 
-  // 6. Créer l'onglet dans la Google Sheet centrale
+  // 5. Créer l'onglet dans la Google Sheet centrale
   if (id) {
     try {
       createRestaurantSheet(id, name);
@@ -281,7 +459,7 @@ function setupRestaurant(body) {
 
   var formUrl = 'https://app.cartefidelavis.com/' + (id || 'restaurant') + '/inscription.html';
 
-  // 7. Envoyer l'email avec les identifiants au gestionnaire du restaurant
+  // 6. Email identifiants au gestionnaire (si adminPass fourni)
   var passwordEmailSent = false;
   if (email && adminPass) {
     try {
@@ -298,19 +476,16 @@ function setupRestaurant(body) {
     } catch(err) {
       Logger.log('[Brevo] Erreur envoi email identifiants : ' + err.message);
     }
-  } else {
-    Logger.log('[Brevo] Email identifiants non envoyé (email ou adminPass manquant)');
   }
 
-  Logger.log('[Brevo] ═══ Setup terminé : listId=' + listId + ' workflowId=' + workflowId + ' ═══');
+  Logger.log('[Brevo] ═══ Setup terminé : listId=' + listId + ' workflowId=' + workflowId + ' templates partagés=' + sharedIds.length + ' ═══');
 
   return {
-    success:    true,
-    listId:     listId,
-    formUrl:    formUrl,
-    workflowId: workflowId,
-    welcomeTemplateId:  welcomeId,
-    monthlyTemplateIds: monthlyIds
+    success:             true,
+    listId:              listId,
+    formUrl:             formUrl,
+    workflowId:          workflowId,
+    sharedTemplateIds:   sharedIds
   };
 }
 
@@ -515,40 +690,46 @@ function subscribeContact(body) {
 
   Logger.log('[Brevo] Inscription : ' + email + ' → liste #' + listId + ' (' + resto + ')');
 
+  var props = PropertiesService.getScriptProperties();
+
+  // Récupérer le nom du restaurant depuis les propriétés (stocké au setup)
+  var restoName = props.getProperty('RESTO_NAME_' + resto) || resto;
+
   var contactData = {
     email:         email,
     listIds:       [listId],
     updateEnabled: true,
     attributes:    {}
   };
-  if (firstName) contactData.attributes.PRENOM = firstName;
-  if (lastName)  contactData.attributes.NOM    = lastName;
-  if (resto)     contactData.attributes.RESTO  = resto;
+  if (firstName) contactData.attributes.PRENOM          = firstName;
+  if (lastName)  contactData.attributes.NOM             = lastName;
+  if (restoName) contactData.attributes.RESTAURANT_NAME = restoName;
+  if (resto)     contactData.attributes.RESTAURANT_SLUG = resto;
 
   brevoFetch('POST', '/contacts', contactData);
-  Logger.log('[Brevo] Contact inscrit : ' + email);
+  Logger.log('[Brevo] Contact inscrit : ' + email + ' (RESTAURANT_NAME=' + restoName + ')');
 
   // ── Envoi automatique de l'email de bienvenue (J+0) ───────
   if (resto) {
-    var props       = PropertiesService.getScriptProperties();
-    var templates   = JSON.parse(props.getProperty('TEMPLATES_'   + resto) || '[]');
-    var senderName  = props.getProperty('SENDER_NAME_'  + resto) || '';
-    var senderEmail = props.getProperty('SENDER_EMAIL_' + resto) || '';
-    var templateId  = templates[0] || 0;
+    // Template partagé #0 = bienvenue
+    var welcomeTemplateId = parseInt(props.getProperty(SHARED_TMPL_PREFIX + '0'), 10) || 0;
+    var senderEmail       = props.getProperty('SENDER_EMAIL_' + resto) || SENDER_EMAIL;
 
-    if (templateId && senderEmail) {
+    if (welcomeTemplateId) {
       try {
-        var gasUrl       = getGasUrl();
-        var unsubUrl     = 'https://app.cartefidelavis.com/desinscription.html?email=' + encodeURIComponent(email) + '&listId=' + listId + '&gas=' + encodeURIComponent(gasUrl);
+        var gasUrl   = getGasUrl();
+        var unsubUrl = 'https://app.cartefidelavis.com/desinscription.html?email=' +
+                       encodeURIComponent(email) + '&listId=' + listId +
+                       '&gas=' + encodeURIComponent(gasUrl);
         brevoFetch('POST', '/smtp/email', {
           to:         [{ email: email, name: firstName || email }],
-          templateId: templateId,
-          sender:     { name: senderName, email: SENDER_EMAIL },
+          templateId: welcomeTemplateId,
+          sender:     { name: restoName + ' via Fidelavis', email: SENDER_EMAIL },
           replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
-          params:     { PRENOM: firstName, NOM: lastName, RESTO: resto, UNSUBSCRIBE_URL: unsubUrl },
-          tags:       ['fidelavis', 'bienvenue']
+          params:     { UNSUBSCRIBE_URL: unsubUrl },
+          tags:       ['fidelavis', 'bienvenue', resto]
         });
-        Logger.log('[Brevo] Email de bienvenue envoyé à ' + email + ' (template #' + templateId + ')');
+        Logger.log('[Brevo] Email de bienvenue envoyé à ' + email + ' (template partagé #' + welcomeTemplateId + ')');
       } catch(err) {
         Logger.log('[Brevo] Erreur envoi email bienvenue : ' + err.message);
       }
@@ -654,12 +835,14 @@ function sendDailyCampaign() {
     var restoId = sheet.getName();
     if (restoId === 'Accueil' || restoId === 'Sheet1') return; // ignorer les onglets système
 
-    var templates   = JSON.parse(props.getProperty('TEMPLATES_'   + restoId) || '[]');
-    var senderName  = props.getProperty('SENDER_NAME_'  + restoId) || '';
-    var senderEmail = props.getProperty('SENDER_EMAIL_' + restoId) || '';
+    // Utiliser les templates partagés
+    var sharedIds   = _getSharedTemplateIds();
+    var senderName  = props.getProperty('SENDER_NAME_'  + restoId) || restoId;
+    var senderEmail = props.getProperty('SENDER_EMAIL_' + restoId) || SENDER_EMAIL;
+    var templates   = sharedIds; // même IDs pour tous les restaurants
 
-    if (!templates.length || !senderEmail) {
-      Logger.log('[Drip] Config manquante pour "' + restoId + '" — ignoré');
+    if (!sharedIds[0]) {
+      Logger.log('[Drip] Templates partagés non trouvés — ignoré pour "' + restoId + '"');
       return;
     }
 
@@ -693,10 +876,10 @@ function sendDailyCampaign() {
           brevoFetch('POST', '/smtp/email', {
             to:         [{ email: email, name: firstName || email }],
             templateId: templates[nextIndex],
-            sender:     { name: senderName, email: SENDER_EMAIL },
+            sender:     { name: senderName + ' via Fidelavis', email: SENDER_EMAIL },
             replyTo:    { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
-            params:     { PRENOM: firstName, NOM: lastName, RESTO: restoId, UNSUBSCRIBE_URL: unsubUrlDrip },
-            tags:       ['fidelavis', 'drip']
+            params:     { UNSUBSCRIBE_URL: unsubUrlDrip },
+            tags:       ['fidelavis', 'drip', restoId]
           });
           // Mettre à jour le compteur emails_envoyes (colonne 5, index 4)
           sheet.getRange(i + 1, 5).setValue(nextIndex + 1);
