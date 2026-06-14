@@ -368,23 +368,23 @@
 
     const RESTO  = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
     const listId = _brevoConfig?.brevoListId  || 0;
-    const gasUrl = _brevoConfig?.brevoGasUrl  || "";
+    // URL Brevo GAS : depuis config.json si configuré, sinon URL par défaut
+    const gasUrl = _brevoConfig?.brevoGasUrl  || "https://script.google.com/macros/s/AKfycbyX_AAph8X7mWywX5Cl326zu1taiA4M9PZV0A9NYGU_G4ki-a4Gd9hVdX6tvISgNU-L/exec";
     const now    = Date.now();
 
     // ── Envoi vers Brevo via GAS (fire-and-forget) ──
-    if (gasUrl && listId) {
-      try {
-        const sp = new URLSearchParams();
-        sp.append("data", JSON.stringify({
-          action:    "subscribe",
-          email:     email,
-          firstName: prenom,
-          listId:    listId,
-          resto:     RESTO
-        }));
-        navigator.sendBeacon(gasUrl, sp);
-      } catch(_) {}
-    }
+    // listId=0 → le GAS cherche/crée la liste automatiquement pour ce restaurant
+    try {
+      const sp = new URLSearchParams();
+      sp.append("data", JSON.stringify({
+        action:    "subscribe",
+        email:     email,
+        firstName: prenom,
+        listId:    listId,
+        resto:     RESTO
+      }));
+      navigator.sendBeacon(gasUrl, sp);
+    } catch(_) {}
 
     // ── Persistance localStorage ──
     try {

@@ -481,17 +481,39 @@ function createAutomationWorkflow(restaurantName, listId, welcomeId, monthlyIds)
 //  ACTION : SUBSCRIBE (appelé à chaque inscription client)
 // ═══════════════════════════════════════════════════════════════
 
+function _getOrCreateListForResto(resto) {
+  var props  = PropertiesService.getScriptProperties();
+  var stored = parseInt(props.getProperty('LIST_ID_' + resto), 10);
+  if (stored) return stored;
+
+  var listName = 'Fidelavis - ' + resto;
+  try {
+    var result = brevoFetch('POST', '/contacts/lists', { name: listName, folderId: 1 });
+    if (result && result.id) {
+      props.setProperty('LIST_ID_' + resto, String(result.id));
+      Logger.log('[Brevo] Liste auto-créée pour ' + resto + ' → #' + result.id);
+      return result.id;
+    }
+  } catch(e) {
+    Logger.log('[Brevo] Erreur création liste pour ' + resto + ': ' + e.message);
+  }
+  return 0;
+}
+
 function subscribeContact(body) {
   var email     = (body.email     || '').trim();
   var firstName = (body.firstName || '').trim();
   var lastName  = (body.lastName  || '').trim();
-  var listId    = parseInt(body.listId, 10);
+  var listId    = parseInt(body.listId, 10) || 0;
   var resto     = (body.resto     || '').trim();
 
-  if (!email)  throw new Error('email requis');
-  if (!listId) throw new Error('listId requis');
+  if (!email) throw new Error('email requis');
 
-  Logger.log('[Brevo] Inscription : ' + email + ' → liste #' + listId);
+  // Si listId absent : chercher dans les propriétés du script ou créer la liste
+  if (!listId && resto) listId = _getOrCreateListForResto(resto);
+  if (!listId) throw new Error('listId manquant et impossible de créer la liste (resto manquant)');
+
+  Logger.log('[Brevo] Inscription : ' + email + ' → liste #' + listId + ' (' + resto + ')');
 
   var contactData = {
     email:         email,
