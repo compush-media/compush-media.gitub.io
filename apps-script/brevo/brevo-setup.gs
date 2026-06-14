@@ -252,7 +252,7 @@ function _buildSharedTemplateHtml(headline, bodyText) {
 
     // Greeting
     '<p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 14px;">' +
-    'Bonjour{% if contact.PRENOM is not empty %} <strong>{{ contact.PRENOM }}</strong>{% endif %},</p>' +
+    'Bonjour <strong>{{ contact.PRENOM }}</strong>,</p>' +
 
     // Headline
     '<h1 style="font-size:21px;font-weight:900;margin:0 0 14px;color:#1d1d1d;line-height:1.3;">' +
@@ -333,7 +333,7 @@ function _ensureSharedTemplates() {
       headline: 'Votre avantage fidélité est activé !',
       body: 'Merci de rejoindre le programme de fidélité de {{ contact.RESTAURANT_NAME }}. Votre avantage de bienvenue est maintenant disponible dans votre espace.' },
     { label: 'Mois 1',
-      subject: '{% if contact.PRENOM is not empty %}{{ contact.PRENOM }}, une{% else %}Une{% endif %} attention vous attend chez {{ contact.RESTAURANT_NAME }}',
+      subject: 'Une attention vous attend chez {{ contact.RESTAURANT_NAME }}',
       headline: 'Un mois déjà — votre avantage est là',
       body: 'Un mois que vous faites partie de notre communauté. Toute l\'équipe de {{ contact.RESTAURANT_NAME }} pense à ses clients fidèles et votre avantage du mois est disponible dans votre espace.' },
     { label: 'Mois 2',
@@ -353,7 +353,7 @@ function _ensureSharedTemplates() {
       headline: 'Votre avantage fidélité de mai est disponible',
       body: 'Les beaux jours sont là et toutes les occasions sont bonnes pour se faire plaisir. Votre nouvel avantage fidélité est disponible. Pensez à consulter votre espace avant votre visite chez {{ contact.RESTAURANT_NAME }}.' },
     { label: 'Mois 6',
-      subject: '{% if contact.PRENOM is not empty %}{{ contact.PRENOM }}, votre{% else %}Votre{% endif %} rendez-vous fidélité chez {{ contact.RESTAURANT_NAME }}',
+      subject: 'Votre rendez-vous fidélité chez {{ contact.RESTAURANT_NAME }}',
       headline: 'Votre avantage du mois est disponible',
       body: '{{ contact.RESTAURANT_NAME }} continue de penser à ses clients fidèles. Une nouvelle attention est disponible dans votre espace. Venez partager un moment agréable, seul, en famille ou entre amis.' },
     { label: 'Mois 7',
@@ -373,7 +373,7 @@ function _ensureSharedTemplates() {
       headline: 'Votre avantage d\'automne est disponible',
       body: 'Les températures baissent, mais l\'accueil reste chaleureux chez {{ contact.RESTAURANT_NAME }}. Votre nouvel avantage fidélité est disponible dans votre espace. Venez nous rendre visite prochainement.' },
     { label: 'Mois 11',
-      subject: '{% if contact.PRENOM is not empty %}{{ contact.PRENOM }}, merci{% else %}Merci{% endif %} pour votre fidélité à {{ contact.RESTAURANT_NAME }}',
+      subject: 'Merci pour votre fidélité à {{ contact.RESTAURANT_NAME }}',
       headline: 'Merci pour cette belle année',
       body: 'À l\'approche des fêtes, toute l\'équipe de {{ contact.RESTAURANT_NAME }} souhaite vous remercier pour votre confiance et votre fidélité. Une nouvelle attention vous attend dans votre espace fidélité.' }
   ];
