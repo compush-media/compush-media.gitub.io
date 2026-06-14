@@ -187,5 +187,12 @@
     "acces_statut": "active",
     "date_creation": "2026-06-05",
     "date_activation": "2026-06-13T18:28:14.503Z"
+  },
+  "test": {
+    "name": "test",
+    "brandColor": "#B8924F",
+    "brandColor2": "#9E7A3E",
+    "email": "dan.drumonde@gmail.com",
+    "ambassadorCode": "AMB-DANY-DRU-003"
   }
 }
