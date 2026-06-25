@@ -9,7 +9,7 @@
   "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
-  "nextBillingDate": "2026-06-25",
+  "nextBillingDate": "2026-07-25",
   "invoices": [
     {
       "id": "in_1Tb7STDpSXl9WhzrK3eo4mbA",
