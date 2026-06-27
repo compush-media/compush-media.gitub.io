@@ -12,6 +12,14 @@
   "nextBillingDate": "2026-07-27",
   "invoices": [
     {
+      "id": "in_1Tn1B2DpSXl9WhzrgTwt1YEO",
+      "date": "2026-06-27",
+      "amount": 14900,
+      "status": "paid",
+      "description": "Abonnement Fidelavis",
+      "pdf": "https://pay.stripe.com/invoice/acct_1Ay0NtDpSXl9Whzr/test_YWNjdF8xQXkwTnREcFNYbDlXaHpyLF9VbWFMYUxxMUZ0QmNKUE50TVFaTlRVUEI3QzZhczZwLDE3MzEzMDIwMw0200eIKkzdvR/pdf?s=ap"
+    },
+    {
       "id": "in_1TbmOvDpSXl9WhzraehMOvUu",
       "date": "2026-05-27",
       "amount": 14900,
