@@ -42,6 +42,12 @@
     "status": "success"
   },
   {
+    "restaurant": "loulou",
+    "source": "loulou/demo/screen.png",
+    "generated": "loulou-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "ter",
     "source": "ter/demo/screen.png",
     "generated": "ter-iphone.png",
