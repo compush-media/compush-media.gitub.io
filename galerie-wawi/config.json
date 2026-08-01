@@ -25,5 +25,6 @@
   "stripeSubscriptionId": "",
   "nextBillingDate": "",
   "invoices": [],
-  "city": "Paris"
+  "city": "Paris",
+  "walletTemplate": "templates/brunch-resto"
 }
