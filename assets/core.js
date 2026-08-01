@@ -381,7 +381,38 @@
     if (isPWAStandalone()) {
       onInstallConfirmed("standalone_open");
     }
+    remplirNomResto();
   });
+
+  /* --------------------------------------------------
+     remplirNomResto() — écrit le nom dans [data-resto-name]
+
+     Le balisage porte <span data-resto-name>Restaurant</span>, mais rien ne
+     le remplissait : le nom était chargé par loadConfig(), mis en cache, et
+     jamais affiché. Tous les wallets annonçaient donc « Restaurant ».
+
+     Le nom en cache s'applique d'abord — il évite le clignotement quand la
+     page a déjà été ouverte — puis la config fraîche corrige si besoin.
+
+     On passe par window.Fidelavis : ce bloc est un IIFE distinct de celui qui
+     déclare loadConfig(), les appeler directement lève « not defined ».
+  -------------------------------------------------- */
+  function remplirNomResto() {
+    var cibles = document.querySelectorAll("[data-resto-name]");
+    var F = window.Fidelavis;
+    if (!cibles.length || !F) return;
+
+    function ecrire(nom) {
+      if (!nom) return;
+      for (var i = 0; i < cibles.length; i++) cibles[i].textContent = nom;
+    }
+
+    try { ecrire(localStorage.getItem("fv_resto_name_" + F.getRestoSlug())); }
+    catch (e) {}
+
+    try { F.loadConfig().then(function (cfg) { if (cfg) ecrire(cfg.name); }); }
+    catch (e) {}
+  }
 
   // Android Chrome : événement natif en complément
   window.addEventListener("appinstalled", function () {
