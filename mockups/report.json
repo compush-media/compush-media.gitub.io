@@ -54,6 +54,12 @@
     "status": "success"
   },
   {
+    "restaurant": "l-atelier-gusto",
+    "source": "l-atelier-gusto/demo/screen.png",
+    "generated": "l-atelier-gusto-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "loulou",
     "source": "loulou/demo/screen.png",
     "generated": "loulou-iphone.png",
