@@ -1,0 +1,29 @@
+{
+  "name": "MIURA",
+  "color": "#4F504F",
+  "color2": "#404140",
+  "phone": "01 47 54 00 28",
+  "address": "15 Rue de l'Arc de Triomphe 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/miura/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/miura_restaurant_paris/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/miura/hero.jpg",
+  "tagline": "Gastronomie Ouvert du lundi au vendredi Chef @nicolasaujay",
+  "category": "brunch",
+  "email": "contact@restaurantmiura.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@restaurantmiura.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "city": "Paris"
+}

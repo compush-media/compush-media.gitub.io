@@ -285,5 +285,32 @@
     "phone": "09 87 33 44 22",
     "address": "45 Rue Saint-Maur 75011 Paris",
     "email": "contact@gusto.fr"
+  },
+  "miura": {
+    "name": "MIURA",
+    "brandColor": "#4F504F",
+    "brandColor2": "#404140",
+    "adresse": "15 Rue de l'Arc de Triomphe 75017 Paris",
+    "ville": "Paris",
+    "code_postal": "",
+    "telephone": "01 47 54 00 28",
+    "email": "contact@restaurantmiura.com",
+    "nom_gerant": "",
+    "site_web": "",
+    "googleReview": "",
+    "instagramUrl": "https://www.instagram.com/miura_restaurant_paris/",
+    "logoUrl": "https://app.cartefidelavis.com/miura/logo.jpg",
+    "heroUrl": "https://app.cartefidelavis.com/miura/hero.jpg",
+    "note_google": "",
+    "nombre_avis_google": "",
+    "ambassadorCode": "",
+    "statut_commercial": "",
+    "instagram_followers": "",
+    "instagram_fullname": "",
+    "instagram_external_url": "",
+    "walletTemplate": "templates/brunch-resto",
+    "demoLayout": "nested",
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-02"
   }
 }
