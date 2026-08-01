@@ -1,0 +1,29 @@
+{
+  "name": "Asko",
+  "color": "#946B4D",
+  "color2": "#79573F",
+  "phone": "01 41 34 30 92",
+  "address": "105 Rue Victor Hugo 92300 Levallois-Perret",
+  "logoUrl": "https://app.cartefidelavis.com/asko/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/asko.restaurant/?igsh=cjd5dHRyNHdyNXhk",
+  "heroUrl": "https://app.cartefidelavis.com/asko/hero.jpg",
+  "tagline": "Asko — Levallois-Perret",
+  "category": "brunch",
+  "email": "contact@asko-restaurant.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@asko-restaurant.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "city": "Levallois-Perret"
+}

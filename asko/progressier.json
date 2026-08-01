@@ -1,0 +1,22 @@
+{
+  "name": "Asko",
+  "short_name": "Asko",
+  "start_url": "/asko/index.html",
+  "scope": "/asko/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#946B4D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

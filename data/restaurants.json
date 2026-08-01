@@ -223,5 +223,32 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-07-26"
+  },
+  "asko": {
+    "name": "Asko",
+    "brandColor": "#946B4D",
+    "brandColor2": "#79573F",
+    "adresse": "105 Rue Victor Hugo 92300 Levallois-Perret",
+    "ville": "Levallois-Perret",
+    "code_postal": "92300",
+    "telephone": "01 41 34 30 92",
+    "email": "contact@asko-restaurant.fr",
+    "nom_gerant": "Vincent Astier",
+    "site_web": "http://www.asko-restaurant.fr/",
+    "googleReview": "https://www.google.com/maps/place/?q=place_id:ChIJlZPDKSVv5kcR8nXB7BgOkHU",
+    "instagramUrl": "https://www.instagram.com/asko.restaurant/",
+    "logoUrl": "https://app.cartefidelavis.com/asko/logo.jpg",
+    "heroUrl": "https://app.cartefidelavis.com/asko/hero.jpg",
+    "note_google": 4.6,
+    "nombre_avis_google": 495,
+    "ambassadorCode": "",
+    "statut_commercial": "",
+    "instagram_followers": 412.0,
+    "instagram_fullname": "",
+    "instagram_external_url": "",
+    "walletTemplate": "templates/brunch-resto",
+    "demoLayout": "nested",
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-02"
   }
 }
