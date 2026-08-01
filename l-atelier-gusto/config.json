@@ -1,0 +1,29 @@
+{
+  "name": "L'atelier Gusto",
+  "color": "#312E32",
+  "color2": "#282529",
+  "phone": "09 87 33 44 22",
+  "address": "45 Rue Saint-Maur 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/l-atelier-gusto/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lateliergusto?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+  "heroUrl": "https://app.cartefidelavis.com/l-atelier-gusto/hero.jpg",
+  "tagline": "L'atelier Gusto — Paris",
+  "category": "brunch",
+  "email": "contact@gusto.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@gusto.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "city": "Paris"
+}

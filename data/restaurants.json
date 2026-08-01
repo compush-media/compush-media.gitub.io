@@ -277,5 +277,13 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-08-02"
+  },
+  "l-atelier-gusto": {
+    "name": "L'atelier Gusto",
+    "brandColor": "#312E32",
+    "brandColor2": "#282529",
+    "phone": "09 87 33 44 22",
+    "address": "45 Rue Saint-Maur 75011 Paris",
+    "email": "contact@gusto.fr"
   }
 }
