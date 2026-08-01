@@ -1,0 +1,29 @@
+{
+  "name": "Galerie WAWI",
+  "color": "#928D8A",
+  "color2": "#777371",
+  "phone": "07 78 53 15 52",
+  "address": "49 Rue Albert Thomas 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/galerie-wawi/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/galeriewawi/",
+  "heroUrl": "https://app.cartefidelavis.com/galerie-wawi/hero.jpg",
+  "tagline": "Galerie WAWI — Paris",
+  "category": "brunch",
+  "email": "galerie.wawi@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "galerie.wawi@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "city": "Paris"
+}
