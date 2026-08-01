@@ -1,5 +1,11 @@
 [
   {
+    "restaurant": "asko",
+    "source": "asko/demo/screen.png",
+    "generated": "asko-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "brother-sister-brunch-lunch-dinner",
     "source": "brother-sister-brunch-lunch-dinner/demo/screen.png",
     "generated": "brother-sister-brunch-lunch-dinner-iphone.png",
