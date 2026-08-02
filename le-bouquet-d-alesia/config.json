@@ -1,0 +1,31 @@
+{
+  "name": "Le Bouquet d'Alesia",
+  "color": "#D2D2CF",
+  "color2": "#ACACA9",
+  "phone": "01 53 71 98 50",
+  "address": "75 Av. du Général Leclerc 75014 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-bouquet-d-alesia/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lebouquetalesia/",
+  "heroUrl": "https://app.cartefidelavis.com/le-bouquet-d-alesia/hero.jpg",
+  "tagline": "Le Bouquet d'Alesia — Paris",
+  "category": "brunch",
+  "email": "contact@bouquet-alesia.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@bouquet-alesia.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-bouquet-d-alesia/logo.jpg"
+}

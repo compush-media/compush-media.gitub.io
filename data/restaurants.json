@@ -339,5 +339,32 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-08-02"
+  },
+  "le-bouquet-d-alesia": {
+    "name": "Le Bouquet d'Alesia",
+    "brandColor": "#D2D2CF",
+    "brandColor2": "#ACACA9",
+    "adresse": "75 Av. du Général Leclerc 75014 Paris",
+    "ville": "Paris",
+    "code_postal": "",
+    "telephone": "01 53 71 98 50",
+    "email": "contact@bouquet-alesia.fr",
+    "nom_gerant": "",
+    "site_web": "",
+    "googleReview": "",
+    "instagramUrl": "https://www.instagram.com/lebouquetalesia/",
+    "logoUrl": "https://app.cartefidelavis.com/le-bouquet-d-alesia/logo.jpg",
+    "heroUrl": "https://app.cartefidelavis.com/le-bouquet-d-alesia/hero.jpg",
+    "note_google": "",
+    "nombre_avis_google": "",
+    "ambassadorCode": "",
+    "statut_commercial": "",
+    "instagram_followers": "",
+    "instagram_fullname": "",
+    "instagram_external_url": "",
+    "walletTemplate": "templates/brunch-resto",
+    "demoLayout": "nested",
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-02"
   }
 }

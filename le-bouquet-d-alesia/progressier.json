@@ -1,0 +1,22 @@
+{
+  "name": "Le Bouquet d'Alesia",
+  "short_name": "Le Bouquet d'Alesia",
+  "start_url": "/le-bouquet-d-alesia/index.html",
+  "scope": "/le-bouquet-d-alesia/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#D2D2CF",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
