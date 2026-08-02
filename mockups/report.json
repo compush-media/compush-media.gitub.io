@@ -84,6 +84,12 @@
     "status": "success"
   },
   {
+    "restaurant": "t-cup",
+    "source": "t-cup/demo/screen.png",
+    "generated": "t-cup-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "ter",
     "source": "ter/demo/screen.png",
     "generated": "ter-iphone.png",
