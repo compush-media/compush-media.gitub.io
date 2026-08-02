@@ -72,6 +72,12 @@
     "status": "success"
   },
   {
+    "restaurant": "princesse",
+    "source": "princesse/demo/screen.png",
+    "generated": "princesse-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "ter",
     "source": "ter/demo/screen.png",
     "generated": "ter-iphone.png",
