@@ -366,5 +366,32 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-08-02"
+  },
+  "t-cup": {
+    "name": "T'Cup",
+    "brandColor": "#312D2E",
+    "brandColor2": "#282425",
+    "adresse": "16 R. des Minimes 75003 Paris",
+    "ville": "Paris",
+    "code_postal": "",
+    "telephone": "01 42 72 00 98",
+    "email": "teacup75003@gmail.com",
+    "nom_gerant": "",
+    "site_web": "",
+    "googleReview": "",
+    "instagramUrl": "https://www.instagram.com/tcupparis/",
+    "logoUrl": "https://app.cartefidelavis.com/t-cup/logo.jpg",
+    "heroUrl": "https://app.cartefidelavis.com/t-cup/hero.jpg",
+    "note_google": "",
+    "nombre_avis_google": "",
+    "ambassadorCode": "",
+    "statut_commercial": "",
+    "instagram_followers": "",
+    "instagram_fullname": "",
+    "instagram_external_url": "",
+    "walletTemplate": "templates/brunch-resto",
+    "demoLayout": "nested",
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-02"
   }
 }

@@ -1,0 +1,31 @@
+{
+  "name": "T'Cup",
+  "color": "#312D2E",
+  "color2": "#282425",
+  "phone": "01 42 72 00 98",
+  "address": "16 R. des Minimes 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/t-cup/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/tcupparis/",
+  "heroUrl": "https://app.cartefidelavis.com/t-cup/hero.jpg",
+  "tagline": "T'Cup — Paris",
+  "category": "brunch",
+  "email": "teacup75003@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "teacup75003@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/t-cup/logo.jpg"
+}
