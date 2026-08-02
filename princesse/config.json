@@ -1,0 +1,30 @@
+{
+  "name": "Princesse",
+  "color": "#E5D9D0",
+  "color2": "#BBB1AA",
+  "phone": "09 88 42 09 91",
+  "address": "32 Rue Bichat 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/princesse/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/princessecafe/",
+  "heroUrl": "https://app.cartefidelavis.com/princesse/hero.jpg",
+  "tagline": "Princesse — Paris",
+  "category": "brunch",
+  "email": "hello@princesse.paris",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "hello@princesse.paris",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}
