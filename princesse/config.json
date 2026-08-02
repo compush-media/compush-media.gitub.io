@@ -26,5 +26,6 @@
   "nextBillingDate": "",
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
-  "city": "Paris"
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/princesse/logo.jpg"
 }
