@@ -26,5 +26,6 @@
   "nextBillingDate": "",
   "invoices": [],
   "city": "Paris",
-  "walletTemplate": "templates/brunch-resto"
+  "walletTemplate": "templates/brunch-resto",
+  "iconUrl": "https://app.cartefidelavis.com/l-atelier-gusto/logo.jpg"
 }
