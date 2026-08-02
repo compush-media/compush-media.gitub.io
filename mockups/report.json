@@ -60,6 +60,12 @@
     "status": "success"
   },
   {
+    "restaurant": "le-bouquet-d-alesia",
+    "source": "le-bouquet-d-alesia/demo/screen.png",
+    "generated": "le-bouquet-d-alesia-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "loulou",
     "source": "loulou/demo/screen.png",
     "generated": "loulou-iphone.png",
