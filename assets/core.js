@@ -407,6 +407,14 @@
     // distinct de celui qui déclare getRestoSlug et trackOnce. Les appeler
     // sans préfixe lève « not defined » — la même erreur que sur le nom du
     // restaurant, silencieuse dans la page et visible seulement en console.
+    // Le robot de captures (gen-demo-screens.yml) ouvre CHAQUE page de démo à
+    // chaque push pour la photographier : sans ce filtre, un déploiement
+    // ajoutait 16 fausses visites et rendait la statistique inexploitable.
+    // navigator.webdriver est posé par Playwright, Puppeteer et Selenium ;
+    // l'agent est vérifié en second, au cas où un outil ne le poserait pas.
+    if (navigator.webdriver === true ||
+        / Headless|bot|crawler|spider/i.test(navigator.userAgent)) return;
+
     var F = window.Fidelavis;
     if (!F || !F.trackOnce) return;
     var p = new URLSearchParams(location.search);
