@@ -382,7 +382,34 @@
       onInstallConfirmed("standalone_open");
     }
     remplirNomResto();
+    tracerVisiteDemo();
   });
+
+  /* --------------------------------------------------
+     tracerVisiteDemo() — la visite d'une page /demo/
+
+     Sans elle, une démonstration ouverte ne laissait AUCUNE trace : sur 2 634
+     événements enregistrés, « demo » n'était jamais vrai. On savait donc qui
+     avait cliqué dans un e-mail (Brevo le dit), mais jamais qui avait cliqué
+     dans un DM Instagram — canal totalement aveugle.
+
+     Le « src » de l'URL (email / dm / setter), posé par la séquence de
+     prospection, est remonté tel quel : c'est ce qui permet de comparer ce que
+     convertit chaque canal. Le « ref » n'a pas de colonne dédiée, mais
+     page_url conserve l'URL entière — rien n'est perdu.
+
+     trackOnce : une seule fois par session, sinon un rechargement gonflerait
+     le compteur.
+  -------------------------------------------------- */
+  function tracerVisiteDemo() {
+    if (location.pathname.indexOf("/demo/") === -1) return;
+    var p = new URLSearchParams(location.search);
+    var slug = getRestoSlug();
+    trackOnce("demo_view", "fv_demo_view_" + slug, {
+      demo: true,
+      src:  p.get("src") || "direct",
+    });
+  }
 
   /* --------------------------------------------------
      remplirNomResto() — écrit le nom dans [data-resto-name]
