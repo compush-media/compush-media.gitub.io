@@ -403,9 +403,15 @@
   -------------------------------------------------- */
   function tracerVisiteDemo() {
     if (location.pathname.indexOf("/demo/") === -1) return;
+    // window.Fidelavis, PAS les fonctions directement : ce bloc est un IIFE
+    // distinct de celui qui déclare getRestoSlug et trackOnce. Les appeler
+    // sans préfixe lève « not defined » — la même erreur que sur le nom du
+    // restaurant, silencieuse dans la page et visible seulement en console.
+    var F = window.Fidelavis;
+    if (!F || !F.trackOnce) return;
     var p = new URLSearchParams(location.search);
-    var slug = getRestoSlug();
-    trackOnce("demo_view", "fv_demo_view_" + slug, {
+    var slug = (F.getRestoSlug && F.getRestoSlug()) || "";
+    F.trackOnce("demo_view", "fv_demo_view_" + slug, {
       demo: true,
       src:  p.get("src") || "direct",
     });
