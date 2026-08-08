@@ -67,7 +67,7 @@
 
     <a id="goDash" class="dashbtn" href="#" style="display:none">Accéder à mon tableau de bord →</a>
 
-    <p class="foot">Test gratuit Fidelavis · jusqu’à <b>30 clients</b> offerts, sans engagement.</p>
+    <p class="foot">Test gratuit Fidelavis · <b>30 jours</b> offerts, sans limite de clients et sans engagement.</p>
   </div>
 
 <script>
@@ -75,7 +75,10 @@
   "use strict";
   var SUPA = "https://rtdiaeskmyjjwohirhzj.supabase.co";
   var KEY  = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
-  var MAX  = 30;
+  // Le plafond de 30 clients a disparu : c'est la date qui termine l'essai.
+  // Le compteur devient un score, la barre mesure le temps écoulé.
+  var DUREE = 30;   // jours
+  var joursRestants = null;   // renseigné par config.json
 
   var slug = (new URLSearchParams(location.search).get("restaurant") || "").trim();
 
@@ -83,25 +86,45 @@
   var elFill  = document.getElementById("fill");
   var elHint  = document.getElementById("hint");
 
+  function jour(n){ return n + " jour" + (n > 1 ? "s" : ""); }
+
   function render(n){
     var c = Math.max(0, n|0);
     elCount.classList.remove("loading");
-    elCount.innerHTML = c + ' <span class="max">/ ' + MAX + '</span>';
-    var pct = Math.min(100, Math.round(c / MAX * 100));
-    requestAnimationFrame(function(){ elFill.style.width = pct + "%"; });
-    if (c >= MAX) {
-      elHint.innerHTML = "🎉 Objectif atteint — vos 30 clients sont recrutés !";
+    elCount.textContent = c;
+    var ecoules = (joursRestants == null) ? 0 : Math.max(0, DUREE - joursRestants);
+    requestAnimationFrame(function(){
+      elFill.style.width = Math.min(100, Math.round(ecoules / DUREE * 100)) + "%";
+    });
+    if (joursRestants === 0) {
+      elHint.textContent = "Votre essai est terminé — activez votre abonnement pour continuer.";
+    } else if (joursRestants != null) {
+      elHint.textContent = jour(joursRestants) + " restant" + (joursRestants > 1 ? "s" : "")
+        + (c > 0 ? " · continuez, ça marche !" : " · posez vos cartes pour démarrer");
     } else {
-      var left = MAX - c;
-      elHint.textContent = "Plus que " + left + " client" + (left>1?"s":"") + " avant la fin de l’essai";
+      elHint.textContent = c > 0 ? "Continuez, ça marche !" : "Posez vos cartes pour démarrer";
     }
   }
 
   function fail(msg){
     elCount.classList.remove("loading");
-    elCount.innerHTML = '0 <span class="max">/ ' + MAX + '</span>';
+    elCount.textContent = "0";
     elFill.style.width = "0%";
     elHint.textContent = msg || "Suivi indisponible pour le moment.";
+  }
+
+  // La date de fin décide seule ; le compteur n'est qu'un score.
+  function chargerEcheance(){
+    if (!slug) return Promise.resolve();
+    return fetch("/" + slug + "/config.json?t=" + Date.now(), {cache:"no-store"})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(c){
+        if (c && c.trialEndDate) {
+          var ms = new Date(c.trialEndDate + "T23:59:59") - new Date();
+          joursRestants = Math.max(0, Math.ceil(ms / 86400000));
+        }
+      })
+      .catch(function(){});
   }
 
   // Bouton vers le vrai tableau de bord (visible si un resto est précisé)
@@ -113,10 +136,13 @@
 
   if (!slug) { fail("Lien incomplet : restaurant non précisé."); return; }
 
-  fetch(SUPA + "/rest/v1/rpc/fv_trial_count", {
-    method:"POST",
-    headers:{ "apikey":KEY, "Authorization":"Bearer "+KEY, "Content-Type":"application/json" },
-    body: JSON.stringify({ p_slug: slug })
+  // On lit d'abord l'échéance : sans elle la barre ne saurait pas quoi mesurer.
+  chargerEcheance().then(function(){
+    return fetch(SUPA + "/rest/v1/rpc/fv_trial_count", {
+      method:"POST",
+      headers:{ "apikey":KEY, "Authorization":"Bearer "+KEY, "Content-Type":"application/json" },
+      body: JSON.stringify({ p_slug: slug })
+    });
   })
   .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
   .then(function(n){ render(typeof n === "number" ? n : parseInt(n,10) || 0); })

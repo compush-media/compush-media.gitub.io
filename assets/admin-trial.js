@@ -6,15 +6,18 @@
 
    • LEGACY (par défaut — restos existants, comportement inchangé) :
      essai temporel (subscriptionStatus "trialing" + trialEndDate) →
-     à expiration, modal BLOQUANT 129€/mois.
+     à expiration, modal BLOQUANT 79€/mois.
 
-   • "CLIENTS" (nouveau — test gratuit 30 clients) : config.json contient
+   • "CLIENTS" (test gratuit 30 jours) : config.json contient
        "trialType":   "clients",
-       "trialEndDate": "YYYY-MM-DD"   ← filet temporel (30 jours après création)
-     Essai terminé au PREMIER atteint : 30 clients recrutés OU date dépassée.
-       - Pendant l'essai : jauge verte « X/30 clients · N jours restants ».
-       - Approche de la fin (≥ NUDGE_CLIENTS ou ≤ NUDGE_DAYS jours) :
-         la jauge devient un nudge orange avec CTA.
+       "trialEndDate": "YYYY-MM-DD"   ← 30 jours après la création
+     Essai terminé à la DATE, sans plafond de clients.
+       Le plafond de 30 clients a été retiré : il coupait l'essai en deux
+       jours chez une brasserie et jamais chez un salon de thé. L'essai
+       était donc le plus court là où l'outil marchait le mieux.
+       Le compteur reste affiché, comme un encouragement et non une limite.
+       - Pendant l'essai : jauge verte « N jours restants · X clients ».
+       - Derniers jours (≤ NUDGE_DAYS) : nudge orange avec CTA.
        - Essai terminé : PAYWALL DOUX — bandeau rouge persistant + modal
          FERMABLE (1×/session). Le dashboard reste consultable :
          le restaurateur voit ses clients (ce qu'il perdrait en partant).
@@ -23,7 +26,7 @@
 (function() {
 
   var STRIPE_GAS_URL = "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec";
-  // ⚠️ REMPLACER par l'ID du price Stripe 129€/mois après création dans le dashboard Stripe
+  // ⚠️ REMPLACER par l'ID du price Stripe 79€/mois après création dans le dashboard Stripe
   var PRICE_IDS = {
     terrain: "price_1TQUurDpSXl9WhzrrhjhA9WC"
   };
@@ -31,9 +34,8 @@
   /* ---- Réglages du mode "clients" ---- */
   var SUPA_URL          = "https://rtdiaeskmyjjwohirhzj.supabase.co";
   var SUPA_KEY          = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
-  var TRIAL_MAX_CLIENTS = 30;   // surchageable par cfg.trialMaxClients
-  var NUDGE_CLIENTS     = 25;   // nudge à partir de X clients…
-  var NUDGE_DAYS        = 7;    // …ou quand il reste ≤ N jours
+  var TRIAL_DAYS        = 30;   // durée de l'essai, pour la jauge
+  var NUDGE_DAYS        = 7;    // nudge quand il reste ≤ N jours
   // Ligne promo du nudge (ex. "🎁 1er mois -50 % avec le code ESSAI50").
   // Laisser vide tant que le coupon n'existe pas dans Stripe.
   var PROMO_LINE        = "";
@@ -142,7 +144,7 @@
             // Header rouge
             '<div style="background:#b6152b;color:#fff;padding:22px 22px">',
               '<div style="display:inline-block;background:rgba(255,255,255,0.2);color:#fff;padding:5px 14px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.05em;margin-bottom:12px">OFFRE TERRAIN EXCLUSIVE</div>',
-              '<div style="font-size:38px;font-weight:900;line-height:1;margin-bottom:6px">129€<span style="font-size:14px;font-weight:400;opacity:.9"> /mois</span></div>',
+              '<div style="font-size:38px;font-weight:900;line-height:1;margin-bottom:6px">79€<span style="font-size:14px;font-weight:400;opacity:.9"> /mois</span></div>',
               '<div style="font-size:13px;color:rgba(255,255,255,.85);font-style:italic">Résiliable à tout moment — sans engagement</div>',
             '</div>',
 
@@ -155,6 +157,7 @@
                 '<li>✓ Offres &amp; coupons fidélité</li>',
                 '<li>✓ Collecte automatique des emails clients</li>',
                 '<li>✓ Plus d\'avis Google naturellement ⭐</li>',
+                '<li>✓ Réponse automatique aux avis Google</li>',
                 '<li>✓ Tableau de bord simple</li>',
               '</ul>',
             '</div>',
@@ -162,8 +165,8 @@
             // Bonus
             '<div style="padding:0 20px 18px;background:#fff;font-size:12.5px;color:#374151">',
               '<div style="margin-top:14px;padding-top:14px;border-top:1px solid #e5e7eb">',
-                '<div><strong>🎁 Mise en place <span style="color:#9ca3af;font-weight:400;text-decoration:line-through">199€</span> → <span style="color:#b6152b">offerte</span></strong></div>',
-                '<div style="margin-top:6px"><strong>⏰ 14 jours d\'essai déjà offerts</strong> — votre carte est enregistrée et la 1ère facture arrive après l\'essai</div>',
+                '<div><strong>🎁 Mise en place offerte</strong> — aucun frais d\'installation</div>',
+                '<div style="margin-top:6px"><strong>⏰ 30 jours d\'essai déjà offerts</strong>, sans limite de clients — la 1ère facture arrive après l\'essai</div>',
               '</div>',
             '</div>',
 
@@ -266,32 +269,37 @@
 
   // Jauge (verte) ou nudge (orange) pendant l'essai. Insérée en haut du
   // contenu principal si présent (espace-admin), sinon ignorée.
-  function _renderGauge(cfg, count, max, days, nudge) {
+  // La jauge mesure désormais le TEMPS, plus les clients : c'est la date qui
+  // termine l'essai. Le nombre de clients recrutés reste affiché — il motive,
+  // et c'est aussi ce que le restaurateur perdrait en partant.
+  function _renderGauge(cfg, count, days, nudge) {
     var host = document.querySelector("main.content");
     if (!host || document.getElementById("fv-trial-gauge")) return;
 
-    var left    = Math.max(0, max - count);
-    var pct     = Math.min(100, Math.round(count / max * 100));
-    var daysTxt = (days == null) ? "" :
-      ' · <span style="white-space:nowrap">⏳ ' + days + " jour" + (days > 1 ? "s" : "") + " restant" + (days > 1 ? "s" : "") + "</span>";
+    var total   = parseInt(cfg.trialDays, 10) || TRIAL_DAYS;
+    var ecoules = (days == null) ? 0 : Math.max(0, total - days);
+    var pct     = Math.min(100, Math.round(ecoules / total * 100));
+    var jour    = function (n) { return n + " jour" + (n > 1 ? "s" : ""); };
 
     var border = nudge ? "#f4c98a" : "#ece5dc";
     var bg     = nudge ? "linear-gradient(135deg,#fff8ef,#fdf1e0)" : "linear-gradient(135deg,#ffffff,#fbf7f1)";
     var fillBg = nudge ? "linear-gradient(90deg,#f59e0b,#ea7d10)" : "linear-gradient(90deg,#27ae60,#1f9d57)";
     var numCol = nudge ? "#ea7d10" : "#1f9d57";
 
-    // Le nudge met en avant la rareté qui l'a déclenché (clients ou jours)
-    var scarcity = (count >= NUDGE_CLIENTS || days == null)
-      ? left + " client" + (left > 1 ? "s" : "")
-      : days + " jour" + (days > 1 ? "s" : "");
+    var clientsTxt = count > 0
+      ? count + " client" + (count > 1 ? "s" : "") + " déjà fidélisé" + (count > 1 ? "s" : "")
+      : "Posez vos cartes : vos premiers clients arrivent";
+
     var sub = nudge
-      ? "<strong>Plus que " + scarcity + " !</strong> Activez maintenant et gardez votre élan." +
+      ? "<strong>Plus que " + (days == null ? "quelques jours" : jour(days)) + " !</strong> " +
+        (count > 0 ? clientsTxt + " — gardez votre élan." : "Activez pour continuer.") +
         (PROMO_LINE ? "<br>" + PROMO_LINE : "")
-      : "Plus que " + left + " client" + (left > 1 ? "s" : "") + " avant la fin de l’essai" + daysTxt;
+      : clientsTxt;
 
     var cta = nudge
       ? '<button id="fv-gauge-cta" style="border:none;background:#b6152b;color:#fff;font-weight:800;font-size:13.5px;padding:10px 16px;border-radius:10px;cursor:pointer;white-space:nowrap">👉 Activer mon abonnement</button>'
-      : '<div style="font-weight:800;font-size:22px;color:' + numCol + ';white-space:nowrap">' + count + '<span style="color:#b3a596;font-size:15px">&nbsp;/&nbsp;' + max + "</span></div>";
+      : '<div style="font-weight:800;font-size:22px;color:' + numCol + ';white-space:nowrap">' + count +
+        '<span style="color:#b3a596;font-size:15px">&nbsp;client' + (count > 1 ? "s" : "") + "</span></div>";
 
     var el = document.createElement("div");
     el.id = "fv-trial-gauge";
@@ -302,7 +310,7 @@
           '<span style="font-size:24px;line-height:1">' + (nudge ? "🔥" : "🎁") + "</span>" +
           '<div style="min-width:0">' +
             '<div style="font-weight:800;font-size:15px;color:#241a12">Essai gratuit' +
-              (nudge ? "" : ' · <span style="color:' + numCol + '">' + count + "/" + max + " clients</span>") +
+              (days == null ? "" : ' · <span style="color:' + numCol + '">' + jour(days) + " restant" + (days > 1 ? "s" : "") + "</span>") +
             "</div>" +
             '<div style="font-size:13px;color:#6f6256;font-weight:600;line-height:1.45">' + sub + "</div>" +
           "</div>" +
@@ -346,25 +354,27 @@
   }
 
   function _runClientsTrial(cfg, slug) {
-    var max  = parseInt(cfg.trialMaxClients, 10) || TRIAL_MAX_CLIENTS;
     var days = _daysLeft(cfg);
     // Neutralise le bandeau d'essai TEMPOREL du dashboard (#subBanner) :
-    // en mode clients, la jauge X/30 le remplace (évite le double message).
+    // la jauge le remplace (évite le double message).
     var st = document.createElement("style");
     st.textContent = "#subBanner{display:none !important}";
     document.head.appendChild(st);
-    _trialCount(slug).then(function(count) {
-      var expired = (count >= max) || (days !== null && days <= 0);
-      if (expired)       _renderSoftPaywall(cfg, count);
-      else {
-        var nudge = (count >= NUDGE_CLIENTS) || (days !== null && days <= NUDGE_DAYS);
-        _renderGauge(cfg, count, max, days, nudge);
-      }
-    }).catch(function(e) {
-      console.warn("[Fidelavis/trial] compteur indisponible :", e.message);
-      // Filet : si le compteur est KO, on retombe sur le critère temporel seul.
-      if (days !== null && days <= 0) _renderSoftPaywall(cfg, 0);
-    });
+
+    // Seule la DATE termine l'essai. Le compteur n'est plus qu'un affichage :
+    // s'il est indisponible, la jauge se dessine quand même à zéro plutôt que
+    // de disparaître.
+    var expire = (days !== null && days <= 0);
+    var nudge  = (days !== null && days <= NUDGE_DAYS);
+    _trialCount(slug)
+      .catch(function(e) {
+        console.warn("[Fidelavis/trial] compteur indisponible :", e.message);
+        return 0;
+      })
+      .then(function(count) {
+        if (expire) _renderSoftPaywall(cfg, count);
+        else        _renderGauge(cfg, count, days, nudge);
+      });
   }
 
   /* --------------------------------------------------
@@ -379,7 +389,7 @@
       .then(function(r) { return r.json(); })
       .then(function(cfg) {
         if (_isClientsTrial(cfg)) {
-          _runClientsTrial(cfg, slug);          // nouveau mode : 30 clients / 30 jours
+          _runClientsTrial(cfg, slug);          // essai 30 jours, sans plafond
         } else if (_isExpired(cfg)) {
           _showModal(cfg, false);               // legacy : modal bloquant inchangé
         }

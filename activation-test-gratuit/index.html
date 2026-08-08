@@ -62,9 +62,9 @@
     <div class="card" id="formCard">
       <span class="badge">🎁 Offre de lancement</span>
       <h1>Activez votre test gratuit Fidelavis</h1>
-      <p class="lead">Jusqu’à 30 clients inclus pour tester le système dans votre établissement.</p>
+      <p class="lead">30 jours pour tester le système dans votre établissement, sans limite de clients.</p>
       <ul class="adv">
-        <li><span class="c">✓</span> 30 clients offerts</li>
+        <li><span class="c">✓</span> 30 jours offerts</li>
         <li><span class="c">✓</span> 3 cartes NFC</li>
         <li><span class="c">✓</span> QR code inclus</li>
         <li><span class="c">✓</span> Sans engagement</li>
@@ -109,7 +109,11 @@
       <h2>Vérifiez votre email</h2>
       <p>Un email vient d’être envoyé à <b id="okEmail">votre adresse</b>.<br>
          Cliquez sur le lien pour <b>créer votre mot de passe</b> et accéder à votre tableau de bord.</p>
-      <p class="fine" style="margin-top:14px">Pensez à vérifier vos spams. Votre essai démarre dès la connexion : jusqu’à <b>30 clients offerts</b>.</p>
+      <p class="fine" style="margin-top:14px">Pensez à vérifier vos spams. Votre essai démarre dès la connexion : <b>30 jours, sans limite de clients</b>.</p>
+      <p id="okAlerte" style="display:none;margin-top:14px;padding:12px 14px;border-radius:10px;background:#fff4f4;border:1px solid #f3c9c9;color:#8c2f2f;font-size:13.5px;line-height:1.5">
+        ⚠️ Votre demande est bien enregistrée, mais l’envoi du lien d’accès n’a pas abouti.
+        Écrivez-nous à <b>support@fidelavis.com</b> et nous vous l’envoyons dans la journée.
+      </p>
       <a id="goEssai" href="#" class="submit" style="display:inline-block;text-decoration:none;width:auto;padding:13px 24px;margin-top:18px;background:#f3efea;color:#4a4038;box-shadow:none;">Suivre mon essai →</a>
     </div>
   </div>
@@ -167,17 +171,23 @@
     btn.disabled = true;
     btn.textContent = "Activation en cours…";
 
-    function finish() {
-      // État local : test actif + compteur 0/30 (évite la réouverture du pop-up)
+    function finish(lienOk) {
+      // État local : test actif (évite la réouverture du pop-up). Le compteur
+      // de clients ne sert plus à rien depuis le retrait du plafond — c'est la
+      // date qui termine l'essai.
       try {
         if (slug) {
-          localStorage.setItem("fidelavis_test_actif_"   + slug, "1");
-          localStorage.setItem("fidelavis_test_clients_" + slug, "0");
+          localStorage.setItem("fidelavis_test_actif_" + slug, "1");
+          localStorage.removeItem("fidelavis_test_clients_" + slug);
         }
         sessionStorage.setItem("fidelavis_demo_popup_closed", "true");
       } catch(_) {}
       var okEmail = document.getElementById("okEmail");
       if (okEmail) okEmail.textContent = data.email;
+      if (lienOk === false) {
+        var alerte = document.getElementById("okAlerte");
+        if (alerte) alerte.style.display = "block";
+      }
       var goEssai = document.getElementById("goEssai");
       if (goEssai) goEssai.href = "/mon-essai/?restaurant=" + encodeURIComponent(slug);
       document.getElementById("formCard").style.display = "none";
@@ -189,7 +199,11 @@
     //    (proxy GAS : génère le token + envoie l'email). Même pattern fiable
     //    que create-password : fetch POST text/plain (le sendBeacon ne
     //    transmettait pas le corps à GAS).
-    fetch(PROXY, {
+    // Cet appel envoie le lien d'accès : c'est l'étape critique. Son échec
+    // était avalé en silence — le restaurateur voyait « activé », ne recevait
+    // jamais rien, et personne ne le savait. On le signale maintenant, à lui
+    // comme à l'agence.
+    var lienEnvoye = fetch(PROXY, {
       method:  "POST",
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({
@@ -198,7 +212,7 @@
         email:   data.email, phone: data.phone,
         address: data.addr, cp: data.cp, ville: data.ville, ts: Date.now()
       })
-    }).catch(function(){});
+    }).then(function(r){ return r.ok; }).catch(function(){ return false; });
 
     // 2) Notif agence via FormSubmit (canal éprouvé) + confirmation UX.
     fetch(FORMSUBMIT, {
@@ -213,12 +227,12 @@
         "Email":      data.email,
         "Téléphone":  data.phone,
         "Adresse":    data.addr + ", " + data.cp + " " + data.ville,
-        "Statut":     "test_gratuit_actif — 0/30 clients"
+        "Statut":     "test_gratuit_actif — 30 jours"
       })
     })
-    .then(function(r){ return r.json(); })
-    .then(function(){ finish(); })
-    .catch(function(){ finish(); });   // l'UX confirme dans tous les cas
+    .catch(function(){})
+    .then(function(){ return lienEnvoye; })
+    .then(function(ok){ finish(ok); });
   });
 })();
 </script>
