@@ -1,0 +1,31 @@
+{
+  "name": "Aux Deux Ecus - Brasserie",
+  "color": "#5D1423",
+  "color2": "#4C101C",
+  "phone": "09 74 64 15 61",
+  "address": "1 Pl. des Deux Ecus 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/aux-deux-ecus-brasserie/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/auxdeuxecus/",
+  "heroUrl": "https://app.cartefidelavis.com/aux-deux-ecus-brasserie/hero.jpg",
+  "tagline": ". Brasserie vivante 7j/7j . . HAPPY HOUR 17H-21H . | Concerts 🎷",
+  "category": "brunch",
+  "email": "aufrereantoine03@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "aufrereantoine03@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/aux-deux-ecus-brasserie/logo.jpg"
+}
