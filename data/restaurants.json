@@ -188,13 +188,6 @@
     "date_creation": "2026-06-05",
     "date_activation": "2026-06-13T18:28:14.503Z"
   },
-  "test": {
-    "name": "test",
-    "brandColor": "#B8924F",
-    "brandColor2": "#9E7A3E",
-    "email": "dan.drumonde@gmail.com",
-    "ambassadorCode": "AMB-DANY-DRU-003"
-  },
   "loulou": {
     "name": "Loulou",
     "brandColor": "#B8924F",
@@ -243,7 +236,7 @@
     "nombre_avis_google": 495,
     "ambassadorCode": "",
     "statut_commercial": "",
-    "instagram_followers": 412.0,
+    "instagram_followers": 412,
     "instagram_fullname": "",
     "instagram_external_url": "",
     "walletTemplate": "templates/brunch-resto",
