@@ -1,0 +1,31 @@
+{
+  "name": "Kuisinistan - Restaurant Paris 2",
+  "color": "#267D43",
+  "color2": "#1F6636",
+  "phone": "01 77 99 78 32",
+  "address": "37 Rue de Palestro 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/kuisinistan-restaurant-paris-2/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/kuisinistann/",
+  "heroUrl": "https://app.cartefidelavis.com/kuisinistan-restaurant-paris-2/hero.jpg",
+  "tagline": "Kuisinistan - Restaurant Paris 2 — Paris",
+  "category": "brunch",
+  "email": "contact@kuisinistan.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@kuisinistan.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kuisinistan-restaurant-paris-2/logo.jpg"
+}

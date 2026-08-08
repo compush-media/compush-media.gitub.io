@@ -557,5 +557,32 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-08-08"
+  },
+  "kuisinistan-restaurant-paris-2": {
+    "name": "Kuisinistan - Restaurant Paris 2",
+    "brandColor": "#267D43",
+    "brandColor2": "#1F6636",
+    "adresse": "37 Rue de Palestro 75002 Paris",
+    "ville": "Paris",
+    "code_postal": "",
+    "telephone": "01 77 99 78 32",
+    "email": "contact@kuisinistan.fr",
+    "nom_gerant": "",
+    "site_web": "",
+    "googleReview": "",
+    "instagramUrl": "https://www.instagram.com/kuisinistann/",
+    "logoUrl": "https://app.cartefidelavis.com/kuisinistan-restaurant-paris-2/logo.jpg",
+    "heroUrl": "https://app.cartefidelavis.com/kuisinistan-restaurant-paris-2/hero.jpg",
+    "note_google": "",
+    "nombre_avis_google": "",
+    "ambassadorCode": "",
+    "statut_commercial": "",
+    "instagram_followers": "",
+    "instagram_fullname": "",
+    "instagram_external_url": "",
+    "walletTemplate": "templates/brunch-resto",
+    "demoLayout": "nested",
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-08"
   }
 }
