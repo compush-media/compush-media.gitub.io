@@ -6,12 +6,6 @@
     "status": "success"
   },
   {
-    "restaurant": "bacini",
-    "source": "bacini/demo/screen.png",
-    "generated": "bacini-iphone.png",
-    "status": "success"
-  },
-  {
     "restaurant": "brother-sister-brunch-lunch-dinner",
     "source": "brother-sister-brunch-lunch-dinner/demo/screen.png",
     "generated": "brother-sister-brunch-lunch-dinner-iphone.png",
@@ -75,18 +69,6 @@
     "restaurant": "le-bouquet-d-alesia",
     "source": "le-bouquet-d-alesia/demo/screen.png",
     "generated": "le-bouquet-d-alesia-iphone.png",
-    "status": "success"
-  },
-  {
-    "restaurant": "le-jackpot",
-    "source": "le-jackpot/demo/screen.png",
-    "generated": "le-jackpot-iphone.png",
-    "status": "success"
-  },
-  {
-    "restaurant": "le-village-cafe",
-    "source": "le-village-cafe/demo/screen.png",
-    "generated": "le-village-cafe-iphone.png",
     "status": "success"
   },
   {
