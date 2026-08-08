@@ -1,0 +1,31 @@
+{
+  "name": "Terre Restaurant",
+  "color": "#B44D2C",
+  "color2": "#933F24",
+  "phone": "09 77 37 04 35",
+  "address": "23 Rue de Montreuil 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/terre-restaurant/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/terre.restaurant/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/terre-restaurant/hero.jpg",
+  "tagline": "Terre Restaurant — Paris",
+  "category": "brunch",
+  "email": "contact@terre-restaurant.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@terre-restaurant.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/terre-restaurant/logo.jpg"
+}
