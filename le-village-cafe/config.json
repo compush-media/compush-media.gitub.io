@@ -1,0 +1,31 @@
+{
+  "name": "Le Village Café",
+  "color": "#6A3007",
+  "color2": "#562705",
+  "phone": "01 42 94 37 92",
+  "address": "22 Rue de la Terrasse 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-village-cafe/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/levillagecafe_paris17/",
+  "heroUrl": "https://app.cartefidelavis.com/le-village-cafe/hero.jpg",
+  "tagline": "Le Village Café — Paris",
+  "category": "brunch",
+  "email": "levillagecafe22@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "levillagecafe22@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-village-cafe/logo.jpg"
+}

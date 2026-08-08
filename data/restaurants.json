@@ -530,5 +530,32 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-08-08"
+  },
+  "le-village-cafe": {
+    "name": "Le Village Café",
+    "brandColor": "#6A3007",
+    "brandColor2": "#562705",
+    "adresse": "22 Rue de la Terrasse 75017 Paris",
+    "ville": "Paris",
+    "code_postal": "",
+    "telephone": "01 42 94 37 92",
+    "email": "levillagecafe22@gmail.com",
+    "nom_gerant": "",
+    "site_web": "",
+    "googleReview": "",
+    "instagramUrl": "https://www.instagram.com/levillagecafe_paris17/",
+    "logoUrl": "https://app.cartefidelavis.com/le-village-cafe/logo.jpg",
+    "heroUrl": "https://app.cartefidelavis.com/le-village-cafe/hero.jpg",
+    "note_google": "",
+    "nombre_avis_google": "",
+    "ambassadorCode": "",
+    "statut_commercial": "",
+    "instagram_followers": "",
+    "instagram_fullname": "",
+    "instagram_external_url": "",
+    "walletTemplate": "templates/brunch-resto",
+    "demoLayout": "nested",
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-08"
   }
 }
