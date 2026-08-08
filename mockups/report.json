@@ -6,6 +6,12 @@
     "status": "success"
   },
   {
+    "restaurant": "aux-deux-ecus-brasserie",
+    "source": "aux-deux-ecus-brasserie/demo/screen.png",
+    "generated": "aux-deux-ecus-brasserie-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "bacini",
     "source": "bacini/demo/screen.png",
     "generated": "bacini-iphone.png",
