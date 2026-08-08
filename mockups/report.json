@@ -96,6 +96,18 @@
     "status": "success"
   },
   {
+    "restaurant": "les-mauvais-garcons",
+    "source": "les-mauvais-garcons/demo/screen.png",
+    "generated": "les-mauvais-garcons-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "lizard",
+    "source": "lizard/demo/screen.png",
+    "generated": "lizard-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "loulou",
     "source": "loulou/demo/screen.png",
     "generated": "loulou-iphone.png",
