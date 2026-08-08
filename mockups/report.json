@@ -66,6 +66,12 @@
     "status": "success"
   },
   {
+    "restaurant": "kuisinistan-restaurant-paris-2",
+    "source": "kuisinistan-restaurant-paris-2/demo/screen.png",
+    "generated": "kuisinistan-restaurant-paris-2-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "l-adada-bar-bar-paris-14",
     "source": "l-adada-bar-bar-paris-14/demo/screen.png",
     "generated": "l-adada-bar-bar-paris-14-iphone.png",
