@@ -611,5 +611,32 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-08-08"
+  },
+  "lizard": {
+    "name": "LIZARD",
+    "brandColor": "#434A27",
+    "brandColor2": "#363C1F",
+    "adresse": "18 Rue du Bourg Tibourg 75004 Paris",
+    "ville": "Paris",
+    "code_postal": "",
+    "telephone": "09 74 64 18 00",
+    "email": "directionlizard@gmail.com",
+    "nom_gerant": "",
+    "site_web": "",
+    "googleReview": "",
+    "instagramUrl": "https://www.instagram.com/lizardloungeparis",
+    "logoUrl": "https://app.cartefidelavis.com/lizard/logo.jpg",
+    "heroUrl": "https://app.cartefidelavis.com/lizard/hero.jpg",
+    "note_google": "",
+    "nombre_avis_google": "",
+    "ambassadorCode": "",
+    "statut_commercial": "",
+    "instagram_followers": "",
+    "instagram_fullname": "",
+    "instagram_external_url": "",
+    "walletTemplate": "templates/brunch-resto",
+    "demoLayout": "nested",
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-08"
   }
 }

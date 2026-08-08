@@ -1,0 +1,31 @@
+{
+  "name": "LIZARD",
+  "color": "#434A27",
+  "color2": "#363C1F",
+  "phone": "09 74 64 18 00",
+  "address": "18 Rue du Bourg Tibourg 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/lizard/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lizardloungeparis?ighid=MjEwN2lyYWYwYw==",
+  "heroUrl": "https://app.cartefidelavis.com/lizard/hero.jpg",
+  "tagline": "LIZARD — Paris",
+  "category": "brunch",
+  "email": "directionlizard@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "directionlizard@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/lizard/logo.jpg"
+}
