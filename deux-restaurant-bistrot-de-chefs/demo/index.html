@@ -719,7 +719,7 @@
 <div class="pg-head">
 
   <!-- Account button top-right -->
-  <button class="acct-btn" onclick="window.Fidelavis?.go?.('compte.html')" aria-label="Mon compte">
+  <button class="acct-btn" id="acctBtn" onclick="window.Fidelavis?.go?.('compte.html')" aria-label="Mon compte">
     <div class="acct-av" id="acctAv">M</div>
     <span class="acct-lbl">Compte</span>
   </button>
@@ -1019,7 +1019,7 @@ function startTimer(){
   function _fvCookie(n){try{var m=document.cookie.match("(?:^|;)\\s*"+n+"\\s*=\\s*([^;]+)");return m?decodeURIComponent(m[1]):null;}catch(e){return null;}}
   var photoUrl, fn;
   if (__FV_DEMO__) {
-    // Faux client identique sur tous les aperçus démo
+    // Démo DM : on salue le RESTAURANT par son nom (pas un prénom générique)
     fn = 'Axelle';
     photoUrl = '/assets/demo/axelle.jpg';
   } else {

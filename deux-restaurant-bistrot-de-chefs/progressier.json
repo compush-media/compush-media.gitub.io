@@ -5,19 +5,18 @@
   "scope": "/deux-restaurant-bistrot-de-chefs/",
   "display": "standalone",
   "background_color": "#f6efe5",
-  "theme_color": "#d4637a",
+  "theme_color": "#273449",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://www.deux-restaurant.fr/wp-content/uploads/2021/06/logo-header-deux-bistrot-de-chef-scaled.jpg",
-      "sizes": "512x512",
+      "src": "icon-192.png",
+      "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://www.deux-restaurant.fr/wp-content/uploads/2021/06/logo-header-deux-bistrot-de-chef-scaled.jpg",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
     }
   ]
 }

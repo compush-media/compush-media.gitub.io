@@ -1,25 +1,30 @@
 {
   "name": "Loulou",
-  "color": "#B8924F",
-  "color2": "#9E7A3E",
-  "walletTemplate": "templates/brunch-resto",
-  "category": "brunch",
-  "tagline": "",
-  "plan": "terrain",
-  "subscriptionStatus": "trialing",
-  "setupPaid": false,
-  "invoices": [],
-  "activeCoupon": {
-    "title": "Café offert",
-    "description": "Réservé aux membres Fidelavis",
-    "month": "juillet"
-  },
+  "color": "#253274",
+  "color2": "#1E295F",
   "phone": "01 46 34 86 64",
   "address": "90 Bd Saint-Germain, 75005, Paris",
-  "email": "info@louloufriendlydiner.com",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJxaKkUudx5kcR7DyJdf662DE",
-  "reservationUrl": "https://www.google.com/maps/reserve/v/dine/c/L75dI0iOtmM?source=pa&opi=79508299&hl=fr-FR&gei=hAdlaoncPM33kdUP-9jXSA&ahbb=1",
+  "logoUrl": "https://app.cartefidelavis.com/loulou/logo.jpg",
   "instagramUrl": "https://www.instagram.com/loulou_restaurant/",
+  "tagline": "Loulou — Paris",
+  "category": "brunch",
+  "email": "info@louloufriendlydiner.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "info@louloufriendlydiner.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "heroUrl": "https://app.cartefidelavis.com/loulou/hero.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/loulou/logo.jpg"
 }

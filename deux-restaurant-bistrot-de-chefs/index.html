@@ -9,25 +9,6 @@
   <link rel="apple-touch-icon-precomposed" id="atip" sizes="180x180" href="" />
   <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
   <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}</script>
-
-  <!-- ✅ Redirection post-installation (lien depuis email → coupon) -->
-  <script>(function(){
-    try {
-      var m = location.pathname.match(/^\/([^\/]+)\//);
-      var slug = m ? m[1] : '';
-      if (!slug) return;
-      var key = 'fidelavis_pending_redirect_' + slug;
-      var dest = localStorage.getItem(key);
-      if (!dest) return;
-      try {
-        var h = new URL(dest).hostname;
-        if (h !== 'app.cartefidelavis.com') return;
-      } catch(_) { return; }
-      if (location.href === dest || location.pathname === new URL(dest).pathname) return;
-      localStorage.removeItem(key);
-      location.replace(dest);
-    } catch(_) {}
-  })();</script>
   <script src="/assets/core.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
@@ -738,7 +719,7 @@
 <div class="pg-head">
 
   <!-- Account button top-right -->
-  <button class="acct-btn" onclick="window.Fidelavis?.go?.('compte.html')" aria-label="Mon compte">
+  <button class="acct-btn" id="acctBtn" onclick="window.Fidelavis?.go?.('compte.html')" aria-label="Mon compte">
     <div class="acct-av" id="acctAv">M</div>
     <span class="acct-lbl">Compte</span>
   </button>
@@ -1038,7 +1019,7 @@ function startTimer(){
   function _fvCookie(n){try{var m=document.cookie.match("(?:^|;)\\s*"+n+"\\s*=\\s*([^;]+)");return m?decodeURIComponent(m[1]):null;}catch(e){return null;}}
   var photoUrl, fn;
   if (__FV_DEMO__) {
-    // Faux client identique sur tous les aperçus démo
+    // Démo DM : on salue le RESTAURANT par son nom (pas un prénom générique)
     fn = 'Axelle';
     photoUrl = '/assets/demo/axelle.jpg';
   } else {

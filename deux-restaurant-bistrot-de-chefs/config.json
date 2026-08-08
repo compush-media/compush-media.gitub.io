@@ -1,76 +1,29 @@
 {
   "name": "Deux Restaurant : Bistrot de chefs",
-  "color": "#d4637a",
-  "color2": "#c04868",
-  "walletTemplate": "templates/brunch-resto",
-  "category": "brunch",
-  "tagline": "Le spot brunch du quartier",
-  "activeCoupon": {
-    "title": "Café offert après brunch",
-    "description": "Sur réservation, le week-end",
-    "month": "mai",
-    "imageUrl": "https://app.cartefidelavis.com/assets/offres/offre-1.jpg"
-  },
-  "plan": "terrain",
-  "subscriptionStatus": "active",
-  "setupPaid": true,
-  "invoices": [],
-  "instagramUrl": "https://www.instagram.com/deux.ptitdeux/",
-  "logoUrl": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/logo.jpg",
-  "iconUrl": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/logo.jpg",
-  "heroUrl": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/hero-1779741881220.jpg",
-  "googleReview": "ChIJSQwPxwdt5kcRbleMxeNvh1Y",
-  "reservationUrl": "https://www.deux-restaurant.fr/reservations",
+  "color": "#273449",
+  "color2": "#1F2A3B",
   "phone": "974974752",
   "address": "58 Rue de la Fontaine au Roi 75011 Paris",
-  "monthlyOffers": [
-    {
-      "title": "",
-      "image": "offre-9.jpg"
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "Votre offre un Smoothie se mois ci",
-      "image": "offre-4.jpg"
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    }
-  ]
+  "logoUrl": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/deux.ptitdeux/",
+  "heroUrl": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/hero.jpg",
+  "tagline": "Deux Restaurant : Bistrot de chefs",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "iconUrl": "https://app.cartefidelavis.com/deux-restaurant-bistrot-de-chefs/logo.jpg"
 }
