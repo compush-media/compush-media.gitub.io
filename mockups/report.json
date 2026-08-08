@@ -6,6 +6,12 @@
     "status": "success"
   },
   {
+    "restaurant": "bacini",
+    "source": "bacini/demo/screen.png",
+    "generated": "bacini-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "brother-sister-brunch-lunch-dinner",
     "source": "brother-sister-brunch-lunch-dinner/demo/screen.png",
     "generated": "brother-sister-brunch-lunch-dinner-iphone.png",
