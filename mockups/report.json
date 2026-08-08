@@ -24,12 +24,6 @@
     "status": "success"
   },
   {
-    "restaurant": "galerie-wawi",
-    "source": "galerie-wawi/demo/screen.png",
-    "generated": "galerie-wawi-iphone.png",
-    "status": "success"
-  },
-  {
     "restaurant": "inavoue",
     "source": "inavoue/demo/screen.png",
     "generated": "inavoue-iphone.png",
