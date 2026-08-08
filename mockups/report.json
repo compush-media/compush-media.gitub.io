@@ -6,6 +6,12 @@
     "status": "success"
   },
   {
+    "restaurant": "bacini",
+    "source": "bacini/demo/screen.png",
+    "generated": "bacini-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "brother-sister-brunch-lunch-dinner",
     "source": "brother-sister-brunch-lunch-dinner/demo/screen.png",
     "generated": "brother-sister-brunch-lunch-dinner-iphone.png",
@@ -21,6 +27,12 @@
     "restaurant": "deux-restaurant-bistrot-de-chefs",
     "source": "deux-restaurant-bistrot-de-chefs/demo/screen.png",
     "generated": "deux-restaurant-bistrot-de-chefs-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "green-deli",
+    "source": "green-deli/demo/screen.png",
+    "generated": "green-deli-iphone.png",
     "status": "success"
   },
   {
@@ -60,6 +72,12 @@
     "status": "success"
   },
   {
+    "restaurant": "le-jackpot",
+    "source": "le-jackpot/demo/screen.png",
+    "generated": "le-jackpot-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "loulou",
     "source": "loulou/demo/screen.png",
     "generated": "loulou-iphone.png",
@@ -87,6 +105,12 @@
     "restaurant": "ter",
     "source": "ter/demo/screen.png",
     "generated": "ter-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "terre-restaurant",
+    "source": "terre-restaurant/demo/screen.png",
+    "generated": "terre-restaurant-iphone.png",
     "status": "success"
   }
 ]
