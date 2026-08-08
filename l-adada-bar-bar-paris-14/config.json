@@ -1,0 +1,31 @@
+{
+  "name": "L'Adada Bar - Bar Paris 14",
+  "color": "#DF3948",
+  "color2": "#B62E3B",
+  "phone": "07 65 79 50 89",
+  "address": "15 Rue du Maine 75014 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/l-adada-bar-bar-paris-14/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/adadabar/",
+  "heroUrl": "https://app.cartefidelavis.com/l-adada-bar-bar-paris-14/hero.jpg",
+  "tagline": "L'Adada Bar - Bar Paris 14 — Paris",
+  "category": "brunch",
+  "email": "adadabar@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "adadabar@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/l-adada-bar-bar-paris-14/logo.jpg"
+}

@@ -503,5 +503,32 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-08-08"
+  },
+  "l-adada-bar-bar-paris-14": {
+    "name": "L'Adada Bar - Bar Paris 14",
+    "brandColor": "#DF3948",
+    "brandColor2": "#B62E3B",
+    "adresse": "15 Rue du Maine 75014 Paris",
+    "ville": "Paris",
+    "code_postal": "",
+    "telephone": "07 65 79 50 89",
+    "email": "adadabar@gmail.com",
+    "nom_gerant": "",
+    "site_web": "",
+    "googleReview": "",
+    "instagramUrl": "https://www.instagram.com/adadabar/",
+    "logoUrl": "https://app.cartefidelavis.com/l-adada-bar-bar-paris-14/logo.jpg",
+    "heroUrl": "https://app.cartefidelavis.com/l-adada-bar-bar-paris-14/hero.jpg",
+    "note_google": "",
+    "nombre_avis_google": "",
+    "ambassadorCode": "",
+    "statut_commercial": "",
+    "instagram_followers": "",
+    "instagram_fullname": "",
+    "instagram_external_url": "",
+    "walletTemplate": "templates/brunch-resto",
+    "demoLayout": "nested",
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-08"
   }
 }
