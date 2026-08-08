@@ -72,6 +72,12 @@
     "status": "success"
   },
   {
+    "restaurant": "le-village-cafe",
+    "source": "le-village-cafe/demo/screen.png",
+    "generated": "le-village-cafe-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "loulou",
     "source": "loulou/demo/screen.png",
     "generated": "loulou-iphone.png",
