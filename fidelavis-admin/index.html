@@ -846,6 +846,31 @@
             Les modifications sont appliquées automatiquement au prochain chargement de la page du restaurant.
           </p>
 
+          <!-- ── Créer / ajouter une fiche restaurant ── -->
+          <details style="margin-bottom:16px;border:1px solid var(--brand-border);border-radius:8px;padding:12px 14px;background:#fff">
+            <summary style="font-weight:800;font-size:13px;cursor:pointer;color:var(--brand)">➕ Ajouter un restaurant / prospect</summary>
+            <div style="display:grid;gap:8px;margin-top:12px">
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Nom du restaurant</label>
+                <input type="text" id="new_resto_name" oninput="deriveSlug()" placeholder="Coco de Mer" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Identifiant (slug) <span style="font-weight:400">— doit correspondre au dossier GitHub si la page existe déjà</span></label>
+                <input type="text" id="new_resto_slug" oninput="this.dataset.touched=1" placeholder="coco-de-mer" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:monospace" />
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Lien Google Maps <span style="font-weight:400">(pour la surveillance des avis)</span></label>
+                <input type="text" id="new_resto_place" placeholder="https://maps.app.goo.gl/… (lien Partager)" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
+              </div>
+              <div>
+                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Email de notification</label>
+                <input type="email" id="new_resto_email" placeholder="votre@email.fr (prospect) ou gérant" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
+              </div>
+              <button class="btn-primary" style="width:100%" onclick="adminCreateResto()">➕ Créer la fiche</button>
+              <div id="new_resto_result" style="font-size:13px"></div>
+            </div>
+          </details>
+
           <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Restaurant</label>
           <select id="admin_resto_slug" onchange="adminLoadRestoConfig()" style="width:100%;margin-bottom:16px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px">
             <option value="">— Choisir un restaurant —</option>
@@ -2434,6 +2459,53 @@ async function loadRestoSlugs() {
     sel.innerHTML = '<option value="">— Choisir un restaurant —</option>' +
       data.map(r => `<option value="${r.slug}">${r.name || r.slug} (${r.slug})</option>`).join('');
   } catch(e) {}
+}
+
+function slugify(s) {
+  return String(s || '')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+function deriveSlug() {
+  const nameEl = el('new_resto_name');
+  const slugEl = el('new_resto_slug');
+  if (!nameEl || !slugEl) return;
+  if (slugEl.dataset.touched) return; // ne pas écraser si l'utilisateur a édité le slug
+  slugEl.value = slugify(nameEl.value);
+}
+async function adminCreateResto() {
+  const name    = el('new_resto_name')?.value?.trim()  || '';
+  const slug    = el('new_resto_slug')?.value?.trim()  || '';
+  const place   = el('new_resto_place')?.value?.trim() || '';
+  const email   = el('new_resto_email')?.value?.trim() || '';
+  const rEl     = el('new_resto_result');
+  if (!name || !slug) { rEl.innerHTML = '<span style="color:var(--red)">Nom et identifiant requis.</span>'; return; }
+  rEl.innerHTML = '⏳ Création...';
+  try {
+    const res = await fetch(_SUPA_URL + '/rest/v1/rpc/admin_create_restaurant', {
+      method: 'POST',
+      headers: { 'apikey': _SUPA_KEY, 'Authorization': 'Bearer ' + _SUPA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        p_slug:          slug,
+        p_name:          name,
+        p_place_id:      place,
+        p_billing_email: email,
+        p_secret:        'fidelavis-super-admin-2026'
+      })
+    });
+    const data = await res.json();
+    if (!data.ok) { rEl.innerHTML = '<span style="color:var(--red)">❌ ' + (data.error || 'Erreur') + '</span>'; return; }
+    rEl.innerHTML = '<span style="color:var(--green)">✅ Fiche « ' + name + ' » créée !</span>';
+    toast('✅ Restaurant ' + slug + ' créé', 'success');
+    // Recharge la liste et sélectionne le nouveau resto
+    await loadRestoSlugs();
+    const sel = el('admin_resto_slug');
+    if (sel) { sel.value = slug; adminLoadRestoConfig(); }
+    // Vide le formulaire de création
+    ['new_resto_name','new_resto_slug','new_resto_place','new_resto_email'].forEach(id => { const e = el(id); if (e) { e.value = ''; delete e.dataset.touched; } });
+  } catch(e) {
+    rEl.innerHTML = '<span style="color:var(--red)">❌ ' + e.message + '</span>';
+  }
 }
 
 async function adminLoadRestoConfig() {
