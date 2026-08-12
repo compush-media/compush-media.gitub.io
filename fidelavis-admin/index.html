@@ -866,8 +866,18 @@
                 <input type="text" id="admin_reply_signature" placeholder="Toute l'équipe du Martin" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
               </div>
               <div>
-                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">ID de localisation Google</label>
+                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">ID de localisation Google <span style="font-weight:400">(API officielle GBP)</span></label>
                 <input type="text" id="admin_location_id" placeholder="accounts/109.../locations/956..." style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
+              </div>
+
+              <div style="border-top:1px dashed var(--line);margin-top:6px;padding-top:12px">
+                <div style="font-size:12px;font-weight:800;color:var(--brand);margin-bottom:8px">🔔 Surveillance automatique des avis (Outscraper)</div>
+                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">Email de notification des nouveaux avis</label>
+                <input type="email" id="admin_billing_email" placeholder="gerant@restaurant.fr" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
+                <p style="font-size:11px;color:var(--muted);margin:4px 0 10px">C'est ici qu'arriveront les emails « Nouvel avis + réponse IA prête ». Pour un prospect, mettez votre propre email.</p>
+                <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px">ID Google Place <span style="font-weight:400">(pour le scan Outscraper)</span></label>
+                <input type="text" id="admin_place_id" placeholder="0x47e665...:0xc719... ou lien Google Maps" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px" />
+                <p style="font-size:11px;color:var(--muted);margin:4px 0 0">Collez le lien Google Maps du resto ou son identifiant. Sans ça, pas de surveillance des avis.</p>
               </div>
             </div>
             <button class="btn-primary" style="width:100%" onclick="adminSetGoogleLocation()">📡 Enregistrer dans Supabase</button>
@@ -2436,7 +2446,7 @@ async function adminLoadRestoConfig() {
   try {
     const res = await fetch(
       _SUPA_URL + '/rest/v1/restaurants?slug=eq.' + encodeURIComponent(slug) +
-        '&select=name,manager_name,reply_signature,google_location_id',
+        '&select=name,manager_name,reply_signature,google_location_id,billing_email,google_place_id',
       { headers: { 'apikey': _SUPA_KEY, 'Authorization': 'Bearer ' + _SUPA_KEY } }
     );
     const data = await res.json();
@@ -2446,6 +2456,8 @@ async function adminLoadRestoConfig() {
     f('admin_manager_name',     row.manager_name);
     f('admin_reply_signature',  row.reply_signature);
     f('admin_location_id',      row.google_location_id);
+    f('admin_billing_email',    row.billing_email);
+    f('admin_place_id',         row.google_place_id);
     if (resultEl) resultEl.innerHTML = '';
   } catch(e) {
     if (resultEl) resultEl.innerHTML = '<span style="color:var(--red)">Erreur chargement : ' + e.message + '</span>';
@@ -2475,11 +2487,33 @@ async function adminSetGoogleLocation() {
       })
     });
     const data = await res.json();
-    if (data.ok) {
-      resultEl.innerHTML = '<span style="color:var(--green)">✅ Enregistré ! Les paramètres de ' + slug + ' sont mis à jour.</span>';
+    if (!data.ok) {
+      resultEl.innerHTML = '<span style="color:var(--red)">❌ ' + (data.error || 'Erreur inconnue') + '</span>';
+      return;
+    }
+
+    // ── Surveillance avis (Outscraper) : email de notif + Google Place ID ──
+    // Si l'admin colle un lien Google Maps, on extrait l'identifiant hex 0x...:0x...
+    const rawPlace = el('admin_place_id')?.value?.trim() || '';
+    const mMaps    = rawPlace.match(/!1s(0x[0-9a-f]+:0x[0-9a-f]+)/i) || rawPlace.match(/(0x[0-9a-f]+:0x[0-9a-f]+)/i);
+    const placeId  = mMaps ? mMaps[1] : rawPlace;
+    const monRes = await fetch(_SUPA_URL + '/rest/v1/rpc/admin_set_review_monitoring', {
+      method: 'POST',
+      headers: { 'apikey': _SUPA_KEY, 'Authorization': 'Bearer ' + _SUPA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        p_slug:          slug,
+        p_place_id:      placeId,
+        p_billing_email: el('admin_billing_email')?.value?.trim() || '',
+        p_secret:        'fidelavis-super-admin-2026'
+      })
+    });
+    const monData = await monRes.json();
+    if (placeId && mMaps) { const pe = el('admin_place_id'); if (pe) pe.value = placeId; }
+    if (monData.ok) {
+      resultEl.innerHTML = '<span style="color:var(--green)">✅ Enregistré ! Paramètres + surveillance des avis de ' + slug + ' mis à jour.</span>';
       toast('✅ Restaurant ' + slug + ' configuré', 'success');
     } else {
-      resultEl.innerHTML = '<span style="color:var(--red)">❌ ' + (data.error || 'Erreur inconnue') + '</span>';
+      resultEl.innerHTML = '<span style="color:var(--orange)">⚠️ Infos enregistrées, mais surveillance avis : ' + (monData.error || 'erreur') + '</span>';
     }
   } catch(e) {
     resultEl.innerHTML = '<span style="color:var(--red)">❌ ' + e.message + '</span>';
@@ -3935,6 +3969,9 @@ const IMPORT_TEMPLATE_LIFESTYLE = 'templates/brunch-resto';
 // Proxy GAS (fetch_image) — pour ré-héberger les logos externes (Instagram) en permanent
 const FV_PROXY = 'https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec';
 
+// Brevo GAS — setup liste + séquence email pour chaque restaurant
+const BREVO_GAS_URL = 'https://script.google.com/macros/s/AKfycbymE_s4YOfYR4fiG0oSQZJqzDrN-grr4EMrena-YOc0WU5xk3qf6hHNV96lVKknncDnqA/exec';
+
 // Si url est externe (ex: Instagram), la télécharge via le proxy et l'héberge dans le repo.
 // Ajoute le blob à newTreeItems et renvoie l'URL locale permanente. Sinon renvoie l'url telle quelle.
 async function rehostExternalImage(slug, url, slot, newTreeItems) {
@@ -4267,6 +4304,26 @@ async function confirmImport() {
             body:    JSON.stringify({ action: 'provision_supabase', ...p })
           });
         } catch(_) { /* non-bloquant : l'activation re-provisionnera si besoin */ }
+      }
+    }
+
+    // 7. Créer la liste Brevo + enregistrer dans la séquence email partagée
+    if (provisionList.length) {
+      btn.textContent = '⏳ Configuration emails fidélité…';
+      for (const p of provisionList) {
+        try {
+          await fetch(BREVO_GAS_URL, {
+            method:  'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body:    JSON.stringify({
+              action:          'setup',
+              restaurantName:  p.name,
+              restaurantEmail: p.email || '',
+              restaurantId:    p.slug,
+              adminPass:       ''
+            })
+          });
+        } catch(_) { /* non-bloquant */ }
       }
     }
 
