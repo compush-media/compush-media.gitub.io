@@ -18,15 +18,33 @@
     "status": "success"
   },
   {
+    "restaurant": "bistrot-mon-cafe",
+    "source": "bistrot-mon-cafe/demo/screen.png",
+    "generated": "bistrot-mon-cafe-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "brother-sister-brunch-lunch-dinner",
     "source": "brother-sister-brunch-lunch-dinner/demo/screen.png",
     "generated": "brother-sister-brunch-lunch-dinner-iphone.png",
     "status": "success"
   },
   {
+    "restaurant": "cafe-petite",
+    "source": "cafe-petite/demo/screen.png",
+    "generated": "cafe-petite-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "casa-loca",
     "source": "casa-loca/demo/screen.png",
     "generated": "casa-loca-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "chokdee-cafe",
+    "source": "chokdee-cafe/demo/screen.png",
+    "generated": "chokdee-cafe-iphone.png",
     "status": "success"
   },
   {
@@ -45,6 +63,12 @@
     "restaurant": "inavoue",
     "source": "inavoue/demo/screen.png",
     "generated": "inavoue-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "jj-beaumarchais",
+    "source": "jj-beaumarchais/demo/screen.png",
+    "generated": "jj-beaumarchais-iphone.png",
     "status": "success"
   },
   {
@@ -78,6 +102,12 @@
     "status": "success"
   },
   {
+    "restaurant": "l-atelier-du-marche",
+    "source": "l-atelier-du-marche/demo/screen.png",
+    "generated": "l-atelier-du-marche-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "l-atelier-gusto",
     "source": "l-atelier-gusto/demo/screen.png",
     "generated": "l-atelier-gusto-iphone.png",
@@ -96,9 +126,21 @@
     "status": "success"
   },
   {
+    "restaurant": "les-acolytes",
+    "source": "les-acolytes/demo/screen.png",
+    "generated": "les-acolytes-iphone.png",
+    "status": "success"
+  },
+  {
     "restaurant": "les-mauvais-garcons",
     "source": "les-mauvais-garcons/demo/screen.png",
     "generated": "les-mauvais-garcons-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "les-ptits-gros",
+    "source": "les-ptits-gros/demo/screen.png",
+    "generated": "les-ptits-gros-iphone.png",
     "status": "success"
   },
   {
