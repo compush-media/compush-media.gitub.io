@@ -1,0 +1,30 @@
+{
+  "name": "DELTA - Restaurant Paris 6",
+  "color": "#EBB22E",
+  "color2": "#C09125",
+  "phone": "07 61 04 55 44",
+  "address": "8 Rue Princesse 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/delta-restaurant-paris-6/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/delta_paris_6/",
+  "heroUrl": "https://app.cartefidelavis.com/delta-restaurant-paris-6/hero.jpg",
+  "tagline": "DELTA - Restaurant Paris 6 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/delta-restaurant-paris-6/logo.jpg"
+}

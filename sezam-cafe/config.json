@@ -1,0 +1,31 @@
+{
+  "name": "SEZAM CAFE",
+  "color": "#A51BFD",
+  "color2": "#8716CF",
+  "phone": "01 42 40 56 47",
+  "address": "21 Rue Marguerite de Rochechouart 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/sezam-cafe/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/sezamcafeparis?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+  "heroUrl": "https://app.cartefidelavis.com/sezam-cafe/hero.jpg",
+  "tagline": "SEZAM CAFE — Paris",
+  "category": "brunch",
+  "email": "contact@sezamcafe.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@sezamcafe.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/sezam-cafe/logo.jpg"
+}

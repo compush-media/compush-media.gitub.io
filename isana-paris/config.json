@@ -1,0 +1,31 @@
+{
+  "name": "ISANA PARIS",
+  "color": "#A18357",
+  "color2": "#846B47",
+  "phone": "01 42 45 18 72",
+  "address": "7 Rue Bourdaloue 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/isana-paris/logo.jpg",
+  "instagramUrl": "http://www.instagram.com/ISANAPARIS",
+  "heroUrl": "https://app.cartefidelavis.com/isana-paris/hero.jpg",
+  "tagline": "ISANA PARIS — Paris",
+  "category": "brunch",
+  "email": "contact@isanaparis.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@isanaparis.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/isana-paris/logo.jpg"
+}

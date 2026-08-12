@@ -1,0 +1,30 @@
+{
+  "name": "Le 50 Voltaire",
+  "color": "#B54429",
+  "color2": "#943721",
+  "phone": "07 57 58 04 73",
+  "address": "50 Bd Voltaire 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-50-voltaire/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le50voltaire/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/le-50-voltaire/hero.jpg",
+  "tagline": "Le 50 Voltaire — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-50-voltaire/logo.jpg"
+}

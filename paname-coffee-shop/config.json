@@ -1,0 +1,31 @@
+{
+  "name": "Paname Coffee Shop",
+  "color": "#274947",
+  "color2": "#1F3B3A",
+  "phone": "06 82 70 47 51",
+  "address": "10 Rue Oberkampf 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/paname-coffee-shop/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/panamecoffeeshop/",
+  "heroUrl": "https://app.cartefidelavis.com/paname-coffee-shop/hero.jpg",
+  "tagline": "Coffee and Homemade Food 7/7 8h-18h30",
+  "category": "brunch",
+  "email": "contact@panamecoffee.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@panamecoffee.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/paname-coffee-shop/logo.jpg"
+}

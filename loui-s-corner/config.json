@@ -1,0 +1,31 @@
+{
+  "name": "Loui's Corner",
+  "color": "#493827",
+  "color2": "#3B2D1F",
+  "phone": "09 81 10 62 16",
+  "address": "49 Rue Bichat 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/loui-s-corner/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/louis_corner_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/loui-s-corner/hero.jpg",
+  "tagline": "Loui's Corner — Paris",
+  "category": "brunch",
+  "email": "contact@louiscorner.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@louiscorner.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/loui-s-corner/logo.jpg"
+}

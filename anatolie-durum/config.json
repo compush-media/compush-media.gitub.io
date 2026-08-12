@@ -1,0 +1,31 @@
+{
+  "name": "Anatolie Durum",
+  "color": "#464928",
+  "color2": "#393B20",
+  "phone": "06 88 37 00 86",
+  "address": "9 Rue de la Harpe 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/anatolie-durum/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/anatoliedurum/",
+  "heroUrl": "https://app.cartefidelavis.com/anatolie-durum/hero.jpg",
+  "tagline": "📍 9, rue de la harpe - 75005 Paris",
+  "category": "brunch",
+  "email": "anatoliedurum@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "anatoliedurum@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/anatolie-durum/logo.jpg"
+}

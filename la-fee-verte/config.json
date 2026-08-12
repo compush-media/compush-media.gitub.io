@@ -1,0 +1,31 @@
+{
+  "name": "La Fée Verte",
+  "color": "#246010",
+  "color2": "#1D4E0D",
+  "phone": "01 43 36 85 91",
+  "address": "108 Rue de la Roquette 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-fee-verte/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lafeeverte75/",
+  "heroUrl": "https://app.cartefidelavis.com/la-fee-verte/hero.jpg",
+  "tagline": "La Fée Verte — Paris",
+  "category": "brunch",
+  "email": "bongrand.r@orange.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "bongrand.r@orange.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-fee-verte/logo.jpg"
+}

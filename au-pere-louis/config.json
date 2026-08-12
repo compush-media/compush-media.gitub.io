@@ -1,0 +1,31 @@
+{
+  "name": "Au Père Louis",
+  "color": "#7B4626",
+  "color2": "#64391F",
+  "phone": "01 43 26 54 14",
+  "address": "38 Rue Monsieur le Prince 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/au-pere-louis/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/auperelouis6/",
+  "heroUrl": "https://app.cartefidelavis.com/au-pere-louis/hero.jpg",
+  "tagline": "Au Père Louis — Paris",
+  "category": "brunch",
+  "email": "auperelouis.paris@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "auperelouis.paris@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/au-pere-louis/logo.jpg"
+}

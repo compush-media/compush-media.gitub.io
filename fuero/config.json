@@ -1,0 +1,30 @@
+{
+  "name": "Fuero",
+  "color": "#44607D",
+  "color2": "#374E66",
+  "phone": "07 87 21 54 03",
+  "address": "11 Cr des Petites Écuries 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/fuero/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/fuero_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/fuero/hero.jpg",
+  "tagline": "Fuero — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/fuero/logo.jpg"
+}

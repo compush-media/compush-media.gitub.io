@@ -1,0 +1,30 @@
+{
+  "name": "KAPÉ - Café philippin",
+  "color": "#A54132",
+  "color2": "#873529",
+  "phone": "17 Rue de Malte 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/kape-cafe-philippin/logo.jpg",
+  "instagramUrl": "http://instagram.com/kapeparis",
+  "heroUrl": "https://app.cartefidelavis.com/kape-cafe-philippin/hero.jpg",
+  "tagline": "KAPÉ - Café philippin — Paris",
+  "category": "brunch",
+  "email": "contact@kapeparis.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@kapeparis.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kape-cafe-philippin/logo.jpg"
+}

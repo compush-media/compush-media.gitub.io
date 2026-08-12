@@ -1,0 +1,31 @@
+{
+  "name": "Le Rey - Restaurant Paris 11",
+  "color": "#8C302F",
+  "color2": "#722726",
+  "phone": "01 42 72 34 31",
+  "address": "130 Rue de la Roquette 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-rey-restaurant-paris-11/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafereyvoltaire",
+  "heroUrl": "https://app.cartefidelavis.com/le-rey-restaurant-paris-11/hero.jpg",
+  "tagline": "Le Rey - Restaurant Paris 11 — Paris",
+  "category": "brunch",
+  "email": "reyvoltaire11@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "reyvoltaire11@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-rey-restaurant-paris-11/logo.jpg"
+}

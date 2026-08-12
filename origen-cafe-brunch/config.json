@@ -1,0 +1,31 @@
+{
+  "name": "ORIGEN café brunch",
+  "color": "#5D4D30",
+  "color2": "#4C3F27",
+  "phone": "07 69 21 35 12",
+  "address": "131 Av. d'Argenteuil 92600 Asnières-sur-Seine",
+  "logoUrl": "https://app.cartefidelavis.com/origen-cafe-brunch/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/origen.cafespecial/",
+  "heroUrl": "https://app.cartefidelavis.com/origen-cafe-brunch/hero.jpg",
+  "tagline": "ORIGEN café brunch — Asnières-sur-Seine",
+  "category": "brunch",
+  "email": "origen.cafespecial@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "origen.cafespecial@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Asnières-sur-Seine",
+  "iconUrl": "https://app.cartefidelavis.com/origen-cafe-brunch/logo.jpg"
+}

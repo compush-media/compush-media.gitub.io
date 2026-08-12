@@ -1,0 +1,31 @@
+{
+  "name": "GOSIER",
+  "color": "#A17B56",
+  "color2": "#846446",
+  "phone": "06 25 42 78 04",
+  "address": "27 Rue Claude Rodier 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/gosier/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/gosier.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/gosier/hero.jpg",
+  "tagline": "GOSIER — Paris",
+  "category": "brunch",
+  "email": "contact@gosier-paris.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@gosier-paris.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/gosier/logo.jpg"
+}

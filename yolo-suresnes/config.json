@@ -1,0 +1,31 @@
+{
+  "name": "YOLO Suresnes",
+  "color": "#AF916A",
+  "color2": "#8F7656",
+  "phone": "01 41 37 30 76",
+  "address": "5 ter Rue Marcel Monge 92150 Suresnes",
+  "logoUrl": "https://app.cartefidelavis.com/yolo-suresnes/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/yolo.suresnes/",
+  "heroUrl": "https://app.cartefidelavis.com/yolo-suresnes/hero.jpg",
+  "tagline": "YOLO Suresnes — Suresnes",
+  "category": "brunch",
+  "email": "yolo.suresnes@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "yolo.suresnes@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Suresnes",
+  "iconUrl": "https://app.cartefidelavis.com/yolo-suresnes/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Ostra Paris - Restaurant Oyster Bar à huîtres sea food",
+  "color": "#04486D",
+  "color2": "#033B59",
+  "phone": "01 43 54 01 00",
+  "address": "17 Rue du Petit Pont 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/ostra-paris-restaurant-oyster-bar-a-huitres-sea-food/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ostra_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/ostra-paris-restaurant-oyster-bar-a-huitres-sea-food/hero.jpg",
+  "tagline": "Ostra Paris - Restaurant Oyster Bar à huîtres sea food — Paris",
+  "category": "brunch",
+  "email": "ostraparis@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "ostraparis@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ostra-paris-restaurant-oyster-bar-a-huitres-sea-food/logo.jpg"
+}

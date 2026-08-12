@@ -1,0 +1,31 @@
+{
+  "name": "Frnchlovebread",
+  "color": "#E7161D",
+  "color2": "#BD1217",
+  "phone": "07 68 54 62 69",
+  "address": "182 Rue de Charenton 75012 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/frnchlovebread/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/frnchlovebread?utm_source=ig_web_button_share_sheet&igsh=MXQ5a3dpamZwNXhzMg==",
+  "heroUrl": "https://app.cartefidelavis.com/frnchlovebread/hero.jpg",
+  "tagline": "Frnchlovebread — Paris",
+  "category": "brunch",
+  "email": "contact@frnchlovebread.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@frnchlovebread.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/frnchlovebread/logo.jpg"
+}

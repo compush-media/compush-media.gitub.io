@@ -1,0 +1,30 @@
+{
+  "name": "Marais Home Coffee",
+  "color": "#9E7A3E",
+  "color2": "01 42 72 32 51",
+  "phone": "41 Bd du Temple 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/marais-home-coffee/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/mhc.coffee/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/marais-home-coffee/hero.jpg",
+  "tagline": "Marais Home Coffee — Paris",
+  "category": "brunch",
+  "email": "contact@maraishomecoffee.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@maraishomecoffee.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/marais-home-coffee/logo.jpg"
+}

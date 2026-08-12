@@ -1,0 +1,29 @@
+{
+  "name": "Les Frangines",
+  "color": "#984909",
+  "color2": "#7C3B07",
+  "phone": "01 43 21 11 80",
+  "address": "46 Rue Raymond Losserand 75014 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-frangines/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesfrangines.paris14/",
+  "tagline": "Les Frangines — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-frangines/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Le Cèdre",
+  "color": "#273049",
+  "color2": "#1F273B",
+  "phone": "01 53 10 19 35",
+  "address": "6 Rue Mouffetard 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-cedre/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lecedre.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/le-cedre/hero.jpg",
+  "tagline": "Le Cèdre — Paris",
+  "category": "brunch",
+  "email": "contacts.lecedre@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contacts.lecedre@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-cedre/logo.jpg"
+}

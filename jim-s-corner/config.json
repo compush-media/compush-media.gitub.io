@@ -1,0 +1,31 @@
+{
+  "name": "Jim's Corner",
+  "color": "#C69B53",
+  "color2": "#A27F44",
+  "phone": "01 73 75 21 39",
+  "address": "127 Rue du Faubourg Poissonnière 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/jim-s-corner/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/jimscornerparis/",
+  "heroUrl": "https://app.cartefidelavis.com/jim-s-corner/hero.jpg",
+  "tagline": "Jim's Corner — Paris",
+  "category": "brunch",
+  "email": "contact@jimscorner.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@jimscorner.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/jim-s-corner/logo.jpg"
+}

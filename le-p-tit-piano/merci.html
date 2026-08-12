@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Activation confirmée — Fidelavis</title>
+
+<script src="../assets/core.js"></script>
+<!-- ✅ Manifest + Progressier (push notifications) -->
+<link rel="manifest" href="progressier.json"/>
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<script>(function(){var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';var c=s?localStorage.getItem('fv_brand_'+s):null;if(c)document.documentElement.style.setProperty('--gold',c);if(!s)return;fetch('/'+s+'/config.json').then(function(r){return r.json();}).then(function(d){var col=d&&d.color;if(!col)return;document.documentElement.style.setProperty('--gold',col);try{localStorage.setItem('fv_brand_'+s,col);}catch(_){}}).catch(function(){});})();</script>
+<style>
+:root{
+  --gold:#b8924f;
+  --bg:#f6efe5;
+  --card:#ffffff;
+  --ink:#1d1d1d;
+  --muted:#6b6b6b;
+  --line:rgba(0,0,0,0.08);
+  --shadow:0 18px 40px rgba(0,0,0,0.12);
+  --ok:#1f8a4c;
+  --danger:#b6152b;
+  --radius:22px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:
+    radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
+    linear-gradient(180deg,#f7f0e8 0%,#f4eadf 100%);
+  color:var(--ink);
+  padding:20px 14px 130px;
+  text-align:center;
+}
+.wrap{max-width:560px;margin:0 auto}
+.badge{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:999px;
+  background:rgba(255,255,255,.84);
+  border:1px solid var(--line);
+  font-weight:950;font-size:13px;
+  box-shadow:0 10px 18px rgba(0,0,0,.05);
+}
+.dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--ok);
+  box-shadow:0 0 0 6px rgba(31,138,76,.15);
+}
+h1{ margin:16px 0 8px; font-size:28px; font-weight:1000; letter-spacing:-.3px; }
+.sub{ margin:0 0 16px; font-size:14px; color:var(--muted); line-height:1.45; }
+
+.lock{
+  background:rgba(182,21,43,.08);
+  border:1px solid rgba(182,21,43,.22);
+  color:#7a1120;
+  padding:12px 12px;
+  border-radius:16px;
+  font-weight:950;
+  font-size:13px;
+  margin:12px 0 14px;
+}
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:18px 16px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--line);
+  text-align:left;
+}
+.step{ display:flex; gap:12px; margin:12px 0 0; font-size:14px; line-height:1.35; }
+.num{
+  width:28px;height:28px;border-radius:9px;
+  background:rgba(184,146,79,.16);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:1000;
+  flex:0 0 auto;
+}
+.bigCTA{
+  width:100%;
+  border:none;
+  border-radius:18px;
+  padding:18px 14px;
+  font-size:16px;
+  font-weight:1000;
+  background:linear-gradient(180deg,#ffffff 0%,#fbf7f1 100%);
+  border:2px solid rgba(184,146,79,.55);
+  box-shadow:0 14px 26px rgba(184,146,79,.28);
+  cursor:pointer;
+}
+.small{
+  margin-top:10px;
+  font-size:12.5px;
+  color:#555;
+  font-weight:900;
+  opacity:.9;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.pill{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:999px;
+  background:rgba(255,255,255,.8);
+  border:1px solid var(--line);
+}
+.timer{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:999px;
+  background:rgba(182,21,43,.08);
+  border:1px solid rgba(182,21,43,.20);
+  color:#7a1120;
+}
+.sticky{
+  position:fixed;left:0;right:0;bottom:0;
+  padding:12px 14px calc(12px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(246,239,229,0) 0%,rgba(246,239,229,.92) 35%,rgba(246,239,229,1) 100%);
+  backdrop-filter: blur(10px);
+}
+.stickyInner{
+  max-width:560px;margin:0 auto;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:10px;
+  box-shadow:0 16px 30px rgba(0,0,0,0.10);
+}
+.pulse{
+  width:10px;height:10px;border-radius:99px;
+  background:var(--danger);
+  box-shadow:0 0 0 0 rgba(182,21,43,0.35);
+  animation:pulse 1.15s infinite;
+  display:inline-block;
+  vertical-align:middle;
+  margin-right:8px;
+}
+@keyframes pulse{
+  0%{ box-shadow:0 0 0 0 rgba(182,21,43,0.35); }
+  70%{ box-shadow:0 0 0 12px rgba(182,21,43,0.00); }
+  100%{ box-shadow:0 0 0 0 rgba(182,21,43,0.00); }
+}
+
+/* OVERLAY FORCE ATTENTION */
+.overlay{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.55);
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding:14px 14px calc(14px + env(safe-area-inset-bottom));
+  z-index:9999;
+}
+.overlayCard{
+  width:min(560px, 100%);
+  background:#fff;
+  border-radius:22px;
+  border:1px solid rgba(0,0,0,.10);
+  box-shadow:0 24px 70px rgba(0,0,0,.35);
+  padding:16px;
+  text-align:left;
+}
+.overlayTitle{
+  font-weight:1000;
+  font-size:18px;
+  margin:0 0 6px;
+}
+.overlayText{
+  margin:0 0 12px;
+  color:#444;
+  font-weight:850;
+  font-size:13.5px;
+  line-height:1.35;
+}
+.overlayWarn{
+  margin:0 0 12px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(182,21,43,.08);
+  border:1px solid rgba(182,21,43,.20);
+  color:#7a1120;
+  font-weight:950;
+  font-size:13px;
+}
+.overlayBtn{
+  width:100%;
+  border:none;
+  border-radius:18px;
+  padding:16px 14px;
+  font-size:15.5px;
+  font-weight:1000;
+  background:linear-gradient(180deg,#ffffff 0%,#fbf7f1 100%);
+  border:2px solid rgba(184,146,79,.55);
+  box-shadow:0 14px 26px rgba(184,146,79,.28);
+  cursor:pointer;
+}
+.overlayMeta{
+  margin-top:10px;
+  font-size:12px;
+  color:#666;
+  font-weight:850;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.hide{ display:none !important; }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="badge"><span class="dot"></span>Activation confirmée</div>
+
+  <h1>✅ Votre -10% est activé</h1>
+  <p class="sub">
+    Dernière étape : <b>ajouter l’app à l’écran d’accueil</b> pour pouvoir présenter votre réduction en caisse.
+  </p>
+
+  <div class="lock">
+    🔒 Sans l’application, la réduction <b>ne peut pas être validée</b>.
+  </div>
+
+  <div class="card">
+    <div class="step"><div class="num">1</div><div><b>Installez maintenant</b> (5 secondes, 1 seule fois).</div></div>
+    <div class="step"><div class="num">2</div><div>Lors de votre prochaine visite, ouvrez l’app.</div></div>
+    <div class="step"><div class="num">3</div><div>Présentez le coupon à la caisse pour validation ✅</div></div>
+
+    <div class="small" style="margin-top:14px;">
+      <span class="pill">📍 Sur place</span>
+      <span class="pill">🎁 Gratuit</span>
+      <span class="timer">⏳ Réservation : <span id="countdown">01:30</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky CTA (toujours visible) -->
+<div class="sticky">
+  <div class="stickyInner">
+    <button class="bigCTA" id="ctaInstall" type="button">
+      <span class="pulse" aria-hidden="true"></span>
+      📲 Installer l’application maintenant
+    </button>
+    <div class="small">
+      <span>✅ 1 seule fois</span>
+      <span>🔒 Anti-spam</span>
+      <span>🗑 Désinscription 1 clic</span>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay (force attention au chargement) -->
+<div class="overlay" id="overlay">
+  <div class="overlayCard">
+    <p class="overlayTitle">🚨 Dernière étape : installer maintenant</p>
+    <p class="overlayText">
+      Votre -10% est activé, mais il sera utilisable uniquement si l’application est ajoutée à votre écran d’accueil.
+    </p>
+    <div class="overlayWarn">⚠️ Ne fermez pas : sans installation, la réduction peut être perdue.</div>
+    <button class="overlayBtn" id="overlayBtn" type="button">📲 Installer l’application maintenant</button>
+    <div class="overlayMeta">
+      <span>⏱️ 5 secondes</span>
+      <span>✅ 1 seule fois</span>
+      <span>📍 sur place</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------------------------
+   HELPERS
+--------------------------- */
+function currentFolderBase(){
+  const p = location.pathname;
+  return p.slice(0, p.lastIndexOf("/") + 1);
+}
+function goInstall(){
+  const base = currentFolderBase();
+  const params = new URLSearchParams(location.search);
+  params.delete("email"); // jamais
+  // on peut garder demo=1 si présent
+  location.href = base + "redit.html" + (params.toString() ? "?" + params.toString() : "");
+}
+
+/* ---------------------------
+   TIMER URGENCE
+--------------------------- */
+const COUNTDOWN_SECONDS = 90; // 1m30 (agressif)
+function startCountdown(){
+  const out = document.getElementById("countdown");
+  const key = "fv_mercy_timer_" + location.pathname;
+  let start = Number(sessionStorage.getItem(key));
+  const now = Date.now();
+  if (!start){
+    start = now;
+    sessionStorage.setItem(key, String(start));
+  }
+  function tick(){
+    const elapsed = Math.floor((Date.now() - start)/1000);
+    const left = Math.max(0, COUNTDOWN_SECONDS - elapsed);
+    const mm = String(Math.floor(left/60)).padStart(2,"0");
+    const ss = String(left%60).padStart(2,"0");
+    out.textContent = mm + ":" + ss;
+  }
+  tick();
+  setInterval(tick, 250);
+}
+startCountdown();
+
+/* ---------------------------
+   CTA + OVERLAY
+--------------------------- */
+document.getElementById("ctaInstall").addEventListener("click", goInstall);
+document.getElementById("overlayBtn").addEventListener("click", goInstall);
+
+// Overlay: visible au chargement, on le masque après 6s si le user ne clique pas (soft)
+setTimeout(()=>{ 
+  const ov = document.getElementById("overlay");
+  if (ov) ov.classList.add("hide");
+}, 6000);
+
+/* ---------------------------
+   ANTI-EXIT (soft lock)
+   - Empêche le retour immédiat (sans casser le navigateur)
+--------------------------- */
+try{
+  history.pushState({fv:1}, "", location.href);
+  window.addEventListener("popstate", () => {
+    // au "retour", on repousse vers install
+    goInstall();
+  });
+}catch(e){}
+</script>
+</body>
+</html>

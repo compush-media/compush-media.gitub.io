@@ -1,0 +1,30 @@
+{
+  "name": "Café Ella",
+  "color": "#5F1111",
+  "color2": "#4D0D0D",
+  "phone": "09 80 62 49 50",
+  "address": "85 Rue de la Convention 75015 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-ella/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafe.ella.officiel",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-ella/hero.jpg",
+  "tagline": "Café Ella — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-ella/logo.jpg"
+}

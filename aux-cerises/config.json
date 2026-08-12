@@ -1,0 +1,31 @@
+{
+  "name": "Aux Cerises",
+  "color": "#BA945E",
+  "color2": "#98794D",
+  "phone": "01 42 73 92 97",
+  "address": "47 Av. de Suffren 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/aux-cerises/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurant_aux_cerises/",
+  "heroUrl": "https://app.cartefidelavis.com/aux-cerises/hero.jpg",
+  "tagline": "Aux Cerises — Paris",
+  "category": "brunch",
+  "email": "restaurant.auxcerises@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "restaurant.auxcerises@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/aux-cerises/logo.jpg"
+}

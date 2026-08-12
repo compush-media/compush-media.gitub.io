@@ -1,0 +1,30 @@
+{
+  "name": "Les Sardignac",
+  "color": "#4F3C21",
+  "color2": "#40311B",
+  "phone": "09 83 62 81 97",
+  "address": "27 Rue Richer 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-sardignac/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lessardignac/",
+  "heroUrl": "https://app.cartefidelavis.com/les-sardignac/hero.jpg",
+  "tagline": "Les Sardignac — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-sardignac/logo.jpg"
+}

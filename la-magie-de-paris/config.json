@@ -1,0 +1,31 @@
+{
+  "name": "La Magie de Paris",
+  "color": "#7E6229",
+  "color2": "#675021",
+  "phone": "06 98 75 18 86",
+  "address": "15 Rue Dupont des Loges 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-magie-de-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lamagiedeparis7/",
+  "heroUrl": "https://app.cartefidelavis.com/la-magie-de-paris/hero.jpg",
+  "tagline": "La Magie de Paris — Paris",
+  "category": "brunch",
+  "email": "lamagiedeparis7@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "lamagiedeparis7@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-magie-de-paris/logo.jpg"
+}

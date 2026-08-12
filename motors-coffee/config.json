@@ -1,0 +1,29 @@
+{
+  "name": "Motors Coffee",
+  "color": "#9E7A3E",
+  "color2": "",
+  "phone": "7 Rue des Halles 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/motors-coffee/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/motorscoffee/",
+  "tagline": "Bright coffees from the world’s best roasters Homemade pastries",
+  "category": "brunch",
+  "email": "info@motorscoffee.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "info@motorscoffee.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/motors-coffee/logo.jpg"
+}

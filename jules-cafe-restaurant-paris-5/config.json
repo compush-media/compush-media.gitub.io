@@ -1,0 +1,30 @@
+{
+  "name": "Jules Café Restaurant (Paris 5)",
+  "color": "#4174A6",
+  "color2": "#355F88",
+  "phone": "01 83 98 84 21",
+  "address": "119 bis Rue Monge 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/jules-cafe-restaurant-paris-5/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/jules_cafe_restaurant",
+  "tagline": "Jules Café Restaurant (Paris 5) — Paris",
+  "category": "brunch",
+  "email": "sarljuveor@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "sarljuveor@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/jules-cafe-restaurant-paris-5/logo.jpg"
+}

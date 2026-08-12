@@ -1,0 +1,22 @@
+{
+  "name": "Visconti",
+  "short_name": "Visconti",
+  "start_url": "/visconti/index.html",
+  "scope": "/visconti/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#283F4B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

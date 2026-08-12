@@ -1,0 +1,31 @@
+{
+  "name": "Frappé par Bloom",
+  "color": "#969945",
+  "color2": "#7A7D38",
+  "phone": "07 89 83 79 58",
+  "address": "2 Rue Guénégaud 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/frappe-par-bloom/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bloomevenement/",
+  "heroUrl": "https://app.cartefidelavis.com/frappe-par-bloom/hero.jpg",
+  "tagline": "Frappé par Bloom — Paris",
+  "category": "brunch",
+  "email": "frappe@bloomexperience.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "frappe@bloomexperience.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/frappe-par-bloom/logo.jpg"
+}

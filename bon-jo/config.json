@@ -1,0 +1,30 @@
+{
+  "name": "Bon Jo",
+  "color": "#494027",
+  "color2": "#3B341F",
+  "phone": "01 42 58 63 84",
+  "address": "10 Rue Lamarck 75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bon-jo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bonjo_paris?igsh=YjRuaGFidjUxY3dn",
+  "heroUrl": "https://app.cartefidelavis.com/bon-jo/hero.jpg",
+  "tagline": "Restaurant | Brunch | Café Montmartre - Paris 18e Lundi - Dimanche ☕️🥞",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bon-jo/logo.jpg"
+}

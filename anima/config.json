@@ -1,0 +1,31 @@
+{
+  "name": "Anima",
+  "color": "#272A49",
+  "color2": "#1F223B",
+  "phone": "01 40 47 90 41",
+  "address": "78 Rue du Cherche-Midi 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/anima/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/anima.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/anima/hero.jpg",
+  "tagline": "Anima — Paris",
+  "category": "brunch",
+  "email": "animaparis@icloud.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "animaparis@icloud.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/anima/logo.jpg"
+}

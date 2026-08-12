@@ -1,0 +1,31 @@
+{
+  "name": "Little Café",
+  "color": "#AF8B6A",
+  "color2": "#8F7156",
+  "phone": "01 48 87 43 36",
+  "address": "62 Rue du Roi de Sicile 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/little-cafe/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/littlecafe.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/little-cafe/hero.jpg",
+  "tagline": "Little Café — Paris",
+  "category": "brunch",
+  "email": "littlecafeparis@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "littlecafeparis@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/little-cafe/logo.jpg"
+}

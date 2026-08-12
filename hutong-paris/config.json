@@ -1,0 +1,31 @@
+{
+  "name": "Hutong Paris 胡同巴黎",
+  "color": "#EB2E33",
+  "color2": "#C02529",
+  "phone": "06 27 54 58 63",
+  "address": "147 Bd Saint-Michel 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/hutong-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/hutong.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/hutong-paris/hero.jpg",
+  "tagline": "Hutong Paris 胡同巴黎 — Paris",
+  "category": "brunch",
+  "email": "info@hutong.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "info@hutong.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/hutong-paris/logo.jpg"
+}

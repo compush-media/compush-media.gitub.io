@@ -1,0 +1,31 @@
+{
+  "name": "Le P'tit Piano",
+  "color": "#484927",
+  "color2": "#3B3B1F",
+  "phone": "06 52 22 44 64",
+  "address": "26 Rue Cadet 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-p-tit-piano/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/leptitpiano/",
+  "heroUrl": "https://app.cartefidelavis.com/le-p-tit-piano/hero.jpg",
+  "tagline": "Le P'tit Piano — Paris",
+  "category": "brunch",
+  "email": "contact@leptitpianobar.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@leptitpianobar.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-p-tit-piano/logo.jpg"
+}

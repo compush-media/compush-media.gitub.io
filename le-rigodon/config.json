@@ -1,0 +1,31 @@
+{
+  "name": "Le Rigodon",
+  "color": "#B67D45",
+  "color2": "#956638",
+  "phone": "07 78 82 58 88",
+  "address": "10 Rue des Trois Bornes 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-rigodon/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lerigodon/",
+  "heroUrl": "https://app.cartefidelavis.com/le-rigodon/hero.jpg",
+  "tagline": "Le Rigodon — Paris",
+  "category": "brunch",
+  "email": "contact@lerigodon.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@lerigodon.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-rigodon/logo.jpg"
+}

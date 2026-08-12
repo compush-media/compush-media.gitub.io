@@ -1,0 +1,31 @@
+{
+  "name": "Touch In Paris",
+  "color": "#1C5443",
+  "color2": "#164436",
+  "phone": "01 40 06 02 64",
+  "address": "20 Rue Vignon 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/touch-in-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/letouchinparis/",
+  "heroUrl": "https://app.cartefidelavis.com/touch-in-paris/hero.jpg",
+  "tagline": "Touch In Paris — Paris",
+  "category": "brunch",
+  "email": "seo@futurdigital.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "seo@futurdigital.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/touch-in-paris/logo.jpg"
+}

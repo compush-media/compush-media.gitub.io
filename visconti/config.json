@@ -1,0 +1,31 @@
+{
+  "name": "Visconti",
+  "color": "#283F4B",
+  "color2": "#20333D",
+  "phone": "01 43 80 78 22",
+  "address": "89 Bd de Courcelles 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/visconti/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/visconti_paris/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/visconti/hero.jpg",
+  "tagline": "Visconti — Paris",
+  "category": "brunch",
+  "email": "domenko.dibartolomeo84@yahoo.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "domenko.dibartolomeo84@yahoo.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/visconti/logo.jpg"
+}

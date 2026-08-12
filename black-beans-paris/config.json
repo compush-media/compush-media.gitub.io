@@ -1,0 +1,27 @@
+{
+  "name": "Black Beans Paris",
+  "color": "#9E7A3E",
+  "color2": "06 95 88 87 21",
+  "phone": "35 Rue de Trévise 75009 Paris",
+  "instagramUrl": "https://www.instagram.com/blackbeansparis?igsh=MXd5Z2xicHoxNTNodQ%3D%3D&utm_source=qr",
+  "tagline": "Black Beans Paris — Paris",
+  "category": "brunch",
+  "email": "blackbeansmexicain@yahoo.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "blackbeansmexicain@yahoo.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

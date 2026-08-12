@@ -1,0 +1,31 @@
+{
+  "name": "Café Fluo Paris",
+  "color": "#24511F",
+  "color2": "#1D4219",
+  "phone": "01 88 61 68 49",
+  "address": "86 Rue Lemercier 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-fluo-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/fluo.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-fluo-paris/hero.jpg",
+  "tagline": "Café Fluo Paris — Paris",
+  "category": "brunch",
+  "email": "contact@fluoparis.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@fluoparis.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-fluo-paris/logo.jpg"
+}

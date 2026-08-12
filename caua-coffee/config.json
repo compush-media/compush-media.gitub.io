@@ -1,0 +1,30 @@
+{
+  "name": "CAUA Coffee",
+  "color": "#6A3316",
+  "color2": "#562912",
+  "phone": "10 Bd des Filles du Calvaire 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/caua-coffee/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cauacoffee/",
+  "heroUrl": "https://app.cartefidelavis.com/caua-coffee/hero.jpg",
+  "tagline": "CAUA Coffee — Paris",
+  "category": "brunch",
+  "email": "contact.cauacoffee@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact.cauacoffee@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/caua-coffee/logo.jpg"
+}

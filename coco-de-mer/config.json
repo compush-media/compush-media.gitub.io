@@ -1,0 +1,30 @@
+{
+  "name": "Coco de Mer",
+  "color": "#E0C339",
+  "color2": "#B79F2E",
+  "phone": "06 20 26 77 67",
+  "address": "34 Bd Saint-Marcel 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/coco-de-mer/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cocodemer.paris/",
+  "tagline": "Coco de Mer — Paris",
+  "category": "brunch",
+  "email": "pierrefrichot@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "pierrefrichot@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/coco-de-mer/logo.jpg"
+}

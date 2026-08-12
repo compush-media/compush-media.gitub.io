@@ -1,0 +1,31 @@
+{
+  "name": "Green Farmer's Paris 11",
+  "color": "#64CA4E",
+  "color2": "#52A53F",
+  "phone": "01 42 52 19 41",
+  "address": "54 Rue du Faubourg du Temple 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/green-farmer-s-paris-11/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/greenfarmers_vegan/",
+  "heroUrl": "https://app.cartefidelavis.com/green-farmer-s-paris-11/hero.jpg",
+  "tagline": "Green Farmer's Paris 11 — Paris",
+  "category": "brunch",
+  "email": "contact@greenfarmers-vegan.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@greenfarmers-vegan.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/green-farmer-s-paris-11/logo.jpg"
+}

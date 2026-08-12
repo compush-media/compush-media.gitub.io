@@ -1,0 +1,31 @@
+{
+  "name": "Chez Yvette",
+  "color": "#ED681E",
+  "color2": "#C25518",
+  "phone": "07 56 84 73 97",
+  "address": "47 Av. Trudaine 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/chez-yvette/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/chezyvette_/",
+  "heroUrl": "https://app.cartefidelavis.com/chez-yvette/hero.jpg",
+  "tagline": "Chez Yvette — Paris",
+  "category": "brunch",
+  "email": "chezyvette@musettegroup.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "chezyvette@musettegroup.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/chez-yvette/logo.jpg"
+}

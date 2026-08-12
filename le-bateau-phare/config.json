@@ -1,0 +1,30 @@
+{
+  "name": "LE BATEAU PHARE",
+  "color": "#FD1B47",
+  "color2": "#CF163A",
+  "phone": "3 Port de la Gare 75013 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-bateau-phare/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le_bateau_phare/",
+  "heroUrl": "https://app.cartefidelavis.com/le-bateau-phare/hero.jpg",
+  "tagline": "LE BATEAU PHARE — Paris",
+  "category": "brunch",
+  "email": "reservation@lebateauphare.paris",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "reservation@lebateauphare.paris",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-bateau-phare/logo.jpg"
+}

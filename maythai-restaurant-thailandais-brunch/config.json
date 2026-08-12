@@ -1,0 +1,31 @@
+{
+  "name": "Maythai - Restaurant Thaïlandais & Brunch",
+  "color": "#21394F",
+  "color2": "#1B2E40",
+  "phone": "01 47 00 19 65",
+  "address": "32 Av. de la République 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/maythai-restaurant-thailandais-brunch/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/maythai_paris",
+  "heroUrl": "https://app.cartefidelavis.com/maythai-restaurant-thailandais-brunch/hero.jpg",
+  "tagline": "Maythai - Restaurant Thaïlandais & Brunch — Paris",
+  "category": "brunch",
+  "email": "info@patiotime.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "info@patiotime.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/maythai-restaurant-thailandais-brunch/logo.jpg"
+}

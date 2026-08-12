@@ -1,0 +1,22 @@
+{
+  "name": "April cafe - coffee shop - café poussette - Paris 10eme",
+  "short_name": "April cafe - coffee shop - café poussette - Paris 10eme",
+  "start_url": "/april-cafe-coffee-shop-cafe-poussette-paris-10eme/index.html",
+  "scope": "/april-cafe-coffee-shop-cafe-poussette-paris-10eme/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#294C49",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

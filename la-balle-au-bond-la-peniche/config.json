@@ -1,0 +1,31 @@
+{
+  "name": "La Balle au Bond - La Péniche",
+  "color": "#C64B33",
+  "color2": "#A23D29",
+  "phone": "07 49 82 10 67",
+  "address": "75006 Prom. Marceline Loridan-Ivens 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-balle-au-bond-la-peniche/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/laballeaubondpeniche/",
+  "heroUrl": "https://app.cartefidelavis.com/la-balle-au-bond-la-peniche/hero.jpg",
+  "tagline": "La Balle au Bond - La Péniche — Paris",
+  "category": "brunch",
+  "email": "contact@laballeaubond.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@laballeaubond.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-balle-au-bond-la-peniche/logo.jpg"
+}

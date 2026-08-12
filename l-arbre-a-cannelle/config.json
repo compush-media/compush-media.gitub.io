@@ -1,0 +1,31 @@
+{
+  "name": "L'Arbre à Cannelle",
+  "color": "#6B0B0C",
+  "color2": "#570909",
+  "phone": "01 43 31 68 31",
+  "address": "14 Rue Linné 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/l-arbre-a-cannelle/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/larbreacannelle/?locale=fr_FR",
+  "heroUrl": "https://app.cartefidelavis.com/l-arbre-a-cannelle/hero.jpg",
+  "tagline": "L'Arbre à Cannelle — Paris",
+  "category": "brunch",
+  "email": "larbreacannelle@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "larbreacannelle@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/l-arbre-a-cannelle/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Chez Troquette",
+  "color": "#FEB603",
+  "color2": "#D09502",
+  "phone": "01 43 73 90 66",
+  "address": "1 Rue Saint-Maur 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/chez-troquette/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cheztroquette",
+  "heroUrl": "https://app.cartefidelavis.com/chez-troquette/hero.jpg",
+  "tagline": "Chez Troquette — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/chez-troquette/logo.jpg"
+}

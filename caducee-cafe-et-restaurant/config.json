@@ -1,0 +1,31 @@
+{
+  "name": "CADUCÉE Café et Restaurant",
+  "color": "#115F5B",
+  "color2": "#0D4D4A",
+  "phone": "01 48 78 17 48",
+  "address": "19 Rue Brochant 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/caducee-cafe-et-restaurant/logo.jpg",
+  "instagramUrl": "https://instagram.com/caducee.cafe?utm_medium=copy_link",
+  "heroUrl": "https://app.cartefidelavis.com/caducee-cafe-et-restaurant/hero.jpg",
+  "tagline": "CADUCÉE Café et Restaurant — Paris",
+  "category": "brunch",
+  "email": "caducee.cafe@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "caducee.cafe@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/caducee-cafe-et-restaurant/logo.jpg"
+}

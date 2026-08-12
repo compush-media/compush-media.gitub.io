@@ -1,0 +1,31 @@
+{
+  "name": "La Truffière",
+  "color": "#2C3953",
+  "color2": "#242E44",
+  "phone": "01 46 33 29 82",
+  "address": "4 Rue Blainville 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-truffiere/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/latruffiereparis/",
+  "heroUrl": "https://app.cartefidelavis.com/la-truffiere/hero.jpg",
+  "tagline": "La Truffière — Paris",
+  "category": "brunch",
+  "email": "truffiereparis@hotmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "truffiereparis@hotmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-truffiere/logo.jpg"
+}

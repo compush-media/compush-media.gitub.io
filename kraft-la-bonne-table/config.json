@@ -1,0 +1,30 @@
+{
+  "name": "Kraft - La Bonne Table",
+  "color": "#A26C3F",
+  "color2": "#845833",
+  "phone": "01 44 19 62 82",
+  "address": "37 Rue du Hameau 75015 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/kraft-la-bonne-table/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/kraft.paris/?hl=fr",
+  "tagline": "Kraft - La Bonne Table — Paris",
+  "category": "brunch",
+  "email": "kraft@machefert.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "kraft@machefert.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kraft-la-bonne-table/logo.jpg"
+}

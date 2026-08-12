@@ -1,0 +1,31 @@
+{
+  "name": "Chez Carrie",
+  "color": "#D0AF47",
+  "color2": "#AA8F3A",
+  "phone": "07 43 63 81 39",
+  "address": "14 Rue Léopold Bellan 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/chez-carrie/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/chez_carrie/",
+  "heroUrl": "https://app.cartefidelavis.com/chez-carrie/hero.jpg",
+  "tagline": "Chez Carrie — Paris",
+  "category": "brunch",
+  "email": "bonjour@chezcarrie.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "bonjour@chezcarrie.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/chez-carrie/logo.jpg"
+}

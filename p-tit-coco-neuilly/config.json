@@ -1,0 +1,30 @@
+{
+  "name": "P'tit Coco Neuilly",
+  "color": "#E43542",
+  "color2": "#BA2B36",
+  "phone": "01 46 24 04 54",
+  "address": "157 Av. Achille Peretti 92200 Neuilly-sur-Seine",
+  "logoUrl": "https://app.cartefidelavis.com/p-tit-coco-neuilly/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ptitcoconeuilly/",
+  "heroUrl": "https://app.cartefidelavis.com/p-tit-coco-neuilly/hero.jpg",
+  "tagline": "P'tit Coco Neuilly — Neuilly-sur-Seine",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Neuilly-sur-Seine",
+  "iconUrl": "https://app.cartefidelavis.com/p-tit-coco-neuilly/logo.jpg"
+}

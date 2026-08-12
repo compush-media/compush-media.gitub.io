@@ -1,0 +1,31 @@
+{
+  "name": "Cavalier.",
+  "color": "#C76A51",
+  "color2": "#A35642",
+  "phone": "01 43 38 95 54",
+  "address": "22 Rue du Faubourg du Temple 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cavalier/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cavalier.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/cavalier/hero.jpg",
+  "tagline": "Cavalier. — Paris",
+  "category": "brunch",
+  "email": "contact@pariscavalier.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@pariscavalier.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cavalier/logo.jpg"
+}

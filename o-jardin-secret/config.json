@@ -1,0 +1,30 @@
+{
+  "name": "O'Jardin Secret",
+  "color": "#464C28",
+  "color2": "#393E20",
+  "phone": "01 42 04 09 18",
+  "address": "134 Bd Henri Sellier 92150 Suresnes",
+  "logoUrl": "https://app.cartefidelavis.com/o-jardin-secret/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ojardinsecret/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/o-jardin-secret/hero.jpg",
+  "tagline": "O'Jardin Secret — Suresnes",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Suresnes",
+  "iconUrl": "https://app.cartefidelavis.com/o-jardin-secret/logo.jpg"
+}

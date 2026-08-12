@@ -1,0 +1,22 @@
+{
+  "name": "Ostra Paris - Restaurant Oyster Bar à huîtres sea food",
+  "short_name": "Ostra Paris - Restaurant Oyster Bar à huîtres sea food",
+  "start_url": "/ostra-paris-restaurant-oyster-bar-a-huitres-sea-food/index.html",
+  "scope": "/ostra-paris-restaurant-oyster-bar-a-huitres-sea-food/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#04486D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

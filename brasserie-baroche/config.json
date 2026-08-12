@@ -1,0 +1,31 @@
+{
+  "name": "Brasserie Baroche",
+  "color": "#9B7945",
+  "color2": "#7F6338",
+  "phone": "01 43 59 69 57",
+  "address": "101 Rue La Boétie 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/brasserie-baroche/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/davidbarocheparis?igsh=dGcyaTV2ajduZnl2",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-baroche/hero.jpg",
+  "tagline": "Brasserie Baroche — Paris",
+  "category": "brunch",
+  "email": "booking@baroche.paris",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "booking@baroche.paris",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-baroche/logo.jpg"
+}

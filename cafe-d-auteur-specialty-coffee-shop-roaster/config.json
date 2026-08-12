@@ -1,0 +1,31 @@
+{
+  "name": "Café d’Auteur - Specialty Coffee shop & roaster",
+  "color": "#273349",
+  "color2": "#1F293B",
+  "phone": "07 56 89 66 03",
+  "address": "39 Rue Mazarine 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-d-auteur-specialty-coffee-shop-roaster/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafedauteur/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-d-auteur-specialty-coffee-shop-roaster/hero.jpg",
+  "tagline": "Torrefacteur & coffee shop / specialty coffee & gourmet brunch",
+  "category": "brunch",
+  "email": "contact@cafedauteur.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@cafedauteur.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-d-auteur-specialty-coffee-shop-roaster/logo.jpg"
+}

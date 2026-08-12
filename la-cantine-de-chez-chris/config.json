@@ -1,0 +1,31 @@
+{
+  "name": "La Cantine de Chez Chris",
+  "color": "#0E4863",
+  "color2": "#0B3B51",
+  "phone": "01 80 87 21 06",
+  "address": "4 Rue Borda 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-cantine-de-chez-chris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lacantinedechezchris/?igsh=ZnRkaWR3cHd2Ymph",
+  "heroUrl": "https://app.cartefidelavis.com/la-cantine-de-chez-chris/hero.jpg",
+  "tagline": "La Cantine de Chez Chris — Paris",
+  "category": "brunch",
+  "email": "christophe@restochezchris.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "christophe@restochezchris.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-cantine-de-chez-chris/logo.jpg"
+}

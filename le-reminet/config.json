@@ -1,0 +1,30 @@
+{
+  "name": "Le Reminet",
+  "color": "#7A2729",
+  "color2": "#641F21",
+  "phone": "01 44 07 04 24",
+  "address": "3 Rue des Grands Degrés 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-reminet/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lereminet/",
+  "heroUrl": "https://app.cartefidelavis.com/le-reminet/hero.jpg",
+  "tagline": "Bistrot parisien Cuisine Bistronomique gourmande",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-reminet/logo.jpg"
+}

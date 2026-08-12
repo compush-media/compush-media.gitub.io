@@ -1,0 +1,30 @@
+{
+  "name": "KOW Paris - Restaurant Cambodgien",
+  "color": "#38693D",
+  "color2": "#2D5632",
+  "phone": "01 45 32 44 01",
+  "address": "53 Rue Basfroi 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/kow-paris-restaurant-cambodgien/logo.jpg",
+  "instagramUrl": "https://instagram.com/kowclub",
+  "heroUrl": "https://app.cartefidelavis.com/kow-paris-restaurant-cambodgien/hero.jpg",
+  "tagline": "KOW Paris - Restaurant Cambodgien — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kow-paris-restaurant-cambodgien/logo.jpg"
+}

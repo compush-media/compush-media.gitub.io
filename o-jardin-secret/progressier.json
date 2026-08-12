@@ -1,0 +1,22 @@
+{
+  "name": "O'Jardin Secret",
+  "short_name": "O'Jardin Secret",
+  "start_url": "/o-jardin-secret/index.html",
+  "scope": "/o-jardin-secret/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#464C28",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
