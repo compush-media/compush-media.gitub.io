@@ -1,0 +1,31 @@
+{
+  "name": "Café Petite",
+  "color": "#AD2418",
+  "color2": "#8D1D13",
+  "phone": "01 42 03 30 16",
+  "address": "52 Rue René Boulanger 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-petite/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafepetiteparis/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-petite/hero.jpg",
+  "tagline": "Café Petite — Paris",
+  "category": "brunch",
+  "email": "reservations@cafepetite.fr",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "reservations@cafepetite.fr",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-petite/logo.jpg"
+}

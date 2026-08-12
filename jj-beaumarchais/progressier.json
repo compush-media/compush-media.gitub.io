@@ -1,0 +1,22 @@
+{
+  "name": "JJ Beaumarchais",
+  "short_name": "JJ Beaumarchais",
+  "start_url": "/jj-beaumarchais/index.html",
+  "scope": "/jj-beaumarchais/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#2B2749",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

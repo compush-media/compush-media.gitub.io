@@ -1,0 +1,31 @@
+{
+  "name": "JJ Beaumarchais",
+  "color": "#2B2749",
+  "color2": "#231F3B",
+  "phone": "09 83 91 45 44",
+  "address": "92 Bd Beaumarchais 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/jj-beaumarchais/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/jjbeaumarchais/",
+  "heroUrl": "https://app.cartefidelavis.com/jj-beaumarchais/hero.jpg",
+  "tagline": "JJ Beaumarchais — Paris",
+  "category": "brunch",
+  "email": "contact@jjbeaumarchais.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@jjbeaumarchais.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/jj-beaumarchais/logo.jpg"
+}

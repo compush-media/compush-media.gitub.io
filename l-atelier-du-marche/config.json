@@ -1,0 +1,31 @@
+{
+  "name": "L'Atelier du Marché",
+  "color": "#7E8140",
+  "color2": "#676934",
+  "phone": "01 42 27 73 50",
+  "address": "4 Rue Saussier-Leroy 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/l-atelier-du-marche/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/latelierdumarche/",
+  "heroUrl": "https://app.cartefidelavis.com/l-atelier-du-marche/hero.jpg",
+  "tagline": "L'Atelier du Marché — Paris",
+  "category": "brunch",
+  "email": "contact@mojo-paris.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "contact@mojo-paris.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/l-atelier-du-marche/logo.jpg"
+}

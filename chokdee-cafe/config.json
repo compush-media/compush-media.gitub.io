@@ -1,0 +1,31 @@
+{
+  "name": "CHOKDEE café",
+  "color": "#FD821B",
+  "color2": "#CF6A16",
+  "phone": "01 56 92 07 68",
+  "address": "54 Rue La Fayette 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/chokdee-cafe/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/chokdeecafe",
+  "heroUrl": "https://app.cartefidelavis.com/chokdee-cafe/hero.jpg",
+  "tagline": "CHOKDEE café — Paris",
+  "category": "brunch",
+  "email": "chokdeeparis@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "chokdeeparis@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/chokdee-cafe/logo.jpg"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Les Ptits Gros",
+  "color": "#9E7A3E",
+  "color2": "09 53 94 01 31",
+  "phone": "27 Av. Trudaine 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-ptits-gros/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/les_ptits_gros/",
+  "tagline": "Les Ptits Gros — Paris",
+  "category": "brunch",
+  "email": "lesptitsgrosparis@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "lesptitsgrosparis@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-ptits-gros/logo.jpg"
+}

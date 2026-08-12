@@ -1,0 +1,31 @@
+{
+  "name": "Les Acolytes",
+  "color": "#036D5D",
+  "color2": "#02594C",
+  "phone": "01 40 35 69 21",
+  "address": "195 rue de Saint Maur 40 Rue Jacques Louvel-Tessier 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-acolytes/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesacolytes.bistrot/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/les-acolytes/hero.jpg",
+  "tagline": "Les Acolytes — Paris",
+  "category": "brunch",
+  "email": "lesacolytes.paris@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "lesacolytes.paris@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-acolytes/logo.jpg"
+}

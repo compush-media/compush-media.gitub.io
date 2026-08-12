@@ -1,0 +1,22 @@
+{
+  "name": "Les Acolytes",
+  "short_name": "Les Acolytes",
+  "start_url": "/les-acolytes/index.html",
+  "scope": "/les-acolytes/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#036D5D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

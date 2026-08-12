@@ -1,0 +1,22 @@
+{
+  "name": "Bistrot Mon café",
+  "short_name": "Bistrot Mon café",
+  "start_url": "/bistrot-mon-cafe/index.html",
+  "scope": "/bistrot-mon-cafe/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#F84621",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

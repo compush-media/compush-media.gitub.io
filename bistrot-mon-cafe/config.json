@@ -1,0 +1,31 @@
+{
+  "name": "Bistrot Mon café",
+  "color": "#F84621",
+  "color2": "#CB391B",
+  "phone": "01 43 72 52 44",
+  "address": "182 Rue du Faubourg Saint-Antoine 75012 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bistrot-mon-cafe/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bistrotmoncafe/",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-mon-cafe/hero.jpg",
+  "tagline": "Bistrot Mon café — Paris",
+  "category": "brunch",
+  "email": "bistrotmoncafe@gmail.com",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "bistrotmoncafe@gmail.com",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-mon-cafe/logo.jpg"
+}
