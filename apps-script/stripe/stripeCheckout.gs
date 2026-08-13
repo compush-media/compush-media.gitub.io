@@ -117,7 +117,7 @@ function _getCheckoutSession(sessionId) {
     return {
       email:      data.customer_email || (data.customer_details && data.customer_details.email) || "",
       customerId: data.customer || "",
-      planId:     (data.metadata && data.metadata.planId) || "essentiel"
+      planId:     (data.metadata && data.metadata.planId) || "terrain"
     };
   } catch(e) {
     return { error: e.message };
@@ -315,11 +315,11 @@ function _updateSlugConfig(token, repo, slug, name, color, color2, customerId, e
     } catch(e) {}
   }
 
-  // Calculer trialEndDate = aujourd'hui + 14 jours si pas déjà défini
+  // Calculer trialEndDate = aujourd'hui + 30 jours si pas déjà défini
   var trialEnd = existing.trialEndDate || "";
   if (!trialEnd) {
     var d = new Date();
-    d.setDate(d.getDate() + 14);
+    d.setDate(d.getDate() + 30);
     trialEnd = d.toISOString().slice(0, 10); // "YYYY-MM-DD"
   }
 
@@ -330,7 +330,7 @@ function _updateSlugConfig(token, repo, slug, name, color, color2, customerId, e
     color2:               color2,
     brevoListId:          existing.brevoListId          || "",
     brevoGasUrl:          existing.brevoGasUrl          || "",
-    plan:                 existing.plan                 || "pro",
+    plan:                 existing.plan                 || "terrain",
     subscriptionStatus:   existing.subscriptionStatus   || "trialing",
     setupPaid:            existing.setupPaid            || false,
     trialEndDate:         trialEnd,
@@ -474,8 +474,9 @@ function createSetupSession(body) {
    1. Récupère le SetupIntent → payment_method
    2. Crée/récupère le Customer Stripe
    3. Crée l'abonnement via l'API Subscriptions avec :
-      - trial_period_days=14
-      - add_invoice_items → 199€ sur la 1ère facture (J+14)
+      - trial_period_days=30
+      Plus de frais d'installation : add_invoice_items reste possible
+      mais le front n'envoie plus de setupPriceId.
    ===================================================== */
 function _finalizeSetup(body) {
   var secretKey    = PropertiesService.getScriptProperties().getProperty("STRIPE_SECRET_KEY");
@@ -483,7 +484,7 @@ function _finalizeSetup(body) {
 
   var setupIntentId = body.setupIntentId || "";
   var sessionId     = body.sessionId     || "";
-  var planId        = body.planId        || "essentiel";
+  var planId        = body.planId        || "terrain";
   var priceId       = body.priceId       || "";
   var setupPriceId  = body.setupPriceId  || "";
   var email         = body.email         || "";
@@ -544,15 +545,15 @@ function _finalizeSetup(body) {
       "default_payment_method="  + encodeURIComponent(paymentMethodId),
       "items[0][price]="         + encodeURIComponent(priceId),
       "items[0][quantity]=1",
-      "trial_period_days=14",
+      "trial_period_days=30",
       "payment_settings[payment_method_types][0]=card",
       "payment_settings[save_default_payment_method]=on_subscription",
       "metadata[planId]="  + encodeURIComponent(planId),
       "metadata[source]=fidelavis-web"
     ];
 
-    // add_invoice_items fonctionne sur /v1/subscriptions (pas sur Checkout Sessions)
-    // Le frais 199€ sera sur la 1ère facture après le trial (J+14)
+    // Conservé pour compatibilité : le front n'envoie plus de setupPriceId
+    // depuis la suppression des frais d'installation.
     if (setupPriceId) {
       subParams.push("add_invoice_items[0][price]="    + encodeURIComponent(setupPriceId));
       subParams.push("add_invoice_items[0][quantity]=1");
@@ -586,8 +587,7 @@ function _finalizeSetup(body) {
 /* =====================================================
    createCheckoutSession(body)
    Crée une session Checkout Stripe avec :
-   - frais d'installation one-time (199€)
-   - abonnement mensuel (essentiel 97€ ou pro 149€)
+   - abonnement mensuel unique : 79 € (plan « terrain »)
    ===================================================== */
 function createCheckoutSession(body) {
   var secretKey    = PropertiesService.getScriptProperties().getProperty("STRIPE_SECRET_KEY");
@@ -595,7 +595,7 @@ function createCheckoutSession(body) {
 
   if (!secretKey) return { error: "STRIPE_SECRET_KEY non configurée" };
 
-  var planId       = body.planId       || "essentiel";
+  var planId       = body.planId       || "terrain";
   var priceId      = body.priceId      || "";
   var setupPriceId = body.setupPriceId || "";
   var email        = body.email        || "";
@@ -606,8 +606,7 @@ function createCheckoutSession(body) {
   if (!priceId) return { error: "priceId manquant" };
 
   // Construire les line_items
-  // Modèle : 0€ aujourd'hui — 14 jours d'essai gratuit
-  // Frais d'installation (199€) → add_invoice_items sur le 1er prélèvement (J+14)
+  // Modèle : 0 € aujourd'hui — 30 jours d'essai gratuit, sans frais d'installation
   // Abonnement mensuel → démarre après le trial
   var lineItems = [
     "line_items[0][price]=" + priceId,
@@ -623,7 +622,8 @@ function createCheckoutSession(body) {
     email      ? ("customer_email=" + encodeURIComponent(email))   : "",
     "metadata[planId]="    + encodeURIComponent(planId),
     "metadata[source]=fidelavis-web",
-    // Frais d'installation (199€) : add_invoice_items n'existe PAS sur Checkout
+    // Frais d'installation supprimés de l'offre. Le paramètre reste lu pour
+    // compatibilité : add_invoice_items n'existe PAS sur Checkout
     // Sessions (uniquement sur l'API Subscriptions). On stocke setupPriceId en
     // metadata, et on ajoute l'invoice item via le webhook
     // customer.subscription.trial_will_end (ou facturation manuelle).
@@ -632,7 +632,7 @@ function createCheckoutSession(body) {
     "subscription_data[metadata][planId]="       + encodeURIComponent(planId),
     "allow_promotion_codes=true",
     "billing_address_collection=auto",
-    "subscription_data[trial_period_days]=14",
+    "subscription_data[trial_period_days]=30",
     // Forcer la collecte du moyen de paiement même sans débit immédiat
     "payment_method_collection=always"
   ].concat(lineItems).filter(Boolean).join("&");
