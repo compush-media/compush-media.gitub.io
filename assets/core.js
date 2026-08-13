@@ -434,6 +434,19 @@
       if (localStorage.getItem("fv_poste_interne") === "1") return;
     } catch (e) {}
 
+    // Filet, et le vrai correctif : le back-office ouvre des démos depuis
+    // plusieurs endroits — un bouton, mais aussi un lien dans chaque carte
+    // restaurant. Marquer les liens un par un revenait à en oublier un, ce qui
+    // s'est produit. On regarde donc D'OÙ l'on vient : une démo ouverte depuis
+    // /fidelavis-admin/ n'est jamais une visite de restaurateur. Même origine,
+    // donc le referrer est bien transmis.
+    try {
+      if (/\/fidelavis-admin\//.test(document.referrer || "")) {
+        localStorage.setItem("fv_poste_interne", "1");
+        return;
+      }
+    } catch (e) {}
+
     var F = window.Fidelavis;
     if (!F || !F.trackOnce) return;
     var slug = (F.getRestoSlug && F.getRestoSlug()) || "";
