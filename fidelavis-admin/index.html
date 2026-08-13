@@ -2323,8 +2323,11 @@ async function openDemoLink(slug) {
   const url = r.demoLayout === 'separate'
     ? `https://app.cartefidelavis.com/demo/${slug}/`
     : `https://app.cartefidelavis.com/${slug}/demo/`;
-  // ouvre la démo (lien direct utilisable en DM)
-  window.open(url, '_blank', 'noopener,width=420,height=860');
+  // On l'ouvre avec ?src=interne : le traceur reconnaît alors le poste de
+  // l'agence et cesse de compter nos vérifications comme des ouvertures par
+  // le restaurateur. Le lien COPIÉ reste propre — c'est lui qui part en DM,
+  // et la visite du prospect doit bien être comptée.
+  window.open(url + '?src=interne', '_blank', 'noopener,width=420,height=860');
   // copie l'URL dans le presse-papier
   try {
     if (navigator.clipboard && navigator.clipboard.writeText) {

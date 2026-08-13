@@ -415,9 +415,27 @@
     if (navigator.webdriver === true ||
         / Headless|bot|crawler|spider/i.test(navigator.userAgent)) return;
 
+    var p = new URLSearchParams(location.search);
+
+    // Le filtre ci-dessus écarte les robots, pas NOUS. Vérifier une démo
+    // depuis le back-office la comptait comme ouverte par le restaurateur :
+    // le lead passait en « 👁 Vue », puis en priorité setter, alors que
+    // personne ne l'avait vue. On marque donc le poste, une fois pour toutes.
+    //   ?src=interne    posé par le bouton « démo » du back-office
+    //   ?fv_interne=1   à ouvrir une fois sur n'importe quelle démo
+    //   ?fv_interne=0   pour redevenir un visiteur ordinaire
+    try {
+      var q = p.get("fv_interne");
+      if (q === "1" || p.get("src") === "interne") {
+        localStorage.setItem("fv_poste_interne", "1");
+      } else if (q === "0") {
+        localStorage.removeItem("fv_poste_interne");
+      }
+      if (localStorage.getItem("fv_poste_interne") === "1") return;
+    } catch (e) {}
+
     var F = window.Fidelavis;
     if (!F || !F.trackOnce) return;
-    var p = new URLSearchParams(location.search);
     var slug = (F.getRestoSlug && F.getRestoSlug()) || "";
     F.trackOnce("demo_view", "fv_demo_view_" + slug, {
       demo: true,
