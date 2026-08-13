@@ -119,10 +119,10 @@
           '<div class="billing-trial-sub">',
             trialEndDate
               ? 'Aucun paiement avant le <strong>' + trialEndDate + '</strong>'
-              : 'Aucun paiement pendant 14 jours',
+              : 'Aucun paiement pendant 30 jours',
           '</div>',
           '<div class="billing-trial-sub" style="margin-top:4px;color:#6b7280;font-size:12px;">',
-            'À la fin de l\'essai : 199 € installation + ' + fmt(planPrice || 0) + '/mois',
+            'À la fin de l\'essai : ' + fmt(planPrice || 0) + '/mois, sans frais d\'installation',
           '</div>',
         '</div>',
       '</div>'
@@ -138,12 +138,10 @@
           _row("Email", cfg.billingEmail || "—"),
           _row("Plan",  '<strong>' + _esc(planLabel) + '</strong>' +
                         (planPrice ? ' <span class="billing-muted">· ' + fmt(planPrice) + '/mois</span>' : "")),
+          // Les frais d'installation ont été supprimés de l'offre : la ligne
+          // ne promet plus un montant à venir, elle rassure.
           _row("Installation",
-               isTrialing
-               ? '<span class="billing-badge blue">À facturer après l\'essai (199 €)</span>'
-               : setupPaid
-                 ? '<span class="billing-badge green">✓ Payée (199 €)</span>'
-                 : '<span class="billing-badge orange">En attente</span>'),
+               '<span class="billing-badge green">✓ Offerte</span>'),
         '</div>',
       '</div>',
 
@@ -159,7 +157,7 @@
             ? _row("Fin d'essai", '<strong style="color:#2563eb">' + trialEndDate + '</strong>')
             : "",
           isTrialing
-            ? _row("1ère facturation", trialEndDate || "Dans 14 jours")
+            ? _row("1ère facturation", trialEndDate || "Dans 30 jours")
             : _row("Prochaine facturation", nextBilling),
           cfg.stripeSubscriptionId
             ? _row("ID abonnement", '<code class="billing-code">' + _esc(cfg.stripeSubscriptionId) + '</code>')
@@ -194,7 +192,7 @@
       '<div class="billing-section">',
         '<div class="billing-section-title">🧾 Factures</div>',
         isTrialing
-          ? '<div class="billing-empty">Aucune facture — votre essai est gratuit jusqu\'au ' + (trialEndDate || "J+14") + '.</div>'
+          ? '<div class="billing-empty">Aucune facture — votre essai est gratuit jusqu\'au ' + (trialEndDate || "la fin de vos 30 jours") + '.</div>'
           : _buildInvoicesHTML(cfg.invoices),
       '</div>'
     ].join("");
@@ -329,7 +327,8 @@
   /* --------------------------------------------------
      _handleSetupReturn(containerId, setupIntentId)
      Appelé quand l'URL contient ?setup_intent=xxx&redirect_status=succeeded.
-     Finalise l'abonnement via GAS (add_invoice_items → 199€ à J+14),
+     Finalise l'abonnement via GAS. Plus de frais d'installation.
+     ⚠️ La DURÉE D'ESSAI est fixée par le script Apps Script, pas ici.
      puis sauvegarde customerId + subscriptionId dans config.json.
   -------------------------------------------------- */
   async function _handleSetupReturn(containerId, setupIntentId, sessionId) {
@@ -349,7 +348,8 @@
       // Plan unique : terrain (79€/mois). chosen_plan ignoré, conservé pour debug.
       var plan = "terrain";
 
-      // 1. Créer l'abonnement via GAS (trial 14j, mise en place offerte → pas d'invoice item)
+      // 1. Créer l'abonnement via GAS (mise en place offerte → pas d'invoice item).
+      //    L'essai doit durer 30 jours : c'est trial_period_days, côté Apps Script.
       //    On envoie soit setupIntentId, soit sessionId — le GAS gère les 2.
       var finalRes = await fetch(STRIPE_GAS_URL, {
         method:  "POST",
@@ -371,13 +371,13 @@
 
       // 2. Sauvegarder dans config.json
       //    trialEnd (Unix timestamp de Stripe) → date ISO pour config.json
-      //    Fallback : si Stripe ne renvoie pas trial_end, calculer à J+14
+      //    Fallback : si Stripe ne renvoie pas trial_end, calculer à J+30
       var trialEndDate;
       if (result.trialEnd) {
         trialEndDate = new Date(result.trialEnd * 1000).toISOString().slice(0, 10);
       } else {
         var d = new Date();
-        d.setDate(d.getDate() + 14);
+        d.setDate(d.getDate() + 30);
         trialEndDate = d.toISOString().slice(0, 10);
       }
 

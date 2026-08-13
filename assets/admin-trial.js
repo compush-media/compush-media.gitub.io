@@ -133,7 +133,7 @@
             '<p style="color:#6b7280;font-size:14px;margin:0;line-height:1.5">',
               'Choisissez votre abonnement pour continuer à utiliser Fidelavis.<br>',
               '<strong style="color:#1c1c2e">Aucun prélèvement aujourd\'hui</strong> — ',
-              'votre carte est enregistrée et la 1ère facture arrive dans 14 jours.',
+              'votre carte est enregistrée et la 1ère facture arrive dans 30 jours.',
             '</p>',
           '</div>',
 
