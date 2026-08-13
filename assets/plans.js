@@ -18,13 +18,8 @@ var STRIPE_CONFIG = {
   portalGasUrl: "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec",
 
   // IDs des prix Stripe — Offre Terrain unique
-  // ⚠️ REMPLACER par le vrai price ID après création dans le dashboard Stripe
   priceIds: {
-    // ⚠️ Ce price ID est celui du tarif à 129 €. Tout l'affichage est
-    //    passé à 79 € : tant qu'un nouveau price n'est pas créé dans
-    //    Stripe et reporté ici, un client qui s'abonne à 79 € serait
-    //    PRÉLEVÉ DE 129 €.
-    terrain: "price_1TQUurDpSXl9WhzrrhjhA9WC"  // ⚠️ 129 €/mois — à remplacer
+    terrain: "price_1U44HiDpSXl9WhzrjHE1ALcL"  // 79 €/mois
   }
 };
 

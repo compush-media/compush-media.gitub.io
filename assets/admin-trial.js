@@ -26,9 +26,8 @@
 (function() {
 
   var STRIPE_GAS_URL = "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec";
-  // ⚠️ REMPLACER par l'ID du price Stripe 79€/mois après création dans le dashboard Stripe
   var PRICE_IDS = {
-    terrain: "price_1TQUurDpSXl9WhzrrhjhA9WC"
+    terrain: "price_1U44HiDpSXl9WhzrjHE1ALcL"
   };
 
   /* ---- Réglages du mode "clients" ---- */
