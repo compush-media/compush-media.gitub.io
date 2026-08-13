@@ -20,18 +20,22 @@ var STRIPE_CONFIG = {
   // IDs des prix Stripe — Offre Terrain unique
   // ⚠️ REMPLACER par le vrai price ID après création dans le dashboard Stripe
   priceIds: {
-    terrain: "price_1TQUurDpSXl9WhzrrhjhA9WC"  // 129 €/mois (mise en place offerte)
+    // ⚠️ Ce price ID est celui du tarif à 129 €. Tout l'affichage est
+    //    passé à 79 € : tant qu'un nouveau price n'est pas créé dans
+    //    Stripe et reporté ici, un client qui s'abonne à 79 € serait
+    //    PRÉLEVÉ DE 129 €.
+    terrain: "price_1TQUurDpSXl9WhzrrhjhA9WC"  // ⚠️ 129 €/mois — à remplacer
   }
 };
 
 /* --------------------------------------------------
-   PLANS — Offre Terrain unique 129€/mois
+   PLANS — Offre Terrain unique 79€/mois
 -------------------------------------------------- */
 var PLANS = {
   terrain: {
     id:           "terrain",
     name:         "Offre Terrain",
-    monthlyPrice: 129,
+    monthlyPrice: 79,
     setupPrice:   0,        // Mise en place offerte
     currency:     "EUR",
     recommended:  true,

@@ -641,7 +641,7 @@
         <div class="stat-card gold">
           <div class="label">CA estimé</div>
           <div class="value" id="kpiCA">–</div>
-          <div class="sub">€ / mois (129€ × abonnés)</div>
+          <div class="sub">€ / mois (79€ × abonnés)</div>
         </div>
       </div>
 
@@ -1454,7 +1454,7 @@ async function loadKpiSaas() {
     const total = slugs.length;
     const tests = slugs.filter(s => data[s].statut_commercial === 'test_actif' || data[s].statut_commercial === 'test_lance').length;
     const abonnes = slugs.filter(s => data[s].statut_commercial === 'abonne').length;
-    const ca = abonnes * 129;
+    const ca = abonnes * 79;   // prix unique — voir assets/plans.js
     el('kpiTotal').textContent   = total;
     el('kpiTests').textContent   = tests;
     el('kpiAbonnes').textContent = abonnes;

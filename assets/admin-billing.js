@@ -284,13 +284,13 @@
   // URLs hardcodées — indépendantes du chargement de plans.js
   var STRIPE_GAS_URL = "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec";
   var PROXY_URL      = "https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec";
-  // ⚠️ REMPLACER par l'ID du price Stripe 129€/mois après création dans le dashboard
+  // ⚠️ REMPLACER par l'ID du price Stripe 79€/mois après création dans le dashboard
   var PRICE_IDS = {
     terrain: "price_1TQUurDpSXl9WhzrrhjhA9WC"
   };
 
   async function _startSelfSetupCheckout(cfg, btn) {
-    var plan  = "terrain";  // Plan unique Offre Terrain 129€/mois
+    var plan  = "terrain";  // Plan unique Offre Terrain 79€/mois
     var email = cfg.billingEmail || "";
     var slug  = _getSlug();
     var originalHTML = btn.innerHTML;
@@ -347,7 +347,7 @@
       // Charger la config pour récupérer plan et email
       var cfg = await loadBillingConfig() || {};
 
-      // Plan unique : terrain (129€/mois). chosen_plan ignoré, conservé pour debug.
+      // Plan unique : terrain (79€/mois). chosen_plan ignoré, conservé pour debug.
       var plan = "terrain";
 
       // 1. Créer l'abonnement via GAS (trial 14j, mise en place offerte → pas d'invoice item)
