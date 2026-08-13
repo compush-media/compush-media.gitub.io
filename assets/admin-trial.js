@@ -27,7 +27,7 @@
 
   var STRIPE_GAS_URL = "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec";
   var PRICE_IDS = {
-    terrain: "price_1U44HiDpSXl9WhzrjHE1ALcL"
+    terrain: "price_1U45nyDpSXl9WhzrCbOobjru"
   };
 
   /* ---- Réglages du mode "clients" ---- */

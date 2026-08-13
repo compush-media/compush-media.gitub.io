@@ -283,7 +283,7 @@
   var STRIPE_GAS_URL = "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec";
   var PROXY_URL      = "https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec";
   var PRICE_IDS = {
-    terrain: "price_1U44HiDpSXl9WhzrjHE1ALcL"
+    terrain: "price_1U45nyDpSXl9WhzrCbOobjru"
   };
 
   async function _startSelfSetupCheckout(cfg, btn) {

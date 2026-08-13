@@ -18,8 +18,14 @@ var STRIPE_CONFIG = {
   portalGasUrl: "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec",
 
   // IDs des prix Stripe — Offre Terrain unique
+  //
+  // ⚠️ MODE TEST. Le script Apps Script tourne avec une clé sk_test_ ; ce
+  //    price doit donc être celui du catalogue de test. Pour passer en
+  //    production, changer LES DEUX ensemble :
+  //      1. STRIPE_SECRET_KEY → sk_live_… dans les propriétés du script
+  //      2. le price ci-dessous → price_1U44HiDpSXl9WhzrjHE1ALcL (79 €, réel)
   priceIds: {
-    terrain: "price_1U44HiDpSXl9WhzrjHE1ALcL"  // 79 €/mois
+    terrain: "price_1U45nyDpSXl9WhzrCbOobjru"  // 79 €/mois
   }
 };
 
