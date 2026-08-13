@@ -277,8 +277,10 @@
     "instagram_external_url": "",
     "walletTemplate": "templates/brunch-resto",
     "demoLayout": "nested",
-    "acces_statut": "non_active",
-    "date_creation": "2026-08-02"
+    "acces_statut": "invite_envoye",
+    "date_creation": "2026-08-02",
+    "invite_token": "9ee80e6bad80420dbe1260576324364f",
+    "invite_expires": "2026-08-20T21:33:06.368Z"
   },
   "l-atelier-gusto": {
     "name": "L'atelier Gusto",
