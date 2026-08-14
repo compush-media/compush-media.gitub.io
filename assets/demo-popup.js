@@ -216,9 +216,12 @@
       inner.appendChild(el("span", "fdp-eyebrow fdp-green", "🎁 Offre de lancement"));
       inner.appendChild(el("h2", "fdp-h", "Prêt à tester dans votre établissement ?"));
       inner.appendChild(el("p", "fdp-sub", "Votre restaurant est déjà configuré."));
-      inner.appendChild(el("p", "fdp-p", "Testez Fidelavis gratuitement avec vos 30 premiers clients."));
+      // Même offre que la page d'activation, mot pour mot : le lead passe de
+      // cet écran à /activation-test-gratuit/ en un clic. Une promesse qui
+      // change entre les deux écrans se lit comme un piège.
+      inner.appendChild(el("p", "fdp-p", "Testez Fidelavis gratuitement pendant 30 jours, sans limite de clients."));
       const ul = el("ul", "fdp-adv");
-      ["30 premiers clients offerts", "3 cartes NFC offertes", "QR code inclus", "Sans engagement"]
+      ["30 jours offerts", "3 cartes NFC offertes", "QR code inclus", "Sans engagement"]
         .forEach(function (t) {
           const li = el("li", null);
           li.appendChild(el("span", "fdp-chk", "✓"));
