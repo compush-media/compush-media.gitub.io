@@ -2243,7 +2243,11 @@ function startFreeTrial(params) {
 
   // Email "magic link" au restaurateur
   var link = base + "/fidelavis-admin/create-password.html?slug=" + encodeURIComponent(slug) + "&token=" + inviteTok;
-  var mail = sendActivationInvite({ email: email, slug: slug, restoName: restoName, link: link });
+  // On transmet l'échéance réelle : l'e-mail annonçait « 48h » en dur alors que
+  // le jeton vit 7 jours. Un restaurateur qui ouvrait son mail le 3e jour
+  // croyait son lien mort.
+  var mail = sendActivationInvite({ email: email, slug: slug, restoName: restoName,
+                                    link: link, expires: r.invite_expires });
 
   return { ok: true, slug: slug, emailSent: !!(mail && mail.ok) };
 }
@@ -2651,6 +2655,18 @@ function sendActivationInvite(params) {
   if (!link)  return { error: "lien manquant" };
 
   var subject = "Activez votre espace Fidelavis — " + restoName;
+
+  // Phrase de validité : calculée depuis l'échéance réelle, et absente quand
+  // il n'y en a pas — le cas « compte déjà actif » envoie un lien de connexion
+  // qui n'expire pas, annoncer une durée y serait faux.
+  var validite = "";
+  if (expires) {
+    try {
+      var fin = new Date(expires);
+      validite = "Ce lien est valable jusqu'au " +
+                 Utilities.formatDate(fin, "Europe/Paris", "dd/MM/yyyy") + ".";
+    } catch (e) { validite = ""; }
+  }
   var html =
     '<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:auto;color:#2A1A0E">' +
       '<h2 style="color:#5A6040;margin:0 0 12px">Bienvenue sur Fidelavis 🎉</h2>' +
@@ -2660,14 +2676,15 @@ function sendActivationInvite(params) {
       '<p style="text-align:center;margin:28px 0">' +
         '<a href="' + link + '" style="background:#5A6040;color:#ffffff;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;display:inline-block">Créer mon mot de passe</a>' +
       '</p>' +
-      '<p style="font-size:13px;color:#8A7260">Ce lien est valable 48h' + (expires ? '.' : '.') + '<br>' +
+      '<p style="font-size:13px;color:#8A7260">' + (validite ? validite + '<br>' : '') +
         'Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :<br>' +
         '<span style="word-break:break-all;color:#5A6040">' + link + '</span></p>' +
       '<p style="font-size:13px;color:#8A7260">Une question ? support@fidelavis.com</p>' +
       '<p style="margin-top:18px">L\'équipe Fidelavis</p>' +
     '</div>';
   var text = "Bienvenue sur Fidelavis !\n\nCréez votre mot de passe pour " + restoName + " :\n" + link +
-             "\n\nCe lien est valable 48h.\nUne question ? support@fidelavis.com\n\nL'équipe Fidelavis";
+             "\n\n" + (validite ? validite + "\n" : "") +
+             "Une question ? support@fidelavis.com\n\nL'équipe Fidelavis";
 
   try {
     var r = _sendEmailFromProxy(email, subject, html, text);

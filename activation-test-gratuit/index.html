@@ -212,7 +212,21 @@
         email:   data.email, phone: data.phone,
         address: data.addr, cp: data.cp, ville: data.ville, ts: Date.now()
       })
-    }).then(function(r){ return r.ok; }).catch(function(){ return false; });
+    }).then(function(r){
+      if (!r.ok) return false;
+      // r.ok ne dit que le statut HTTP, et le proxy répond 200 même quand
+      // l'e-mail n'est pas parti : le vrai verdict est dans le corps
+      // (emailSent). Sans cette lecture, un échec Brevo ET MailApp passait
+      // pour un succès — précisément le silence qu'on voulait supprimer.
+      return r.json().then(function(j){
+        if (!j) return true;
+        if (j.error) return false;
+        if (typeof j.emailSent === "boolean") return j.emailSent;
+        return true;               // alreadyActive : pas de champ, pas d'alarme
+      }).catch(function(){
+        return true;               // corps illisible : on s'en tient au HTTP,
+      });                          // mieux vaut ça qu'une fausse alerte
+    }).catch(function(){ return false; });
 
     // 2) Notif agence via FormSubmit (canal éprouvé) + confirmation UX.
     fetch(FORMSUBMIT, {
