@@ -18,16 +18,15 @@
     "date_fin": ""
   },
   "plan": "terrain",
-  "subscriptionStatus": "trialing",
+  "subscriptionStatus": "active",
   "setupPaid": true,
   "billingEmail": "dumondedamien6@gmail.com",
-  "stripeCustomerId": "cus_V4XoWiGuO4QlVD",
-  "stripeSubscriptionId": "sub_1U4OixDpSXl9WhzrMzE0sap4",
-  "nextBillingDate": "2026-09-13",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
   "iconUrl": "https://app.cartefidelavis.com/bacini/logo.jpg",
-  "trialType": "clients",
-  "trialEndDate": "2026-09-09"
+  "trialEndDate": ""
 }

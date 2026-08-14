@@ -79,10 +79,10 @@
       "image": ""
     }
   ],
-  "nextBillingDate": "2026-09-13",
-  "stripeCustomerId": "cus_V4WiclBfWGqcd2",
-  "stripeSubscriptionId": "sub_1U4NpqDpSXl9WhzrBrIU9MNW",
-  "trialEndDate": "2026-09-13",
+  "nextBillingDate": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "trialEndDate": "",
   "remindersSent": [
     "j-7",
     "j-3",
