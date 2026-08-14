@@ -91,6 +91,15 @@
         _startSelfSetupCheckout(cfg, setupPayBtn);
       });
     }
+
+    // Même parcours que « Configurer mon paiement », proposé cette fois
+    // PENDANT l'essai : la carte est enregistrée, l'essai continue.
+    var subscribeNowBtn = container.querySelector("#subscribeNowBtn");
+    if (subscribeNowBtn) {
+      subscribeNowBtn.addEventListener("click", function() {
+        _startSelfSetupCheckout(cfg, subscribeNowBtn);
+      });
+    }
   }
 
   /* --------------------------------------------------
@@ -178,14 +187,26 @@
         (status === "canceled") ?
           '<div class="billing-alert red">❌ Abonnement résilié. Contactez-nous pour réactiver.</div>' : "",
 
-        // Bouton selon disponibilité du compte Stripe
-        (isTrialing || cfg.stripeCustomerId)
-          ? '<button id="manageSubBtn" class="billing-btn">' +
-              (isTrialing ? '❌ Annuler l\'essai gratuit' : '⚙️ Gérer mon abonnement') +
+        // Pendant l'essai, le seul bouton proposé était « Annuler ». Celui qui
+        // voulait s'engager au 3e jour n'avait rien pour le faire. On met
+        // l'abonnement en avant, l'annulation en retrait — et on précise qu'il
+        // ne perd rien, c'est ce qui lève l'hésitation.
+        isTrialing
+          ? '<button id="subscribeNowBtn" class="billing-btn">' +
+              '👉 Activer mon abonnement' +
+            '</button>' +
+            '<div style="font-size:12.5px;color:#6b7280;margin-top:8px">' +
+              'Vous gardez vos jours d\'essai restants — la première facture ' +
+              'tombera' + (trialEndDate ? ' le <strong>' + trialEndDate + '</strong>' : ' à la fin de votre essai') + '.' +
+            '</div>' +
+            '<button id="manageSubBtn" class="billing-btn" style="background:none;color:#9ca3af;font-weight:500;font-size:12.5px;margin-top:10px;padding:4px 0;text-decoration:underline">' +
+              'Annuler l\'essai gratuit' +
             '</button>'
-          : '<button id="setupPayBtn" class="billing-btn" style="background:#1976d2">' +
-              '💳 Configurer mon paiement en ligne' +
-            '</button>',
+          : cfg.stripeCustomerId
+            ? '<button id="manageSubBtn" class="billing-btn">⚙️ Gérer mon abonnement</button>'
+            : '<button id="setupPayBtn" class="billing-btn" style="background:#1976d2">' +
+                '💳 Configurer mon paiement en ligne' +
+              '</button>',
       '</div>',
 
       // ── FACTURES ────────────────────────────────────
@@ -361,6 +382,10 @@
           planId:        plan,
           priceId:       PRICE_IDS.terrain,
           // setupPriceId omis volontairement → mise en place offerte
+          // La date de fin d'essai DÉJÀ EN COURS : sans elle, le script
+          // repartirait pour 30 jours pleins et quelqu'un qui s'abonne au
+          // 3e jour ne serait facturé qu'au 33e.
+          trialEndDate:  cfg.trialEndDate || "",
           email:         cfg.billingEmail || cfg.email || ""
         })
       });

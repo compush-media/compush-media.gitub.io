@@ -474,7 +474,8 @@ function createSetupSession(body) {
    1. Récupère le SetupIntent → payment_method
    2. Crée/récupère le Customer Stripe
    3. Crée l'abonnement via l'API Subscriptions avec :
-      - trial_period_days=30
+      - trial_end = l'échéance d'origine si un essai court déjà,
+        sinon trial_period_days=30
       Plus de frais d'installation : add_invoice_items reste possible
       mais le front n'envoie plus de setupPriceId.
    ===================================================== */
@@ -487,6 +488,7 @@ function _finalizeSetup(body) {
   var planId        = body.planId        || "terrain";
   var priceId       = body.priceId       || "";
   var setupPriceId  = body.setupPriceId  || "";
+  var trialEndDate  = body.trialEndDate  || "";   // "YYYY-MM-DD", essai en cours
   var email         = body.email         || "";
 
   if (!setupIntentId && !sessionId) return { error: "setupIntentId ou sessionId manquant" };
@@ -540,12 +542,30 @@ function _finalizeSetup(body) {
     }
 
     // 3. Créer l'abonnement avec trial + frais installation sur 1ère facture
+    // Un essai est peut-être DÉJÀ en cours : celui ouvert par le formulaire
+    // d'activation, dont la date vit dans config.json. Repartir sur
+    // trial_period_days=30 offrirait 30 jours de plus à celui qui s'abonne au
+    // 3e jour — il ne paierait qu'au 33e. On respecte donc l'échéance
+    // d'origine quand elle existe, et elle seule.
+    var trialParam = "trial_period_days=30";
+    if (trialEndDate) {
+      var fin = new Date(trialEndDate + "T23:59:59");
+      var sec = Math.floor(fin.getTime() / 1000);
+      // Stripe refuse un trial_end dans le passé ou à moins de 48 h : dans ce
+      // cas l'essai est fini ou presque, on facture au prochain cycle.
+      if (sec > Math.floor(Date.now() / 1000) + 172800) {
+        trialParam = "trial_end=" + sec;
+      } else {
+        trialParam = "trial_end=now";
+      }
+    }
+
     var subParams = [
       "customer="                 + encodeURIComponent(customerId),
       "default_payment_method="  + encodeURIComponent(paymentMethodId),
       "items[0][price]="         + encodeURIComponent(priceId),
       "items[0][quantity]=1",
-      "trial_period_days=30",
+      trialParam,
       "payment_settings[payment_method_types][0]=card",
       "payment_settings[save_default_payment_method]=on_subscription",
       "metadata[planId]="  + encodeURIComponent(planId),

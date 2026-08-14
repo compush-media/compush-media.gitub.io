@@ -295,10 +295,18 @@
         (PROMO_LINE ? "<br>" + PROMO_LINE : "")
       : clientsTxt;
 
+    // Le bouton d'abonnement n'apparaissait QUE dans les 7 derniers jours.
+    // Un restaurateur convaincu au jour 3 n'avait rien à cliquer — et sur la
+    // page facturation, le seul bouton disponible était « Annuler l'essai ».
+    // Il est désormais offert pendant tout l'essai : discret tant qu'il reste
+    // du temps, insistant à l'approche de la fin.
     var cta = nudge
       ? '<button id="fv-gauge-cta" style="border:none;background:#b6152b;color:#fff;font-weight:800;font-size:13.5px;padding:10px 16px;border-radius:10px;cursor:pointer;white-space:nowrap">👉 Activer mon abonnement</button>'
-      : '<div style="font-weight:800;font-size:22px;color:' + numCol + ';white-space:nowrap">' + count +
-        '<span style="color:#b3a596;font-size:15px">&nbsp;client' + (count > 1 ? "s" : "") + "</span></div>";
+      : '<div style="display:flex;align-items:center;gap:14px">' +
+          '<div style="font-weight:800;font-size:22px;color:' + numCol + ';white-space:nowrap">' + count +
+            '<span style="color:#b3a596;font-size:15px">&nbsp;client' + (count > 1 ? "s" : "") + "</span></div>" +
+          '<button id="fv-gauge-cta" title="Vous gardez vos jours d\'essai restants" style="border:1.5px solid #d8cfc3;background:#fff;color:#6f6256;font-weight:700;font-size:12.5px;padding:8px 13px;border-radius:9px;cursor:pointer;white-space:nowrap">Activer mon abonnement</button>' +
+        "</div>";
 
     var el = document.createElement("div");
     el.id = "fv-trial-gauge";
