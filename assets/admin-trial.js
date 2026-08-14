@@ -109,6 +109,8 @@
   -------------------------------------------------- */
   function _showModal(cfg, dismissible) {
     if (document.getElementById("fv-trial-modal")) return;
+    var _joursRestants = _daysLeft(cfg);
+    var _enCours = _joursRestants !== null && _joursRestants > 0;
     var el = document.createElement("div");
     el.id = "fv-trial-modal";
     el.innerHTML = [
@@ -125,15 +127,25 @@
             : ''),
 
           // Header
+          // Cette modale s'ouvre désormais dans DEUX situations : l'essai est
+          // fini (paywall), ou il court encore et le restaurateur veut
+          // s'engager tout de suite. Le texte doit dire la vérité dans les
+          // deux cas — annoncer « la 1ère facture arrive dans 30 jours » à
+          // quelqu'un dont l'essai vient d'expirer est faux, et le contraire
+          // l'est tout autant.
           '<div style="text-align:center;margin-bottom:24px">',
-            '<div style="font-size:52px;line-height:1;margin-bottom:12px">⏰</div>',
+            '<div style="font-size:52px;line-height:1;margin-bottom:12px">' + (_enCours ? "🚀" : "⏰") + '</div>',
             '<h2 style="font-size:21px;font-weight:900;color:#1c1c2e;margin:0 0 8px">',
-              'Votre essai gratuit est terminé',
+              _enCours ? 'Activez votre abonnement' : 'Votre essai gratuit est terminé',
             '</h2>',
             '<p style="color:#6b7280;font-size:14px;margin:0;line-height:1.5">',
-              'Choisissez votre abonnement pour continuer à utiliser Fidelavis.<br>',
-              '<strong style="color:#1c1c2e">Aucun prélèvement aujourd\'hui</strong> — ',
-              'votre carte est enregistrée et la 1ère facture arrive dans 30 jours.',
+              _enCours
+                ? 'Vous gardez vos <strong style="color:#1c1c2e">' + _joursRestants +
+                  ' jour' + (_joursRestants > 1 ? 's' : '') + ' d\'essai</strong> — ' +
+                  'votre carte est enregistrée aujourd\'hui, la 1ère facture arrive à la fin de l\'essai.'
+                : 'Choisissez votre abonnement pour continuer à utiliser Fidelavis.<br>' +
+                  '<strong style="color:#1c1c2e">Votre abonnement démarre aujourd\'hui</strong> — ' +
+                  'votre essai est arrivé à son terme.',
             '</p>',
           '</div>',
 
@@ -165,7 +177,9 @@
             '<div style="padding:0 20px 18px;background:#fff;font-size:12.5px;color:#374151">',
               '<div style="margin-top:14px;padding-top:14px;border-top:1px solid #e5e7eb">',
                 '<div><strong>🎁 Mise en place offerte</strong> — aucun frais d\'installation</div>',
-                '<div style="margin-top:6px"><strong>⏰ 30 jours d\'essai déjà offerts</strong>, sans limite de clients — la 1ère facture arrive après l\'essai</div>',
+                _enCours
+                  ? '<div style="margin-top:6px"><strong>⏰ Vos jours d\'essai sont conservés</strong> — rien n\'est prélevé avant la fin</div>'
+                  : '<div style="margin-top:6px"><strong>⏰ 30 jours d\'essai déjà utilisés</strong>, sans limite de clients</div>',
               '</div>',
             '</div>',
 
