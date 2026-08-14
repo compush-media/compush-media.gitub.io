@@ -293,28 +293,48 @@
     var ecoules = (days == null) ? 0 : Math.max(0, total - days);
     var pct     = Math.min(100, Math.round(ecoules / total * 100));
     var jour    = function (n) { return n + " jour" + (n > 1 ? "s" : ""); };
+    var _jourFr = function (iso) {
+      var p = String(iso).split("-");
+      return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : iso;
+    };
 
     var border = nudge ? "#f4c98a" : "#ece5dc";
     var bg     = nudge ? "linear-gradient(135deg,#fff8ef,#fdf1e0)" : "linear-gradient(135deg,#ffffff,#fbf7f1)";
     var fillBg = nudge ? "linear-gradient(90deg,#f59e0b,#ea7d10)" : "linear-gradient(90deg,#27ae60,#1f9d57)";
     var numCol = nudge ? "#ea7d10" : "#1f9d57";
 
+    // Une carte est-elle déjà enregistrée ? Après souscription anticipée,
+    // l'essai continue — c'est voulu — mais proposer « Activer mon
+    // abonnement » à quelqu'un qui vient de le faire relancerait tout le
+    // parcours de paiement. On le rassure au lieu de le solliciter.
+    var dejaAbonne = !!(cfg && cfg.stripeSubscriptionId);
+
     var clientsTxt = count > 0
       ? count + " client" + (count > 1 ? "s" : "") + " déjà fidélisé" + (count > 1 ? "s" : "")
       : "Posez vos cartes : vos premiers clients arrivent";
 
-    var sub = nudge
-      ? "<strong>Plus que " + (days == null ? "quelques jours" : jour(days)) + " !</strong> " +
-        (count > 0 ? clientsTxt + " — gardez votre élan." : "Activez pour continuer.") +
-        (PROMO_LINE ? "<br>" + PROMO_LINE : "")
-      : clientsTxt;
+    var sub = dejaAbonne
+      ? "Abonnement enregistré — 1<sup>re</sup> facture le " +
+        (cfg.trialEndDate ? _jourFr(cfg.trialEndDate) : "à la fin de l'essai") +
+        ". " + clientsTxt
+      : nudge
+        ? "<strong>Plus que " + (days == null ? "quelques jours" : jour(days)) + " !</strong> " +
+          (count > 0 ? clientsTxt + " — gardez votre élan." : "Activez pour continuer.") +
+          (PROMO_LINE ? "<br>" + PROMO_LINE : "")
+        : clientsTxt;
 
     // Le bouton d'abonnement n'apparaissait QUE dans les 7 derniers jours.
     // Un restaurateur convaincu au jour 3 n'avait rien à cliquer — et sur la
     // page facturation, le seul bouton disponible était « Annuler l'essai ».
     // Il est désormais offert pendant tout l'essai : discret tant qu'il reste
     // du temps, insistant à l'approche de la fin.
-    var cta = nudge
+    var cta = dejaAbonne
+      ? '<div style="display:flex;align-items:center;gap:12px">' +
+          '<div style="font-weight:800;font-size:22px;color:' + numCol + ';white-space:nowrap">' + count +
+            '<span style="color:#b3a596;font-size:15px">&nbsp;client' + (count > 1 ? "s" : "") + "</span></div>" +
+          '<span style="font-size:12.5px;font-weight:700;color:#1f9d57;white-space:nowrap">✓ Abonné</span>' +
+        "</div>"
+      : nudge
       ? '<button id="fv-gauge-cta" style="border:none;background:#b6152b;color:#fff;font-weight:800;font-size:13.5px;padding:10px 16px;border-radius:10px;cursor:pointer;white-space:nowrap">👉 Activer mon abonnement</button>'
       : '<div style="display:flex;align-items:center;gap:14px">' +
           '<div style="font-weight:800;font-size:22px;color:' + numCol + ';white-space:nowrap">' + count +
@@ -385,7 +405,10 @@
     // Seule la DATE termine l'essai. Le compteur n'est plus qu'un affichage :
     // s'il est indisponible, la jauge se dessine quand même à zéro plutôt que
     // de disparaître.
-    var expire = (days !== null && days <= 0);
+    // Entre la fin de l'essai et le traitement du webhook par Stripe, le
+    // statut reste « trialing » quelques minutes. Sans ce garde-fou, un
+    // restaurateur déjà abonné verrait le paywall s'ouvrir devant lui.
+    var expire = (days !== null && days <= 0) && !cfg.stripeSubscriptionId;
     var nudge  = (days !== null && days <= NUDGE_DAYS);
     _trialCount(slug)
       .catch(function(e) {
