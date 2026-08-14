@@ -2611,14 +2611,5 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-08-12"
-  },
-  "test-fidelavis": {
-    "acces_statut": "active",
-    "name": "test-fidelavis",
-    "email": "tirakountech@gmail.com",
-    "nom_gerant": "dupont",
-    "telephone": "00000000",
-    "adresse": "dijàpk, 23456, la",
-    "date_activation": "2026-08-14T23:04:17.497Z"
   }
 }
