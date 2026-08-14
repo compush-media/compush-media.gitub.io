@@ -24,5 +24,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/logo.jpg",
+  "email": "dan.drumonde@gmail.com"
 }
