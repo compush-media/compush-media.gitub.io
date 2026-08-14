@@ -489,6 +489,7 @@ function _finalizeSetup(body) {
   var priceId       = body.priceId       || "";
   var setupPriceId  = body.setupPriceId  || "";
   var trialEndDate  = body.trialEndDate  || "";   // "YYYY-MM-DD", essai en cours
+  var slug          = body.slug          || "";   // pour les webhooks ultérieurs
   var email         = body.email         || "";
 
   if (!setupIntentId && !sessionId) return { error: "setupIntentId ou sessionId manquant" };
@@ -597,8 +598,12 @@ function _finalizeSetup(body) {
       "payment_settings[payment_method_types][0]=card",
       "payment_settings[save_default_payment_method]=on_subscription",
       "metadata[planId]="  + encodeURIComponent(planId),
+      // Sans ce slug, le webhook ne sait pas à quel restaurant rattacher une
+      // résiliation : il le cherchait dans une feuille Google que ce parcours
+      // n'alimente jamais. Résultat, un client qui résiliait gardait son accès.
+      slug ? ("metadata[slug]=" + encodeURIComponent(slug)) : "",
       "metadata[source]=fidelavis-web"
-    ];
+    ].filter(function(x) { return x; });
 
     // Conservé pour compatibilité : le front n'envoie plus de setupPriceId
     // depuis la suppression des frais d'installation.

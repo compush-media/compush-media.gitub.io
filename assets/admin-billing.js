@@ -407,6 +407,9 @@
           sessionId:     sessionId     || "",
           planId:        plan,
           priceId:       PRICE_IDS.terrain,
+          // Le slug part en métadonnée Stripe : c'est par lui que le webhook
+          // retrouvera le restaurant lors d'une résiliation ou d'un impayé.
+          slug:          slug,
           // setupPriceId omis volontairement → mise en place offerte
           // La date de fin d'essai DÉJÀ EN COURS : sans elle, le script
           // repartirait pour 30 jours pleins et quelqu'un qui s'abonne au

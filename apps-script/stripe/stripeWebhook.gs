@@ -28,11 +28,58 @@ var STRIPE_API = "https://api.stripe.com/v1";
 /* =====================================================
    doPost — réception webhook Stripe
    ===================================================== */
+/**
+ * _evenementAuthentique(body)
+ *
+ * L'URL d'un déploiement Apps Script est publique et sans authentification :
+ * n'importe qui la connaissant pouvait envoyer un faux événement et faire
+ * passer un restaurant en « active », ou lui écrire une facture — le script
+ * détient un jeton GitHub en écriture.
+ *
+ * Apps Script ne donne pas accès aux en-têtes HTTP, donc la signature
+ * Stripe (Stripe-Signature) est hors de portée. On vérifie autrement, et
+ * c'est aussi solide : on redemande l'événement à Stripe par son id. Un
+ * événement inventé n'existe pas chez eux, et un événement authentique ne
+ * peut pas être falsifié puisque c'est Stripe qui nous le renvoie.
+ */
+function _evenementAuthentique(body) {
+  var id = body && body.id;
+  if (!id || String(id).indexOf("evt_") !== 0) {
+    Logger.log("Webhook refusé : pas d'id d'événement");
+    return null;
+  }
+  var secretKey = PropertiesService.getScriptProperties().getProperty("STRIPE_SECRET_KEY");
+  if (!secretKey) {
+    Logger.log("Webhook refusé : STRIPE_SECRET_KEY absente");
+    return null;
+  }
+  try {
+    var res = UrlFetchApp.fetch(STRIPE_API + "/events/" + encodeURIComponent(id), {
+      headers:            { Authorization: "Bearer " + secretKey },
+      muteHttpExceptions: true
+    });
+    var verifie = JSON.parse(res.getContentText());
+    if (verifie.error || !verifie.type) {
+      Logger.log("Webhook refusé : événement " + id + " introuvable chez Stripe");
+      return null;
+    }
+    return verifie;   // on travaille sur LA version de Stripe, pas sur l'entrée
+  } catch (err) {
+    Logger.log("Webhook : vérification impossible — " + err.message);
+    return null;
+  }
+}
+
 function doPost(e) {
   var output = ContentService.createTextOutput("ok");
 
   try {
-    var body  = JSON.parse(e.postData.contents);
+    var recu = JSON.parse(e.postData.contents);
+
+    // On ne fait RIEN tant que Stripe n'a pas confirmé l'événement.
+    var body = _evenementAuthentique(recu);
+    if (!body) return output;
+
     var event = body.type || "";
 
     if (event === "checkout.session.completed") {
@@ -95,7 +142,7 @@ function _handleCheckoutCompleted(session) {
   var email          = session.customer_email || (session.customer_details && session.customer_details.email) || "";
   var customerId     = session.customer || "";
   var subscriptionId = session.subscription || "";
-  var planId         = (session.metadata && session.metadata.planId) || "essentiel";
+  var planId         = (session.metadata && session.metadata.planId) || "terrain";
   var setupPriceId   = (session.metadata && session.metadata.setupPriceId) || "";
 
   // Slug inconnu à ce stade — on utilise customerId comme clé provisoire.
@@ -104,8 +151,8 @@ function _handleCheckoutCompleted(session) {
 
   // Récupérer les détails de l'abonnement (trial_end, status)
   var subDetails   = _fetchSubscription(subscriptionId);
-  var trialEnd     = subDetails ? _tsToDate(subDetails.trial_end)          : _dateInDays(14);
-  var nextBilling  = subDetails ? _tsToDate(subDetails.current_period_end) : _dateInDays(14);
+  var trialEnd     = subDetails ? _tsToDate(subDetails.trial_end)          : _dateInDays(30);
+  var nextBilling  = subDetails ? _tsToDate(subDetails.current_period_end) : _dateInDays(30);
   var subStatus    = (subDetails && subDetails.status) || "trialing";
 
   // Créer l'InvoiceItem pour les frais d'installation (199€)
@@ -187,7 +234,7 @@ function _handleInvoicePaid(invoice) {
   _updateBillingStatus(customerId, subscriptionId, "active", invoiceData, nextBilling);
 
   // Sync GitHub
-  var restoId = _findRestoIdByCustomer(customerId);
+  var restoId = _findRestoIdByCustomer(customerId, invoice, subscriptionId);
   if (restoId) {
     _updateGithubConfig(restoId, {
       subscriptionStatus: "active",
@@ -212,7 +259,7 @@ function _handleInvoicePaymentFailed(invoice) {
   _updateBillingStatus(customerId, subscriptionId, "past_due", null, "");
 
   // Sync GitHub
-  var restoId = _findRestoIdByCustomer(customerId);
+  var restoId = _findRestoIdByCustomer(customerId, invoice, subscriptionId);
   if (restoId) {
     _updateGithubConfig(restoId, { subscriptionStatus: "past_due" });
   }
@@ -237,7 +284,7 @@ function _handleSubscriptionDeleted(subscription) {
   _updateBillingStatus(customerId, subscriptionId, "canceled", null, "");
 
   // Sync GitHub
-  var restoId = _findRestoIdByCustomer(customerId);
+  var restoId = _findRestoIdByCustomer(customerId, subscription);
   if (restoId) {
     _updateGithubConfig(restoId, { subscriptionStatus: "canceled" });
   }
@@ -263,7 +310,7 @@ function _handleSubscriptionUpdated(subscription) {
   _updateBillingStatus(customerId, subscriptionId, status, null, nextBilling);
 
   // Sync GitHub
-  var restoId = _findRestoIdByCustomer(customerId);
+  var restoId = _findRestoIdByCustomer(customerId, subscription);
   if (restoId) {
     _updateGithubConfig(restoId, {
       subscriptionStatus: status,
@@ -301,7 +348,7 @@ function _syncBillingFromSheet(restoId, customerId) {
     try { raw = JSON.parse(record[10] || "{}"); } catch(e) {}
 
     var fields = {
-      plan:                 record[3]  || raw.plan || "essentiel",
+      plan:                 record[3]  || raw.plan || "terrain",
       subscriptionStatus:   record[4]  || "incomplete",
       setupPaid:            record[5] === "oui" || raw.setupPaid === true,
       billingEmail:         record[2]  || "",
@@ -432,7 +479,21 @@ function _logEvent(eventType, obj, rawBody) {
  * _findRestoIdByCustomer(customerId)
  * Cherche le restoId dans la Sheet à partir du stripeCustomerId.
  */
-function _findRestoIdByCustomer(customerId) {
+function _findRestoIdByCustomer(customerId, objet, subscriptionId) {
+  // La métadonnée d'abord : elle est posée à la création de l'abonnement et
+  // ne dépend d'aucune feuille. La recherche par Sheet ne fonctionnait que
+  // pour les clients passés par _provisionRestaurant — un abonnement pris
+  // depuis l'espace du restaurateur n'y figure pas, et sa résiliation était
+  // donc ignorée : le config.json restait « active ».
+  if (objet && objet.metadata && objet.metadata.slug) {
+    return objet.metadata.slug;
+  }
+  // Une FACTURE porte ses propres métadonnées, pas celles de l'abonnement :
+  // il faut aller les chercher sur l'abonnement lui-même.
+  if (subscriptionId) {
+    var sub = _fetchSubscription(subscriptionId);
+    if (sub && sub.metadata && sub.metadata.slug) return sub.metadata.slug;
+  }
   if (!customerId) return null;
   try {
     var sheet = _getSheet();
@@ -557,7 +618,7 @@ function _defaultConfig(restoId) {
     name:                 restoId,
     color:                "#B8924F",
     color2:               "#9E7A3E",
-    plan:                 "essentiel",
+    plan:                 "terrain",
     subscriptionStatus:   "trialing",
     setupPaid:            false,
     trialEndDate:         "",
@@ -662,23 +723,21 @@ function _sendEmail(to, subject, body) {
 function _sendOnboardingEmail(email, planId, sessionId, trialEndDate) {
   if (!email) return;
 
-  var planName = planId === "pro" ? "Pro" : "Essentiel";
   var subject  = "Votre essai gratuit Fidelavis commence !";
   var body = [
     "Bonjour,",
     "",
-    "Votre paiement a bien été enregistré. Votre essai gratuit Fidelavis " + planName + " est actif.",
+    "Votre carte a bien été enregistrée. Votre essai gratuit Fidelavis est actif.",
     "",
     "✅ Aucun paiement aujourd'hui.",
-    "📅 Fin d'essai : " + (trialEndDate || "dans 14 jours"),
+    "📅 Fin d'essai : " + (trialEndDate || "dans 30 jours"),
     "",
     "Votre espace restaurant est en cours de création.",
     "Vous recevrez un second email avec vos identifiants de connexion d'ici quelques minutes.",
     "",
     "─────────────────────────────",
-    "Après l'essai, vous serez facturé :",
-    "  - 199 € d'installation (une seule fois)",
-    "  - " + (planId === "pro" ? "149" : "97") + " €/mois — plan " + planName,
+    "Après l'essai : 79 € par mois, sans engagement.",
+    "Aucun frais d'installation.",
     "",
     "Pour annuler avant la fin d'essai, répondez à cet email.",
     "",
