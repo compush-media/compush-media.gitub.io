@@ -2607,5 +2607,15 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-08-12"
+  },
+  "test-empreinte": {
+    "invite_hash": "07077f54d6a45be8396156083a41cff3e6c40fa968e6dedb7e4cb9830677ecc7",
+    "invite_expires": "2026-08-21T23:39:35.178Z",
+    "acces_statut": "invite_envoye",
+    "name": "test-empreinte",
+    "email": "tirakountech@gmail.com",
+    "nom_gerant": "laau",
+    "telephone": "222233",
+    "adresse": "gyui, 45678, koi"
   }
 }
