@@ -2613,13 +2613,12 @@
     "date_creation": "2026-08-12"
   },
   "test-fidelavis": {
-    "invite_token": "0c6e33041ef4403d8437fb0a8b8d957c",
-    "invite_expires": "2026-08-21T23:00:59.595Z",
-    "acces_statut": "invite_envoye",
+    "acces_statut": "active",
     "name": "test-fidelavis",
     "email": "tirakountech@gmail.com",
     "nom_gerant": "dupont",
     "telephone": "00000000",
-    "adresse": "dijàpk, 23456, la"
+    "adresse": "dijàpk, 23456, la",
+    "date_activation": "2026-08-14T23:04:17.497Z"
   }
 }
