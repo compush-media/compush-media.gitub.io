@@ -15,7 +15,7 @@
     "updatedAt": "2026-06-01T17:10:00.784Z"
   },
   "plan": "terrain",
-  "subscriptionStatus": "trialing",
+  "subscriptionStatus": "active",
   "setupPaid": true,
   "invoices": [],
   "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ_fYMsiVt5kcR_ElRbOjYTRc",
@@ -79,10 +79,10 @@
       "image": ""
     }
   ],
-  "nextBillingDate": "2026-06-25",
-  "stripeCustomerId": "cus_UaYVg2rRB3bfqF",
-  "stripeSubscriptionId": "sub_1TbNOxDpSXl9Whzr3dUr9FzX",
-  "trialEndDate": "2026-06-09",
+  "nextBillingDate": "2026-09-13",
+  "stripeCustomerId": "cus_V4WiclBfWGqcd2",
+  "stripeSubscriptionId": "sub_1U4NpqDpSXl9WhzrBrIU9MNW",
+  "trialEndDate": "2026-09-13",
   "remindersSent": [
     "j-7",
     "j-3",
