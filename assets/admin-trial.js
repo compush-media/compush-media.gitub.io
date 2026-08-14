@@ -48,8 +48,15 @@
   }
 
   function _isClientsTrial(cfg) {
-    return !!cfg && cfg.trialType === "clients" &&
-           (cfg.subscriptionStatus === "trialing" || !cfg.subscriptionStatus);
+    if (!cfg) return false;
+    var enEssai = cfg.subscriptionStatus === "trialing" || !cfg.subscriptionStatus;
+    if (!enEssai) return false;
+    // trialType n'est écrit NULLE PART dans le code — un seul wallet le
+    // portait, posé à la main. Un restaurateur activant son essai obtenait
+    // donc « trialing » + une date, sans ce drapeau : ni jauge pendant
+    // l'essai, ni paywall doux à la fin, mais l'ancienne modale bloquante.
+    // Une date de fin d'essai suffit désormais à reconnaître un essai.
+    return cfg.trialType === "clients" || !!cfg.trialEndDate;
   }
 
   function _daysLeft(cfg) {
