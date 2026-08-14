@@ -136,14 +136,11 @@ fi
 SLUG=$(echo "$SLUG" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g')
 TARGET="./${SLUG}"
 
-# Choix du template : --template > _template > fallback le-coreen
+# Choix du template : --template > _template
 if [ -n "$TEMPLATE_DIR" ]; then
   TEMPLATE="$TEMPLATE_DIR"
 else
   TEMPLATE="_template"
-  if [ ! -d "$TEMPLATE" ] && [ -d "le-coreen" ]; then
-    TEMPLATE="le-coreen"
-  fi
 fi
 
 if [ -d "$TARGET" ]; then

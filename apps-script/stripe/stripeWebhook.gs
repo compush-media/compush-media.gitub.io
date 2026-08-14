@@ -110,7 +110,7 @@ function doPost(e) {
 /* =====================================================
    doGet — synchronisation manuelle + diagnostic
    Usage :
-     ?action=syncBilling&restoId=le-coreen&customerId=cus_xxx
+     ?action=syncBilling&restoId=casa-loca&customerId=cus_xxx
        → force la sync Sheet → config.json pour ce restaurant
      ?action=ping
        → retourne {"ok":true} pour tester le déploiement

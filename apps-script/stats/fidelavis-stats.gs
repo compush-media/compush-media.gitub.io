@@ -21,7 +21,7 @@
 var SHEET_NAME = "events";
 
 // ─── Normalise un identifiant restaurant en slug ─────────────
-//     "Le Coreen" → "le-coreen"  |  "le coreen" → "le-coreen"
+//     "Casa Loca" → "casa-loca"  |  "casa loca" → "casa-loca"
 function toSlug(name) {
   return (name || "").toString().trim().toLowerCase().replace(/\s+/g, '-');
 }
