@@ -452,12 +452,16 @@
       console.log("[Fidelavis] update_billing result:", saveData);
       if (!saveData.ok) throw new Error("update_billing: " + (saveData.error || "réponse non-ok"));
 
-      // 3. Redirection définitive vers espace-admin (location.replace force le reload
-      //    et empêche un retour arrière sur l'URL ?setup_intent=xxx)
-      var returnTo = chosenPlan
-        ? (window.location.origin + "/" + slug + "/admin/espace-admin.html")
-        : (window.location.origin + window.location.pathname);
-      window.location.replace(returnTo);
+      // 3. Redirection vers l'espace admin. location.replace force le
+      //    rechargement et empêche un retour arrière sur l'URL de retour.
+      //
+      //    Ici se cachait un bug ancien : la condition portait sur une
+      //    variable `chosenPlan` jamais déclarée depuis la suppression du
+      //    choix de plan. Elle levait « chosenPlan is not defined » APRÈS
+      //    que l'abonnement ait été créé et la config enregistrée — tout
+      //    avait réussi, mais le restaurateur voyait une erreur.
+      window.location.replace(
+        window.location.origin + "/" + slug + "/admin/espace-admin.html");
 
     } catch(e) {
       container.innerHTML =
