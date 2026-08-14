@@ -3579,11 +3579,24 @@ async function updateAmbassadeur(slug, code) {
 // ============================================================
 let _activationSlug = '';
 
+// Empreinte SHA-256 hexadécimale — même calcul que _hashToken côté Apps Script
+// et que create-password.html. data/restaurants.json étant servi publiquement,
+// seule l'empreinte y est écrite ; le jeton en clair ne part que dans l'e-mail.
+async function empreinteToken(txt) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+  return Array.from(new Uint8Array(buf))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 function openActivationModal(slug) {
   const data = window._restoData || {};
   const r    = data[slug] || {};
   _activationSlug = slug;
-  const token = 'fvt_' + Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,10);
+  // randomUUID et non Math.random : ce jeton est la seule preuve qu'on possède
+  // l'adresse e-mail du restaurateur. Math.random n'est pas cryptographique,
+  // ses tirages successifs sont prédictibles à partir de quelques sorties.
+  const token = crypto.randomUUID().replace(/-/g, '');
   const link  = `https://app.cartefidelavis.com/fidelavis-admin/create-password.html?token=${token}&slug=${encodeURIComponent(slug)}`;
   el('activationRestoName').textContent  = r.name || slug;
   el('activationRestoEmail').textContent = r.email || '(aucun email enregistré)';
@@ -3628,7 +3641,8 @@ async function sendActivationEmail() {
     const regData = JSON.parse(new TextDecoder().decode(bytes));
     const expires = new Date(Date.now() + 48 * 3600 * 1000).toISOString();
     regData[slug].acces_statut    = 'invite_envoye';
-    regData[slug].invite_token    = token;
+    regData[slug].invite_hash     = await empreinteToken(token);
+    delete regData[slug].invite_token;          // purge d'un jeton hérité, publié en clair
     regData[slug].invite_expires  = expires;
     window._restoData = regData;
     const newContent  = JSON.stringify(regData, null, 2) + '\n';

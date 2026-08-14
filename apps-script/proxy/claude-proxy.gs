@@ -2182,9 +2182,26 @@ function brevoDiag(params) {
 // Génère un lien d'activation pour le restaurateur et le lui envoie par email
 // → il crée son mot de passe (create-password) → accède direct à son dashboard
 // (l'essai 30 clients/30 jours démarre automatiquement à l'activation).
-//   • génère invite_token (7 jours) dans data/restaurants.json
+//   • génère un jeton (7 jours) et n'écrit que son empreinte SHA-256
+//     (invite_hash) dans data/restaurants.json, qui est public
 //   • email "magic link" au restaurateur (réutilise sendActivationInvite)
 //   • si déjà actif : renvoie simplement le lien de connexion
+// Empreinte SHA-256 d'un jeton d'invitation, en hexadécimal.
+//
+// data/restaurants.json est servi publiquement : y écrire le jeton en clair
+// revenait à publier la clé à côté de la serrure — n'importe qui pouvait lire
+// le jeton d'un restaurant invité et définir son mot de passe avant lui.
+// Seule l'empreinte est stockée désormais ; le jeton en clair ne vit que dans
+// l'e-mail du restaurateur. Une empreinte publiée n'est exploitable par
+// personne.
+function _hashToken(t) {
+  var octets = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,
+                                       String(t), Utilities.Charset.UTF_8);
+  return octets.map(function (b) {
+    return ("0" + (b & 0xFF).toString(16)).slice(-2);
+  }).join("");
+}
+
 function startFreeTrial(params) {
   var slug   = (params.slug || params.restaurant_slug || "").trim().toLowerCase();
   var email  = (params.email  || "").trim();
@@ -2222,7 +2239,10 @@ function startFreeTrial(params) {
   // Génère le token d'activation (valable 7 jours)
   var inviteTok = Utilities.getUuid().replace(/-/g, "");
   var exp = new Date(); exp.setDate(exp.getDate() + 7);
-  r.invite_token   = inviteTok;
+  // Le registre ne reçoit que l'empreinte. inviteTok en clair part dans l'e-mail
+  // et n'est écrit nulle part.
+  r.invite_hash    = _hashToken(inviteTok);
+  delete r.invite_token;                     // purge d'une éventuelle valeur héritée
   r.invite_expires = exp.toISOString();
   r.acces_statut   = "invite_envoye";
   if (!r.name && gerant)  r.name = restoName;
@@ -2337,7 +2357,9 @@ function activateRestaurateur(params) {
   if (r.acces_statut === "active") return { success: true, alreadyActive: true };
 
   // 2) Valider le token + l'expiration
-  if (!r.invite_token || r.invite_token !== token) return { error: "Lien d'activation invalide." };
+  // Comparaison sur l'empreinte uniquement. Aucun repli sur un invite_token en
+  // clair : accepter l'ancien format rouvrirait exactement la faille corrigée.
+  if (!r.invite_hash || r.invite_hash !== _hashToken(token)) return { error: "Lien d'activation invalide." };
   if (r.invite_expires && new Date(r.invite_expires) < new Date()) return { error: "Lien d'activation expiré." };
 
   // 3) Provisionner Supabase (restaurant + admin avec le mot de passe choisi)
@@ -2364,7 +2386,8 @@ function activateRestaurateur(params) {
   // 4) Mettre à jour le registre : actif + purge du token
   r.acces_statut    = "active";
   r.date_activation = new Date().toISOString();
-  delete r.invite_token;
+  delete r.invite_token;                     // héritage éventuel
+  delete r.invite_hash;
   delete r.invite_expires;
   registry[slug] = r;
 
