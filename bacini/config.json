@@ -27,8 +27,8 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/bacini/logo.jpg"
-  "trialType":          "clients",
-"subscriptionStatus": "trialing",
-"trialEndDate":       "2026-09-09"
+  "iconUrl": "https://app.cartefidelavis.com/bacini/logo.jpg",
+  "trialType": "clients",
+  "subscriptionStatus": "trialing",
+  "trialEndDate": "2026-09-09"
 }
