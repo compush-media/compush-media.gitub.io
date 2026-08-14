@@ -394,6 +394,15 @@
       if (result.error) throw new Error("finalizeSetup: " + result.error);
       if (!result.customerId) throw new Error("Pas de customerId reçu de Stripe");
 
+      // Le session_id reste dans l'URL : un simple rechargement relançait
+      // toute la procédure. Le script sait maintenant reconnaître un
+      // abonnement existant, mais autant ne pas le solliciter pour rien —
+      // et l'utilisateur ne doit pas revoir « Activation en cours… ».
+      try {
+        var propre = window.location.pathname;
+        window.history.replaceState({}, "", propre);
+      } catch(_) {}
+
       // 2. Sauvegarder dans config.json
       //    trialEnd (Unix timestamp de Stripe) → date ISO pour config.json
       //    Fallback : si Stripe ne renvoie pas trial_end, calculer à J+30

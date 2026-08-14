@@ -541,6 +541,34 @@ function _finalizeSetup(body) {
       customerId = cu.id;
     }
 
+    // 2 bis. Ce client a-t-il DÉJÀ un abonnement ? Sans ce garde-fou, chaque
+    // appel en créait un nouveau : un restaurateur qui recharge la page de
+    // retour, ou qui réessaie après une erreur réseau, se retrouvait facturé
+    // deux fois. Le cas s'est produit en test — deux abonnements en 3 secondes.
+    var dejaRes = UrlFetchApp.fetch(
+      STRIPE_API + "/subscriptions?customer=" + encodeURIComponent(customerId) +
+      "&status=all&limit=10", {
+        headers:            { Authorization: "Bearer " + secretKey },
+        muteHttpExceptions: true
+      });
+    var deja = JSON.parse(dejaRes.getContentText());
+    if (deja && deja.data && deja.data.length) {
+      for (var k = 0; k < deja.data.length; k++) {
+        var s = deja.data[k];
+        if (s.status === "active" || s.status === "trialing" || s.status === "past_due") {
+          Logger.log("_finalizeSetup : abonnement déjà existant " + s.id + " (" + s.status + ")");
+          return {
+            ok:             true,
+            customerId:     customerId,
+            subscriptionId: s.id,
+            status:         s.status,
+            trialEnd:       s.trial_end || null,
+            deja:           true          // le front peut le signaler
+          };
+        }
+      }
+    }
+
     // 3. Créer l'abonnement avec trial + frais installation sur 1ère facture
     // Un essai est peut-être DÉJÀ en cours : celui ouvert par le formulaire
     // d'activation, dont la date vit dans config.json. Repartir sur
