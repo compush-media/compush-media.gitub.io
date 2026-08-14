@@ -132,7 +132,13 @@
     var planPrice   = (typeof getPlanPrice   === "function") ? getPlanPrice(plan)     : null;
     var fmt         = (typeof formatPrice    === "function") ? formatPrice            : function(v) { return v + " €"; };
 
-    var nextBilling  = cfg.nextBillingDate ? _formatDate(cfg.nextBillingDate) : "—";
+    // Pendant un essai, la prochaine facture EST la fin de l'essai — inutile
+    // de se fier à une date stockée à part, qui peut dériver : sur bacini
+    // elle annonçait le 13 septembre alors que Stripe prélevait le 9, reliquat
+    // d'un webhook déclenché par une tentative antérieure.
+    var nextBilling  = (status === "trialing" && cfg.trialEndDate)
+      ? _formatDate(cfg.trialEndDate)
+      : (cfg.nextBillingDate ? _formatDate(cfg.nextBillingDate) : "—");
     var trialEndDate = cfg.trialEndDate    ? _formatDate(cfg.trialEndDate)    : null;
     var setupPaid    = cfg.setupPaid === true;
 
