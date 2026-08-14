@@ -25,10 +25,8 @@
     "twitter": "",
     "linkedin": "",
     "GMB_URL": "",
-    "acces_statut": "invite_envoye",
-    "date_creation": "2026-05-23",
-    "invite_token": "fvt_7bq2ge6djjlsmguu",
-    "invite_expires": "2026-08-10T09:23:19.207Z"
+    "acces_statut": "non_active",
+    "date_creation": "2026-05-23"
   },
   "brother-sister-brunch-lunch-dinner": {
     "name": "BROTHER SISTER Brunch Lunch Dinner",
@@ -277,10 +275,8 @@
     "instagram_external_url": "",
     "walletTemplate": "templates/brunch-resto",
     "demoLayout": "nested",
-    "acces_statut": "invite_envoye",
-    "date_creation": "2026-08-02",
-    "invite_token": "9ee80e6bad80420dbe1260576324364f",
-    "invite_expires": "2026-08-20T21:33:06.368Z"
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-02"
   },
   "l-atelier-gusto": {
     "name": "L'atelier Gusto",
