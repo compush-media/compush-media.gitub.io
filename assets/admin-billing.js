@@ -49,11 +49,28 @@
     var setupIntentId  = _urlParams.get("setup_intent");
     var sessionId      = _urlParams.get("session_id");
     var redirectStatus = _urlParams.get("redirect_status") || "";
-    if (setupIntentId || sessionId) {
-      console.log("[Fidelavis] Stripe return — setup_intent=" + setupIntentId + " session_id=" + sessionId + " status=" + redirectStatus);
-      await _handleSetupReturn(containerId, setupIntentId, sessionId);
-      return;
-    }
+      var CLE_REPRISE = "fv_activation_en_cours_" + _getSlug();
+      // L'appel au script prend 20 à 30 s. Si l'utilisateur quitte la page
+      // pendant ce temps — le bouton « Tableau de bord » est juste là —, la
+      // requête est annulée ET le session_id disparaît avec l'URL : plus
+      // aucun moyen de reprendre, la carte est enregistrée chez Stripe mais
+      // aucun abonnement n'existe. On mémorise donc la session avant de
+      // commencer, et on reprend tout seul à la visite suivante.
+      if (setupIntentId || sessionId) {
+        try { localStorage.setItem(CLE_REPRISE,
+              JSON.stringify({ setupIntentId: setupIntentId, sessionId: sessionId })); } catch(_) {}
+        await _handleSetupReturn(containerId, setupIntentId, sessionId);
+        return;
+      }
+      try {
+        var repriseBrute = localStorage.getItem(CLE_REPRISE);
+        if (repriseBrute) {
+          var reprise = JSON.parse(repriseBrute);
+          console.log("[Fidelavis] activation interrompue — reprise automatique");
+          await _handleSetupReturn(containerId, reprise.setupIntentId, reprise.sessionId);
+          return;
+        }
+      } catch(_) {}
 
     // ── Retour legacy stripe_session (ancien flow) ──
     var stripeSession = _urlParams.get("stripe_session");
@@ -358,8 +375,11 @@
     var slug = _getSlug();
 
     container.innerHTML =
-      '<div class="billing-loading" style="font-size:15px;padding:48px">' +
+      '<div class="billing-loading" style="font-size:15px;padding:48px;text-align:center">' +
         '✅ Carte enregistrée — Activation de votre abonnement en cours…' +
+        '<div style="font-size:13px;color:#6b7280;margin-top:10px">' +
+          'Cela prend une trentaine de secondes. <strong>Ne quittez pas cette page.</strong>' +
+        '</div>' +
       '</div>';
 
     try {
@@ -399,8 +419,8 @@
       // abonnement existant, mais autant ne pas le solliciter pour rien —
       // et l'utilisateur ne doit pas revoir « Activation en cours… ».
       try {
-        var propre = window.location.pathname;
-        window.history.replaceState({}, "", propre);
+        window.history.replaceState({}, "", window.location.pathname);
+        localStorage.removeItem("fv_activation_en_cours_" + slug);
       } catch(_) {}
 
       // 2. Sauvegarder dans config.json
