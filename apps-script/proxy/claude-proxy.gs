@@ -1098,7 +1098,7 @@ function createRestaurantForAmbassador(params) {
 function _provisionRestaurantInSupabase(slug, name, color, color2, phone, email, adminPass, googleReview, ambCode) {
   var SUPA_URL        = "https://rtdiaeskmyjjwohirhzj.supabase.co";
   var SUPA_KEY        = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
-  var PROVISION_SECRET = "fv_gas_provision_2025";
+  var PROVISION_SECRET = _provisionSecret();
 
   var payload = JSON.stringify({
     p_slug:          slug,
@@ -2186,6 +2186,21 @@ function brevoDiag(params) {
 //     (invite_hash) dans data/restaurants.json, qui est public
 //   • email "magic link" au restaurateur (réutilise sendActivationInvite)
 //   • si déjà actif : renvoie simplement le lien de connexion
+// Secret partagé des RPC Supabase (fv_provision_restaurant, fv_clients_for_reward).
+//
+// Il était écrit en dur ici. Or ce fichier est servi tel quel par
+// app.cartefidelavis.com ET par raw.githubusercontent.com : le secret censé
+// compenser une clé publiable était donc lisible par tout le monde. Qui le
+// connaissait pouvait aspirer les e-mails des clients de n'importe quel
+// restaurant, et provisionner un restaurant en fixant ses mots de passe.
+//
+// Il vit désormais dans les propriétés du script, côté Google, et dans un
+// schéma Postgres que PostgREST n'expose pas. Aucun des deux n'est
+// téléchargeable.
+function _provisionSecret() {
+  return PropertiesService.getScriptProperties().getProperty("PROVISION_SECRET") || "";
+}
+
 // Empreinte SHA-256 d'un jeton d'invitation, en hexadécimal.
 //
 // data/restaurants.json est servi publiquement : y écrire le jeton en clair
@@ -2531,7 +2546,7 @@ function _fvClientsForReward(slug, onlyPending) {
     var res = UrlFetchApp.fetch(SUPA_URL + "/rest/v1/rpc/fv_clients_for_reward", {
       method:  "post",
       headers: { "apikey": SUPA_KEY, "Authorization": "Bearer " + SUPA_KEY, "Content-Type": "application/json" },
-      payload: JSON.stringify({ p_slug: slug, p_only_pending: !!onlyPending, p_secret: "fv_gas_provision_2025" }),
+      payload: JSON.stringify({ p_slug: slug, p_only_pending: !!onlyPending, p_secret: _provisionSecret() }),
       muteHttpExceptions: true
     });
     if (res.getResponseCode() !== 200) {
