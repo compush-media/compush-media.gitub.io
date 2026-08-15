@@ -853,7 +853,7 @@ function sendDailyCampaign() {
 
     // Utiliser les templates partagés
     var sharedIds   = _getSharedTemplateIds();
-    var senderName  = props.getProperty('SENDER_NAME_'  + restoId) || restoId;
+    var senderName  = _nomAffichage(restoId, props);
     var senderEmail = props.getProperty('SENDER_EMAIL_' + restoId) || SENDER_EMAIL;
     var templates   = sharedIds; // même IDs pour tous les restaurants
 
@@ -944,7 +944,7 @@ function sendPasswordResetEmail(body) {
 
   // Récupérer l'expéditeur configuré pour ce restaurant (ou expéditeur par défaut)
   var props       = PropertiesService.getScriptProperties();
-  var senderName  = props.getProperty('SENDER_NAME_'  + restoId) || restoName;
+  var senderName  = _nomAffichage(restoId, props) || restoName;
   var senderEmail = props.getProperty('SENDER_EMAIL_' + restoId) || SENDER_EMAIL;
 
   var empRow = empPass
@@ -1054,6 +1054,39 @@ function sendPasswordResetEmail(body) {
 //
 //  Retourne toujours { success: true } pour éviter l'énumération d'emails.
 // ═══════════════════════════════════════════════════════════════
+// Nom lisible d'un restaurant, pour les e-mails.
+//
+// Les envois retombaient sur le slug quand la propriété SENDER_NAME_ n'existait
+// pas — ce qui est le cas de la quasi-totalité des restaurants. Le restaurateur
+// lisait « Fidelavis × brasserie-baroche » au lieu de « Brasserie Baroche ».
+// Le registre public porte toujours « name » : c'est une donnée d'enseigne, pas
+// une coordonnée, elle n'a pas été déplacée.
+var _cacheNomsRegistre = null;
+
+function _nomAffichage(restoId, props) {
+  if (!restoId) return '';
+  var p = props || PropertiesService.getScriptProperties();
+
+  var stocke = (p.getProperty('SENDER_NAME_' + restoId) || '').trim();
+  if (stocke) return stocke;
+
+  try {
+    if (_cacheNomsRegistre === null) {          // une seule requête par exécution
+      var res = UrlFetchApp.fetch(
+        'https://raw.githubusercontent.com/compush-media/compush-media.gitub.io/main/data/restaurants.json',
+        { muteHttpExceptions: true });
+      _cacheNomsRegistre = (res.getResponseCode() === 200)
+        ? JSON.parse(res.getContentText()) : {};
+    }
+    var r = _cacheNomsRegistre[restoId];
+    if (r && r.name) return String(r.name).trim();
+  } catch (e) {
+    Logger.log('[Nom] registre injoignable : ' + e.message);
+  }
+
+  return restoId;                                // dernier recours
+}
+
 function getAdminEmailForResto(restoId, props) {
   // Le registre d'abord, le cache seulement en secours.
   //
@@ -1343,7 +1376,7 @@ function updateLoginFileOnGitHub(restoId, newAdminPass, newEmpPass, githubToken)
 // ─── Envoi de l'email avec le lien de réinitialisation ──────────────────────
 function sendResetLinkEmail(recipientEmail, restoId, resetUrl) {
   var props     = PropertiesService.getScriptProperties();
-  var restoName = props.getProperty('SENDER_NAME_' + restoId) || restoId;
+  var restoName = _nomAffichage(restoId, props);
 
   var htmlContent =
     '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">' +
