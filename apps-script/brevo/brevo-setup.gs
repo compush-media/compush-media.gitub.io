@@ -1170,16 +1170,18 @@ function handleConfirmPasswordReset(body) {
     return { success: false, error: 'Lien expiré. Veuillez refaire une demande.' };
   }
 
-  var githubToken = props.getProperty('GITHUB_TOKEN');
-  if (!githubToken) {
-    return { success: false, error: 'GITHUB_TOKEN non configuré — contactez le support.' };
-  }
-
-  try {
-    updateLoginFileOnGitHub(restoId, newAdminPass, newEmpPass || null, githubToken);
-  } catch(e) {
-    Logger.log('[ConfirmReset] Erreur GitHub : ' + e.message);
-    return { success: false, error: 'Erreur lors de la mise à jour : ' + e.message };
+  // Le mot de passe va là où la connexion le lit : la table admins.
+  //
+  // Ce bloc réécrivait login.html sur GitHub, héritage de l'époque où le
+  // fichier contenait { user: "admin", pass: "..." }. Plus aucun login.html
+  // n'en contient — la connexion appelle fv_admin_login, qui compare à
+  // admins.password_hash. Écrire dans le fichier ne changeait donc rien, et une
+  // fois GITHUB_TOKEN configuré la page aurait annoncé « mot de passe mis à
+  // jour » alors que l'ancien restait seul valable.
+  var maj = fvSetAdminPassword(restoId, newAdminPass, newEmpPass || null);
+  if (!maj.ok) {
+    Logger.log('[ConfirmReset] échec pour ' + restoId + ' : ' + maj.reason);
+    return { success: false, error: 'Erreur lors de la mise à jour : ' + maj.reason };
   }
 
   // Invalider le token
@@ -1189,7 +1191,51 @@ function handleConfirmPasswordReset(body) {
   return { success: true };
 }
 
-// ─── Mise à jour de login.html sur GitHub ────────────────────────────────────
+// ─── Pose du mot de passe dans Supabase ─────────────────────────────────────
+// Appelle fv_set_admin_password, qui hache en bcrypt côté Postgres. Le mot de
+// passe n'est jamais stocké en clair, ni ici ni dans les propriétés du script.
+// PROVISION_SECRET est la même propriété que celle du proxy Fidelavis.
+function fvSetAdminPassword(restoId, adminPass, empPass) {
+  var SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+  var SUPA_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
+  var secret   = PropertiesService.getScriptProperties().getProperty('PROVISION_SECRET') || '';
+
+  if (!secret) return { ok: false, reason: 'PROVISION_SECRET non configurée' };
+
+  try {
+    var res = UrlFetchApp.fetch(SUPA_URL + '/rest/v1/rpc/fv_set_admin_password', {
+      method:  'post',
+      headers: {
+        'apikey':        SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type':  'application/json'
+      },
+      payload: JSON.stringify({
+        p_slug:       restoId,
+        p_admin_pass: adminPass,
+        p_emp_pass:   empPass || null,
+        p_secret:     secret
+      }),
+      muteHttpExceptions: true
+    });
+
+    var code = res.getResponseCode();
+    if (code !== 200) {
+      return { ok: false, reason: 'Supabase HTTP ' + code + ' — ' + res.getContentText().slice(0, 160) };
+    }
+    var out = JSON.parse(res.getContentText());
+    if (!out || out.ok !== true) {
+      return { ok: false, reason: (out && out.reason) || 'refus Supabase' };
+    }
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, reason: e.message };
+  }
+}
+
+// ─── Mise à jour de login.html sur GitHub (HÉRITAGE, plus appelé) ────────────
+// Conservé pour les rares wallets dont le login.html porterait encore un mot de
+// passe en dur. Aucun n'est dans ce cas aujourd'hui.
 function updateLoginFileOnGitHub(restoId, newAdminPass, newEmpPass, githubToken) {
   var repo     = 'compush-media/compush-media.gitub.io';
   var filePath = restoId + '/admin/login.html';
