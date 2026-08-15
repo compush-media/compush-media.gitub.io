@@ -182,7 +182,12 @@ function _handleCheckoutCompleted(session) {
   }
 
   _saveBillingRecord(clientData, "checkout.session.completed");
-  _sendOnboardingEmail(email, planId, session.id, trialEnd);
+  // Le slug distingue les deux parcours : présent = le restaurateur s'abonne
+  // depuis son espace, qui existe déjà ; absent = souscription depuis la page
+  // publique, l'espace reste à créer. L'e-mail ne doit pas dire la même chose
+  // dans les deux cas.
+  _sendOnboardingEmail(email, planId, session.id, trialEnd,
+                       (session.metadata && session.metadata.slug) || "");
   _notifyAdmin("Nouveau client Fidelavis (essai gratuit)", [
     "Email : " + email,
     "Plan : " + planId,
@@ -720,8 +725,20 @@ function _sendEmail(to, subject, body) {
   }
 }
 
-function _sendOnboardingEmail(email, planId, sessionId, trialEndDate) {
+function _sendOnboardingEmail(email, planId, sessionId, trialEndDate, slug) {
   if (!email) return;
+
+  // Ces deux lignes étaient inconditionnelles et devenaient fausses dès que le
+  // restaurateur s'abonnait depuis son propre espace admin : on lui annonçait
+  // un espace « en cours de création » et des identifiants à venir, alors
+  // qu'il venait de s'y connecter pour cliquer sur le bouton. Le second e-mail
+  // promis n'arrive jamais — il n'est envoyé qu'à la création d'un restaurant
+  // par le back-office.
+  var suite = slug
+    ? ["Votre espace reste accessible avec vos identifiants habituels :",
+       "https://app.cartefidelavis.com/" + slug + "/admin/login.html"]
+    : ["Votre espace restaurant est en cours de création.",
+       "Vous recevrez un second email avec vos identifiants de connexion d'ici quelques minutes."];
 
   var subject  = "Votre essai gratuit Fidelavis commence !";
   var body = [
@@ -732,8 +749,8 @@ function _sendOnboardingEmail(email, planId, sessionId, trialEndDate) {
     "✅ Aucun paiement aujourd'hui.",
     "📅 Fin d'essai : " + (trialEndDate || "dans 30 jours"),
     "",
-    "Votre espace restaurant est en cours de création.",
-    "Vous recevrez un second email avec vos identifiants de connexion d'ici quelques minutes.",
+    suite[0],
+    suite[1],
     "",
     "─────────────────────────────",
     "Après l'essai : 79 € par mois, sans engagement.",
