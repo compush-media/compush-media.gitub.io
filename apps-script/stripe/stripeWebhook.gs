@@ -175,6 +175,37 @@ function _handleCheckoutCompleted(session) {
     createdAt:            new Date().toISOString()
   };
 
+  // L'e-mail au client AVANT toute opération sur la Google Sheet.
+  //
+  // L'ordre était : contrôle anti-doublon (lecture de la Sheet), écriture de
+  // la Sheet, puis e-mail. Or c'est l'écriture qui marque l'événement comme
+  // traité. Ce webhook dépasse les 20 secondes : quand Stripe abandonnait
+  // entre l'écriture et l'envoi, sa nouvelle tentative voyait « déjà traité »
+  // et repartait sans rien envoyer. Le client s'abonnait dans le silence — et
+  // comme c'est une course, ça marchait une fois sur deux.
+  //
+  // L'e-mail porte maintenant sa propre idempotence, indexée sur
+  // l'identifiant de session et rangée dans les propriétés du script, dont la
+  // lecture est immédiate. Il part donc exactement une fois par session, quel
+  // que soit le nombre de tentatives.
+  //
+  // Le slug distingue les deux parcours : présent = le restaurateur s'abonne
+  // depuis son espace, qui existe déjà ; absent = souscription depuis la page
+  // publique, l'espace reste à créer.
+  try {
+    var propsMail = PropertiesService.getScriptProperties();
+    var cleMail   = "ONBOARD_" + (session.id || customerId);
+    if (propsMail.getProperty(cleMail)) {
+      Logger.log("e-mail d'accueil déjà envoyé pour " + cleMail);
+    } else {
+      _sendOnboardingEmail(email, planId, session.id, trialEnd,
+                           (session.metadata && session.metadata.slug) || "");
+      propsMail.setProperty(cleMail, new Date().toISOString());
+    }
+  } catch (errMail) {
+    Logger.log("e-mail d'accueil : " + errMail.message);
+  }
+
   // Anti-doublon : si cet email a déjà été traité pour checkout.session.completed, on stop
   if (_isAlreadyProcessed(customerId)) {
     Logger.log("checkout.session.completed déjà traité pour " + customerId + " — ignoré");
@@ -182,12 +213,6 @@ function _handleCheckoutCompleted(session) {
   }
 
   _saveBillingRecord(clientData, "checkout.session.completed");
-  // Le slug distingue les deux parcours : présent = le restaurateur s'abonne
-  // depuis son espace, qui existe déjà ; absent = souscription depuis la page
-  // publique, l'espace reste à créer. L'e-mail ne doit pas dire la même chose
-  // dans les deux cas.
-  _sendOnboardingEmail(email, planId, session.id, trialEnd,
-                       (session.metadata && session.metadata.slug) || "");
   _notifyAdmin("Nouveau client Fidelavis (essai gratuit)", [
     "Email : " + email,
     "Plan : " + planId,
