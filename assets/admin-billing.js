@@ -454,7 +454,12 @@
           stripeSubscriptionId: result.subscriptionId || "",
           plan:                 plan,
           status:               result.status || "trialing",
-          trialEndDate:         trialEndDate
+          trialEndDate:         trialEndDate,
+          // L'adresse était transmise à finalizeSetup mais jamais réécrite dans
+          // la config : après un abonnement, billingEmail restait vide et la
+          // page facturation affichait « Email — » à un client qui venait de
+          // payer. Le proxy sait la poser, il fallait la lui envoyer.
+          email:                cfg.billingEmail || cfg.email || ""
         })
       });
       var saveData = await saveRes.json();
