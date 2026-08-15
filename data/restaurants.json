@@ -2607,14 +2607,5 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-08-12"
-  },
-  "test-secret": {
-    "acces_statut": "active",
-    "name": "test-secret",
-    "email": "contact@fidelavis.com",
-    "nom_gerant": "bleu",
-    "telephone": "09887766555",
-    "adresse": "hdhjdld, 96789, la seine",
-    "date_activation": "2026-08-15T18:07:05.625Z"
   }
 }
