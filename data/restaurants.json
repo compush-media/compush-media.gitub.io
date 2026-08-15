@@ -2609,13 +2609,12 @@
     "date_creation": "2026-08-12"
   },
   "test-secret": {
-    "invite_hash": "d80bf8cd8aee27572db6d7404197827228ff9c8a4b88d5b7b4e76f4a4ef85017",
-    "invite_expires": "2026-08-22T17:50:37.350Z",
-    "acces_statut": "invite_envoye",
+    "acces_statut": "active",
     "name": "test-secret",
     "email": "contact@fidelavis.com",
     "nom_gerant": "bleu",
     "telephone": "09887766555",
-    "adresse": "hdhjdld, 96789, la seine"
+    "adresse": "hdhjdld, 96789, la seine",
+    "date_activation": "2026-08-15T18:07:05.625Z"
   }
 }
