@@ -1048,32 +1048,37 @@ function sendPasswordResetEmail(body) {
 //  Retourne toujours { success: true } pour éviter l'énumération d'emails.
 // ═══════════════════════════════════════════════════════════════
 function getAdminEmailForResto(restoId, props) {
-  // 1. Chercher dans les Script Properties
-  var stored = (props.getProperty('ADMIN_EMAIL_' + restoId) || '').trim().toLowerCase();
-  if (stored) return stored;
-
-  // 2. Fallback : récupérer depuis restaurants.json sur GitHub
+  // Le registre d'abord, le cache seulement en secours.
+  //
+  // L'ordre était inverse, et le cache n'était JAMAIS invalidé : la première
+  // adresse rencontrée s'imposait pour toujours. Changer l'adresse dans la
+  // fiche du restaurant n'avait donc aucun effet — la réinitialisation
+  // continuait de viser l'ancienne, et le restaurateur qui saisissait sa
+  // nouvelle adresse tombait sur la réponse neutre, sans jamais rien recevoir.
+  var registre = '';
   try {
     var res = UrlFetchApp.fetch(
       'https://raw.githubusercontent.com/compush-media/compush-media.gitub.io/main/data/restaurants.json',
       { muteHttpExceptions: true }
     );
     if (res.getResponseCode() === 200) {
-      var data = JSON.parse(res.getContentText());
-      var resto = data[restoId];
-      if (resto && resto.email) {
-        var fallbackEmail = resto.email.trim().toLowerCase();
-        // Mettre en cache pour les prochains appels
-        props.setProperty('ADMIN_EMAIL_' + restoId, fallbackEmail);
-        Logger.log('[ReqReset] ADMIN_EMAIL_' + restoId + ' récupéré depuis restaurants.json et mis en cache');
-        return fallbackEmail;
-      }
+      var resto = JSON.parse(res.getContentText())[restoId];
+      if (resto && resto.email) registre = String(resto.email).trim().toLowerCase();
     }
   } catch(e) {
-    Logger.log('[ReqReset] Erreur fallback restaurants.json : ' + e.message);
+    Logger.log('[ReqReset] registre injoignable : ' + e.message);
   }
 
-  return '';
+  if (registre) {
+    props.setProperty('ADMIN_EMAIL_' + restoId, registre);   // cache rafraîchi, pas figé
+    return registre;
+  }
+
+  // Registre injoignable ou fiche sans adresse : on se rabat sur le dernier
+  // connu plutôt que de bloquer une demande légitime.
+  var cache = (props.getProperty('ADMIN_EMAIL_' + restoId) || '').trim().toLowerCase();
+  if (cache) Logger.log('[ReqReset] repli sur le cache pour ' + restoId);
+  return cache;
 }
 
 function handleRequestPasswordReset(body) {
@@ -1308,15 +1313,39 @@ function sendResetLinkEmail(recipientEmail, restoId, resetUrl) {
     '---\r\nCet email a été envoyé automatiquement par Fidelavis.\r\n' +
     '© ' + new Date().getFullYear() + ' ' + restoName + ' · Fidelavis';
 
-  brevoFetch('POST', '/smtp/email', {
-    to:          [{ email: recipientEmail }],
-    sender:      { name: 'Fidelavis', email: SENDER_EMAIL },
-    replyTo:     { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
-    subject:     'Réinitialisation de votre mot de passe — ' + restoName,
-    htmlContent: htmlContent,
-    textContent: textContent,
-    tags:        ['fidelavis', 'password-reset-request']
-  });
+  var sujet = 'Réinitialisation de votre mot de passe — ' + restoName;
 
-  Logger.log('[ReqReset] Lien envoyé à ' + recipientEmail);
+  // Brevo d'abord, MailApp en secours.
+  //
+  // L'envoi n'avait aucun repli : une BREVO_API_KEY absente ou un refus de
+  // l'API levait une exception, avalée par le try/catch de l'appelant, et le
+  // demandeur voyait « email envoyé » sans jamais rien recevoir. Le proxy
+  // Fidelavis bascule déjà sur MailApp dans ce cas ; ce script ne le faisait
+  // pas.
+  try {
+    brevoFetch('POST', '/smtp/email', {
+      to:          [{ email: recipientEmail }],
+      sender:      { name: 'Fidelavis', email: SENDER_EMAIL },
+      replyTo:     { email: 'noreply@fidelavis.com', name: 'Ne pas répondre' },
+      subject:     sujet,
+      htmlContent: htmlContent,
+      textContent: textContent,
+      tags:        ['fidelavis', 'password-reset-request']
+    });
+    Logger.log('[ReqReset] Lien envoyé via Brevo à ' + recipientEmail);
+    return { ok: true, canal: 'brevo' };
+  } catch (e) {
+    Logger.log('[ReqReset] Brevo a échoué (' + e.message + ') — bascule sur MailApp');
+  }
+
+  MailApp.sendEmail({
+    to:       recipientEmail,
+    subject:  sujet,
+    htmlBody: htmlContent,
+    body:     textContent,
+    name:     'Fidelavis',
+    replyTo:  'support@fidelavis.com'
+  });
+  Logger.log('[ReqReset] Lien envoyé via MailApp à ' + recipientEmail);
+  return { ok: true, canal: 'mailapp' };
 }
