@@ -1055,18 +1055,48 @@ function getAdminEmailForResto(restoId, props) {
   // fiche du restaurant n'avait donc aucun effet — la réinitialisation
   // continuait de viser l'ancienne, et le restaurateur qui saisissait sa
   // nouvelle adresse tombait sur la réponse neutre, sans jamais rien recevoir.
+  // Le stockage privé fait foi : le registre public ne porte plus d'adresses.
   var registre = '';
   try {
-    var res = UrlFetchApp.fetch(
-      'https://raw.githubusercontent.com/compush-media/compush-media.gitub.io/main/data/restaurants.json',
-      { muteHttpExceptions: true }
-    );
-    if (res.getResponseCode() === 200) {
-      var resto = JSON.parse(res.getContentText())[restoId];
-      if (resto && resto.email) registre = String(resto.email).trim().toLowerCase();
+    var secret = props.getProperty('PROVISION_SECRET') || '';
+    if (secret) {
+      var rpc = UrlFetchApp.fetch(
+        'https://rtdiaeskmyjjwohirhzj.supabase.co/rest/v1/rpc/fv_contact_get', {
+          method:  'post',
+          headers: { 'apikey': 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ',
+                     'Authorization': 'Bearer sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ',
+                     'Content-Type': 'application/json' },
+          payload: JSON.stringify({ p_slug: restoId, p_secret: secret }),
+          muteHttpExceptions: true
+        });
+      if (rpc.getResponseCode() === 200) {
+        var out = JSON.parse(rpc.getContentText());
+        if (out && out.found && out.email) registre = String(out.email).trim().toLowerCase();
+      } else {
+        Logger.log('[ReqReset] fv_contact_get HTTP ' + rpc.getResponseCode());
+      }
+    } else {
+      Logger.log('[ReqReset] PROVISION_SECRET non configurée');
     }
   } catch(e) {
-    Logger.log('[ReqReset] registre injoignable : ' + e.message);
+    Logger.log('[ReqReset] stockage privé injoignable : ' + e.message);
+  }
+
+  // Transition : tant que la migration n'est pas passée, le registre peut
+  // encore porter l'adresse. À retirer une fois le fichier public nettoyé.
+  if (!registre) {
+    try {
+      var res = UrlFetchApp.fetch(
+        'https://raw.githubusercontent.com/compush-media/compush-media.gitub.io/main/data/restaurants.json',
+        { muteHttpExceptions: true }
+      );
+      if (res.getResponseCode() === 200) {
+        var resto = JSON.parse(res.getContentText())[restoId];
+        if (resto && resto.email) registre = String(resto.email).trim().toLowerCase();
+      }
+    } catch(e) {
+      Logger.log('[ReqReset] registre injoignable : ' + e.message);
+    }
   }
 
   if (registre) {

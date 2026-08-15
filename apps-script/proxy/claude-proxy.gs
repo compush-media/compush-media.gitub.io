@@ -2201,6 +2201,105 @@ function _provisionSecret() {
   return PropertiesService.getScriptProperties().getProperty("PROVISION_SECRET") || "";
 }
 
+/* ════════════════════════════════════════════════════════════════════
+   Coordonnées des restaurants — stockage privé
+   ════════════════════════════════════════════════════════════════════
+   data/restaurants.json est servi par le site ET par un dépôt GitHub
+   public. Y laisser e-mails, téléphones, adresses et noms de gérants
+   revenait à publier le fichier de prospection. Ces champs vivent
+   désormais dans fv_private.contacts, hors de portée de l'API.
+   ═══════════════════════════════════════════════════════════════════ */
+var FV_SUPA_URL = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+var FV_SUPA_KEY = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
+
+function _contactRpc(fonction, charge) {
+  charge.p_secret = _provisionSecret();
+  if (!charge.p_secret) return { ok: false, reason: "PROVISION_SECRET non configurée" };
+  try {
+    var res = UrlFetchApp.fetch(FV_SUPA_URL + "/rest/v1/rpc/" + fonction, {
+      method:  "post",
+      headers: { "apikey": FV_SUPA_KEY, "Authorization": "Bearer " + FV_SUPA_KEY,
+                 "Content-Type": "application/json" },
+      payload: JSON.stringify(charge),
+      muteHttpExceptions: true
+    });
+    if (res.getResponseCode() !== 200) {
+      return { ok: false, reason: fonction + " HTTP " + res.getResponseCode() +
+                                  " — " + res.getContentText().slice(0, 160) };
+    }
+    return JSON.parse(res.getContentText());
+  } catch (e) {
+    return { ok: false, reason: e.message };
+  }
+}
+
+// Coordonnées d'un restaurant, ou {} si aucune fiche.
+function _contactGet(slug) {
+  var r = _contactRpc("fv_contact_get", { p_slug: slug });
+  return (r && r.ok && r.found) ? r : {};
+}
+
+// Écrit ou complète une fiche. Les champs vides n'écrasent pas l'existant.
+function _contactSet(slug, champs) {
+  return _contactRpc("fv_contact_set", {
+    p_slug:        slug,
+    p_email:       champs.email       || null,
+    p_telephone:   champs.telephone   || null,
+    p_adresse:     champs.adresse     || null,
+    p_code_postal: champs.code_postal || null,
+    p_ville:       champs.ville       || null,
+    p_nom_gerant:  champs.nom_gerant  || null
+  });
+}
+
+/**
+ * migrerContactsVersSupabase()
+ *
+ * À LANCER UNE FOIS depuis l'éditeur (bouton Exécuter), avant de retirer
+ * les champs personnels de data/restaurants.json. Idempotente : relancer
+ * ne fait que recopier les mêmes valeurs.
+ *
+ * Ne journalise que des compteurs — aucune coordonnée n'apparaît dans les
+ * journaux d'exécution.
+ */
+function migrerContactsVersSupabase() {
+  var res = UrlFetchApp.fetch(
+    "https://raw.githubusercontent.com/compush-media/compush-media.gitub.io/main/data/restaurants.json",
+    { muteHttpExceptions: true });
+  if (res.getResponseCode() !== 200) {
+    Logger.log("Registre illisible : HTTP " + res.getResponseCode());
+    return;
+  }
+  var reg = JSON.parse(res.getContentText());
+  var vus = 0, ecrits = 0, vides = 0, echecs = 0;
+
+  for (var slug in reg) {
+    var r = reg[slug] || {};
+    vus++;
+    var champs = {
+      email:       r.email      || "",
+      telephone:   r.telephone  || r.phone   || "",
+      adresse:     r.adresse    || r.address || "",
+      code_postal: r.code_postal || "",
+      ville:       r.ville      || "",
+      nom_gerant:  r.nom_gerant || ""
+    };
+    // Une fiche sans aucune coordonnée n'a rien à migrer.
+    if (!champs.email && !champs.telephone && !champs.adresse && !champs.nom_gerant) {
+      vides++;
+      continue;
+    }
+    var out = _contactSet(slug, champs);
+    if (out && out.ok) { ecrits++; } else {
+      echecs++;
+      Logger.log("échec sur " + slug + " : " + (out && out.reason));
+    }
+  }
+
+  Logger.log("Migration terminée — " + vus + " fiches lues, " + ecrits +
+             " migrées, " + vides + " sans coordonnées, " + echecs + " en échec.");
+}
+
 // Empreinte SHA-256 d'un jeton d'invitation, en hexadécimal.
 //
 // data/restaurants.json est servi publiquement : y écrire le jeton en clair
@@ -2261,11 +2360,19 @@ function startFreeTrial(params) {
   r.invite_expires = exp.toISOString();
   r.acces_statut   = "invite_envoye";
   if (!r.name && gerant)  r.name = restoName;
-  if (!r.email)      r.email      = email;
-  if (!r.nom_gerant && gerant) r.nom_gerant = gerant;
-  if (!r.telephone && phone)   r.telephone  = phone;
-  if (!r.adresse   && address) r.adresse    = address;
   reg[slug] = r;
+
+  // Les coordonnées vont dans le stockage privé, plus dans le registre public.
+  // L'échec n'interrompt pas l'activation : mieux vaut un restaurateur activé
+  // dont la fiche contact est incomplète qu'une invitation perdue.
+  var majContact = _contactSet(slug, {
+    email: email, nom_gerant: gerant, telephone: phone,
+    adresse: params.address || "", code_postal: params.cp || "", ville: params.ville || ""
+  });
+  if (!majContact || !majContact.ok) {
+    Logger.log("startFreeTrial: contact non enregistré pour " + slug +
+               " — " + (majContact && majContact.reason));
+  }
 
   var b64 = Utilities.base64Encode(Utilities.newBlob(JSON.stringify(reg, null, 2) + "\n").getBytes());
   var put = UrlFetchApp.fetch(apiUrl, {
@@ -2378,6 +2485,10 @@ function activateRestaurateur(params) {
   if (r.invite_expires && new Date(r.invite_expires) < new Date()) return { error: "Lien d'activation expiré." };
 
   // 3) Provisionner Supabase (restaurant + admin avec le mot de passe choisi)
+  // Téléphone et e-mail viennent du stockage privé : le registre public ne les
+  // porte plus. Le repli sur r.* reste pour la transition, le temps que la
+  // migration soit passée partout.
+  var contact = _contactGet(slug);
   var prov;
   try {
     prov = _provisionRestaurantInSupabase(
@@ -2385,8 +2496,8 @@ function activateRestaurateur(params) {
       r.name || slug,
       r.brandColor  || "#B8924F",
       r.brandColor2 || "#9E7A3E",
-      r.telephone   || r.phone || null,
-      r.email       || null,
+      contact.telephone || r.telephone || r.phone || null,
+      contact.email     || r.email     || null,
       newPass,
       r.GMB_URL     || r.googleReview || r.note_google || null,
       r.ambassadorCode || null
