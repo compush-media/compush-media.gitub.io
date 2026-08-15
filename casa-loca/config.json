@@ -6,7 +6,7 @@
   "category": "brunch",
   "tagline": "Casa Loca 🌵",
   "plan": "terrain",
-  "subscriptionStatus": "canceled",
+  "subscriptionStatus": "active",
   "setupPaid": false,
   "invoices": [],
   "activeCoupon": {
@@ -22,9 +22,10 @@
   "logoUrl": "https://app.cartefidelavis.com/casa-loca/logo.jpg",
   "iconUrl": "https://app.cartefidelavis.com/casa-loca/logo.jpg",
   "heroUrl": "https://app.cartefidelavis.com/casa-loca/hero.jpg",
-  "trialEndDate": "2026-09-14",
+  "trialEndDate": "",
   "email": "dan.drumonde@gmail.com",
-  "nextBillingDate": "2026-09-14",
-  "stripeCustomerId": "cus_V4xQEBUvNgVl0q",
-  "stripeSubscriptionId": "sub_1U4nVDDpSXl9WhzrHdAainMx"
+  "nextBillingDate": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "billingEmail": ""
 }
