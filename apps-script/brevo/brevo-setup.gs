@@ -930,6 +930,13 @@ function sendPasswordResetEmail(body) {
   var adminPass      = (body.adminPass      || '').trim();
   var empPass        = (body.empPass        || '').trim();
 
+  // Le back-office ne connaît plus l'adresse : elle a quitté le registre
+  // public. Le serveur la résout lui-même, ce qui évite de faire transiter
+  // les coordonnées des restaurants par un navigateur.
+  if (!recipientEmail && restoId) {
+    recipientEmail = getAdminEmailForResto(restoId, PropertiesService.getScriptProperties());
+  }
+
   if (!recipientEmail) throw new Error('recipientEmail requis');
   if (!adminPass)      throw new Error('adminPass requis');
 
