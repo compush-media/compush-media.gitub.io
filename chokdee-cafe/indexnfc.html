@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Fidelavis — Activer -10%</title>
+  <title>Rejoignez le Club</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,281 +99,200 @@
 })();
 </script>
   <style>
-    :root{
-      --gold:#B8924F;
-      --gold2:#9E7A3E;
-      --bg:#f6efe5;
-      --ink:#1d1d1d;
-      --muted:#6b6b6b;
-      --line:rgba(0,0,0,0.08);
-      --shadow:0 18px 40px rgba(0,0,0,0.12);
-      --radius:22px;
-      --danger:#b6152b;
-      --ok:#1f8a4c;
-    }
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
-        linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
-      color:var(--ink);
-      padding:22px 14px 150px;
-      text-align:center;
-    }
-    .wrap{ max-width:520px; margin:0 auto; }
+    /* ─────────────────────────────────────────────────────────────
+       Page d'accueil après un scan NFC.
 
-    .resto{
-      font-size:40px;
-      line-height:1.05;
-      margin:10px 0 0;
-      font-weight:900;
-      color:#7a5b26;
-      letter-spacing:-0.8px;
+       Refonte du 16/08/2026. L'ancienne version vendait « -10% OFFERT »
+       en capitales alors que la remise n'est pas la récompense choisie
+       par l'établissement : un coffee shop qui offre un café voyait sa
+       carte promettre une réduction qu'il n'accorde pas. Elle affichait
+       aussi un compteur de clients fabriqué (tirage aléatoire entre 18
+       et 38) et un minuteur artificiel de 5 minutes qui, une fois
+       écoulé, montrait « 00:00 » à un client dont l'offre était encore
+       valable.
+
+       Ici : la récompense vient de la config, l'image porte l'envie, et
+       rien n'est promis qui ne soit vrai.
+       ───────────────────────────────────────────────────────────── */
+    :root {
+      --marque:  #B8924F;
+      --marque2: #9E7A3E;
+      --encre:   #1d1d1f;
+      --gris:    #6b6b70;
+      --fond:    #faf7f2;
+      --carte:   #ffffff;
+      --ligne:   rgba(0,0,0,.07);
+      --ombre:   0 6px 28px rgba(0,0,0,.09);
     }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.72);
-      border:1px solid var(--line);
-      font-weight:900;
-      color:#3b3b3b;
-      font-size:13px;
-      box-shadow:0 10px 18px rgba(0,0,0,0.05);
-      margin-top:10px;
-    }
-    .dot{
-      width:8px;height:8px;border-radius:99px;
-      background:var(--ok);
-      box-shadow:0 0 0 6px rgba(31,138,76,0.12);
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--fond);
+      color: var(--encre);
+      min-height: 100dvh;
+      padding-bottom: 28px;
     }
 
-    .hero{
-      margin:18px 0 12px;
-      padding:0 10px;
+    /* ── Bandeau photo + logo ──────────────────────────────────── */
+    .banniere { position: relative; height: 210px; overflow: hidden; background: var(--marque); }
+    .banniere img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .banniere::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 46px;
+      background: var(--fond);
+      border-radius: 50% 50% 0 0 / 100% 100% 0 0;
     }
-    .hero h2{
-      margin:0;
-      font-size:20px;
-      font-weight:950;
-      color:#2b2b2b;
-      letter-spacing:-0.2px;
+    .medaillon {
+      position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%);
+      width: 104px; height: 104px; border-radius: 50%;
+      background: #fff; border: 3px solid #fff; box-shadow: var(--ombre);
+      display: grid; place-items: center; overflow: hidden; z-index: 2;
     }
-    .expire{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      margin-top:12px;
-      padding:10px 14px;
-      border-radius:16px;
-      background:rgba(182,21,43,0.08);
-      border:1px solid rgba(182,21,43,0.18);
-      color:#7a1120;
-      font-weight:950;
-      font-size:13.5px;
+    .medaillon img { width: 100%; height: 100%; object-fit: cover; }
+    .medaillon .initiales { font-weight: 800; font-size: 30px; color: var(--marque); }
+
+    .page { max-width: 480px; margin: 0 auto; padding: 16px 20px 0; }
+
+    /* ── Badge de présence ─────────────────────────────────────── */
+    .presence {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; border: 1px solid var(--ligne); border-radius: 999px;
+      padding: 8px 16px; font-size: 13.5px; font-weight: 600; color: var(--encre);
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      margin: 6px auto 18px;
+    }
+    .presence .point { width: 9px; height: 9px; border-radius: 50%; background: #1a9e5c; }
+    .centre { text-align: center; }
+
+    h1 { font-size: 26px; font-weight: 800; line-height: 1.22; letter-spacing: -.4px; }
+    .sous-titre { margin-top: 8px; font-size: 15px; color: var(--gris); }
+
+    /* ── Carte cadeau ──────────────────────────────────────────── */
+    .cadeau {
+      margin-top: 22px; background: var(--carte); border: 1px solid var(--ligne);
+      border-radius: 18px; padding: 22px 20px; box-shadow: var(--ombre);
+      display: flex; gap: 16px; align-items: center; text-align: left;
+    }
+    .cadeau .visuel {
+      flex-shrink: 0; width: 74px; height: 74px; border-radius: 14px;
+      display: grid; place-items: center; font-size: 38px;
+      background: linear-gradient(135deg, rgba(184,146,79,.14), rgba(158,122,62,.10));
+      overflow: hidden;
+    }
+    .cadeau .visuel img { width: 100%; height: 100%; object-fit: cover; }
+    .cadeau .intitule {
+      font-size: 10.5px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase;
+      color: var(--marque2); margin-bottom: 6px;
+    }
+    .cadeau .titre { font-size: 19px; font-weight: 800; line-height: 1.25; }
+    .cadeau .detail { margin-top: 6px; font-size: 13px; color: var(--gris); line-height: 1.5; }
+
+    /* ── Rapidité ──────────────────────────────────────────────── */
+    .rapide {
+      display: inline-flex; align-items: center; gap: 7px; margin: 18px auto 0;
+      background: rgba(184,146,79,.10); border: 1px solid rgba(184,146,79,.22);
+      border-radius: 999px; padding: 9px 18px; font-size: 13.5px; font-weight: 700;
+      color: var(--marque2);
     }
 
-    .card{
-      margin:14px auto 12px;
-      background:linear-gradient(180deg, rgba(184,146,79,0.96) 0%, rgba(158,122,62,0.96) 100%);
-      border-radius:var(--radius);
-      padding:18px 16px 16px;
-      box-shadow:var(--shadow);
-      text-align:left;
+    /* ── Réassurance ───────────────────────────────────────────── */
+    .rassure {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+      margin-top: 22px; padding: 18px 6px; background: var(--carte);
+      border: 1px solid var(--ligne); border-radius: 18px;
     }
-    .card h3{
-      margin:0 0 10px;
-      color:#fff;
-      font-size:40px;
-      line-height:1.02;
-      font-weight:950;
-      letter-spacing:-0.9px;
-    }
-    .sub{
-      color:rgba(255,255,255,0.95);
-      font-size:15.5px;
-      line-height:1.35;
-      margin:0 0 12px;
-      font-weight:700;
-    }
-    .miniLine{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.22);
-      border:1px solid rgba(255,255,255,0.22);
-      color:#fff;
-      font-weight:900;
-      font-size:13px;
-      backdrop-filter: blur(8px);
-    }
-    .social{
-      margin-top:12px;
-      padding:12px 12px;
-      border-radius:16px;
-      background:rgba(255,255,255,0.18);
-      border:1px solid rgba(255,255,255,0.22);
-      color:#fff;
-      font-weight:950;
-      font-size:14px;
-    }
+    .rassure > div { text-align: center; padding: 0 6px; }
+    .rassure .ico { font-size: 21px; }
+    .rassure .quoi { margin-top: 6px; font-size: 12.5px; font-weight: 800; }
+    .rassure .pourquoi { margin-top: 3px; font-size: 11px; color: var(--gris); line-height: 1.45; }
 
-    .trust{
-      margin:12px auto 0;
-      max-width:520px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-      color:#4a4a4a;
-      font-size:12.5px;
-      font-weight:900;
+    /* ── Appel à l'action ──────────────────────────────────────── */
+    .cta {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; margin-top: 24px; padding: 17px 20px;
+      background: linear-gradient(135deg, var(--marque), var(--marque2));
+      color: #fff; border: none; border-radius: 14px;
+      font-family: inherit; font-size: 17px; font-weight: 800; cursor: pointer;
+      box-shadow: 0 8px 22px rgba(0,0,0,.16);
     }
-    .trust span{
-      background:rgba(255,255,255,0.72);
-      border:1px solid var(--line);
-      padding:10px 12px;
-      border-radius:999px;
-      box-shadow:0 10px 18px rgba(0,0,0,0.04);
-    }
+    .cta:active { transform: translateY(1px); }
+    .note { margin-top: 12px; font-size: 11.5px; color: var(--gris); }
 
-    .sticky{
-      position:fixed;
-      left:0; right:0;
-      bottom:0;
-      padding:10px 14px calc(10px + env(safe-area-inset-bottom));
-      background:linear-gradient(180deg, rgba(246,239,229,0.0) 0%, rgba(246,239,229,0.92) 28%, rgba(246,239,229,0.98) 100%);
-      backdrop-filter: blur(10px);
-      z-index:50;
+    .membre {
+      margin-top: 22px; padding: 16px 18px; background: var(--carte);
+      border: 1px solid var(--ligne); border-radius: 16px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      flex-wrap: wrap; font-size: 13.5px;
     }
-    .ctaWrap{
-      max-width:520px;
-      margin:0 auto;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:10px;
-      box-shadow:0 16px 30px rgba(0,0,0,0.10);
-    }
-    .cta{
-      width:100%;
-      border:0;
-      cursor:pointer;
-      border-radius:16px;
-      padding:16px 14px;
-      font-family:inherit;
-      font-weight:950;
-      font-size:16px;
-      letter-spacing:-0.2px;
-      color:#1c1c1c;
-      background:linear-gradient(180deg, #ffffff 0%, #fbf7f1 100%);
-      border:2px solid rgba(184,146,79,0.45);
-      box-shadow:0 14px 26px rgba(184,146,79,0.25);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-    }
-    .pulse{
-      width:10px;height:10px;border-radius:99px;
-      background:var(--danger);
-      box-shadow:0 0 0 0 rgba(182,21,43,0.35);
-      animation:pulse 1.15s infinite;
-    }
-    @keyframes pulse{
-      0%{ box-shadow:0 0 0 0 rgba(182,21,43,0.35); }
-      70%{ box-shadow:0 0 0 12px rgba(182,21,43,0.00); }
-      100%{ box-shadow:0 0 0 0 rgba(182,21,43,0.00); }
-    }
-    .below{
-      margin-top:8px;
-      font-size:12.5px;
-      color:#5a5a5a;
-      font-weight:900;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .timer{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      background:rgba(182,21,43,0.08);
-      border:1px solid rgba(182,21,43,0.18);
-      color:#7a1120;
-      font-weight:950;
-    }
+    .membre a { color: var(--marque2); font-weight: 800; text-decoration: none; }
+    .pied { margin-top: 24px; font-size: 12px; color: var(--gris); }
 
-    /* ✅ Cache le bouton/widget flottant Progressier */
-    progressier-install-button,
-    pwa-install,
-    #progressier-install-button,
-    .progressier-install-button,
-    #progressier-widget,
-    .progressier-widget,
-    [id*="progressier"][style*="position: fixed"],
-    [class*="progressier"][style*="position: fixed"]{
-      display:none !important;
-      visibility:hidden !important;
-      opacity:0 !important;
-      pointer-events:none !important;
+    @media (max-width: 360px) {
+      h1 { font-size: 23px; }
+      .cadeau { flex-direction: column; text-align: center; }
     }
   </style>
+
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="resto"><span data-resto-name>Restaurant</span></div>
-    <div class="badge"><span class="dot"></span>Client invité aujourd’hui</div>
 
-    <div class="hero">
-      <h2>🎁 Votre -10% est prêt pour cette table</h2>
-      <div class="expire">Valable pendant votre présence aujourd'hui</div>
-    </div>
-
-    <div class="card">
-      <h3>-10% OFFERT</h3>
-      <p class="sub">💎 Sur votre prochaine <b>addition</b><br>📩 Reçu par email en 10 secondes</p>
-
-      <div class="miniLine">
-        <div class="pill">🔒 Sans spam</div>
-        <div class="pill">✅ Sans engagement</div>
-        <div class="pill">🗑 Désinscription 1 clic</div>
-      </div>
-
-      <div class="social">🔥 <span id="socialCount">27</span> clients ont activé aujourd’hui</div>
-    </div>
-
-    <div class="trust">
-      <span>📍 Sur place</span>
-      <span>🎁 Gratuit</span>
-      <span>✅ 1 clic</span>
-    </div>
+  <div class="banniere">
+    <img id="photo" alt="" />
+    <div class="medaillon"><span class="initiales" id="initiales">·</span></div>
   </div>
 
-  <div class="sticky">
-    <div class="ctaWrap">
-      <button class="cta" id="ctaBtn" type="button">
-        <span class="pulse" aria-hidden="true"></span>
-        🎁 Recevoir mon -10% maintenant
-      </button>
+  <div class="page centre">
 
-      <div class="below">
-        <div>📲 Ajout rapide à votre écran (5 secondes, 1 seule fois)</div>
-        <div class="timer">⏳ Offre : <span id="countdown">05:00</span></div>
+    <div class="presence">
+      <span class="point"></span>
+      Vous êtes chez <span data-resto-name>votre restaurant</span> aujourd'hui
+    </div>
+
+    <h1>Rejoignez le Club <span id="nomClub">Fidelavis</span> ✨</h1>
+    <p class="sous-titre">et profitez de votre premier avantage</p>
+
+    <!-- Récompense. Renseignée par l'établissement dans offre_jour → on
+         l'annonce comme la sienne. Sinon on montre un exemple, dit comme
+         tel : promettre une remise que le restaurant n'accorde pas se
+         retourne contre lui à l'addition. -->
+    <div class="cadeau">
+      <div class="visuel" id="cadeauVisuel">🎁</div>
+      <div>
+        <div class="intitule" id="cadeauIntitule">Cadeau de bienvenue</div>
+        <div class="titre"  id="cadeauTitre">Un avantage vous attend</div>
+        <div class="detail" id="cadeauDetail">Choisi par l'établissement — vous le découvrez juste après votre inscription.</div>
       </div>
     </div>
+
+    <div class="rapide">⚡ Activation en 10 secondes</div>
+
+    <div class="rassure">
+      <div>
+        <div class="ico">🔒</div>
+        <div class="quoi">Sans spam</div>
+        <div class="pourquoi">Vos données sont protégées</div>
+      </div>
+      <div>
+        <div class="ico">🎁</div>
+        <div class="quoi">Gratuit</div>
+        <div class="pourquoi">Aucun engagement</div>
+      </div>
+      <div>
+        <div class="ico">🗑</div>
+        <div class="quoi">Désinscription</div>
+        <div class="pourquoi">1 clic à tout moment</div>
+      </div>
+    </div>
+
+    <button class="cta" id="ctaBtn" type="button">🎁 Recevoir mon avantage</button>
+    <div class="note">🔒 Vos données ne seront jamais partagées.</div>
+
+    <div class="membre">
+      <span>Déjà membre&nbsp;?</span>
+      <a href="#" id="lienMembre">Mon espace fidélité →</a>
+    </div>
+
+    <div class="pied">❤️ Merci de soutenir les commerces locaux 🌿</div>
   </div>
 
 <script>
@@ -397,56 +316,84 @@
 </script>
 
 <script>
-  const COUNTDOWN_SECONDS = 5 * 60;
-
-  function stableDailyRandom(min, max, seed){
-    const d = new Date();
-    const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}-${seed || location.pathname}`;
-    let hash = 0;
-    for (let i=0;i<key.length;i++) hash = (hash*31 + key.charCodeAt(i)) >>> 0;
-    return (hash % (max - min + 1)) + min;
-  }
-
-  function startCountdown(){
-    const out = document.getElementById("countdown");
-    const startKey = `fv_offer_start_${RESTO}`;
-    let start = Number(localStorage.getItem(startKey));
-    const now = Date.now();
-
-    if (!start || (now - start) > (COUNTDOWN_SECONDS * 1000)) {
-      start = now;
-      localStorage.setItem(startKey, String(start));
-    }
-
-    function tick(){
-      const elapsed = Math.floor((Date.now() - start) / 1000);
-      const left = Math.max(0, COUNTDOWN_SECONDS - elapsed);
-      const mm = String(Math.floor(left/60)).padStart(2,"0");
-      const ss = String(left%60).padStart(2,"0");
-      out.textContent = `${mm}:${ss}`;
-    }
-    tick();
-    setInterval(tick, 250);
-  }
-
   function goToInscription(){
     window.Fidelavis?.track?.("signup_open");
     if (window.Fidelavis?.go) window.Fidelavis.go("inscription.html");
     else window.location.href = "./inscription.html";
   }
 
+  // Deux initiales à afficher tant que le logo n'est pas chargé — un rond
+  // vide au centre de l'écran fait « page cassée » avant même le premier clic.
+  function initiales(nom){
+    var mots = String(nom || "").replace(/[^\p{L}\p{N} ]/gu, " ").trim().split(/\s+/);
+    if (!mots[0]) return "·";
+    return (mots.length > 1 ? mots[0][0] + mots[1][0] : mots[0].slice(0, 2)).toUpperCase();
+  }
+
   (async function init(){
     let cfg = null;
     try { cfg = await window.Fidelavis?.loadConfig?.(); } catch(e){}
+    cfg = cfg || {};
 
-    document.getElementById("socialCount").textContent =
-      String(stableDailyRandom(18, 38, (cfg && cfg.name) ? cfg.name : RESTO));
+    var nom = cfg.name || "";
+    if (nom) {
+      document.getElementById("nomClub").textContent = nom;
+      document.title = "Rejoignez le Club " + nom;
+    }
+
+    // Couleurs de l'établissement. La carte doit ressembler au restaurant,
+    // pas à Fidelavis.
+    if (cfg.color)  document.documentElement.style.setProperty("--marque",  cfg.color);
+    if (cfg.color2) document.documentElement.style.setProperty("--marque2", cfg.color2);
+
+    var photo = document.getElementById("photo");
+    if (cfg.heroUrl) { photo.src = cfg.heroUrl; photo.alt = nom ? ("Chez " + nom) : ""; }
+    else photo.remove();
+
+    var med = document.querySelector(".medaillon");
+    document.getElementById("initiales").textContent = initiales(nom);
+    if (cfg.logoUrl) {
+      var img = new Image();
+      img.alt = nom;
+      // On ne remplace les initiales qu'une fois l'image chargée : un logo
+      // manquant laissait un médaillon vide.
+      img.onload = function(){ med.innerHTML = ""; med.appendChild(img); };
+      img.src = cfg.logoUrl;
+    }
+
+    // ── Récompense ────────────────────────────────────────────────
+    var o = cfg.offre_jour || {};
+    var active = o.active === true && String(o.titre || "").trim() !== "";
+    if (active) {
+      document.getElementById("cadeauIntitule").textContent = "Cadeau de bienvenue";
+      document.getElementById("cadeauTitre").textContent    = o.titre;
+      document.getElementById("cadeauDetail").textContent   =
+        String(o.description || "").trim() || "Offert par l'établissement.";
+      if (o.image) {
+        var v = document.getElementById("cadeauVisuel");
+        var im = new Image(); im.alt = "";
+        im.onload = function(){ v.innerHTML = ""; v.appendChild(im); };
+        im.src = o.image;
+      }
+    } else {
+      // Rien de configuré : on ne chiffre aucune remise et on ne nomme
+      // aucun cadeau. L'ancienne page affichait « -10% OFFERT » à tous.
+      document.getElementById("cadeauIntitule").textContent = "Cadeau de bienvenue";
+      document.getElementById("cadeauTitre").textContent    = "Un avantage vous attend";
+      document.getElementById("cadeauDetail").textContent   =
+        "Choisi par l'établissement — vous le découvrez juste après votre inscription.";
+    }
 
     document.getElementById("ctaBtn").addEventListener("click", goToInscription);
-    startCountdown();
+
+    var lien = document.getElementById("lienMembre");
+    lien.addEventListener("click", function(e){
+      e.preventDefault();
+      if (window.Fidelavis?.go) window.Fidelavis.go("compte.html");
+      else window.location.href = "./compte.html";
+    });
   })();
 </script>
-
 
 </body>
 </html>
