@@ -2616,7 +2616,22 @@ async function sendNotification() {
     console.log('[NOTIF DEBUG]', JSON.stringify(data));
 
     if (data?.ok) {
-      showNotifFeedback('✅ Notification envoyée avec succès !', 'success');
+      // « Envoyée avec succès » s'affichait même quand personne ne l'avait
+      // reçue : Progressier répond bien à un envoi qui ne correspond à aucun
+      // abonné. On dit maintenant combien de personnes l'ont réellement reçue.
+      const pg = data.progressier || {};
+      const n  = [pg.recipients, pg.count, pg.sent, pg.total, pg.subscribers]
+                   .find(v => typeof v === 'number');
+      if (n === 0) {
+        showNotifFeedback(
+          '⚠️ Personne ne l\'a reçue : aucun client de votre restaurant n\'est ' +
+          'encore abonné aux notifications. Ils le deviennent en ouvrant leur carte.',
+          'error');
+      } else if (typeof n === 'number') {
+        showNotifFeedback('✅ Notification envoyée à ' + n + ' client' + (n > 1 ? 's' : '') + '.', 'success');
+      } else {
+        showNotifFeedback('✅ Notification transmise.', 'success');
+      }
       document.getElementById('notifTitle').value   = '';
       document.getElementById('notifMessage').value = '';
       document.getElementById('titleCount').textContent = '0';
