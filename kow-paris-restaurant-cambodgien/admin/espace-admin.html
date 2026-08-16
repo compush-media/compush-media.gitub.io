@@ -1505,7 +1505,13 @@ const GROUPES = {
 let kpisLoaded = false;
 let pinInterval = null;   // ⚠️ doit être déclaré AVANT initFromHash() (qui appelle loadDashboard)
 
+/* Un panneau fusionné n'a plus de bouton dans le menu. Sans cette
+   redirection, un lien vers #offre ou #revenus affichait le panneau sans
+   onglet actif : le restaurateur ne savait plus où il se trouvait. */
+const PARENT = { offre: 'coupon', revenus: 'dashboard' };
+
 function switchTab(tabId) {
+  if (PARENT[tabId]) tabId = PARENT[tabId];
   if (!INLINE_TABS.includes(tabId)) return;
   if (tabId === 'dashboard'     && ROLE !== 'admin') return;
   if (tabId === 'notifications' && ROLE !== 'admin') return;
@@ -1975,7 +1981,10 @@ function renderActionsList(clientsRevenus) {
 
   items.push({
     icon: '🎁',
-    label: offreActive ? 'Offre du mois active' : 'Activer l\'offre du mois',
+    // « offre du mois » et « offre du jour » sont deux mécanismes distincts :
+    // le coupon récurrent d'un côté, la promo poussée en notification de
+    // l'autre. Ce raccourci mène à la seconde — le libellé le dit.
+    label: offreActive ? 'Offre du jour active' : 'Activer l\'offre du jour',
     status: offreActive ? 'done' : 'todo',
     statusLabel: offreActive ? 'Terminé' : 'À faire',
     href: '#offre',
