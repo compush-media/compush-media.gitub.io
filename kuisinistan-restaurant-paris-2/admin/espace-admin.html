@@ -527,25 +527,16 @@
     <span class="tab-icon">🏠</span> Tableau de bord
   </button>
   <button class="tab-btn" data-tab="coupon">
-    <span class="tab-icon">🎫</span> Coupon
+    <span class="tab-icon">🎁</span> Mon offre
   </button>
   <button class="tab-btn admin-only" data-tab="notifications">
     <span class="tab-icon">🔔</span> Notifications
   </button>
-  <a class="tab-btn admin-only" href="billing.html" id="linkBilling">
-    <span class="tab-icon">💳</span> Compte
-  </a>
   <button class="tab-btn admin-only" data-tab="clients">
     <span class="tab-icon">📇</span> Mes clients
   </button>
   <button class="tab-btn admin-only" data-tab="parametres">
-    <span class="tab-icon">⚙️</span> Paramètres
-  </button>
-  <button class="tab-btn admin-only" data-tab="offre">
-    <span class="tab-icon">🔥</span> Offre du jour
-  </button>
-  <button class="tab-btn admin-only" data-tab="revenus">
-    <span class="tab-icon">💰</span> Revenus
+    <span class="tab-icon">⚙️</span> Réglages
   </button>
 </nav>
 
@@ -937,8 +928,19 @@
 
   <!-- ═══════════════════════════ PARAMÈTRES ═══════════════════════════ -->
   <div id="parametres" class="tab-panel">
-    <div class="section-title">⚙️ Paramètres de l'app</div>
-    <div class="section-sub">Personnalisation de votre application PWA</div>
+    <div class="section-title">⚙️ Réglages</div>
+    <div class="section-sub">Votre abonnement et l'apparence de votre carte</div>
+
+    <!-- « Compte » a quitté la barre d'onglets : c'est une page qu'on ouvre
+         une fois par trimestre, elle n'avait pas à occuper le même rang que
+         le quotidien. Elle reste accessible ici, en tête des réglages. -->
+    <a href="billing.html" class="card" style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;text-decoration:none;color:inherit;">
+      <span>
+        <span class="card-title" style="margin:0;"><span class="card-title-icon">💳</span> Compte &amp; facturation</span>
+        <span style="display:block;font-size:13px;color:var(--muted);margin-top:4px;">Abonnement, factures et moyen de paiement</span>
+      </span>
+      <span style="font-size:20px;color:var(--muted);flex-shrink:0;">→</span>
+    </a>
 
     <!-- Icône -->
     <div class="card" style="margin-bottom:16px;">
@@ -1486,6 +1488,20 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 // ═══════════════════════════════════════════════════════════════
 
 const INLINE_TABS = ['dashboard', 'coupon', 'notifications', 'clients', 'parametres', 'offre', 'revenus'];
+
+/* Dix entrées de menu, c'était trop pour quelqu'un qui ouvre ça entre deux
+   services. Plusieurs sont regroupées derrière une seule, sans déplacer une
+   ligne de contenu : une entrée peut afficher plusieurs panneaux.
+
+     Tableau de bord → les chiffres du jour ET les revenus
+     Mon offre       → le coupon du mois ET l'offre du jour
+
+   Le restaurateur ne se demande pas « coupon ou offre du jour ? » : il
+   cherche où changer son cadeau. */
+const GROUPES = {
+  dashboard: ['dashboard', 'revenus'],
+  coupon:    ['coupon', 'offre']
+};
 let kpisLoaded = false;
 let pinInterval = null;   // ⚠️ doit être déclaré AVANT initFromHash() (qui appelle loadDashboard)
 
@@ -1501,20 +1517,24 @@ function switchTab(tabId) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
 
-  const panel = document.getElementById(tabId);
-  if (panel) panel.classList.add('active');
+  (GROUPES[tabId] || [tabId]).forEach(function(id) {
+    const p = document.getElementById(id);
+    if (p) p.classList.add('active');
+  });
   const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
   if (btn) btn.classList.add('active');
 
   history.replaceState(null, '', `#${tabId}`);
 
-  if (tabId === 'dashboard')     loadDashboard();
-  if (tabId === 'coupon')        initCoupon();
-  if (tabId === 'notifications') loadPWACount();
-  if (tabId === 'clients')       loadClients();
-  if (tabId === 'parametres')    loadParametres();
-  if (tabId === 'offre')         loadOffre();
-  if (tabId === 'revenus')       loadRevenus(false);
+  // Les panneaux regroupés chargent leurs données ensemble.
+  const aCharger = GROUPES[tabId] || [tabId];
+  if (aCharger.includes('dashboard'))     loadDashboard();
+  if (aCharger.includes('coupon'))        initCoupon();
+  if (aCharger.includes('notifications')) loadPWACount();
+  if (aCharger.includes('clients'))       loadClients();
+  if (aCharger.includes('parametres'))    loadParametres();
+  if (aCharger.includes('offre'))         loadOffre();
+  if (aCharger.includes('revenus'))       loadRevenus(false);
 }
 
 // Clics sur les boutons tab inline
