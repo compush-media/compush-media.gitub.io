@@ -251,10 +251,10 @@
     <h1>Rejoignez le Club <span id="nomClub">Fidelavis</span> ✨</h1>
     <p class="sous-titre">et profitez de votre premier avantage</p>
 
-    <!-- Récompense. Renseignée par l'établissement dans offre_jour → on
-         l'annonce comme la sienne. Sinon on montre un exemple, dit comme
-         tel : promettre une remise que le restaurant n'accorde pas se
-         retourne contre lui à l'addition. -->
+    <!-- Récompense = le coupon du mois, renseigné par le restaurateur dans
+         son espace. Affiché seulement s'il est du mois en cours ; sinon un
+         texte qui n'engage sur rien de chiffré. Promettre un avantage que
+         l'établissement n'accorde plus se retourne contre lui au comptoir. -->
     <div class="cadeau">
       <div class="visuel" id="cadeauVisuel">🎁</div>
       <div>
@@ -362,37 +362,49 @@
     }
 
     // ── Récompense ────────────────────────────────────────────────
-    // La récompense du membre est activeCoupon — c'est elle que le
-    // restaurateur renseigne dans son espace (« Café offert ») et que
-    // reprennent les e-mails mensuels. offre_jour est autre chose : une
-    // promo datée, avec une date de fin. On préfère donc la récompense,
-    // et on ne retient la promo que si elle est active ET non expirée.
+    // Le coupon du mois est l'avantage du membre : le restaurateur le
+    // renseigne chaque mois depuis son espace. On ne l'affiche donc que
+    // s'il est bien du mois en cours — les quatre trouvés en base
+    // dataient de juin alors qu'on était en août, et annoncer à un
+    // nouveau client un café offert de juin l'expose à un refus au
+    // comptoir.
+    //
+    // offre_jour n'apparaît pas ici : c'est une promotion ponctuelle
+    // que le restaurateur pousse en notification, pas l'avantage
+    // permanent qu'on promet à l'inscription.
+    var MOIS = ["janvier","février","mars","avril","mai","juin",
+                "juillet","août","septembre","octobre","novembre","décembre"];
     var c = cfg.activeCoupon || {};
-    var o = cfg.offre_jour   || {};
-    var expiree = false;
-    if (o.date_fin) {
-      var f = new Date(o.date_fin);
-      expiree = !isNaN(f) && f < new Date(new Date().toDateString());
-    }
-    var promoOk = o.active === true && !expiree && String(o.titre || "").trim() !== "";
-
-    var titre  = String(c.title || "").trim() || (promoOk ? String(o.titre || "").trim() : "");
-    var detail = String(c.description || "").trim() || (promoOk ? String(o.description || "").trim() : "");
-    var image  = c.imageUrl || (promoOk ? o.image : "") || "";
+    var titre = String(c.title || "").trim();
+    var duMois = false;
 
     if (titre) {
+      var maintenant = new Date();
+      var m = String(c.month || "").trim().toLowerCase();
+      if (m) {
+        duMois = (m === MOIS[maintenant.getMonth()]);
+      } else if (c.updatedAt) {
+        var u = new Date(c.updatedAt);
+        duMois = !isNaN(u) && u.getMonth() === maintenant.getMonth()
+                           && u.getFullYear() === maintenant.getFullYear();
+      }
+      // Ni mois ni date d'enregistrement : valeur posée à la création du
+      // wallet, jamais choisie par le restaurateur. On ne la promet pas.
+    }
+
+    if (titre && duMois) {
       document.getElementById("cadeauTitre").textContent  = titre;
-      document.getElementById("cadeauDetail").textContent = detail || "Offert par l'établissement.";
-      if (image) {
+      document.getElementById("cadeauDetail").textContent =
+        String(c.description || "").trim() || "Offert par l'établissement.";
+      if (c.imageUrl) {
         var v = document.getElementById("cadeauVisuel");
         var im = new Image(); im.alt = "";
         im.onload = function(){ v.innerHTML = ""; v.appendChild(im); };
-        im.src = image;
+        im.src = c.imageUrl;
       }
     }
-    // Sinon : le texte par défaut reste, et il ne promet aucune remise
-    // chiffrée — l'ancienne page affichait « -10% OFFERT » à tous.
-
+    // Sinon : le texte par défaut reste. Il ne promet rien de chiffré ni
+    // de daté, il est donc toujours vrai.
     document.getElementById("ctaBtn").addEventListener("click", goToInscription);
 
     var lien = document.getElementById("lienMembre");
