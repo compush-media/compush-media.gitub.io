@@ -154,7 +154,11 @@
               : 'Aucun paiement pendant 30 jours',
           '</div>',
           '<div class="billing-trial-sub" style="margin-top:4px;color:#6b7280;font-size:12px;">',
-            'À la fin de l\'essai : ' + fmt(planPrice || 0) + '/mois, sans frais d\'installation',
+            // Les cartes NFC arrivent avec l'abonnement, pas pendant l'essai : le
+            // restaurateur commence au QR code. Le dire ici évite qu'il les
+            // attende en vain pendant 30 jours.
+            'À la fin de l\'essai : ' + fmt(planPrice || 0) + '/mois, sans frais d\'installation,'
+              + ' 10 cartes NFC personnalisées incluses',
           '</div>',
         '</div>',
       '</div>'
