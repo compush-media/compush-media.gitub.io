@@ -529,9 +529,6 @@
   <button class="tab-btn" data-tab="coupon">
     <span class="tab-icon">🎫</span> Coupon
   </button>
-  <a class="tab-btn" href="reputation-google.html" id="linkAvis">
-    <span class="tab-icon">⭐</span> Avis
-  </a>
   <button class="tab-btn admin-only" data-tab="notifications">
     <span class="tab-icon">🔔</span> Notifications
   </button>
@@ -649,17 +646,6 @@
     <!-- Footer sécurité -->
     <div class="dash-footer">🔒 Vos données sont sécurisées et confidentielles.</div>
 
-    <!-- CTA Configurer avis Google (masqué automatiquement une fois Google connecté) -->
-    <div class="card" id="ctaGoogleSetup" style="margin-bottom:20px;background:linear-gradient(135deg,#fff9ec 0%,#fff3cf 100%);border:1.5px solid #f4c95d;">
-      <div class="card-title" style="color:#6b4f00;"><span class="card-title-icon">⭐</span> Avis Google automatiques</div>
-      <p style="font-size:13.5px;color:#6b4f00;margin-bottom:14px;line-height:1.5;">
-        Connectez votre fiche Google My Business et notre IA rédige automatiquement une réponse personnalisée à chaque nouvel avis.
-        <strong>Gratuit, aucune clé API à fournir.</strong>
-      </p>
-      <a href="reputation-google.html" class="btn btn-brand" style="display:inline-block;padding:12px 22px;text-decoration:none;font-weight:700;font-size:14px;">
-        ⚙️ Configurer mes avis Google →
-      </a>
-    </div>
 
     <!-- Lien NFC / QR Code -->
     <div class="card" style="margin-bottom:20px;">
@@ -1994,13 +1980,6 @@ function renderActionsList(clientsRevenus) {
   // 3. Avis Google
   const reviews = JSON.parse(localStorage.getItem('fv_reviews') || '[]');
   const pendingReviews = reviews.filter(r => r.status === 'pending').length;
-  items.push({
-    icon: '⭐',
-    label: `Répondre aux avis (${pendingReviews} en attente)`,
-    status: pendingReviews > 0 ? 'todo' : 'done',
-    statusLabel: pendingReviews > 0 ? 'À faire' : 'Terminé',
-    href: 'reputation-google.html'
-  });
 
   // 4. Notifications push (uniquement si admin et clients connectés)
   if (ROLE === 'admin') {
