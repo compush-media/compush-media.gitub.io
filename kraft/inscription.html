@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Activer -10% — Fidelavis</title>
+  <title>Rejoindre le Club</title>
 
   <!-- ✅ Core commun -->
   <script src="../assets/core.js"></script>
@@ -21,128 +21,148 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      --gold:#b8924f;
-      --line:rgba(0,0,0,.08);
-      --shadow:0 16px 34px rgba(0,0,0,.10);
-      --radius:18px;
-      --bg1:#f7f0e8;
-      --bg2:#f4eadf;
-      --ok:#1f8a4c;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 100%);
-      color:#1d1d1d;
-      padding:10px 12px calc(70px + env(safe-area-inset-bottom));
-      text-align:center;
-    }
-    .wrap{max-width:460px;margin:0 auto;}
+    /* ─────────────────────────────────────────────────────────────
+       Page d'inscription, atteinte depuis la page NFC.
 
-    .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:6px 12px;border-radius:999px;
-      background:#fff;border:1px solid var(--line);
-      font-weight:900;font-size:12px;
-      margin:0 0 6px;
+       Refonte du 16/08/2026, en suite de indexnfc.html. Elle demandait
+       « Où devons-nous envoyer votre -10% ? » et son bouton disait
+       « Activer ma réduction -10% » — une remise que la plupart des
+       établissements n'accordent pas.
+
+       Elle rappelle désormais la récompense réelle juste avant le
+       formulaire : c'est l'instant où le client hésite à donner son
+       e-mail, et où il a besoin de savoir ce qu'il obtient.
+       ───────────────────────────────────────────────────────────── */
+    :root {
+      --marque:  #B8924F;
+      --marque2: #9E7A3E;
+      --encre:   #1d1d1f;
+      --gris:    #6b6b70;
+      --fond:    #faf7f2;
+      --carte:   #ffffff;
+      --ligne:   rgba(0,0,0,.07);
+      --ombre:   0 6px 28px rgba(0,0,0,.09);
+      --rouge:   #c0392b;
     }
-    .dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
-    h1{
-      margin:0 0 6px;
-      font-size:22px;
-      line-height:1.10;
-      font-weight:950;
-      letter-spacing:-0.35px;
-    }
-    .micro{
-      margin:0 0 10px;
-      font-size:13px;
-      font-weight:900;
-      color:#2b2b2b;
-      opacity:.88;
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--fond); color: var(--encre);
+      min-height: 100dvh; padding-bottom: 90px;
     }
 
-    .card{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:10px;
-      text-align:left;
+    .banniere { position: relative; height: 172px; overflow: hidden; background: var(--marque); }
+    .banniere img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .banniere::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 40px;
+      background: var(--fond); border-radius: 50% 50% 0 0 / 100% 100% 0 0;
     }
-    /* ── Formulaire Brevo ── */
-    .bv-field { margin-bottom:16px; }
-    .bv-label {
-      display:block;font-size:12px;font-weight:800;
-      color:#555;margin-bottom:6px;letter-spacing:.2px;
+    .medaillon {
+      position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%);
+      width: 92px; height: 92px; border-radius: 50%;
+      background: #fff; border: 3px solid #fff; box-shadow: var(--ombre);
+      display: grid; place-items: center; overflow: hidden; z-index: 2;
     }
+    .medaillon img { width: 100%; height: 100%; object-fit: cover; }
+    .medaillon .initiales { font-weight: 800; font-size: 26px; color: var(--marque); }
+
+    .page { max-width: 480px; margin: 0 auto; padding: 14px 20px 0; text-align: center; }
+
+    .presence {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; border: 1px solid var(--ligne); border-radius: 999px;
+      padding: 8px 16px; font-size: 13px; font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05); margin-bottom: 16px;
+    }
+    .presence .point { width: 9px; height: 9px; border-radius: 50%; background: #1a9e5c; }
+
+    h1 { font-size: 24px; font-weight: 800; line-height: 1.24; letter-spacing: -.3px; }
+    .sous-titre { margin-top: 7px; font-size: 14.5px; color: var(--gris); }
+
+    /* ── Rappel de la récompense, juste avant le formulaire ─────── */
+    .rappel {
+      margin-top: 20px; background: var(--carte); border: 1px solid var(--ligne);
+      border-radius: 16px; padding: 16px 18px; box-shadow: var(--ombre);
+      display: flex; gap: 14px; align-items: center; text-align: left;
+    }
+    .rappel .visuel {
+      flex-shrink: 0; width: 56px; height: 56px; border-radius: 12px;
+      display: grid; place-items: center; font-size: 28px; overflow: hidden;
+      background: linear-gradient(135deg, rgba(184,146,79,.14), rgba(158,122,62,.10));
+    }
+    .rappel .visuel img { width: 100%; height: 100%; object-fit: cover; }
+    .rappel .intitule {
+      font-size: 10px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase;
+      color: var(--marque2); margin-bottom: 4px;
+    }
+    .rappel .titre { font-size: 16px; font-weight: 800; line-height: 1.28; }
+    .rappel .detail { margin-top: 4px; font-size: 12px; color: var(--gris); line-height: 1.45; }
+
+    /* ── Réassurance ───────────────────────────────────────────── */
+    .rassure {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+      margin-top: 16px; padding: 14px 4px;
+      background: var(--carte); border: 1px solid var(--ligne); border-radius: 16px;
+    }
+    .rassure > div { text-align: center; padding: 0 4px; }
+    .rassure .ico { font-size: 18px; }
+    .rassure .quoi { margin-top: 4px; font-size: 12px; font-weight: 800; }
+    .rassure .pourquoi { margin-top: 2px; font-size: 10.5px; color: var(--gris); line-height: 1.4; }
+
+    /* ── Formulaire ────────────────────────────────────────────── */
+    .carte {
+      margin-top: 18px; background: var(--carte); border: 1px solid var(--ligne);
+      border-radius: 18px; padding: 22px 20px; box-shadow: var(--ombre); text-align: left;
+    }
+    .carte h2 { font-size: 16.5px; font-weight: 800; line-height: 1.3; }
+    .carte .amorce { margin-top: 6px; margin-bottom: 16px; font-size: 13px; color: var(--gris); line-height: 1.5; }
+
+    .bv-loading { padding: 26px 0; text-align: center; color: var(--gris); font-size: 14px; }
+    .bv-field { margin-bottom: 13px; }
+    .bv-label { display: block; margin-bottom: 5px; font-size: 12px; font-weight: 800; color: var(--gris); }
     .bv-input {
-      width:100%;padding:13px 14px;
-      border:1.5px solid var(--line);border-radius:12px;
-      font-size:15px;font-family:inherit;background:#faf8f5;color:#1d1d1d;
-      transition:border-color .15s,box-shadow .15s;
+      width: 100%; padding: 13px 14px; border: 1.5px solid var(--ligne); border-radius: 11px;
+      font-family: inherit; font-size: 16px; background: var(--fond); color: var(--encre);
     }
-    .bv-input:focus {
-      outline:none;border-color:var(--gold);
-      box-shadow:0 0 0 3px rgba(184,146,79,.12);background:#fff;
-    }
+    .bv-input:focus { outline: none; border-color: var(--marque); box-shadow: 0 0 0 3px rgba(184,146,79,.14); }
     .bv-btn {
-      width:100%;padding:15px;border:none;border-radius:14px;
-      background:linear-gradient(135deg,var(--gold),#9c7c43);
-      color:#fff;font-size:15px;font-weight:900;font-family:inherit;
-      cursor:pointer;margin-top:4px;
-      transition:opacity .15s,transform .1s;
-      box-shadow:0 6px 18px rgba(184,146,79,.35);
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      width: 100%; margin-top: 6px; padding: 16px 18px;
+      background: linear-gradient(135deg, var(--marque), var(--marque2));
+      color: #fff; border: none; border-radius: 13px;
+      font-family: inherit; font-size: 16.5px; font-weight: 800; cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,.15);
     }
-    .bv-btn:hover  { opacity:.88; }
-    .bv-btn:active { transform:scale(.98); }
-    .bv-btn:disabled { opacity:.5;cursor:not-allowed;transform:none; }
-    .bv-privacy {
-      font-size:11px;color:#888;text-align:center;
-      margin-top:12px;font-weight:600;line-height:1.5;
-    }
-    .bv-loading {
-      text-align:center;padding:32px 16px;
-      color:#999;font-size:13px;font-weight:700;
-    }
+    .bv-btn:active { transform: translateY(1px); }
+    .bv-btn:disabled { opacity: .6; cursor: not-allowed; }
+    .bv-privacy { margin-top: 11px; text-align: center; font-size: 11px; color: var(--gris); line-height: 1.5; }
     .bv-error {
-      display:none;background:rgba(192,57,43,.07);
-      border:1px solid rgba(192,57,43,.25);border-radius:10px;
-      padding:10px 14px;font-size:13px;color:#c0392b;
-      margin-top:12px;text-align:center;
+      display: none; margin-top: 11px; padding: 10px 12px; border-radius: 10px;
+      background: rgba(192,57,43,.07); border: 1px solid rgba(192,57,43,.22);
+      color: var(--rouge); font-size: 12.5px;
     }
 
-    .sticky{
-      position:fixed;
-      left:0; right:0; bottom:0;
-      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
-      background:linear-gradient(180deg, rgba(247,240,232,0) 0%, rgba(247,240,232,.92) 30%, rgba(247,240,232,.98) 100%);
-      backdrop-filter: blur(10px);
-      z-index:999;
+    .pied { margin-top: 20px; font-size: 11.5px; color: var(--gris); }
+
+    /* ── Barre légale ──────────────────────────────────────────── */
+    .sticky {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      background: rgba(250,247,242,.95); backdrop-filter: blur(10px);
+      border-top: 1px solid var(--ligne);
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
     }
-    .stickyInner{
-      max-width:460px;
-      margin:0 auto;
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      align-items:center;
+    .stickyInner { max-width: 480px; margin: 0 auto; display: flex; gap: 10px; justify-content: center; }
+    .btnLink {
+      font-size: 12px; font-weight: 700; color: var(--gris); text-decoration: none;
+      padding: 7px 13px; border: 1px solid var(--ligne); border-radius: 999px; background: #fff;
     }
-    .btnLink{
-      flex:1 1 0;
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:#fff;
-      font-weight:950;font-size:13px;
-      color:#2b2b2b;
-      text-decoration:none;
-      box-shadow:0 10px 22px rgba(0,0,0,.06);
+
+    @media (max-width: 360px) {
+      h1 { font-size: 21px; }
+      .rappel { flex-direction: column; text-align: center; }
     }
   </style>
+
 
   <!-- ✅ Détection retour après soumission (paramètre URL ?submitted=1 conservé pour compatibilité) -->
   <script>
@@ -195,16 +215,59 @@
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="badge"><span class="dot"></span>Dernière étape</div>
-    <h1>🎁 Où devons-nous envoyer votre -10% ?</h1>
-    <p class="micro">⚡ 10 secondes • 🎁 Gratuit • 🔒 Anti-spam</p>
 
-    <div class="card" id="card">
-      <!-- ✅ Formulaire Brevo (remplace l'iframe GHL) -->
+  <div class="banniere">
+    <img id="photo" alt="" />
+    <div class="medaillon"><span class="initiales" id="initiales">·</span></div>
+  </div>
+
+  <div class="page">
+
+    <div class="presence">
+      <span class="point"></span>
+      Vous êtes chez <span data-resto-name>votre restaurant</span> aujourd'hui
+    </div>
+
+    <h1>Votre avantage vous attend 🎁</h1>
+    <p class="sous-titre">Rejoignez le Club <span id="nomClub">Fidelavis</span> pour en profiter</p>
+
+    <!-- Rappel de la récompense AVANT le formulaire : c'est l'instant où
+         le client hésite à donner son e-mail. Même source que la page NFC,
+         pour qu'il ne lise pas deux promesses différentes en deux écrans. -->
+    <div class="rappel">
+      <div class="visuel" id="cadeauVisuel">🎁</div>
+      <div>
+        <div class="intitule" id="cadeauIntitule">Cadeau de bienvenue</div>
+        <div class="titre"  id="cadeauTitre">Un avantage vous attend</div>
+        <div class="detail" id="cadeauDetail">Choisi par l'établissement — vous le découvrez juste après votre inscription.</div>
+      </div>
+    </div>
+
+    <div class="rassure">
+      <div>
+        <div class="ico">⚡</div>
+        <div class="quoi">Rapide</div>
+        <div class="pourquoi">10 secondes</div>
+      </div>
+      <div>
+        <div class="ico">🎁</div>
+        <div class="quoi">Gratuit</div>
+        <div class="pourquoi">Sans engagement</div>
+      </div>
+      <div>
+        <div class="ico">🔒</div>
+        <div class="quoi">Sécurisé</div>
+        <div class="pourquoi">Données protégées</div>
+      </div>
+    </div>
+
+    <div class="carte" id="card">
+      <h2>Où devons-nous envoyer votre avantage&nbsp;?</h2>
+      <p class="amorce">Entrez votre prénom et votre email pour rejoindre le Club.</p>
+
       <div id="brevoLoading" class="bv-loading">Chargement…</div>
 
-      <form id="brevoForm" style="display:none;padding:4px 0" onsubmit="submitBrevoForm(event)" novalidate>
+      <form id="brevoForm" style="display:none" onsubmit="submitBrevoForm(event)" novalidate>
         <div class="bv-field">
           <label class="bv-label" for="bvPrenom">Prénom</label>
           <input class="bv-input" type="text" id="bvPrenom"
@@ -216,14 +279,16 @@
             placeholder="votre@email.com" required autocomplete="email" />
         </div>
         <button class="bv-btn" type="submit" id="bvSubmitBtn">
-          🎁 Activer ma réduction -10%
+          🎁 Recevoir mon avantage
         </button>
         <div class="bv-privacy">
-          🔒 Anti-spam · Données non partagées · Résiliable à tout moment
+          🔒 Aucun spam · Données non partagées · Désinscription en 1 clic
         </div>
         <div class="bv-error" id="bvError"></div>
       </form>
     </div>
+
+    <div class="pied">❤️ Merci de soutenir les commerces locaux 🌿</div>
   </div>
 
   <div class="sticky">
@@ -232,6 +297,7 @@
       <a class="btnLink" id="cguBtn" href="/cgu.html">📄 CGU</a>
     </div>
   </div>
+
 
   <script>
   var _brevoConfig = null; // accessible par submitBrevoForm (hors IIFE)
@@ -282,7 +348,6 @@
   })();
   </script>
 
-  <!-- ✅ Soumission formulaire Brevo -->
   <script>
   function submitBrevoForm(e) {
     e.preventDefault();
@@ -372,6 +437,62 @@
     // ── Redirection vers merci ──
     setTimeout(() => window.location.replace("redit.html"), 400);
   }
+  </script>
+
+  <!-- Présentation : photo, logo, couleurs et rappel de la récompense.
+       Même source que la page NFC (offre_jour), pour que le client ne lise
+       pas deux promesses différentes en deux écrans. -->
+  <script>
+  (function(){
+    function initiales(nom){
+      var mots = String(nom || "").replace(/[^\p{L}\p{N} ]/gu, " ").trim().split(/\s+/);
+      if (!mots[0]) return "·";
+      return (mots.length > 1 ? mots[0][0] + mots[1][0] : mots[0].slice(0, 2)).toUpperCase();
+    }
+
+    (async function(){
+      var cfg = null;
+      try { cfg = await window.Fidelavis?.loadConfig?.(); } catch(e){}
+      cfg = cfg || {};
+
+      var nom = cfg.name || "";
+      if (nom) {
+        document.getElementById("nomClub").textContent = nom;
+        document.title = "Rejoindre le Club " + nom;
+      }
+
+      if (cfg.color)  document.documentElement.style.setProperty("--marque",  cfg.color);
+      if (cfg.color2) document.documentElement.style.setProperty("--marque2", cfg.color2);
+
+      var photo = document.getElementById("photo");
+      if (cfg.heroUrl) { photo.src = cfg.heroUrl; photo.alt = nom ? ("Chez " + nom) : ""; }
+      else photo.remove();
+
+      var med = document.querySelector(".medaillon");
+      document.getElementById("initiales").textContent = initiales(nom);
+      if (cfg.logoUrl) {
+        var img = new Image(); img.alt = nom;
+        img.onload = function(){ med.innerHTML = ""; med.appendChild(img); };
+        img.src = cfg.logoUrl;
+      }
+
+      var o = cfg.offre_jour || {};
+      if (o.active === true && String(o.titre || "").trim() !== "") {
+        document.getElementById("cadeauTitre").textContent  = o.titre;
+        document.getElementById("cadeauDetail").textContent =
+          String(o.description || "").trim() || "Offert par l'établissement.";
+        if (o.image) {
+          var v = document.getElementById("cadeauVisuel");
+          var im = new Image(); im.alt = "";
+          im.onload = function(){ v.innerHTML = ""; v.appendChild(im); };
+          im.src = o.image;
+        }
+      }
+      // Sinon : le texte par défaut du HTML reste, et il ne promet aucune
+      // remise chiffrée — l'ancienne page demandait « Où devons-nous envoyer
+      // votre -10% ? » à des restaurants qui n'accordent pas de remise.
+    })();
+  })();
   </script>
 
 </body>
