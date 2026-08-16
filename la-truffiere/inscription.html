@@ -479,21 +479,36 @@
         img.src = cfg.logoUrl;
       }
 
-      var o = cfg.offre_jour || {};
-      if (o.active === true && String(o.titre || "").trim() !== "") {
-        document.getElementById("cadeauTitre").textContent  = o.titre;
-        document.getElementById("cadeauDetail").textContent =
-          String(o.description || "").trim() || "Offert par l'établissement.";
-        if (o.image) {
+      // La récompense du membre est activeCoupon — c'est elle que le
+      // restaurateur renseigne dans son espace (« Café offert ») et que
+      // reprennent les e-mails mensuels. offre_jour est autre chose : une
+      // promo datée, avec une date de fin. On préfère donc la récompense,
+      // et on ne retient la promo que si elle est active ET non expirée.
+      var c = cfg.activeCoupon || {};
+      var o = cfg.offre_jour   || {};
+      var expiree = false;
+      if (o.date_fin) {
+        var f = new Date(o.date_fin);
+        expiree = !isNaN(f) && f < new Date(new Date().toDateString());
+      }
+      var promoOk = o.active === true && !expiree && String(o.titre || "").trim() !== "";
+
+      var titre  = String(c.title || "").trim() || (promoOk ? String(o.titre || "").trim() : "");
+      var detail = String(c.description || "").trim() || (promoOk ? String(o.description || "").trim() : "");
+      var image  = c.imageUrl || (promoOk ? o.image : "") || "";
+
+      if (titre) {
+        document.getElementById("cadeauTitre").textContent  = titre;
+        document.getElementById("cadeauDetail").textContent = detail || "Offert par l'établissement.";
+        if (image) {
           var v = document.getElementById("cadeauVisuel");
           var im = new Image(); im.alt = "";
           im.onload = function(){ v.innerHTML = ""; v.appendChild(im); };
-          im.src = o.image;
+          im.src = image;
         }
       }
-      // Sinon : le texte par défaut du HTML reste, et il ne promet aucune
-      // remise chiffrée — l'ancienne page demandait « Où devons-nous envoyer
-      // votre -10% ? » à des restaurants qui n'accordent pas de remise.
+      // Sinon : le texte par défaut reste, et il ne promet aucune remise
+      // chiffrée — l'ancienne page affichait « -10% OFFERT » à tous.
     })();
   })();
   </script>
