@@ -158,7 +158,7 @@
             // restaurateur commence au QR code. Le dire ici évite qu'il les
             // attende en vain pendant 30 jours.
             'À la fin de l\'essai : ' + fmt(planPrice || 0) + '/mois, sans frais d\'installation,'
-              + ' 10 cartes NFC personnalisées incluses',
+              + ' 10 cartes NFC',
           '</div>',
         '</div>',
       '</div>'
