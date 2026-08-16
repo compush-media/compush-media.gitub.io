@@ -503,16 +503,36 @@
      pas de doublon. Le script étant chargé en « defer », on attend qu'il
      soit prêt plutôt que de tenter une fois et d'abandonner. */
   (function etiqueterProgressier() {
-    var slug;
-    try { slug = F.getRestoSlug && F.getRestoSlug(); } catch (e) { return; }
+    /* window.Fidelavis, PAS F : ce bloc est au premier niveau du second IIFE,
+       où « var F = window.Fidelavis » n'existe qu'à l'intérieur de deux autres
+       fonctions. La version précédente lisait F.getRestoSlug et levait donc
+       « F is not defined » — le catch l'avalait, le rattrapage n'a jamais
+       tourné, aucun abonné n'a été étiqueté et chaque notification ciblée
+       partait à zéro destinataire en affichant « envoyée avec succès ». */
+    var api = window.Fidelavis || {};
+    var slug = "";
+    try { slug = (api.getRestoSlug && api.getRestoSlug()) || ""; } catch (e) { return; }
     if (!slug) return;
+
+    /* getRestoSlug retombe sur « fv_last_resto », sinon « resto1 », quand
+       l'URL ne porte pas de dossier. Sur la page d'accueil on étiquetterait
+       alors un visiteur au nom d'un restaurant qu'il n'a jamais vu. On
+       n'accepte que le slug réellement lu dans l'URL. */
+    var dossier = location.pathname.match(/^\/([^/]+)\//);
+    var deLUrl  = (new URLSearchParams(location.search).get("resto")
+                  || (dossier ? dossier[1] : "")).trim().toLowerCase();
+    if (deLUrl !== slug) return;
 
     var inscrit = false;
     try {
       inscrit = localStorage.getItem("fv_registered_" + slug) === "1"
              || localStorage.getItem("is_registered") === "1";
     } catch (e) {}
-    if (!inscrit) return;
+    /* Celui qui a déjà autorisé les notifications sur cette page doit porter
+       l'étiquette même sans inscription : sinon il est abonné sans canal et
+       ne recevra jamais rien. */
+    var abonne = !!(window.Notification && window.Notification.permission === "granted");
+    if (!inscrit && !abonne) return;
 
     var email = "";
     try { email = localStorage.getItem("user_email") || ""; } catch (e) {}
