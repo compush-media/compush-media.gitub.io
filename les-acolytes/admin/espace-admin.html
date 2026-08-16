@@ -1562,6 +1562,20 @@ window.addEventListener('popstate', initFromHash);
 // ═══════════════════════════════════════════════════════════════
 
 const API       = 'https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec';
+
+  /* Jeton de session, posé à la connexion (admin/login.html). Il accompagne
+     chaque écriture pour prouver au proxy qu'elle vient bien de ce
+     restaurant. Sans lui, l'URL du proxy et les noms d'actions étant
+     lisibles dans le HTML public, n'importe qui pouvait réécrire les offres,
+     la facturation ou envoyer une notification aux clients. */
+  function fvJeton() {
+    try { return localStorage.getItem('fv_session_' + SITE) || ''; } catch(e) { return ''; }
+  }
+  function fvAuth(url) {
+    var j = fvJeton();
+    return j ? (url + '&token=' + encodeURIComponent(j)) : url;
+  }
+
 const STATS_API = 'https://script.google.com/macros/s/AKfycbymE_s4YOfYR4fiG0oSQZJqzDrN-grr4EMrena-YOc0WU5xk3qf6hHNV96lVKknncDnqA/exec';
 
 // Phase 5b : Supabase d'abord (rapide), fallback GAS si Supabase indispo.
@@ -2281,7 +2295,7 @@ async function saveMonthlyOffersAdmin() {
   for (let i = 0; i < 12; i++) offers.push({ title: (titles[i]?.value || '').trim(), image: (imgs[i]?.value || '') });
   btn.disabled = true; btn.textContent = '⏳ Enregistrement…'; fb.className = 'notif-msg';
   try {
-    const url = `${API}?action=save_monthly_offers&resto=${encodeURIComponent(SITE)}&offers=${encodeURIComponent(JSON.stringify(offers))}`;
+    const url = fvAuth(`${API}?action=save_monthly_offers&resto=${encodeURIComponent(SITE)}&offers=${encodeURIComponent(JSON.stringify(offers))}`);
     const data = await (await fetch(url, { cache: 'no-store' })).json();
     if (data?.ok) { fb.className = 'notif-msg success'; fb.textContent = '✅ Calendrier enregistré ! Visible dans ~1 minute.'; }
     else { fb.className = 'notif-msg error'; fb.textContent = '⚠️ ' + (data?.error || 'Erreur inconnue'); }
@@ -2475,7 +2489,7 @@ async function saveCouponMoisAdmin() {
   fb.textContent  = '';
 
   try {
-    const url  = `${API}?action=save_coupon_mois&resto=${encodeURIComponent(SITE)}&coupon=${encodeURIComponent(JSON.stringify(coupon))}`;
+    const url  = fvAuth(`${API}?action=save_coupon_mois&resto=${encodeURIComponent(SITE)}&coupon=${encodeURIComponent(JSON.stringify(coupon))}`);
     const res  = await fetch(url, { cache: 'no-store' });
     const data = await res.json();
 
@@ -2545,7 +2559,7 @@ async function sendNotification() {
       `&body=${encodeURIComponent(message)}` +
       `&url=${encodeURIComponent(startUrl)}`;
 
-    const res  = await fetch(proxyUrl, { cache: 'no-store' });
+    const res  = await fetch(fvAuth(proxyUrl), { cache: 'no-store' });
     const data = await res.json();
     console.log('[NOTIF DEBUG]', JSON.stringify(data));
 
@@ -2660,7 +2674,7 @@ async function saveGoogleReview() {
   fb.className    = 'notif-msg';
 
   try {
-    const url  = `${API}?action=save_google_review&resto=${encodeURIComponent(SITE)}&googleReview=${encodeURIComponent(googleReview)}`;
+    const url  = fvAuth(`${API}?action=save_google_review&resto=${encodeURIComponent(SITE)}&googleReview=${encodeURIComponent(googleReview)}`);
     const res  = await fetch(url, { cache: 'no-store' });
     const data = await res.json();
 
@@ -2749,7 +2763,7 @@ async function saveIcon() {
 
   try {
     // GET pour éviter le preflight CORS (même pattern que push_notification)
-    const url  = `${API}?action=save_icon&resto=${encodeURIComponent(SITE)}&iconUrl=${encodeURIComponent(iconUrl)}`;
+    const url  = fvAuth(`${API}?action=save_icon&resto=${encodeURIComponent(SITE)}&iconUrl=${encodeURIComponent(iconUrl)}`);
     const res  = await fetch(url, { cache: 'no-store' });
     const data = await res.json();
 
@@ -3011,7 +3025,7 @@ async function saveOffre() {
   fb.className    = 'notif-msg';
 
   try {
-    const url  = `${API}?action=save_offre_jour&resto=${encodeURIComponent(SITE)}&offre_jour=${encodeURIComponent(JSON.stringify(offre))}`;
+    const url  = fvAuth(`${API}?action=save_offre_jour&resto=${encodeURIComponent(SITE)}&offre_jour=${encodeURIComponent(JSON.stringify(offre))}`);
     const res  = await fetch(url, { cache: 'no-store' });
     const data = await res.json();
 

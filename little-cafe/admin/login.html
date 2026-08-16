@@ -120,6 +120,15 @@
         // Authentification OK
         localStorage.setItem(`admin_${site}`, "true");
         localStorage.setItem(`role_${site}`, j.role);
+        // Jeton de session : c'est lui qui prouvera au proxy que les écritures
+        // viennent bien de ce restaurant. Sans lui, n'importe qui pouvait
+        // modifier ses offres, sa facturation, ou écrire à ses clients —
+        // l'URL du proxy et les noms d'actions étant lisibles dans le HTML
+        // public de cette page.
+        if (j.token) {
+          localStorage.setItem(`fv_session_${site}`, j.token);
+          if (j.expires_at) localStorage.setItem(`fv_session_exp_${site}`, j.expires_at);
+        }
         error.style.color = "green";
         error.innerText = "Connexion réussie. Redirection...";
         setTimeout(() => {

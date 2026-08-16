@@ -326,6 +326,13 @@
   // URLs hardcodées — indépendantes du chargement de plans.js
   var STRIPE_GAS_URL = "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec";
   var PROXY_URL      = "https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec";
+
+  // Jeton de session, posé à la connexion (admin/login.html). update_billing
+  // touche au statut d'abonnement : sans preuve d'identité, n'importe qui
+  // pouvait s'offrir un abonnement gratuit ou résilier celui d'un autre.
+  function fvJeton(sl) {
+    try { return localStorage.getItem("fv_session_" + sl) || ""; } catch (e) { return ""; }
+  }
   var PRICE_IDS = {
     terrain: "price_1U45nyDpSXl9WhzrCbOobjru"
   };
@@ -449,6 +456,7 @@
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({
           action:               "update_billing",
+          token:                fvJeton(slug),
           slug:                 slug,
           stripeCustomerId:     result.customerId     || "",
           stripeSubscriptionId: result.subscriptionId || "",
@@ -520,6 +528,7 @@
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({
           action:          "update_billing",
+          token:           fvJeton(slug),
           slug:            slug,
           stripeCustomerId: session.customerId || "",
           email:           session.email       || "",
