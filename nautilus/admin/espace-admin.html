@@ -499,6 +499,15 @@
       .tab-btn     { padding: 12px 12px; font-size: 13px; }
       .pin-display { font-size: 40px; letter-spacing: 8px; }
     }
+
+    /* Sous-navigation de « Mon offre » */
+    .sous-nav { display: flex; gap: 8px; margin: 0 0 18px; flex-wrap: wrap; }
+    .sous-btn {
+      font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer;
+      padding: 9px 16px; border-radius: 999px; background: #fff;
+      border: 1.5px solid var(--line); color: var(--muted);
+    }
+    .sous-btn.active { border-color: var(--brand); background: rgba(200,151,58,.10); color: var(--brand); }
   </style>
 </head>
 <body>
@@ -660,6 +669,15 @@
   </div>
 
   <!-- ═══════════════════════════ COUPON ═══════════════════════════ -->
+  <!-- Sous-navigation de « Mon offre ». Les deux mécanismes restent
+       distincts — le coupon récurrent et la promo poussée en notification —
+       mais ils vivent sous la même entrée de menu, celle où le restaurateur
+       vient chercher « où je change mon cadeau ». -->
+  <div id="sousNavOffre" class="sous-nav" style="display:none">
+    <button type="button" class="sous-btn" data-sous="coupon">🎫 Coupon du mois</button>
+    <button type="button" class="sous-btn" data-sous="offre">🔥 Offre du jour</button>
+  </div>
+
   <div id="coupon" class="tab-panel">
     <div class="section-title">Coupon du mois</div>
     <div class="section-sub" id="couponPeriod">—</div>
@@ -1510,8 +1528,27 @@ let pinInterval = null;   // ⚠️ doit être déclaré AVANT initFromHash() (q
    onglet actif : le restaurateur ne savait plus où il se trouvait. */
 const PARENT = { offre: 'coupon', revenus: 'dashboard' };
 
+/* « Mon offre » réunit deux sections sous une même entrée, mais on n'en
+   montre qu'une à la fois : les empiler faisait défiler le restaurateur sur
+   deux formulaires longs pour trouver celui qu'il cherchait.
+   Un lien vers #offre atterrit directement sur la bonne section. */
+const SOUS_OFFRE = ['coupon', 'offre'];
+let sousDemande = null;
+
+function switchSousOffre(id) {
+  SOUS_OFFRE.forEach(function(p) {
+    const el = document.getElementById(p);
+    if (el) el.classList.toggle('active', p === id);
+  });
+  document.querySelectorAll('.sous-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.sous === id);
+  });
+  if (id === 'coupon') initCoupon();
+  if (id === 'offre')  loadOffre();
+}
+
 function switchTab(tabId) {
-  if (PARENT[tabId]) tabId = PARENT[tabId];
+  if (PARENT[tabId]) { sousDemande = tabId; tabId = PARENT[tabId]; }
   if (!INLINE_TABS.includes(tabId)) return;
   if (tabId === 'dashboard'     && ROLE !== 'admin') return;
   if (tabId === 'notifications' && ROLE !== 'admin') return;
@@ -1523,10 +1560,17 @@ function switchTab(tabId) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
 
-  (GROUPES[tabId] || [tabId]).forEach(function(id) {
-    const p = document.getElementById(id);
-    if (p) p.classList.add('active');
-  });
+  if (tabId === 'coupon') {
+    document.getElementById('sousNavOffre').style.display = 'flex';
+    switchSousOffre(SOUS_OFFRE.includes(sousDemande) ? sousDemande : 'coupon');
+    sousDemande = null;
+  } else {
+    document.getElementById('sousNavOffre').style.display = 'none';
+    (GROUPES[tabId] || [tabId]).forEach(function(id) {
+      const p = document.getElementById(id);
+      if (p) p.classList.add('active');
+    });
+  }
   const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
   if (btn) btn.classList.add('active');
 
@@ -1535,17 +1579,20 @@ function switchTab(tabId) {
   // Les panneaux regroupés chargent leurs données ensemble.
   const aCharger = GROUPES[tabId] || [tabId];
   if (aCharger.includes('dashboard'))     loadDashboard();
-  if (aCharger.includes('coupon'))        initCoupon();
   if (aCharger.includes('notifications')) loadPWACount();
   if (aCharger.includes('clients'))       loadClients();
   if (aCharger.includes('parametres'))    loadParametres();
-  if (aCharger.includes('offre'))         loadOffre();
   if (aCharger.includes('revenus'))       loadRevenus(false);
+  // coupon et offre sont chargés par switchSousOffre, à la section affichée
 }
 
 // Clics sur les boutons tab inline
 document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+document.querySelectorAll('.sous-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchSousOffre(btn.dataset.sous));
 });
 
 // Hash initial au chargement
