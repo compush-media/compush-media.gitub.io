@@ -51,7 +51,7 @@
       min-height: 100dvh; padding-bottom: 90px;
     }
 
-    .banniere { position: relative; height: 172px; overflow: hidden; background: var(--marque); }
+    .banniere { position: relative; height: 118px; overflow: hidden; background: var(--marque); }
     .banniere img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .banniere::after {
       content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 40px;
@@ -59,35 +59,38 @@
     }
     .medaillon {
       position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%);
-      width: 92px; height: 92px; border-radius: 50%;
+      width: 76px; height: 76px; border-radius: 50%;
       background: #fff; border: 3px solid #fff; box-shadow: var(--ombre);
       display: grid; place-items: center; overflow: hidden; z-index: 2;
     }
     .medaillon img { width: 100%; height: 100%; object-fit: cover; }
-    .medaillon .initiales { font-weight: 800; font-size: 26px; color: var(--marque); }
+    .medaillon .initiales { font-weight: 800; font-size: 22px; color: var(--marque); }
 
     .page { max-width: 480px; margin: 0 auto; padding: 14px 20px 0; text-align: center; }
 
     .presence {
       display: inline-flex; align-items: center; gap: 8px;
       background: #fff; border: 1px solid var(--ligne); border-radius: 999px;
-      padding: 8px 16px; font-size: 13px; font-weight: 600;
-      box-shadow: 0 2px 10px rgba(0,0,0,.05); margin-bottom: 16px;
+      padding: 6px 14px; font-size: 12.5px; font-weight: 600; white-space: nowrap;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05); margin-bottom: 12px;
     }
     .presence .point { width: 9px; height: 9px; border-radius: 50%; background: #1a9e5c; }
 
-    h1 { font-size: 24px; font-weight: 800; line-height: 1.24; letter-spacing: -.3px; }
-    .sous-titre { margin-top: 7px; font-size: 14.5px; color: var(--gris); }
+    h1 { font-size: 22px; font-weight: 800; line-height: 1.22; letter-spacing: -.3px; }
+    .sous-titre { margin-top: 5px; font-size: 13.5px; color: var(--gris); }
 
     /* ── Rappel de la récompense, juste avant le formulaire ─────── */
+    /* Bande compacte : le rappel doit motiver sans repousser le
+       formulaire hors de l'écran. Sur un nom long, l'ancienne carte
+       coûtait 142 px et le bouton d'envoi tombait à 942 px. */
     .rappel {
-      margin-top: 20px; background: var(--carte); border: 1px solid var(--ligne);
-      border-radius: 16px; padding: 16px 18px; box-shadow: var(--ombre);
-      display: flex; gap: 14px; align-items: center; text-align: left;
+      margin-top: 14px; background: var(--carte); border: 1px solid var(--ligne);
+      border-radius: 14px; padding: 11px 14px; box-shadow: 0 3px 14px rgba(0,0,0,.06);
+      display: flex; gap: 11px; align-items: center; text-align: left;
     }
     .rappel .visuel {
-      flex-shrink: 0; width: 56px; height: 56px; border-radius: 12px;
-      display: grid; place-items: center; font-size: 28px; overflow: hidden;
+      flex-shrink: 0; width: 42px; height: 42px; border-radius: 10px;
+      display: grid; place-items: center; font-size: 21px; overflow: hidden;
       background: linear-gradient(135deg, rgba(184,146,79,.14), rgba(158,122,62,.10));
     }
     .rappel .visuel img { width: 100%; height: 100%; object-fit: cover; }
@@ -95,13 +98,14 @@
       font-size: 10px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase;
       color: var(--marque2); margin-bottom: 4px;
     }
-    .rappel .titre { font-size: 16px; font-weight: 800; line-height: 1.28; }
-    .rappel .detail { margin-top: 4px; font-size: 12px; color: var(--gris); line-height: 1.45; }
+    .rappel .titre { font-size: 14.5px; font-weight: 800; line-height: 1.25; }
+    .rappel .detail { margin-top: 2px; font-size: 11.5px; color: var(--gris); line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* ── Réassurance ───────────────────────────────────────────── */
     .rassure {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
-      margin-top: 16px; padding: 14px 4px;
+      margin-top: 16px; padding: 13px 4px;
       background: var(--carte); border: 1px solid var(--ligne); border-radius: 16px;
     }
     .rassure > div { text-align: center; padding: 0 4px; }
@@ -111,10 +115,10 @@
 
     /* ── Formulaire ────────────────────────────────────────────── */
     .carte {
-      margin-top: 18px; background: var(--carte); border: 1px solid var(--ligne);
-      border-radius: 18px; padding: 22px 20px; box-shadow: var(--ombre); text-align: left;
+      margin-top: 14px; background: var(--carte); border: 1px solid var(--ligne);
+      border-radius: 18px; padding: 18px 18px 20px; box-shadow: var(--ombre); text-align: left;
     }
-    .carte h2 { font-size: 16.5px; font-weight: 800; line-height: 1.3; }
+    .carte h2 { font-size: 15.5px; font-weight: 800; line-height: 1.3; margin-bottom: 14px; }
     .carte .amorce { margin-top: 6px; margin-bottom: 16px; font-size: 13px; color: var(--gris); line-height: 1.5; }
 
     .bv-loading { padding: 26px 0; text-align: center; color: var(--gris); font-size: 14px; }
@@ -225,7 +229,7 @@
 
     <div class="presence">
       <span class="point"></span>
-      Vous êtes chez <span data-resto-name>votre restaurant</span> aujourd'hui
+      Vous êtes sur place aujourd'hui
     </div>
 
     <h1>Votre avantage vous attend 🎁</h1>
@@ -243,27 +247,8 @@
       </div>
     </div>
 
-    <div class="rassure">
-      <div>
-        <div class="ico">⚡</div>
-        <div class="quoi">Rapide</div>
-        <div class="pourquoi">10 secondes</div>
-      </div>
-      <div>
-        <div class="ico">🎁</div>
-        <div class="quoi">Gratuit</div>
-        <div class="pourquoi">Sans engagement</div>
-      </div>
-      <div>
-        <div class="ico">🔒</div>
-        <div class="quoi">Sécurisé</div>
-        <div class="pourquoi">Données protégées</div>
-      </div>
-    </div>
-
     <div class="carte" id="card">
-      <h2>Où devons-nous envoyer votre avantage&nbsp;?</h2>
-      <p class="amorce">Entrez votre prénom et votre email pour rejoindre le Club.</p>
+      <h2>Où envoyer votre avantage&nbsp;?</h2>
 
       <div id="brevoLoading" class="bv-loading">Chargement…</div>
 
@@ -286,6 +271,24 @@
         </div>
         <div class="bv-error" id="bvError"></div>
       </form>
+    </div>
+
+    <div class="rassure">
+      <div>
+        <div class="ico">⚡</div>
+        <div class="quoi">Rapide</div>
+        <div class="pourquoi">10 secondes</div>
+      </div>
+      <div>
+        <div class="ico">🎁</div>
+        <div class="quoi">Gratuit</div>
+        <div class="pourquoi">Sans engagement</div>
+      </div>
+      <div>
+        <div class="ico">🔒</div>
+        <div class="quoi">Sécurisé</div>
+        <div class="pourquoi">Données protégées</div>
+      </div>
     </div>
 
     <div class="pied">❤️ Merci de soutenir les commerces locaux 🌿</div>
