@@ -27,5 +27,55 @@
   "nextBillingDate": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
-  "billingEmail": "dan.drumonde@gmail.com"
+  "billingEmail": "dan.drumonde@gmail.com",
+  "monthlyOffers": [
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "Café offert",
+      "image": "offre-1.jpg"
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    },
+    {
+      "title": "",
+      "image": ""
+    }
+  ]
 }
