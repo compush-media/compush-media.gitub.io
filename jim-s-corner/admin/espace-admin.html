@@ -2844,7 +2844,9 @@ async function saveDesign() {
   try {
     const params = new URLSearchParams({ action: 'save_design', resto: SITE,
       color, color2, heroUrl, tagline, instagramUrl, reservationUrl });
-    const res  = await fetch(`${API}?${params}`, { cache: 'no-store' });
+    // save_design réécrit heroUrl : sans jeton, n'importe qui pouvait
+    // remplacer la photo affichée à la table des clients d'un restaurant.
+    const res  = await fetch(fvAuth(`${API}?${params}`), { cache: 'no-store' });
     const data = await res.json();
 
     if (data?.ok) {
