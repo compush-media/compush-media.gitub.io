@@ -1,18 +1,32 @@
-const CACHE_NAME = "fidelavis-resto1-v4";
+/* Service worker d'un wallet.
+
+   Le slug se déduit de l'emplacement du fichier (/casa-loca/sw.js) au lieu
+   d'être écrit en dur. Les 98 copies portaient toutes « resto1 », un dossier
+   qui renvoie 404 : cache.addAll() est tout-ou-rien, l'installation était
+   donc rejetée et AUCUN wallet n'a jamais eu de service worker actif.
+   Se déduire du chemin rend la copie identique pour tous les restaurants,
+   aujourd'hui comme pour les 929 à venir. */
+
+const BASE = self.location.pathname.replace(/[^/]*$/, "");        // "/casa-loca/"
+const SLUG = BASE.split("/").filter(Boolean).pop() || "resto";
+const CACHE_NAME = "fidelavis-" + SLUG + "-v5";
 
 const FILES_TO_CACHE = [
-  "/resto1/",
-  "/resto1/index.html",
-  "/resto1/indexnfc.html",
-  "/resto1/inscription.html",
-  "/resto1/redit.html"
+  BASE,
+  BASE + "index.html",
+  BASE + "indexnfc.html",
+  BASE + "inscription.html",
+  BASE + "redit.html"
 ];
 
 // INSTALL
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(FILES_TO_CACHE))
+    caches.open(CACHE_NAME).then(cache =>
+      // cache.add() page par page : une page absente ne doit plus faire
+      // échouer l'installation entière, sinon plus rien ne fonctionne.
+      Promise.all(FILES_TO_CACHE.map(url => cache.add(url).catch(() => null)))
+    )
   );
   self.skipWaiting();
 });

@@ -503,50 +503,61 @@
      pas de doublon. Le script étant chargé en « defer », on attend qu'il
      soit prêt plutôt que de tenter une fois et d'abandonner. */
   (function etiqueterProgressier() {
-    /* window.Fidelavis, PAS F : ce bloc est au premier niveau du second IIFE,
-       où « var F = window.Fidelavis » n'existe qu'à l'intérieur de deux autres
-       fonctions. La version précédente lisait F.getRestoSlug et levait donc
-       « F is not defined » — le catch l'avalait, le rattrapage n'a jamais
-       tourné, aucun abonné n'a été étiqueté et chaque notification ciblée
-       partait à zéro destinataire en affichant « envoyée avec succès ». */
-    var api = window.Fidelavis || {};
-    var slug = "";
-    try { slug = (api.getRestoSlug && api.getRestoSlug()) || ""; } catch (e) { return; }
-    if (!slug) return;
+    function poser() {
+      /* window.Fidelavis, PAS F : ce bloc est au premier niveau du second
+         IIFE, où « var F = window.Fidelavis » n'existe qu'à l'intérieur de
+         deux autres fonctions. La version précédente lisait F.getRestoSlug et
+         levait « F is not defined » — le catch l'avalait, le rattrapage n'a
+         jamais tourné, aucun abonné n'a porté d'étiquette et chaque envoi
+         ciblé trouvait zéro destinataire en affichant « envoyée ». */
+      var api = window.Fidelavis || {};
+      var slug = "";
+      try { slug = (api.getRestoSlug && api.getRestoSlug()) || ""; } catch (e) { return; }
+      if (!slug) return;
 
-    /* getRestoSlug retombe sur « fv_last_resto », sinon « resto1 », quand
-       l'URL ne porte pas de dossier. Sur la page d'accueil on étiquetterait
-       alors un visiteur au nom d'un restaurant qu'il n'a jamais vu. On
-       n'accepte que le slug réellement lu dans l'URL. */
-    var dossier = location.pathname.match(/^\/([^/]+)\//);
-    var deLUrl  = (new URLSearchParams(location.search).get("resto")
-                  || (dossier ? dossier[1] : "")).trim().toLowerCase();
-    if (deLUrl !== slug) return;
+      /* getRestoSlug retombe sur « fv_last_resto », sinon « resto1 », quand
+         l'URL ne porte pas de dossier : sur la page d'accueil on étiquetterait
+         un visiteur au nom d'un restaurant qu'il n'a jamais vu. On n'accepte
+         que le slug réellement lu dans l'URL. */
+      var dossier = location.pathname.match(/^\/([^/]+)\//);
+      var deLUrl  = (new URLSearchParams(location.search).get("resto")
+                    || (dossier ? dossier[1] : "")).trim().toLowerCase();
+      if (deLUrl !== slug) return;
 
-    var inscrit = false;
-    try {
-      inscrit = localStorage.getItem("fv_registered_" + slug) === "1"
-             || localStorage.getItem("is_registered") === "1";
-    } catch (e) {}
-    /* Celui qui a déjà autorisé les notifications sur cette page doit porter
-       l'étiquette même sans inscription : sinon il est abonné sans canal et
-       ne recevra jamais rien. */
-    var abonne = !!(window.Notification && window.Notification.permission === "granted");
-    if (!inscrit && !abonne) return;
+      /* Page de wallet, reconnue à son manifeste PWA : écarte /demo/ et les
+         pages d'agence, qui portent pourtant un dossier en tête d'URL. */
+      var man = document.querySelector('link[rel="manifest"]');
+      if (!man || (man.getAttribute("href") || "").indexOf("progressier.json") === -1) return;
 
-    var email = "";
-    try { email = localStorage.getItem("user_email") || ""; } catch (e) {}
+      /* Aucune condition d'inscription. L'étiquette dit « cet appareil relève
+         de ce restaurant », pas « cette personne est membre ». La conditionner
+         créait une course perdue d'avance : sur iOS le stockage de la PWA est
+         isolé de Safari, donc l'appareil qui s'abonne depuis l'écran d'accueil
+         ne voit pas le drapeau d'inscription posé dans le navigateur, et il
+         restait sans canal. Un visiteur non abonné aux notifications ne reçoit
+         rien de toute façon : l'étiqueter ne coûte rien et ferme le trou. */
+      var email = "";
+      try { email = localStorage.getItem("user_email") || ""; } catch (e) {}
 
-    var essais = 0;
-    var minuteur = setInterval(function () {
-      if (window.progressier && typeof window.progressier.add === "function") {
-        clearInterval(minuteur);
-        try { window.progressier.add({ id: email || undefined, email: email || undefined, tags: slug }); }
-        catch (e) {}
-      } else if (++essais > 20) {
-        clearInterval(minuteur);   // pas de Progressier sur cette page
-      }
-    }, 500);
+      var essais = 0;
+      var minuteur = setInterval(function () {
+        if (window.progressier && typeof window.progressier.add === "function") {
+          clearInterval(minuteur);
+          try { window.progressier.add({ id: email || undefined, email: email || undefined, tags: slug }); }
+          catch (e) {}
+        } else if (++essais > 20) {
+          clearInterval(minuteur);   // pas de Progressier sur cette page
+        }
+      }, 500);
+    }
+
+    /* core.js est chargé dans le <head> : le manifeste n'est pas toujours
+       encore analysé quand ce bloc s'exécute. On attend le DOM. */
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", poser);
+    } else {
+      poser();
+    }
   })();
 
 })();
