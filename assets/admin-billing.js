@@ -101,6 +101,18 @@
       });
     }
 
+    // Annulation pendant l'essai : même portail Stripe, c'est là que la
+    // résiliation se fait réellement.
+    var cancelBtn = container.querySelector("#cancelTrialBtn");
+    if (cancelBtn && window.FidelavisBilling && cfg.stripeCustomerId) {
+      cancelBtn.addEventListener("click", function() {
+        FidelavisBilling.openPortal({
+          stripeCustomerId: cfg.stripeCustomerId,
+          button: cancelBtn
+        });
+      });
+    }
+
     // Attacher le bouton "Configurer mon paiement" si pas de stripeCustomerId
     var setupPayBtn = container.querySelector("#setupPayBtn");
     if (setupPayBtn) {
@@ -214,11 +226,32 @@
         (status === "canceled") ?
           '<div class="billing-alert red">❌ Abonnement résilié. Contactez-nous pour réactiver.</div>' : "",
 
-        // Pendant l'essai, le seul bouton proposé était « Annuler ». Celui qui
-        // voulait s'engager au 3e jour n'avait rien pour le faire. On met
-        // l'abonnement en avant, l'annulation en retrait — et on précise qu'il
-        // ne perd rien, c'est ce qui lève l'hésitation.
-        isTrialing
+        // Deux essais très différents se cachent derrière « trialing » :
+        //
+        //   · avec abonnement Stripe — le restaurateur a déjà enregistré sa
+        //     carte, la première facture tombera toute seule. Lui proposer
+        //     « Activer mon abonnement » lui fait croire qu'il reste une
+        //     démarche, et le clic relance un parcours de paiement pour rien.
+        //
+        //   · sans abonnement — essai posé à l'activation du compte, aucune
+        //     carte enregistrée. Là le bouton a tout son sens : il permet de
+        //     s'engager au 3e jour sans perdre les jours restants.
+        (isTrialing && cfg.stripeSubscriptionId)
+          ? '<div style="font-size:13px;color:#1f9d57;font-weight:700;margin-bottom:8px">' +
+              '✓ Votre carte est enregistrée' +
+            '</div>' +
+            '<div style="font-size:12.5px;color:#6b7280;margin-bottom:12px">' +
+              'Aucune démarche à faire : la première facture tombera' +
+              (trialEndDate ? ' le <strong>' + trialEndDate + '</strong>' : ' à la fin de votre essai') + '.' +
+            '</div>' +
+            '<button id="manageSubBtn" class="billing-btn">⚙️ Gérer mon abonnement</button>' +
+            // La résiliation doit rester à portée de clic : c'est une
+            // obligation légale depuis 2023, et la cacher derrière le portail
+            // Stripe donne le sentiment inverse.
+            '<button id="cancelTrialBtn" class="billing-btn" style="background:none;color:#9ca3af;font-weight:500;font-size:12.5px;margin-top:10px;padding:4px 0;text-decoration:underline">' +
+              'Annuler l\'essai gratuit' +
+            '</button>'
+        : isTrialing
           ? '<button id="subscribeNowBtn" class="billing-btn">' +
               '👉 Activer mon abonnement' +
             '</button>' +
