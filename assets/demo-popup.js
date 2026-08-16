@@ -221,7 +221,7 @@
       // change entre les deux écrans se lit comme un piège.
       inner.appendChild(el("p", "fdp-p", "Testez Fidelavis gratuitement pendant 30 jours, sans limite de clients."));
       const ul = el("ul", "fdp-adv");
-      ["30 jours offerts", "3 cartes NFC offertes", "QR code inclus", "Sans engagement"]
+      ["30 jours offerts", "QR code inclus", "Sans engagement"]
         .forEach(function (t) {
           const li = el("li", null);
           li.appendChild(el("span", "fdp-chk", "✓"));
