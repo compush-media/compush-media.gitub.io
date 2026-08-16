@@ -423,6 +423,17 @@
     // Cookie PWA iOS standalone (localStorage isolé de Safari)
     window.Fidelavis?.setAuthCookie?.();
 
+    // ── Étiquetage Progressier ──
+    // Les 98 wallets partagent un seul compte Progressier. Sans étiquette,
+    // une notification part à TOUS les abonnés : le « Happy Hour » d'un
+    // brunch du 11e arriverait chez les clients d'un café de Neuilly.
+    // Le slug devient l'étiquette, et l'envoi la cible.
+    try {
+      if (window.progressier && typeof window.progressier.add === "function") {
+        window.progressier.add({ id: email, email: email, tags: RESTO });
+      }
+    } catch(_) {}
+
     // ── Tracking ──
     const dedupKey = "signup_brevo_" + RESTO;
     const last     = Number(localStorage.getItem(dedupKey) || "0");

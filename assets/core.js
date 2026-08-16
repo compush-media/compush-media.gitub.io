@@ -491,4 +491,42 @@
     onInstallConfirmed("appinstalled");
   });
 
+  /* ── Rattrapage de l'étiquette Progressier ────────────────────────────
+     Les clients inscrits avant la mise en place de l'étiquetage n'en ont
+     pas : après la bascule vers un envoi ciblé, ils ne recevraient plus
+     rien. On les étiquette à la première ouverture de leur carte.
+
+     Les 98 wallets partagent un compte Progressier unique : sans étiquette,
+     une notification part à tous les abonnés, tous restaurants confondus.
+
+     progressier.add est idempotent — réétiqueter un abonné connu ne crée
+     pas de doublon. Le script étant chargé en « defer », on attend qu'il
+     soit prêt plutôt que de tenter une fois et d'abandonner. */
+  (function etiqueterProgressier() {
+    var slug;
+    try { slug = F.getRestoSlug && F.getRestoSlug(); } catch (e) { return; }
+    if (!slug) return;
+
+    var inscrit = false;
+    try {
+      inscrit = localStorage.getItem("fv_registered_" + slug) === "1"
+             || localStorage.getItem("is_registered") === "1";
+    } catch (e) {}
+    if (!inscrit) return;
+
+    var email = "";
+    try { email = localStorage.getItem("user_email") || ""; } catch (e) {}
+
+    var essais = 0;
+    var minuteur = setInterval(function () {
+      if (window.progressier && typeof window.progressier.add === "function") {
+        clearInterval(minuteur);
+        try { window.progressier.add({ id: email || undefined, email: email || undefined, tags: slug }); }
+        catch (e) {}
+      } else if (++essais > 20) {
+        clearInterval(minuteur);   // pas de Progressier sur cette page
+      }
+    }, 500);
+  })();
+
 })();
