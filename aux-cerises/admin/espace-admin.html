@@ -894,6 +894,10 @@
             <label class="form-label">Titre de la notification</label>
             <input class="form-input" id="notifTitle" placeholder="Ex : Offre spéciale ce soir !" maxlength="50" />
             <div class="char-count"><span id="titleCount">0</span>/50</div>
+            <!-- Aperçu du titre réellement envoyé, préfixe compris. Rempli par
+                 JS une fois config.json chargé ; masqué tant qu'on ignore le
+                 nom du restaurant. -->
+            <div id="notifApercu" style="display:none;margin-top:6px;font-size:12px;color:#64748b;line-height:1.45"></div>
           </div>
           <div class="form-group">
             <label class="form-label">Message</label>
@@ -1477,6 +1481,9 @@ fetch(`/${SITE}/config.json`)
   .then(r => r.json())
   .then(cfg => {
     window._cachedConfig = cfg;
+    // Le nom du restaurant n'est connu qu'ici : l'aperçu du titre de
+    // notification et la réserve de caractères en dépendent.
+    try { if (typeof majApercuNotif === 'function') majApercuNotif(); } catch (e) {}
     if (cfg?.name) document.getElementById('restNameHeader').textContent = cfg.name;
 
     // Lien NFC
@@ -2606,9 +2613,42 @@ async function saveCouponMoisAdmin() {
 //  NOTIFICATIONS
 // ═══════════════════════════════════════════════════════════════
 
-document.getElementById('notifTitle').addEventListener('input', function() {
-  document.getElementById('titleCount').textContent = this.value.length;
-});
+/* Le proxy place le nom du restaurant en tête du titre envoyé.
+
+   Sur iOS, l'icône d'une notification est celle de l'application installée
+   et ne peut pas être changée par message : un client membre de plusieurs
+   clubs ne saurait pas qui lui écrit. Le nom dans le texte est la seule
+   chose qui le lui dise. Le restaurateur doit donc voir le titre réel, et
+   son budget de caractères doit tenir compte du préfixe — sinon le proxy
+   tronquerait sa phrase sans qu'il comprenne pourquoi. */
+function prefixeNotif() {
+  var n = (window._cachedConfig && window._cachedConfig.name) || '';
+  return n ? n + ' · ' : '';
+}
+
+function majApercuNotif() {
+  var champ  = document.getElementById('notifTitle');
+  var pre    = prefixeNotif();
+  var apercu = document.getElementById('notifApercu');
+
+  document.getElementById('titleCount').textContent = pre.length + champ.value.length;
+
+  if (!pre) { if (apercu) apercu.style.display = 'none'; return; }
+
+  // Le titre est limité à 50 caractères par Progressier : on réserve la
+  // place du préfixe plutôt que de laisser le message se faire couper.
+  champ.maxLength = Math.max(10, 50 - pre.length);
+
+  if (apercu) {
+    apercu.style.display = 'block';
+    apercu.textContent = champ.value
+      ? 'Vos clients verront : « ' + pre + champ.value + ' »'
+      : 'Le nom « ' + pre.trim().replace(/\s·$/, '') +
+        ' » sera ajouté devant votre titre, pour que vos clients sachent que la notification vient de vous.';
+  }
+}
+
+document.getElementById('notifTitle').addEventListener('input', majApercuNotif);
 document.getElementById('notifMessage').addEventListener('input', function() {
   document.getElementById('msgCount').textContent = this.value.length;
 });
