@@ -43,7 +43,15 @@
     var c=s?localStorage.getItem('fv_brand_'+s):null;
     if(c)document.documentElement.style.setProperty('--brand',c);
     var FALLBACK_ICON = 'https://dn721804.ca.archive.org/0/items/512x-512-icon-logo-png/512x512%20icon%20logo%20png.png';
-    var ICON_URL = localStorage.getItem('fv_icon_'+s) || FALLBACK_ICON;
+    /* Repli immédiat : l'icône générée du restaurant, présente pour chaque
+       wallet et lisible sans aucune requête. Le repli précédent était le logo
+       Fidelavis générique hébergé sur archive.org — or à la première visite
+       fv_icon_<slug> n'existe pas encore et config.json n'a pas répondu. iOS
+       lisait donc ce repli au moment de « Ajouter à l'écran d'accueil » et
+       posait un « F » doré, jamais le logo du restaurant. FALLBACK_ICON ne
+       sert plus que hors dossier restaurant. */
+    var ICON_URL = localStorage.getItem('fv_icon_'+s)
+                || (s ? ('/'+s+'/icons/icon-512.png') : FALLBACK_ICON);
     function enforceIcon(url){
       // Supprime toute balise apple-touch-icon injectée par Progressier
       document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="apple-touch-icon-precomposed"]').forEach(function(l){
