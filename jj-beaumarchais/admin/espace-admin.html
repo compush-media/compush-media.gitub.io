@@ -552,6 +552,10 @@
 <!-- ── CONTENT ── -->
 <main class="content">
 
+  <!-- Bandeau d'état de la session d'écriture. Rempli par JS ; vide et
+       invisible quand la session est valide. -->
+  <div id="bandeauSession" style="display:none"></div>
+
   <!-- ═══════════════════════════ DASHBOARD ═══════════════════════════ -->
   <div id="dashboard" class="tab-panel">
     <div class="section-title">Tableau de bord</div>
@@ -1422,6 +1426,41 @@ if (!localStorage.getItem(AUTH_KEY)) {
 }
 
 const ROLE = localStorage.getItem(ROLE_KEY) || 'employe';
+
+/* ── État de la session d'écriture ────────────────────────────────────
+   Le drapeau admin_<slug> ouvre la page ; il ne prouve rien au proxy. Les
+   écritures (notification, offres, facturation) exigent en plus le jeton
+   fv_session_<slug>, posé à la connexion par login.html.
+
+   Deux chemins arrivent ici sans ce jeton : une connexion antérieure à la
+   mise en place des sessions, dont le drapeau survit dans le navigateur, et
+   l'ouverture depuis le back-office agence, qui ne pose que le drapeau. Dans
+   les deux cas le restaurateur remplissait une notification entière et
+   découvrait « session absente » au moment d'envoyer, sans aucune issue
+   indiquée. On le dit maintenant d'entrée. */
+const SESSION_OK = (() => {
+  const jeton = localStorage.getItem('fv_session_' + SITE) || '';
+  if (!jeton) return false;
+  const exp = localStorage.getItem('fv_session_exp_' + SITE) || '';
+  const t   = Date.parse(exp);
+  return !(exp && !isNaN(t) && t < Date.now());
+})();
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (SESSION_OK) return;
+  const agence = !!localStorage.getItem('fv_superadmin_grant_' + SITE);
+  const el = document.getElementById('bandeauSession');
+  if (!el) return;
+  el.style.cssText = 'display:block;margin:0 0 18px;padding:14px 16px;border-radius:10px;' +
+                     'background:#FFF4E5;border:1px solid #F0C68A;color:#7A4A00;font-size:14px;line-height:1.5';
+  el.innerHTML = agence
+    ? '<strong>Ouvert depuis le back-office agence.</strong> La lecture fonctionne, ' +
+      'mais les envois et les modifications sont refusés : cette ouverture ne crée ' +
+      'pas de session. Connectez-vous avec le mot de passe du restaurant pour agir. ' +
+      '<a href="login.html" style="color:#7A4A00;font-weight:700">Se connecter</a>'
+    : '<strong>Session expirée.</strong> Vos modifications seraient refusées. ' +
+      '<a href="login.html" style="color:#7A4A00;font-weight:700">Se reconnecter</a>';
+});
 
 // ── Init UI selon rôle ──────────────────────────────────────
 document.getElementById('roleBadge').textContent = ROLE === 'admin' ? '👑 Admin' : '👤 Employé';
