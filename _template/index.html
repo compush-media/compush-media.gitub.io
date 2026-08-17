@@ -71,8 +71,14 @@
     fetch('/'+s+'/config.json').then(function(r){return r.json();}).then(function(d){
       var col=d&&d.color;
       if(col){document.documentElement.style.setProperty('--brand',col);try{localStorage.setItem('fv_brand_'+s,col);}catch(_){}}
+      /* iconUrl vaut « /<slug>/logo.jpg » pour 95 wallets sur 98 : le logo brut,
+         renseigne automatiquement a la generation, pas un choix du restaurateur.
+         Le laisser ecraser icons/icon-512.png annulerait sur l'ecran d'accueil
+         le recadrage de cette icone — c'est elle qui est fabriquee pour cet
+         usage, cadree et posee sur la couleur de fond du logo. On ne cede la
+         place qu'a une icone reellement televersee via save_icon. */
       var ico=d&&d.iconUrl;
-      if(ico){ICON_URL=ico;try{localStorage.setItem('fv_icon_'+s,ico);}catch(_){}enforceIcon(ico);}
+      if(ico&&!/\/logo\.jpe?g$/i.test(ico)){ICON_URL=ico;try{localStorage.setItem('fv_icon_'+s,ico);}catch(_){}enforceIcon(ico);}
     }).catch(function(){});
   })();</script>
 
