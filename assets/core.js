@@ -576,7 +576,22 @@
      Aucune page web ne peut forcer l'ouverture de Safari depuis un autre
      navigateur : c'est donc une consigne, plus l'adresse à copier en secours. */
   (function preveniriOSHorsSafari() {
-    var PAGES = ["index.html", "inscription.html", "installapps-page.html"];
+    /* Uniquement la page d'installation.
+
+       Sur iPhone, un tag NFC ouvre TOUJOURS Safari — Apple n'offre aucun
+       réglage pour le changer, même avec Chrome comme navigateur par défaut.
+       Le client qui touche la carte, seul chemin imprimé sur les cartes,
+       arrive donc déjà au bon endroit et n'a rien à lire.
+
+       Le bandeau ne s'affichait que pour quelqu'un ayant ouvert le lien à la
+       main dans Chrome : un quart d'écran de friction sur la carte et sur le
+       formulaire d'inscription, pour un cas quasi absent du parcours réel.
+
+       Il reste sur installapps-page.html, dont tout le propos est d'expliquer
+       l'installation : cette page dit « appuyez sur le bouton Partager en bas
+       de Safari », instruction inexécutable ailleurs. Là il ne coûte rien,
+       puisqu'il ne s'affiche pas pour un visiteur déjà dans Safari. */
+    var PAGES = ["installapps-page.html"];
 
     function afficher() {
       var ua = navigator.userAgent || "";
