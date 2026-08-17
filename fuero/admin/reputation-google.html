@@ -1570,7 +1570,16 @@ function generateTemplateResponse(review) {
 //  le restaurant n'a RIEN à configurer côté IA).
 // ============================================================
 const CLAUDE_PROXY_URL = 'https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec';
-const REPLY_PROXY_URL  = 'https://script.google.com/macros/s/AKfycby3VEoN1wsp3AYsBrbTXSnHsossxVuKwCNA2HLKFo89o6xkeenuOzTCjeMb1ZL7zOI/exec';
+/* Neutralisé le 17/08/2026.
+   Ce proxy publiait une réponse sur une fiche Google via
+   ScriptApp.getOAuthToken(), donc avec les droits du propriétaire, et son
+   doPost n'authentifiait personne : ni secret, ni session, ni origine. Son
+   URL était en clair dans cette page, servie publiquement — quiconque la
+   lisait pouvait publier un texte quelconque en réponse à un avis, au nom
+   du restaurant.
+   Vide, le code passe à l'API Google directe puis au copier-coller manuel.
+   Son code est sauvegardé dans le dépôt privé, apps-script/reply-proxy/. */
+const REPLY_PROXY_URL  = '';
 async function generateWithClaude(review) {
   const s = getSettings();
   const payload = {
