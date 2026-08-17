@@ -560,6 +560,56 @@
     }
   })();
 
+  /* ── Défendre l'icône du restaurant contre Progressier ────────────────
+     Progressier n'ajoute pas une icône concurrente : il RÉÉCRIT la nôtre.
+     Son réglage « overwriteExistingMeta » est activé sur ce compte, et son
+     createMeta() fait alors, sur la balise déjà présente :
+         if (r && n) { r.setAttribute("href", son_icone) }
+
+     Vérifié en direct : une page déclarant apple-touch-icon vers une adresse
+     à nous voyait ce href remplacé par le logo Fidelavis générique dès le
+     chargement du SDK. C'est ce qui produisait le « F » doré sur l'écran
+     d'accueil, là où Safari montrait le bon logo — Safari lisait la balise
+     avant la réécriture, Chrome la lit au moment de créer le raccourci.
+
+     La défense d'index.html ne durait que 5 secondes (20 × 250 ms), bien
+     moins que le temps d'ouvrir le menu Partager. On surveille donc le
+     <head> en permanence et on remet notre icône dès qu'une adresse
+     Progressier apparaît. Le réglage peut aussi être désactivé dans le
+     tableau de bord Progressier ; ceci tient sans en dépendre. */
+  (function defendreIcone() {
+    var m    = location.pathname.match(/^\/([^/]+)\//);
+    var slug = m ? m[1].toLowerCase() : "";
+    if (!slug || slug === "assets" || slug === "data") return;
+
+    var notre = "";
+    try { notre = localStorage.getItem("fv_icon_" + slug) || ""; } catch (e) {}
+    if (!notre) notre = "/" + slug + "/icons/icon-512.png";
+
+    function etrangere(href) {
+      return /progressier|pgsstoragebucket/i.test(String(href || ""));
+    }
+
+    function remettre() {
+      var liens = document.querySelectorAll(
+        'link[rel="apple-touch-icon"],link[rel="apple-touch-icon-precomposed"],link[rel~="icon"]');
+      for (var i = 0; i < liens.length; i++) {
+        if (etrangere(liens[i].getAttribute("href"))) liens[i].setAttribute("href", notre);
+      }
+    }
+
+    remettre();
+    try {
+      new MutationObserver(remettre).observe(document.head || document.documentElement, {
+        childList: true, subtree: true, attributes: true, attributeFilter: ["href"]
+      });
+    } catch (e) {
+      // Navigateur sans MutationObserver : on retombe sur une surveillance
+      // périodique, sans limite de durée cette fois.
+      setInterval(remettre, 1000);
+    }
+  })();
+
   /* ── Icône de site, par restaurant ────────────────────────────────────
      Les pages ne déclaraient AUCUN <link rel="icon">, et /favicon.ico
      renvoie 404 sur le domaine. Safari s'en moque : il lit apple-touch-icon
