@@ -21,6 +21,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
 
   <style>
+    /* Bulle « F » d'installation injectée par Progressier : elle flottait
+       au-dessus des liens Confidentialité et CGU, et proposait d'installer
+       la carte à quelqu'un qui n'est pas encore inscrit — sur cette page le
+       seul geste utile est de remplir le formulaire. index.html la masque
+       déjà ; merci.html la garde, l'installation ayant du sens juste après
+       l'inscription. */
+    .progressier-widget { display: none !important; }
+
     /* ─────────────────────────────────────────────────────────────
        Page d'inscription, atteinte depuis la page NFC.
 

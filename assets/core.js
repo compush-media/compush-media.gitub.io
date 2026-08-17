@@ -621,8 +621,10 @@
           '<strong style="display:block;margin-bottom:4px">Ouvrez cette page dans Safari</strong>' +
           "Sur iPhone, seul Safari permet d'ajouter votre carte à l'écran d'accueil " +
           'et de recevoir les offres du restaurant.' +
+          /* Espaces insécables dans les guillemets : sans elles le « » fermant
+             tombait seul à la ligne suivante sur un écran d'iPhone. */
           '<div style="margin-top:8px;opacity:.85">Dans ' + nom +
-            ' : menu <strong>⋯</strong> puis <strong>« Ouvrir dans Safari »</strong>.</div>' +
+            ' : menu <strong>⋯</strong> puis <strong>« Ouvrir dans Safari »</strong>.</div>' +
           '<button id="fvSafariCopie" style="margin-top:10px;padding:8px 14px;border:0;' +
             'border-radius:8px;background:#fff;color:#1B1B1F;font-size:13px;font-weight:700;' +
             'cursor:pointer">Copier l\'adresse</button>' +
