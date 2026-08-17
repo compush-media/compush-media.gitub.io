@@ -194,6 +194,12 @@
 
     // ✅ Cookie de persistance pour PWA standalone iOS (localStorage isolé de Safari)
     window.Fidelavis?.setAuthCookie?.();
+    /* Cookie d'appartenance à CE club. Les notifications ne sont plus
+       étiquetées que pour les membres, et sur iOS le stockage local de la
+       carte installée est séparé de celui de Safari où l'inscription a
+       lieu : seul un cookie traverse cette frontière. Écrit ici pour ne
+       pas dépendre d'un chargement de page ultérieur. */
+    try { document.cookie = 'fv_member_' + RESTO + '=1; path=/; max-age=31536000; SameSite=Lax'; } catch(_) {}
 
     const dedupKey = `signup_${RESTO}`;
     const last = Number(localStorage.getItem(dedupKey) || "0");
@@ -430,6 +436,12 @@
 
     // Cookie PWA iOS standalone (localStorage isolé de Safari)
     window.Fidelavis?.setAuthCookie?.();
+    /* Cookie d'appartenance à CE club. Les notifications ne sont plus
+       étiquetées que pour les membres, et sur iOS le stockage local de la
+       carte installée est séparé de celui de Safari où l'inscription a
+       lieu : seul un cookie traverse cette frontière. Écrit ici pour ne
+       pas dépendre d'un chargement de page ultérieur. */
+    try { document.cookie = 'fv_member_' + RESTO + '=1; path=/; max-age=31536000; SameSite=Lax'; } catch(_) {}
 
     // ── Étiquetage Progressier ──
     // Les 98 wallets partagent un seul compte Progressier. Sans étiquette,

@@ -326,11 +326,41 @@
   /* --------------------------------------------------
      window.Fidelavis — API publique
   -------------------------------------------------- */
+  /* --------------------------------------------------
+     estMembre(slug) — cette personne a-t-elle rejoint CE club ?
+
+     hasAccess() ne convient pas ici : il accepte fv_onboarding_done, qui est
+     global. Un membre du Club A y passerait donc pour membre du Club B.
+
+     Le cookie double le localStorage parce que sur iOS l'application posée
+     sur l'écran d'accueil a son propre stockage local, séparé de celui de
+     Safari où l'inscription a eu lieu : la carte installée ne voyait pas le
+     drapeau. Les cookies, eux, franchissent cette frontière.
+
+     Le cookie est écrit à la volée quand le drapeau existe déjà : les
+     membres des 97 wallets déjà en service n'ont donc rien à refaire.
+  -------------------------------------------------- */
+  function estMembre(slug) {
+    slug = slug || getRestoSlug();
+    if (!slug) return false;
+    var cle = "fv_member_" + slug;
+    var flag = false;
+    try { flag = localStorage.getItem("fv_registered_" + slug) === "1"; } catch (e) {}
+    if (flag) {
+      if (_getCookie(cle) !== "1") {
+        try { document.cookie = cle + "=1; path=/; max-age=31536000; SameSite=Lax"; } catch (e) {}
+      }
+      return true;
+    }
+    return _getCookie(cle) === "1";
+  }
+
   window.Fidelavis = {
     track:              track,
     trackOnce:          trackOnce,
     go:                 go,
     hasAccess:          hasAccess,
+    estMembre:          estMembre,
     loadConfig:         loadConfig,
     getRestoSlug:       getRestoSlug,
     rememberLastResto:  rememberLastResto,
@@ -529,13 +559,26 @@
       var man = document.querySelector('link[rel="manifest"]');
       if (!man || (man.getAttribute("href") || "").indexOf("progressier.json") === -1) return;
 
-      /* Aucune condition d'inscription. L'étiquette dit « cet appareil relève
-         de ce restaurant », pas « cette personne est membre ». La conditionner
-         créait une course perdue d'avance : sur iOS le stockage de la PWA est
-         isolé de Safari, donc l'appareil qui s'abonne depuis l'écran d'accueil
-         ne voit pas le drapeau d'inscription posé dans le navigateur, et il
-         restait sans canal. Un visiteur non abonné aux notifications ne reçoit
-         rien de toute façon : l'étiqueter ne coûte rien et ferme le trou. */
+      /* Réservé aux membres de CE club.
+
+         J'avais retiré cette condition, à tort. Toute visite étiquetait alors
+         l'appareil : un simple curieux recevait ensuite les offres du
+         restaurant, et un client membre de deux clubs voyait des messages
+         arriver sous l'icône du mauvais établissement — les wallets partagent
+         un domaine, donc un seul abonnement push, et iOS délivre à l'une des
+         applications installées sans qu'on puisse choisir laquelle. Le nom en
+         tête du titre lève l'ambiguïté ; l'icône, elle, est hors de portée.
+
+         Restreindre aux membres ne supprime pas ce cas — un vrai membre de
+         deux clubs le rencontrera — mais il ne concerne plus que des gens qui
+         ont demandé à recevoir les deux. C'est aussi une question de
+         consentement : ouvrir une carte n'est pas s'abonner à sa publicité.
+
+         estMembre() s'appuie sur un cookie par restaurant, seul moyen de
+         traverser l'isolation du stockage entre Safari et la PWA installée —
+         la raison même pour laquelle j'avais renoncé à la condition. */
+      if (!(api.estMembre && api.estMembre(slug))) return;
+
       var email = "";
       try { email = localStorage.getItem("user_email") || ""; } catch (e) {}
 
