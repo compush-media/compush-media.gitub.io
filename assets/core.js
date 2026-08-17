@@ -560,6 +560,29 @@
     }
   })();
 
+  /* ── Icône de site, par restaurant ────────────────────────────────────
+     Les pages ne déclaraient AUCUN <link rel="icon">, et /favicon.ico
+     renvoie 404 sur le domaine. Safari s'en moque : il lit apple-touch-icon
+     et affiche donc bien le logo. Chrome, lui, se sert de l'icône de site
+     pour le raccourci qu'il pose sur l'écran d'accueil — il n'en trouvait
+     aucune et retombait sur une icône générique. C'est tout l'écart observé
+     entre les deux navigateurs.
+
+     Injecté depuis le <head>, où core.js est chargé : la déclaration existe
+     donc avant la fin de l'analyse de la page. */
+  (function declarerFavicon() {
+    var m    = location.pathname.match(/^\/([^/]+)\//);
+    var slug = m ? m[1].toLowerCase() : "";
+    if (!slug || slug === "assets" || slug === "data") return;
+    if (document.querySelector('link[rel~="icon"]')) return;   // déjà déclarée
+
+    var l  = document.createElement("link");
+    l.rel  = "icon";
+    l.type = "image/png";
+    l.href = "/" + slug + "/icons/icon-512.png";
+    (document.head || document.documentElement).appendChild(l);
+  })();
+
   /* ── iOS hors Safari : dire l'issue au lieu d'une consigne impossible ──
      Sur iPhone, seul Safari installe une vraie application sur l'écran
      d'accueil. Chrome, Firefox et Edge y sont obligés d'utiliser WebKit,
