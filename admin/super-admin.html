@@ -899,7 +899,8 @@ async function persist() {
     const res  = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'save_ambassadeurs', ambassadeurs })
+      body: JSON.stringify({ action: 'save_ambassadeurs', ambassadeurs,
+                            gh_token: (localStorage.getItem('fv_superadmin_gh_token') || localStorage.getItem('fv_gh_token') || '') })
     });
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || 'Erreur GAS');

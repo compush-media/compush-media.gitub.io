@@ -2302,15 +2302,51 @@ function logout() {
 // Accès super-admin direct à l'espace d'un restaurant (sans login.html).
 // Possible car app.cartefidelavis.com partage le localStorage entre /admin
 // et /{resto}/admin/. Vérifie que l'on est bien super-admin avant d'injecter.
-function openRestoAdmin(slug) {
+/* Cette fonction posait seulement admin_<slug> : l'espace s'ouvrait, mais
+   aucune session n'était créée. Toute écriture était donc refusée — on
+   remplissait une notification entière pour lire « session absente » à
+   l'envoi. Et le contrôle ci-dessous (fv_role === 'superadmin') ne prouve
+   rien : cette valeur est posée en dur par le navigateur.
+
+   On échange donc le jeton GitHub du back-office contre une vraie session,
+   côté proxy, qui vérifie auprès de GitHub que ce jeton donne bien un accès
+   en écriture au dépôt servant le site. C'est la seule autorité que le
+   serveur puisse constater. Le jeton ne circule qu'ici, une fois par
+   ouverture : ensuite c'est la session qui accompagne les écritures. */
+async function openRestoAdmin(slug) {
   if (!slug) return;
   if (localStorage.getItem('fv_role') !== 'superadmin') {
     alert('Action réservée au super-admin.');
     return;
   }
+  const gh = (localStorage.getItem('fv_superadmin_gh_token') || localStorage.getItem('fv_gh_token') || '');
+  if (!gh) {
+    alert("Jeton GitHub absent. Reconnectez-vous au back-office pour pouvoir agir sur cet espace.");
+    return;
+  }
+
+  let session = '';
+  try {
+    const r = await fetch(FV_PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'agency_session', slug, gh_token: gh })
+    });
+    const j = await r.json();
+    if (j && j.ok && j.token) session = j.token;
+    else alert("Session refusée pour " + slug + " : " + ((j && j.error) || 'raison inconnue') +
+               "\n\nL'espace va s'ouvrir en lecture seule.");
+  } catch (e) {
+    alert("Proxy injoignable : l'espace va s'ouvrir en lecture seule.");
+  }
+
   localStorage.setItem(`admin_${slug}`, 'true');
   localStorage.setItem(`role_${slug}`, 'admin');
   localStorage.setItem(`fv_superadmin_grant_${slug}`, Date.now().toString());
+  if (session) {
+    localStorage.setItem(`fv_session_${slug}`, session);
+    localStorage.removeItem(`fv_session_exp_${slug}`);
+  }
   window.open(`https://app.cartefidelavis.com/${slug}/admin/espace-admin.html`, '_blank');
 }
 

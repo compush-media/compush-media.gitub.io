@@ -697,6 +697,37 @@ const ALLOWED   = ['compush-media'];
 const AUTH_KEY  = 'fv_restos_v1';
 const TOKEN_KEY = 'fv_superadmin_gh_token';
 const PROXY_URL = 'https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-VS1AfGFCF4jbL9GEkk7VontUpT48OhoxxfArbDOLMY6OeQQnA/exec';
+
+/* Session d'écriture pour un restaurant, obtenue en échangeant le jeton
+   GitHub du back-office. Mise en cache : une seule vérification GitHub par
+   restaurant et par session de travail, pas une à chaque sauvegarde. */
+const _sessionsAgence = {};
+async function sessionAgence(slug) {
+  if (!slug) return '';
+  if (_sessionsAgence[slug]) return _sessionsAgence[slug];
+  const dejaLa = localStorage.getItem('fv_session_' + slug);
+  if (dejaLa) { _sessionsAgence[slug] = dejaLa; return dejaLa; }
+
+  // Deux connexions coexistent : admin/*.html pose fv_superadmin_gh_token,
+  // fidelavis-admin pose fv_gh_token. Lire une seule clef laissait la
+  // moitie des chemins sans jeton, donc sans session.
+  const gh = (localStorage.getItem('fv_superadmin_gh_token') || localStorage.getItem('fv_gh_token') || '');
+  if (!gh) return '';
+  try {
+    const r = await fetch(PROXY_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body:    JSON.stringify({ action: 'agency_session', slug, gh_token: gh })
+    });
+    const j = await r.json();
+    if (j && j.ok && j.token) {
+      _sessionsAgence[slug] = j.token;
+      try { localStorage.setItem('fv_session_' + slug, j.token); } catch (e) {}
+      return j.token;
+    }
+  } catch (e) {}
+  return '';
+}
 const BASE_URL  = 'https://app.cartefidelavis.com';
 const AUTOSAVE_KEY = 'fv_resto_draft';
 
@@ -1051,7 +1082,17 @@ async function saveChanges() {
   st.textContent = 'Envoi en cours…'; st.className = 'save-status';
 
   try {
+    /* update_resto_full réécrit config.json en entier : l'action la plus
+       puissante du proxy, restée sans authentification parce qu'elle n'est
+       appelée que depuis cette page d'agence — alors que l'URL du proxy et
+       le nom de l'action sont lisibles dans ce HTML public. Elle exige
+       maintenant une session, obtenue en échangeant le jeton GitHub du
+       back-office : le proxy vérifie auprès de GitHub que ce jeton donne un
+       accès en écriture au dépôt qui sert le site. */
     const body = { action: 'update_resto_full', slug: currentResto.slug };
+    const session = await sessionAgence(currentResto.slug);
+    if (!session) throw new Error("Session refusée : reconnectez-vous au back-office.");
+    body.token = session;
     if (Object.keys(changes).length)    body.config      = changes;
     if (Object.keys(pwaChanges).length) body.progressier = pwaChanges;
 
@@ -1090,7 +1131,8 @@ async function duplicateResto(srcSlug, srcName) {
     const res = await fetch(PROXY_URL, {
       method:  'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body:    JSON.stringify({ action: 'duplicate_resto', srcSlug, newSlug, newName })
+      body:    JSON.stringify({ action: 'duplicate_resto', srcSlug, newSlug, newName,
+                              gh_token: (localStorage.getItem('fv_superadmin_gh_token') || localStorage.getItem('fv_gh_token') || '') })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
