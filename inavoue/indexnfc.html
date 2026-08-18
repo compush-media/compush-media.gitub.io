@@ -275,7 +275,32 @@
          carte. Les trois garanties gardent leur rôle — elles répondent aux
          objections — mais elles le font maintenant sous l'appel à l'action
          au lieu de le cacher. -->
+    <style>
+      /* Barre d'action collante.
+
+         Mesuré sur la hauteur réellement utile d'un petit iPhone (517 px,
+         barres de Safari déduites) : même en réduisant la photo à 150 px ET
+         en supprimant le badge « Activation en 10 secondes », le bouton
+         n'était pas entièrement visible. Raboter ne suffisait pas.
+
+         Ici il garde sa place dans le flux tant que l'écran est assez haut —
+         rien n'est masqué — et se colle en bas seulement quand il en
+         sortirait. La photo de devanture et les garanties sont conservées.
+
+         Le fond opaque et le dégradé au-dessus évitent qu'il paraisse
+         flotter sur le texte qu'il recouvre sur les écrans courts ; ce
+         contenu réapparaît dès le premier défilement. */
+      .barreCta { position: sticky; bottom: 0; z-index: 20; padding: 14px 0 12px;
+                  background: var(--fond); margin-inline: -4px; }
+      .barreCta::before { content: ""; position: absolute; left: 0; right: 0; top: -26px;
+                          height: 26px; pointer-events: none;
+                          background: linear-gradient(to top, var(--fond), transparent); }
+      .barreCta .cta { margin: 0; }
+      body { padding-bottom: 8px; }
+    </style>
+    <div class="barreCta">
     <button class="cta" id="ctaBtn" type="button">🎁 Recevoir mon avantage</button>
+    </div>
     <div class="note">🔒 Vos données ne seront jamais partagées.</div>
 
     <div class="rassure">
