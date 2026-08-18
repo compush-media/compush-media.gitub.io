@@ -264,8 +264,6 @@
       </div>
     </div>
 
-    <div class="rapide">⚡ Activation en 10 secondes</div>
-
     <!-- Le bouton passe AVANT le bloc rassurance.
          Mesuré sur un écran de 375×812 : le bloc rassurance fait 121 px, ce
          qui repoussait le bouton à 739 px du haut. Les barres de Safari
@@ -296,9 +294,15 @@
                           height: 26px; pointer-events: none;
                           background: linear-gradient(to top, var(--fond), transparent); }
       .barreCta .cta { margin: 0; }
+      /* Le badge voyage avec la barre : colle en bas, il etait coupe en
+         deux par le degrade, ce qui se lisait comme un defaut d'affichage.
+         Attache au bouton, il n'est jamais recouvert — et ce que la barre
+         masque devient la carte blanche du cadeau, qui se cache proprement. */
+      .barreCta .rapide { margin: 0 auto 10px; }
       body { padding-bottom: 8px; }
     </style>
     <div class="barreCta">
+      <div class="rapide">⚡ Activation en 10 secondes</div>
     <button class="cta" id="ctaBtn" type="button">🎁 Recevoir mon avantage</button>
     </div>
     <div class="note">🔒 Vos données ne seront jamais partagées.</div>
