@@ -706,10 +706,20 @@ try {
 
 window.Fidelavis?.trackOnce?.("coupon_view", `coupon_view_${RESTO}`, { src: "coupon_page" });
 
+/* Repli affiché quand le restaurant n'a configuré ni activeCoupon ni
+   monthlyOffers pour le mois en cours — le cas de 94 wallets sur 98
+   au moment de cet audit. Trois mois promettaient une remise chiffrée
+   ("-10% menu", "-15% végétarien", "-20% étudiants") : sur la page de
+   coupon elle-même, celle que le client présente en caisse, pas
+   seulement sur un teaser. Un restaurant qui n'a pas encore rempli son
+   calendrier voyait donc son client brandir une réduction que
+   l'établissement n'avait jamais acceptée. Remplacé par une mention
+   neutre, identique pour ces trois mois : rien n'est promis tant que
+   rien n'est configuré. */
 const offers = [
-  "🎁 Janvier : -10% menu","🎁 Février : Dessert offert","🎁 Mars : Café offert",
-  "🎁 Avril : -15% végétarien","🎁 Mai : Apéritif offert","🎁 Juin : Entrée offerte",
-  "🎁 Juillet : Glace enfant","🎁 Août : Boisson gratuite","🎁 Septembre : -20% étudiants",
+  "🎁 Janvier : Surprise du mois","🎁 Février : Dessert offert","🎁 Mars : Café offert",
+  "🎁 Avril : Surprise du mois","🎁 Mai : Apéritif offert","🎁 Juin : Entrée offerte",
+  "🎁 Juillet : Glace enfant","🎁 Août : Boisson gratuite","🎁 Septembre : Surprise du mois",
   "🎁 Octobre : Café gourmand","🎁 Novembre : Menu duo","🎁 Décembre : Chocolat chaud"
 ];
 
