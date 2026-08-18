@@ -69,10 +69,18 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // HTML = network first
+  // HTML = network first. { cache: "no-store" } est indispensable ici :
+  // sans lui, ce fetch() reste soumis au cache HTTP du navigateur
+  // (max-age=600 sur ce domaine), et « toujours interroger le réseau »
+  // pouvait retourner une réponse d'il y a dix minutes sans jamais
+  // recontacter le serveur — c'est exactement ce qui rendait une page
+  // comme redit.html invisible juste après son déploiement, même en
+  // fermant et rouvrant l'onglet. config.json et /assets/ l'avaient déjà
+  // deux blocs plus haut ; il manquait ici, sur la branche la plus
+  // consultée après chaque mise à jour.
   if (request.headers.get("accept")?.includes("text/html")) {
     event.respondWith(
-      fetch(request)
+      fetch(request, { cache: "no-store" })
         .then(response => {
           const copy = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
