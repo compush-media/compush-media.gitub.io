@@ -107,6 +107,19 @@ h1{
   font-weight:950;
   flex:0 0 auto;
 }
+/* Icone iOS reelle a droite de chaque etape. Dessinees en SVG plutot
+   qu'en emoji : le carre-fleche du partage, les trois points et le plus
+   n'ont pas d'equivalent emoji fidele, et le client doit reconnaitre
+   exactement le symbole qu'il cherche sur son ecran. */
+.step-txt{ flex:1 1 auto; }
+.ios-ico{
+  flex:0 0 auto;
+  width:30px;height:30px;
+  display:grid;place-items:center;
+  color:#3b3b3b;
+  align-self:center;
+}
+.ios-ico svg{ width:20px;height:20px;display:block; }
 
 .sticky{
   position:fixed;
@@ -169,8 +182,38 @@ h1{
     <p class="big">🎁 Votre cadeau de bienvenue vous attend.</p>
 
     <div class="steps hidden" id="iosSteps">
-      <div class="step"><div class="num">1</div><div>Appuyez sur <b>Partager</b> (carré avec une flèche ↑).</div></div>
-      <div class="step"><div class="num">2</div><div>Choisissez <b>Sur l'écran d'accueil</b> — parfois sous <b>Plus</b> ou <b>En voir plus</b> — puis <b>Ajouter</b>.</div></div>
+      <div class="step">
+        <div class="num">1</div>
+        <div class="step-txt">Appuyez sur <b>Partager</b>.</div>
+        <div class="ios-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 15V3"/><path d="m8 7 4-4 4 4"/>
+            <path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/>
+          </svg>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div class="step-txt">Si besoin, touchez <b>En voir plus</b>.</div>
+        <div class="ios-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/>
+            <circle cx="8" cy="12" r="1.1" fill="currentColor" stroke="none"/>
+            <circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/>
+            <circle cx="16" cy="12" r="1.1" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div class="step-txt">Choisissez <b>Sur l'écran d'accueil</b>, puis <b>Ajouter</b>.</div>
+        <div class="ios-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <rect x="3.5" y="3.5" width="17" height="17" rx="4"/>
+            <path d="M12 8.5v7M8.5 12h7"/>
+          </svg>
+        </div>
+      </div>
     </div>
 
     <div class="steps hidden" id="androidSteps">
