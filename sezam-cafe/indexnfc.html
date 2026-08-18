@@ -13,7 +13,13 @@
   <link rel="manifest" href="progressier.json">
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(function(){});
+      /* updateViaCache:'none' — sans cette option le navigateur applique
+         le cache HTTP (max-age=600) au fichier sw.js lui-meme : il attendait
+         donc jusqu'a dix minutes avant meme de VERIFIER s'il existe une
+         nouvelle version du service worker. Un correctif deploye dans sw.js
+         ne pouvait pas s'appliquer avant ce delai, y compris un correctif
+         portant sur le cache lui-meme. */
+      navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(function(){});
     }
   </script>
 

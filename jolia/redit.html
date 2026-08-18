@@ -9,7 +9,7 @@
 
 <link rel="manifest" href="progressier.json"/>
 <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
-<script>if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}</script>
+<script>if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(function(){});}</script>
 <script>(function(){var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';var c=s?localStorage.getItem('fv_brand_'+s):null;if(c)document.documentElement.style.setProperty('--gold',c);if(!s)return;fetch('/'+s+'/config.json').then(function(r){return r.json();}).then(function(d){var col=d&&d.color;if(col){document.documentElement.style.setProperty('--gold',col);try{localStorage.setItem('fv_brand_'+s,col);}catch(_){}}var nom=d&&d.name;if(nom){document.getElementById('title').textContent='📲 Installer l’app '+nom;document.getElementById('sub').textContent='Installez l’application '+nom+' pour retrouver votre cadeau de bienvenue et vos avantages à chaque visite.';}}).catch(function(){});})();</script>
 
 <style>
