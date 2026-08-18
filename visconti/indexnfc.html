@@ -266,6 +266,18 @@
 
     <div class="rapide">⚡ Activation en 10 secondes</div>
 
+    <!-- Le bouton passe AVANT le bloc rassurance.
+         Mesuré sur un écran de 375×812 : le bloc rassurance fait 121 px, ce
+         qui repoussait le bouton à 739 px du haut. Les barres de Safari
+         mangeant environ 150 px, la zone réellement visible s'arrête vers
+         660 px : le client ne voyait aucun moyen d'agir sans faire défiler,
+         sur la toute première page qu'il découvre après avoir touché la
+         carte. Les trois garanties gardent leur rôle — elles répondent aux
+         objections — mais elles le font maintenant sous l'appel à l'action
+         au lieu de le cacher. -->
+    <button class="cta" id="ctaBtn" type="button">🎁 Recevoir mon avantage</button>
+    <div class="note">🔒 Vos données ne seront jamais partagées.</div>
+
     <div class="rassure">
       <div>
         <div class="ico">🔒</div>
@@ -283,9 +295,6 @@
         <div class="pourquoi">1 clic à tout moment</div>
       </div>
     </div>
-
-    <button class="cta" id="ctaBtn" type="button">🎁 Recevoir mon avantage</button>
-    <div class="note">🔒 Vos données ne seront jamais partagées.</div>
 
     <div class="membre">
       <span>Déjà membre&nbsp;?</span>
