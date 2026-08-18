@@ -226,7 +226,6 @@ h1{
 <div class="sticky">
   <div class="ctaWrap">
     <button class="btn" id="installBtn" type="button">📲 Installer maintenant</button>
-    <button class="lien" id="doneBtn" type="button">J'ai déjà installé l'app →</button>
   </div>
 </div>
 
@@ -252,10 +251,14 @@ const ios = isIOS();
 
 if (ios){
   iosSteps.classList.remove("hidden");
-  installBtn.textContent = "📤 Voir comment faire";
-  installBtn.addEventListener("click", () => {
-    document.querySelector(".card").scrollIntoView({ behavior: "smooth", block: "center" });
-  });
+
+  /* Aucun bouton sur iPhone. Il affichait « Voir comment faire » et faisait
+     defiler vers la carte des etapes — deja visible a l'ecran : il ne
+     faisait donc rien. Et aucun bouton ne peut faire mieux, iOS
+     n'autorisant pas une page web a ouvrir la feuille de partage. La
+     consigne EST l'action ici ; un bouton inerte laisse croire le
+     contraire et fait attendre un effet qui ne viendra pas. */
+  document.querySelector(".sticky").remove();
 } else {
   androidSteps.classList.remove("hidden");
 
@@ -270,9 +273,12 @@ if (ios){
   });
 }
 
-document.getElementById("doneBtn").addEventListener("click", () => {
-  window.location.href = "./merci.html";
-});
+/* « J'ai deja installe l'app » a ete retire : il renvoyait vers merci.html,
+   dont le bouton principal renvoie ici — un client qui ne voulait pas
+   installer tournait donc en rond entre les deux pages. Il n'a pas besoin de
+   sortie ici : merci.html, la page precedente, offre deja « Plus tard, voir
+   mon compte ». Et celui qui a reellement installe l'app l'ouvre depuis son
+   ecran d'accueil : isStandalone() le renvoie alors directement a sa carte. */
 </script>
 
 <!-- =====================================================
@@ -344,23 +350,25 @@ document.getElementById("doneBtn").addEventListener("click", () => {
   });
 
   // 4. Tracking install_click (s'ajoute au listener existant)
+  //    Le bouton n'existe que sur Android : sur iPhone la barre entiere est
+  //    retiree, aucun bouton ne pouvant declencher la feuille de partage.
   try {
-    document.getElementById("installBtn").addEventListener("click", function(){
-      // ✅ "install_attempt" = nom attendu par le Dashboard (KPI "Installs tentatives")
-      if (window.Fidelavis && window.Fidelavis.track) {
-        window.Fidelavis.track("install_attempt", { src: "redit", resto: RESTO });
-      }
-    });
+    var btn = document.getElementById("installBtn");
+    if (btn) {
+      btn.addEventListener("click", function(){
+        // ✅ "install_attempt" = nom attendu par le Dashboard (KPI "Installs tentatives")
+        if (window.Fidelavis && window.Fidelavis.track) {
+          window.Fidelavis.track("install_attempt", { src: "redit", resto: RESTO });
+        }
+      });
+    }
   } catch(e){}
 
-  // 5. Tracking pwa_installed quand "J'ai installé" est cliqué
-  try {
-    document.getElementById("doneBtn").addEventListener("click", function(){
-      if (window.Fidelavis && window.Fidelavis.track) {
-        window.Fidelavis.track("install_confirmed", { src: "redit", resto: RESTO });
-      }
-    });
-  } catch(e){}
+  /* Le suivi « install_confirmed » sur le bouton « J'ai installé » est
+     supprime avec ce bouton. Il ne mesurait de toute facon qu'une
+     declaration du client, pas une installation reelle — l'evenement
+     appinstalled, lui, est emis par le navigateur et reste ecoute
+     ci-dessus. */
 
 })();
 </script>
