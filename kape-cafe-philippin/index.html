@@ -3,1067 +3,1271 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Coupon du Mois – Fidelavis</title>
-
-  <!-- ✅ Manifest + PWA Progressier + SW local pour le cache offline -->
-  <link rel="manifest" href="progressier.json"/>
-  <!-- apple-touch-icon : enforcé en continu pour contrer l'override de Progressier -->
-  <link rel="apple-touch-icon" id="ati" sizes="180x180" href=""/>
-  <link rel="apple-touch-icon-precomposed" id="atip" sizes="180x180" href=""/>
+  <title>Bienvenue – Fidelavis</title>
+  <link rel="manifest" href="progressier.json" />
+  <link rel="apple-touch-icon" id="ati" sizes="180x180" href="" />
+  <link rel="apple-touch-icon-precomposed" id="atip" sizes="180x180" href="" />
   <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
   <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(function(){});}</script>
-
-  <!-- ✅ Redirection post-installation (lien depuis email → coupon) -->
-  <script>(function(){
-    try {
-      var m = location.pathname.match(/^\/([^/]+)\//);
-      var slug = m ? m[1] : '';
-      if (!slug) return;
-      var key = 'fidelavis_pending_redirect_' + slug;
-      var dest = localStorage.getItem(key);
-      if (!dest) return;
-      // Ne rediriger que vers des destinations internes
-      try {
-        var h = new URL(dest).hostname;
-        if (h !== 'app.cartefidelavis.com') return;
-      } catch(_) { return; }
-      // Ne pas boucler si on est déjà sur la destination
-      if (location.href === dest || location.pathname === new URL(dest).pathname) return;
-      localStorage.removeItem(key);
-      location.replace(dest);
-    } catch(_) {}
-  })();</script>
-
-  <!-- ✅ Core commun (1 seule fois) -->
-  <script src="../assets/core.js"></script>
-
-  <!-- window.trackEventFidelavis est defini par core.js avec iframe unique par envoi -->
-  <script>(function(){
-    var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';
-    var c=s?localStorage.getItem('fv_brand_'+s):null;
-    if(c)document.documentElement.style.setProperty('--brand',c);
-    var FALLBACK_ICON = 'https://dn721804.ca.archive.org/0/items/512x-512-icon-logo-png/512x512%20icon%20logo%20png.png';
-    /* Repli immédiat : l'icône générée du restaurant, présente pour chaque
-       wallet et lisible sans aucune requête. Le repli précédent était le logo
-       Fidelavis générique hébergé sur archive.org — or à la première visite
-       fv_icon_<slug> n'existe pas encore et config.json n'a pas répondu. iOS
-       lisait donc ce repli au moment de « Ajouter à l'écran d'accueil » et
-       posait un « F » doré, jamais le logo du restaurant. FALLBACK_ICON ne
-       sert plus que hors dossier restaurant. */
-    var ICON_URL = localStorage.getItem('fv_icon_'+s)
-                || (s ? ('/'+s+'/icons/icon-512.png') : FALLBACK_ICON);
-    function enforceIcon(url){
-      // Supprime toute balise apple-touch-icon injectée par Progressier
-      document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="apple-touch-icon-precomposed"]').forEach(function(l){
-        if(l.id!=='ati'&&l.id!=='atip') l.parentNode.removeChild(l);
-      });
-      var a=document.getElementById('ati');
-      if(!a){a=document.createElement('link');a.rel='apple-touch-icon';a.id='ati';a.setAttribute('sizes','180x180');document.head.appendChild(a);}
-      a.href=url;
-      var p=document.getElementById('atip');
-      if(!p){p=document.createElement('link');p.rel='apple-touch-icon-precomposed';p.id='atip';p.setAttribute('sizes','180x180');document.head.appendChild(p);}
-      p.href=url;
-    }
-    enforceIcon(ICON_URL);
-    // Re-enforce pendant 5s (250ms x 20) pour battre l'injection async de Progressier
-    var n=0, iv=setInterval(function(){enforceIcon(ICON_URL); if(++n>=20) clearInterval(iv);},250);
-    if(!s)return;
-    fetch('/'+s+'/config.json').then(function(r){return r.json();}).then(function(d){
-      var col=d&&d.color;
-      if(col){document.documentElement.style.setProperty('--brand',col);try{localStorage.setItem('fv_brand_'+s,col);}catch(_){}}
-      /* iconUrl vaut « /<slug>/logo.jpg » pour 95 wallets sur 98 : le logo brut,
-         renseigne automatiquement a la generation, pas un choix du restaurateur.
-         Le laisser ecraser icons/icon-512.png annulerait sur l'ecran d'accueil
-         le recadrage de cette icone — c'est elle qui est fabriquee pour cet
-         usage, cadree et posee sur la couleur de fond du logo. On ne cede la
-         place qu'a une icone reellement televersee via save_icon. */
-      var ico=d&&d.iconUrl;
-      if(ico&&!/\/logo\.jpe?g$/i.test(ico)){ICON_URL=ico;try{localStorage.setItem('fv_icon_'+s,ico);}catch(_){}enforceIcon(ico);}
-    }).catch(function(){});
-  })();</script>
+  <script src="/assets/core.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <script>(function(){var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';var F='https://dn721804.ca.archive.org/0/items/512x-512-icon-logo-png/512x512%20icon%20logo%20png.png';var u=localStorage.getItem('fv_icon_'+s)||(s?('/'+s+'/icons/icon-512.png'):F);/* Repli immediat : l'icone generee du restaurant, disponible sans requete. L'ancien repli etait le logo Fidelavis generique sur archive.org — a la premiere visite fv_icon_<slug> n'existe pas encore et config.json n'a pas repondu, donc iOS lisait ce repli au moment de l'ajout a l'ecran d'accueil et posait un « F ». */function ei(x){document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="apple-touch-icon-precomposed"]').forEach(function(l){if(l.id!=='ati'&&l.id!=='atip')l.parentNode.removeChild(l);});var a=document.getElementById('ati');if(!a){a=document.createElement('link');a.rel='apple-touch-icon';a.id='ati';a.setAttribute('sizes','180x180');document.head.appendChild(a);}a.href=x;var p=document.getElementById('atip');if(!p){p=document.createElement('link');p.rel='apple-touch-icon-precomposed';p.id='atip';p.setAttribute('sizes','180x180');document.head.appendChild(p);}p.href=x;}ei(u);var n=0,iv=setInterval(function(){ei(u);if(++n>=20)clearInterval(iv);},250);})();</script>
 
   <style>
-    :root{
-      --brand:#b8924f;
-      --bg:#fbfaf8;
-      --card:#ffffff;
-      --ink:#191919;
-      --muted:#6f6f6f;
-      --line:rgba(0,0,0,.08);
-      --shadow:0 18px 50px rgba(0,0,0,.08);
-      --r:22px;
-    }
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background:
-        radial-gradient(1100px 520px at 50% -160px, rgba(180,140,74,0.16), transparent 60%),
-        linear-gradient(180deg, #fbfaf8 0%, #f6f2ec 100%);
-      color:var(--ink);
-      padding:24px 14px 30px;
-      text-align:center;
-    }
-    .wrap{ max-width:520px; margin:0 auto; }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 14px;
-      border-radius:999px;
-      background:rgba(255,255,255,.75);
-      border:1px solid var(--line);
-      box-shadow:0 10px 22px rgba(0,0,0,.05);
-      font-weight:900;
-      font-size:13px;
-      color:#3b3b3b;
-      margin-bottom:10px;
-    }
-    .dot{
-      width:8px;height:8px;border-radius:999px;
-      background:#1f8a4c;
-      box-shadow:0 0 0 6px rgba(31,138,76,.12);
+    /* ═══════════════════════════════════════════
+       VARIABLES — overridées par JS depuis config
+    ═══════════════════════════════════════════ */
+    :root {
+      --brand:  #5A6040;
+      --brand2: #454D30;
+      --gold:   #C8973A;
+      --cream:  #F7EFE5;
+      --white:  #FFFFFF;
+      --ink:    #2A1A0E;
+      --muted:  #8A7260;
+      --line:   #E4D8CC;
     }
 
-    h1{
-      margin:10px 0 6px;
-      font-size:28px;
-      letter-spacing:-0.4px;
-      font-weight:950;
-      color:#1a1a1a;
+    /* ═══════════════════════════════════════════
+       BASE
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'Lato', -apple-system, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      max-width: 390px;
+      margin: 0 auto;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 6px;
     }
-    .sub{
-      margin:0 auto 18px;
-      max-width:420px;
-      font-size:14px;
-      color:var(--muted);
-      line-height:1.35;
-    }
-    .restoLine{
-      margin:6px auto 4px;
-      font-size:17px;
-      font-weight:800;
-      color:#2a2a2a;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-    }
-    .restoLine .restoIcon{ font-size:18px; opacity:.85; }
-    .restoLine .restoName{ color:var(--brand); font-weight:950; }
+    button { font-family: inherit; cursor: pointer; }
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--r);
-      padding:18px 16px 16px;
-      box-shadow:var(--shadow);
-      text-align:left;
+    /* ═══════════════════════════════════════════
+       PAGE HEADER
+    ═══════════════════════════════════════════ */
+    .pg-head {
+      position: relative;
+      text-align: center;
+      padding: 12px 18px 0;
     }
 
-    /* ── Nouveau bloc "Votre avantage" ── */
-    .offer{
-      position:relative;
-      border-radius:20px;
-      padding:16px 14px 16px;
-      padding-right:96px;
-      min-height:130px;
-      border:1px solid rgba(180,140,74,.22);
-      background:linear-gradient(180deg, rgba(180,140,74,.14) 0%, rgba(180,140,74,.05) 100%);
-      margin-bottom:18px;
-      overflow:hidden;
+    /* Status pill */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .15px;
+      margin-bottom: 8px;
     }
-    .offer__body{ position:relative; z-index:1; }
-    .offerPill{
-      display:inline-block;
-      padding:5px 11px;
-      border-radius:999px;
-      background:linear-gradient(180deg, var(--brand) 0%, #a97f37 100%);
-      color:#fff;
-      font-size:10.5px;
-      font-weight:950;
-      letter-spacing:.6px;
-      text-transform:uppercase;
-      box-shadow:0 4px 10px rgba(180,140,74,.25);
-      margin-bottom:8px;
-    }
-    .offerTitle{
-      margin:0 0 10px;
-      font-weight:950;
-      color:#1a1a1a;
-      font-size:16px;
-      line-height:1.2;
-      letter-spacing:-.3px;
-    }
-    .offerTitle .gift{ font-size:18px; margin-right:2px; vertical-align:-2px; }
-    .offerLine{
-      margin:0 0 6px;
-      font-size:12.5px;
-      color:#3a3a3a;
-      font-weight:600;
-      line-height:1.35;
-    }
-    .offerLine:last-child{ margin-bottom:0; }
-    .offerLine .ic{ font-size:13px; margin-right:6px; vertical-align:-1px; }
-    .offerImg{
-      position:absolute;
-      right:6px;
-      top:50%;
-      transform:translateY(-50%);
-      width:100px;
-      height:100px;
-      object-fit:contain;
-      filter:drop-shadow(0 8px 18px rgba(0,0,0,.18));
-      animation:offerImgIn .45s ease both;
-      pointer-events:none;
-    }
-    @keyframes offerImgIn{
-      from{opacity:0;transform:translateY(-50%) scale(.85) rotate(-3deg);}
-      to{opacity:1;transform:translateY(-50%) scale(1) rotate(0);}
-    }
-    @media (max-width:380px){
-      .offer{ padding-right:84px; min-height:120px; }
-      .offerImg{ width:84px; height:84px; }
-      .offerTitle{ font-size:15px; }
-      .offerLine{ font-size:11.5px; }
-    }
-    @media (max-width:340px){
-      .offer{ padding-right:72px; min-height:108px; }
-      .offerImg{ width:72px; height:72px; }
-      .offerTitle{ font-size:14px; }
+    .status-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: #52B788;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px rgba(82,183,136,.2);
     }
 
-    .pinNotice{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      margin:8px 0 0;
-      font-size:12.5px;
-      color:#7c6a3f;
-      font-weight:700;
+    /* Main title */
+    .pg-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 23px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.15;
+      letter-spacing: -.5px;
+      margin-top: 4px;
+      margin-bottom: 6px;
     }
-    .pinFooter{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      margin:14px 0 4px;
-      font-size:12px;
-      color:#8a8a8a;
-      font-weight:600;
-    }
-    .pinCountdown{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      margin:4px 0 0;
-      font-size:13px;
-      color:#3a3a3a;
-      font-weight:700;
-    }
-    .pinCountdown .timer{ color:var(--brand); font-weight:950; font-variant-numeric:tabular-nums; }
 
-    .pinLabel{
-      margin:10px 0 10px;
-      color:#2a2a2a;
-      font-weight:900;
-      font-size:13px;
-      text-align:left;
+    /* Heart divider */
+    .pg-heart {
+      font-size: 13px;
+      color: var(--gold);
+      letter-spacing: 6px;
+      margin-bottom: 14px;
+      opacity: .85;
     }
-    .pinGrid{
-      display:grid;
+
+    /* Account button — absolute top-right */
+    .acct-btn {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 0;
+    }
+    .acct-av {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid var(--white);
+      box-shadow: 0 2px 12px rgba(0,0,0,.18);
+      background: var(--brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--white);
+      overflow: hidden;
+    }
+    .acct-av img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .acct-lbl {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .2px;
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO CARD
+    ═══════════════════════════════════════════ */
+    .hero-card {
+      position: relative;
+      margin: 0 10px;
+      /* no overflow:hidden — logo overflows below */
+    }
+
+    /* Photo area */
+    .hero-img {
+      position: relative;
+      height: 108px;
+      border-radius: 24px 24px 0 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 100%);
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Plus de texte sur le hero → pas d'assombrissement, photo nette */
+    .hero-img::before {
+      content: none;
+    }
+
+    /* Restaurant name overlay — top-left */
+    .hero-txt {
+      display: none;          /* texte du hero retiré — photo seule */
+      position: absolute;
+      top: 22px;
+      left: 22px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .hero-nm {
+      font-family: 'Dancing Script', cursive;
+      font-size: 33px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+      text-shadow: 0 1px 8px rgba(0,0,0,.35);
+    }
+    .hero-sub {
+      font-size: 9.5px;
+      font-weight: 300;
+      color: rgba(255,255,255,.88);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .hero-city {
+      font-size: 8.5px;
+      font-weight: 400;
+      color: rgba(255,255,255,.7);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .hero-rule {
+      width: 22px; height: 1px;
+      background: rgba(255,255,255,.55);
+      margin-top: 8px;
+    }
+
+    /* White wave at the bottom of the photo */
+    .hero-wave {
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150%;
+      height: 44px;
+      background: var(--cream);
+      border-radius: 50% 50% 0 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* Circular logo — sits on the wave boundary */
+    .hero-logo {
+      position: absolute;
+      bottom: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 84px; height: 84px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 4px solid var(--white);
+      box-shadow: 0 4px 18px rgba(0,0,0,.16);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+    .hero-logo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .hero-logo-init {
+      font-family: 'Dancing Script', cursive;
+      font-size: 27px;
+      font-weight: 700;
+      color: var(--brand);
+      text-align: center;
+      line-height: 1;
+    }
+
+    /* ═══════════════════════════════════════════
+       PROFILE SECTION
+    ═══════════════════════════════════════════ */
+    .profile {
+      text-align: center;
+      padding: 14px 24px 14px;
+    }
+    .profile-hi {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .profile-hi em {
+      font-style: normal;
+      color: var(--brand);
+    }
+    .profile-since {
+      font-size: 12.5px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-bottom: 8px;
+      letter-spacing: .1px;
+    }
+    .profile-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 16px;
+      border-radius: 999px;
+      background: rgba(200,151,58,.13);
+      border: 1px solid rgba(200,151,58,.28);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--brand);
+      letter-spacing: .2px;
+    }
+
+    /* ═══════════════════════════════════════════
+       CONTENT WRAPPER
+    ═══════════════════════════════════════════ */
+    .ct { padding: 0 14px; }
+
+    /* ═══════════════════════════════════════════
+       OFFER CARD
+    ═══════════════════════════════════════════ */
+    .offer-c {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: 0 3px 20px rgba(42,26,14,.09);
+      padding: 9px 96px 9px 14px;   /* droite réservée pour la note manuscrite */
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 14px;
+      position: relative;
+      min-height: 56px;
+    }
+
+    /* Circular offer photo */
+    .offer-photo {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      overflow: hidden;
+    }
+    .offer-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    /* Offer text */
+    .offer-info { flex: 1; min-width: 0; }
+    .offer-ttl {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.25;
+      margin-bottom: 1px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
+    }
+    .offer-kw {
+      font-size: 23px;
+      font-weight: 900;
+      color: var(--brand);
+      letter-spacing: .5px;
+      line-height: 1.1;
+      margin-bottom: 3px;
+    }
+    .offer-badge {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Handwritten label — right side */
+    .offer-note {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-8deg);
+      font-family: 'Dancing Script', cursive;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      text-align: center;
+      line-height: 1.4;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .offer-note-arr {
+      display: block;
+      font-size: 20px;
+      transform: scaleX(-1) rotate(10deg);
+      color: var(--gold);
+      margin-top: 2px;
+      opacity: .7;
+    }
+
+    /* ═══════════════════════════════════════════
+       PIN CODE SECTION
+    ═══════════════════════════════════════════ */
+    .code-sec {
+      text-align: center;
+      padding: 0;
+      margin-bottom: 14px;
+    }
+    .code-ttl {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: .1px;
+      margin-bottom: 6px;
+    }
+    .code-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    /* Decorative dashes */
+    .code-deco {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      opacity: .45;
+    }
+    .code-deco span {
+      display: inline-block;
+      width: 2px;
+      height: 22px;
+      background: var(--gold);
+      border-radius: 1px;
+    }
+    .code-deco span:nth-child(1) { transform: rotate(25deg); }
+    .code-deco span:nth-child(2) { transform: rotate(-25deg); }
+
+    /* PIN digit boxes */
+    .code-box {
+      width: 44px;
+      height: 44px;
+      background: var(--white);
+      border: 1.5px solid var(--line);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      box-shadow: 0 2px 10px rgba(42,26,14,.06);
+      letter-spacing: 0;
+    }
+
+    .code-secure {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .code-secure svg {
+      width: 14px; height: 14px;
+      flex-shrink: 0;
+      color: var(--gold);
+      opacity: .8;
+    }
+
+    /* ═══════════════════════════════════════════
+       CTA BUTTON
+    ═══════════════════════════════════════════ */
+    .cta-btn {
+      width: 100%;
+      background: var(--brand);
+      color: var(--white);
+      border: none;
+      border-radius: 30px;
+      height: 52px;
+      padding: 0 24px;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.2);
+      transition: transform .15s, box-shadow .15s;
+      letter-spacing: .1px;
+    }
+    .cta-btn:active { transform: scale(.98); box-shadow: 0 3px 12px rgba(0,0,0,.15); }
+    .cta-inner {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+    .cta-arr {
+      font-size: 22px;
+      opacity: .75;
+      line-height: 1;
+    }
+
+    /* Timer */
+    .timer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      letter-spacing: .1px;
+    }
+    .timer strong {
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    /* ═══════════════════════════════════════════
+       ACTION GRID (4 items, no card backgrounds)
+    ═══════════════════════════════════════════ */
+    .acts {
+      display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap:12px;
-      margin:0 0 6px;
+      gap: 6px;
+      margin-bottom: 14px;
     }
-    .pinBox{
-      width:100%;
-      height:64px;
-      border-radius:16px;
-      border:2px solid rgba(180,140,74,.45);
-      background:#fff;
-      font-size:26px;
-      font-weight:950;
-      text-align:center;
-      outline:none;
-      box-shadow:0 10px 22px rgba(180,140,74,.06);
+    .act-btn {
+      background: none;
+      border: none;
+      padding: 2px 4px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: opacity .15s;
     }
-    .pinBox:focus{
-      border-color: rgba(180,140,74,.85);
-      box-shadow:0 14px 26px rgba(180,140,74,.14);
+    .act-btn:active { opacity: .6; }
+    .act-icon {
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      background: var(--white);
+      box-shadow: 0 2px 10px rgba(42,26,14,.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .pinBox::-webkit-outer-spin-button,
-    .pinBox::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
-
-    .btn{
-      width:100%;
-      margin-top:12px;
-      padding:16px 16px;
-      border-radius:16px;
-      border:none;
-      cursor:pointer;
-      font-weight:950;
-      font-size:16px;
+    .act-icon svg {
+      width: 22px; height: 22px;
+      stroke: var(--brand);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
-    .btnPrimary{
-      background:linear-gradient(180deg, var(--brand) 0%, #a97f37 100%);
-      color:#fff;
-      box-shadow:0 16px 30px rgba(180,140,74,.22);
-    }
-    .btnSecondary{
-      background:#fff;
-      color:var(--brand);
-      border:2px solid rgba(180,140,74,.55);
-      margin-top:10px;
+    .act-lbl {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--ink);
+      text-align: center;
+      line-height: 1.35;
     }
 
-    .result{ margin-top:12px; }
-    .ok-box{
-      padding:14px;
-      border-radius:14px;
-      font-weight:950;
-      font-size:16px;
-      text-align:center;
-      border:1px solid var(--line);
+    /* ═══════════════════════════════════════════
+       SHARE BANNER
+    ═══════════════════════════════════════════ */
+    .share-btn {
+      width: 100%;
+      background: var(--white);
+      border: none;
+      border-radius: 18px;
+      padding: 11px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 3px 20px rgba(42,26,14,.08);
+      margin-bottom: 6px;
+      transition: transform .15s;
     }
-    .success { background:#d4edda;color:#155724; border-color: rgba(21,87,36,.18); }
-    .error { background:#f8d7da;color:#721c24; border-color: rgba(114,28,36,.18); }
-    .warn { background:#fff3cd;color:#856404; border-color: rgba(133,100,4,.18); }
+    .share-btn:active { transform: scale(.99); }
+    .share-ico {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: rgba(90,96,64,.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .share-ico svg {
+      width: 20px; height: 20px;
+      stroke: var(--brand);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .share-txt { flex: 1; text-align: left; }
+    .share-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .share-sub {
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+    .share-arr {
+      font-size: 22px;
+      color: var(--muted);
+      opacity: .4;
+      line-height: 1;
+    }
 
-    small{
-      display:block;
-      margin-top:12px;
-      color:#8a8a8a;
-      font-size:12px;
-      text-align:center;
-      line-height:1.3;
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    .pg-footer {
+      text-align: center;
+      padding: 0 20px 2px;
+      font-family: 'Dancing Script', cursive;
+      font-size: 16px;
+      color: var(--muted);
+      opacity: .75;
     }
 
-    .reviewBox{
-      margin-top:14px;
-      padding:16px;
-      border-radius:16px;
-      background:rgba(180,140,74,.08);
-      border:1px solid rgba(180,140,74,.18);
-      text-align:center;
-      animation:fadeIn .4s ease;
+    /* ═══════════════════════════════════════════
+       TOAST
+    ═══════════════════════════════════════════ */
+    .toast {
+      position: fixed;
+      bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--ink);
+      color: var(--white);
+      padding: 11px 22px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      pointer-events: none;
+      opacity: 0;
+      transition: all .28s cubic-bezier(.4,0,.2,1);
+      z-index: 9999;
+      white-space: nowrap;
     }
-    .reviewTitle{ margin:0 0 8px; font-weight:950; color:#2a2a2a; }
-    .reviewSub{ margin:0 0 12px; font-size:13px; color:#6f6f6f; line-height:1.35; }
-    .reviewLink{
-      display:block;
-      margin-top:10px;
-      font-size:12.5px;
-      color:#8a8a8a;
-      text-decoration:underline;
-      cursor:pointer;
-    }
-    /* ── Amount picker post-validation ── */
-    .amountBox{
-      margin-top:14px;
-      padding:14px 12px;
-      border-radius:16px;
-      background:rgba(180,140,74,.08);
-      border:1px solid rgba(180,140,74,.18);
-      text-align:center;
-      animation:fadeIn .4s ease;
-    }
-    .amountTitle{ margin:0 0 4px; font-weight:950; color:#2a2a2a; font-size:14px; }
-    .amountSub{ margin:0 0 10px; font-size:13.5px; color:#3a3a3a; line-height:1.35; font-weight:700; }
-    .amountGrid{
-      display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-bottom:8px;
-    }
-    .amountBtn{
-      padding:13px 8px;
-      border:1.5px solid rgba(180,140,74,.3);
-      border-radius:10px;
-      background:#fff;
-      color:#2a2a2a;
-      font-weight:800;
-      font-size:14px;
-      cursor:pointer;
-      font-family:inherit;
-      transition:all .15s;
-    }
-    .amountBtn:hover, .amountBtn:active { background:rgba(180,140,74,.12); transform:scale(.98); }
-    .amountBtn.sel{ background:#155724; color:#fff; border-color:#155724; transform:none; }
-    .amountSkip{
-      display:inline-block;
-      margin-top:6px;
-      font-size:12.5px;
-      color:#8a8a8a;
-      text-decoration:underline;
-      cursor:pointer;
-    }
-    @keyframes fadeIn{
-      from{opacity:0; transform:translateY(6px);}
-      to{opacity:1; transform:translateY(0);}
-    }
-    .progressier-widget { display: none !important; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── Services block ── */
-    .services-block{ margin-top:24px; text-align:left; }
-    .services-title{
-      font-size:12px; font-weight:900; color:#9a9a9a;
-      text-transform:uppercase; letter-spacing:1.2px;
-      margin:0 0 14px; text-align:left;
+    /* ═══════════════════════════════════════════
+       PIN INPUTS (validation)
+    ═══════════════════════════════════════════ */
+    input.code-box {
+      -webkit-appearance: none;
+      appearance: none;
+      outline: none;
+      text-align: center;
+      caret-color: var(--brand);
+      transition: border-color .15s, box-shadow .15s;
     }
-    .services-grid{
-      display:grid; grid-template-columns:1fr 1fr;
-      gap:12px; margin-bottom:12px;
+    input.code-box:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(90,96,64,.16);
     }
-    .svc-btn{
-      display:flex; flex-direction:row; align-items:center;
-      gap:12px; padding:14px 14px;
-      background:var(--card); border:1px solid var(--line);
-      border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,.06);
-      cursor:pointer; transition:transform .12s,box-shadow .12s;
-      text-align:left; width:100%; font-family:inherit;
-      position:relative;
+    input.code-box:disabled { opacity: .6; }
+    input.code-box::-webkit-outer-spin-button,
+    input.code-box::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .code-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin: -4px 0 9px;
+      letter-spacing: .1px;
     }
-    .svc-btn:active{ transform:scale(.96); box-shadow:0 4px 12px rgba(0,0,0,.05); }
-    .svc-btn.disabled{ opacity:.45; pointer-events:none; }
-    .svc-icon{ font-size:26px; line-height:1; flex-shrink:0; }
-    .svc-content{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; overflow:hidden; }
-    .svc-label{
-      font-size:13px; font-weight:900; color:var(--ink); line-height:1.15;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+
+    .cta-btn:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+
+    /* ═══════════════════════════════════════════
+       RESULT FEEDBACK + AMOUNT + REVIEW
+    ═══════════════════════════════════════════ */
+    .result { margin: 4px 0 0; }
+    .result:empty { margin: 0; }
+    .ok-box {
+      border-radius: 16px;
+      padding: 13px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.4;
+      margin-bottom: 11px;
     }
-    .svc-desc{
-      font-size:11px; font-weight:600; color:var(--muted); line-height:1.25;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    .ok-box.success { background: rgba(82,183,136,.15); color: #2C7A52; }
+    .ok-box.error   { background: rgba(193,72,72,.12);  color: #B23B3B; }
+    .ok-box.warn    { background: rgba(200,151,58,.16);  color: #946615; }
+
+    .amountBox, .reviewBox {
+      background: var(--white);
+      border-radius: 18px;
+      box-shadow: 0 3px 20px rgba(42,26,14,.08);
+      padding: 18px 16px;
+      margin-bottom: 11px;
+      text-align: center;
     }
-    .svc-arrow{ font-size:18px; color:#c5c5c5; font-weight:600; flex-shrink:0; }
-    @media (max-width:380px){
-      .svc-btn{ padding:12px 10px; gap:8px; }
-      .svc-icon{ font-size:22px; }
-      .svc-label{ font-size:12px; }
-      .svc-desc{ font-size:10.5px; }
-      .svc-arrow{ display:none; }
+    .amountTitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 3px;
     }
-    .svc-btn-full{
-      width:100%; padding:18px 20px;
-      background:linear-gradient(135deg,var(--brand) 0%,#a97f37 100%);
-      border:none; border-radius:18px; cursor:pointer; text-align:left;
-      box-shadow:0 16px 32px rgba(180,140,74,.22);
-      transition:transform .12s,box-shadow .12s;
+    .amountSub { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+    .amountGrid { display: grid; grid-template-columns: repeat(2,1fr); gap: 9px; }
+    .amountBtn {
+      background: var(--cream);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 0;
+      font-size: 14px; font-weight: 700; color: var(--ink);
+      transition: all .15s;
     }
-    .svc-btn-full:active{ transform:scale(.98); box-shadow:0 8px 20px rgba(180,140,74,.16); }
-    .svc-full-main{
-      display:flex; align-items:center; gap:10px;
-      font-size:17px; font-weight:900; color:#fff; margin-bottom:4px;
+    .amountBtn.sel { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .amountSkip { display: inline-block; margin-top: 13px; font-size: 12.5px; color: var(--muted); text-decoration: underline; cursor: pointer; }
+
+    .reviewTitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 4px;
     }
-    .svc-full-sub{ margin:0; font-size:13px; color:rgba(255,255,255,.8); font-weight:600; }
-    @media(hover:hover){
-      .svc-btn:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(0,0,0,.09); }
-      .svc-btn-full:hover{ transform:translateY(-2px); box-shadow:0 20px 36px rgba(180,140,74,.28); }
+    .reviewSub { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+    .review-cta {
+      width: 100%;
+      background: var(--brand); color: #fff; border: none;
+      border-radius: 14px; height: 46px;
+      font-size: 14.5px; font-weight: 700; margin-bottom: 10px;
     }
+    .reviewLink { font-size: 12.5px; color: var(--muted); text-decoration: underline; cursor: pointer; }
   </style>
-
-  <!-- ✅ Gate d’accès : si pas onboardé => redirige selon le contexte -->
-  <script>
-  (function(){
-    try { window.Fidelavis?.rememberLastResto?.(); } catch(e){}
-
-    function hasAccessSafe(){
-      try{ return window.Fidelavis?.hasAccess?.() === true; }
-      catch(e){ return false; }
-    }
-
-    // Detecte si l’app est ouverte depuis l’icone ecran d’accueil (PWA standalone)
-    // Sur iOS, le localStorage de la PWA standalone est ISOLE de Safari :
-    // l’utilisateur peut avoir une session valide dans Safari mais
-    // un localStorage vide dans le contexte standalone.
-    function isStandalone(){
-      return window.navigator.standalone === true ||
-             window.matchMedia("(display-mode: standalone)").matches;
-    }
-
-    if (!hasAccessSafe()){
-      setTimeout(() => {
-        if (!hasAccessSafe()){
-          if (isStandalone()){
-            // Mode PWA standalone sans session : renvoyer vers indexnfc.html
-            // avec ?from=pwa pour que indexnfc.html gère le routage (retour → index,
-            // non-inscrit → inscription) SANS déclencher un event scan NFC.
-            window.Fidelavis?.go?.("indexnfc.html?from=pwa");
-          } else {
-            // Mode navigateur normal : flux NFC standard
-            window.Fidelavis?.go?.("indexnfc.html");
-          }
-        }
-      }, 350);
-    }
-  })();
-  </script>
 </head>
-
 <body>
-<div class="wrap">
-  <div class="badge"><span class="dot"></span>Accès client activé</div>
-  <h1>Coupon du mois</h1>
-  <p class="restoLine"><span class="restoIcon">🏛️</span> Chez <span class="restoName" id="restoName">Le restaurant</span></p>
-  <p class="sub">Présentez ce coupon en caisse. Entrez le code PIN affiché par le restaurant.</p>
 
-  <div class="card">
-    <div class="offer">
-      <div class="offer__body">
-        <span class="offerPill">VOTRE AVANTAGE</span>
-        <p class="offerTitle"><span class="gift">🎁</span> <span id="txtOffer">Chargement…</span></p>
-        <p class="offerLine"><span class="ic">💎</span> Réservé clients Fidelavis</p>
-        <p class="offerLine"><span class="ic">📅</span> Jusqu'au <span id="offerEnd">—</span></p>
-      </div>
-      <img id="offerImg" class="offerImg" src="" alt="" aria-hidden="true">
-    </div>
+<!-- ══════════ PAGE HEADER ══════════ -->
+<div class="pg-head">
 
-    <div class="pinLabel">Code PIN (4 chiffres)</div>
+  <!-- Account button top-right -->
+  <button class="acct-btn" id="acctBtn" onclick="window.Fidelavis?.go?.('compte.html')" aria-label="Mon compte">
+    <div class="acct-av" id="acctAv">M</div>
+    <span class="acct-lbl">Compte</span>
+  </button>
 
-    <div class="pinGrid" id="pinGrid" aria-label="Code PIN 4 chiffres">
-      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" aria-label="Chiffre 1">
-      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 2">
-      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 3">
-      <input class="pinBox" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 4">
-    </div>
-
-    <p class="pinNotice"><span>🛡️</span> Code personnel et sécurisé</p>
-
-    <button class="btn btnPrimary" id="btnValidate" type="button" onclick="soumettrePin()"><span>🎁</span> Valider le coupon</button>
-    <div id="result" class="result"></div>
-
-    <p class="pinFooter"><span>🔒</span> Valable une fois par mois</p>
-    <p class="pinCountdown"><span>⏱️</span> Nouveau code dans <span class="timer" id="countdown">—</span></p>
+  <div class="status-pill">
+    <span class="status-dot"></span>
+    Accès client activé
   </div>
 
-  <audio id="audioOK">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-reward-952.mp3">
-  </audio>
+  <h1 class="pg-title">Votre avantage est prêt&nbsp;✨</h1>
+  <div class="pg-heart">—&nbsp;♡&nbsp;—</div>
 
-  <!-- ── Tout ce dont vous avez besoin ── -->
-  <div class="services-block" id="servicesBlock">
-    <p class="services-title">Tout ce dont vous avez besoin</p>
-    <div class="services-grid">
-      <button class="svc-btn" id="btnOffre" type="button" onclick="svcOffre()">
-        <span class="svc-icon">🔥</span>
-        <span class="svc-content">
-          <span class="svc-label">Offre du jour</span>
-          <span class="svc-desc">L'offre du moment</span>
-        </span>
-        <span class="svc-arrow">›</span>
-      </button>
-      <button class="svc-btn" id="btnAvis" type="button" onclick="svcAvis()">
-        <span class="svc-icon">⭐</span>
-        <span class="svc-content">
-          <span class="svc-label">Avis Google</span>
-          <span class="svc-desc">Partagez votre avis</span>
-        </span>
-        <span class="svc-arrow">›</span>
-      </button>
-      <button class="svc-btn" id="btnReserver" type="button" onclick="svcReserver()">
-        <span class="svc-icon">📅</span>
-        <span class="svc-content">
-          <span class="svc-label">Réserver</span>
-          <span class="svc-desc">Une table</span>
-        </span>
-        <span class="svc-arrow">›</span>
-      </button>
-      <button class="svc-btn" id="btnAppeler" type="button" onclick="svcAppeler()">
-        <span class="svc-icon">📞</span>
-        <span class="svc-content">
-          <span class="svc-label">Appeler</span>
-          <span class="svc-desc">Le restaurant</span>
-        </span>
-        <span class="svc-arrow">›</span>
-      </button>
-    </div>
-    <button class="svc-btn-full" type="button" onclick="svcRecommander()">
-      <div class="svc-full-main"><span>❤️</span><span>Recommander à un ami</span></div>
-      <p class="svc-full-sub">Partagez votre restaurant et gagnez des avantages</p>
-    </button>
-  </div>
 </div>
 
+<!-- ══════════ HERO CARD ══════════ -->
+<div class="hero-card">
+
+  <div class="hero-img" id="heroBg">
+    <!-- Restaurant name overlay -->
+    <div class="hero-txt">
+      <div class="hero-nm"  id="heroName">Le Restaurant</div>
+      <div class="hero-sub" id="heroSub">BRUNCH &amp; COFFEE SHOP</div>
+      <div class="hero-city" id="heroCity">PARIS</div>
+      <div class="hero-rule"></div>
+    </div>
+    <!-- White wave at the bottom -->
+    <div class="hero-wave"></div>
+  </div>
+
+  <!-- Circular logo sitting on the wave -->
+  <div class="hero-logo" id="logoWrap">
+    <span class="hero-logo-init" id="logoInit">F</span>
+  </div>
+
+</div>
+
+<!-- ══════════ PROFILE ══════════ -->
+<div class="profile">
+  <p class="profile-hi">Bonjour <em id="pName">Marie</em>&nbsp;☕</p>
+  <span class="profile-badge">👑&nbsp;<span id="pBadge">Brunch Lover</span></span>
+</div>
+
+<!-- ══════════ CONTENT ══════════ -->
+<div class="ct">
+
+  <!-- ── Offer card ── -->
+  <div class="offer-c">
+    <div class="offer-photo" id="offerPhoto">🎁</div>
+    <div class="offer-info">
+      <p class="offer-ttl" id="offerTtl">Votre avantage</p>
+      <p class="offer-kw">OFFERT</p>
+      <p class="offer-badge">💎&nbsp;Réservé aux membres Fidelavis</p>
+    </div>
+    <div class="offer-note">
+      Notre cadeau<br>pour vous&nbsp;♡
+      <span class="offer-note-arr">↩</span>
+    </div>
+  </div>
+
+  <!-- ── PIN code ── -->
+  <div class="code-sec">
+    <p class="code-ttl">Code brunch privé&nbsp;🔒</p>
+    <div class="code-row" id="pinGrid">
+      <div class="code-deco"><span></span><span></span></div>
+      <input class="code-box" id="p0" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" aria-label="Chiffre 1">
+      <input class="code-box" id="p1" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 2">
+      <input class="code-box" id="p2" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 3">
+      <input class="code-box" id="p3" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre 4">
+      <div class="code-deco"><span></span><span></span></div>
+    </div>
+    <p class="code-hint">Entrez le code affiché en caisse&nbsp;✨</p>
+    <p class="code-secure">
+      <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" stroke-width="1.8" fill="none" stroke="currentColor"/></svg>
+      Code personnel et sécurisé
+    </p>
+  </div>
+
+  <!-- ── CTA ── -->
+  <button class="cta-btn" id="btnValidate" type="button" onclick="soumettrePin()">
+    <span class="cta-inner">
+      <span>🎁</span>
+      <span id="ctaLabel">Activer mon brunch offert</span>
+    </span>
+    <span class="cta-arr">›</span>
+  </button>
+  <div id="result" class="result"></div>
+  <p class="timer">⏰ Nouveau code dans&nbsp;<strong id="timerV">—</strong></p>
+
+  <audio id="audioOk"><source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-reward-952.mp3"></audio>
+
+  <!-- ── Action grid ── -->
+  <div class="acts">
+
+    <button class="act-btn" id="btnInsta" onclick="goInsta()">
+      <div class="act-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="var(--brand)" stroke="none"/></svg>
+      </div>
+      <span class="act-lbl">Voir notre<br>Instagram</span>
+    </button>
+
+    <button class="act-btn" id="btnResa" onclick="goReserver()">
+      <div class="act-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <span class="act-lbl">Réserver<br>ma table</span>
+    </button>
+
+    <button class="act-btn" onclick="goAvis()">
+      <div class="act-icon">
+        <svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+      </div>
+      <span class="act-lbl">Laisser un avis<br>sur Google</span>
+    </button>
+
+    <button class="act-btn" onclick="goShare()">
+      <div class="act-icon">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </div>
+      <span class="act-lbl">Partager<br>ce brunch</span>
+    </button>
+
+  </div>
+
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<p class="pg-footer">Merci d'être à nos côtés&nbsp;♡</p>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
 <script>
-/* ✅ PIN UX */
-(function pinUX(){
-  const grid = document.getElementById("pinGrid");
-  if (!grid) return;
+/* ══ DEMO MODE — aperçu visuel sans inscription (URL /<slug>/demo/) ══ */
+var __FV_DEMO__ = location.pathname.indexOf('/demo/') !== -1;
 
-  const boxes = Array.from(grid.querySelectorAll(".pinBox"));
-  function sanitizeDigit(v){ return (v || "").replace(/\D/g, "").slice(0,1); }
+/* ══ GATE ══ */
+(function(){
+  if (__FV_DEMO__) return;   // pas de redirection en mode aperçu
+  function ok(){try{return window.Fidelavis?.hasAccess?.()===true;}catch(e){return false;}}
+  function sa(){return window.navigator.standalone===true||window.matchMedia('(display-mode:standalone)').matches;}
+  if(!ok()){setTimeout(()=>{if(!ok())window.Fidelavis?.go?.(sa()?'indexnfc.html?from=pwa':'indexnfc.html');},350);}
+})();
 
-  setTimeout(()=> boxes[0]?.focus(), 250);
+/* ══ STATE ══ */
+var _cfg = {};
+var RESTO = (location.pathname.match(/^\/([^/]+)\//)||[,''])[1] || '';
+var ACTIVE_YEAR  = new Date().getFullYear();
+var ACTIVE_MONTH = new Date().getMonth();
+var IS_LOCKED = false;
 
-  boxes.forEach((box, idx) => {
-    box.addEventListener("input", () => {
-      const d = sanitizeDigit(box.value);
-      box.value = d;
-      if (d && idx < boxes.length - 1) boxes[idx + 1].focus();
+/* ── device + session id (requis pour la validation serveur) ── */
+try{ if(!sessionStorage.getItem('fv_session_id')) sessionStorage.setItem('fv_session_id','sess_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)); }catch(e){}
+try{ if(!localStorage.getItem('device_id')) localStorage.setItem('device_id','dev_'+Math.random().toString(36).slice(2,10)); }catch(e){}
+
+/* ── PIN tournant — SYNCHRO dashboard admin (secret partagé) ──
+   Identique à espace-admin.html : simpleHash(SECRET + minute) % 10000.
+   Le resto lit le code en caisse, le client le saisit, ±2 min de tolérance. */
+var SECRET_KEY = 'OFFLINE123';
+function simpleHash(str){ var h=0; for(var i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))%1000000007; } return h; }
+function getMinute(offset){ return Math.floor(Date.now()/60000)+(offset||0); }
+function generatePin(offset){ return (simpleHash(SECRET_KEY+getMinute(offset))%10000).toString().padStart(4,'0'); }
+function verifierPin(pin){ return [-2,-1,0,1,2].some(function(o){ return generatePin(o)===pin; }); }
+function couponKey(){ return 'coupon_'+RESTO+'_'+ACTIVE_YEAR+'_'+ACTIVE_MONTH; }
+function reviewKey(){ return 'review_'+RESTO+'_'+ACTIVE_YEAR+'_'+ACTIVE_MONTH; }
+
+/* Emoji de repli pour la photo d'offre (jamais le hero) selon l'intitulé */
+/* Résout l'image d'offre du calendrier : URL complète OU offre-N.jpg */
+function resolveOffreImg(v){
+  v=(v||'').trim(); if(!v) return '';
+  if(/^https?:\/\//.test(v)) return v;
+  if(/^offre-\d+\.jpg$/i.test(v)) return 'https://app.cartefidelavis.com/assets/offres/'+v.toLowerCase();
+  return '';
+}
+function offerEmoji(t){
+  t=(t||'').toLowerCase();
+  if(/dessert|g[âa]teau|p[âa]tiss|tarte|brownie/.test(t)) return '🍰';
+  if(/matcha|th[ée]|infusion/.test(t))                    return '🍵';
+  if(/caf[ée]|expresso|latt|cappucc|moka/.test(t))        return '☕';
+  if(/cocktail|ap[ée]ritif|spritz|vin|champ|bi[èe]re/.test(t)) return '🍹';
+  if(/pancake|brunch|œuf|oeuf|toast|gaufre/.test(t))      return '🥞';
+  if(/glace|cr[èe]me|sorbet/.test(t))                     return '🍨';
+  if(/croissant|viennois|pain|brioche/.test(t))           return '🥐';
+  if(/jus|smoothie|boisson|limonade/.test(t))             return '🥤';
+  return '🎁';
+}
+
+/* ── PIN UX : auto-advance / backspace / collage / Entrée ── */
+function initPinUX(){
+  var grid=document.getElementById('pinGrid'); if(!grid) return;
+  var boxes=Array.prototype.slice.call(grid.querySelectorAll('.code-box'));
+  function san(v){ return (v||'').replace(/\D/g,'').slice(0,1); }
+  boxes.forEach(function(box,idx){
+    box.addEventListener('input',function(){
+      var d=san(box.value); box.value=d;
+      if(d && idx<boxes.length-1) boxes[idx+1].focus();
     });
-
-    box.addEventListener("keydown", (e) => {
-      if (e.key === "Backspace" && !box.value && idx > 0) {
-        boxes[idx - 1].focus();
-        boxes[idx - 1].value = "";
-        e.preventDefault();
-      }
-      if (e.key === "Enter") soumettrePin();
+    box.addEventListener('keydown',function(e){
+      if(e.key==='Backspace' && !box.value && idx>0){ boxes[idx-1].focus(); boxes[idx-1].value=''; e.preventDefault(); }
+      if(e.key==='Enter') soumettrePin();
     });
-
-    box.addEventListener("paste", (e) => {
-      const txt = (e.clipboardData || window.clipboardData).getData("text") || "";
-      const digits = txt.replace(/\D/g, "").slice(0, 4).split("");
-      if (!digits.length) return;
-
+    box.addEventListener('paste',function(e){
+      var txt=((e.clipboardData||window.clipboardData).getData('text')||'');
+      var digits=txt.replace(/\D/g,'').slice(0,4).split('');
+      if(!digits.length) return;
       e.preventDefault();
-      const start = idx;
-      for (let i = 0; i < digits.length && (start + i) < boxes.length; i++){
-        boxes[start + i].value = digits[i];
-      }
-      boxes[Math.min(start + digits.length, boxes.length - 1)].focus();
+      for(var i=0;i<digits.length && (idx+i)<boxes.length;i++){ boxes[idx+i].value=digits[i]; }
+      boxes[Math.min(idx+digits.length,boxes.length-1)].focus();
     });
   });
-
-  window.getPinCode = function(){
-    return boxes.map(b => (b.value || "")).join("");
-  };
-})();
-</script>
-
-<script>
-/* ===========================
-   APP LOGIC (mois suivant)
-=========================== */
-const RESTO = window.Fidelavis?.getRestoSlug?.() || "le-martin";
-window.Fidelavis?.rememberLastResto?.();
-
-/* ── Services block ── */
-var _svcCfg = {};
-function initServices(cfg) {
-  _svcCfg = cfg || {};
-  if (!_svcCfg.phone)        document.getElementById("btnAppeler")?.classList.add("disabled");
-  if (!_svcCfg.googleReview) document.getElementById("btnAvis")?.classList.add("disabled");
-}
-function svcReserver() {
-  window.Fidelavis?.track?.("reserve_click", { src: "services_block" });
-  if (_svcCfg.reservationUrl) window.open(_svcCfg.reservationUrl, "_blank");
-  else window.Fidelavis?.go?.("reservation.html");
-}
-function svcAppeler() {
-  if (!_svcCfg.phone) return;
-  window.Fidelavis?.track?.("call_click", { src: "services_block" });
-  window.location.href = "tel:" + _svcCfg.phone.replace(/\s/g, "");
-}
-function svcOffre() {
-  window.Fidelavis?.track?.("offer_day_click", { src: "services_block" });
-  window.Fidelavis?.go?.("offre-du-jour.html");
-}
-function svcAvis() {
-  if (!_svcCfg.googleReview) return;
-  window.Fidelavis?.track?.("review_click", { src: "services_block" });
-  window.open(_svcCfg.googleReview, "_blank");
-}
-function svcRecommander() {
-  window.Fidelavis?.track?.("share_click", { src: "services_block" });
-  window.Fidelavis?.go?.("recommander.html");
+  window.getPinCode=function(){ return boxes.map(function(b){return (b.value||'');}).join(''); };
 }
 
-// ✅ Installation confirmée (Android Chrome — iOS ne déclenche pas cet event)
-window.addEventListener("appinstalled", function() {
-  window.Fidelavis?.track?.("install", { src: "pwa_appinstalled", page: "index" });
-});
-
-// ✅ Détection premier lancement standalone (iOS + Android)
-(function detectFirstStandaloneLaunch() {
-  try {
-    var standalone = window.navigator.standalone === true ||
-                     window.matchMedia("(display-mode: standalone)").matches;
-    if (!standalone) return;
-    var RESTO_SLUG = window.Fidelavis?.getRestoSlug?.() || "le-martin";
-    var trackKey   = "fv_install_tracked_" + RESTO_SLUG;
-    if (localStorage.getItem(trackKey)) return;
-    localStorage.setItem(trackKey, String(Date.now()));
-    localStorage.setItem("is_registered",              "1");
-    localStorage.setItem("fv_onboarding_done",         "1");
-    localStorage.setItem("fv_registered_" + RESTO_SLUG, "1");
-    window.Fidelavis?.setAuthCookie?.();
-    window.Fidelavis?.track?.("install_confirmed", { src: "standalone_first_launch", page: "index", resto: RESTO_SLUG });
-  } catch(e) {}
-})();
-
-try {
-  if (!sessionStorage.getItem("fv_session_id")) {
-    sessionStorage.setItem("fv_session_id", "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2,8));
-  }
-} catch(e){}
-
-try {
-  if (!localStorage.getItem("device_id")) {
-    localStorage.setItem("device_id", "dev_" + Math.random().toString(36).slice(2,10));
-  }
-} catch(e){}
-
-window.Fidelavis?.trackOnce?.("coupon_view", `coupon_view_${RESTO}`, { src: "coupon_page" });
-
-/* Repli affiché quand le restaurant n'a configuré ni activeCoupon ni
-   monthlyOffers pour le mois en cours — le cas de 94 wallets sur 98
-   au moment de cet audit. Trois mois promettaient une remise chiffrée
-   ("-10% menu", "-15% végétarien", "-20% étudiants") : sur la page de
-   coupon elle-même, celle que le client présente en caisse, pas
-   seulement sur un teaser. Un restaurant qui n'a pas encore rempli son
-   calendrier voyait donc son client brandir une réduction que
-   l'établissement n'avait jamais acceptée. Remplacé par une mention
-   neutre, identique pour ces trois mois : rien n'est promis tant que
-   rien n'est configuré. */
-const offers = [
-  "🎁 Janvier : Surprise du mois","🎁 Février : Dessert offert","🎁 Mars : Café offert",
-  "🎁 Avril : Surprise du mois","🎁 Mai : Apéritif offert","🎁 Juin : Entrée offerte",
-  "🎁 Juillet : Glace enfant","🎁 Août : Boisson gratuite","🎁 Septembre : Surprise du mois",
-  "🎁 Octobre : Café gourmand","🎁 Novembre : Menu duo","🎁 Décembre : Chocolat chaud"
-];
-
-const offerImages = {
-  "apéritif":  "/_template/images/offres/aperitif.png",
-  "gâteau":    "/_template/images/offres/gateau.png",
-  "café":      "/_template/images/offres/cafe.png",
-  "chocolat":  "/_template/images/offres/cafe.png",
-  "dessert":   "/_template/images/offres/dessert.png",
-  "cocktail":  "/_template/images/offres/cocktail.png",
-  "boisson":   "/_template/images/offres/boisson.png",
-  "entrée":    "/_template/images/offres/entree.png",
-  "plat":      "/_template/images/offres/plat.png",
-  "pizza":     "/_template/images/offres/pizza.png",
-  "menu":      "/_template/images/offres/menu.png",
-  "surprise":  "/_template/images/offres/surprise.png",
-  "glace":     "/_template/images/offres/dessert.png",
-  "réduction": "/_template/images/offres/reduction.png",
-  "%":         "/_template/images/offres/reduction.png"
-};
-
-function setOfferImage(offerText) {
-  const img = document.getElementById("offerImg");
-  if (!img) return;
-  let src;
-  if (offerText && (offerText.startsWith('/') || offerText.startsWith('http'))) {
-    src = offerText;
-  } else {
-    const lower = (offerText || '').toLowerCase();
-    const match = Object.keys(offerImages).find(k => lower.includes(k));
-    src = match ? offerImages[match] : "/_template/images/offres/surprise.png";
-  }
-  img.src = src;
-  img.alt = offerText;
-  img.style.animation = "none";
-  void img.offsetWidth;
-  img.style.animation = "";
-}
-
-/* Extrait le nom de l'offre depuis "🎁 Mars : Café offert" → "Café offert" */
-function extractOfferName(s) {
-  if (!s) return "";
-  const parts = s.split(" : ");
-  let name = parts.length > 1 ? parts.slice(1).join(" : ") : s;
-  name = name.replace(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]\s*/u, "").trim();
-  return name;
-}
-
-/* Met à jour le bouton avec le nom de l'offre */
-function setBtnLabel(offerName) {
-  const btn = document.getElementById("btnValidate");
-  if (!btn || btn.disabled) return;
-  const lower = (offerName || "").toLowerCase();
-  let label = `Utiliser mon coupon`;
-  if (lower.includes("offert") || lower.includes("offerte")) {
-    label = `Utiliser mon ${offerName.toLowerCase()}`;
-  } else if (offerName) {
-    label = `Utiliser : ${offerName}`;
-  }
-  btn.innerHTML = `<span>🎁</span> ${label}`;
-}
-
-/* Date de fin du mois actif au format "31 mai" */
-function setOfferEndLabel() {
-  const el = document.getElementById("offerEnd");
-  if (!el) return;
-  const y = ACTIVE_YEAR, m = ACTIVE_MONTH;
-  const lastDay = new Date(y, m + 1, 0);
-  el.textContent = lastDay.toLocaleDateString("fr-FR", { day:"numeric", month:"long" });
-}
-
-/* Countdown jusqu'au prochain mois */
-let _countdownIv = null;
-function startCountdown() {
-  const el = document.getElementById("countdown");
-  if (!el) return;
-  function pad(n){ return String(n).padStart(2,"0"); }
-  function tick() {
-    const now = new Date();
-    const next = new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 0);
-    const diff = Math.max(0, next - now);
-    const days = Math.floor(diff / 86400000);
-    const hrs  = Math.floor(diff / 3600000) % 24;
-    const mins = Math.floor(diff / 60000) % 60;
-    const secs = Math.floor(diff / 1000) % 60;
-    if (days > 0) {
-      el.textContent = `${days}j ${pad(hrs)}h ${pad(mins)}m`;
-    } else {
-      el.textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
-    }
-  }
-  tick();
-  if (_countdownIv) clearInterval(_countdownIv);
-  _countdownIv = setInterval(tick, 1000);
-}
-
-let ACTIVE_YEAR = new Date().getFullYear();
-let ACTIVE_MONTH = new Date().getMonth();
-let IS_LOCKED = false;
-
-(async function init(){
-  let _cfg = null;
-  try{ _cfg = await window.Fidelavis?.loadConfig?.(); }catch(e){}
-  initServices(_cfg);
-
-  // Nom du restaurant
-  const restoNameEl = document.getElementById("restoName");
-  if (restoNameEl && _cfg?.name) restoNameEl.textContent = _cfg.name;
-
-  // Démarre le countdown
-  startCountdown();
-
-  const offerEl = document.getElementById("txtOffer");
-  const subEl = document.querySelector(".sub");
-  const btn = document.getElementById("btnValidate");
-
+/* ── Verrou mensuel : grise le bouton si l'avantage est déjà consommé ── */
+function applyLockState(){
+  var btn=document.getElementById('btnValidate');
   try{
-    if (window.Fidelavis?.isCouponAvailable && !window.Fidelavis.isCouponAvailable()){
-      IS_LOCKED = true;
-
-      const cd = window.Fidelavis.getCouponCountdown();
-      const unlock = cd.unlock;
-
-      ACTIVE_YEAR = unlock.getFullYear();
-      ACTIVE_MONTH = unlock.getMonth();
-
-      const offerName = (_cfg?.activeCoupon?.title) || extractOfferName(offers[ACTIVE_MONTH]);
-      offerEl.textContent = offerName;
-      setOfferImage(_cfg?.activeCoupon?.imageUrl || _cfg?.activeCoupon?.title || offers[ACTIVE_MONTH]);
-      setOfferEndLabel();
-
-      if (subEl){
-        subEl.innerHTML = `✅ Inscription confirmée.<br><b>Revenez le mois prochain</b> pour profiter de votre coupon.`;
-      }
-
-      if (btn){
-        btn.disabled = true;
-        btn.style.opacity = "0.55";
-        btn.style.cursor = "not-allowed";
-        btn.innerHTML = "⏳ Disponible le mois prochain";
-      }
-
-      window.Fidelavis?.trackOnce?.("coupon_locked_view", `coupon_locked_${RESTO}_${unlock.toISOString().slice(0,10)}`, { src: "coupon_page" });
-
-      syncCouponState();
-      return;
+    if(window.Fidelavis?.isCouponAvailable && !window.Fidelavis.isCouponAvailable()){
+      IS_LOCKED=true;
+      var cd=window.Fidelavis.getCouponCountdown(), unlock=cd.unlock;
+      ACTIVE_YEAR=unlock.getFullYear(); ACTIVE_MONTH=unlock.getMonth();
+      if(btn) btn.disabled=true;
+      var lbl=document.getElementById('ctaLabel'); if(lbl) lbl.textContent='Disponible le mois prochain';
+      var pg=document.getElementById('pinGrid');
+      if(pg) Array.prototype.forEach.call(pg.querySelectorAll('.code-box'),function(b){ b.disabled=true; });
+      var res=document.getElementById('result');
+      if(res) res.innerHTML='<div class="ok-box warn">✅ Avantage déjà utilisé ce mois-ci.<br>Revenez le mois prochain ✨</div>';
+      window.Fidelavis?.trackOnce?.('coupon_locked_view','coupon_locked_'+RESTO+'_'+unlock.toISOString().slice(0,10),{src:'brunch_v2'});
     }
   }catch(e){}
+}
 
-  IS_LOCKED = false;
-  ACTIVE_YEAR = new Date().getFullYear();
-  ACTIVE_MONTH = new Date().getMonth();
-  const offerName = (_cfg?.activeCoupon?.title) || extractOfferName(offers[ACTIVE_MONTH]);
-  offerEl.textContent = offerName;
-  setOfferImage(_cfg?.activeCoupon?.imageUrl || _cfg?.activeCoupon?.title || offers[ACTIVE_MONTH]);
-  setOfferEndLabel();
+/* ── Timer fin de mois ── */
+function startTimer(){
+  function upd(){
+    var now=new Date(), end=new Date(now.getFullYear(),now.getMonth()+1,1);
+    var ms=Math.max(0,end-now);
+    var d=Math.floor(ms/86400000), h=Math.floor((ms%86400000)/3600000), m=Math.floor((ms%3600000)/60000);
+    var el=document.getElementById('timerV');
+    if(el) el.textContent=d+'j '+String(h).padStart(2,'0')+'h '+String(m).padStart(2,'0')+'m';
+  }
+  upd(); setInterval(upd,30000);
+}
 
-  if (btn){
-    btn.disabled = false;
-    btn.style.opacity = "1";
-    btn.style.cursor = "pointer";
-    setBtnLabel(offerName);
+/* ══ INIT ══ */
+(async function init(){
+  window.Fidelavis?.rememberLastResto?.();
+
+  var slug=(location.pathname.match(/^\/([^/]+)\//))||[,''];
+  slug=slug[1]||'';
+
+  /* Bandeau "Aperçu démo" en mode démo (masqué lors des screenshots auto) */
+  if (__FV_DEMO__) {
+    var demoBar = document.createElement('div');
+    demoBar.id = 'fv-demo-bar';
+    demoBar.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#0d0d0d;color:#fff;padding:5px 10px;font:600 10.5px/1.3 system-ui,-apple-system,sans-serif;letter-spacing:.5px;text-transform:uppercase;text-align:center;z-index:9999;';
+    demoBar.textContent = '👁 Aperçu démo — version visuelle';
+    document.body.insertBefore(demoBar, document.body.firstChild);
+    document.body.style.paddingTop = '22px';
   }
 
-  syncCouponState();
+  try{_cfg=await window.Fidelavis?.loadConfig?.()||{};}catch(e){}
+
+  /* Brand colors */
+  if(_cfg.color)  document.documentElement.style.setProperty('--brand',_cfg.color);
+  if(_cfg.color2) document.documentElement.style.setProperty('--brand2',_cfg.color2);
+
+  /* Hero image */
+  var heroBg=document.getElementById('heroBg');
+  var heroUrl=_cfg.heroUrl||_cfg.iconUrl||null;
+  if(heroUrl){
+    heroBg.style.backgroundImage='url("'+heroUrl+'")';
+    heroBg.style.backgroundSize='cover';
+    heroBg.style.backgroundPosition='center';
+  }
+
+  /* Hero text */
+  var name=_cfg.name||'Le Restaurant';
+  document.getElementById('heroName').textContent=name;
+
+  var cat=(_cfg.category||'').toLowerCase();
+  var sub=cat.includes('coffee')?'COFFEE SHOP':cat.includes('gastro')?'GASTRONOMIQUE':'BRUNCH & COFFEE SHOP';
+  document.getElementById('heroSub').textContent=sub;
+
+  if(_cfg.city){document.getElementById('heroCity').textContent=(_cfg.city||'').toUpperCase();}
+  else{document.getElementById('heroCity').style.display='none';}
+
+  /* Logo */
+  var lw=document.getElementById('logoWrap'), li=document.getElementById('logoInit');
+  if(_cfg.iconUrl){
+    lw.innerHTML='<img src="'+_cfg.iconUrl+'" alt="logo" onerror="this.style.display=\'none\'">';
+  } else {
+    li.textContent=name.split(' ').slice(0,2).map(function(w){return(w[0]||'').toUpperCase();}).join('');
+  }
+
+  /* Account avatar */
+  var av=document.getElementById('acctAv');
+  function _fvCookie(n){try{var m=document.cookie.match("(?:^|;)\\s*"+n+"\\s*=\\s*([^;]+)");return m?decodeURIComponent(m[1]):null;}catch(e){return null;}}
+  var photoUrl, fn;
+  if (__FV_DEMO__) {
+    // Démo DM : on salue le RESTAURANT par son nom (pas un prénom générique)
+    fn = 'Axelle';
+    photoUrl = '/assets/demo/axelle.jpg';
+  } else {
+    photoUrl = localStorage.getItem('fv_photo_url_'+slug)||localStorage.getItem('fv_photo_url');
+    fn = localStorage.getItem('fv_firstname_'+slug)||localStorage.getItem('fv_firstname')||_fvCookie('fv_firstname')||'';
+    // iOS : localStorage PWA ≠ Safari → restaure depuis le cookie partagé
+    if(fn){ try{ localStorage.setItem('fv_firstname',fn); localStorage.setItem('fv_firstname_'+slug,fn); }catch(e){} }
+  }
+  var initial=(fn||'G').charAt(0).toUpperCase();
+  if(photoUrl){
+    av.innerHTML='<img src="'+photoUrl+'" alt="profil" onerror="this.parentNode.textContent=\''+initial+'\'">';
+  } else {
+    av.textContent=initial;
+  }
+
+  /* Profile */
+  document.getElementById('pName').textContent=fn||'gourmand';
+
+  /* Badge */
+  var badge=cat.includes('coffee')?'Coffee Lover':cat.includes('gastro')?'Gourmet Club':'Brunch Lover';
+  document.getElementById('pBadge').textContent=badge;
+
+  /* Offer — calendrier mensuel : offre du mois en cours si défini, sinon activeCoupon */
+  var coupon=_cfg.activeCoupon||{};
+  var mo=(Array.isArray(_cfg.monthlyOffers)?_cfg.monthlyOffers[new Date().getMonth()]:null)||null;
+  var offTitle=(mo && mo.title) ? mo.title : (coupon.title||'');
+  var offImg  =(mo && mo.image) ? resolveOffreImg(mo.image) : (coupon.imageUrl||'');
+  if(offTitle){
+    document.getElementById('offerTtl').textContent=offTitle.replace(/offert[e]?/gi,'').trim()||offTitle;
+  }
+  /* Photo de l'offre : image DÉDIÉE uniquement (jamais le hero) */
+  var op=document.getElementById('offerPhoto');
+  var emj=offerEmoji(offTitle||'');
+  op.textContent=emj;
+  if(offImg){
+    op.innerHTML='<img src="'+offImg+'" alt="offre" onerror="this.parentNode.textContent=\''+emj+'\'">';
+  }
+
+  /* PIN — saisie + verrou mensuel */
+  initPinUX();
+  applyLockState();
+
+
+  /* Action buttons opacity if not configured */
+  if(!_cfg.instagramUrl) document.getElementById('btnInsta').style.opacity='.45';
+  if(!_cfg.reservationUrl) document.getElementById('btnResa').style.opacity='.45';
+
+  /* Timer */
+  startTimer();
+
+  window.Fidelavis?.trackOnce?.('wallet_view','wallet_view_'+slug,{src:'brunch_v2'});
 })();
 
-function couponKey(){
-  return `coupon_${RESTO}_${ACTIVE_YEAR}_${ACTIVE_MONTH}`;
-}
+/* ══ VALIDATION PIN (synchro dashboard) ══ */
+async function soumettrePin(){
+  var res=document.getElementById('result');
 
-function reviewKey(){
-  return `review_${RESTO}_${ACTIVE_YEAR}_${ACTIVE_MONTH}`;
-}
-
-function syncCouponState(){
-  const res = document.getElementById("result");
-  if (!res) return;
-
-  if (localStorage.getItem(couponKey()) === "used") {
-    res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
+  if (__FV_DEMO__) {
+    showToast('👁 Mode aperçu — validation désactivée');
+    return;
   }
-}
 
-function allerAvis(){
-  localStorage.setItem(reviewKey(), "done");
-  window.Fidelavis?.track?.("review_click", { src: "coupon_review_prompt" });
-  setTimeout(()=> window.Fidelavis?.go?.("avis.html"), 120);
-}
-
-function fermerAvis(){
-  localStorage.setItem(reviewKey(), "later");
-  window.Fidelavis?.track?.("review_later", { src: "coupon_review_prompt" });
-  document.getElementById("reviewPrompt")?.remove();
-}
-
-/* PIN (synchro admin) */
-const SECRET_KEY = "OFFLINE123";
-function simpleHash(str) {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 1000000007;
-  return h;
-}
-function getMinute(offset = 0) { return Math.floor(Date.now() / 60000) + offset; }
-function generatePin(offset = 0) {
-  return (simpleHash(SECRET_KEY + getMinute(offset)) % 10000).toString().padStart(4, "0");
-}
-function verifierPin(pin) { return [-2, -1, 0, 1, 2].some(o => generatePin(o) === pin); }
-
-async function soumettrePin() {
-  const res = document.getElementById("result");
-
-  if (IS_LOCKED){
+  if(IS_LOCKED){
     try{
-      const cd = window.Fidelavis.getCouponCountdown();
-      const unlockLabel = cd.unlock.toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" });
-      res.innerHTML = `<div class="ok-box warn">⏳ Coupon disponible le ${unlockLabel}. Revenez à ce moment-là ✅</div>`;
-      window.Fidelavis?.track?.("coupon_locked_try", { src: "coupon_validate" });
-      return;
-    }catch(e){
-      res.innerHTML = `<div class="ok-box warn">⏳ Coupon disponible le mois prochain ✅</div>`;
-      return;
-    }
-  }
-
-  const code = (window.getPinCode ? window.getPinCode() : "").trim();
-  document.getElementById("reviewPrompt")?.remove();
-
-  if (localStorage.getItem(couponKey()) === "used") {
-    res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
-    window.Fidelavis?.track?.("coupon_already_used", { src: "coupon_validate" });
+      var cd=window.Fidelavis.getCouponCountdown();
+      var lab=cd.unlock.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+      res.innerHTML='<div class="ok-box warn">⏳ Disponible le '+lab+'. Revenez à ce moment-là ✨</div>';
+    }catch(e){ res.innerHTML='<div class="ok-box warn">⏳ Disponible le mois prochain ✨</div>'; }
+    window.Fidelavis?.track?.('coupon_locked_try',{src:'brunch_v2'});
     return;
   }
 
-  if (!/^\d{4}$/.test(code)) {
-    res.innerHTML = `<div class="ok-box warn">⚠️ Code invalide</div>`;
-    window.Fidelavis?.track?.("coupon_pin_invalid", { src: "coupon_validate" });
+  var code=(window.getPinCode?window.getPinCode():'').trim();
+  document.getElementById('reviewPrompt')?.remove();
+
+  if(localStorage.getItem(couponKey())==='used'){
+    res.innerHTML='<div class="ok-box error">❌ Avantage déjà utilisé</div>';
+    window.Fidelavis?.track?.('coupon_already_used',{src:'brunch_v2'});
+    return;
+  }
+  if(!/^\d{4}$/.test(code)){
+    res.innerHTML='<div class="ok-box warn">⚠️ Entrez les 4 chiffres affichés en caisse</div>';
+    window.Fidelavis?.track?.('coupon_pin_invalid',{src:'brunch_v2'});
     return;
   }
 
-  window.Fidelavis?.track?.("coupon_validate_attempt", { src: "coupon_validate" });
+  window.Fidelavis?.track?.('coupon_validate_attempt',{src:'brunch_v2'});
 
-  // Phase 5c : check serveur — bloque le contournement par clear localStorage
-  try {
-    const deviceId = localStorage.getItem("device_id");
-    if (deviceId) {
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 2500);
-      const r = await fetch("https://rtdiaeskmyjjwohirhzj.supabase.co/rest/v1/rpc/fv_coupon_status", {
-        method: "POST",
-        headers: {
-          "apikey":        "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ",
-          "Authorization": "Bearer sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ",
-          "Content-Type":  "application/json"
-        },
-        body:   JSON.stringify({ p_slug: RESTO, p_device_id: deviceId }),
-        signal: ctrl.signal
+  /* Check serveur — bloque le contournement par clear localStorage */
+  try{
+    var deviceId=localStorage.getItem('device_id');
+    if(deviceId){
+      var ctrl=new AbortController(), timer=setTimeout(function(){ctrl.abort();},2500);
+      var r=await fetch('https://rtdiaeskmyjjwohirhzj.supabase.co/rest/v1/rpc/fv_coupon_status',{
+        method:'POST',
+        headers:{'apikey':'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ','Authorization':'Bearer sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ','Content-Type':'application/json'},
+        body:JSON.stringify({p_slug:RESTO,p_device_id:deviceId}),
+        signal:ctrl.signal
       });
       clearTimeout(timer);
-      if (r.ok) {
-        const j = await r.json();
-        if (j && j.ok && j.status === "used") {
-          localStorage.setItem(couponKey(), "used");
-          res.innerHTML = `<div class="ok-box error">❌ Coupon déjà utilisé</div>`;
-          window.Fidelavis?.track?.("coupon_already_used_supabase", { src: "coupon_validate" });
+      if(r.ok){
+        var j=await r.json();
+        if(j && j.ok && j.status==='used'){
+          localStorage.setItem(couponKey(),'used');
+          res.innerHTML='<div class="ok-box error">❌ Avantage déjà utilisé</div>';
+          window.Fidelavis?.track?.('coupon_already_used_supabase',{src:'brunch_v2'});
           return;
         }
       }
     }
-  } catch(_) { /* offline / Supabase down → on continue avec le check PIN local */ }
+  }catch(_){ /* offline / Supabase down → on continue avec le check PIN local */ }
 
-  if (verifierPin(code)) {
-    localStorage.setItem(couponKey(), "used");
-    // Phase 4 : double-write Supabase (UPSERT coupon + INSERT validation via RPC)
-    try { window.fvSupaValidateCoupon && window.fvSupaValidateCoupon(RESTO, { validatedBy: "self_pwa" }); } catch(_) {}
-    res.innerHTML = `
-      <div class="ok-box success">🎉 Coupon validé</div>
-      <div class="amountBox" id="amountBox">
-        <p class="amountTitle">Aidez le restaurant (2 secondes)</p>
-        <p class="amountSub">💰 Quel était le montant de votre addition ?</p>
-        <div class="amountGrid">
-          <button class="amountBtn" type="button" data-bracket="0–20€"  data-value="10">0–20 €</button>
-          <button class="amountBtn" type="button" data-bracket="20–40€" data-value="30">20–40 €</button>
-          <button class="amountBtn" type="button" data-bracket="40–60€" data-value="50">40–60 €</button>
-          <button class="amountBtn" type="button" data-bracket="60€+"   data-value="70">60 €+</button>
-        </div>
-        <span class="amountSkip" id="amountSkip">Passer</span>
-      </div>
-    `;
-    document.getElementById("audioOK").play().catch(()=>{});
+  if(verifierPin(code)){
+    localStorage.setItem(couponKey(),'used');
+    /* Double-write Supabase : UPSERT coupon + INSERT validation (visible dashboard) */
+    try{ window.fvSupaValidateCoupon && window.fvSupaValidateCoupon(RESTO,{validatedBy:'self_pwa'}); }catch(_){}
+    document.getElementById('audioOk')?.play().catch(function(){});
+    window.Fidelavis?.track?.('coupon_validate',{src:'brunch_v2'});
 
-    window.Fidelavis?.track?.("coupon_validate", { src: "coupon_validate" });
+    var btn=document.getElementById('btnValidate'); if(btn) btn.disabled=true;
+    var pg=document.getElementById('pinGrid');
+    if(pg) Array.prototype.forEach.call(pg.querySelectorAll('.code-box'),function(b){ b.disabled=true; });
 
-    // Affiche le prompt "Donner un avis" après le picker (sélection ou skip)
-    const showReview = () => {
-      if (localStorage.getItem(reviewKey())) return;
-      const ab = document.getElementById('amountBox');
-      if (ab) ab.style.opacity = '0.55';
-      setTimeout(() => {
-        if (ab) ab.style.display = 'none';
-        const box = document.createElement("div");
-        box.className = "reviewBox";
-        box.id = "reviewPrompt";
-        box.innerHTML = `
-          <p class="reviewTitle">Votre avis compte</p>
-          <p class="reviewSub">Si vous le souhaitez, vous pouvez partager votre expérience.</p>
-          <button class="btn btnSecondary" type="button" onclick="allerAvis()">Donner mon avis</button>
-          <span class="reviewLink" onclick="fermerAvis()">Plus tard</span>
-        `;
+    res.innerHTML=''
+      +'<div class="ok-box success">🎉 Brunch validé — bonne dégustation ☕</div>'
+      +'<div class="amountBox" id="amountBox">'
+      +'<p class="amountTitle">Aidez le restaurant&nbsp;✨</p>'
+      +'<p class="amountSub">💰 Quel était le montant de votre addition&nbsp;?</p>'
+      +'<div class="amountGrid">'
+      +'<button class="amountBtn" type="button" data-bracket="0–20€"  data-value="10">0–20 €</button>'
+      +'<button class="amountBtn" type="button" data-bracket="20–40€" data-value="30">20–40 €</button>'
+      +'<button class="amountBtn" type="button" data-bracket="40–60€" data-value="50">40–60 €</button>'
+      +'<button class="amountBtn" type="button" data-bracket="60€+"   data-value="70">60 €+</button>'
+      +'</div><span class="amountSkip" id="amountSkip">Passer</span></div>';
+
+    var showReview=function(){
+      if(localStorage.getItem(reviewKey())) return;
+      var ab=document.getElementById('amountBox'); if(ab) ab.style.opacity='0.55';
+      setTimeout(function(){
+        if(ab) ab.style.display='none';
+        var box=document.createElement('div');
+        box.className='reviewBox'; box.id='reviewPrompt';
+        box.innerHTML='<p class="reviewTitle">Votre avis compte</p>'
+          +'<p class="reviewSub">Partagez votre expérience si vous le souhaitez ♡</p>'
+          +'<button class="review-cta" type="button" onclick="allerAvis()">Donner mon avis</button>'
+          +'<span class="reviewLink" onclick="fermerAvis()">Plus tard</span>';
         res.appendChild(box);
-      }, 600);
+      },600);
     };
 
-    // Bind picker
-    res.querySelectorAll('.amountBtn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const bracket = btn.dataset.bracket;
-        const value   = parseInt(btn.dataset.value);
-        // Stockage local par mois (consultable côté staff via export futur)
-        try {
-          const k = `fv_amount_${RESTO}_${new Date().getFullYear()}_${new Date().getMonth()+1}`;
-          const arr = JSON.parse(localStorage.getItem(k) || '[]');
-          arr.push({ ts: Date.now(), bracket, value, source: 'client' });
-          localStorage.setItem(k, JSON.stringify(arr));
-        } catch(_) {}
-        // Tracking côté serveur via events Supabase (event_type=coupon_amount, src=tranche)
-        window.Fidelavis?.track?.("coupon_amount", { src: bracket });
-        // Feedback visuel
-        res.querySelectorAll('.amountBtn').forEach(b => b.classList.remove('sel'));
-        btn.classList.add('sel');
+    res.querySelectorAll('.amountBtn').forEach(function(b){
+      b.addEventListener('click',function(){
+        var bracket=b.dataset.bracket;
+        try{
+          var k='fv_amount_'+RESTO+'_'+new Date().getFullYear()+'_'+(new Date().getMonth()+1);
+          var arr=JSON.parse(localStorage.getItem(k)||'[]');
+          arr.push({ts:Date.now(),bracket:bracket,value:parseInt(b.dataset.value),source:'client'});
+          localStorage.setItem(k,JSON.stringify(arr));
+        }catch(_){}
+        window.Fidelavis?.track?.('coupon_amount',{src:bracket});
+        res.querySelectorAll('.amountBtn').forEach(function(x){ x.classList.remove('sel'); });
+        b.classList.add('sel');
         showReview();
       });
     });
-    document.getElementById('amountSkip')?.addEventListener('click', () => {
-      window.Fidelavis?.track?.("coupon_amount_skip", { src: "skip" });
+    document.getElementById('amountSkip')?.addEventListener('click',function(){
+      window.Fidelavis?.track?.('coupon_amount_skip',{src:'skip'});
       showReview();
     });
 
   } else {
-    res.innerHTML = `<div class="ok-box error">❌ Code incorrect</div>`;
-    window.Fidelavis?.track?.("coupon_validate_fail", { src: "coupon_validate" });
+    res.innerHTML='<div class="ok-box error">❌ Code incorrect</div>';
+    window.Fidelavis?.track?.('coupon_validate_fail',{src:'brunch_v2'});
   }
 }
 
+function allerAvis(){
+  localStorage.setItem(reviewKey(),'done');
+  window.Fidelavis?.track?.('review_click',{src:'brunch_v2'});
+  setTimeout(function(){
+    if(_cfg.googleReview) window.open(_cfg.googleReview,'_blank');
+    else window.Fidelavis?.go?.('avis.html');
+  },120);
+}
+function fermerAvis(){
+  localStorage.setItem(reviewKey(),'later');
+  window.Fidelavis?.track?.('review_later',{src:'brunch_v2'});
+  document.getElementById('reviewPrompt')?.remove();
+}
+
+/* ══ ACTIONS ══ */
+function goOffer(){
+  window.Fidelavis?.track?.('offer_click',{src:'brunch_v2'});
+  window.Fidelavis?.go?.('offre-du-jour.html');
+}
+function goReserver(){
+  window.Fidelavis?.track?.('reserve_click',{src:'brunch_v2'});
+  if(_cfg.reservationUrl) window.open(_cfg.reservationUrl,'_blank');
+  else showToast('Lien de réservation non configuré');
+}
+function goInsta(){
+  window.Fidelavis?.track?.('instagram_click',{src:'brunch_v2'});
+  if(_cfg.instagramUrl) window.open(_cfg.instagramUrl,'_blank');
+  else showToast('Instagram non configuré');
+}
+function goAvis(){
+  window.Fidelavis?.track?.('review_click',{src:'brunch_v2'});
+  var g=(_cfg.googleReview||'').trim();
+  if(g){
+    // accepte une URL complète OU un Place ID (ChIJ…) → construit le lien d'avis
+    var url=/^https?:\/\//.test(g) ? g : 'https://search.google.com/local/writereview?placeid='+encodeURIComponent(g);
+    window.open(url,'_blank');
+  } else {
+    window.Fidelavis?.go?.('avis.html');
+  }
+}
+function goShare(){
+  window.Fidelavis?.track?.('share_click',{src:'brunch_v2'});
+  if(navigator.share){
+    navigator.share({title:_cfg.name||'Fidelavis',text:'Découvrez ce spot 🌿',url:location.href}).catch(function(){});
+  } else {
+    window.Fidelavis?.go?.('recommander.html');
+  }
+}
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2200);
+}
+
+/* ══ PWA TRACKING ══ */
+window.addEventListener('appinstalled',function(){
+  window.Fidelavis?.track?.('install',{src:'pwa_appinstalled',page:'brunch_v2'});
+});
+(function detectStandalone(){
+  try{
+    var sa=window.navigator.standalone===true||window.matchMedia('(display-mode:standalone)').matches;
+    if(!sa) return;
+    var sl=(location.pathname.match(/^\/([^/]+)\//)||[,''])[1];
+    var k='fv_install_tracked_'+sl;
+    if(localStorage.getItem(k)) return;
+    localStorage.setItem(k,String(Date.now()));
+    localStorage.setItem('fv_registered_'+sl,'1');
+    localStorage.setItem('fv_registered_at_'+sl,String(Date.now()));
+    window.Fidelavis?.setAuthCookie?.();
+    window.Fidelavis?.track?.('install_confirmed',{src:'standalone_first_launch',page:'brunch_v2'});
+  }catch(e){}
+})();
 </script>
 
   <script src="/assets/demo-popup.js" defer></script>
