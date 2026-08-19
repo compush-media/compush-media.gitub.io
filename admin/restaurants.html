@@ -702,11 +702,39 @@ const PROXY_URL = 'https://script.google.com/macros/s/AKfycbwtiShSiVd1qZ7NM7YQ-V
    GitHub du back-office. Mise en cache : une seule vérification GitHub par
    restaurant et par session de travail, pas une à chaque sauvegarde. */
 const _sessionsAgence = {};
-async function sessionAgence(slug) {
+
+/* Oublie la session connue pour ce restaurant, en memoire et sur le disque.
+   Appelee quand le proxy refuse : une session expiree est SUPPRIMEE de la
+   base par fv_session_check, donc le jeton garde ici ne correspond plus a
+   rien. Sans cet oubli, le navigateur represente indefiniment un jeton mort
+   et n'en redemande jamais un neuf — d'ou le « session inconnue » qui
+   revenait a chaque tentative. */
+function oublierSessionAgence(slug) {
+  delete _sessionsAgence[slug];
+  try {
+    localStorage.removeItem('fv_session_' + slug);
+    localStorage.removeItem('fv_session_exp_' + slug);
+  } catch (e) {}
+}
+
+function _sessionEncoreValable(slug) {
+  const exp = localStorage.getItem('fv_session_exp_' + slug);
+  if (!exp) return true;              // expiration inconnue : on tente
+  const t = Date.parse(exp);
+  if (isNaN(t)) return true;
+  // Marge d'une minute : inutile de partir avec un jeton sur le point de
+  // mourir au milieu d'une sauvegarde.
+  return t > Date.now() + 60000;
+}
+
+async function sessionAgence(slug, forcer) {
   if (!slug) return '';
-  if (_sessionsAgence[slug]) return _sessionsAgence[slug];
-  const dejaLa = localStorage.getItem('fv_session_' + slug);
-  if (dejaLa) { _sessionsAgence[slug] = dejaLa; return dejaLa; }
+  if (forcer) oublierSessionAgence(slug);
+
+  if (!forcer && _sessionsAgence[slug]) return _sessionsAgence[slug];
+  const dejaLa = !forcer && localStorage.getItem('fv_session_' + slug);
+  if (dejaLa && _sessionEncoreValable(slug)) { _sessionsAgence[slug] = dejaLa; return dejaLa; }
+  if (dejaLa) oublierSessionAgence(slug);   // perimee : on en redemande une
 
   // Deux connexions coexistent : admin/*.html pose fv_superadmin_gh_token,
   // fidelavis-admin pose fv_gh_token. Lire une seule clef laissait la
@@ -1095,18 +1123,29 @@ async function saveChanges() {
        back-office : le proxy vérifie auprès de GitHub que ce jeton donne un
        accès en écriture au dépôt qui sert le site. */
     const body = { action: 'update_resto_full', slug: currentResto.slug };
-    const session = await sessionAgence(currentResto.slug);
-    if (!session) throw new Error("Session refusée : reconnectez-vous au back-office.");
-    body.token = session;
     if (Object.keys(changes).length)    body.config      = changes;
     if (Object.keys(pwaChanges).length) body.progressier = pwaChanges;
 
-    const res = await fetch(PROXY_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body:    JSON.stringify(body)
-    });
-    const data = await res.json();
+    /* Un refus de session ne doit pas coûter une saisie. On renouvelle et on
+       rejoue une fois : le jeton peut avoir expiré pendant que le formulaire
+       était ouvert, ce qui est fréquent ici — on y passe du temps. */
+    async function envoyer(forcerSession) {
+      const session = await sessionAgence(currentResto.slug, forcerSession);
+      if (!session) throw new Error("Session refusée : reconnectez-vous au back-office.");
+      body.token = session;
+      const res = await fetch(PROXY_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body:    JSON.stringify(body)
+      });
+      return await res.json();
+    }
+
+    let data = await envoyer(false);
+    if (data.error && /Non autoris|session/i.test(data.error)) {
+      oublierSessionAgence(currentResto.slug);
+      data = await envoyer(true);
+    }
     if (data.error) throw new Error(data.error);
 
     // Mettre à jour le state local
