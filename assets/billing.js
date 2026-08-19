@@ -40,8 +40,8 @@
       var payload = {
         action:        "createCheckoutSession",
         planId:        planId,
-        priceId:       plan.priceId,
-        setupPriceId:  plan.setupPriceId,
+        // priceId / setupPriceId ne sont plus envoyés : le proxy les impose
+        // depuis ses propres propriétés (STRIPE_PRICE_ID).
         email:         options.email || "",
         restoId:       options.restoId || "",
         successUrl:    options.successUrl || (window.location.origin + "/fidelavis-admin/merci-abonnement.html?session_id={CHECKOUT_SESSION_ID}"),

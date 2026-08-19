@@ -17,16 +17,14 @@ var STRIPE_CONFIG = {
   // URL du Google Apps Script proxy (portail client Stripe)
   portalGasUrl: "https://script.google.com/macros/s/AKfycbyUEPhWO-AhN3XefyYqOBnmaDDfd8oOV1YAaMaZizN9dEKbeY-9zabt8Dt318OWDxDXkQ/exec",
 
-  // IDs des prix Stripe — Offre Terrain unique
-  //
-  // ⚠️ MODE TEST. Le script Apps Script tourne avec une clé sk_test_ ; ce
-  //    price doit donc être celui du catalogue de test. Pour passer en
-  //    production, changer LES DEUX ensemble :
-  //      1. STRIPE_SECRET_KEY → sk_live_… dans les propriétés du script
-  //      2. le price ci-dessous → price_1U44HiDpSXl9WhzrjHE1ALcL (79 €, réel)
-  priceIds: {
-    terrain: "price_1U45nyDpSXl9WhzrCbOobjru"  // 79 €/mois
-  }
+  /* Plus d'identifiant de prix ici.
+     Le prix est décidé par le proxy Stripe, depuis la propriété de script
+     STRIPE_PRICE_ID. Il était auparavant envoyé par le navigateur et
+     transmis tel quel à Stripe sans validation : une requête forgée pouvait
+     désigner n'importe quel prix du catalogue et souscrire à ce tarif.
+     Corollaire : la bascule test → production se fait entièrement dans les
+     propriétés du script, la clé et le prix changeant ensemble. Aucun
+     fichier du site n'est plus concerné. */
 };
 
 /* --------------------------------------------------
@@ -54,9 +52,7 @@ var PLANS = {
   }
 };
 
-// Injecter les priceIds depuis STRIPE_CONFIG
-PLANS.terrain.priceId = STRIPE_CONFIG.priceIds.terrain;
-// setupPriceId reste null (mise en place offerte)
+// priceId et setupPriceId restent null : le proxy impose le prix côté serveur.
 
 /* --------------------------------------------------
    PENNYLANE — facturation électronique

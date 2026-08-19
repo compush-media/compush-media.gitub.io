@@ -370,10 +370,6 @@
   function fvJeton(sl) {
     try { return localStorage.getItem("fv_session_" + sl) || ""; } catch (e) { return ""; }
   }
-  var PRICE_IDS = {
-    terrain: "price_1U45nyDpSXl9WhzrCbOobjru"
-  };
-
   async function _startSelfSetupCheckout(cfg, btn) {
     var plan  = "terrain";  // Plan unique Offre Terrain 79€/mois
     var email = cfg.billingEmail || "";
@@ -450,7 +446,7 @@
           setupIntentId: setupIntentId || "",
           sessionId:     sessionId     || "",
           planId:        plan,
-          priceId:       PRICE_IDS.terrain,
+          // priceId non transmis : impose par le proxy (STRIPE_PRICE_ID).
           // Le slug part en métadonnée Stripe : c'est par lui que le webhook
           // retrouvera le restaurant lors d'une résiliation ou d'un impayé.
           slug:          slug,
