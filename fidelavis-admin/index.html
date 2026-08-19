@@ -2326,6 +2326,7 @@ async function openRestoAdmin(slug) {
   }
 
   let session = '';
+  let expiration = '';
   try {
     const r = await fetch(FV_PROXY, {
       method: 'POST',
@@ -2333,7 +2334,7 @@ async function openRestoAdmin(slug) {
       body: JSON.stringify({ action: 'agency_session', slug, gh_token: gh })
     });
     const j = await r.json();
-    if (j && j.ok && j.token) session = j.token;
+    if (j && j.ok && j.token) { session = j.token; expiration = j.expires_at || ''; }
     else alert("Session refusée pour " + slug + " : " + ((j && j.error) || 'raison inconnue') +
                "\n\nL'espace va s'ouvrir en lecture seule.");
   } catch (e) {
@@ -2345,7 +2346,14 @@ async function openRestoAdmin(slug) {
   localStorage.setItem(`fv_superadmin_grant_${slug}`, Date.now().toString());
   if (session) {
     localStorage.setItem(`fv_session_${slug}`, session);
-    localStorage.removeItem(`fv_session_exp_${slug}`);
+    /* L'expiration est enregistree, plus supprimee. C'est elle que lit le
+       bandeau d'alerte de l'espace admin (fv_session_exp_<slug>) pour
+       prevenir AVANT qu'une action echoue. En l'effacant, je rendais ce
+       bandeau muet : le restaurateur decouvrait la session expiree au moment
+       de cliquer, en plein milieu d'un envoi ou d'un changement de
+       facturation. Constate en test sur la page de facturation de datil. */
+    if (expiration) localStorage.setItem(`fv_session_exp_${slug}`, expiration);
+    else            localStorage.removeItem(`fv_session_exp_${slug}`);
   }
   window.open(`https://app.cartefidelavis.com/${slug}/admin/espace-admin.html`, '_blank');
 }

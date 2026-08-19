@@ -722,7 +722,12 @@ async function sessionAgence(slug) {
     const j = await r.json();
     if (j && j.ok && j.token) {
       _sessionsAgence[slug] = j.token;
-      try { localStorage.setItem('fv_session_' + slug, j.token); } catch (e) {}
+      try {
+        localStorage.setItem('fv_session_' + slug, j.token);
+        // L'expiration accompagne le jeton : le bandeau d'alerte de l'espace
+        // admin la lit pour prevenir avant qu'une action echoue.
+        if (j.expires_at) localStorage.setItem('fv_session_exp_' + slug, j.expires_at);
+      } catch (e) {}
       return j.token;
     }
   } catch (e) {}
