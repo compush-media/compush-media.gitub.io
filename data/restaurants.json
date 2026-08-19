@@ -2123,5 +2123,27 @@
     "acces_statut": "non_active",
     "date_creation": "2026-08-12",
     "email": "pierrefrichot@gmail.com"
+  },
+  "zz-test-stripe": {
+    "name": "ZZ Test Stripe",
+    "brandColor": "#493C27",
+    "brandColor2": "#3B311F",
+    "ville": "Paris",
+    "categorie": "",
+    "site_web": "",
+    "note_google": null,
+    "nombre_avis_google": null,
+    "facebook": "",
+    "ambassadorCode": "",
+    "statut_commercial": "",
+    "nom_enseigne": "",
+    "forme_juridique": "",
+    "employes_dernier": "",
+    "employes_dernier_annee": "",
+    "twitter": "",
+    "linkedin": "",
+    "GMB_URL": "",
+    "acces_statut": "",
+    "date_creation": ""
   }
 }

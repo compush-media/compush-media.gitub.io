@@ -1,0 +1,30 @@
+{
+  "name": "ZZ Test Stripe",
+  "color": "#493C27",
+  "color2": "#3B311F",
+  "phone": "",
+  "address": "",
+  "logoUrl": "",
+  "instagramUrl": "",
+  "heroUrl": "",
+  "tagline": "Wallet jetable — tests de paiement uniquement",
+  "category": "brunch",
+  "email": "",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": ""
+  },
+  "plan": "terrain",
+  "subscriptionStatus": "none",
+  "setupPaid": false,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": ""
+}
