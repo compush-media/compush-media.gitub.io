@@ -17,14 +17,15 @@
     "image": ""
   },
   "plan": "terrain",
-  "subscriptionStatus": "none",
+  "subscriptionStatus": "trialing",
   "setupPaid": false,
   "billingEmail": "",
-  "stripeCustomerId": "",
-  "stripeSubscriptionId": "",
-  "nextBillingDate": "",
+  "stripeCustomerId": "cus_V6RbrK8YsDzb78",
+  "stripeSubscriptionId": "sub_1U6EiWDpSXl9WhzrLOpeTTIR",
+  "nextBillingDate": "2026-09-18",
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": ""
+  "iconUrl": "",
+  "trialEndDate": "2026-09-18"
 }
