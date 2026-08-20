@@ -505,7 +505,28 @@
       });
       var saveData = await saveRes.json();
       console.log("[Fidelavis] update_billing result:", saveData);
-      if (!saveData.ok) throw new Error("update_billing: " + (saveData.error || "réponse non-ok"));
+
+      /* Un echec ici ne doit PLUS interrompre l'activation.
+
+         L'abonnement est deja cree chez Stripe — finalizeSetup a reussi, on
+         a son customerId. update_billing ne fait qu'ecrire config.json, et
+         le webhook Stripe l'ecrit de toute facon quelques secondes plus tard
+         (evenement customer.subscription.updated).
+
+         Or cette action exige une session, et le jeton peut avoir expire
+         pendant le passage par Stripe — plusieurs minutes, parfois avec une
+         authentification bancaire. Le restaurateur voyait alors « Erreur
+         lors de l'activation : session expiree » APRES avoir paye, sans
+         aucune issue, et un rechargement le renvoyait vers la page de
+         paiement alors que son abonnement etait actif.
+
+         Constate en test le 20/08/2026 : abonnement cree, config.json ecrit
+         par le webhook, et pourtant ecran d'erreur. */
+      if (!saveData.ok) {
+        console.warn("[Fidelavis] update_billing a echoue (" +
+                     (saveData.error || "réponse non-ok") +
+                     ") — le webhook Stripe prend le relais, activation poursuivie");
+      }
 
       // 3. Redirection vers l'espace admin. location.replace force le
       //    rechargement et empêche un retour arrière sur l'URL de retour.
@@ -570,7 +591,17 @@
         })
       });
       var saveData = await saveRes.json();
-      if (!saveData.ok) throw new Error(saveData.error || "Erreur sauvegarde");
+
+      /* Meme regle que dans _handleSetupReturn : un echec ici n'interrompt
+         pas le parcours. Le paiement est encaisse, le webhook Stripe ecrira
+         config.json de toute facon. Faire echouer l'affichage sur une
+         session expiree afficherait une erreur a quelqu'un qui vient de
+         payer, alors que tout a reussi. */
+      if (!saveData.ok) {
+        console.warn("[Fidelavis] update_billing a echoue (" +
+                     (saveData.error || "réponse non-ok") +
+                     ") — le webhook Stripe prend le relais");
+      }
 
       // 3. Nettoyer l'URL et recharger
       window.history.replaceState({}, "", window.location.pathname);
