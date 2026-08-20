@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/l-adada-bar-bar-paris-14/hero.jpg",
   "tagline": "L'Adada Bar - Bar Paris 14 — Paris",
   "category": "brunch",
-  "email": "adadabar@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "adadabar@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

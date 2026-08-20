@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/kuisinistan-restaurant-paris-2/hero.jpg",
   "tagline": "Kuisinistan - Restaurant Paris 2 — Paris",
   "category": "brunch",
-  "email": "contact@kuisinistan.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@kuisinistan.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

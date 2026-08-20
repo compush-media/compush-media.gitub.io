@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/yolo-suresnes/hero.jpg",
   "tagline": "YOLO Suresnes — Suresnes",
   "category": "brunch",
-  "email": "yolo.suresnes@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "yolo.suresnes@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

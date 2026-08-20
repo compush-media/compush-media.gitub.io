@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/le-cedre/hero.jpg",
   "tagline": "Le Cèdre — Paris",
   "category": "brunch",
-  "email": "contacts.lecedre@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contacts.lecedre@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

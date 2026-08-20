@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/hutong-paris/hero.jpg",
   "tagline": "Hutong Paris 胡同巴黎 — Paris",
   "category": "brunch",
-  "email": "info@hutong.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "info@hutong.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

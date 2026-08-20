@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/cavalier/hero.jpg",
   "tagline": "Cavalier. — Paris",
   "category": "brunch",
-  "email": "contact@pariscavalier.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@pariscavalier.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

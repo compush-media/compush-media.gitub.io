@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/chez-yvette/hero.jpg",
   "tagline": "Chez Yvette — Paris",
   "category": "brunch",
-  "email": "chezyvette@musettegroup.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "chezyvette@musettegroup.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

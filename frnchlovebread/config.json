@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/frnchlovebread/hero.jpg",
   "tagline": "Frnchlovebread — Paris",
   "category": "brunch",
-  "email": "contact@frnchlovebread.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@frnchlovebread.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

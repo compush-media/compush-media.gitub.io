@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/bacini/hero.jpg",
   "tagline": "Bacini — Paris",
   "category": "brunch",
-  "email": "cindy.turinetti@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "dumondedamien6@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

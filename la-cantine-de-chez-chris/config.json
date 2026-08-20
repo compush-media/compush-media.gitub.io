@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/la-cantine-de-chez-chris/hero.jpg",
   "tagline": "La Cantine de Chez Chris — Paris",
   "category": "brunch",
-  "email": "christophe@restochezchris.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "christophe@restochezchris.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/les-acolytes/hero.jpg",
   "tagline": "Les Acolytes — Paris",
   "category": "brunch",
-  "email": "lesacolytes.paris@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "lesacolytes.paris@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

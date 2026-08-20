@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/la-fee-verte/hero.jpg",
   "tagline": "La Fée Verte — Paris",
   "category": "brunch",
-  "email": "bongrand.r@orange.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "bongrand.r@orange.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

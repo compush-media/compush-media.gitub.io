@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/gosier/hero.jpg",
   "tagline": "GOSIER — Paris",
   "category": "brunch",
-  "email": "contact@gosier-paris.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@gosier-paris.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

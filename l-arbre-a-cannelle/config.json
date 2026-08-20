@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/l-arbre-a-cannelle/hero.jpg",
   "tagline": "L'Arbre à Cannelle — Paris",
   "category": "brunch",
-  "email": "larbreacannelle@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "larbreacannelle@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

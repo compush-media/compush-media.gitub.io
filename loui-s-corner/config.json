@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/loui-s-corner/hero.jpg",
   "tagline": "Loui's Corner — Paris",
   "category": "brunch",
-  "email": "contact@louiscorner.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@louiscorner.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

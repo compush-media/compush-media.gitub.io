@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/cafe-petite/hero.jpg",
   "tagline": "Café Petite — Paris",
   "category": "brunch",
-  "email": "reservations@cafepetite.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "reservations@cafepetite.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

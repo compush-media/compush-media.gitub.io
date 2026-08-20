@@ -8,7 +8,7 @@
   "heroUrl": "https://app.cartefidelavis.com/caua-coffee/hero.jpg",
   "tagline": "CAUA Coffee — Paris",
   "category": "brunch",
-  "email": "contact.cauacoffee@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -19,7 +19,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact.cauacoffee@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

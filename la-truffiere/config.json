@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/la-truffiere/hero.jpg",
   "tagline": "La Truffière — Paris",
   "category": "brunch",
-  "email": "truffiereparis@hotmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "truffiereparis@hotmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

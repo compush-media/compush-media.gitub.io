@@ -6,7 +6,7 @@
   "instagramUrl": "https://www.instagram.com/blackbeansparis?igsh=MXd5Z2xicHoxNTNodQ%3D%3D&utm_source=qr",
   "tagline": "Black Beans Paris — Paris",
   "category": "brunch",
-  "email": "blackbeansmexicain@yahoo.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -17,7 +17,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "blackbeansmexicain@yahoo.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/frappe-par-bloom/hero.jpg",
   "tagline": "Frappé par Bloom — Paris",
   "category": "brunch",
-  "email": "frappe@bloomexperience.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "frappe@bloomexperience.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

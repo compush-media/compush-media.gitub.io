@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/bistrot-mon-cafe/hero.jpg",
   "tagline": "Bistrot Mon café — Paris",
   "category": "brunch",
-  "email": "bistrotmoncafe@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "bistrotmoncafe@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

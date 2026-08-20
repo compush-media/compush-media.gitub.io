@@ -7,7 +7,7 @@
   "instagramUrl": "https://www.instagram.com/motorscoffee/",
   "tagline": "Bright coffees from the world’s best roasters Homemade pastries",
   "category": "brunch",
-  "email": "info@motorscoffee.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -18,7 +18,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "info@motorscoffee.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

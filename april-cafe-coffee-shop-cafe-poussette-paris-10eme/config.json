@@ -8,7 +8,7 @@
   "heroUrl": "https://app.cartefidelavis.com/april-cafe-coffee-shop-cafe-poussette-paris-10eme/hero.jpg",
   "tagline": "April cafe - coffee shop - café poussette - Paris 10eme — Paris",
   "category": "brunch",
-  "email": "contact@aprilcafe.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -19,7 +19,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@aprilcafe.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/lizard/hero.jpg",
   "tagline": "LIZARD — Paris",
   "category": "brunch",
-  "email": "directionlizard@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "directionlizard@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

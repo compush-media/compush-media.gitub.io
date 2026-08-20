@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/sezam-cafe/hero.jpg",
   "tagline": "SEZAM CAFE — Paris",
   "category": "brunch",
-  "email": "contact@sezamcafe.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@sezamcafe.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

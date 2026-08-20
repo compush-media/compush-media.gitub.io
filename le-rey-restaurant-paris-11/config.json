@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/le-rey-restaurant-paris-11/hero.jpg",
   "tagline": "Le Rey - Restaurant Paris 11 — Paris",
   "category": "brunch",
-  "email": "reyvoltaire11@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "reyvoltaire11@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

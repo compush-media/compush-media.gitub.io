@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/cafe-d-auteur-specialty-coffee-shop-roaster/hero.jpg",
   "tagline": "Torrefacteur & coffee shop / specialty coffee & gourmet brunch",
   "category": "brunch",
-  "email": "contact@cafedauteur.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@cafedauteur.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/chez-carrie/hero.jpg",
   "tagline": "Chez Carrie — Paris",
   "category": "brunch",
-  "email": "bonjour@chezcarrie.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "bonjour@chezcarrie.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

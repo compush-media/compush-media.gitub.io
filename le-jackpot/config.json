@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/le-jackpot/hero.jpg",
   "tagline": "Le Jackpot — Paris",
   "category": "brunch",
-  "email": "restaurantjackpot@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "restaurantjackpot@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/le-village-cafe/hero.jpg",
   "tagline": "Le Village Café — Paris",
   "category": "brunch",
-  "email": "levillagecafe22@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "levillagecafe22@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

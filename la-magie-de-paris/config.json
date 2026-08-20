@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/la-magie-de-paris/hero.jpg",
   "tagline": "La Magie de Paris — Paris",
   "category": "brunch",
-  "email": "lamagiedeparis7@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "lamagiedeparis7@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

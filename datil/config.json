@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/datil/hero.jpg",
   "tagline": "Approche sensible @manonfleury__ ⭐️🍀 @michelinguide",
   "category": "brunch",
-  "email": "contact@datil-restaurant.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@datil-restaurant.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

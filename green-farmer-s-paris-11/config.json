@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/green-farmer-s-paris-11/hero.jpg",
   "tagline": "Green Farmer's Paris 11 — Paris",
   "category": "brunch",
-  "email": "contact@greenfarmers-vegan.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@greenfarmers-vegan.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

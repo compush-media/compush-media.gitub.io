@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/maythai-restaurant-thailandais-brunch/hero.jpg",
   "tagline": "Maythai - Restaurant Thaïlandais & Brunch — Paris",
   "category": "brunch",
-  "email": "info@patiotime.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "info@patiotime.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

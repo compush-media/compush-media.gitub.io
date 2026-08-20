@@ -8,7 +8,7 @@
   "heroUrl": "https://app.cartefidelavis.com/kape-cafe-philippin/hero.jpg",
   "tagline": "KAPÉ - Café philippin — Paris",
   "category": "brunch",
-  "email": "contact@kapeparis.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -19,7 +19,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@kapeparis.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/aux-cerises/hero.jpg",
   "tagline": "Aux Cerises — Paris",
   "category": "brunch",
-  "email": "restaurant.auxcerises@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "restaurant.auxcerises@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

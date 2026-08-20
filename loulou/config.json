@@ -8,7 +8,7 @@
   "instagramUrl": "https://www.instagram.com/loulou_restaurant/",
   "tagline": "Loulou — Paris",
   "category": "brunch",
-  "email": "info@louloufriendlydiner.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -19,7 +19,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "info@louloufriendlydiner.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

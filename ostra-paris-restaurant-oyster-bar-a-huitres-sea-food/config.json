@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/ostra-paris-restaurant-oyster-bar-a-huitres-sea-food/hero.jpg",
   "tagline": "Ostra Paris - Restaurant Oyster Bar à huîtres sea food — Paris",
   "category": "brunch",
-  "email": "ostraparis@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "ostraparis@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

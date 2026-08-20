@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/brasserie-baroche/hero.jpg",
   "tagline": "Brasserie Baroche — Paris",
   "category": "brunch",
-  "email": "booking@baroche.paris",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "booking@baroche.paris",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/le-rigodon/hero.jpg",
   "tagline": "Le Rigodon — Paris",
   "category": "brunch",
-  "email": "contact@lerigodon.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@lerigodon.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

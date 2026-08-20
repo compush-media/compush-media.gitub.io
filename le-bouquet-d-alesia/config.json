@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/le-bouquet-d-alesia/hero.jpg",
   "tagline": "Le Bouquet d'Alesia — Paris",
   "category": "brunch",
-  "email": "contact@bouquet-alesia.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@bouquet-alesia.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

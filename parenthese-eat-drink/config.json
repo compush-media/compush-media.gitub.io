@@ -6,7 +6,7 @@
   "instagramUrl": "https://www.instagram.com/parenthesebrunch/?hl=fr",
   "tagline": "Parenthèse Eat & Drink — Paris",
   "category": "brunch",
-  "email": "contact@parenthesebrunch.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -17,7 +17,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@parenthesebrunch.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

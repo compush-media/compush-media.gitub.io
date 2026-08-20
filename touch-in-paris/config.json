@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/touch-in-paris/hero.jpg",
   "tagline": "Touch In Paris — Paris",
   "category": "brunch",
-  "email": "seo@futurdigital.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "seo@futurdigital.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

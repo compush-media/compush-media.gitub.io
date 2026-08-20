@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/isana-paris/hero.jpg",
   "tagline": "ISANA PARIS — Paris",
   "category": "brunch",
-  "email": "contact@isanaparis.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@isanaparis.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

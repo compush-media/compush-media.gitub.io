@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/miura/hero.jpg",
   "tagline": "Gastronomie Ouvert du lundi au vendredi Chef @nicolasaujay",
   "category": "brunch",
-  "email": "contact@restaurantmiura.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@restaurantmiura.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/jim-s-corner/hero.jpg",
   "tagline": "Jim's Corner — Paris",
   "category": "brunch",
-  "email": "contact@jimscorner.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@jimscorner.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

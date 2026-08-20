@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/l-atelier-du-marche/hero.jpg",
   "tagline": "L'Atelier du Marché — Paris",
   "category": "brunch",
-  "email": "contact@mojo-paris.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@mojo-paris.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

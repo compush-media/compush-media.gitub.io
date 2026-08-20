@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/la-balle-au-bond-la-peniche/hero.jpg",
   "tagline": "La Balle au Bond - La Péniche — Paris",
   "category": "brunch",
-  "email": "contact@laballeaubond.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@laballeaubond.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

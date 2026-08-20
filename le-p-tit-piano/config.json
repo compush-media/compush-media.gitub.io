@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/le-p-tit-piano/hero.jpg",
   "tagline": "Le P'tit Piano — Paris",
   "category": "brunch",
-  "email": "contact@leptitpianobar.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@leptitpianobar.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

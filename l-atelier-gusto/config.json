@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/l-atelier-gusto/hero.jpg",
   "tagline": "L'atelier Gusto — Paris",
   "category": "brunch",
-  "email": "contact@gusto.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@gusto.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

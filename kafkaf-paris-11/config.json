@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/kafkaf-paris-11/hero.jpg",
   "tagline": "Kafkaf - Paris 11",
   "category": "brunch",
-  "email": "danydrumonde@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "danydrumonde@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

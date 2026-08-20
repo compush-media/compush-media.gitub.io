@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/aux-deux-ecus-brasserie/hero.jpg",
   "tagline": ". Brasserie vivante 7j/7j . . HAPPY HOUR 17H-21H . | Concerts 🎷",
   "category": "brunch",
-  "email": "aufrereantoine03@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "aufrereantoine03@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

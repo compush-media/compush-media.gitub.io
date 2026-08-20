@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/cafe-fluo-paris/hero.jpg",
   "tagline": "Café Fluo Paris — Paris",
   "category": "brunch",
-  "email": "contact@fluoparis.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@fluoparis.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/paname-coffee-shop/hero.jpg",
   "tagline": "Coffee and Homemade Food 7/7 8h-18h30",
   "category": "brunch",
-  "email": "contact@panamecoffee.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@panamecoffee.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

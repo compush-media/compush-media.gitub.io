@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/asko/hero.jpg",
   "tagline": "Asko — Levallois-Perret",
   "category": "brunch",
-  "email": "contact@asko-restaurant.fr",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@asko-restaurant.fr",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

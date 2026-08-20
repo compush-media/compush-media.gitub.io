@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/chokdee-cafe/hero.jpg",
   "tagline": "CHOKDEE café — Paris",
   "category": "brunch",
-  "email": "chokdeeparis@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "chokdeeparis@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

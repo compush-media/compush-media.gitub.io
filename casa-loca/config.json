@@ -23,11 +23,11 @@
   "iconUrl": "https://app.cartefidelavis.com/casa-loca/logo.jpg",
   "heroUrl": "https://app.cartefidelavis.com/casa-loca/hero.jpg",
   "trialEndDate": "",
-  "email": "dan.drumonde@gmail.com",
+  "email": "",
   "nextBillingDate": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
-  "billingEmail": "dan.drumonde@gmail.com",
+  "billingEmail": "",
   "monthlyOffers": [
     {
       "title": "",

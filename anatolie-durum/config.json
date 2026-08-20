@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/anatolie-durum/hero.jpg",
   "tagline": "📍 9, rue de la harpe - 75005 Paris",
   "category": "brunch",
-  "email": "anatoliedurum@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "anatoliedurum@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

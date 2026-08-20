@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/little-cafe/hero.jpg",
   "tagline": "Little Café — Paris",
   "category": "brunch",
-  "email": "littlecafeparis@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "littlecafeparis@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

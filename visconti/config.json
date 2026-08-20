@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/visconti/hero.jpg",
   "tagline": "Visconti — Paris",
   "category": "brunch",
-  "email": "domenko.dibartolomeo84@yahoo.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "domenko.dibartolomeo84@yahoo.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

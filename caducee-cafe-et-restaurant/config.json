@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/caducee-cafe-et-restaurant/hero.jpg",
   "tagline": "CADUCÉE Café et Restaurant — Paris",
   "category": "brunch",
-  "email": "caducee.cafe@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "caducee.cafe@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

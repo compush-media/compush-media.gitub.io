@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/origen-cafe-brunch/hero.jpg",
   "tagline": "ORIGEN café brunch — Asnières-sur-Seine",
   "category": "brunch",
-  "email": "origen.cafespecial@gmail.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "origen.cafespecial@gmail.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",

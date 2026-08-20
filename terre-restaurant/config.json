@@ -9,7 +9,7 @@
   "heroUrl": "https://app.cartefidelavis.com/terre-restaurant/hero.jpg",
   "tagline": "Terre Restaurant — Paris",
   "category": "brunch",
-  "email": "contact@terre-restaurant.com",
+  "email": "",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -20,7 +20,7 @@
   "plan": "terrain",
   "subscriptionStatus": "active",
   "setupPaid": true,
-  "billingEmail": "contact@terre-restaurant.com",
+  "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",
