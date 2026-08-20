@@ -168,6 +168,7 @@
               '<ul style="list-style:none;padding:0;margin:0;font-size:13px;color:#374151;line-height:1.7">',
                 '<li>✓ 10 cartes NFC prêtes à poser sur vos tables</li>',
                 '<li>✓ Notifications push illimitées</li>',
+                '<li>✓ E-mails automatiques chaque mois pour faire revenir vos clients</li>',
                 '<li>✓ Offres &amp; coupons fidélité</li>',
                 '<li>✓ Collecte automatique des emails clients</li>',
                 '<li>✓ Plus d\'avis Google naturellement ⭐</li>',
