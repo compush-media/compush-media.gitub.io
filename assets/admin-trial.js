@@ -171,7 +171,6 @@
                 '<li>✓ Offres &amp; coupons fidélité</li>',
                 '<li>✓ Collecte automatique des emails clients</li>',
                 '<li>✓ Plus d\'avis Google naturellement ⭐</li>',
-                '<li>✓ Réponse automatique aux avis Google</li>',
                 '<li>✓ Tableau de bord simple</li>',
               '</ul>',
             '</div>',
