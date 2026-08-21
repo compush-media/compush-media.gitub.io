@@ -110,9 +110,9 @@
     <div class="card kpi"><div class="t">Installs</div><div class="v" id="install">—</div><div class="h">install</div></div>
     <div class="card kpi"><div class="t">Coupons</div><div class="v" id="coupon">—</div><div class="h">coupon_validate</div></div>
 
-    <div class="card kpi"><div class="t">Avis (clics)</div><div class="v" id="review">—</div><div class="h">review_open</div></div>
+    <div class="card kpi"><div class="t">Avis (clics)</div><div class="v" id="review">—</div><div class="h">review (tous variants)</div></div>
     <div class="card kpi"><div class="t">Taux coupon</div><div class="v" id="couponRate">—</div><div class="h">coupon_validate / signup</div></div>
-    <div class="card kpi"><div class="t">Taux avis</div><div class="v" id="reviewRate">—</div><div class="h">review_open / coupon_validate</div></div>
+    <div class="card kpi"><div class="t">Taux avis</div><div class="v" id="reviewRate">—</div><div class="h">review / coupon_validate</div></div>
     <div class="card kpi"><div class="t">Activation</div><div class="v" id="activationRate">—</div><div class="h">signup / scan</div></div>
 
     <div class="card half">
@@ -143,16 +143,32 @@
 </div>
 
 <script>
-const API_TRACK = "https://script.google.com/macros/s/AKfycbxWOMRzGmraEknBpVLzr0dv4FwHiVlZOkcgIMFE39eKj3eqLpUy0PT9zcz9YkxK18cC/exec";
+/* Source : Supabase. L'ancienne URL lisait une feuille Google qui n'est plus
+   alimentee depuis la bascule du 03/05/2026 — elle repondait, mais sur des
+   donnees mortes, et sans le champ « event » que cette page compte.
+
+   Cette page a ete concue comme un outil interne couvrant toute la
+   plateforme. Elle est servie dans le dossier admin de chaque wallet : un
+   mode « tous les restaurants » y exposerait les donnees de chaque client a
+   tous les autres. Elle est donc restreinte a son propre restaurant, et la
+   RPC cote serveur exige un slug. */
+const SUPA_URL = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+const SUPA_KEY = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
+const SLUG = (location.pathname.match(/^\/([^\/]+)\//) || [])[1] || "";
 const el = (id)=>document.getElementById(id);
 const restoSelect = el("restoSelect");
 const daysSelect = el("daysSelect");
 
-let ALL_ROWS = [];
-let FILTERED = [];
+let ALL_ROWS  = [];
+let FILTERED  = [];
+let TOP_PAGES = [];
+let STATS     = {};
 
 function pct(n,d){
-  if (!d) return "—";
+  /* Un taux dont le numerateur depasse le denominateur n'est pas un taux :
+     on s'inscrit aussi par NFC et par lien direct sans jamais scanner. On
+     renvoie un tiret plutot qu'un « 140 % » qui n'a aucun sens. */
+  if (!d || n > d) return "—";
   const v=(n/d)*100;
   return (Math.round(v*10)/10).toFixed(1)+"%";
 }
@@ -182,19 +198,28 @@ google.charts.load("current", { packages:["corechart"] });
 
 async function fetchAll(){
   const days = Number(daysSelect.value || 30);
-  const url = `${API_TRACK}?days=${encodeURIComponent(days)}`;
-  const r = await fetch(url);
+  if (!SLUG) throw new Error("Restaurant introuvable dans l'URL");
+
+  const r = await fetch(SUPA_URL + "/rest/v1/rpc/fv_stats_dashboard", {
+    method: "POST",
+    headers: { "apikey": SUPA_KEY, "Authorization": "Bearer " + SUPA_KEY,
+               "Content-Type": "application/json" },
+    body: JSON.stringify({ p_slug: SLUG, p_days: days })
+  });
+  if (!r.ok) throw new Error("HTTP " + r.status);
   const j = await r.json();
-  ALL_ROWS = safeRows(j);
+  if (!j || j.ok !== true) throw new Error((j && j.reason) || "réponse invalide");
 
-  const restos = uniq(ALL_ROWS.map(x => String(x.resto||x.restaurant||"").trim().toLowerCase())).sort();
-  const current = restoSelect.value;
+  ALL_ROWS  = safeRows(j);
+  TOP_PAGES = Array.isArray(j.top_pages) ? j.top_pages : [];
+  STATS     = (j.stats && typeof j.stats === "object") ? j.stats : {};
 
-  restoSelect.innerHTML = `<option value="">Tous</option>` + restos.map(s=>`<option value="${s}">${s}</option>`).join("");
-  if (restos.includes(current)) restoSelect.value = current;
+  // Un seul restaurant : le selecteur ne sert plus qu'a le nommer.
+  restoSelect.innerHTML = `<option value="${SLUG}">${SLUG}</option>`;
+  restoSelect.value = SLUG;
 
-  el("subLine").textContent = `Période: ${days} jours • Total events: ${ALL_ROWS.length}`;
-  el("debugBox").textContent = `GET ${url}`;
+  el("subLine").textContent = `Période : ${days} jours • ${ALL_ROWS.length} événements`;
+  el("debugBox").textContent = `Supabase · fv_stats_dashboard("${SLUG}", ${days})`;
 }
 
 function applyFilter(){
@@ -208,11 +233,14 @@ function applyFilter(){
   const count    = (evt)  => FILTERED.filter(x => String(x.event||"") === evt).length;
   const countAny = (...ev)=> FILTERED.filter(x => ev.includes(String(x.event||""))).length;
 
-  const scan    = count("scan");
-  const signup  = countAny("signup", "inscription", "form_submit");
-  const install = countAny("install", "install_confirmed");
-  const coupon  = countAny("coupon_validate", "coupon_validated");
-  const review  = countAny("review_open", "review_click", "review_page_view", "review_qr_view");
+  /* Les totaux viennent du serveur, qui applique la meme normalisation que
+     fidelavis-backfill.gs. Les comptages locaux ne servent plus que de repli
+     si la reponse n'a pas de bloc stats. */
+  const scan    = STATS.scan              ?? count("scan");
+  const signup  = STATS.signup            ?? countAny("signup", "inscription", "form_submit");
+  const install = STATS.install_confirmed ?? countAny("install", "install_confirmed");
+  const coupon  = STATS.coupon_validate   ?? countAny("coupon_validate", "coupon_validated");
+  const review  = STATS.review            ?? countAny("review", "review_open", "review_click", "review_page_view", "review_qr_view");
 
   el("scan").textContent = scan;
   el("signup").textContent = signup;
@@ -222,7 +250,7 @@ function applyFilter(){
 
   el("couponRate").textContent = pct(coupon, signup);
   el("reviewRate").textContent = pct(review, coupon);
-  el("activationRate").textContent = pct(signup, scan);
+  el("activationRate").textContent = STATS.signup_rate == null ? "—" : STATS.signup_rate + "%";
 
   drawDaily();
   drawEvents();
@@ -236,7 +264,7 @@ function drawDaily(){
     if(!day) return;
     byDay[day] ||= { coupon:0, review:0 };
     if(["coupon_validate","coupon_validated"].includes(x.event)) byDay[day].coupon++;
-    if(["review_open","review_click","review_page_view","review_qr_view"].includes(x.event)) byDay[day].review++;
+    if(["review","review_open","review_click","review_page_view","review_qr_view"].includes(x.event)) byDay[day].review++;
   });
 
   const table = [["Date","Coupons","Avis (clics)"]];
@@ -249,7 +277,9 @@ function drawDaily(){
 }
 
 function drawEvents(){
-  const events = ["scan","signup","install","install_confirmed","coupon_validate","review_open","review_click","review_page_view","review_qr_view"];
+  /* Vocabulaire normalise cote serveur : install et review y sont deja
+     regroupes. Lister les anciens variants n'affichait que des zeros. */
+  const events = ["wallet_view","scan","signup","install_attempt","install_confirmed","coupon_view","coupon_validate","review"];
   const table = [["Event","Total"]];
   events.forEach(evt => table.push([evt, FILTERED.filter(x=>x.event===evt).length]));
   const data = google.visualization.arrayToDataTable(table);
@@ -259,20 +289,15 @@ function drawEvents(){
 }
 
 function drawTopPages(){
-  const map = {};
-  FILTERED.forEach(x=>{
-    const u = String(x.pageURL||"").trim();
-    if(!u) return;
-    map[u] = (map[u]||0) + 1;
-  });
-
-  const top = Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0, 12);
+  /* Le classement est calcule par le serveur : les lignes renvoyees ne
+     portent volontairement ni URL complete, ni identifiant d'appareil. */
   const tbody = el("topPagesBody");
-  if(!top.length){
-    tbody.innerHTML = `<tr><td colspan="2">Aucune URL trackée sur la période.</td></tr>`;
+  if(!TOP_PAGES.length){
+    tbody.innerHTML = `<tr><td colspan="2">Aucune page suivie sur la période.</td></tr>`;
     return;
   }
-  tbody.innerHTML = top.map(([url,c]) => `<tr><td>${escapeHtml(url)}</td><td><b>${c}</b></td></tr>`).join("");
+  tbody.innerHTML = TOP_PAGES.slice(0, 12)
+    .map(p => `<tr><td>${escapeHtml(p.page)}</td><td><b>${p.n}</b></td></tr>`).join("");
 }
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -280,7 +305,9 @@ function escapeHtml(s){
 
 function exportCSV(){
   // export sur la sélection courante FILTERED
-  const headers = ["ts","resto","event","mois","annee","user","userAgent","pageURL"];
+  /* Colonnes reduites : le serveur ne renvoie plus ni user, ni userAgent,
+     ni URL complete — ce sont des donnees par personne, sans usage ici. */
+  const headers = ["ts","resto","event"];
   const lines = [headers.join(",")];
 
   FILTERED.forEach(x=>{

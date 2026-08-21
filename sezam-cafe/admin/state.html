@@ -655,11 +655,21 @@ function checkSettingsState() {
 }
 
 // ── PLATFORM STATS ────────────────────────────────────────────
-const API = "https://script.google.com/macros/s/AKfycbymE_s4YOfYR4fiG0oSQZJqzDrN-grr4EMrena-YOc0WU5xk3qf6hHNV96lVKknncDnqA/exec";
+/* Les statistiques viennent de Supabase, pas d'Apps Script.
+   L'ancienne URL etait celle du script Brevo : son doGet renvoie
+   <p>Fidelavis API</p>, et le await res.json() echouait a chaque
+   chargement. Les evenements sont dans la table events depuis le
+   03/05/2026, lus ici par la RPC fv_stats_dashboard. */
+const SUPA_URL = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+const SUPA_KEY = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
 async function loadPlatformStats() {
   try {
-    const url = `${API}?resto=${encodeURIComponent(SITE)}&days=30`;
-    const res  = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(SUPA_URL + '/rest/v1/rpc/fv_stats_dashboard', {
+      method: 'POST',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY,
+                 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_slug: SITE, p_days: 30 })
+    });
     if (!res.ok) return;
     const data = await res.json();
     if (!data || data.ok !== true) return;

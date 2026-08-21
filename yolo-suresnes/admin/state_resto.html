@@ -220,7 +220,10 @@
 </div>
 
 <script>
-  const API = "https://script.google.com/macros/s/AKfycbymE_s4YOfYR4fiG0oSQZJqzDrN-grr4EMrena-YOc0WU5xk3qf6hHNV96lVKknncDnqA/exec";
+  /* Source : Supabase. L'ancienne URL etait celle du script Brevo, dont le
+     doGet renvoie du HTML — le await res.json() echouait a chaque fois. */
+  const SUPA_URL = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+  const SUPA_KEY = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
 
   // Extrait le slug depuis le chemin URL : /bistro-paris/admin/state.html → "bistro-paris"
   const SLUG = (function(){
@@ -249,14 +252,13 @@
     "":                 "total"
   };
 
-  function pct(a, b){
-    if (!b) return "—";
-    return ((a / b) * 100).toFixed(1) + "%";
-  }
-
   async function fetchData(resto, days){
-    const url = `${API}?resto=${encodeURIComponent(resto)}&days=${encodeURIComponent(days)}`;
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(SUPA_URL + "/rest/v1/rpc/fv_stats_dashboard", {
+      method: "POST",
+      headers: { "apikey": SUPA_KEY, "Authorization": "Bearer " + SUPA_KEY,
+                 "Content-Type": "application/json" },
+      body: JSON.stringify({ p_slug: resto, p_days: days })
+    });
     if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
     if (!data || data.ok !== true) throw new Error("Bad response");
@@ -322,8 +324,9 @@
       <tr><td class="muted">Installs (confirmées)</td><td>${ic}</td></tr>
       <tr><td class="muted">Coupons validés</td><td>${s.coupon_validate ?? "—"}</td></tr>
       <tr><td class="muted">Avis Google (clics)</td><td>${s.review ?? s.review_total ?? "—"}</td></tr>
-      <tr><td class="muted">Conversion (signup/scan)</td><td>${pct(s.signup, s.scan)}</td></tr>
-      <tr><td class="muted">Taux install réel (install/attempt)</td><td>${pct(ic, ia)}</td></tr>
+      <tr><td class="muted">Vues du wallet</td><td>${s.wallet_view ?? "—"}</td></tr>
+      <tr><td class="muted">Conversion (signup/scan)</td><td>${s.signup_rate  == null ? "—" : s.signup_rate  + "%"}</td></tr>
+      <tr><td class="muted">Taux install réel (install/attempt)</td><td>${s.install_rate == null ? "—" : s.install_rate + "%"}</td></tr>
     `;
   }
 
@@ -336,7 +339,10 @@
 
     let data;
     try {
-      data = await fetchData(RESTO, days);
+      /* SLUG, pas RESTO : RESTO porte le nom d'enseigne des que config.json
+         a repondu (« Datil »), alors que la table events est indexee sur le
+         slug (« datil »). */
+      data = await fetchData(SLUG, days);
     } catch(e) {
       errBox.innerHTML = `<div class="err">Erreur fetch : ${String(e.message || e)}</div>`;
       return;
@@ -352,8 +358,12 @@
     document.getElementById("kInstallConfirmed").textContent = s.install_confirmed ?? "—";
     document.getElementById("kCoupon").textContent           = s.coupon_validate  ?? "—";
     document.getElementById("kReview").textContent           = s.review ?? s.review_total ?? "—";
-    document.getElementById("kConv").textContent             = pct(s.signup, s.scan);
-    document.getElementById("kInstallRate").textContent      = pct(s.install_confirmed, s.install_attempt);
+    /* Les taux viennent du serveur, qui renvoie null quand le denominateur
+       ne couvre pas le numerateur — on s'inscrit aussi par NFC et par lien
+       direct sans scanner, et une installation iOS se confirme sans
+       tentative enregistree. Un tiret est plus juste qu'un ratio faux. */
+    document.getElementById("kConv").textContent             = s.signup_rate  == null ? "—" : s.signup_rate  + "%";
+    document.getElementById("kInstallRate").textContent      = s.install_rate == null ? "—" : s.install_rate + "%";
 
     // Graphe & top jours sur le champ sélectionné
     const field = EVENT_FIELD[ev] ?? "total";
