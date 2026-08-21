@@ -27,6 +27,7 @@
   "walletTemplate": "templates/brunch-resto",
   "iconUrl": "https://app.cartefidelavis.com/ter/logo.jpg",
   "rewardEmailsSent": [
-    "2026-08-reminder"
+    "2026-08-reminder",
+    "2026-08-main"
   ]
 }
