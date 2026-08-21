@@ -22,5 +22,8 @@
   "city": "Paris",
   "logoUrl": "https://app.cartefidelavis.com/kraft/logo.jpg",
   "iconUrl": "https://app.cartefidelavis.com/kraft/logo.jpg",
-  "heroUrl": "https://app.cartefidelavis.com/kraft/hero.jpg"
+  "heroUrl": "https://app.cartefidelavis.com/kraft/hero.jpg",
+  "rewardEmailsSent": [
+    "2026-08-main"
+  ]
 }
