@@ -26,5 +26,8 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/coco-de-mer/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/coco-de-mer/logo.jpg",
+  "rewardEmailsSent": [
+    "2026-08-main"
+  ]
 }
