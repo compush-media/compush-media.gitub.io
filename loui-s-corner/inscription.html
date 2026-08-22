@@ -391,7 +391,17 @@
 
     // ── Envoi vers Brevo via GAS (fire-and-forget) ──
     
-    if (gasUrl && listId) {
+    /* La condition exigeait un listId non nul. Or brevoListId est absent des 97
+       config.json : listId valait donc toujours 0, et cet appel n'est jamais
+       parti. Aucun contact Brevo n'a jamais ete cree par une inscription, et
+       aucun e-mail de bienvenue n'a jamais ete envoye.
+
+       Le serveur sait pourtant faire : subscribeContact appelle
+       _getOrCreateListForResto(resto) quand listId vaut 0, et cree la liste du
+       restaurant a la volee. C'est le client qui ne l'appelait pas.
+
+       On envoie donc toujours, en transmettant listId tel quel — 0 compris. */
+    if (gasUrl) {
       try {
         const sp = new URLSearchParams();
         sp.append("data", JSON.stringify({
