@@ -3662,17 +3662,18 @@ async function sendActivationEmail() {
   const data  = window._restoData || {};
   const r     = data[slug] || {};
   const token = el('activationLinkPreview').dataset.token;
-  const email = r.email;
+  /* L'adresse n'est plus lue ici. Elle a quitté le registre public lors du
+     nettoyage de confidentialité : 96 fiches sur 97 n'en portent plus, et ce
+     contrôle refusait donc l'invitation pour presque tout le monde — avant
+     même d'avoir enregistré le jeton, ce qui rendait aussi le lien manuel
+     inutilisable.
+
+     C'est le proxy qui la résout maintenant, dans le stockage privé. Le
+     back-office n'a plus à connaître les coordonnées des restaurateurs pour
+     les inviter. On transmet r.email s'il existe encore, par compatibilité. */
+  const email = r.email || '';
   const btn   = el('activationSendBtn');
   const res   = el('activationResult');
-
-  if (!email) {
-    res.style.display      = 'block';
-    res.style.background   = 'var(--red-bg)';
-    res.style.color        = 'var(--red)';
-    res.textContent        = '❌ Ce restaurant n\'a pas d\'email enregistré.';
-    return;
-  }
 
   btn.disabled    = true;
   btn.textContent = 'Envoi…';
