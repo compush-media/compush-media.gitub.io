@@ -115,8 +115,11 @@
 <div class="wrap">
   <div class="top">
     <div>
-      <h1 id="title">📊 Dashboard Restaurant — Fidelavis</h1>
-      <div class="sub" id="subtitle">KPIs & courbes (7/30/90 jours)</div>
+      <!-- Sans ce lien, la page est un cul-de-sac : on y arrive depuis
+           l'espace admin, il faut pouvoir y retourner. -->
+      <a href="espace-admin.html" style="display:inline-block;margin-bottom:6px;font-size:13px;font-weight:800;color:#b6152b;text-decoration:none;">← Retour à mon espace</a>
+      <h1 id="title">📈 Évolution de mon activité</h1>
+      <div class="sub" id="subtitle">Votre activité sur 7, 30 ou 90 jours</div>
     </div>
 
     <div class="controls">
@@ -130,14 +133,14 @@
       </label>
 
       <label style="display:flex;align-items:center;gap:8px;font-weight:950;font-size:12px;color:#333;">
-        Event (graphe)
+        Afficher
         <select id="eventSelect">
-          <option value="">Tous</option>
-          <option value="scan">scan</option>
-          <option value="signup">signup</option>
-          <option value="install">install (confirmée)</option>
-          <option value="coupon_validate">coupon_validate</option>
-          <option value="review">avis (review)</option>
+          <option value="">Toute l’activité</option>
+          <option value="signup">Nouveaux clients</option>
+          <option value="install">Cartes installées</option>
+          <option value="coupon_validate">Avantages utilisés</option>
+          <option value="review">Avis Google</option>
+          <option value="scan">Scans QR / NFC</option>
         </select>
       </label>
     </div>
@@ -145,51 +148,33 @@
 
   <div class="grid">
     <div class="card kpi">
-      <div class="kpiLabel">Scans</div>
-      <div class="kpiValue" id="kScan">—</div>
-      <div class="kpiHint">scan</div>
-    </div>
-
-    <div class="card kpi">
-      <div class="kpiLabel">Clients captés</div>
+      <div class="kpiLabel">Nouveaux clients</div>
       <div class="kpiValue" id="kSignup">—</div>
-      <div class="kpiHint">signup</div>
+      <div class="kpiHint">Inscrits à votre programme de fidélité</div>
     </div>
 
     <div class="card kpi">
-      <div class="kpiLabel">Installs (tentatives)</div>
-      <div class="kpiValue" id="kInstallAttempt">—</div>
-      <div class="kpiHint">install_attempt</div>
-    </div>
-
-    <div class="card kpi">
-      <div class="kpiLabel">Installs (confirmées)</div>
+      <div class="kpiLabel">Cartes installées</div>
       <div class="kpiValue" id="kInstallConfirmed">—</div>
-      <div class="kpiHint">install (standalone)</div>
+      <div class="kpiHint">Clients ayant ajouté la carte à leur téléphone</div>
     </div>
 
     <div class="card kpi">
-      <div class="kpiLabel">Coupons validés</div>
+      <div class="kpiLabel">Avantages utilisés</div>
       <div class="kpiValue" id="kCoupon">—</div>
-      <div class="kpiHint">coupon_validate</div>
+      <div class="kpiHint" id="kCouponHint">Coupons validés en caisse</div>
     </div>
 
     <div class="card kpi">
-      <div class="kpiLabel">Clic “Donner mon avis”</div>
+      <div class="kpiLabel">Avis Google</div>
       <div class="kpiValue" id="kReview">—</div>
-      <div class="kpiHint">review (tous variants)</div>
+      <div class="kpiHint">Clients partis déposer un avis</div>
     </div>
 
     <div class="card kpi">
-      <div class="kpiLabel">Conversion</div>
-      <div class="kpiValue" id="kConv">—</div>
-      <div class="kpiHint">signup / scan</div>
-    </div>
-
-    <div class="card kpi">
-      <div class="kpiLabel">Taux install réel</div>
-      <div class="kpiValue" id="kInstallRate">—</div>
-      <div class="kpiHint">install / install_attempt</div>
+      <div class="kpiLabel">Scans QR / NFC</div>
+      <div class="kpiValue" id="kScan">—</div>
+      <div class="kpiHint">Cartes et affiches scannées</div>
     </div>
 
     <div class="card chart">
@@ -199,8 +184,8 @@
     </div>
 
     <div class="card half">
-      <div style="font-weight:950;color:var(--brand);margin-bottom:8px;">🏆 Top jours (par volume)</div>
-      <div class="muted" style="margin-bottom:8px;">Basé sur le filtre Event (ou tous si “Tous”)</div>
+      <div style="font-weight:950;color:var(--brand);margin-bottom:8px;">🏆 Vos meilleures journées</div>
+      <div class="muted" style="margin-bottom:8px;">Vos meilleures journées, selon ce que vous affichez</div>
       <table>
         <thead>
           <tr><th>Date</th><th>Count</th></tr>
@@ -210,8 +195,8 @@
     </div>
 
     <div class="card half">
-      <div style="font-weight:950;color:var(--brand);margin-bottom:8px;">🧾 Récap</div>
-      <div class="muted" style="margin-bottom:10px;">KPIs globaux (indépendants du filtre Event)</div>
+      <div style="font-weight:950;color:var(--brand);margin-bottom:8px;">🧾 Récapitulatif</div>
+      <div class="muted" style="margin-bottom:10px;">Totaux sur la période choisie</div>
       <table>
         <tbody id="recapBody"></tbody>
       </table>
@@ -237,8 +222,8 @@
     .then(r => r.ok ? r.json() : null)
     .then(cfg => {
       if (cfg && cfg.name) RESTO = cfg.name;
-      document.getElementById("title").textContent    = `📊 Dashboard — ${RESTO}`;
-      document.getElementById("subtitle").textContent = `KPIs & courbes — Restaurant\u00a0: ${RESTO}`;
+      document.getElementById("title").textContent    = `📈 Évolution — ${RESTO}`;
+      document.getElementById("subtitle").textContent = `Votre activité — ${RESTO}`;
     })
     .catch(() => {});
 
@@ -316,17 +301,13 @@
   function fillRecap(s){
     const recap = document.getElementById("recapBody");
     const ic = s.install_confirmed ?? 0;
-    const ia = s.install_attempt  ?? 0;
     recap.innerHTML = `
-      <tr><td class="muted">Scans</td><td>${s.scan ?? "—"}</td></tr>
-      <tr><td class="muted">Clients captés (signup)</td><td>${s.signup ?? "—"}</td></tr>
-      <tr><td class="muted">Installs (tentatives)</td><td>${ia}</td></tr>
-      <tr><td class="muted">Installs (confirmées)</td><td>${ic}</td></tr>
-      <tr><td class="muted">Coupons validés</td><td>${s.coupon_validate ?? "—"}</td></tr>
-      <tr><td class="muted">Avis Google (clics)</td><td>${s.review ?? s.review_total ?? "—"}</td></tr>
-      <tr><td class="muted">Vues du wallet</td><td>${s.wallet_view ?? "—"}</td></tr>
-      <tr><td class="muted">Conversion (signup/scan)</td><td>${s.signup_rate  == null ? "—" : s.signup_rate  + "%"}</td></tr>
-      <tr><td class="muted">Taux install réel (install/attempt)</td><td>${s.install_rate == null ? "—" : s.install_rate + "%"}</td></tr>
+      <tr><td class="muted">Nouveaux clients inscrits</td><td>${s.signup ?? "—"}</td></tr>
+      <tr><td class="muted">Cartes ajoutées au téléphone</td><td>${ic}</td></tr>
+      <tr><td class="muted">Avantages utilisés en caisse</td><td>${s.coupon_validate ?? "—"}</td></tr>
+      <tr><td class="muted">Clients partis déposer un avis</td><td>${s.review ?? s.review_total ?? "—"}</td></tr>
+      <tr><td class="muted">Scans QR / NFC</td><td>${s.scan ?? "—"}</td></tr>
+      <tr><td class="muted">Ouvertures de la carte</td><td>${s.wallet_view ?? "—"}</td></tr>
     `;
   }
 
@@ -354,16 +335,18 @@
     // KPIs
     document.getElementById("kScan").textContent             = s.scan             ?? "—";
     document.getElementById("kSignup").textContent           = s.signup           ?? "—";
-    document.getElementById("kInstallAttempt").textContent   = s.install_attempt  ?? "—";
     document.getElementById("kInstallConfirmed").textContent = s.install_confirmed ?? "—";
     document.getElementById("kCoupon").textContent           = s.coupon_validate  ?? "—";
     document.getElementById("kReview").textContent           = s.review ?? s.review_total ?? "—";
-    /* Les taux viennent du serveur, qui renvoie null quand le denominateur
-       ne couvre pas le numerateur — on s'inscrit aussi par NFC et par lien
-       direct sans scanner, et une installation iOS se confirme sans
-       tentative enregistree. Un tiret est plus juste qu'un ratio faux. */
-    document.getElementById("kConv").textContent             = s.signup_rate  == null ? "—" : s.signup_rate  + "%";
-    document.getElementById("kInstallRate").textContent      = s.install_rate == null ? "—" : s.install_rate + "%";
+
+    /* Le détail du jour et du mois est ce que le restaurateur regarde le plus
+       souvent : il vérifie en fin de service. Il est indépendant de la période
+       choisie plus haut. */
+    const hint = document.getElementById("kCouponHint");
+    if (hint) {
+      const j = data.today ?? 0, m = data.thisMonth ?? 0;
+      hint.textContent = `Validés en caisse — ${j} aujourd’hui, ${m} ce mois`;
+    }
 
     // Graphe & top jours sur le champ sélectionné
     const field = EVENT_FIELD[ev] ?? "total";

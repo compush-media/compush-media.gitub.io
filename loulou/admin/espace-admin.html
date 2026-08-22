@@ -618,6 +618,17 @@
       <a href="#notifications" class="kpi-sec-btn admin-only" onclick="switchTab('notifications');return false;">👥 Voir les contacts</a>
     </div>
 
+    <!-- Les chiffres ci-dessus sont un instantane sur 30 jours. L'evolution
+         jour par jour vit sur state_resto.html, qui n'etait liee depuis nulle
+         part : le restaurateur ne pouvait y arriver qu'en tapant l'URL. -->
+    <a href="state_resto.html" class="card" style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;text-decoration:none;color:inherit;">
+      <span>
+        <span class="card-title" style="margin:0;"><span class="card-title-icon">📈</span> Évolution de mon activité</span>
+        <span style="display:block;font-size:13px;color:var(--muted);margin-top:4px;">Courbes jour par jour sur 7, 30 ou 90 jours</span>
+      </span>
+      <span style="font-size:20px;color:var(--muted);flex-shrink:0;">→</span>
+    </a>
+
     <!-- Montants à compléter -->
     <div class="card" id="montantsCompleterCard" style="border-left:4px solid var(--orange);display:none;">
       <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
