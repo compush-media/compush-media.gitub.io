@@ -17,7 +17,7 @@
     "date_fin": ""
   },
   "plan": "terrain",
-  "subscriptionStatus": "active",
+  "subscriptionStatus": "trialing",
   "setupPaid": true,
   "billingEmail": "",
   "stripeCustomerId": "",
@@ -30,5 +30,7 @@
     "2026-08-reminder",
     "2026-08-main"
   ],
-  "email": "axou.v@aliceadsl.fr"
+  "email": "axou.v@aliceadsl.fr",
+  "trialType": "clients",
+  "trialEndDate": "2026-09-22"
 }
