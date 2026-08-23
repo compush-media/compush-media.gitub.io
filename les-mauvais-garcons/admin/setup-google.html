@@ -261,6 +261,27 @@
   </div>
 </div>
 <script>
+/* ── Garde d'authentification ──────────────────────────────────────────
+   Cette page n'en avait aucune, comme state_resto.html avant elle. La
+   difference tient a ce qu'elle montre : rien. C'est un mode d'emploi pour
+   creer un ID client Google Cloud, sans donnee du restaurant, sans appel
+   reseau, sans localStorage — l'ID affiche a l'etape 3 est un exemple
+   invente. Elle vit neanmoins sous /admin/, ou l'on entre en etant
+   connecte : le drapeau suffit.
+
+   Pas de garde de role, donc, comme print-qr.html. La regle qui court sur
+   ces pages : /admin/ demande la connexion, et seules celles qui montrent
+   des chiffres, des revenus ou des reglages — billing, state, state_resto,
+   reputation-google — demandent en plus le role admin. */
+const SITE = (() => {
+  const m = location.pathname.match(/^\/([^/]+)\//);
+  if (m && !['assets', 'data', 'fidelavis-admin'].includes(m[1])) return m[1];
+  return localStorage.getItem('fv_last_resto') || '';
+})();
+if (SITE && !localStorage.getItem(`admin_${SITE}`)) {
+  window.location.href = 'login.html';
+}
+
 function toggleStep(id) {
   const card   = document.getElementById(id);
   const header = card.querySelector('.step-header');

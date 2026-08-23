@@ -473,7 +473,26 @@ const SITE = (() => {
   return (m && m[1] !== 'assets') ? m[1] : (localStorage.getItem('fv_last_resto') || 'resto1');
 })();
 const authKey = `admin_${SITE}`;
-if (!localStorage.getItem(authKey)) window.location.href = 'login.html';
+const roleKey = `role_${SITE}`;
+
+/* Cette page porte la carte « Statistiques Plateforme » — scans, inscrits,
+   coupons du mois — a cote de l'etat de la fiche Google, de la
+   synchronisation GBP et de la configuration IA. Des statistiques et des
+   parametres : les deux choses que le panneau « Equipe » d'espace-admin
+   promet a l'employe de ne pas lui montrer. Elle n'avait que le drapeau de
+   connexion. Meme regle qu'espace-admin.html ligne 1443 : role absent vaut
+   « employe », et l'employe repart vers la seule page qui lui est ouverte. */
+const ACCES_OK = (() => {
+  if (!localStorage.getItem(authKey)) {
+    window.location.href = 'login.html';
+    return false;
+  }
+  if ((localStorage.getItem(roleKey) || 'employe') !== 'admin') {
+    window.location.href = 'espace-admin.html';
+    return false;
+  }
+  return true;
+})();
 
 document.getElementById('logoutBtn').addEventListener('click', e => {
   e.preventDefault();
@@ -710,6 +729,10 @@ function renderLog() {
 
 // ── MAIN ──────────────────────────────────────────────────────
 function refresh() {
+  /* La redirection posee en tete de script ne coupe pas l'execution en
+     cours, et refresh() tourne aussi toutes les 60 secondes : sans ce
+     garde-fou, les cartes se peignaient le temps que la navigation parte. */
+  if (!ACCES_OK) return;
   checkGoogleState();
   checkReviewsState();
   checkSyncState();
