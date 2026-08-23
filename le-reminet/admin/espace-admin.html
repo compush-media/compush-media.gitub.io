@@ -2279,7 +2279,12 @@ function initCoupon() {
 
   document.getElementById('couponPeriod').textContent      = `Coupon actif — ${mName} ${year}`;
   document.getElementById('couponMonthDisplay').textContent = `${mName} ${year}`;
-  document.getElementById('couponTitle').textContent        = `Offre Fidelavis — ${mName}`;
+  /* couponTitle n'est plus rempli ici.
+     Il affichait « Offre Fidelavis — <mois> », ce qui posait deux problemes :
+     le meme nom que l'abonnement du restaurateur, et surtout un libelle qui
+     laissait croire qu'une offre existait alors qu'aucune n'etait definie.
+     Il garde le tiret du HTML jusqu'a ce que la vraie offre soit chargee,
+     puis affiche soit son titre, soit une invitation a la definir. */
 
   // Statut coupon
   const couponKey = `coupon_${SITE}_${year}_${month + 1}`;
@@ -2364,7 +2369,7 @@ async function loadCouponEditForm() {
     } else {
       monthSel.value = months[new Date().getMonth()];
     }
-    if (c.title) document.getElementById('couponTitle').textContent = c.title;
+    document.getElementById('couponTitle').textContent = c.title || 'Aucune offre définie';
   } catch(e) {
     // Défaut : mois courant pré-sélectionné
     const monthSel = document.getElementById('couponEditMonth');
