@@ -71,7 +71,13 @@
 
   <div class="login-box">
     <h2 style="color:#b6152b;">🔐 Connexion Admin</h2>
-    <input id="user" placeholder="Identifiant" autocomplete="off">
+    <!-- Pre-rempli a « admin » : c'est le seul identifiant que le
+         provisionnement cree pour le restaurateur, et rien ne le lui disait —
+         ni l'e-mail d'invitation, ni la page d'activation. Il arrivait ici
+         apres avoir choisi son mot de passe, devant un champ vide, sans moyen
+         de deviner. Le champ reste modifiable : les employes ont leur propre
+         identifiant, cree depuis l'espace admin. -->
+    <input id="user" value="admin" placeholder="Identifiant" autocomplete="username">
     <input id="pass" placeholder="Mot de passe" type="password">
     <button onclick="login()">Se connecter</button>
     <div id="error" class="err"></div>
