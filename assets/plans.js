@@ -28,12 +28,12 @@ var STRIPE_CONFIG = {
 };
 
 /* --------------------------------------------------
-   PLANS — Offre Terrain unique 79€/mois
+   PLANS — Offre Fidelavis unique 79€/mois
 -------------------------------------------------- */
 var PLANS = {
   terrain: {
     id:           "terrain",
-    name:         "Offre Terrain",
+    name:         "Offre Fidelavis",
     monthlyPrice: 79,
     setupPrice:   0,        // Mise en place offerte
     currency:     "EUR",

@@ -371,7 +371,7 @@
     try { return localStorage.getItem("fv_session_" + sl) || ""; } catch (e) { return ""; }
   }
   async function _startSelfSetupCheckout(cfg, btn) {
-    var plan  = "terrain";  // Plan unique Offre Terrain 79€/mois
+    var plan  = "terrain";  // Plan unique Offre Fidelavis 79€/mois
     var email = cfg.billingEmail || "";
     var slug  = _getSlug();
     var originalHTML = btn.innerHTML;
