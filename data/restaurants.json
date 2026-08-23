@@ -66,7 +66,8 @@
     "walletTemplate": "templates/brunch-resto",
     "demoLayout": "nested",
     "acces_statut": "non_active",
-    "date_creation": "2026-08-08"
+    "date_creation": "2026-08-08",
+    "email": "axou.v@aliceadsl.fr"
   },
   "kafkaf-paris-11": {
     "name": "Kafkaf - Paris 11",
