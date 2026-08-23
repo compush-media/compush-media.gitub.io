@@ -65,11 +65,10 @@
     "instagram_external_url": "",
     "walletTemplate": "templates/brunch-resto",
     "demoLayout": "nested",
-    "acces_statut": "invite_envoye",
+    "acces_statut": "active",
     "date_creation": "2026-08-08",
     "email": "axou.v@aliceadsl.fr",
-    "invite_hash": "65dccfe82bfff283175fd6fbe68149df56fa7d0da45cbe8b8ccdbbaab6b0faab",
-    "invite_expires": "2026-08-25T09:01:07.090Z"
+    "date_activation": "2026-08-23T09:02:21.675Z"
   },
   "kafkaf-paris-11": {
     "name": "Kafkaf - Paris 11",
