@@ -18,11 +18,8 @@
     "twitter": "",
     "linkedin": "",
     "GMB_URL": "",
-    "acces_statut": "invite_envoye",
-    "date_creation": "2026-05-23",
-    "email": "axou.v@aliceadsl.fr",
-    "invite_hash": "77374033bdc3beeeacc6753b442cb8e847de6483de300b719302b78e8ecd40fb",
-    "invite_expires": "2026-08-25T08:41:41.883Z"
+    "acces_statut": "non_active",
+    "date_creation": "2026-05-23"
   },
   "brother-sister-brunch-lunch-dinner": {
     "name": "BROTHER SISTER Brunch Lunch Dinner",
@@ -65,10 +62,8 @@
     "instagram_external_url": "",
     "walletTemplate": "templates/brunch-resto",
     "demoLayout": "nested",
-    "acces_statut": "active",
-    "date_creation": "2026-08-08",
-    "email": "axou.v@aliceadsl.fr",
-    "date_activation": "2026-08-23T09:02:21.675Z"
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-08"
   },
   "kafkaf-paris-11": {
     "name": "Kafkaf - Paris 11",

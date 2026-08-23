@@ -17,7 +17,7 @@
     "date_fin": ""
   },
   "plan": "terrain",
-  "subscriptionStatus": "trialing",
+  "subscriptionStatus": "active",
   "setupPaid": true,
   "billingEmail": "",
   "stripeCustomerId": "",
@@ -26,61 +26,5 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "iconUrl": "https://app.cartefidelavis.com/ter/logo.jpg",
-  "rewardEmailsSent": [
-    "2026-08-reminder",
-    "2026-08-main"
-  ],
-  "email": "axou.v@aliceadsl.fr",
-  "trialType": "clients",
-  "trialEndDate": "2026-09-22",
-  "monthlyOffers": [
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    },
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    },
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    },
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    },
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    },
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    },
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    },
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    },
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    },
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    },
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    },
-    {
-      "title": "Apéritif offert",
-      "image": ""
-    }
-  ]
+  "email": ""
 }
