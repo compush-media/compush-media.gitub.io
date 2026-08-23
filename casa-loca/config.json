@@ -7,13 +7,8 @@
   "tagline": "Casa Loca 🌵",
   "plan": "terrain",
   "subscriptionStatus": "active",
-  "setupPaid": false,
+  "setupPaid": true,
   "invoices": [],
-  "activeCoupon": {
-    "title": "Café offert",
-    "description": "Réservé aux membres Fidelavis",
-    "month": "juin"
-  },
   "address": "12 Bd de Sébastopol, 75004, Paris",
   "googleReview": "https://search.google.com/local/writereview?placeid=ChIJl3oCHk5v5kcRtQMbU4O25Tc",
   "reservationUrl": "https://www.google.com/maps/reserve/v/dine/c/CtpJNXEhtaw?source=pa&opi=79508299&hl=fr-FR&gei=2vweauOnCeqckdUPi9jKyAQ&ahbb=1",
@@ -27,59 +22,5 @@
   "nextBillingDate": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
-  "billingEmail": "",
-  "monthlyOffers": [
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "Gateau du chef",
-      "image": "offre-2.jpg"
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    },
-    {
-      "title": "",
-      "image": ""
-    }
-  ],
-  "rewardEmailsSent": [
-    "2026-08-main",
-    "2026-08-reminder"
-  ]
+  "billingEmail": ""
 }

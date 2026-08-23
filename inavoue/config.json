@@ -7,13 +7,8 @@
   "tagline": "inavoué restaurant",
   "plan": "terrain",
   "subscriptionStatus": "active",
-  "setupPaid": false,
+  "setupPaid": true,
   "invoices": [],
-  "activeCoupon": {
-    "title": "Café offert",
-    "description": "Réservé aux membres Fidelavis",
-    "month": "juin"
-  },
   "address": "4 Imp. Gomboust, 75001, Paris",
   "googleReview": "https://search.google.com/local/writereview?placeid=ChIJcwbSyjFu5kcRug6RvZpzlWs",
   "reservationUrl": "https://www.google.com/maps/reserve/v/dine/c/7Tu5oInoxyk?source=pa&opi=79508299&hl=fr-FR&gei=8vweaojrKNrW7M8PqK2G6QY&ahbb=1",

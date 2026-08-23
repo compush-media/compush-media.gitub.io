@@ -7,13 +7,8 @@
   "tagline": "KRAFT - Restaurant de quartier",
   "plan": "terrain",
   "subscriptionStatus": "active",
-  "setupPaid": false,
+  "setupPaid": true,
   "invoices": [],
-  "activeCoupon": {
-    "title": "Café offert",
-    "description": "Réservé aux membres Fidelavis",
-    "month": "juin"
-  },
   "address": "37 Rue du Hameau, 75015, Paris",
   "email": "",
   "googleReview": "https://search.google.com/local/writereview?placeid=ChIJkeDnenVx5kcRZ06pEIdB4TM",
@@ -22,9 +17,5 @@
   "city": "Paris",
   "logoUrl": "https://app.cartefidelavis.com/kraft/logo.jpg",
   "iconUrl": "https://app.cartefidelavis.com/kraft/logo.jpg",
-  "heroUrl": "https://app.cartefidelavis.com/kraft/hero.jpg",
-  "rewardEmailsSent": [
-    "2026-08-main",
-    "2026-08-reminder"
-  ]
+  "heroUrl": "https://app.cartefidelavis.com/kraft/hero.jpg"
 }

@@ -178,9 +178,8 @@
     "instagram_external_url": "https://linktr.ee/casalocaparis",
     "walletTemplate": "templates/brunch-resto",
     "demoLayout": "nested",
-    "acces_statut": "active",
-    "date_creation": "2026-06-05",
-    "date_activation": "2026-06-13T18:28:14.503Z"
+    "acces_statut": "non_active",
+    "date_creation": "2026-06-05"
   },
   "loulou": {
     "name": "Loulou",
@@ -229,7 +228,8 @@
   "l-atelier-gusto": {
     "name": "L'atelier Gusto",
     "brandColor": "#312E32",
-    "brandColor2": "#282529"
+    "brandColor2": "#282529",
+    "acces_statut": "non_active"
   },
   "miura": {
     "name": "MIURA",
@@ -2121,7 +2121,6 @@
     "walletTemplate": "templates/brunch-resto",
     "demoLayout": "nested",
     "acces_statut": "non_active",
-    "date_creation": "2026-08-12",
-    "email": "pierrefrichot@gmail.com"
+    "date_creation": "2026-08-12"
   }
 }
