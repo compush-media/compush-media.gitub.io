@@ -299,6 +299,18 @@ if (!localStorage.getItem(AUTH_KEY)) {
   window.location.href = "login.html";
 }
 
+/* ROLE_KEY etait declare juste au-dessus et jamais lu : le drapeau de
+   connexion suffisait, si bien qu'un employe qui tapait l'URL voyait le
+   chiffre d'affaires et les factures. Le panneau « Equipe » d'espace-admin
+   lui promet l'inverse. Meme regle qu'espace-admin.html ligne 1443 : role
+   absent vaut « employe », et l'employe repart vers la seule page qui lui
+   est ouverte. */
+var ROLE     = localStorage.getItem(ROLE_KEY) || "employe";
+var ACCES_OK = ROLE === "admin";
+if (!ACCES_OK) {
+  window.location.href = "espace-admin.html";
+}
+
 fetch("/" + SITE + "/config.json")
   .then(function(r) { return r.json(); })
   .then(function(cfg) {
@@ -310,6 +322,9 @@ fetch("/" + SITE + "/config.json")
 
 // ── Rendre la section billing ───────────────────────
 document.addEventListener("DOMContentLoaded", function() {
+  /* La redirection ci-dessus ne coupe pas le script en cours : sans ce
+     garde-fou, les montants s'affichaient le temps que la navigation parte. */
+  if (!ACCES_OK) return;
   if (window.FidelavisAdminBilling) {
     FidelavisAdminBilling.renderBilling("billingContent");
   } else {

@@ -269,6 +269,14 @@ if (SITE && !localStorage.getItem(AUTH_KEY)) {
   window.location.href = 'login.html';
 }
 
+/* Pas de garde de role ici, et c'est delibere. Le panneau « Equipe »
+   d'espace-admin annonce a l'employe l'acces au « QR d'installation » : ces
+   cartes A6 ne sont que ce QR, mis en page pour l'imprimante. La page ne
+   montre ni chiffre d'affaires, ni statistiques, ni reglages — seulement le
+   nom de l'enseigne et son lien NFC public. Un employe qui recharge les
+   cartes des tables est dans son role. Voir a l'inverse billing.html,
+   state_resto.html et reputation-google.html, reservees au responsable. */
+
 /* ── URL NFC ── */
 const nfcUrl = `${location.origin}/${SITE}/indexnfc.html`;
 const qrUrl  = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&color=1c1c2e&bgcolor=ffffff&data=${encodeURIComponent(nfcUrl)}`;

@@ -216,6 +216,31 @@
     return m ? m[1].toLowerCase() : "resto1";
   })();
 
+  /* ── Garde d'acces ────────────────────────────────────────────────────
+     Cette page n'en avait aucune : l'adresse suffisait, sans meme etre
+     connecte. C'est pourtant le tableau de bord de statistiques, celui que
+     le panneau « Equipe » d'espace-admin promet a l'employe de ne pas lui
+     montrer. Meme motif qu'espace-admin.html lignes 1440 et 1443 : le
+     drapeau admin_<slug> ouvre la page, un role absent vaut « employe », et
+     l'employe repart vers la seule page qui lui est ouverte.
+
+     Garde de navigateur, contournable : elle tient la promesse faite a
+     l'ecran vis-a-vis d'un employe ordinaire, pas davantage. La RPC
+     fv_stats_dashboard reste concue pour resister a l'exposition. */
+  const AUTH_KEY = "admin_" + SLUG;
+  const ROLE_KEY = "role_"  + SLUG;
+  const ACCES_OK = (function(){
+    if (!localStorage.getItem(AUTH_KEY)) {
+      window.location.href = "login.html";
+      return false;
+    }
+    if ((localStorage.getItem(ROLE_KEY) || "employe") !== "admin") {
+      window.location.href = "espace-admin.html";
+      return false;
+    }
+    return true;
+  })();
+
   let RESTO = SLUG; // sera remplacé par le nom config dès que le fetch répond
 
   fetch("/" + SLUG + "/config.json", { cache: "no-store" })
@@ -359,6 +384,10 @@
 
   google.charts.load("current", { packages:["corechart"] });
   google.charts.setOnLoadCallback(() => {
+    /* La redirection posee en tete de script ne coupe pas l'execution en
+       cours : sans ce garde-fou, refresh() appelait la RPC et peignait les
+       chiffres le temps que la navigation parte. */
+    if (!ACCES_OK) return;
     ["daysSelect","eventSelect"].forEach(id => {
       document.getElementById(id).addEventListener("change", refresh);
     });

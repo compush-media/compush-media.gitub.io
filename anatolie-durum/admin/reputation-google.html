@@ -859,6 +859,20 @@
 // ============================================================
 const _adminSite  = location.pathname.split('/')[1] || 'resto1';
 let authToken     = localStorage.getItem('fv_token') || localStorage.getItem('admin_' + _adminSite) || null;
+
+/* ── Garde de role ─────────────────────────────────────────────────────
+   Le panneau « Equipe » d'espace-admin promet a l'employe qu'il ne verra ni
+   les statistiques ni les parametres. Cette page est les deux a la fois :
+   la note Google et le volume d'avis d'un cote, la connexion de la fiche
+   Google et les reglages de reponse automatique de l'autre. Reservee au
+   responsable. Meme regle qu'espace-admin.html ligne 1443 : role absent
+   vaut « employe ». Le controle d'authentification, lui, vit plus bas dans
+   init() ou authToken est verifie. */
+const _adminRole = localStorage.getItem('role_' + _adminSite) || 'employe';
+if (authToken && _adminRole !== 'admin') {
+  window.location.href = 'espace-admin.html';
+}
+
 let merchantData  = null;
 let googleToken   = null;
 let currentAccount  = null;
@@ -1071,6 +1085,10 @@ async function initApp() {
   if (urlParams.get('connected')) { toast('✅ Fiche Google connectée !', 'success'); history.replaceState({}, '', location.pathname); }
   if (urlParams.get('error'))     { toast('Erreur de connexion Google.', 'error');   history.replaceState({}, '', location.pathname); }
   if (!authToken) return (window.location.href = 'login.html');
+  /* La redirection posee en tete de script ne coupe pas l'execution : sans
+     ce garde-fou, le tableau de bord des avis se peignait le temps que la
+     navigation parte. */
+  if (_adminRole !== 'admin') return;
   initGoogleAuth();
   const savedMerchant = JSON.parse(localStorage.getItem('fv_merchant') || '{"name":"Admin"}');
   merchantData = savedMerchant;
