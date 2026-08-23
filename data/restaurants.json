@@ -18,9 +18,11 @@
     "twitter": "",
     "linkedin": "",
     "GMB_URL": "",
-    "acces_statut": "non_active",
+    "acces_statut": "invite_envoye",
     "date_creation": "2026-05-23",
-    "email": "axou.v@aliceadsl.fr"
+    "email": "axou.v@aliceadsl.fr",
+    "invite_hash": "77374033bdc3beeeacc6753b442cb8e847de6483de300b719302b78e8ecd40fb",
+    "invite_expires": "2026-08-25T08:41:41.883Z"
   },
   "brother-sister-brunch-lunch-dinner": {
     "name": "BROTHER SISTER Brunch Lunch Dinner",
