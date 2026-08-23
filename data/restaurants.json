@@ -2098,9 +2098,8 @@
     "instagram_external_url": "",
     "walletTemplate": "templates/brunch-resto",
     "demoLayout": "nested",
-    "acces_statut": "active",
-    "date_creation": "2026-08-12",
-    "date_activation": "2026-08-22T22:41:51.153Z"
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-12"
   },
   "coco-de-mer": {
     "name": "Coco de Mer",

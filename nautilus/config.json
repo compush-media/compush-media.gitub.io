@@ -17,7 +17,7 @@
     "date_fin": ""
   },
   "plan": "terrain",
-  "subscriptionStatus": "trialing",
+  "subscriptionStatus": "active",
   "setupPaid": true,
   "billingEmail": "",
   "stripeCustomerId": "",
@@ -26,7 +26,5 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/nautilus/logo.jpg",
-  "trialType": "clients",
-  "trialEndDate": "2026-09-21"
+  "iconUrl": "https://app.cartefidelavis.com/nautilus/logo.jpg"
 }
