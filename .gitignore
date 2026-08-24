@@ -6,3 +6,7 @@ package-lock.json
 
 # Intermédiaires green-screen (régénérables)
 dm_videos/*-green.mp4
+
+# Vignettes extraites de la video finale a des horodatages fixes, regenerees
+# a chaque passage de gen_dm_videos.py. Purement derivees : 25 Mo pour rien.
+dm_videos/*_scenes/
