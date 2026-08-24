@@ -1,41 +1,41 @@
 [
   {
-    "slug": "casa-loca",
-    "restaurant_name": "Casa Loca",
-    "mockup_url": "https://app.cartefidelavis.com/mockups/casa-loca-iphone.png",
-    "wallet_url": "https://app.cartefidelavis.com/casa-loca/",
-    "demo_url": "https://app.cartefidelavis.com/casa-loca/demo/",
+    "slug": "anima",
+    "restaurant_name": "Anima",
+    "mockup_url": "https://app.cartefidelavis.com/mockups/anima-iphone.png",
+    "wallet_url": "https://app.cartefidelavis.com/anima/",
+    "demo_url": "https://app.cartefidelavis.com/anima/demo/",
     "status": "success",
-    "heygen_video_id": "c8cb8e5f138c426e894357bb5f31b2c4",
-    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/c8cb8e5f138c426e894357bb5f31b2c4.mp4?Expires=1781304587&Signature=CPmD2FOv4ibxIs8wpfneSiNUHDprPQEYjQTwb5MBCv1j0OntQr7TkTZe9Yc69KQfUH0bOse4pxx-iXTV1UIxaQisdR35fqaQN0Jtu1ajenAMn4HyvRhGnYuz5DIafoK2YWEvbpxyw95uNr0ENHzH-Zjv42aV2BswMgW~7R4hI5pPE1jzSF~SJvoaLDkCk2EZhdaAsKSQcrEb4RUssbboQ1AZ8V3nG5DmOxfoYflu4ik~ECExarPC8L3Vl645D9TyXj0ZwBiJdm4sGQiY90hITZlc-dHYXuJ8QVcQDhXh8~aedlSEg4aP0bUxaNgOzSyxBhnD~K3A54F6-AgzwsnaNQ__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "heygen_video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/288630a07eca49aa87460535cee78838/dc1b0c30e3df4a9398271b50237fe721.mp4?Expires=1788209703&Signature=oOtDxP2qHDJWQy3-ODV-uUR3f67wAxNOJ2z9oTrhMV5xyTFOBa8wB4Nm2HoGTS9i9AB~insWGFteQPvhlYG~mi-v5Ng8xluk3SKFA96zAw5Ee8Bwv2KAO5eeNV9LA-yEMvXXCEEsgOs6CXbOUgzf-Eg1lfRBQpiBnE6OCqo3-B9ZspzuUbjChUIYeGMi6qsyQOp7IQC7UmWcCq9ZIkBpG4sphxtA92mtxrmOJmamPkm~FmPXkbI2aok2waFQUJXQjuie3c~M95XbWIT1cQrw7ork-tVqWm2gGaLcN-B~8Z3LtImvd1TVpR6LtH9mSdX8cD6VARU3nGS7gp5Bn1JBAA__&Key-Pair-Id=K38HBHX5LX3X2H",
+    "heygen_empreinte": "a46bc5289b3f6e6e",
     "mode": "heygen_green_composite",
-    "output_file": "dm_videos/casa-loca-dm.mp4",
-    "output_size_mb": 4.56,
-    "total_elapsed_s": 141.2,
+    "output_file": "dm_videos/anima-dm.mp4",
+    "output_size_mb": 15.59,
+    "total_elapsed_s": 16.2,
     "scenes": [
       {
         "t": 1.5,
-        "path": "dm_videos/casa-loca_scenes/scene_0015.png"
+        "path": "dm_videos/anima_scenes/scene_0015.png"
       },
       {
         "t": 4.5,
-        "path": "dm_videos/casa-loca_scenes/scene_0045.png"
+        "path": "dm_videos/anima_scenes/scene_0045.png"
       },
       {
         "t": 7.5,
-        "path": "dm_videos/casa-loca_scenes/scene_0075.png"
+        "path": "dm_videos/anima_scenes/scene_0075.png"
       },
       {
         "t": 11.0,
-        "path": "dm_videos/casa-loca_scenes/scene_0110.png"
+        "path": "dm_videos/anima_scenes/scene_0110.png"
       },
       {
         "t": 14.0,
-        "path": "dm_videos/casa-loca_scenes/scene_0140.png"
+        "path": "dm_videos/anima_scenes/scene_0140.png"
       },
       {
         "t": 17.0,
-        "path": "dm_videos/casa-loca_scenes/scene_0170.png"
+        "path": "dm_videos/anima_scenes/scene_0170.png"
       }
     ]
   }
