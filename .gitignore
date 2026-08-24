@@ -5,8 +5,14 @@ node_modules/
 package-lock.json
 
 # Intermédiaires green-screen (régénérables)
-dm_videos/*-green.mp4
 
 # Vignettes extraites de la video finale a des horodatages fixes, regenerees
 # a chaque passage de gen_dm_videos.py. Purement derivees : 25 Mo pour rien.
 dm_videos/*_scenes/
+
+# Les vidéos DM ne sont plus publiées. Elles sont ATTACHÉES au message
+# Instagram, jamais liées : le prospect ne va chercher aucune URL. Elles
+# vivent donc sur la machine qui les produit et qui envoie, et nulle part
+# ailleurs. Les publier ne servait qu'à les faire parvenir à un ambassadeur —
+# modèle construit mais jamais mis en service, 0 wallet sur 97 en porte le code.
+dm_videos/*.mp4
