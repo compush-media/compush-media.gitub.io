@@ -16,3 +16,9 @@ dm_videos/*_scenes/
 # ailleurs. Les publier ne servait qu'à les faire parvenir à un ambassadeur —
 # modèle construit mais jamais mis en service, 0 wallet sur 97 en porte le code.
 dm_videos/*.mp4
+
+# La photo du wallet, copiée à côté de sa vidéo pour que les deux pièces d'un
+# même DM soient dans le seul dossier qu'on ouvre au moment d'envoyer.
+# Strictement une copie : l'original vit dans mockups/, suivi et publié. La
+# versionner reviendrait à committer 929 PNG déjà présents dans le dépôt.
+dm_videos/*-wallet.png
