@@ -39,6 +39,7 @@
         session_id:      extra.sessionId || sessionStorage.getItem("fv_session_id")  || null,
         src:             extra.src       || null,
         demo:            extra.demo === true || extra.demo === "true" || extra.demo === "1",
+        duree_s:         extra.duree != null ? extra.duree : null,
         jour:            new Date().toISOString().slice(0, 10),
         mois:            new Date().getMonth() + 1,
         annee:           new Date().getFullYear(),
@@ -480,10 +481,63 @@
     var F = window.Fidelavis;
     if (!F || !F.trackOnce) return;
     var slug = (F.getRestoSlug && F.getRestoSlug()) || "";
+    var src  = p.get("src") || "direct";
     F.trackOnce("demo_view", "fv_demo_view_" + slug, {
       demo: true,
-      src:  p.get("src") || "direct",
+      src:  src,
     });
+    chronometrerDemo(slug, src);
+  }
+
+  /* --------------------------------------------------
+     chronometrerDemo() — combien de temps il est resté
+
+     « demo_view » dit qu'il est venu, jamais combien de temps il est resté.
+     Or entre le prospect qui ferme en deux secondes et celui qui parcourt sa
+     carte pendant une minute, il n'y a pas le même sujet de conversation.
+
+     Événement SÉPARÉ, et non un champ ajouté à demo_view : la visite est
+     connue à l'arrivée, la durée seulement au départ. Les fondre obligerait à
+     attendre la fermeture de l'onglet pour savoir qu'une démo a été ouverte —
+     et la dérogation « contacter dans l'heure » perdrait son heure.
+
+     Appelé APRÈS les filtres de tracerVisiteDemo : le robot de captures et le
+     poste interne sont déjà écartés, sans avoir à répéter leurs règles.
+
+     On compte le temps VISIBLE. Un onglet laissé ouvert en arrière-plan
+     pendant trois heures ne prouve aucun intérêt.
+  -------------------------------------------------- */
+  function chronometrerDemo(slug, src) {
+    var F = window.Fidelavis;
+    if (!F || !F.track) return;
+
+    var cle = "fv_demo_time_" + slug;
+    try { if (sessionStorage.getItem(cle)) return; } catch (e) {}
+
+    var depuis = (document.visibilityState === "visible") ? Date.now() : 0;
+    var cumul  = 0;
+    var envoye = false;
+
+    function envoyer() {
+      if (envoye) return;
+      if (depuis) { cumul += Date.now() - depuis; depuis = 0; }
+      var s = Math.round(cumul / 1000);
+      // Sous 2 s : un rebond, ou un préchargement de navigateur. Au-delà
+      // d'une heure : un onglet oublié, dont la durée ne dit plus rien.
+      if (s < 2 || s > 3600) return;
+      envoye = true;
+      try { sessionStorage.setItem(cle, "1"); } catch (e) {}
+      // track passe par fetch keepalive : la requête survit à la fermeture.
+      F.track("demo_time", { demo: true, src: src, duree: s });
+    }
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") envoyer();
+      else if (!depuis) depuis = Date.now();
+    });
+    // pagehide plutôt que unload : unload n'est pas fiable sur mobile, et
+    // empêche la mise en cache de la page par le navigateur.
+    window.addEventListener("pagehide", envoyer);
   }
 
   /* --------------------------------------------------
