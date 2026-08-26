@@ -22,3 +22,9 @@ dm_videos/*.mp4
 # Strictement une copie : l'original vit dans mockups/, suivi et publié. La
 # versionner reviendrait à committer 929 PNG déjà présents dans le dépôt.
 dm_videos/*-wallet.png
+
+# Correspondance slug → URL de la vidéo hébergée, tenue par la passerelle du
+# CRM au fil de l'eau. Régénérable d'un clic (« Mettre en ligne ») et sans
+# aucun coût d'API. Aucune raison de publier, dans un dépôt public, la liste
+# des prospects à qui l'on a fait une vidéo.
+dm_videos/hebergement.json
