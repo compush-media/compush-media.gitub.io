@@ -2122,5 +2122,27 @@
     "demoLayout": "nested",
     "acces_statut": "non_active",
     "date_creation": "2026-08-12"
+  },
+  "le-bon-moment-cafe": {
+    "name": "Le bon moment café",
+    "brandColor": "#BD825C",
+    "brandColor2": "#9A6A4B",
+    "ville": "Paris",
+    "site_web": "https://lebonmomentparis.eatbu.com/",
+    "googleReview": "https://www.google.com/maps/place/?q=place_id:ChIJx4dvvh5x5kcRND0lWvWzjA4",
+    "instagramUrl": "https://www.instagram.com/lebonmoment_cafeparis/",
+    "logoUrl": "https://app.cartefidelavis.com/le-bon-moment-cafe/logo.jpg",
+    "heroUrl": "https://app.cartefidelavis.com/le-bon-moment-cafe/hero.jpg",
+    "note_google": 4.6,
+    "nombre_avis_google": 729,
+    "ambassadorCode": "",
+    "statut_commercial": "",
+    "instagram_followers": 1350.0,
+    "instagram_fullname": "",
+    "instagram_external_url": "",
+    "walletTemplate": "templates/brunch-resto",
+    "demoLayout": "nested",
+    "acces_statut": "non_active",
+    "date_creation": "2026-08-25"
   }
 }

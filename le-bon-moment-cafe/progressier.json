@@ -1,0 +1,22 @@
+{
+  "name": "Le bon moment café",
+  "short_name": "Le bon moment café",
+  "start_url": "/le-bon-moment-cafe/index.html",
+  "scope": "/le-bon-moment-cafe/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#BD825C",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
