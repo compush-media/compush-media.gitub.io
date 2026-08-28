@@ -1,0 +1,30 @@
+{
+  "name": "Le Petit Pontoise",
+  "color": "#6A2D06",
+  "color2": "#562404",
+  "phone": "01 43 29 25 20",
+  "address": "9 Rue de Pontoise 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-petit-pontoise/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lepetitpontoise/",
+  "heroUrl": "https://app.cartefidelavis.com/le-petit-pontoise/hero.jpg",
+  "tagline": "Le Petit Pontoise — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-petit-pontoise/logo.jpg"
+}

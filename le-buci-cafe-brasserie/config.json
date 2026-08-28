@@ -1,0 +1,30 @@
+{
+  "name": "LE BUCI CAFÉ BRASSERIE",
+  "color": "#122979",
+  "color2": "#0E2163",
+  "phone": "01 43 26 67 52",
+  "address": "52 Rue Dauphine 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-buci-cafe-brasserie/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafe_buci",
+  "heroUrl": "https://app.cartefidelavis.com/le-buci-cafe-brasserie/hero.jpg",
+  "tagline": "7/7 - 7h30/5h Saint Germain Des Prés, Paris 6",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-buci-cafe-brasserie/logo.jpg"
+}

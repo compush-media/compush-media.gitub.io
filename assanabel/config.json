@@ -1,0 +1,30 @@
+{
+  "name": "Assanabel",
+  "color": "#988449",
+  "color2": "#7C6C3B",
+  "phone": "01 42 96 89 85",
+  "address": "38 Rue Jacob 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/assanabel/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/assanabel/",
+  "heroUrl": "https://app.cartefidelavis.com/assanabel/hero.jpg",
+  "tagline": "Assanabel — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/assanabel/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Ismaïl",
+  "color": "#5A73A6",
+  "color2": "#495E88",
+  "phone": "09 51 33 39 51",
+  "address": "5 Av. Trudaine 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/ismail/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurantismail",
+  "heroUrl": "https://app.cartefidelavis.com/ismail/hero.jpg",
+  "tagline": "Ismaïl — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ismail/logo.jpg"
+}

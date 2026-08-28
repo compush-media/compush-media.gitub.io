@@ -1,0 +1,22 @@
+{
+  "name": "Café Lapérouse Concorde",
+  "short_name": "Café Lapérouse Concorde",
+  "start_url": "/cafe-laperouse-concorde/index.html",
+  "scope": "/cafe-laperouse-concorde/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#0A3F67",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

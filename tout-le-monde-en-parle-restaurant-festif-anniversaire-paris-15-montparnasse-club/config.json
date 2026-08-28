@@ -1,0 +1,30 @@
+{
+  "name": "Tout Le Monde En Parle - restaurant festif anniversaire paris 15 montparnasse club",
+  "color": "#E62011",
+  "color2": "#BC1A0D",
+  "phone": "01 40 47 08 09",
+  "address": "4 Rue du Départ 75015 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/tout-le-monde-en-parle-restaurant-festif-anniversaire-paris-15-montparnasse-club/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/letoutlemondeenparle/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/tout-le-monde-en-parle-restaurant-festif-anniversaire-paris-15-montparnasse-club/hero.jpg",
+  "tagline": "Tout Le Monde En Parle - restaurant festif anniversaire paris 15 montparnasse club — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/tout-le-monde-en-parle-restaurant-festif-anniversaire-paris-15-montparnasse-club/logo.jpg"
+}

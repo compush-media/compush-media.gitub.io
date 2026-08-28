@@ -1,0 +1,30 @@
+{
+  "name": "Papa Poule",
+  "color": "#25687B",
+  "color2": "#1E5564",
+  "phone": "09 50 48 28 23",
+  "address": "23 Rue des Taillandiers 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/papa-poule/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/papa__poule__/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/papa-poule/hero.jpg",
+  "tagline": "Papa Poule — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/papa-poule/logo.jpg"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Hanami Teatime - Fluffy Pancakes",
+  "short_name": "Hanami Teatime - Fluffy Pancakes",
+  "start_url": "/hanami-teatime-fluffy-pancakes/index.html",
+  "scope": "/hanami-teatime-fluffy-pancakes/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#4B4228",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

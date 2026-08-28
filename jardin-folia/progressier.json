@@ -1,0 +1,22 @@
+{
+  "name": "Jardin Folia",
+  "short_name": "Jardin Folia",
+  "start_url": "/jardin-folia/index.html",
+  "scope": "/jardin-folia/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#5B6809",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

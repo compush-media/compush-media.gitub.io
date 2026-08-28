@@ -1,0 +1,30 @@
+{
+  "name": "Coutume Babylone | Torréfacteur | Coffee shop | Brunch",
+  "color": "#75533F",
+  "color2": "#5F4433",
+  "phone": "09 88 40 47 99",
+  "address": "47 Rue de Babylone 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/coutume-babylone-torrefacteur-coffee-shop-brunch/logo.jpg",
+  "instagramUrl": "https://instagram.com/coutumecafe",
+  "heroUrl": "https://app.cartefidelavis.com/coutume-babylone-torrefacteur-coffee-shop-brunch/hero.jpg",
+  "tagline": "Coutume Babylone | Torréfacteur | Coffee shop | Brunch — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/coutume-babylone-torrefacteur-coffee-shop-brunch/logo.jpg"
+}

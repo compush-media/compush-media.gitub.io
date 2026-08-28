@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant Chez Bartolo",
+  "color": "#21495E",
+  "color2": "#1B3B4D",
+  "phone": "01 43 26 27 08",
+  "address": "7 Rue des Canettes 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-chez-bartolo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/chez_bartolo/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-chez-bartolo/hero.jpg",
+  "tagline": "Restaurant Chez Bartolo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-chez-bartolo/logo.jpg"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Le Pré aux Clercs",
+  "color": "#966242",
+  "color2": "#7A5036",
+  "phone": "01 43 54 41 73",
+  "address": "30 Rue Bonaparte 75006 Paris",
+  "instagramUrl": "https://www.instagram.com/placejoys",
+  "heroUrl": "https://app.cartefidelavis.com/le-pre-aux-clercs/hero.jpg",
+  "tagline": "Le Pré aux Clercs — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Le Jardin de Mademoiselle",
+  "color": "#B47A48",
+  "color2": "#93643B",
+  "phone": "01 43 06 27 91",
+  "address": "69 bis Rue Saint-Dominique 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-jardin-de-mademoiselle/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lejardindemademoiselle/",
+  "heroUrl": "https://app.cartefidelavis.com/le-jardin-de-mademoiselle/hero.jpg",
+  "tagline": "Le Jardin de Mademoiselle — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-jardin-de-mademoiselle/logo.jpg"
+}

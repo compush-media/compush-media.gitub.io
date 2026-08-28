@@ -1,0 +1,30 @@
+{
+  "name": "Amazonia-Restaurant Halal Paris",
+  "color": "#3B521E",
+  "color2": "#304318",
+  "phone": "06 76 27 01 07",
+  "address": "30 Rue Marbeuf 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/amazonia-restaurant-halal-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/amazonia_restaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/amazonia-restaurant-halal-paris/hero.jpg",
+  "tagline": "Amazonia-Restaurant Halal Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/amazonia-restaurant-halal-paris/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Fitzgerald",
+  "color": "#D7AA07",
+  "color2": "#B08B05",
+  "phone": "01 83 64 82 91",
+  "address": "54 Bd de la Tour-Maubourg 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/fitzgerald/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/fitzgerald.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/fitzgerald/hero.jpg",
+  "tagline": "Fitzgerald — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/fitzgerald/logo.jpg"
+}

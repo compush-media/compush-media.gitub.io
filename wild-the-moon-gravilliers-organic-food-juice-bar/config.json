@@ -1,0 +1,30 @@
+{
+  "name": "Wild & The Moon Gravilliers - Organic Food Juice Bar",
+  "color": "#90874E",
+  "color2": "#766E3F",
+  "phone": "01 86 95 40 46",
+  "address": "25 Rue des Gravilliers 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/wild-the-moon-gravilliers-organic-food-juice-bar/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/wildandthemoon/",
+  "heroUrl": "https://app.cartefidelavis.com/wild-the-moon-gravilliers-organic-food-juice-bar/hero.jpg",
+  "tagline": "Wild & The Moon Gravilliers - Organic Food Juice Bar — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/wild-the-moon-gravilliers-organic-food-juice-bar/logo.jpg"
+}

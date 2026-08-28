@@ -1,0 +1,30 @@
+{
+  "name": "Le Pain Quotidien",
+  "color": "#F3BB26",
+  "color2": "#C7991F",
+  "phone": "01 42 96 31 70",
+  "address": "18 Pl. du Marché Saint-Honoré 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-pain-quotidien/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lepainquotidienfr/",
+  "heroUrl": "https://app.cartefidelavis.com/le-pain-quotidien/hero.jpg",
+  "tagline": "Le Pain Quotidien — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-pain-quotidien/logo.jpg"
+}

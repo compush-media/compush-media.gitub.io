@@ -1,0 +1,22 @@
+{
+  "name": "La Brigade - Oberkampf - Restaurant Paris 11",
+  "short_name": "La Brigade - Oberkampf - Restaurant Paris 11",
+  "start_url": "/la-brigade-oberkampf-restaurant-paris-11/index.html",
+  "scope": "/la-brigade-oberkampf-restaurant-paris-11/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#D90C1F",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

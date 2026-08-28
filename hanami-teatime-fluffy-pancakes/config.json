@@ -1,0 +1,30 @@
+{
+  "name": "Hanami Teatime - Fluffy Pancakes",
+  "color": "#4B4228",
+  "color2": "#3D3620",
+  "phone": "06 71 95 19 38",
+  "address": "50 Rue des Gravilliers 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/hanami-teatime-fluffy-pancakes/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/hanamiteatime/",
+  "heroUrl": "https://app.cartefidelavis.com/hanami-teatime-fluffy-pancakes/hero.jpg",
+  "tagline": "Hanami Teatime - Fluffy Pancakes — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/hanami-teatime-fluffy-pancakes/logo.jpg"
+}

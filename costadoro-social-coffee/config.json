@@ -1,0 +1,30 @@
+{
+  "name": "Costadoro Social Coffee",
+  "color": "#4D3125",
+  "color2": "#3F281E",
+  "phone": "01 40 20 05 18",
+  "address": "91 Rue de Rivoli 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/costadoro-social-coffee/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/costadoro_official/",
+  "heroUrl": "https://app.cartefidelavis.com/costadoro-social-coffee/hero.jpg",
+  "tagline": "Costadoro Social Coffee — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/costadoro-social-coffee/logo.jpg"
+}

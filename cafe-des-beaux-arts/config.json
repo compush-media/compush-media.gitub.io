@@ -1,0 +1,30 @@
+{
+  "name": "Café des Beaux Arts",
+  "color": "#864130",
+  "color2": "#6D3527",
+  "phone": "01 72 60 98 46",
+  "address": "7 Quai Malaquais 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-des-beaux-arts/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafe_desbeauxarts/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-des-beaux-arts/hero.jpg",
+  "tagline": "Café des Beaux Arts — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-des-beaux-arts/logo.jpg"
+}

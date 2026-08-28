@@ -1,0 +1,22 @@
+{
+  "name": "Coutume Babylone | Torréfacteur | Coffee shop | Brunch",
+  "short_name": "Coutume Babylone | Torréfacteur | Coffee shop | Brunch",
+  "start_url": "/coutume-babylone-torrefacteur-coffee-shop-brunch/index.html",
+  "scope": "/coutume-babylone-torrefacteur-coffee-shop-brunch/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#75533F",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

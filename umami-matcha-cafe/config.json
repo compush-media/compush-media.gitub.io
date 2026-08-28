@@ -1,0 +1,30 @@
+{
+  "name": "Umami Matcha Café",
+  "color": "#566827",
+  "color2": "#46551F",
+  "phone": "01 48 04 06 02",
+  "address": "22 Rue Béranger 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/umami-matcha-cafe/logo.jpg",
+  "instagramUrl": "http://instagram.com/umami_matcha_cafe",
+  "heroUrl": "https://app.cartefidelavis.com/umami-matcha-cafe/hero.jpg",
+  "tagline": "Umami Matcha Café — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/umami-matcha-cafe/logo.jpg"
+}

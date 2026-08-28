@@ -1,0 +1,30 @@
+{
+  "name": "Le vrai Paris",
+  "color": "#C2A257",
+  "color2": "#9F8447",
+  "phone": "09 74 64 10 30",
+  "address": "33 Rue des Abbesses 75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-vrai-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/levraiparisbistrot/",
+  "heroUrl": "https://app.cartefidelavis.com/le-vrai-paris/hero.jpg",
+  "tagline": "Le vrai Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-vrai-paris/logo.jpg"
+}

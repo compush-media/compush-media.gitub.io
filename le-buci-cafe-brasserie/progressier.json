@@ -1,0 +1,22 @@
+{
+  "name": "LE BUCI CAFÉ BRASSERIE",
+  "short_name": "LE BUCI CAFÉ BRASSERIE",
+  "start_url": "/le-buci-cafe-brasserie/index.html",
+  "scope": "/le-buci-cafe-brasserie/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#122979",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

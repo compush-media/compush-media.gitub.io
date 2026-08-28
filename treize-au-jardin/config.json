@@ -1,0 +1,29 @@
+{
+  "name": "Treize au Jardin",
+  "color": "#493427",
+  "color2": "#3B2A1F",
+  "phone": "5 Rue de Médicis 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/treize-au-jardin/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/treize_au_jardin",
+  "heroUrl": "https://app.cartefidelavis.com/treize-au-jardin/hero.jpg",
+  "tagline": "Treize au Jardin — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/treize-au-jardin/logo.jpg"
+}

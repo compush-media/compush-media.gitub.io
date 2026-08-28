@@ -1,0 +1,30 @@
+{
+  "name": "Café Albert",
+  "color": "#4D7FAC",
+  "color2": "#3F688D",
+  "phone": "01 42 64 71 92",
+  "address": "117 Rue Ordener 75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-albert/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafealbert.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-albert/hero.jpg",
+  "tagline": "Café Albert — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-albert/logo.jpg"
+}

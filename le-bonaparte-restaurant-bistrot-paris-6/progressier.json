@@ -1,0 +1,22 @@
+{
+  "name": "Le Bonaparte - Restaurant Bistrot Paris 6",
+  "short_name": "Le Bonaparte - Restaurant Bistrot Paris 6",
+  "start_url": "/le-bonaparte-restaurant-bistrot-paris-6/index.html",
+  "scope": "/le-bonaparte-restaurant-bistrot-paris-6/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#3032E8",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

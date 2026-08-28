@@ -1,0 +1,30 @@
+{
+  "name": "Laïa Monceau",
+  "color": "#984511",
+  "color2": "#7C380D",
+  "phone": "06 30 27 09 10",
+  "address": "28 Rue de Monceau 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/laia-monceau/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/laia_restaurant/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/laia-monceau/hero.jpg",
+  "tagline": "Laïa Monceau — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/laia-monceau/logo.jpg"
+}

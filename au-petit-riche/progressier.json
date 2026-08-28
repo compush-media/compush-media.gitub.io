@@ -1,0 +1,22 @@
+{
+  "name": "Au Petit Riche",
+  "short_name": "Au Petit Riche",
+  "start_url": "/au-petit-riche/index.html",
+  "scope": "/au-petit-riche/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#9E2612",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Le Zimmer",
+  "color": "#74151D",
+  "color2": "#5F1117",
+  "phone": "01 42 36 74 03",
+  "address": "1 Pl. du Châtelet 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-zimmer/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lezimmerparis/",
+  "heroUrl": "https://app.cartefidelavis.com/le-zimmer/hero.jpg",
+  "tagline": "📞 01 42 36 74 03",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-zimmer/logo.jpg"
+}

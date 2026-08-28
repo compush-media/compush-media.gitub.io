@@ -1,0 +1,22 @@
+{
+  "name": "La Compagnie du Café Coffee & Brunch",
+  "short_name": "La Compagnie du Café Coffee & Brunch",
+  "start_url": "/la-compagnie-du-cafe-coffee-brunch/index.html",
+  "scope": "/la-compagnie-du-cafe-coffee-brunch/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#6E4702",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

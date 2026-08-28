@@ -1,0 +1,30 @@
+{
+  "name": "La Maison Montmorency",
+  "color": "#D24A43",
+  "color2": "#AC3C36",
+  "phone": "01 39 89 82 06",
+  "address": "8 Rue Carnot 95160 Montmorency",
+  "logoUrl": "https://app.cartefidelavis.com/la-maison-montmorency/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lamaisonmontmorency/",
+  "heroUrl": "https://app.cartefidelavis.com/la-maison-montmorency/hero.jpg",
+  "tagline": "La Maison Montmorency — Montmorency",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Montmorency",
+  "iconUrl": "https://app.cartefidelavis.com/la-maison-montmorency/logo.jpg"
+}

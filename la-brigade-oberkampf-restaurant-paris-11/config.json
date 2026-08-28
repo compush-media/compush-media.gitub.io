@@ -1,0 +1,30 @@
+{
+  "name": "La Brigade - Oberkampf - Restaurant Paris 11",
+  "color": "#D90C1F",
+  "color2": "#B10919",
+  "phone": "01 48 06 79 56",
+  "address": "103 Rue Oberkampf 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-brigade-oberkampf-restaurant-paris-11/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/labrigadeft/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/la-brigade-oberkampf-restaurant-paris-11/hero.jpg",
+  "tagline": "La Brigade - Oberkampf - Restaurant Paris 11 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-brigade-oberkampf-restaurant-paris-11/logo.jpg"
+}

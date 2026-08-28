@@ -1,0 +1,30 @@
+{
+  "name": "Pepita - Pizza & Pasta",
+  "color": "#EC982A",
+  "color2": "#C17C22",
+  "phone": "01 56 81 92 87",
+  "address": "88 Bd Saint-Germain 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/pepita-pizza-pasta/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pepita_paris/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/pepita-pizza-pasta/hero.jpg",
+  "tagline": "Pepita - Pizza & Pasta — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pepita-pizza-pasta/logo.jpg"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Judy cantine qualitarienne & sans gluten",
+  "color": "#9E7A3E",
+  "color2": "01 43 25 54 14",
+  "phone": "18 Rue de Fleurus 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/judy-cantine-qualitarienne-sans-gluten/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/wix/",
+  "heroUrl": "https://app.cartefidelavis.com/judy-cantine-qualitarienne-sans-gluten/hero.jpg",
+  "tagline": "Judy cantine qualitarienne & sans gluten — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/judy-cantine-qualitarienne-sans-gluten/logo.jpg"
+}

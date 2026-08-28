@@ -1,0 +1,30 @@
+{
+  "name": "Les Jardins du Presbourg",
+  "color": "#64120C",
+  "color2": "#520E09",
+  "phone": "01 45 00 24 77",
+  "address": "3 Av. de la Grande Armée 75116 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-jardins-du-presbourg/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesjardinsdupresbourg/",
+  "heroUrl": "https://app.cartefidelavis.com/les-jardins-du-presbourg/hero.jpg",
+  "tagline": "Les Jardins du Presbourg — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-jardins-du-presbourg/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "The Hood Paris",
+  "color": "#016F4E",
+  "color2": "#005B3F",
+  "phone": "01 43 57 64 47",
+  "address": "80 Rue Jean-Pierre Timbaud 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/the-hood-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/thehoodparis/?hl=en",
+  "heroUrl": "https://app.cartefidelavis.com/the-hood-paris/hero.jpg",
+  "tagline": "The Hood Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/the-hood-paris/logo.jpg"
+}

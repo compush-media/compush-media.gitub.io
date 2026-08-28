@@ -1,0 +1,30 @@
+{
+  "name": "Jaipur Café I Restaurant indien & Brunch à volonté & Buffet à volonté",
+  "color": "#4D3D23",
+  "color2": "#3F321C",
+  "phone": "01 48 01 06 00",
+  "address": "15-17 Rue des Messageries 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/jaipur-cafe-i-restaurant-indien-brunch-a-volonte-buffet-a-volonte/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/jaipur.cafe/",
+  "heroUrl": "https://app.cartefidelavis.com/jaipur-cafe-i-restaurant-indien-brunch-a-volonte-buffet-a-volonte/hero.jpg",
+  "tagline": "Jaipur Café I Restaurant indien & Brunch à volonté & Buffet à volonté — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/jaipur-cafe-i-restaurant-indien-brunch-a-volonte-buffet-a-volonte/logo.jpg"
+}

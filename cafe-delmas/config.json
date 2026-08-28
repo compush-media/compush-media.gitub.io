@@ -1,0 +1,30 @@
+{
+  "name": "Café Delmas",
+  "color": "#01246F",
+  "color2": "#001D5B",
+  "phone": "01 43 26 51 26",
+  "address": "2 Pl. de la Contrescarpe 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-delmas/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/delmascafe/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-delmas/hero.jpg",
+  "tagline": "Café Delmas — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-delmas/logo.jpg"
+}

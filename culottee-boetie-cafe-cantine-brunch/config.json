@@ -1,0 +1,30 @@
+{
+  "name": "Culottée Boétie - Café cantine & brunch",
+  "color": "#357FE4",
+  "color2": "#2B68BA",
+  "phone": "09 70 66 76 90",
+  "address": "42 Rue de Miromesnil 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/culottee-boetie-cafe-cantine-brunch/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/culotteecafe/",
+  "heroUrl": "https://app.cartefidelavis.com/culottee-boetie-cafe-cantine-brunch/hero.jpg",
+  "tagline": "Culottée Boétie - Café cantine & brunch — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/culottee-boetie-cafe-cantine-brunch/logo.jpg"
+}

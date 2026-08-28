@@ -1,0 +1,22 @@
+{
+  "name": "Terraza Mikuna - BHV Marais",
+  "short_name": "Terraza Mikuna - BHV Marais",
+  "start_url": "/terraza-mikuna-bhv-marais/index.html",
+  "scope": "/terraza-mikuna-bhv-marais/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#C66036",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

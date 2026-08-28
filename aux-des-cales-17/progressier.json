@@ -1,0 +1,22 @@
+{
+  "name": "Aux Dés Calés 17",
+  "short_name": "Aux Dés Calés 17",
+  "start_url": "/aux-des-cales-17/index.html",
+  "scope": "/aux-des-cales-17/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#D75E12",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

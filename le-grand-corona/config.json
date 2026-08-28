@@ -1,0 +1,30 @@
+{
+  "name": "Le Grand Corona",
+  "color": "#05306B",
+  "color2": "#042757",
+  "phone": "01 47 20 70 27",
+  "address": "3 Pl. de l'Alma 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-grand-corona/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/legrandcorona",
+  "heroUrl": "https://app.cartefidelavis.com/le-grand-corona/hero.jpg",
+  "tagline": "Le Grand Corona — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-grand-corona/logo.jpg"
+}

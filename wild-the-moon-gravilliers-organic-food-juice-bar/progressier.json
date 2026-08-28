@@ -1,0 +1,22 @@
+{
+  "name": "Wild & The Moon Gravilliers - Organic Food Juice Bar",
+  "short_name": "Wild & The Moon Gravilliers - Organic Food Juice Bar",
+  "start_url": "/wild-the-moon-gravilliers-organic-food-juice-bar/index.html",
+  "scope": "/wild-the-moon-gravilliers-organic-food-juice-bar/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#90874E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

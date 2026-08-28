@@ -1,0 +1,30 @@
+{
+  "name": "Echo | All-Day Breakfast & Brunch | Coffee",
+  "color": "#072569",
+  "color2": "#051E56",
+  "phone": "01 40 26 53 21",
+  "address": "95 Rue d'Aboukir 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/echo-all-day-breakfast-brunch-coffee/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/echo.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/echo-all-day-breakfast-brunch-coffee/hero.jpg",
+  "tagline": "ECHO Paris — Los Angeles state of mind Breakfast/Lunch · Coffee — 7/7",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/echo-all-day-breakfast-brunch-coffee/logo.jpg"
+}

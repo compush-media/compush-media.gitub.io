@@ -1,0 +1,30 @@
+{
+  "name": "Beaucour à la folie",
+  "color": "#7C4A2A",
+  "color2": "#653C22",
+  "phone": "01 45 61 08 57",
+  "address": "16 Av. Hoche 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/beaucour-a-la-folie/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/beaucourfolie8",
+  "heroUrl": "https://app.cartefidelavis.com/beaucour-a-la-folie/hero.jpg",
+  "tagline": "Beaucour à la folie — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/beaucour-a-la-folie/logo.jpg"
+}

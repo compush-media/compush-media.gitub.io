@@ -1,0 +1,22 @@
+{
+  "name": "La Terrasse des Archives",
+  "short_name": "La Terrasse des Archives",
+  "start_url": "/la-terrasse-des-archives/index.html",
+  "scope": "/la-terrasse-des-archives/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#997653",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Café Marlette",
+  "color": "#1E3252",
+  "color2": "#182943",
+  "phone": "51 R. des Martyrs 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-marlette/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/marlette_marlette_/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-marlette/hero.jpg",
+  "tagline": "Café Marlette — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-marlette/logo.jpg"
+}

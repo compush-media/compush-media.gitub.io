@@ -1,0 +1,29 @@
+{
+  "name": "Maison Sauvage",
+  "color": "#80AA62",
+  "color2": "#688B50",
+  "phone": "5 Rue de Buci 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/maison-sauvage/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/maisonsauvageparis",
+  "heroUrl": "https://app.cartefidelavis.com/maison-sauvage/hero.jpg",
+  "tagline": "Maison Sauvage — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/maison-sauvage/logo.jpg"
+}

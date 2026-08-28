@@ -1,0 +1,29 @@
+{
+  "name": "5 Pailles",
+  "color": "#99160F",
+  "color2": "#7D120C",
+  "phone": "79 Rue du Faubourg Saint-Denis 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/5-pailles/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/5pailles/?hl=en",
+  "heroUrl": "https://app.cartefidelavis.com/5-pailles/hero.jpg",
+  "tagline": "5 Pailles — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/5-pailles/logo.jpg"
+}

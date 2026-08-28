@@ -1,0 +1,30 @@
+{
+  "name": "La Fontaine Gaillon",
+  "color": "#215048",
+  "color2": "#1B413B",
+  "phone": "01 83 64 82 94",
+  "address": "1 Rue de la Michodière 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-fontaine-gaillon/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lafontainegaillonparis/",
+  "heroUrl": "https://app.cartefidelavis.com/la-fontaine-gaillon/hero.jpg",
+  "tagline": "La Fontaine Gaillon — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-fontaine-gaillon/logo.jpg"
+}

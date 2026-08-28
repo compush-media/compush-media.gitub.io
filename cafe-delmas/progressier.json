@@ -1,0 +1,22 @@
+{
+  "name": "Café Delmas",
+  "short_name": "Café Delmas",
+  "start_url": "/cafe-delmas/index.html",
+  "scope": "/cafe-delmas/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#01246F",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

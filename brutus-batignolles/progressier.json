@@ -1,0 +1,22 @@
+{
+  "name": "BRUTUS - Batignolles",
+  "short_name": "BRUTUS - Batignolles",
+  "start_url": "/brutus-batignolles/index.html",
+  "scope": "/brutus-batignolles/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#0B046C",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

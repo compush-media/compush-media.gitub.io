@@ -1,0 +1,30 @@
+{
+  "name": "L'Alivi",
+  "color": "#274749",
+  "color2": "#1F3A3B",
+  "phone": "01 48 87 90 20",
+  "address": "27 Rue du Roi de Sicile 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/l-alivi/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lalivirestaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/l-alivi/hero.jpg",
+  "tagline": "L'Alivi — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/l-alivi/logo.jpg"
+}

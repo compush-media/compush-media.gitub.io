@@ -1,0 +1,29 @@
+{
+  "name": "Bisou.",
+  "color": "#C46055",
+  "color2": "#A04E45",
+  "phone": "15 Bd du Temple 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bisou/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bar_bisou",
+  "heroUrl": "https://app.cartefidelavis.com/bisou/hero.jpg",
+  "tagline": "Bisou. — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bisou/logo.jpg"
+}

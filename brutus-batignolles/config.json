@@ -1,0 +1,30 @@
+{
+  "name": "BRUTUS - Batignolles",
+  "color": "#0B046C",
+  "color2": "#090358",
+  "phone": "06 21 90 33 20",
+  "address": "99 Rue des Dames 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/brutus-batignolles/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/brutus_creperies/",
+  "heroUrl": "https://app.cartefidelavis.com/brutus-batignolles/hero.jpg",
+  "tagline": "BRUTUS - Batignolles — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brutus-batignolles/logo.jpg"
+}

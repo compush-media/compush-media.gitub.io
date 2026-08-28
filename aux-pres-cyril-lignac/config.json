@@ -1,0 +1,30 @@
+{
+  "name": "Aux Prés Cyril Lignac",
+  "color": "#493227",
+  "color2": "#3B291F",
+  "phone": "01 45 48 29 68",
+  "address": "27 Rue du Dragon 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/aux-pres-cyril-lignac/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/auxpres_cyrillignac/",
+  "heroUrl": "https://app.cartefidelavis.com/aux-pres-cyril-lignac/hero.jpg",
+  "tagline": "Aux Prés Cyril Lignac — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/aux-pres-cyril-lignac/logo.jpg"
+}

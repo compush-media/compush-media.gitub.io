@@ -1,0 +1,30 @@
+{
+  "name": "BMK Folie-Bamako",
+  "color": "#7F3F3D",
+  "color2": "#683332",
+  "phone": "09 87 56 36 28",
+  "address": "40 Rue Jean-Pierre Timbaud 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bmk-folie-bamako/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bmkparisbamako/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/bmk-folie-bamako/hero.jpg",
+  "tagline": "BMK Folie-Bamako — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bmk-folie-bamako/logo.jpg"
+}

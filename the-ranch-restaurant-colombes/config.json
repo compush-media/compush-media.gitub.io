@@ -1,0 +1,30 @@
+{
+  "name": "The Ranch Restaurant Colombes",
+  "color": "#70633D",
+  "color2": "#5B5132",
+  "phone": "01 72 61 14 09",
+  "address": "224 Bd Charles de Gaulle 92700 Colombes",
+  "logoUrl": "https://app.cartefidelavis.com/the-ranch-restaurant-colombes/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/theranch_baraviandes",
+  "heroUrl": "https://app.cartefidelavis.com/the-ranch-restaurant-colombes/hero.jpg",
+  "tagline": "The Ranch Restaurant Colombes — Colombes",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Colombes",
+  "iconUrl": "https://app.cartefidelavis.com/the-ranch-restaurant-colombes/logo.jpg"
+}

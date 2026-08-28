@@ -1,0 +1,30 @@
+{
+  "name": "Le Bonaparte - Restaurant Bistrot Paris 6",
+  "color": "#3032E8",
+  "color2": "#2729BE",
+  "phone": "01 43 26 42 81",
+  "address": "42 Rue Bonaparte 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-bonaparte-restaurant-bistrot-paris-6/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafelebonaparte/",
+  "heroUrl": "https://app.cartefidelavis.com/le-bonaparte-restaurant-bistrot-paris-6/hero.jpg",
+  "tagline": "Le Bonaparte - Restaurant Bistrot Paris 6 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-bonaparte-restaurant-bistrot-paris-6/logo.jpg"
+}

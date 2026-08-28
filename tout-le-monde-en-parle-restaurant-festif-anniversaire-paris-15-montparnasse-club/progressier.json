@@ -1,0 +1,22 @@
+{
+  "name": "Tout Le Monde En Parle - restaurant festif anniversaire paris 15 montparnasse club",
+  "short_name": "Tout Le Monde En Parle - restaurant festif anniversaire paris 15 montparnasse club",
+  "start_url": "/tout-le-monde-en-parle-restaurant-festif-anniversaire-paris-15-montparnasse-club/index.html",
+  "scope": "/tout-le-monde-en-parle-restaurant-festif-anniversaire-paris-15-montparnasse-club/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#E62011",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Pavyllon Paris - Yannick Alléno",
+  "color": "#57301A",
+  "color2": "#472715",
+  "phone": "01 53 05 10 10",
+  "address": "8 Av. Dutuit 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/pavyllon-paris-yannick-alleno/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pavyllon_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/pavyllon-paris-yannick-alleno/hero.jpg",
+  "tagline": "Le comptoir de @yannickalleno 1 étoile au @michelinguide",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pavyllon-paris-yannick-alleno/logo.jpg"
+}

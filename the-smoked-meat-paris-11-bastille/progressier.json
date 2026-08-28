@@ -1,0 +1,22 @@
+{
+  "name": "THE SMOKED MEAT PARIS 11 - BASTILLE",
+  "short_name": "THE SMOKED MEAT PARIS 11 - BASTILLE",
+  "start_url": "/the-smoked-meat-paris-11-bastille/index.html",
+  "scope": "/the-smoked-meat-paris-11-bastille/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#9C2742",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Les Parigots",
+  "color": "#B60100",
+  "color2": "#950000",
+  "phone": "07 80 95 99 08",
+  "address": "5 Rue du Château d'Eau 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-parigots/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/les_parigots/",
+  "heroUrl": "https://app.cartefidelavis.com/les-parigots/hero.jpg",
+  "tagline": "Les Parigots — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-parigots/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Café Français",
+  "color": "#D40128",
+  "color2": "#AD0020",
+  "phone": "01 86 61 94 32",
+  "address": "1-3 Pl. de la Bastille 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-francais/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafefrancais.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-francais/hero.jpg",
+  "tagline": "Café Français — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-francais/logo.jpg"
+}

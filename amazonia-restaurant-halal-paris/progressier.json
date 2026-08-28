@@ -1,0 +1,22 @@
+{
+  "name": "Amazonia-Restaurant Halal Paris",
+  "short_name": "Amazonia-Restaurant Halal Paris",
+  "start_url": "/amazonia-restaurant-halal-paris/index.html",
+  "scope": "/amazonia-restaurant-halal-paris/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#3B521E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Apégo",
+  "color": "#F8B004",
+  "color2": "#CB9003",
+  "phone": "01 83 62 71 73",
+  "address": "22 Rue des Saints-Pères 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/apego/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/apegobrunch/",
+  "heroUrl": "https://app.cartefidelavis.com/apego/hero.jpg",
+  "tagline": "Apégo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/apego/logo.jpg"
+}

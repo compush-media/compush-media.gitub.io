@@ -1,0 +1,30 @@
+{
+  "name": "Cloud Cakes",
+  "color": "#33DDE5",
+  "color2": "#29B5BB",
+  "phone": "01 42 33 95 45",
+  "address": "6 Rue Mandar 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cloud-cakes/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cloudcakesfr/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/cloud-cakes/hero.jpg",
+  "tagline": "Cloud Cakes — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cloud-cakes/logo.jpg"
+}

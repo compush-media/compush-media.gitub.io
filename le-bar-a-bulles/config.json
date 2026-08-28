@@ -1,0 +1,29 @@
+{
+  "name": "Le Bar à Bulles",
+  "color": "#EE301F",
+  "color2": "#C32719",
+  "phone": "4 Cité Véron 75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-bar-a-bulles/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lamachineparis/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/le-bar-a-bulles/hero.jpg",
+  "tagline": "Le Bar à Bulles — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-bar-a-bulles/logo.jpg"
+}

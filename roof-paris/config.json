@@ -1,0 +1,30 @@
+{
+  "name": "ROOF Paris",
+  "color": "#D28F01",
+  "color2": "#AC7500",
+  "phone": "01 80 40 77 43",
+  "address": "43 Rue Étienne Marcel 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/roof-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/hotelmadamereve/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/roof-paris/hero.jpg",
+  "tagline": "ROOF Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/roof-paris/logo.jpg"
+}

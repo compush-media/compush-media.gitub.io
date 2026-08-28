@@ -1,0 +1,22 @@
+{
+  "name": "Pavyllon Paris - Yannick Alléno",
+  "short_name": "Pavyllon Paris - Yannick Alléno",
+  "start_url": "/pavyllon-paris-yannick-alleno/index.html",
+  "scope": "/pavyllon-paris-yannick-alleno/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#57301A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

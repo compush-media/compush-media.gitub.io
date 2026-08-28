@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant LAVA",
+  "color": "#4C4029",
+  "color2": "#3E3421",
+  "phone": "01 43 29 12 12",
+  "address": "9 Rue de la Montagne Ste Geneviève 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-lava/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lava__paris/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-lava/hero.jpg",
+  "tagline": "Cuisine volcanique. 🔥 Vins en éruption. 🌋 7/7 Par @wilfried.romain",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-lava/logo.jpg"
+}

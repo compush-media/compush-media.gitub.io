@@ -1,0 +1,22 @@
+{
+  "name": "5 Pailles",
+  "short_name": "5 Pailles",
+  "start_url": "/5-pailles/index.html",
+  "scope": "/5-pailles/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#99160F",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

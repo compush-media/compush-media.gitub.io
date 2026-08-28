@@ -1,0 +1,30 @@
+{
+  "name": "Les Parisiennes",
+  "color": "#448194",
+  "color2": "#376979",
+  "phone": "01 47 05 07 37",
+  "address": "17 Av. de la Motte-Picquet 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-parisiennes/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesparisiennescafe/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/les-parisiennes/hero.jpg",
+  "tagline": "Les Parisiennes — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-parisiennes/logo.jpg"
+}

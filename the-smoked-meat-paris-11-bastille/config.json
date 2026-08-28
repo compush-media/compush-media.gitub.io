@@ -1,0 +1,30 @@
+{
+  "name": "THE SMOKED MEAT PARIS 11 - BASTILLE",
+  "color": "#9C2742",
+  "color2": "#7F1F36",
+  "phone": "09 79 28 33 69",
+  "address": "17 Rue Sedaine 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/the-smoked-meat-paris-11-bastille/logo.jpg",
+  "instagramUrl": "https://instagram.com/thesmokedmeat",
+  "heroUrl": "https://app.cartefidelavis.com/the-smoked-meat-paris-11-bastille/hero.jpg",
+  "tagline": "THE SMOKED MEAT PARIS 11 - BASTILLE — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/the-smoked-meat-paris-11-bastille/logo.jpg"
+}

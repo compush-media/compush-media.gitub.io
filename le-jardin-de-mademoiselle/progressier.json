@@ -1,0 +1,22 @@
+{
+  "name": "Le Jardin de Mademoiselle",
+  "short_name": "Le Jardin de Mademoiselle",
+  "start_url": "/le-jardin-de-mademoiselle/index.html",
+  "scope": "/le-jardin-de-mademoiselle/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#B47A48",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

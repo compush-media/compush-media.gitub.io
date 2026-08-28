@@ -1,0 +1,22 @@
+{
+  "name": "Café Albert",
+  "short_name": "Café Albert",
+  "start_url": "/cafe-albert/index.html",
+  "scope": "/cafe-albert/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#4D7FAC",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

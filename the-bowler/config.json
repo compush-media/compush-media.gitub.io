@@ -1,0 +1,30 @@
+{
+  "name": "The Bowler",
+  "color": "#C24936",
+  "color2": "#9F3B2C",
+  "phone": "01 45 61 16 60",
+  "address": "13 Rue d'Artois 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/the-bowler/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/thebowlerparis/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/the-bowler/hero.jpg",
+  "tagline": "The Bowler — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/the-bowler/logo.jpg"
+}

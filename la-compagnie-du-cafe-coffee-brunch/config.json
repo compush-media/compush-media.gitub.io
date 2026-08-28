@@ -1,0 +1,30 @@
+{
+  "name": "La Compagnie du Café Coffee & Brunch",
+  "color": "#6E4702",
+  "color2": "#5A3A01",
+  "phone": "09 81 25 74 16",
+  "address": "19 Rue Notre Dame de Lorette 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-compagnie-du-cafe-coffee-brunch/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lacompagnieducafe/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/la-compagnie-du-cafe-coffee-brunch/hero.jpg",
+  "tagline": "La Compagnie du Café Coffee & Brunch — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-compagnie-du-cafe-coffee-brunch/logo.jpg"
+}

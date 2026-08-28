@@ -1,0 +1,26 @@
+{
+  "name": "Balou Paris 10",
+  "color": "#9E7A3E",
+  "color2": "01 44 52 93 44",
+  "phone": "40 Rue Louis Blanc 75010 Paris",
+  "instagramUrl": "https://www.instagram.com/brasseriebalou",
+  "tagline": "Balou Paris 10 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Le Nemours",
+  "color": "#B19467",
+  "color2": "#917954",
+  "phone": "09 72 99 37 93",
+  "address": "2 à 7 Galerie de Nemours 2 Place Colette 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-nemours/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lenemoursparis/",
+  "heroUrl": "https://app.cartefidelavis.com/le-nemours/hero.jpg",
+  "tagline": "Le Nemours — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-nemours/logo.jpg"
+}

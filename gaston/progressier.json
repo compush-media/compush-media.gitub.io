@@ -1,0 +1,22 @@
+{
+  "name": "Gaston",
+  "short_name": "Gaston",
+  "start_url": "/gaston/index.html",
+  "scope": "/gaston/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#016F53",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Au Petit Riche",
+  "color": "#9E2612",
+  "color2": "#811F0E",
+  "phone": "01 47 70 68 68",
+  "address": "25 Rue Le Peletier 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/au-petit-riche/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/aupetitriche/",
+  "heroUrl": "https://app.cartefidelavis.com/au-petit-riche/hero.jpg",
+  "tagline": "Au Petit Riche — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/au-petit-riche/logo.jpg"
+}
