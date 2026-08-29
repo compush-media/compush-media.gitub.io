@@ -1,0 +1,22 @@
+{
+  "name": "La Ferrandaise restaurant de terroir Paris 6 table gourmande Gault&Millau 2026",
+  "short_name": "La Ferrandaise restaurant de terroir Paris 6 table gourmande Gault&Millau 2026",
+  "start_url": "/la-ferrandaise-restaurant-de-terroir-paris-6-table-gourmande-gault-millau-2026/index.html",
+  "scope": "/la-ferrandaise-restaurant-de-terroir-paris-6-table-gourmande-gault-millau-2026/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#4B8C63",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

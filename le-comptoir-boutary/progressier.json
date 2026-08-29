@@ -1,0 +1,22 @@
+{
+  "name": "Le Comptoir Boutary",
+  "short_name": "Le Comptoir Boutary",
+  "start_url": "/le-comptoir-boutary/index.html",
+  "scope": "/le-comptoir-boutary/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#6D5D3A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

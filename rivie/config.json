@@ -1,0 +1,30 @@
+{
+  "name": "Rivié",
+  "color": "#5D482C",
+  "color2": "#4C3B24",
+  "phone": "01 85 65 75 00",
+  "address": "30-32 Rue du Sentier 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/rivie/logo.jpg",
+  "instagramUrl": "https://instagram.com/thehoxtonhotel/",
+  "heroUrl": "https://app.cartefidelavis.com/rivie/hero.jpg",
+  "tagline": "Neighbourhood hotels across the UK, Europe + the USA 🧳",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/rivie/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "La Tour d'Argent",
+  "color": "#2B5F7F",
+  "color2": "#234D68",
+  "phone": "01 43 54 23 31",
+  "address": "15 Quai de la Tournelle 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-tour-d-argent/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/latourdargentparis/",
+  "heroUrl": "https://app.cartefidelavis.com/la-tour-d-argent/hero.jpg",
+  "tagline": "La Tour d'Argent — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-tour-d-argent/logo.jpg"
+}

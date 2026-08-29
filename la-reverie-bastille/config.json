@@ -1,0 +1,30 @@
+{
+  "name": "La Rêverie Bastille",
+  "color": "#171A61",
+  "color2": "#12154F",
+  "phone": "07 87 97 77 29",
+  "address": "15 Rue de la Roquette 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-reverie-bastille/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lareverie_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/la-reverie-bastille/hero.jpg",
+  "tagline": "La Rêverie Bastille — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-reverie-bastille/logo.jpg"
+}

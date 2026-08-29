@@ -1,0 +1,30 @@
+{
+  "name": "Le Petit Lutetia",
+  "color": "#72603E",
+  "color2": "#5D4E32",
+  "phone": "01 45 48 33 53",
+  "address": "107 Rue de Sèvres 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-petit-lutetia/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lepetitlutetia.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/le-petit-lutetia/hero.jpg",
+  "tagline": "Le Petit Lutetia — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-petit-lutetia/logo.jpg"
+}

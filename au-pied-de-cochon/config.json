@@ -1,0 +1,30 @@
+{
+  "name": "Au Pied de Cochon",
+  "color": "#D1242A",
+  "color2": "#AB1D22",
+  "phone": "01 40 13 77 00",
+  "address": "6 Rue Coquillière 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/au-pied-de-cochon/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pieddecochon/",
+  "heroUrl": "https://app.cartefidelavis.com/au-pied-de-cochon/hero.jpg",
+  "tagline": "Au Pied de Cochon — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/au-pied-de-cochon/logo.jpg"
+}

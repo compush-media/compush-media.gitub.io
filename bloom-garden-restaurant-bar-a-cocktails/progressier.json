@@ -1,0 +1,22 @@
+{
+  "name": "BLOOM GARDEN Restaurant & Bar à cocktails",
+  "short_name": "BLOOM GARDEN Restaurant & Bar à cocktails",
+  "start_url": "/bloom-garden-restaurant-bar-a-cocktails/index.html",
+  "scope": "/bloom-garden-restaurant-bar-a-cocktails/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#C96E50",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

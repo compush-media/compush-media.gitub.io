@@ -1,0 +1,30 @@
+{
+  "name": "Le Berkeley",
+  "color": "#88252C",
+  "color2": "#6F1E24",
+  "phone": "01 44 07 27 28",
+  "address": "7 Av. Matignon 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-berkeley/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/berkeleyparis/",
+  "heroUrl": "https://app.cartefidelavis.com/le-berkeley/hero.jpg",
+  "tagline": "Le Berkeley — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-berkeley/logo.jpg"
+}

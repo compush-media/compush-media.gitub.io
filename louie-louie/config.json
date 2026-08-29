@@ -1,0 +1,30 @@
+{
+  "name": "Louie Louie",
+  "color": "#22354E",
+  "color2": "#1B2B3F",
+  "phone": "09 73 58 14 36",
+  "address": "78 Rue de Charonne 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/louie-louie/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/louielouieparis",
+  "heroUrl": "https://app.cartefidelavis.com/louie-louie/hero.jpg",
+  "tagline": "Louie Louie — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/louie-louie/logo.jpg"
+}

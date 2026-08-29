@@ -1,0 +1,30 @@
+{
+  "name": "Navigli - Restaurant Italien",
+  "color": "#3B3C6D",
+  "color2": "#303159",
+  "phone": "06 09 28 52 05",
+  "address": "52 Rue d'Enghien 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/navigli-restaurant-italien/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/navigli_aperitivo/",
+  "heroUrl": "https://app.cartefidelavis.com/navigli-restaurant-italien/hero.jpg",
+  "tagline": "Navigli - Restaurant Italien — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/navigli-restaurant-italien/logo.jpg"
+}

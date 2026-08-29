@@ -1,0 +1,30 @@
+{
+  "name": "Le Floor",
+  "color": "#AC9134",
+  "color2": "#8D762A",
+  "phone": "01 83 75 63 00",
+  "address": "42 Rue Notre Dame des Victoires 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-floor/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/thebureau.paris/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/le-floor/hero.jpg",
+  "tagline": "Le Floor — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-floor/logo.jpg"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Les Deux Magots",
+  "short_name": "Les Deux Magots",
+  "start_url": "/les-deux-magots/index.html",
+  "scope": "/les-deux-magots/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#00705B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

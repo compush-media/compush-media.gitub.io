@@ -1,0 +1,30 @@
+{
+  "name": "MOJO",
+  "color": "#283B4A",
+  "color2": "#20303C",
+  "phone": "01 42 94 01 00",
+  "address": "9 Rue du Général Lanrezac 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/mojo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurantmojoparis17/",
+  "heroUrl": "https://app.cartefidelavis.com/mojo/hero.jpg",
+  "tagline": "MOJO — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/mojo/logo.jpg"
+}

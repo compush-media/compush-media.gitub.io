@@ -1,0 +1,30 @@
+{
+  "name": "Onze à Table",
+  "color": "#0E624D",
+  "color2": "#0B503F",
+  "phone": "01 48 06 54 28",
+  "address": "10 Rue de la Folie Méricourt 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/onze-a-table/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/onze_a_table",
+  "heroUrl": "https://app.cartefidelavis.com/onze-a-table/hero.jpg",
+  "tagline": "Onze à Table — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/onze-a-table/logo.jpg"
+}

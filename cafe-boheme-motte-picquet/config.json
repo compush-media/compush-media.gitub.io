@@ -1,0 +1,29 @@
+{
+  "name": "Café Bohème Motte Picquet",
+  "color": "#434927",
+  "color2": "#363B1F",
+  "phone": "53B Av. de la Motte-Picquet 75015 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-boheme-motte-picquet/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafebohemeparis/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-boheme-motte-picquet/hero.jpg",
+  "tagline": "Café Bohème Motte Picquet — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-boheme-motte-picquet/logo.jpg"
+}

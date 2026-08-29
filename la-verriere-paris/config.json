@@ -1,0 +1,30 @@
+{
+  "name": "La Verrière PARIS",
+  "color": "#B2A366",
+  "color2": "#918553",
+  "phone": "01 83 75 69 21",
+  "address": "4 Rue Niépce 75014 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-verriere-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/niepce_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/la-verriere-paris/hero.jpg",
+  "tagline": "Boutique Hôtel **** 14e arr. de Paris W/ Restaurant @verriere_paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-verriere-paris/logo.jpg"
+}

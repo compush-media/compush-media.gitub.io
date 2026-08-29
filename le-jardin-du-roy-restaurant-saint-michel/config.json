@@ -1,0 +1,30 @@
+{
+  "name": "Le Jardin du Roy - Restaurant Saint Michel",
+  "color": "#AC9365",
+  "color2": "#8D7852",
+  "phone": "01 43 26 10 08",
+  "address": "28 Rue de la Huchette 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-jardin-du-roy-restaurant-saint-michel/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/jardinduroy.restaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/le-jardin-du-roy-restaurant-saint-michel/hero.jpg",
+  "tagline": "Le Jardin du Roy - Restaurant Saint Michel — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-jardin-du-roy-restaurant-saint-michel/logo.jpg"
+}

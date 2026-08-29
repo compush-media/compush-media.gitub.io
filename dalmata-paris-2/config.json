@@ -1,0 +1,30 @@
+{
+  "name": "Dalmata Paris 2",
+  "color": "#AE6D68",
+  "color2": "#8E5955",
+  "phone": "07 56 79 93 79",
+  "address": "8 Rue Tiquetonne 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/dalmata-paris-2/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/dalmatapizza/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/dalmata-paris-2/hero.jpg",
+  "tagline": "Dalmata Paris 2 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/dalmata-paris-2/logo.jpg"
+}

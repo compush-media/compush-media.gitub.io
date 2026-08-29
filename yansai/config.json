@@ -1,0 +1,30 @@
+{
+  "name": "Yansai",
+  "color": "#BF735A",
+  "color2": "#9C5E49",
+  "phone": "01 42 77 80 88",
+  "address": "88 Rue des Gravilliers 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/yansai/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/yansai.asian.food/",
+  "heroUrl": "https://app.cartefidelavis.com/yansai/hero.jpg",
+  "tagline": "Yansai — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/yansai/logo.jpg"
+}

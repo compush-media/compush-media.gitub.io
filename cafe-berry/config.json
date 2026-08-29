@@ -1,0 +1,26 @@
+{
+  "name": "Café Berry",
+  "color": "#9E7A3E",
+  "color2": "",
+  "phone": "10 Rue Chapon 75003 Paris",
+  "instagramUrl": "https://www.instagram.com/cafe_berry_paris_/",
+  "tagline": "Café Berry — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

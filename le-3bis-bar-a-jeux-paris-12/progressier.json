@@ -1,0 +1,22 @@
+{
+  "name": "Le 3Bis - Bar à jeux Paris 12",
+  "short_name": "Le 3Bis - Bar à jeux Paris 12",
+  "start_url": "/le-3bis-bar-a-jeux-paris-12/index.html",
+  "scope": "/le-3bis-bar-a-jeux-paris-12/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#691854",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "L'Initial",
+  "color": "#493727",
+  "color2": "#3B2D1F",
+  "phone": "01 42 01 84 22",
+  "address": "9 Rue de Bièvre 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/l-initial/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurant_linitial/",
+  "heroUrl": "https://app.cartefidelavis.com/l-initial/hero.jpg",
+  "tagline": "L'Initial — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/l-initial/logo.jpg"
+}

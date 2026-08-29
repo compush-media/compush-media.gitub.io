@@ -1,0 +1,26 @@
+{
+  "name": "L'Arc Café Brasserie Restaurant",
+  "color": "#9E7A3E",
+  "color2": "01 53 81 77 43",
+  "phone": "27 Av. Carnot 75017 Paris",
+  "instagramUrl": "https://www.instagram.com/bistrot_arc_cafe/",
+  "tagline": "L'Arc Café Brasserie Restaurant — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

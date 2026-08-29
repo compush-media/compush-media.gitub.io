@@ -1,0 +1,30 @@
+{
+  "name": "TiTi Palacio",
+  "color": "#C41C2D",
+  "color2": "#A01624",
+  "phone": "01 81 22 40 89",
+  "address": "17 Bd Morland 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/titi-palacio/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/titi.palacio/",
+  "heroUrl": "https://app.cartefidelavis.com/titi-palacio/hero.jpg",
+  "tagline": "TiTi Palacio — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/titi-palacio/logo.jpg"
+}

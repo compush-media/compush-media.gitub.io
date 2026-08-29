@@ -1,0 +1,22 @@
+{
+  "name": "Anicia table nature par François Gagnaire",
+  "short_name": "Anicia table nature par François Gagnaire",
+  "start_url": "/anicia-table-nature-par-francois-gagnaire/index.html",
+  "scope": "/anicia-table-nature-par-francois-gagnaire/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#BAB60D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

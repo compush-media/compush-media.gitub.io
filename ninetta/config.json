@@ -1,0 +1,30 @@
+{
+  "name": "Ninetta",
+  "color": "#046C17",
+  "color2": "#035812",
+  "phone": "01 45 33 19 53",
+  "address": "17 Rue Malar 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/ninetta/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ninetta_paris",
+  "heroUrl": "https://app.cartefidelavis.com/ninetta/hero.jpg",
+  "tagline": "Ninetta — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ninetta/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Ariette - restaurant & bar",
+  "color": "#30E970",
+  "color2": "#27BF5B",
+  "phone": "01 44 67 34 00",
+  "address": "1 Rue de Libourne 75012 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/ariette-restaurant-bar/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/Pullmanbercy/",
+  "heroUrl": "https://app.cartefidelavis.com/ariette-restaurant-bar/hero.jpg",
+  "tagline": "Ariette - restaurant & bar — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ariette-restaurant-bar/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Immersion Tour Eiffel - Brunch & Coffee",
+  "color": "#B66023",
+  "color2": "#954E1C",
+  "phone": "01 42 36 18 19",
+  "address": "83 Av. de la Bourdonnais 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/immersion-tour-eiffel-brunch-coffee/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/immersionparis_/",
+  "heroUrl": "https://app.cartefidelavis.com/immersion-tour-eiffel-brunch-coffee/hero.jpg",
+  "tagline": "Immersion Tour Eiffel - Brunch & Coffee — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/immersion-tour-eiffel-brunch-coffee/logo.jpg"
+}

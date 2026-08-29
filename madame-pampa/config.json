@@ -1,0 +1,30 @@
+{
+  "name": "Madame Pampa",
+  "color": "#CB904E",
+  "color2": "#A6763F",
+  "phone": "01 53 71 95 20",
+  "address": "64 Rue du Montparnasse 75014 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/madame-pampa/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/madamepampa_montparnasse/",
+  "heroUrl": "https://app.cartefidelavis.com/madame-pampa/hero.jpg",
+  "tagline": "Madame Pampa — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/madame-pampa/logo.jpg"
+}

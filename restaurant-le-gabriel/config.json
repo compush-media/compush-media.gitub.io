@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant Le Gabriel",
+  "color": "#6A061E",
+  "color2": "#560418",
+  "phone": "01 58 36 60 66",
+  "address": "la reserve 42 Av. Gabriel 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-le-gabriel/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lareserveparis/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-le-gabriel/hero.jpg",
+  "tagline": "Restaurant Le Gabriel — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-le-gabriel/logo.jpg"
+}

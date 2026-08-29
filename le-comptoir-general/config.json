@@ -1,0 +1,30 @@
+{
+  "name": "Le Comptoir Général",
+  "color": "#02416E",
+  "color2": "#01355A",
+  "phone": "01 44 88 24 48",
+  "address": "84 Quai de Jemmapes 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-comptoir-general/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lecomptoirgeneral/",
+  "heroUrl": "https://app.cartefidelavis.com/le-comptoir-general/hero.jpg",
+  "tagline": "Le Comptoir Général — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-comptoir-general/logo.jpg"
+}

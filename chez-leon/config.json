@@ -1,0 +1,30 @@
+{
+  "name": "Chez Léon",
+  "color": "#C59254",
+  "color2": "#A17744",
+  "phone": "01 42 27 06 82",
+  "address": "32 Rue Legendre 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/chez-leon/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/chezleon/",
+  "heroUrl": "https://app.cartefidelavis.com/chez-leon/hero.jpg",
+  "tagline": "Chez Léon — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/chez-leon/logo.jpg"
+}

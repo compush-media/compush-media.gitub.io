@@ -1,0 +1,30 @@
+{
+  "name": "Chouchou",
+  "color": "#EF6F2A",
+  "color2": "#C35B22",
+  "phone": "01 45 08 02 03",
+  "address": "23 Bd de Sébastopol 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/chouchou/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurant_chouchou_paris?igsh=MXdlbWxsYm9iYzI5dA%3D%3D&utm_source=qr",
+  "heroUrl": "https://app.cartefidelavis.com/chouchou/hero.jpg",
+  "tagline": "Chouchou — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/chouchou/logo.jpg"
+}

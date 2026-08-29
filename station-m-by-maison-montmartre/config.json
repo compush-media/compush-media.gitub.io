@@ -1,0 +1,30 @@
+{
+  "name": "Station M by Maison Montmartre",
+  "color": "#273849",
+  "color2": "#1F2D3B",
+  "phone": "09 74 64 10 16",
+  "address": "32 Av. de la Prte de Montmartre 75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/station-m-by-maison-montmartre/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/maison_montmartre",
+  "heroUrl": "https://app.cartefidelavis.com/station-m-by-maison-montmartre/hero.jpg",
+  "tagline": "Station M by Maison Montmartre — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/station-m-by-maison-montmartre/logo.jpg"
+}

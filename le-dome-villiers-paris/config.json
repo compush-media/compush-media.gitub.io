@@ -1,0 +1,30 @@
+{
+  "name": "Le Dôme Villiers - Paris",
+  "color": "#C2A457",
+  "color2": "#9F8647",
+  "phone": "01 42 44 19 01",
+  "address": "4 Av. de Villiers 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-dome-villiers-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le_dome_villiers_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/le-dome-villiers-paris/hero.jpg",
+  "tagline": "Le Dôme Villiers - Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-dome-villiers-paris/logo.jpg"
+}

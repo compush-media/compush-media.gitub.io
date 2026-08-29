@@ -1,0 +1,30 @@
+{
+  "name": "Warwick Champs-Elysées Paris",
+  "color": "#403766",
+  "color2": "#342D53",
+  "phone": "01 45 63 14 11",
+  "address": "5 Rue de Berri 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/warwick-champs-elysees-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/warwickparis/",
+  "heroUrl": "https://app.cartefidelavis.com/warwick-champs-elysees-paris/hero.jpg",
+  "tagline": "Warwick Champs-Elysées Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/warwick-champs-elysees-paris/logo.jpg"
+}

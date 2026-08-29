@@ -1,0 +1,30 @@
+{
+  "name": "LE CAFÉ PIERRE HERMÉ PARIS",
+  "color": "#593221",
+  "color2": "#48291B",
+  "phone": "01 82 73 27 21",
+  "address": "53 - 57 Rue de Grenelle 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-cafe-pierre-herme-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pierrehermeofficial/",
+  "heroUrl": "https://app.cartefidelavis.com/le-cafe-pierre-herme-paris/hero.jpg",
+  "tagline": "LE CAFÉ PIERRE HERMÉ PARIS — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-cafe-pierre-herme-paris/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Gran Caffè Convivium",
+  "color": "#54311C",
+  "color2": "#442816",
+  "phone": "06 36 55 55 55",
+  "address": "28 Rue Marbeuf 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/gran-caffe-convivium/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/grancaffeconvivium.paris/?ref=SRocker",
+  "heroUrl": "https://app.cartefidelavis.com/gran-caffe-convivium/hero.jpg",
+  "tagline": "Gran Caffè Convivium — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/gran-caffe-convivium/logo.jpg"
+}

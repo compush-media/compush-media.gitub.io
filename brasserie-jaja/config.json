@@ -1,0 +1,30 @@
+{
+  "name": "Brasserie Jaja",
+  "color": "#002A70",
+  "color2": "#00225B",
+  "phone": "01 40 26 83 60",
+  "address": "8 Rue St Denis 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/brasserie-jaja/logo.jpg",
+  "instagramUrl": "https://instagram.com/jajabrasserie?igshid=YmMyMTA2M2Y=",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-jaja/hero.jpg",
+  "tagline": "🧑‍🍳 Brasserie et plein d’autres surprise !",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-jaja/logo.jpg"
+}

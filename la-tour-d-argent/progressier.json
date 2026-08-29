@@ -1,0 +1,22 @@
+{
+  "name": "La Tour d'Argent",
+  "short_name": "La Tour d'Argent",
+  "start_url": "/la-tour-d-argent/index.html",
+  "scope": "/la-tour-d-argent/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#2B5F7F",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

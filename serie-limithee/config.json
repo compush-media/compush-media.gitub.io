@@ -1,0 +1,26 @@
+{
+  "name": "Série Limithée",
+  "color": "#9E7A3E",
+  "color2": "01 48 06 27 97",
+  "phone": "24 Rue Trousseau 75011 Paris",
+  "instagramUrl": "https://www.instagram.com/serie_limithee_paris_moscou__/",
+  "tagline": "Série Limithée — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

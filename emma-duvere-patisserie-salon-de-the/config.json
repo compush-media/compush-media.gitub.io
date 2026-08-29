@@ -1,0 +1,30 @@
+{
+  "name": "Emma Duvéré - Pâtisserie & Salon de thé",
+  "color": "#6B3F39",
+  "color2": "#57332E",
+  "phone": "09 83 20 99 55",
+  "address": "41 Rue Sedaine 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/emma-duvere-patisserie-salon-de-the/logo.jpg",
+  "instagramUrl": "https://instagram.com/emmaduvere",
+  "heroUrl": "https://app.cartefidelavis.com/emma-duvere-patisserie-salon-de-the/hero.jpg",
+  "tagline": "Emma Duvéré - Pâtisserie & Salon de thé — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/emma-duvere-patisserie-salon-de-the/logo.jpg"
+}

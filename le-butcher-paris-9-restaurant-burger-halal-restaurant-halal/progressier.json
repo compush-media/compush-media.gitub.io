@@ -1,0 +1,22 @@
+{
+  "name": "Le Butcher paris 9 : restaurant burger halal | restaurant halal",
+  "short_name": "Le Butcher paris 9 : restaurant burger halal | restaurant halal",
+  "start_url": "/le-butcher-paris-9-restaurant-burger-halal-restaurant-halal/index.html",
+  "scope": "/le-butcher-paris-9-restaurant-burger-halal-restaurant-halal/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#925A4F",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "SOLIS bar & restaurant Méditerranéen",
+  "color": "#E4B512",
+  "color2": "#BA940E",
+  "phone": "01 55 37 55 37",
+  "address": "39 Av. de Wagram 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/solis-bar-restaurant-mediterraneen/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/amineifakren/",
+  "heroUrl": "https://app.cartefidelavis.com/solis-bar-restaurant-mediterraneen/hero.jpg",
+  "tagline": "SOLIS bar & restaurant Méditerranéen — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/solis-bar-restaurant-mediterraneen/logo.jpg"
+}

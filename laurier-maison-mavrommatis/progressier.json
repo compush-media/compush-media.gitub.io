@@ -1,0 +1,22 @@
+{
+  "name": "Laurier - Maison Mavrommatis",
+  "short_name": "Laurier - Maison Mavrommatis",
+  "start_url": "/laurier-maison-mavrommatis/index.html",
+  "scope": "/laurier-maison-mavrommatis/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#EBA901",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

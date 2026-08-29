@@ -1,0 +1,30 @@
+{
+  "name": "Besties Bakery",
+  "color": "#BC9743",
+  "color2": "#9A7B36",
+  "phone": "09 78 80 45 15",
+  "address": "11 Rue Auber 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/besties-bakery/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bestiesbakery.fr/",
+  "heroUrl": "https://app.cartefidelavis.com/besties-bakery/hero.jpg",
+  "tagline": "🚀 #franchise du Cake Design #1 🌸 Paris 🌸 Toulouse ORDER HERE 🍰👇🏻",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/besties-bakery/logo.jpg"
+}

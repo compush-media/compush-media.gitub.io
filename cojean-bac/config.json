@@ -1,0 +1,30 @@
+{
+  "name": "Cojean Bac",
+  "color": "#3C98DC",
+  "color2": "#317CB4",
+  "phone": "01 42 60 00 90",
+  "address": "28 Rue du Bac 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cojean-bac/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cojeanrestaurants/",
+  "heroUrl": "https://app.cartefidelavis.com/cojean-bac/hero.jpg",
+  "tagline": "Cojean Bac — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cojean-bac/logo.jpg"
+}

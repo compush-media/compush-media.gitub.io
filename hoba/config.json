@@ -1,0 +1,30 @@
+{
+  "name": "HOBA",
+  "color": "#43B69A",
+  "color2": "#36957E",
+  "phone": "01 83 64 02 11",
+  "address": "43 Rue Bernard Buffet 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/hoba/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/hoba.paris",
+  "heroUrl": "https://app.cartefidelavis.com/hoba/hero.jpg",
+  "tagline": "HOBA — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/hoba/logo.jpg"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "CHARLY SAINT-HONORÉ",
+  "short_name": "CHARLY SAINT-HONORÉ",
+  "start_url": "/charly-saint-honore/index.html",
+  "scope": "/charly-saint-honore/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#BD985B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

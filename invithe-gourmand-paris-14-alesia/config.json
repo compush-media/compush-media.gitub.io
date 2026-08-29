@@ -1,0 +1,30 @@
+{
+  "name": "Invithe Gourmand Paris 14 Alesia",
+  "color": "#B37D45",
+  "color2": "#926638",
+  "phone": "01 71 39 22 74",
+  "address": "64 Rue d'Alésia 75014 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/invithe-gourmand-paris-14-alesia/logo.jpg",
+  "instagramUrl": "https://instagram.com/invithegourmand",
+  "heroUrl": "https://app.cartefidelavis.com/invithe-gourmand-paris-14-alesia/hero.jpg",
+  "tagline": "Invithe Gourmand Paris 14 Alesia — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/invithe-gourmand-paris-14-alesia/logo.jpg"
+}

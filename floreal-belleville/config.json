@@ -1,0 +1,30 @@
+{
+  "name": "Floréal Belleville",
+  "color": "#F5019C",
+  "color2": "#C8007F",
+  "phone": "01 43 61 94 66",
+  "address": "43 Rue des Couronnes 75020 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/floreal-belleville/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/floreal.belleville/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/floreal-belleville/hero.jpg",
+  "tagline": "Floréal Belleville — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/floreal-belleville/logo.jpg"
+}

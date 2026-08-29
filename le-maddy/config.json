@@ -1,0 +1,30 @@
+{
+  "name": "Le Maddy",
+  "color": "#4A3527",
+  "color2": "#3C2B1F",
+  "phone": "01 42 93 47 21",
+  "address": "8 Bd de la Madeleine 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-maddy/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lemaddyparis/",
+  "heroUrl": "https://app.cartefidelavis.com/le-maddy/hero.jpg",
+  "tagline": "Le Maddy — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-maddy/logo.jpg"
+}

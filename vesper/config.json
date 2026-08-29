@@ -1,0 +1,30 @@
+{
+  "name": "Vesper",
+  "color": "#694339",
+  "color2": "#56362E",
+  "phone": "01 83 64 82 93",
+  "address": "81 Av. Bosquet 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/vesper/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/vesper_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/vesper/hero.jpg",
+  "tagline": "Contemporary Japanese cuisine & Cocktails @fitzgroupevents Experience",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/vesper/logo.jpg"
+}

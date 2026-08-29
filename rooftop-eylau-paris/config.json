@@ -1,0 +1,30 @@
+{
+  "name": "Rooftop Eylau Paris",
+  "color": "#610F16",
+  "color2": "#4F0C12",
+  "phone": "01 45 50 50 92",
+  "address": "16 Av. d'Eylau Floor 7 75116 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/rooftop-eylau-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/canopypariseiffeltower/",
+  "heroUrl": "https://app.cartefidelavis.com/rooftop-eylau-paris/hero.jpg",
+  "tagline": "Rooftop Eylau Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/rooftop-eylau-paris/logo.jpg"
+}

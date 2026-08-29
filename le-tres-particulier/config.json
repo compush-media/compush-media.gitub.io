@@ -1,0 +1,30 @@
+{
+  "name": "Le Très Particulier",
+  "color": "#B74362",
+  "color2": "#963650",
+  "phone": "01 53 41 81 40",
+  "address": "Hôtel Particulier Montmartre 23 Av. Junot Pavillon D 75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-tres-particulier/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/letresparticulier/",
+  "heroUrl": "https://app.cartefidelavis.com/le-tres-particulier/hero.jpg",
+  "tagline": "Le Très Particulier — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-tres-particulier/logo.jpg"
+}

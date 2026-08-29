@@ -1,0 +1,22 @@
+{
+  "name": "10ème Ciel - Rooftop Bar Paris",
+  "short_name": "10ème Ciel - Rooftop Bar Paris",
+  "start_url": "/10eme-ciel-rooftop-bar-paris/index.html",
+  "scope": "/10eme-ciel-rooftop-bar-paris/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#AF9B6A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

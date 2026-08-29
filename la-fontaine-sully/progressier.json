@@ -1,0 +1,22 @@
+{
+  "name": "LA FONTAINE SULLY",
+  "short_name": "LA FONTAINE SULLY",
+  "start_url": "/la-fontaine-sully/index.html",
+  "scope": "/la-fontaine-sully/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#A6595D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

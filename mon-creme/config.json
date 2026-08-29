@@ -1,0 +1,30 @@
+{
+  "name": "Mon Creme",
+  "color": "#AF6C69",
+  "color2": "#8F5856",
+  "phone": "01 40 20 08 52",
+  "address": "64-66 Rue Montmartre 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/mon-creme/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/mon_creme_paris",
+  "heroUrl": "https://app.cartefidelavis.com/mon-creme/hero.jpg",
+  "tagline": "Brunch house du marais 🥞 COMFORT FOOD & FUN DRINKS 👇🏼 Tous les jours",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/mon-creme/logo.jpg"
+}

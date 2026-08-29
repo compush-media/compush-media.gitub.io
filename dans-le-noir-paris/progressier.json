@@ -1,0 +1,22 @@
+{
+  "name": "Dans le Noir ? Paris",
+  "short_name": "Dans le Noir ? Paris",
+  "start_url": "/dans-le-noir-paris/index.html",
+  "scope": "/dans-le-noir-paris/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#6A0E06",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

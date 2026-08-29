@@ -1,0 +1,30 @@
+{
+  "name": "Le Rempart Bastille",
+  "color": "#4D4229",
+  "color2": "#3F3621",
+  "phone": "09 52 50 57 89",
+  "address": "15 Rue Saint-Antoine 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-rempart-bastille/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lerempartbastille/",
+  "heroUrl": "https://app.cartefidelavis.com/le-rempart-bastille/hero.jpg",
+  "tagline": "Le Rempart Bastille — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-rempart-bastille/logo.jpg"
+}

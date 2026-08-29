@@ -1,0 +1,30 @@
+{
+  "name": "Josy Pub",
+  "color": "#492F27",
+  "color2": "#3B261F",
+  "phone": "01 53 21 94 50",
+  "address": "35 Rue Saint-Georges 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/josy-pub/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/castaniufamily/",
+  "heroUrl": "https://app.cartefidelavis.com/josy-pub/hero.jpg",
+  "tagline": "Josy Pub — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/josy-pub/logo.jpg"
+}

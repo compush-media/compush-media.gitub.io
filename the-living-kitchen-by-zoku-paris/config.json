@@ -1,0 +1,30 @@
+{
+  "name": "The Living Kitchen by Zoku Paris",
+  "color": "#B06542",
+  "color2": "#905236",
+  "phone": "01 86 26 10 67",
+  "address": "48 Av. de la Prte de Clichy Floor 8 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/the-living-kitchen-by-zoku-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/chefrhysallen/",
+  "heroUrl": "https://app.cartefidelavis.com/the-living-kitchen-by-zoku-paris/hero.jpg",
+  "tagline": "Executive chef #chefrhysallen",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/the-living-kitchen-by-zoku-paris/logo.jpg"
+}

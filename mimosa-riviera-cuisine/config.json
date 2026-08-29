@@ -1,0 +1,30 @@
+{
+  "name": "Mimosa – Riviera Cuisine",
+  "color": "#6D030B",
+  "color2": "#590209",
+  "phone": "01 53 93 65 52",
+  "address": "2 Rue Royale 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/mimosa-riviera-cuisine/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/butlercollection/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/mimosa-riviera-cuisine/hero.jpg",
+  "tagline": "Mimosa – Riviera Cuisine — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/mimosa-riviera-cuisine/logo.jpg"
+}

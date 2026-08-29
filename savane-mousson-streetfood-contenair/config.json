@@ -1,0 +1,30 @@
+{
+  "name": "Savane & Mousson Streetfood - Contenair",
+  "color": "#B38F65",
+  "color2": "#927552",
+  "phone": "01 79 73 70 10",
+  "address": "29 Rue Bichat 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/savane-mousson-streetfood-contenair/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/savane.mousson/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/savane-mousson-streetfood-contenair/hero.jpg",
+  "tagline": "Savane & Mousson Streetfood - Contenair — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/savane-mousson-streetfood-contenair/logo.jpg"
+}

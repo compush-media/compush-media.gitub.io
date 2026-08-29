@@ -1,0 +1,30 @@
+{
+  "name": "DS Café Niel",
+  "color": "#3A4C29",
+  "color2": "#2F3E21",
+  "phone": "01 40 55 02 02",
+  "address": "25 Av. Niel 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/ds-cafe-niel/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/dscafe/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/ds-cafe-niel/hero.jpg",
+  "tagline": "DS Café Niel — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ds-cafe-niel/logo.jpg"
+}

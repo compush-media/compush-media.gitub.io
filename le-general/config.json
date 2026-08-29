@@ -1,0 +1,30 @@
+{
+  "name": "Le Général",
+  "color": "#AF886A",
+  "color2": "#8F6F56",
+  "phone": "01 43 80 34 12",
+  "address": "17 Av. de Wagram 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-general/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/legeneralwagram/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/le-general/hero.jpg",
+  "tagline": "Le Général — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-general/logo.jpg"
+}

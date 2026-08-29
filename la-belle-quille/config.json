@@ -1,0 +1,30 @@
+{
+  "name": "La Belle Quille",
+  "color": "#5D4927",
+  "color2": "#4C3B1F",
+  "phone": "01 48 74 93 09",
+  "address": "48 Rue d'Amsterdam 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-belle-quille/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/labellequille.restaurant.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/la-belle-quille/hero.jpg",
+  "tagline": "La Belle Quille — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-belle-quille/logo.jpg"
+}

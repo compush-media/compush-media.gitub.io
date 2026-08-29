@@ -1,0 +1,30 @@
+{
+  "name": "Laïa Voltaire",
+  "color": "#984511",
+  "color2": "#7C380D",
+  "phone": "07 69 95 15 39",
+  "address": "226 Bd Voltaire 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/laia-voltaire/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/laia_restaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/laia-voltaire/hero.jpg",
+  "tagline": "Laïa Voltaire — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/laia-voltaire/logo.jpg"
+}

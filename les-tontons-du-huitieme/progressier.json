@@ -1,0 +1,22 @@
+{
+  "name": "Les Tontons du Huitième",
+  "short_name": "Les Tontons du Huitième",
+  "start_url": "/les-tontons-du-huitieme/index.html",
+  "scope": "/les-tontons-du-huitieme/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#AF8B69",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

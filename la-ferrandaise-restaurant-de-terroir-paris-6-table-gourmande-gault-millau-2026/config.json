@@ -1,0 +1,30 @@
+{
+  "name": "La Ferrandaise restaurant de terroir Paris 6 table gourmande Gault&Millau 2026",
+  "color": "#4B8C63",
+  "color2": "#3D7251",
+  "phone": "01 43 26 36 36",
+  "address": "8 Rue de Vaugirard 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-ferrandaise-restaurant-de-terroir-paris-6-table-gourmande-gault-millau-2026/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/resto_la_ferrandaise",
+  "heroUrl": "https://app.cartefidelavis.com/la-ferrandaise-restaurant-de-terroir-paris-6-table-gourmande-gault-millau-2026/hero.jpg",
+  "tagline": "La Ferrandaise restaurant de terroir Paris 6 table gourmande Gault&Millau 2026 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-ferrandaise-restaurant-de-terroir-paris-6-table-gourmande-gault-millau-2026/logo.jpg"
+}

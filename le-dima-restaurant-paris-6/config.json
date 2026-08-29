@@ -1,0 +1,30 @@
+{
+  "name": "LE DIMA - Restaurant Paris 6",
+  "color": "#FDB31C",
+  "color2": "#CF9216",
+  "phone": "01 43 35 11 39",
+  "address": "81 Bd Raspail 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-dima-restaurant-paris-6/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ledimaparis_restaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/le-dima-restaurant-paris-6/hero.jpg",
+  "tagline": "LE DIMA - Restaurant Paris 6 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-dima-restaurant-paris-6/logo.jpg"
+}

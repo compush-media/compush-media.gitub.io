@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant Martin Paris",
+  "color": "#29571A",
+  "color2": "#214715",
+  "phone": "01 71 18 38 88",
+  "address": "40 bis Rue René Boulanger 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-martin-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/martinrepublique/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-martin-paris/hero.jpg",
+  "tagline": "Restaurant Martin Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-martin-paris/logo.jpg"
+}

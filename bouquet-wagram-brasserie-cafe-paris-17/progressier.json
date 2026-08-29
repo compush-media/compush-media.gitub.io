@@ -1,0 +1,22 @@
+{
+  "name": "Bouquet Wagram | Brasserie | Café | Paris 17",
+  "short_name": "Bouquet Wagram | Brasserie | Café | Paris 17",
+  "start_url": "/bouquet-wagram-brasserie-cafe-paris-17/index.html",
+  "scope": "/bouquet-wagram-brasserie-cafe-paris-17/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#2D5843",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

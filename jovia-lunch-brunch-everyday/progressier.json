@@ -1,0 +1,22 @@
+{
+  "name": "JOVIA - Lunch & Brunch Everyday",
+  "short_name": "JOVIA - Lunch & Brunch Everyday",
+  "start_url": "/jovia-lunch-brunch-everyday/index.html",
+  "scope": "/jovia-lunch-brunch-everyday/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#E66E33",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

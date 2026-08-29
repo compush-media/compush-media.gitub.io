@@ -1,0 +1,30 @@
+{
+  "name": "Bel Ami Café",
+  "color": "#06226E",
+  "color2": "#041B5A",
+  "phone": "01 42 61 53 53",
+  "address": "7 Rue Saint-Benoît 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bel-ami-cafe/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/hotelbelami/",
+  "heroUrl": "https://app.cartefidelavis.com/bel-ami-cafe/hero.jpg",
+  "tagline": "Bel Ami Café — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bel-ami-cafe/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Café Moco",
+  "color": "#6B653A",
+  "color2": "#57522F",
+  "phone": "06 18 29 59 91",
+  "address": "177 bis Bd Voltaire 177bis 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-moco/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafemocoparis",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-moco/hero.jpg",
+  "tagline": "☕️ #brunchparis 🥑 ⏱ 8h à 20 h 7/7 🧑‍🍳#pancakes #matcha",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-moco/logo.jpg"
+}

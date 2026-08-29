@@ -1,0 +1,30 @@
+{
+  "name": "Grand Café Capucines",
+  "color": "#223166",
+  "color2": "#1B2853",
+  "phone": "01 43 12 19 00",
+  "address": "4 Bd des Capucines 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/grand-cafe-capucines/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/grandcafecapucines/",
+  "heroUrl": "https://app.cartefidelavis.com/grand-cafe-capucines/hero.jpg",
+  "tagline": "Grand Café Capucines — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/grand-cafe-capucines/logo.jpg"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Harper's Paris 15",
+  "short_name": "Harper's Paris 15",
+  "start_url": "/harper-s-paris-15/index.html",
+  "scope": "/harper-s-paris-15/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#AD427A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Les Éditeurs",
+  "color": "#B9010F",
+  "color2": "#97000C",
+  "phone": "01 43 26 67 76",
+  "address": "4 Carr de l'Odéon 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-editeurs/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesediteurs_caferestaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/les-editeurs/hero.jpg",
+  "tagline": "Les Éditeurs — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-editeurs/logo.jpg"
+}

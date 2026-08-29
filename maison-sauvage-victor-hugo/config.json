@@ -1,0 +1,29 @@
+{
+  "name": "Maison Sauvage - Victor Hugo",
+  "color": "#80AA62",
+  "color2": "#688B50",
+  "phone": "5 Pl. Victor Hugo 75116 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/maison-sauvage-victor-hugo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/maisonsauvageparis",
+  "heroUrl": "https://app.cartefidelavis.com/maison-sauvage-victor-hugo/hero.jpg",
+  "tagline": "Maison Sauvage - Victor Hugo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/maison-sauvage-victor-hugo/logo.jpg"
+}

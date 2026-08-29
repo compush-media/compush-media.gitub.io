@@ -1,0 +1,30 @@
+{
+  "name": "Papilla Brochant",
+  "color": "#F54123",
+  "color2": "#C8351C",
+  "phone": "09 55 39 25 69",
+  "address": "127 Av. de Clichy 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/papilla-brochant/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/papillaparis/",
+  "heroUrl": "https://app.cartefidelavis.com/papilla-brochant/hero.jpg",
+  "tagline": "Papilla Brochant — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/papilla-brochant/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "La Plage Parisienne",
+  "color": "#193057",
+  "color2": "#142747",
+  "phone": "01 86 61 85 19",
+  "address": "Port de Javel Haut 75015 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-plage-parisienne/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/laplageparisienne/",
+  "heroUrl": "https://app.cartefidelavis.com/la-plage-parisienne/hero.jpg",
+  "tagline": "La Plage Parisienne — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-plage-parisienne/logo.jpg"
+}

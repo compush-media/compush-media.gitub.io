@@ -1,0 +1,22 @@
+{
+  "name": "Gritte - Restaurant & coffee shop",
+  "short_name": "Gritte - Restaurant & coffee shop",
+  "start_url": "/gritte-restaurant-coffee-shop/index.html",
+  "scope": "/gritte-restaurant-coffee-shop/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#9E7A3E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

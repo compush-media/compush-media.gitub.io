@@ -1,0 +1,30 @@
+{
+  "name": "SAYLY BRUNCH & COFFEE",
+  "color": "#274932",
+  "color2": "#1F3B29",
+  "phone": "01 43 87 65 39",
+  "address": "50 Rue du Rocher 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/sayly-brunch-coffee/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/sayly_brunch/",
+  "heroUrl": "https://app.cartefidelavis.com/sayly-brunch-coffee/hero.jpg",
+  "tagline": "SAYLY BRUNCH & COFFEE — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/sayly-brunch-coffee/logo.jpg"
+}

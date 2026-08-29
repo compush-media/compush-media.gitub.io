@@ -1,0 +1,29 @@
+{
+  "name": "Briochette Paris – Sandwichs briochés & brioches salées",
+  "color": "#F9B120",
+  "color2": "#CC911A",
+  "phone": "64 Rue du Faubourg Saint-Denis 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/briochette-paris-sandwichs-brioches-brioches-salees/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/briochette.fr/",
+  "heroUrl": "https://app.cartefidelavis.com/briochette-paris-sandwichs-brioches-brioches-salees/hero.jpg",
+  "tagline": "Briochette Paris – Sandwichs briochés & brioches salées — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/briochette-paris-sandwichs-brioches-brioches-salees/logo.jpg"
+}

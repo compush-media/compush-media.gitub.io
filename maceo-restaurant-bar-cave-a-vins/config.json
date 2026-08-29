@@ -1,0 +1,30 @@
+{
+  "name": "Macéo Restaurant Bar & Cave à Vins",
+  "color": "#AC7E64",
+  "color2": "#8D6752",
+  "phone": "01 85 15 22 56",
+  "address": "15 Rue des Petits Champs 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/maceo-restaurant-bar-cave-a-vins/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurantmaceo/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/maceo-restaurant-bar-cave-a-vins/hero.jpg",
+  "tagline": "Macéo Restaurant Bar & Cave à Vins — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/maceo-restaurant-bar-cave-a-vins/logo.jpg"
+}

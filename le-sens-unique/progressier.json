@@ -1,0 +1,22 @@
+{
+  "name": "Le Sens Unique",
+  "short_name": "Le Sens Unique",
+  "start_url": "/le-sens-unique/index.html",
+  "scope": "/le-sens-unique/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#2A5F74",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

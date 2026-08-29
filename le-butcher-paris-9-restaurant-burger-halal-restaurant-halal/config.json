@@ -1,0 +1,30 @@
+{
+  "name": "Le Butcher paris 9 : restaurant burger halal | restaurant halal",
+  "color": "#925A4F",
+  "color2": "#774940",
+  "phone": "01 47 42 46 64",
+  "address": "15 Rue Godot de Mauroy 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-butcher-paris-9-restaurant-burger-halal-restaurant-halal/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le.butcher",
+  "heroUrl": "https://app.cartefidelavis.com/le-butcher-paris-9-restaurant-burger-halal-restaurant-halal/hero.jpg",
+  "tagline": "Le Butcher paris 9 : restaurant burger halal | restaurant halal — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-butcher-paris-9-restaurant-burger-halal-restaurant-halal/logo.jpg"
+}

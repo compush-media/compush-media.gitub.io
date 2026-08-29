@@ -1,0 +1,30 @@
+{
+  "name": "Le 17.45 Paris Pigalle - Planches à composer",
+  "color": "#631E0D",
+  "color2": "#51180A",
+  "phone": "09 88 30 32 46",
+  "address": "49 Rue Jean-Baptiste Pigalle 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-17-45-paris-pigalle-planches-a-composer/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le17.45/",
+  "heroUrl": "https://app.cartefidelavis.com/le-17-45-paris-pigalle-planches-a-composer/hero.jpg",
+  "tagline": "Le 17.45 Paris Pigalle - Planches à composer — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-17-45-paris-pigalle-planches-a-composer/logo.jpg"
+}

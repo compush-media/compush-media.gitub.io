@@ -1,0 +1,30 @@
+{
+  "name": "Café Studio",
+  "color": "#D2733C",
+  "color2": "#AC5E31",
+  "phone": "09 75 71 30 69",
+  "address": "4 Rue de Sambre-et-Meuse 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-studio/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafe.studio.paris?igsh=MTN6NGN5enMxbGJ0YQ==",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-studio/hero.jpg",
+  "tagline": "Café Studio — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-studio/logo.jpg"
+}

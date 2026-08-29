@@ -1,0 +1,30 @@
+{
+  "name": "Le Durand Dupont",
+  "color": "#274944",
+  "color2": "#1F3B37",
+  "phone": "01 41 92 93 00",
+  "address": "14 Pl. du Marché 92200 Neuilly-sur-Seine",
+  "logoUrl": "https://app.cartefidelavis.com/le-durand-dupont/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le_durand_dupont/",
+  "heroUrl": "https://app.cartefidelavis.com/le-durand-dupont/hero.jpg",
+  "tagline": "Le Durand Dupont — Neuilly-sur-Seine",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Neuilly-sur-Seine",
+  "iconUrl": "https://app.cartefidelavis.com/le-durand-dupont/logo.jpg"
+}

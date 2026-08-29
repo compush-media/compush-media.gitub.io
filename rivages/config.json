@@ -1,0 +1,30 @@
+{
+  "name": "RIVAGES",
+  "color": "#5D4328",
+  "color2": "#4C3620",
+  "phone": "01 44 71 24 02",
+  "address": "1 Rue Scribe 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/rivages/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/rivages_restaurant/?hl=en",
+  "heroUrl": "https://app.cartefidelavis.com/rivages/hero.jpg",
+  "tagline": "RIVAGES — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/rivages/logo.jpg"
+}

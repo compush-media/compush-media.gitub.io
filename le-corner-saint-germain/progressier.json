@@ -1,0 +1,22 @@
+{
+  "name": "Le Corner Saint-Germain",
+  "short_name": "Le Corner Saint-Germain",
+  "start_url": "/le-corner-saint-germain/index.html",
+  "scope": "/le-corner-saint-germain/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#494728",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

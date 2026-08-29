@@ -1,0 +1,22 @@
+{
+  "name": "L'Arc Café Brasserie Restaurant",
+  "short_name": "L'Arc Café Brasserie Restaurant",
+  "start_url": "/l-arc-cafe-brasserie-restaurant/index.html",
+  "scope": "/l-arc-cafe-brasserie-restaurant/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#9E7A3E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

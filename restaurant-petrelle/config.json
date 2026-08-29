@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant Pétrelle",
+  "color": "#D59B44",
+  "color2": "#AE7F37",
+  "phone": "01 42 82 11 02",
+  "address": "34 Rue Petrelle 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-petrelle/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/petrelle.restaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-petrelle/hero.jpg",
+  "tagline": "Restaurant Pétrelle — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-petrelle/logo.jpg"
+}

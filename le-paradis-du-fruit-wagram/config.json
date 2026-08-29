@@ -1,0 +1,30 @@
+{
+  "name": "Le Paradis du Fruit - Wagram",
+  "color": "#214F36",
+  "color2": "#1B402C",
+  "phone": "01 44 09 02 02",
+  "address": "32 Av. de Wagram 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-wagram/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/leparadisdufruit?igsh=MXZmcDg4dHV3bWxjYg==",
+  "heroUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-wagram/hero.jpg",
+  "tagline": "Le Paradis du Fruit - Wagram — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-wagram/logo.jpg"
+}

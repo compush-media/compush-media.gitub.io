@@ -1,0 +1,22 @@
+{
+  "name": "Judy Rousseau - Restaurant healthy sans gluten • Brunch • Café & bowls",
+  "short_name": "Judy Rousseau - Restaurant healthy sans gluten • Brunch • Café & bowls",
+  "start_url": "/judy-rousseau-restaurant-healthy-sans-gluten-brunch-cafe-bowls/index.html",
+  "scope": "/judy-rousseau-restaurant-healthy-sans-gluten-brunch-cafe-bowls/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#9E7A3E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

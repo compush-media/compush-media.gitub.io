@@ -1,0 +1,29 @@
+{
+  "name": "Yellow Tucan Coffee",
+  "color": "#0D6974",
+  "color2": "#0A565F",
+  "phone": "20 Rue des Tournelles 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/yellow-tucan-coffee/logo.jpg",
+  "instagramUrl": "https://instagram.com/yellowtucan",
+  "heroUrl": "https://app.cartefidelavis.com/yellow-tucan-coffee/hero.jpg",
+  "tagline": "Yellow Tucan Coffee — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/yellow-tucan-coffee/logo.jpg"
+}

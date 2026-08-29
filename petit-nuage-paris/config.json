@@ -1,0 +1,30 @@
+{
+  "name": "Petit Nuage Paris",
+  "color": "#325899",
+  "color2": "#29487D",
+  "phone": "01 45 35 31 15",
+  "address": "51 Rue Basfroi 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/petit-nuage-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/petitnuageparis/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/petit-nuage-paris/hero.jpg",
+  "tagline": "🍴 Cuisine du monde 🍸 Bar à cocktails et bon jaja",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/petit-nuage-paris/logo.jpg"
+}

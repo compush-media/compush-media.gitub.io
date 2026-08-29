@@ -1,0 +1,30 @@
+{
+  "name": "Le Café Marly",
+  "color": "#DB1D2A",
+  "color2": "#B31722",
+  "phone": "01 49 26 06 60",
+  "address": "93 Rue de Rivoli 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-cafe-marly/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafe_marly/",
+  "heroUrl": "https://app.cartefidelavis.com/le-cafe-marly/hero.jpg",
+  "tagline": "Le Café Marly — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-cafe-marly/logo.jpg"
+}

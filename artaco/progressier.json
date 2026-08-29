@@ -1,0 +1,22 @@
+{
+  "name": "ArtaCo",
+  "short_name": "ArtaCo",
+  "start_url": "/artaco/index.html",
+  "scope": "/artaco/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#234D7B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

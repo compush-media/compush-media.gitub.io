@@ -1,0 +1,30 @@
+{
+  "name": "PonPon Café",
+  "color": "#EA672E",
+  "color2": "#BF5425",
+  "phone": "06 72 32 37 38",
+  "address": "3 Rue Molière 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/ponpon-cafe/logo.jpg",
+  "instagramUrl": "https://instagram.com/ponpon.cafe",
+  "heroUrl": "https://app.cartefidelavis.com/ponpon-cafe/hero.jpg",
+  "tagline": "PonPon Café — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ponpon-cafe/logo.jpg"
+}

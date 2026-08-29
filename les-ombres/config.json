@@ -1,0 +1,30 @@
+{
+  "name": "Les Ombres",
+  "color": "#B67D60",
+  "color2": "#95664E",
+  "phone": "01 47 53 68 00",
+  "address": "27 Quai Jacques Chirac 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-ombres/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesombres.quaibranly/",
+  "heroUrl": "https://app.cartefidelavis.com/les-ombres/hero.jpg",
+  "tagline": "Restaurant Les Ombres Bar Les Ombres 📍 Rooftop du @quaibranly",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-ombres/logo.jpg"
+}

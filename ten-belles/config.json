@@ -1,0 +1,30 @@
+{
+  "name": "Ten Belles",
+  "color": "#FD2F1C",
+  "color2": "#CF2616",
+  "phone": "06 31 67 68 45",
+  "address": "10 Rue de la Grange aux Belles 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/ten-belles/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/tenbelles",
+  "heroUrl": "https://app.cartefidelavis.com/ten-belles/hero.jpg",
+  "tagline": "Ten Belles — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ten-belles/logo.jpg"
+}

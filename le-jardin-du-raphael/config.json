@@ -1,0 +1,30 @@
+{
+  "name": "Le Jardin du Raphael",
+  "color": "#B29E5E",
+  "color2": "#91814D",
+  "phone": "01 53 64 32 30",
+  "address": "17 ter Av. Kléber 75116 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-jardin-du-raphael/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/hotelraphaelparis/",
+  "heroUrl": "https://app.cartefidelavis.com/le-jardin-du-raphael/hero.jpg",
+  "tagline": "Closed for renovation until 2026",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-jardin-du-raphael/logo.jpg"
+}

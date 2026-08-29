@@ -1,0 +1,30 @@
+{
+  "name": "Rosa Bonheur sur Seine",
+  "color": "#ED9907",
+  "color2": "#C27D05",
+  "phone": "01 47 53 66 92",
+  "address": "2 Port des Invalides 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/rosa-bonheur-sur-seine/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/rosabonheurofficiel/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/rosa-bonheur-sur-seine/hero.jpg",
+  "tagline": "Rosa Bonheur sur Seine — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/rosa-bonheur-sur-seine/logo.jpg"
+}

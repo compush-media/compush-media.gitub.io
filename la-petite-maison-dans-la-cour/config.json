@@ -1,0 +1,30 @@
+{
+  "name": "La Petite Maison Dans La Cour",
+  "color": "#610F30",
+  "color2": "#4F0C27",
+  "phone": "06 89 32 00 10",
+  "address": "9 Rue Saint-Paul 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-petite-maison-dans-la-cour/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lapetitemaisondanslacour/",
+  "heroUrl": "https://app.cartefidelavis.com/la-petite-maison-dans-la-cour/hero.jpg",
+  "tagline": "La Petite Maison Dans La Cour — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-petite-maison-dans-la-cour/logo.jpg"
+}

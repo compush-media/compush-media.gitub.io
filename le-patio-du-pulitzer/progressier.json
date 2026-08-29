@@ -1,0 +1,22 @@
+{
+  "name": "Le Patio du Pulitzer",
+  "short_name": "Le Patio du Pulitzer",
+  "start_url": "/le-patio-du-pulitzer/index.html",
+  "scope": "/le-patio-du-pulitzer/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#5B3A16",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

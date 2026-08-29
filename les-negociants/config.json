@@ -1,0 +1,30 @@
+{
+  "name": "Les Négociants",
+  "color": "#27492D",
+  "color2": "#1F3B24",
+  "phone": "01 43 31 28 16",
+  "address": "23 Av. des Gobelins 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-negociants/logo.jpg",
+  "instagramUrl": "http://instagram.com/lesnegociants",
+  "heroUrl": "https://app.cartefidelavis.com/les-negociants/hero.jpg",
+  "tagline": "🥘 Cuisine 100% maison 🕒 Ouvert jusqu'à 2h tous les jours",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-negociants/logo.jpg"
+}

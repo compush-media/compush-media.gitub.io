@@ -1,0 +1,26 @@
+{
+  "name": "Comptoir Moderne",
+  "color": "#9E7A3E",
+  "color2": "01 47 34 14 94",
+  "phone": "26 Rue de la Croix Nivert 75015 Paris",
+  "instagramUrl": "https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.instagram.com%2Fcm_paris15%3Ffbclid%3DIwcGRvZgVleHRuA2FlbQIxMABicmlkETFtQzN6cVd6S2lycVU4c292c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHoS__mUlSoEGhILYUm96Phd_Jc6O0P2ENLpH_lKo9Tv4GuRYbPx6-6uqbGBl_aem_jgMVasBGRfZzSh7CVXfTIg&h=AUCK8hGwXuCJ7wZ6lySS4SV7Kus6govHSicAfJG64qI3UoeSyc_4-s9OceWHqw8n37s8H390dd6p0edXkZVGZEThAJt-FOazTiPL0udQVqVe8-ncbUwzztS20_U6V9gOC8FxQXx0c6HBnU8DMyXfj3gP7A",
+  "tagline": "Comptoir Moderne — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

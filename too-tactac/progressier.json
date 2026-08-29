@@ -1,0 +1,22 @@
+{
+  "name": "TOO TacTac",
+  "short_name": "TOO TacTac",
+  "start_url": "/too-tactac/index.html",
+  "scope": "/too-tactac/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#E46534",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

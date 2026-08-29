@@ -1,0 +1,30 @@
+{
+  "name": "Angelina Paris - Rivoli",
+  "color": "#BD995C",
+  "color2": "#9A7D4B",
+  "phone": "01 42 60 82 00",
+  "address": "226 Rue de Rivoli 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/angelina-paris-rivoli/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/angelina_paris",
+  "heroUrl": "https://app.cartefidelavis.com/angelina-paris-rivoli/hero.jpg",
+  "tagline": "Angelina Paris - Rivoli — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/angelina-paris-rivoli/logo.jpg"
+}

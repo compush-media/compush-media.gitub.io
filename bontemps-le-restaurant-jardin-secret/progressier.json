@@ -1,0 +1,23 @@
+{
+  "name": "Resto1",
+  "short_name": "Resto1",
+  "start_url": "/resto1/index.html",
+  "scope": "/resto1/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#B8924F",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

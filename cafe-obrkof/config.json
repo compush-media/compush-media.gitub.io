@@ -1,0 +1,30 @@
+{
+  "name": "Café Obrkof",
+  "color": "#815F45",
+  "color2": "#694D38",
+  "phone": "06 74 57 09 90",
+  "address": "41 Bd Voltaire 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-obrkof/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/obrkof/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-obrkof/hero.jpg",
+  "tagline": "Café Obrkof — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-obrkof/logo.jpg"
+}

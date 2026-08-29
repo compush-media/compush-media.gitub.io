@@ -1,0 +1,30 @@
+{
+  "name": "Les Foodies",
+  "color": "#1F488A",
+  "color2": "#193B71",
+  "phone": "01 42 19 97 86",
+  "address": "6-8 Sq. Sainte-Croix de la Bretonnerie 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-foodies/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesfoodiesparis/",
+  "heroUrl": "https://app.cartefidelavis.com/les-foodies/hero.jpg",
+  "tagline": "Les Foodies — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-foodies/logo.jpg"
+}

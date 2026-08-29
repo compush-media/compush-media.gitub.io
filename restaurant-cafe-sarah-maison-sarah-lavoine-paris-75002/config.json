@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant Café Sarah Maison Sarah Lavoine Paris 75002",
+  "color": "#006170",
+  "color2": "#004F5B",
+  "phone": "01 40 13 75 75",
+  "address": "6 Pl. des Petits Pères 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-cafe-sarah-maison-sarah-lavoine-paris-75002/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/maisonsarahlavoine/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-cafe-sarah-maison-sarah-lavoine-paris-75002/hero.jpg",
+  "tagline": "Restaurant Café Sarah Maison Sarah Lavoine Paris 75002 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-cafe-sarah-maison-sarah-lavoine-paris-75002/logo.jpg"
+}

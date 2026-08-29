@@ -1,0 +1,29 @@
+{
+  "name": "Les Délices d'Aphrodite",
+  "color": "#EBA901",
+  "color2": "#C08A00",
+  "phone": "01 43 31 40 39",
+  "address": "4 Rue de Candolle 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-delices-d-aphrodite/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/maisonmavrommatis/?hl=fr",
+  "tagline": "Les Délices d'Aphrodite — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-delices-d-aphrodite/logo.jpg"
+}

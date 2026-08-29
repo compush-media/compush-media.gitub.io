@@ -1,0 +1,30 @@
+{
+  "name": "Drawing House",
+  "color": "#A08156",
+  "color2": "#836946",
+  "phone": "01 89 89 27 27",
+  "address": "21 Rue Vercingétorix 75014 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/drawing-house/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/drawinghouseparis/",
+  "heroUrl": "https://app.cartefidelavis.com/drawing-house/hero.jpg",
+  "tagline": "Drawing House — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/drawing-house/logo.jpg"
+}

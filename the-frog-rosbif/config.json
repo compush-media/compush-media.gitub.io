@@ -1,0 +1,30 @@
+{
+  "name": "The Frog & Rosbif",
+  "color": "#FEE707",
+  "color2": "#D0BD05",
+  "phone": "01 42 36 34 73",
+  "address": "116 Rue St Denis 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/the-frog-rosbif/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/frogpubs/",
+  "heroUrl": "https://app.cartefidelavis.com/the-frog-rosbif/hero.jpg",
+  "tagline": "The Frog & Rosbif — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/the-frog-rosbif/logo.jpg"
+}

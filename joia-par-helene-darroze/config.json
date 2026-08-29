@@ -1,0 +1,30 @@
+{
+  "name": "Jòia par Hélène Darroze",
+  "color": "#A25761",
+  "color2": "#84474F",
+  "phone": "01 40 20 06 06",
+  "address": "39 Rue des Jeuneurs 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/joia-par-helene-darroze/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/joiaparhelenedarroze",
+  "heroUrl": "https://app.cartefidelavis.com/joia-par-helene-darroze/hero.jpg",
+  "tagline": "SI C’EST PAS LE BONHEUR, ÇA Y RESSEMBLE…",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/joia-par-helene-darroze/logo.jpg"
+}

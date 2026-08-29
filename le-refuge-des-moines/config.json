@@ -1,0 +1,30 @@
+{
+  "name": "Le Refuge des Moines",
+  "color": "#D32D40",
+  "color2": "#AD2434",
+  "phone": "01 42 28 92 52",
+  "address": "85 Rue des Moines 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-refuge-des-moines/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lerefugedesmoines/",
+  "heroUrl": "https://app.cartefidelavis.com/le-refuge-des-moines/hero.jpg",
+  "tagline": "Le Refuge des Moines — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-refuge-des-moines/logo.jpg"
+}

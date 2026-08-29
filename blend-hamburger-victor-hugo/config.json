@@ -1,0 +1,30 @@
+{
+  "name": "Blend Hamburger Victor Hugo",
+  "color": "#492727",
+  "color2": "#3B1F1F",
+  "phone": "01 53 86 05 55",
+  "address": "91 Av. Raymond Poincaré 75016 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/blend-hamburger-victor-hugo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/blend/",
+  "heroUrl": "https://app.cartefidelavis.com/blend-hamburger-victor-hugo/hero.jpg",
+  "tagline": "Blend Hamburger Victor Hugo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/blend-hamburger-victor-hugo/logo.jpg"
+}

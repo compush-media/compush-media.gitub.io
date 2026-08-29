@@ -1,0 +1,30 @@
+{
+  "name": "LA FONTAINE SULLY",
+  "color": "#A6595D",
+  "color2": "#88484C",
+  "phone": "07 77 33 15 86",
+  "address": "67 Rue Saint-Antoine 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-fontaine-sully/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafefontainesully",
+  "heroUrl": "https://app.cartefidelavis.com/la-fontaine-sully/hero.jpg",
+  "tagline": "LA FONTAINE SULLY — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-fontaine-sully/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Ten Belles 6 | Coffee Shop | Pain au levain & torréfaction artisanale",
+  "color": "#FD2F1C",
+  "color2": "#CF2616",
+  "phone": "09 83 34 33 65",
+  "address": "53 Rue du Cherche-Midi 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/ten-belles-6-coffee-shop-pain-au-levain-torrefaction-artisanale/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/tenbelles",
+  "heroUrl": "https://app.cartefidelavis.com/ten-belles-6-coffee-shop-pain-au-levain-torrefaction-artisanale/hero.jpg",
+  "tagline": "Ten Belles 6 | Coffee Shop | Pain au levain & torréfaction artisanale — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ten-belles-6-coffee-shop-pain-au-levain-torrefaction-artisanale/logo.jpg"
+}

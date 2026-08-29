@@ -1,0 +1,30 @@
+{
+  "name": "Papilles & Epices",
+  "color": "#A2A10E",
+  "color2": "#84840B",
+  "phone": "01 41 21 50 76",
+  "address": "7 Bd Richard Wallace 92800 Puteaux",
+  "logoUrl": "https://app.cartefidelavis.com/papilles-epices/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/papilles.et.epices?igsh=Y3MzaHNxdjBvenM%3D&utm_source=qr",
+  "heroUrl": "https://app.cartefidelavis.com/papilles-epices/hero.jpg",
+  "tagline": "Papilles & Epices — Puteaux",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Puteaux",
+  "iconUrl": "https://app.cartefidelavis.com/papilles-epices/logo.jpg"
+}

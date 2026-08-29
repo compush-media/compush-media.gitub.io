@@ -1,0 +1,30 @@
+{
+  "name": "L'île",
+  "color": "#325C52",
+  "color2": "#294B43",
+  "phone": "01 41 09 99 99",
+  "address": "Parc de l’Ile Saint-Germain 170 Quai de Stalingrad 92130 Issy-les-Moulineaux",
+  "logoUrl": "https://app.cartefidelavis.com/l-ile/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ile.restaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/l-ile/hero.jpg",
+  "tagline": "L'île — Issy-les-Moulineaux",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Issy-les-Moulineaux",
+  "iconUrl": "https://app.cartefidelavis.com/l-ile/logo.jpg"
+}

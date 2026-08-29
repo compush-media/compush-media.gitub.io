@@ -1,0 +1,30 @@
+{
+  "name": "Le Chalet des Îles",
+  "color": "#4A4526",
+  "color2": "#3C381F",
+  "phone": "01 42 88 04 69",
+  "address": "Bois de Boulogne Embarcadère du Chalet des Îles Porte de la Muette Ceinture du lac inférieur du 75016 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-chalet-des-iles/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/chaletdesiles/",
+  "heroUrl": "https://app.cartefidelavis.com/le-chalet-des-iles/hero.jpg",
+  "tagline": "RESTAURANT • BAR • ÉVÉNEMENTIEL • Du lundi au dimanche ⛵️🌱",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-chalet-des-iles/logo.jpg"
+}

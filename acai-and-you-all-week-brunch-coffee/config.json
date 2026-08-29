@@ -1,0 +1,30 @@
+{
+  "name": "Acai and You - All week Brunch & Coffee",
+  "color": "#8E3370",
+  "color2": "#74295B",
+  "phone": "09 56 24 99 75",
+  "address": "200 bis Bd Jean Jaurès 92100 Boulogne-Billancourt",
+  "logoUrl": "https://app.cartefidelavis.com/acai-and-you-all-week-brunch-coffee/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/acaiandyou.fr/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/acai-and-you-all-week-brunch-coffee/hero.jpg",
+  "tagline": "Acai and You - All week Brunch & Coffee — Boulogne-Billancourt",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Boulogne-Billancourt",
+  "iconUrl": "https://app.cartefidelavis.com/acai-and-you-all-week-brunch-coffee/logo.jpg"
+}

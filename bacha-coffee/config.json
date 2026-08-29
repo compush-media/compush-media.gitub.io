@@ -1,0 +1,30 @@
+{
+  "name": "Bacha Coffee",
+  "color": "#E17B01",
+  "color2": "#B86400",
+  "phone": "01 71 25 19 10",
+  "address": "26 Av. des Champs-Élysées 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bacha-coffee/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/BachaCoffee/",
+  "heroUrl": "https://app.cartefidelavis.com/bacha-coffee/hero.jpg",
+  "tagline": "Bacha Coffee — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bacha-coffee/logo.jpg"
+}

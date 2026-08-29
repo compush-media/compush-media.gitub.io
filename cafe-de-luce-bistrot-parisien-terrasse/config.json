@@ -1,0 +1,30 @@
+{
+  "name": "Café de Luce - Bistrot parisien & terrasse",
+  "color": "#299035",
+  "color2": "#21762B",
+  "phone": "01 42 58 00 44",
+  "address": "2 Rue des Trois Frères 75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-de-luce-bistrot-parisien-terrasse/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafedeluce.montmartre/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-de-luce-bistrot-parisien-terrasse/hero.jpg",
+  "tagline": "Café de Luce - Bistrot parisien & terrasse — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-de-luce-bistrot-parisien-terrasse/logo.jpg"
+}

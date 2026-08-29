@@ -1,0 +1,30 @@
+{
+  "name": "Perception",
+  "color": "#AB7364",
+  "color2": "#8C5E52",
+  "phone": "01 40 35 78 32",
+  "address": "53 Rue Blanche 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/perception/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurant.perception/",
+  "heroUrl": "https://app.cartefidelavis.com/perception/hero.jpg",
+  "tagline": "Perception — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/perception/logo.jpg"
+}

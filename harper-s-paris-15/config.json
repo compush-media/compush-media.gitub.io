@@ -1,0 +1,30 @@
+{
+  "name": "Harper's Paris 15",
+  "color": "#AD427A",
+  "color2": "#8D3664",
+  "phone": "01 42 22 45 54",
+  "address": "46 Bis Bd du Montparnasse 75015 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/harper-s-paris-15/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/harpersparis/",
+  "heroUrl": "https://app.cartefidelavis.com/harper-s-paris-15/hero.jpg",
+  "tagline": "Harper's Paris 15 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/harper-s-paris-15/logo.jpg"
+}

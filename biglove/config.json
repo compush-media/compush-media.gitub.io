@@ -1,0 +1,30 @@
+{
+  "name": "BigLove",
+  "color": "#493F27",
+  "color2": "#3B331F",
+  "phone": "09 73 03 45 08",
+  "address": "30 Rue Debelleyme 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/biglove/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bigmammagroup/",
+  "heroUrl": "https://app.cartefidelavis.com/biglove/hero.jpg",
+  "tagline": "BigLove — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/biglove/logo.jpg"
+}

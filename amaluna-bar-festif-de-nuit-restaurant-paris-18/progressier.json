@@ -1,0 +1,22 @@
+{
+  "name": "Amaluna - Bar festif de Nuit restaurant Paris 18",
+  "short_name": "Amaluna - Bar festif de Nuit restaurant Paris 18",
+  "start_url": "/amaluna-bar-festif-de-nuit-restaurant-paris-18/index.html",
+  "scope": "/amaluna-bar-festif-de-nuit-restaurant-paris-18/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#023B6E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

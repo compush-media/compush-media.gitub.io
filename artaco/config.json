@@ -1,0 +1,29 @@
+{
+  "name": "ArtaCo",
+  "color": "#234D7B",
+  "color2": "#1C3F64",
+  "phone": "81 Rue de Cléry 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/artaco/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/artaco.fr/",
+  "heroUrl": "https://app.cartefidelavis.com/artaco/hero.jpg",
+  "tagline": "ArtaCo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/artaco/logo.jpg"
+}

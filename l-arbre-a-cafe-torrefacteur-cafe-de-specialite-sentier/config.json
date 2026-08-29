@@ -1,0 +1,30 @@
+{
+  "name": "L'Arbre à Café - Torréfacteur & Café de Spécialité Sentier",
+  "color": "#BF8859",
+  "color2": "#9C6F48",
+  "phone": "01 84 17 24 17",
+  "address": "10 Rue du Nil 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/l-arbre-a-cafe-torrefacteur-cafe-de-specialite-sentier/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/larbreacafe/",
+  "heroUrl": "https://app.cartefidelavis.com/l-arbre-a-cafe-torrefacteur-cafe-de-specialite-sentier/hero.jpg",
+  "tagline": "L'Arbre à Café - Torréfacteur & Café de Spécialité Sentier — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/l-arbre-a-cafe-torrefacteur-cafe-de-specialite-sentier/logo.jpg"
+}

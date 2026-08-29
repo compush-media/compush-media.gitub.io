@@ -1,0 +1,30 @@
+{
+  "name": "Le Comptoir Boutary",
+  "color": "#6D5D3A",
+  "color2": "#594C2F",
+  "phone": "01 53 16 44 56",
+  "address": "32 Rue Catherine de la Rochefoucauld 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-comptoir-boutary/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/comptoirboutary/",
+  "heroUrl": "https://app.cartefidelavis.com/le-comptoir-boutary/hero.jpg",
+  "tagline": "Le Comptoir Boutary — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-comptoir-boutary/logo.jpg"
+}

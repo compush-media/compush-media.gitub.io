@@ -1,0 +1,22 @@
+{
+  "name": "Les Parisiens Restaurant by Thibault Sombardier",
+  "short_name": "Les Parisiens Restaurant by Thibault Sombardier",
+  "start_url": "/les-parisiens-restaurant-by-thibault-sombardier/index.html",
+  "scope": "/les-parisiens-restaurant-by-thibault-sombardier/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#084068",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

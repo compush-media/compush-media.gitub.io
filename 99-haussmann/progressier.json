@@ -1,0 +1,22 @@
+{
+  "name": "99 Haussmann",
+  "short_name": "99 Haussmann",
+  "start_url": "/99-haussmann/index.html",
+  "scope": "/99-haussmann/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#B68062",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

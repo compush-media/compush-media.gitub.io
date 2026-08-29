@@ -1,0 +1,22 @@
+{
+  "name": "Restaurant hotel Chouchou",
+  "short_name": "Restaurant hotel Chouchou",
+  "start_url": "/restaurant-hotel-chouchou/index.html",
+  "scope": "/restaurant-hotel-chouchou/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#011EF0",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

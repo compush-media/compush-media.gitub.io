@@ -1,0 +1,28 @@
+{
+  "name": "Table de MEE",
+  "color": "#9E7A3E",
+  "color2": "01 43 54 42 56",
+  "phone": "6 Rue des Ciseaux 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/table-de-mee/logo.jpg",
+  "instagramUrl": "https://instagram.com/table_de_mee",
+  "tagline": "Table de MEE — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/table-de-mee/logo.jpg"
+}

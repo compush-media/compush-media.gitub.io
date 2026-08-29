@@ -1,0 +1,22 @@
+{
+  "name": "Briochette Paris – Sandwichs briochés & brioches salées",
+  "short_name": "Briochette Paris – Sandwichs briochés & brioches salées",
+  "start_url": "/briochette-paris-sandwichs-brioches-brioches-salees/index.html",
+  "scope": "/briochette-paris-sandwichs-brioches-brioches-salees/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#F9B120",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

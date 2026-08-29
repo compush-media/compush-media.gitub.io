@@ -1,0 +1,26 @@
+{
+  "name": "Amarvi",
+  "color": "#9E7A3E",
+  "color2": "01 42 02 00 02",
+  "phone": "9 Rue Cujas 75005 Paris",
+  "instagramUrl": "https://www.instagram.com/amarvi.paris/",
+  "tagline": "Amarvi — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Café Charlot",
+  "color": "#C6120E",
+  "color2": "#A20E0B",
+  "phone": "01 44 54 03 30",
+  "address": "38 Rue de Bretagne 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-charlot/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafecharlotparis/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-charlot/hero.jpg",
+  "tagline": "Café Charlot — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-charlot/logo.jpg"
+}

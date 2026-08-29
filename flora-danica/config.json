@@ -1,0 +1,30 @@
+{
+  "name": "Flora Danica",
+  "color": "#34604C",
+  "color2": "#2A4E3E",
+  "phone": "01 44 13 86 26",
+  "address": "142 Av. des Champs-Élysées 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/flora-danica/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/flora_danica/",
+  "heroUrl": "https://app.cartefidelavis.com/flora-danica/hero.jpg",
+  "tagline": "Flora Danica — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/flora-danica/logo.jpg"
+}

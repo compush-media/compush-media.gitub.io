@@ -1,0 +1,29 @@
+{
+  "name": "Tigermilk South-Pigalle - Paris 9",
+  "color": "#1B5643",
+  "color2": "#164636",
+  "phone": "72 Rue du Faubourg Montmartre 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/tigermilk-south-pigalle-paris-9/logo.jpg",
+  "instagramUrl": "https://instagram.com/tigermilkgroup",
+  "heroUrl": "https://app.cartefidelavis.com/tigermilk-south-pigalle-paris-9/hero.jpg",
+  "tagline": "Tigermilk South-Pigalle - Paris 9 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/tigermilk-south-pigalle-paris-9/logo.jpg"
+}

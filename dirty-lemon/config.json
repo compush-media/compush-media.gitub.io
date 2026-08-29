@@ -1,0 +1,30 @@
+{
+  "name": "Dirty Lemon",
+  "color": "#BD9229",
+  "color2": "#9A7721",
+  "phone": "01 43 38 77 02",
+  "address": "24 Rue de la Folie Méricourt 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/dirty-lemon/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/dirtylemon.bar/",
+  "heroUrl": "https://app.cartefidelavis.com/dirty-lemon/hero.jpg",
+  "tagline": "Dirty Lemon — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/dirty-lemon/logo.jpg"
+}

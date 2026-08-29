@@ -1,0 +1,30 @@
+{
+  "name": "Le 3Bis - Bar à jeux Paris 12",
+  "color": "#691854",
+  "color2": "#561344",
+  "phone": "01 71 25 26 37",
+  "address": "41 Rue des Pirogues de Bercy 75012 Bercy Village - Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-3bis-bar-a-jeux-paris-12/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le_3bis/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/le-3bis-bar-a-jeux-paris-12/hero.jpg",
+  "tagline": "Le 3Bis - Bar à jeux Paris 12 — Bercy Village - Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Bercy Village - Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-3bis-bar-a-jeux-paris-12/logo.jpg"
+}

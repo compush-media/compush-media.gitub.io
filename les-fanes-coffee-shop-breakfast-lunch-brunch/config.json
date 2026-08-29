@@ -1,0 +1,29 @@
+{
+  "name": "Les Fanés - Coffee shop - Breakfast - Lunch - Brunch",
+  "color": "#D74015",
+  "color2": "#B03411",
+  "phone": "109 Rue de la Réunion 75020 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-fanes-coffee-shop-breakfast-lunch-brunch/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesfanes_paris20/",
+  "heroUrl": "https://app.cartefidelavis.com/les-fanes-coffee-shop-breakfast-lunch-brunch/hero.jpg",
+  "tagline": "Les Fanés - Coffee shop - Breakfast - Lunch - Brunch — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-fanes-coffee-shop-breakfast-lunch-brunch/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Ground to Grow | Restaurant vegan | Yôga & Méditation",
+  "color": "#22334F",
+  "color2": "#1B2940",
+  "phone": "07 70 78 44 85",
+  "address": "28 Rue Chapon 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/ground-to-grow-restaurant-vegan-yoga-meditation/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ground.togrow/",
+  "heroUrl": "https://app.cartefidelavis.com/ground-to-grow-restaurant-vegan-yoga-meditation/hero.jpg",
+  "tagline": "Ground to Grow | Restaurant vegan | Yôga & Méditation — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ground-to-grow-restaurant-vegan-yoga-meditation/logo.jpg"
+}

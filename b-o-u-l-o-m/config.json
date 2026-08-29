@@ -1,0 +1,30 @@
+{
+  "name": "B.O.U.L.O.M",
+  "color": "#654E37",
+  "color2": "#523F2D",
+  "phone": "01 46 06 64 20",
+  "address": "181 Rue Ordener 75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/b-o-u-l-o-m/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/b.o.u.l.o.m/",
+  "heroUrl": "https://app.cartefidelavis.com/b-o-u-l-o-m/hero.jpg",
+  "tagline": "B.O.U.L.O.M — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/b-o-u-l-o-m/logo.jpg"
+}

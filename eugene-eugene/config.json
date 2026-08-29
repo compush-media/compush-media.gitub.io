@@ -1,0 +1,30 @@
+{
+  "name": "Eugène Eugène",
+  "color": "#324927",
+  "color2": "#293B1F",
+  "phone": "01 41 38 40 00",
+  "address": "38-40 Rue Eugène Eichenberger 92800 Puteaux",
+  "logoUrl": "https://app.cartefidelavis.com/eugene-eugene/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/eugeneeugeneputeaux/",
+  "heroUrl": "https://app.cartefidelavis.com/eugene-eugene/hero.jpg",
+  "tagline": "Eugène Eugène — Puteaux",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Puteaux",
+  "iconUrl": "https://app.cartefidelavis.com/eugene-eugene/logo.jpg"
+}

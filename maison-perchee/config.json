@@ -1,0 +1,30 @@
+{
+  "name": "Maison Perchée",
+  "color": "#52381F",
+  "color2": "#432D19",
+  "phone": "09 73 88 00 94",
+  "address": "58 Rue Mouffetard 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/maison-perchee/logo.jpg",
+  "instagramUrl": "https://instagram.com/maisonperchee.paris",
+  "heroUrl": "https://app.cartefidelavis.com/maison-perchee/hero.jpg",
+  "tagline": "Maison Perchée — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/maison-perchee/logo.jpg"
+}

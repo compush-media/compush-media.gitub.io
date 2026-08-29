@@ -1,0 +1,30 @@
+{
+  "name": "Bistrot Gisèle",
+  "color": "#6C0805",
+  "color2": "#580604",
+  "phone": "01 80 86 41 62",
+  "address": "204 Rue St Denis 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bistrot-gisele/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bistrotgisele",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-gisele/hero.jpg",
+  "tagline": "Bistrot Gisèle — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-gisele/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Tosca",
+  "color": "#B69C63",
+  "color2": "#957F51",
+  "phone": "01 42 68 10 00",
+  "address": "20 Rue du Cirque 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/tosca/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/splendideroyalparis/",
+  "heroUrl": "https://app.cartefidelavis.com/tosca/hero.jpg",
+  "tagline": "Tosca — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/tosca/logo.jpg"
+}

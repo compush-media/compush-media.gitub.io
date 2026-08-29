@@ -1,0 +1,30 @@
+{
+  "name": "Les Grands Gamins - Bar à jeux de société et Boutique",
+  "color": "#133D5E",
+  "color2": "#0F324D",
+  "phone": "06 77 60 21 33",
+  "address": "19 Rue de Cléry 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-grands-gamins-bar-a-jeux-de-societe-et-boutique/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesgrandsgaminsparis/",
+  "heroUrl": "https://app.cartefidelavis.com/les-grands-gamins-bar-a-jeux-de-societe-et-boutique/hero.jpg",
+  "tagline": "Les Grands Gamins - Bar à jeux de société et Boutique — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-grands-gamins-bar-a-jeux-de-societe-et-boutique/logo.jpg"
+}

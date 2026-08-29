@@ -1,0 +1,30 @@
+{
+  "name": "La Bauhinia",
+  "color": "#AA9651",
+  "color2": "#8B7A42",
+  "phone": "06 61 86 56 86",
+  "address": "Shangri-La Paris 10 Av. d'Iéna 75116 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-bauhinia/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/shangrilahotels/",
+  "heroUrl": "https://app.cartefidelavis.com/la-bauhinia/hero.jpg",
+  "tagline": "La Bauhinia — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-bauhinia/logo.jpg"
+}

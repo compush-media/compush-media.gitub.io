@@ -1,0 +1,30 @@
+{
+  "name": "La Favorite Saint-Paul",
+  "color": "#DA3E50",
+  "color2": "#B23241",
+  "phone": "01 40 09 12 76",
+  "address": "4 Rue de Rivoli 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-favorite-saint-paul/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lafavoritesaintpaul/",
+  "heroUrl": "https://app.cartefidelavis.com/la-favorite-saint-paul/hero.jpg",
+  "tagline": "La Favorite Saint-Paul — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-favorite-saint-paul/logo.jpg"
+}

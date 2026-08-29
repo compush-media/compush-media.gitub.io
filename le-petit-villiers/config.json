@@ -1,0 +1,30 @@
+{
+  "name": "LE PETIT VILLIERS",
+  "color": "#27493B",
+  "color2": "#1F3B30",
+  "phone": "01 48 88 96 59",
+  "address": "75 Av. de Villiers 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-petit-villiers/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lepetitvilliers/",
+  "heroUrl": "https://app.cartefidelavis.com/le-petit-villiers/hero.jpg",
+  "tagline": "LE PETIT VILLIERS — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-petit-villiers/logo.jpg"
+}

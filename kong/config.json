@@ -1,0 +1,26 @@
+{
+  "name": "Kong",
+  "color": "#9E7A3E",
+  "color2": "01 40 39 09 00",
+  "phone": "1 Rue du Pont Neuf 75001 Paris",
+  "instagramUrl": "https://scontent-vie1-1.cdninstagram.com/v/t51.82787-15/753446095_18609425707012603_3782914121345457568_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&cb=8438d1d6-89aba764&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiRkVFRC5iZXN0X2ltYWdlX3VybGdlbi5DMyJ9&_nc_ohc=npwkuJmGbu0Q7kNvwHbHNqt&_nc_oc=AdpSxhRn6WMZUfWEMyxSGWp31XNKJoQK4w7neaIQKpzy8MYOJ8nbxlFP2P1jjPO6cwo&_nc_zt=23&_nc_ht=scontent-vie1-1.cdninstagram.com&edm=ANo9K5cEAAAA&_nc_gid=n0HCBaUFwPqxi7kG3Bmkjw&_nc_tpa=Q5bMBQGcxdBuAZS38x9w1lc_jBF9U1QT1d5uYKWtUgSBo6-6wGuS0Zi6Wq9zGNdw6PxOb1K8jcSZh9HWvQ&oh=00_AQDdp75rILZArEnUjDJpf52iu8pjIthwjahKTZGZ0D6F-A&oe=6A6B56B9",
+  "tagline": "Kong — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

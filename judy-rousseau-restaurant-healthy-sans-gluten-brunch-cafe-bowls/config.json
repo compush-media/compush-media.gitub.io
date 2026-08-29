@@ -1,0 +1,29 @@
+{
+  "name": "Judy Rousseau - Restaurant healthy sans gluten • Brunch • Café & bowls",
+  "color": "#9E7A3E",
+  "color2": "01 42 33 63 83",
+  "phone": "14 Rue Jean-Jacques Rousseau 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/judy-rousseau-restaurant-healthy-sans-gluten-brunch-cafe-bowls/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/wix/",
+  "heroUrl": "https://app.cartefidelavis.com/judy-rousseau-restaurant-healthy-sans-gluten-brunch-cafe-bowls/hero.jpg",
+  "tagline": "Judy Rousseau - Restaurant healthy sans gluten • Brunch • Café & bowls — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/judy-rousseau-restaurant-healthy-sans-gluten-brunch-cafe-bowls/logo.jpg"
+}

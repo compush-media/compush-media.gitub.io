@@ -1,0 +1,26 @@
+{
+  "name": "Resto1",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "",
+  "address": "",
+  "googleReview": "",
+  "reservationUrl": "",
+  "logoUrl": "",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "trialing",
+  "setupPaid": false,
+  "trialEndDate": "",
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": []
+}

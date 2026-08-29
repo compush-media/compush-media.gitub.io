@@ -1,0 +1,30 @@
+{
+  "name": "Brasserie Lutetia",
+  "color": "#DD883C",
+  "color2": "#B56F31",
+  "phone": "01 49 54 46 92",
+  "address": "43 Bd Raspail 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/brasserie-lutetia/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/mo_lutetia/",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-lutetia/hero.jpg",
+  "tagline": "Brasserie Lutetia — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-lutetia/logo.jpg"
+}

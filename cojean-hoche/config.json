@@ -1,0 +1,30 @@
+{
+  "name": "Cojean Hoche",
+  "color": "#3C98DC",
+  "color2": "#317CB4",
+  "phone": "01 45 61 66 60",
+  "address": "27 Av. Hoche 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cojean-hoche/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cojeanrestaurants/",
+  "heroUrl": "https://app.cartefidelavis.com/cojean-hoche/hero.jpg",
+  "tagline": "Cojean Hoche — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cojean-hoche/logo.jpg"
+}

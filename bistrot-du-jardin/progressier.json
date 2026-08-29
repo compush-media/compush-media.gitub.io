@@ -1,0 +1,22 @@
+{
+  "name": "Bistrot du Jardin",
+  "short_name": "Bistrot du Jardin",
+  "start_url": "/bistrot-du-jardin/index.html",
+  "scope": "/bistrot-du-jardin/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#284949",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

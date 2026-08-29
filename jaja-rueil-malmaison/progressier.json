@@ -1,0 +1,22 @@
+{
+  "name": "Jaja Rueil-Malmaison",
+  "short_name": "Jaja Rueil-Malmaison",
+  "start_url": "/jaja-rueil-malmaison/index.html",
+  "scope": "/jaja-rueil-malmaison/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#C35658",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

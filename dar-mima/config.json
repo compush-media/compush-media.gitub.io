@@ -1,0 +1,30 @@
+{
+  "name": "Dar Mima",
+  "color": "#D4672B",
+  "color2": "#AD5423",
+  "phone": "01 85 14 79 25",
+  "address": "1 Rue des Fossés Saint-Bernard 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/dar-mima/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/sama_rooftop?igsh=MTgwY3JoaWJ2ZTNqbA%3D%3D",
+  "heroUrl": "https://app.cartefidelavis.com/dar-mima/hero.jpg",
+  "tagline": "Dar Mima — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/dar-mima/logo.jpg"
+}

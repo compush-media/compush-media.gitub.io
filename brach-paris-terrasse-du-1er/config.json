@@ -1,0 +1,30 @@
+{
+  "name": "Brach Paris – Terrasse du 1er",
+  "color": "#4B2F25",
+  "color2": "#3D261E",
+  "phone": "01 44 30 10 00",
+  "address": "Brach Paris - Evok Collection 1-7 Rue Jean Richepin 75116 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/brach-paris-terrasse-du-1er/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/brachparis/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/brach-paris-terrasse-du-1er/hero.jpg",
+  "tagline": "Brach Paris – Terrasse du 1er — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brach-paris-terrasse-du-1er/logo.jpg"
+}

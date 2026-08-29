@@ -1,0 +1,30 @@
+{
+  "name": "Scaria",
+  "color": "#0C4865",
+  "color2": "#093B52",
+  "phone": "09 83 47 62 66",
+  "address": "88 Ave Parmentier 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/scaria/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/scariaparis",
+  "heroUrl": "https://app.cartefidelavis.com/scaria/hero.jpg",
+  "tagline": "Scaria — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/scaria/logo.jpg"
+}

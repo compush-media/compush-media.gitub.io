@@ -1,0 +1,30 @@
+{
+  "name": "Café Juliette",
+  "color": "#D3A845",
+  "color2": "#AD8938",
+  "phone": "09 74 64 09 90",
+  "address": "1 Rue d'Avron 75020 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-juliette/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafejulietteparis?igsh=Z2E4Y29oenV0Yml0",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-juliette/hero.jpg",
+  "tagline": "Café Juliette — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-juliette/logo.jpg"
+}

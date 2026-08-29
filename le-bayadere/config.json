@@ -1,0 +1,30 @@
+{
+  "name": "Le Bayadère",
+  "color": "#B8945E",
+  "color2": "#96794D",
+  "phone": "01 53 53 20 28",
+  "address": "35 Rue de Berri 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-bayadere/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurantlebayadere/",
+  "heroUrl": "https://app.cartefidelavis.com/le-bayadere/hero.jpg",
+  "tagline": "Le Bayadère — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-bayadere/logo.jpg"
+}

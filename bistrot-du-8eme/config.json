@@ -1,0 +1,30 @@
+{
+  "name": "Bistrot du 8ème",
+  "color": "#125E31",
+  "color2": "#0E4D28",
+  "phone": "01 42 89 28 09",
+  "address": "8 Av. de Friedland 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bistrot-du-8eme/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bistrotdu8",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-du-8eme/hero.jpg",
+  "tagline": "Bistrot du 8ème — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-du-8eme/logo.jpg"
+}

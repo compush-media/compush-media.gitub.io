@@ -1,0 +1,30 @@
+{
+  "name": "L'Éclair",
+  "color": "#EB741F",
+  "color2": "#C05F19",
+  "phone": "01 44 18 09 04",
+  "address": "32 Rue Cler 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/l-eclair/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/leclair.paris/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/l-eclair/hero.jpg",
+  "tagline": "L'Éclair — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/l-eclair/logo.jpg"
+}

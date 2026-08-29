@@ -1,0 +1,30 @@
+{
+  "name": "Pedzouille La Grange",
+  "color": "#334F60",
+  "color2": "#29404E",
+  "phone": "01 88 33 23 69",
+  "address": "Novotel Paris Porte de Versailles 4 Av. de la Prte de la Plaine Rooftop - 8ème étage 75015 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/pedzouille-la-grange/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pedzouilleparis/",
+  "heroUrl": "https://app.cartefidelavis.com/pedzouille-la-grange/hero.jpg",
+  "tagline": "Pedzouille La Grange — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pedzouille-la-grange/logo.jpg"
+}

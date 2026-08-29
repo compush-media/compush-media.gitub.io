@@ -1,0 +1,30 @@
+{
+  "name": "Meshuga",
+  "color": "#FDE71B",
+  "color2": "#CFBD16",
+  "phone": "06 72 35 92 94",
+  "address": "3 Rue Vavin 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/meshuga/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/meshuga.fr/",
+  "heroUrl": "https://app.cartefidelavis.com/meshuga/hero.jpg",
+  "tagline": "THE FINEST CALIFORNIAN SANDWICHES WITH SOME MESS 🥪❤️‍🔥",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/meshuga/logo.jpg"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Dar Mima",
+  "short_name": "Dar Mima",
+  "start_url": "/dar-mima/index.html",
+  "scope": "/dar-mima/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#D4672B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

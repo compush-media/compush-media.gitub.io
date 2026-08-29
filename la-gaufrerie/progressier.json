@@ -1,0 +1,22 @@
+{
+  "name": "La Gaufrerie",
+  "short_name": "La Gaufrerie",
+  "start_url": "/la-gaufrerie/index.html",
+  "scope": "/la-gaufrerie/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#B19567",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

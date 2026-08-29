@@ -1,0 +1,30 @@
+{
+  "name": "Luppolo Bar",
+  "color": "#794C23",
+  "color2": "#633E1C",
+  "phone": "09 74 73 57 33",
+  "address": "31 Rue Victor Massé 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/luppolo-bar/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/luppolobarparis/",
+  "heroUrl": "https://app.cartefidelavis.com/luppolo-bar/hero.jpg",
+  "tagline": "🇮🇹🇫🇷 Bières et Aperitivo 👇🏼 Réservation et privatisation en ligne",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/luppolo-bar/logo.jpg"
+}

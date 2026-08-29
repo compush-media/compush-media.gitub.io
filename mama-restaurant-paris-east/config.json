@@ -1,0 +1,29 @@
+{
+  "name": "MAMA RESTAURANT PARIS EAST",
+  "color": "#F30502",
+  "color2": "#C70401",
+  "phone": "01 43 48 45 45",
+  "address": "109 Rue de Bagnolet 75020 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/mama-restaurant-paris-east/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/mamashelterpariseast/",
+  "tagline": "Rooms • Restaurant & Bar • Rooftop Infos et réservations 👇❤️",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/mama-restaurant-paris-east/logo.jpg"
+}

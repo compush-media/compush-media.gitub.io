@@ -1,0 +1,30 @@
+{
+  "name": "KALI | Restaurant grec & Brunch Paris 10",
+  "color": "#5387C5",
+  "color2": "#446EA1",
+  "phone": "01 73 70 31 86",
+  "address": "221 Rue Saint-Maur 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/kali-restaurant-grec-brunch-paris-10/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/kali.greekfood/",
+  "heroUrl": "https://app.cartefidelavis.com/kali-restaurant-grec-brunch-paris-10/hero.jpg",
+  "tagline": "KALI | Restaurant grec & Brunch Paris 10 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kali-restaurant-grec-brunch-paris-10/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Kodawari Ramen (Tsukiji)",
+  "color": "#BB2732",
+  "color2": "#991F29",
+  "phone": "01 42 61 34 60",
+  "address": "12 Rue de Richelieu 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/kodawari-ramen-tsukiji/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/kodawariramen/",
+  "heroUrl": "https://app.cartefidelavis.com/kodawari-ramen-tsukiji/hero.jpg",
+  "tagline": "Kodawari Ramen (Tsukiji) — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kodawari-ramen-tsukiji/logo.jpg"
+}

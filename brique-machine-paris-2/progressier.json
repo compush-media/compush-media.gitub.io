@@ -1,0 +1,22 @@
+{
+  "name": "Brique Machine - Paris 2",
+  "short_name": "Brique Machine - Paris 2",
+  "start_url": "/brique-machine-paris-2/index.html",
+  "scope": "/brique-machine-paris-2/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#E60902",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

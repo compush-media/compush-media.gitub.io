@@ -1,0 +1,30 @@
+{
+  "name": "Le Peloton Café",
+  "color": "#4E3623",
+  "color2": "#3F2C1C",
+  "phone": "06 18 80 84 92",
+  "address": "17 Rue du Pont Louis-Philippe 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-peloton-cafe/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lepelotoncafe/",
+  "heroUrl": "https://app.cartefidelavis.com/le-peloton-cafe/hero.jpg",
+  "tagline": "Le Peloton Café — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-peloton-cafe/logo.jpg"
+}

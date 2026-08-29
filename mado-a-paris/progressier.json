@@ -1,0 +1,22 @@
+{
+  "name": "Mado à Paris",
+  "short_name": "Mado à Paris",
+  "start_url": "/mado-a-paris/index.html",
+  "scope": "/mado-a-paris/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#F8E120",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

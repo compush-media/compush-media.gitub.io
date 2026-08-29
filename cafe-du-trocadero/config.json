@@ -1,0 +1,30 @@
+{
+  "name": "Café du Trocadéro",
+  "color": "#B6A063",
+  "color2": "#958351",
+  "phone": "01 44 05 37 00",
+  "address": "8 Pl. du Trocadéro et du 11 Novembre 75116 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-du-trocadero/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafedutrocadero/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-du-trocadero/hero.jpg",
+  "tagline": "Café du Trocadéro — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-du-trocadero/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Bonnie",
+  "color": "#AF3B2E",
+  "color2": "#8F3025",
+  "phone": "01 78 90 74 74",
+  "address": "10 Rue Agrippa d'Aubigné 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bonnie/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bonnie_restaurant_bar/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/bonnie/hero.jpg",
+  "tagline": "🍴 Restaurant🍸 Bar 🪩 Club Paris as never before A @paris_society brand",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bonnie/logo.jpg"
+}

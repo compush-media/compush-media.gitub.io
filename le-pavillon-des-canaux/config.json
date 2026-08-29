@@ -1,0 +1,29 @@
+{
+  "name": "Le Pavillon des Canaux",
+  "color": "#492C27",
+  "color2": "#3B241F",
+  "phone": "39 Quai de la Loire 75019 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-pavillon-des-canaux/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lepavillondescanaux/",
+  "heroUrl": "https://app.cartefidelavis.com/le-pavillon-des-canaux/hero.jpg",
+  "tagline": "Le Pavillon des Canaux — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-pavillon-des-canaux/logo.jpg"
+}

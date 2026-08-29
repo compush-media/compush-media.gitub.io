@@ -1,0 +1,30 @@
+{
+  "name": "Brasserie des Prés",
+  "color": "#273649",
+  "color2": "#1F2C3B",
+  "phone": "01 42 03 44 13",
+  "address": "6 Cr du Commerce Saint-André 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/brasserie-des-pres/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lanouvellegarde/",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-des-pres/hero.jpg",
+  "tagline": "Brasserie des Prés — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-des-pres/logo.jpg"
+}

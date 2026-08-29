@@ -1,0 +1,30 @@
+{
+  "name": "Kafkaf",
+  "color": "#1C81FD",
+  "color2": "#1669CF",
+  "phone": "09 71 07 94 36",
+  "address": "7 Rue Keller 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/kafkaf/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/kafkaf.fr",
+  "heroUrl": "https://app.cartefidelavis.com/kafkaf/hero.jpg",
+  "tagline": "Kafkaf — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kafkaf/logo.jpg"
+}

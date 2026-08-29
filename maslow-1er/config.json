@@ -1,0 +1,29 @@
+{
+  "name": "Maslow 1er",
+  "color": "#F95902",
+  "color2": "#CC4801",
+  "phone": "14 Quai de la Mégisserie 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/maslow-1er/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/maslow_restaurants/",
+  "heroUrl": "https://app.cartefidelavis.com/maslow-1er/hero.jpg",
+  "tagline": "Maslow 1er — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/maslow-1er/logo.jpg"
+}

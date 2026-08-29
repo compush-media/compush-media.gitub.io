@@ -1,0 +1,30 @@
+{
+  "name": "Buddha-Bar Paris",
+  "color": "#C69F53",
+  "color2": "#A28244",
+  "phone": "01 53 05 90 00",
+  "address": "8-12 Rue Boissy d'Anglas 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/buddha-bar-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/buddhabarparis/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/buddha-bar-paris/hero.jpg",
+  "tagline": "Buddha-Bar Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/buddha-bar-paris/logo.jpg"
+}

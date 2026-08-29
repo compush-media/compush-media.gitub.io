@@ -1,0 +1,26 @@
+{
+  "name": "Rooftop Villa M",
+  "color": "#9E7A3E",
+  "color2": "01 70 61 70 45",
+  "phone": "28 Bd Pasteur 75015 Paris",
+  "instagramUrl": "https://www.instagram.com/villamhotel/",
+  "tagline": "Rooftop Villa M — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

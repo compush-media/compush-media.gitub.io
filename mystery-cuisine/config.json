@@ -1,0 +1,30 @@
+{
+  "name": "Mystery Cuisine",
+  "color": "#6A5F39",
+  "color2": "#564D2E",
+  "phone": "01 40 20 03 02",
+  "address": "37 bis Rue de Montpensier 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/mystery-cuisine/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/mysterycuisineparis/?utm_source=ig_embed&ig_rid=de9148fb-eadf-44a1-af83-0172208368f1&ig_mid=1054E193-0F25-4699-B531-1DEAF2071C10",
+  "heroUrl": "https://app.cartefidelavis.com/mystery-cuisine/hero.jpg",
+  "tagline": "Mystery Cuisine — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/mystery-cuisine/logo.jpg"
+}

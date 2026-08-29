@@ -1,0 +1,30 @@
+{
+  "name": "Acai & You - Odéon (Brunch & Coffee)",
+  "color": "#8E3370",
+  "color2": "#74295B",
+  "phone": "09 54 79 85 74",
+  "address": "47 Rue Dauphine 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/acai-you-odeon-brunch-coffee/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/acaiandyou.fr/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/acai-you-odeon-brunch-coffee/hero.jpg",
+  "tagline": "Acai & You - Odéon (Brunch & Coffee) — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/acai-you-odeon-brunch-coffee/logo.jpg"
+}

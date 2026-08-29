@@ -1,0 +1,30 @@
+{
+  "name": "Péniche L'Eau Et Les Rêves - Restaurant / Café - Librairie Botanique",
+  "color": "#62350E",
+  "color2": "#502B0B",
+  "phone": "06 82 14 02 33",
+  "address": "9 Quai de l'Oise 75019 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/peniche-l-eau-et-les-reves-restaurant-cafe-librairie-botanique/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/peniche_librairie/",
+  "heroUrl": "https://app.cartefidelavis.com/peniche-l-eau-et-les-reves-restaurant-cafe-librairie-botanique/hero.jpg",
+  "tagline": "Péniche L'Eau Et Les Rêves - Restaurant / Café - Librairie Botanique — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/peniche-l-eau-et-les-reves-restaurant-cafe-librairie-botanique/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Blind Bar",
+  "color": "#AA9462",
+  "color2": "#8B7950",
+  "phone": "01 40 74 64 64",
+  "address": "8 Rue Jean Goujon 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/blind-bar/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lamaisonchampselyseesparis/",
+  "heroUrl": "https://app.cartefidelavis.com/blind-bar/hero.jpg",
+  "tagline": "Blind Bar — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/blind-bar/logo.jpg"
+}

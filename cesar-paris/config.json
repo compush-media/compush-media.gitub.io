@@ -1,0 +1,30 @@
+{
+  "name": "César Paris",
+  "color": "#B08F64",
+  "color2": "#907552",
+  "phone": "01 42 27 69 82",
+  "address": "12 Av. de Wagram 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cesar-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cesar.restaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/cesar-paris/hero.jpg",
+  "tagline": "César Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cesar-paris/logo.jpg"
+}

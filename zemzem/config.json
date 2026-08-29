@@ -1,0 +1,30 @@
+{
+  "name": "ZemZem",
+  "color": "#214F36",
+  "color2": "#1B402C",
+  "phone": "01 80 88 11 33",
+  "address": "3 Rue Victor Hugo 92270 Bois-Colombes",
+  "logoUrl": "https://app.cartefidelavis.com/zemzem/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/zemzem.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/zemzem/hero.jpg",
+  "tagline": "ZemZem — Bois-Colombes",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Bois-Colombes",
+  "iconUrl": "https://app.cartefidelavis.com/zemzem/logo.jpg"
+}

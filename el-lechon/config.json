@@ -1,0 +1,30 @@
+{
+  "name": "El Lechón",
+  "color": "#03176D",
+  "color2": "#021259",
+  "phone": "09 50 48 32 34",
+  "address": "17 Rue Pierre Fontaine 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/el-lechon/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/el_lechonparis/",
+  "heroUrl": "https://app.cartefidelavis.com/el-lechon/hero.jpg",
+  "tagline": "El Lechón — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/el-lechon/logo.jpg"
+}

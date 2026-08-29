@@ -1,0 +1,30 @@
+{
+  "name": "Maggie Restaurant Brunch & Rooftop",
+  "color": "#81212E",
+  "color2": "#691B25",
+  "phone": "01 42 81 99 10",
+  "address": "55 Blvd Marguerite de Rochechouart 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/maggie-restaurant-brunch-rooftop/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/maggie_pigalle/",
+  "heroUrl": "https://app.cartefidelavis.com/maggie-restaurant-brunch-rooftop/hero.jpg",
+  "tagline": "Maggie Restaurant Brunch & Rooftop — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/maggie-restaurant-brunch-rooftop/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Le Louis",
+  "color": "#B77D60",
+  "color2": "#96664E",
+  "phone": "01 42 33 56 17",
+  "address": "31 Rue Coquillière 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-louis/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurantlelouis/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/le-louis/hero.jpg",
+  "tagline": "Le Louis — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-louis/logo.jpg"
+}

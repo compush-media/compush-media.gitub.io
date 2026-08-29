@@ -1,0 +1,30 @@
+{
+  "name": "Wild & The Moon",
+  "color": "#90874E",
+  "color2": "#766E3F",
+  "phone": "01 84 25 82 70",
+  "address": "4 Rue du Helder 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/wild-the-moon/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/wildandthemoon/",
+  "heroUrl": "https://app.cartefidelavis.com/wild-the-moon/hero.jpg",
+  "tagline": "Wild & The Moon — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/wild-the-moon/logo.jpg"
+}

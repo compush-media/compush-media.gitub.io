@@ -1,0 +1,29 @@
+{
+  "name": "Kitchen",
+  "color": "#4A4628",
+  "color2": "#3C3920",
+  "phone": "74 Rue des Gravilliers 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/kitchen/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/kitchenparis/",
+  "heroUrl": "https://app.cartefidelavis.com/kitchen/hero.jpg",
+  "tagline": "Kitchen — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kitchen/logo.jpg"
+}

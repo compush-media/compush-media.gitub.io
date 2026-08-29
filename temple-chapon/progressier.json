@@ -1,0 +1,22 @@
+{
+  "name": "Temple & Chapon",
+  "short_name": "Temple & Chapon",
+  "start_url": "/temple-chapon/index.html",
+  "scope": "/temple-chapon/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#BA8E5E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "MAMA RESTAURANT PARIS WEST",
+  "color": "#F1B314",
+  "color2": "#C59210",
+  "phone": "01 70 94 14 14",
+  "address": "20 Av. de la Prte de la Plaine 75015 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/mama-restaurant-paris-west/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/mamashelterpariswest/",
+  "heroUrl": "https://app.cartefidelavis.com/mama-restaurant-paris-west/hero.jpg",
+  "tagline": "MAMA RESTAURANT PARIS WEST — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/mama-restaurant-paris-west/logo.jpg"
+}

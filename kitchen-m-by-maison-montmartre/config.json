@@ -1,0 +1,30 @@
+{
+  "name": "Kitchen M by Maison Montmartre",
+  "color": "#273849",
+  "color2": "#1F2D3B",
+  "phone": "01 83 75 51 51",
+  "address": "22 Rue Maurice Grimaud 75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/kitchen-m-by-maison-montmartre/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/maison_montmartre/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/kitchen-m-by-maison-montmartre/hero.jpg",
+  "tagline": "Kitchen M by Maison Montmartre — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kitchen-m-by-maison-montmartre/logo.jpg"
+}

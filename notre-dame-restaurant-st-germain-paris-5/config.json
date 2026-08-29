@@ -1,0 +1,26 @@
+{
+  "name": "Notre dame Restaurant St Germain Paris 5",
+  "color": "#9E7A3E",
+  "color2": "01 42 03 53 56",
+  "phone": "18 Bd Saint-Germain 75005 Paris",
+  "instagramUrl": "https://www.instagram.com/cafe.stgermain/",
+  "tagline": "Notre dame Restaurant St Germain Paris 5 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

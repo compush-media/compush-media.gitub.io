@@ -1,0 +1,22 @@
+{
+  "name": "Le Maddy",
+  "short_name": "Le Maddy",
+  "start_url": "/le-maddy/index.html",
+  "scope": "/le-maddy/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#4A3527",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

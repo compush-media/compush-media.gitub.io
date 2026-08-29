@@ -1,0 +1,28 @@
+{
+  "name": "Uma Nota",
+  "color": "#149D94",
+  "color2": "#108079",
+  "phone": "86 Rue Réaumur 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/uma-nota/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/umanotaparis/",
+  "tagline": "Uma Nota — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/uma-nota/logo.jpg"
+}

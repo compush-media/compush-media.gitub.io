@@ -1,0 +1,30 @@
+{
+  "name": "Benedict",
+  "color": "#61452A",
+  "color2": "#4F3822",
+  "phone": "01 42 76 91 37",
+  "address": "19 Rue Sainte-Croix de la Bretonnerie 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/benedict/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/benedict_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/benedict/hero.jpg",
+  "tagline": "Benedict — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/benedict/logo.jpg"
+}

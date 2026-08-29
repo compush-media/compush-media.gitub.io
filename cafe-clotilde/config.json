@@ -1,0 +1,30 @@
+{
+  "name": "Café Clotilde",
+  "color": "#264A35",
+  "color2": "#1F3C2B",
+  "phone": "01 56 81 19 00",
+  "address": "7 Rue de l'Hôtel Colbert 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-clotilde/logo.jpg",
+  "instagramUrl": "https://instagram.com/meliahtlresorts/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-clotilde/hero.jpg",
+  "tagline": "Welcome to the place where everything has a soul. #SoulMatters",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-clotilde/logo.jpg"
+}

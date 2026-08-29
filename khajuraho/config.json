@@ -1,0 +1,30 @@
+{
+  "name": "Khajuraho",
+  "color": "#272749",
+  "color2": "#1F1F3B",
+  "phone": "01 42 73 29 18",
+  "address": "14 Bd de la Tour-Maubourg 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/khajuraho/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/khajurahoparis/",
+  "heroUrl": "https://app.cartefidelavis.com/khajuraho/hero.jpg",
+  "tagline": "14 Boulevard de la Tour Maubourg",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/khajuraho/logo.jpg"
+}

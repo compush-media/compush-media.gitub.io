@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant Les Passerelles",
+  "color": "#AC7D2F",
+  "color2": "#8D6626",
+  "phone": "01 72 63 29 80",
+  "address": "19 Rue Saulnier 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-les-passerelles/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/Hotel_parister",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-les-passerelles/hero.jpg",
+  "tagline": "Restaurant Les Passerelles — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-les-passerelles/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Pomelo Bistrot - Restaurant à Paris 2e",
+  "color": "#EEBA2A",
+  "color2": "#C39822",
+  "phone": "01 40 13 07 31",
+  "address": "153 Rue Montmartre 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/pomelo-bistrot-restaurant-a-paris-2e/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pomelobistrot/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/pomelo-bistrot-restaurant-a-paris-2e/hero.jpg",
+  "tagline": "Pomelo Bistrot - Restaurant à Paris 2e — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pomelo-bistrot-restaurant-a-paris-2e/logo.jpg"
+}

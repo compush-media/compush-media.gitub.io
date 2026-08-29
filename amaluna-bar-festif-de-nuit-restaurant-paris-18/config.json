@@ -1,0 +1,30 @@
+{
+  "name": "Amaluna - Bar festif de Nuit restaurant Paris 18",
+  "color": "#023B6E",
+  "color2": "#01305A",
+  "phone": "09 74 64 16 93",
+  "address": "12 Espl. Nathalie Sarraute 75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/amaluna-bar-festif-de-nuit-restaurant-paris-18/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/amalunaparis/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/amaluna-bar-festif-de-nuit-restaurant-paris-18/hero.jpg",
+  "tagline": "Amaluna - Bar festif de Nuit restaurant Paris 18 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/amaluna-bar-festif-de-nuit-restaurant-paris-18/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Monsieur Bleu",
+  "color": "#324D23",
+  "color2": "#293F1C",
+  "phone": "01 47 20 90 47",
+  "address": "Palais De Tokyo 20 Av. de New York 75116 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/monsieur-bleu/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/monsieur_bleu/",
+  "heroUrl": "https://app.cartefidelavis.com/monsieur-bleu/hero.jpg",
+  "tagline": "& Le Jardin Monsieur Bleu Palais de Tokyo A @paris_society brand🍃",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/monsieur-bleu/logo.jpg"
+}

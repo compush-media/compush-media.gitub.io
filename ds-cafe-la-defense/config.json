@@ -1,0 +1,30 @@
+{
+  "name": "DS Café La Défense",
+  "color": "#3A4C29",
+  "color2": "#2F3E21",
+  "phone": "01 47 67 22 75",
+  "address": "12 Cr Michelet 92800 Puteaux",
+  "logoUrl": "https://app.cartefidelavis.com/ds-cafe-la-defense/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/dscafe/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/ds-cafe-la-defense/hero.jpg",
+  "tagline": "DS Café La Défense — Puteaux",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Puteaux",
+  "iconUrl": "https://app.cartefidelavis.com/ds-cafe-la-defense/logo.jpg"
+}

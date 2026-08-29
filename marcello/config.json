@@ -1,0 +1,30 @@
+{
+  "name": "Marcello",
+  "color": "#7D6444",
+  "color2": "#665237",
+  "phone": "01 43 26 52 26",
+  "address": "8 Rue Mabillon 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/marcello/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/marcello._._._/",
+  "heroUrl": "https://app.cartefidelavis.com/marcello/hero.jpg",
+  "tagline": "Marcello — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/marcello/logo.jpg"
+}

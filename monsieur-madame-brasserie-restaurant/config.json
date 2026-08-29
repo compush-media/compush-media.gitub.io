@@ -1,0 +1,30 @@
+{
+  "name": "MONSIEUR MADAME - BRASSERIE RESTAURANT",
+  "color": "#002170",
+  "color2": "#001B5B",
+  "phone": "01 40 37 09 60",
+  "address": "35 Av. des Ternes 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/monsieur-madame-brasserie-restaurant/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lemonsieurmadame?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+  "heroUrl": "https://app.cartefidelavis.com/monsieur-madame-brasserie-restaurant/hero.jpg",
+  "tagline": "MONSIEUR MADAME - BRASSERIE RESTAURANT — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/monsieur-madame-brasserie-restaurant/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant Drouant",
+  "color": "#0A3666",
+  "color2": "#082C53",
+  "phone": "01 42 65 15 16",
+  "address": "16-18 Rue Gaillon 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-drouant/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/drouantparis/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-drouant/hero.jpg",
+  "tagline": "Restaurant Drouant — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-drouant/logo.jpg"
+}

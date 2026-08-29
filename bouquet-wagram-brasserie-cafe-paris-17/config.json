@@ -1,0 +1,30 @@
+{
+  "name": "Bouquet Wagram | Brasserie | Café | Paris 17",
+  "color": "#2D5843",
+  "color2": "#244836",
+  "phone": "01 42 27 28 07",
+  "address": "145 Av. de Wagram 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bouquet-wagram-brasserie-cafe-paris-17/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bouquetwagram/",
+  "heroUrl": "https://app.cartefidelavis.com/bouquet-wagram-brasserie-cafe-paris-17/hero.jpg",
+  "tagline": "Bouquet Wagram | Brasserie | Café | Paris 17 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bouquet-wagram-brasserie-cafe-paris-17/logo.jpg"
+}

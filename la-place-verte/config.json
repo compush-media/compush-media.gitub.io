@@ -1,0 +1,30 @@
+{
+  "name": "La Place Verte",
+  "color": "#2BAA77",
+  "color2": "#238B61",
+  "phone": "01 43 57 34 10",
+  "address": "105 Rue Oberkampf 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-place-verte/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/laplaceverteparis/",
+  "heroUrl": "https://app.cartefidelavis.com/la-place-verte/hero.jpg",
+  "tagline": "La Place Verte — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-place-verte/logo.jpg"
+}

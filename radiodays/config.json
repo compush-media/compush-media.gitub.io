@@ -1,0 +1,26 @@
+{
+  "name": "Radiodays",
+  "color": "#9E7A3E",
+  "color2": "",
+  "phone": "15 Rue Alibert 75010 Paris",
+  "instagramUrl": "https://www.instagram.com/radiodays.cafe",
+  "tagline": "Radiodays — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

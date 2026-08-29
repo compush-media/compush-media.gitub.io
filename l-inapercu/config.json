@@ -1,0 +1,30 @@
+{
+  "name": "L'INAPERÇU",
+  "color": "#BC5D5E",
+  "color2": "#9A4C4D",
+  "phone": "01 42 72 69 81",
+  "address": "65 Rue Beaubourg 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/l-inapercu/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/linapercuparis",
+  "heroUrl": "https://app.cartefidelavis.com/l-inapercu/hero.jpg",
+  "tagline": "L'INAPERÇU — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/l-inapercu/logo.jpg"
+}

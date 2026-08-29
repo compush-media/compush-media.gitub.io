@@ -1,0 +1,30 @@
+{
+  "name": "Yum Sakebar",
+  "color": "#935CBB",
+  "color2": "#784B99",
+  "phone": "09 53 09 58 88",
+  "address": "48 Rue Catherine de la Rochefoucauld 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/yum-sakebar/logo.jpg",
+  "instagramUrl": "https://instagram.com/pixelgrade/",
+  "heroUrl": "https://app.cartefidelavis.com/yum-sakebar/hero.jpg",
+  "tagline": "Yum Sakebar — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/yum-sakebar/logo.jpg"
+}

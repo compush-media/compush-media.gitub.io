@@ -1,0 +1,30 @@
+{
+  "name": "Le Grand Café Fauchon",
+  "color": "#E23794",
+  "color2": "#B92D79",
+  "phone": "01 87 86 28 27",
+  "address": "11 Pl. de la Madeleine 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-grand-cafe-fauchon/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/fauchon_lhotel_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/le-grand-cafe-fauchon/hero.jpg",
+  "tagline": "Le Grand Café Fauchon — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-grand-cafe-fauchon/logo.jpg"
+}

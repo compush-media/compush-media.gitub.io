@@ -1,0 +1,30 @@
+{
+  "name": "Brasserie Flora",
+  "color": "#FE1B53",
+  "color2": "#D01644",
+  "phone": "09 72 98 25 46",
+  "address": "30 Bd Poissonnière 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/brasserie-flora/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/brasseriefloraparis/",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-flora/hero.jpg",
+  "tagline": "Brasserie Flora — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-flora/logo.jpg"
+}

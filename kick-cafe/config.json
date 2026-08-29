@@ -1,0 +1,30 @@
+{
+  "name": "Kick Café",
+  "color": "#EE382A",
+  "color2": "#C32D22",
+  "phone": "01 53 40 87 91",
+  "address": "12 Rue d'Alexandrie 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/kick-cafe/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/kpopisforcoolkids/",
+  "heroUrl": "https://app.cartefidelavis.com/kick-cafe/hero.jpg",
+  "tagline": "Kick Café — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kick-cafe/logo.jpg"
+}

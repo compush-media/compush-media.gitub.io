@@ -1,0 +1,30 @@
+{
+  "name": "Café de l’Église",
+  "color": "#283F7A",
+  "color2": "#203364",
+  "phone": "01 42 47 01 23",
+  "address": "2 Pl. Franz Liszt 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-de-l-eglise/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafedelegliseparis",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-de-l-eglise/hero.jpg",
+  "tagline": "Café de l’Église — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-de-l-eglise/logo.jpg"
+}

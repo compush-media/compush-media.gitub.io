@@ -1,0 +1,30 @@
+{
+  "name": "Thoumieux",
+  "color": "#3B646E",
+  "color2": "#30525A",
+  "phone": "01 47 05 79 00",
+  "address": "79 Rue Saint-Dominique 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/thoumieux/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/thoumieuxparis/",
+  "heroUrl": "https://app.cartefidelavis.com/thoumieux/hero.jpg",
+  "tagline": "Depuis 1923 Institution parisienne",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/thoumieux/logo.jpg"
+}

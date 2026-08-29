@@ -1,0 +1,30 @@
+{
+  "name": "Mon Square",
+  "color": "#27493D",
+  "color2": "#1F3B32",
+  "phone": "01 86 64 06 06",
+  "address": "31 Rue Saint-Dominique 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/mon-square/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/monsquarerestaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/mon-square/hero.jpg",
+  "tagline": "Mon Square — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/mon-square/logo.jpg"
+}

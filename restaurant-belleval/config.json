@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant Belleval",
+  "color": "#454928",
+  "color2": "#383B20",
+  "phone": "01 85 73 36 45",
+  "address": "16 Rue de la Pépinière 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-belleval/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/hotelbelleval",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-belleval/hero.jpg",
+  "tagline": "Restaurant Belleval — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-belleval/logo.jpg"
+}

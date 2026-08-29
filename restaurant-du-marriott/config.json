@@ -1,0 +1,29 @@
+{
+  "name": "Restaurant du Marriott",
+  "color": "#A1072F",
+  "color2": "#840526",
+  "phone": "70 Av. des Champs-Élysées 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-du-marriott/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/marriottchampselysees/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-du-marriott/hero.jpg",
+  "tagline": "Restaurant du Marriott — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-du-marriott/logo.jpg"
+}

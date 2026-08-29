@@ -1,0 +1,30 @@
+{
+  "name": "Le Nelson's - Louvre",
+  "color": "#94564F",
+  "color2": "#794640",
+  "phone": "01 42 36 74 24",
+  "address": "16 Rue Coquillière 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-nelson-s-louvre/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/nelsons.paris/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/le-nelson-s-louvre/hero.jpg",
+  "tagline": "Le Nelson's - Louvre — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-nelson-s-louvre/logo.jpg"
+}

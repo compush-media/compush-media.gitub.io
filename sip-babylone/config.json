@@ -1,0 +1,30 @@
+{
+  "name": "SIP BABYLONE",
+  "color": "#026E8C",
+  "color2": "#015A72",
+  "phone": "01 45 48 87 17",
+  "address": "46 Bd Raspail 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/sip-babylone/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/sipcafebabylone/",
+  "heroUrl": "https://app.cartefidelavis.com/sip-babylone/hero.jpg",
+  "tagline": "Ouvert 7/7, de 6h30 à 2h 01 45 48 87 17 Menu 🔽",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/sip-babylone/logo.jpg"
+}

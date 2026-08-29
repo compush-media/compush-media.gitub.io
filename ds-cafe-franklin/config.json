@@ -1,0 +1,30 @@
+{
+  "name": "DS Café Franklin",
+  "color": "#3A4C29",
+  "color2": "#2F3E21",
+  "phone": "01 53 76 03 03",
+  "address": "18 Av. Franklin Delano Roosevelt 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/ds-cafe-franklin/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/dscafe/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/ds-cafe-franklin/hero.jpg",
+  "tagline": "DS Café Franklin — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ds-cafe-franklin/logo.jpg"
+}

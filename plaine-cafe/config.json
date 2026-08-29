@@ -1,0 +1,30 @@
+{
+  "name": "Plaine Café",
+  "color": "#A58159",
+  "color2": "#876948",
+  "phone": "07 64 35 08 85",
+  "address": "accès au Métro dans la Rotonde / Salle des piliers 16 Pl. du Havre Niveau -1 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/plaine-cafe/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/plaine_cafe",
+  "heroUrl": "https://app.cartefidelavis.com/plaine-cafe/hero.jpg",
+  "tagline": "Plaine Café — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/plaine-cafe/logo.jpg"
+}

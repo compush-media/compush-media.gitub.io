@@ -1,0 +1,30 @@
+{
+  "name": "Apycem",
+  "color": "#0F5C62",
+  "color2": "#0C4B50",
+  "phone": "07 81 60 80 11",
+  "address": "3 Rue Ferdinand Duval 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/apycem/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/apycem_/",
+  "heroUrl": "https://app.cartefidelavis.com/apycem/hero.jpg",
+  "tagline": "Apycem — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/apycem/logo.jpg"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Café de Luce - Bistrot parisien & terrasse",
+  "short_name": "Café de Luce - Bistrot parisien & terrasse",
+  "start_url": "/cafe-de-luce-bistrot-parisien-terrasse/index.html",
+  "scope": "/cafe-de-luce-bistrot-parisien-terrasse/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#299035",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Café la Comtesse",
+  "color": "#B9945F",
+  "color2": "#97794D",
+  "phone": "01 45 51 29 29",
+  "address": "29 Av. de Tourville 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-la-comtesse/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lacomtessehotel/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-la-comtesse/hero.jpg",
+  "tagline": "Café la Comtesse — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-la-comtesse/logo.jpg"
+}

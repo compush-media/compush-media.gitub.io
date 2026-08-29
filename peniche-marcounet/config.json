@@ -1,0 +1,30 @@
+{
+  "name": "Péniche Marcounet",
+  "color": "#FE001E",
+  "color2": "#D00018",
+  "phone": "07 43 76 12 42",
+  "address": "Port des Célestins Quai de l'Hôtel de ville 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/peniche-marcounet/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/peniche_marcounet/",
+  "heroUrl": "https://app.cartefidelavis.com/peniche-marcounet/hero.jpg",
+  "tagline": "Péniche Marcounet — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/peniche-marcounet/logo.jpg"
+}

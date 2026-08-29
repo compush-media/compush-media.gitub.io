@@ -1,0 +1,30 @@
+{
+  "name": "Choupette",
+  "color": "#493727",
+  "color2": "#3B2D1F",
+  "phone": "06 95 42 15 35",
+  "address": "117 Rue de la Roquette 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/choupette/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/choupette_brunch/",
+  "heroUrl": "https://app.cartefidelavis.com/choupette/hero.jpg",
+  "tagline": "Choupette — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/choupette/logo.jpg"
+}

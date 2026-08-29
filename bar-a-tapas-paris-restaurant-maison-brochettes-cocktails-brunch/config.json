@@ -1,0 +1,30 @@
+{
+  "name": "Bar à Tapas Paris - Restaurant Maison Brochettes | Cocktails & Brunch",
+  "color": "#49272D",
+  "color2": "#3B1F24",
+  "phone": "01 57 40 85 30",
+  "address": "10 Rue du Grenier-Saint-Lazare 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bar-a-tapas-paris-restaurant-maison-brochettes-cocktails-brunch/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/maison.brochettes/",
+  "heroUrl": "https://app.cartefidelavis.com/bar-a-tapas-paris-restaurant-maison-brochettes-cocktails-brunch/hero.jpg",
+  "tagline": "Bar à Tapas Paris - Restaurant Maison Brochettes | Cocktails & Brunch — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bar-a-tapas-paris-restaurant-maison-brochettes-cocktails-brunch/logo.jpg"
+}

@@ -1,0 +1,26 @@
+{
+  "name": "Noûsh - Restaurant Paris 9",
+  "color": "#9E7A3E",
+  "color2": "09 87 35 15 82",
+  "phone": "Enseigne bleue 60 Rue Saint-Lazare 75009 Paris",
+  "instagramUrl": "https://www.instagram.com/noushparis",
+  "tagline": "Noûsh - Restaurant Paris 9 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

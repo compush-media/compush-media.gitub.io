@@ -1,0 +1,30 @@
+{
+  "name": "Bianca Trattoria - Restaurant & Brunch PARIS 2",
+  "color": "#205040",
+  "color2": "#1A4134",
+  "phone": "09 82 28 53 39",
+  "address": "2 Rue du 4 septembre 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bianca-trattoria-restaurant-brunch-paris-2/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/biancatrattoria",
+  "heroUrl": "https://app.cartefidelavis.com/bianca-trattoria-restaurant-brunch-paris-2/hero.jpg",
+  "tagline": "Bianca Trattoria - Restaurant & Brunch PARIS 2 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bianca-trattoria-restaurant-brunch-paris-2/logo.jpg"
+}

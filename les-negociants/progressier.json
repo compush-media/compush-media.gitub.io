@@ -1,0 +1,22 @@
+{
+  "name": "Les Négociants",
+  "short_name": "Les Négociants",
+  "start_url": "/les-negociants/index.html",
+  "scope": "/les-negociants/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#27492D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

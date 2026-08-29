@@ -1,0 +1,30 @@
+{
+  "name": "The 46 Bar",
+  "color": "#02027D",
+  "color2": "#010166",
+  "phone": "01 86 22 24 46",
+  "address": "46 Rue René Boulanger 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/the-46-bar/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/the46bar/",
+  "heroUrl": "https://app.cartefidelavis.com/the-46-bar/hero.jpg",
+  "tagline": "The 46 Bar — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/the-46-bar/logo.jpg"
+}

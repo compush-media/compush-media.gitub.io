@@ -1,0 +1,30 @@
+{
+  "name": "JOVIA - Lunch & Brunch Everyday",
+  "color": "#E66E33",
+  "color2": "#BC5A29",
+  "phone": "01 88 61 16 98",
+  "address": "5 Rue Bourdaloue 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/jovia-lunch-brunch-everyday/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/jovia_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/jovia-lunch-brunch-everyday/hero.jpg",
+  "tagline": "JOVIA - Lunch & Brunch Everyday — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/jovia-lunch-brunch-everyday/logo.jpg"
+}

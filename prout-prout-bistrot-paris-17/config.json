@@ -1,0 +1,30 @@
+{
+  "name": "Prout Prout - Bistrot Paris 17",
+  "color": "#214550",
+  "color2": "#1B3841",
+  "phone": "09 83 70 05 06",
+  "address": "19 Rue Médéric 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/prout-prout-bistrot-paris-17/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/prout_prout17/",
+  "heroUrl": "https://app.cartefidelavis.com/prout-prout-bistrot-paris-17/hero.jpg",
+  "tagline": "🥘 Ouvert du lundi au dimanche ✒️ Réservation en ligne.",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/prout-prout-bistrot-paris-17/logo.jpg"
+}

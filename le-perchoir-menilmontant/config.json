@@ -1,0 +1,30 @@
+{
+  "name": "Le Perchoir Ménilmontant",
+  "color": "#6785B2",
+  "color2": "#546D91",
+  "phone": "01 89 71 14 61",
+  "address": "14 Rue Camille Crespin du Gast 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-perchoir-menilmontant/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/leperchoirmenilmontant",
+  "heroUrl": "https://app.cartefidelavis.com/le-perchoir-menilmontant/hero.jpg",
+  "tagline": "Le Perchoir Ménilmontant — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-perchoir-menilmontant/logo.jpg"
+}

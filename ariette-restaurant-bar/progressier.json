@@ -1,0 +1,22 @@
+{
+  "name": "Ariette - restaurant & bar",
+  "short_name": "Ariette - restaurant & bar",
+  "start_url": "/ariette-restaurant-bar/index.html",
+  "scope": "/ariette-restaurant-bar/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#30E970",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Le Tê",
+  "color": "#274942",
+  "color2": "#1F3B36",
+  "phone": "41 bis Rue de Montpensier 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-te/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lete.salondethe/",
+  "heroUrl": "https://app.cartefidelavis.com/le-te/hero.jpg",
+  "tagline": "Le Tê — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-te/logo.jpg"
+}

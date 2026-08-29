@@ -1,0 +1,26 @@
+{
+  "name": "Qasti Green",
+  "color": "#9E7A3E",
+  "color2": "01 53 40 86 82",
+  "phone": "41 Rue des Jeuneurs 75002 Paris",
+  "instagramUrl": "https://www.instagram.com/qasti.bistrot/",
+  "tagline": "Qasti Green — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

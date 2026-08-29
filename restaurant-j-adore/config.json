@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant j'Adore !",
+  "color": "#0D6352",
+  "color2": "#0A5143",
+  "phone": "01 83 81 09 09",
+  "address": "7 Rue Beudant 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-j-adore/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurantjadore/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-j-adore/hero.jpg",
+  "tagline": "Restaurant j'Adore ! — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-j-adore/logo.jpg"
+}

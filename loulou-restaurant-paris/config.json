@@ -1,0 +1,30 @@
+{
+  "name": "Loulou Restaurant Paris",
+  "color": "#EA242A",
+  "color2": "#BF1D22",
+  "phone": "01 42 60 41 96",
+  "address": "107 Rue de Rivoli 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/loulou-restaurant-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/loulourestaurants/",
+  "heroUrl": "https://app.cartefidelavis.com/loulou-restaurant-paris/hero.jpg",
+  "tagline": "Paris🍋 Courchevel 🛷 Ramatuelle 🌴Roquebrune-Cap-Martin 🏴‍☠️",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/loulou-restaurant-paris/logo.jpg"
+}

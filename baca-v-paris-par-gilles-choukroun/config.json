@@ -1,0 +1,26 @@
+{
+  "name": "Baca'v Paris par Gilles Choukroun",
+  "color": "#9E7A3E",
+  "color2": "01 47 07 91 25",
+  "phone": "6 Rue des Fossés Saint-Marcel 75005 Paris",
+  "instagramUrl": "https://www.instagram.com/bacavbistrot/",
+  "tagline": "Baca'v Paris par Gilles Choukroun — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

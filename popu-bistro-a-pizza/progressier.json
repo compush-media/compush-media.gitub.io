@@ -1,0 +1,22 @@
+{
+  "name": "Popu Bistro à Pizza",
+  "short_name": "Popu Bistro à Pizza",
+  "start_url": "/popu-bistro-a-pizza/index.html",
+  "scope": "/popu-bistro-a-pizza/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#014F92",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

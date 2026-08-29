@@ -1,0 +1,30 @@
+{
+  "name": "La Favorite Turbigo",
+  "color": "#59A48B",
+  "color2": "#488671",
+  "phone": "01 83 06 17 84",
+  "address": "75 R. de Turbigo 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-favorite-turbigo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lafavoriteturbigo/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/la-favorite-turbigo/hero.jpg",
+  "tagline": "La Favorite Turbigo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-favorite-turbigo/logo.jpg"
+}

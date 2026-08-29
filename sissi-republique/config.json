@@ -1,0 +1,30 @@
+{
+  "name": "Sissi République",
+  "color": "#28495C",
+  "color2": "#203B4B",
+  "phone": "01 40 59 02 62",
+  "address": "6 Rue du Château d'Eau 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/sissi-republique/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/sissi.paris.republique/?locale=fr&hl=en",
+  "heroUrl": "https://app.cartefidelavis.com/sissi-republique/hero.jpg",
+  "tagline": "Sissi République — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/sissi-republique/logo.jpg"
+}

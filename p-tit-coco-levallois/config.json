@@ -1,0 +1,30 @@
+{
+  "name": "P'tit coco Levallois",
+  "color": "#D46445",
+  "color2": "#AD5238",
+  "phone": "01 57 64 13 83",
+  "address": "1 Pl. Jean Zay 92300 Levallois-Perret",
+  "logoUrl": "https://app.cartefidelavis.com/p-tit-coco-levallois/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ptitcocolevallois/",
+  "heroUrl": "https://app.cartefidelavis.com/p-tit-coco-levallois/hero.jpg",
+  "tagline": "P'tit coco Levallois — Levallois-Perret",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Levallois-Perret",
+  "iconUrl": "https://app.cartefidelavis.com/p-tit-coco-levallois/logo.jpg"
+}

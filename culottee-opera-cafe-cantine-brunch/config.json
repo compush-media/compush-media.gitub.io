@@ -1,0 +1,30 @@
+{
+  "name": "Culottée Opéra - Café cantine & brunch",
+  "color": "#357FE4",
+  "color2": "#2B68BA",
+  "phone": "01 42 36 18 20",
+  "address": "35 Pass. Choiseul 32 Rue Dalayrac 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/culottee-opera-cafe-cantine-brunch/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/culotteecafe/",
+  "heroUrl": "https://app.cartefidelavis.com/culottee-opera-cafe-cantine-brunch/hero.jpg",
+  "tagline": "Culottée Opéra - Café cantine & brunch — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/culottee-opera-cafe-cantine-brunch/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "NHOME",
+  "color": "#493B27",
+  "color2": "#3B301F",
+  "phone": "01 89 33 48 43",
+  "address": "41 Rue de Montpensier 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/nhome/logo.jpg",
+  "instagramUrl": "https://instagram.com/nhomeparis/",
+  "heroUrl": "https://app.cartefidelavis.com/nhome/hero.jpg",
+  "tagline": "NHOME — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/nhome/logo.jpg"
+}

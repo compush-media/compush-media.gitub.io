@@ -1,0 +1,30 @@
+{
+  "name": "OUISTITI Paris",
+  "color": "#49272C",
+  "color2": "#3B1F24",
+  "phone": "06 07 08 10 48",
+  "address": "58 Rue de l'Arcade 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/ouistiti-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ouistiti_paris/?hl=en",
+  "heroUrl": "https://app.cartefidelavis.com/ouistiti-paris/hero.jpg",
+  "tagline": "Restaurant festif, bar à cocktails, Live Music & DJ Set",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ouistiti-paris/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Rooftop - PLEY Hotel",
+  "color": "#D24946",
+  "color2": "#AC3B39",
+  "phone": "01 42 25 26 27",
+  "address": "216 Rue du Faubourg Saint-Honoré 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/rooftop-pley-hotel/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pley_hotel/",
+  "heroUrl": "https://app.cartefidelavis.com/rooftop-pley-hotel/hero.jpg",
+  "tagline": "Rooftop - PLEY Hotel — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/rooftop-pley-hotel/logo.jpg"
+}

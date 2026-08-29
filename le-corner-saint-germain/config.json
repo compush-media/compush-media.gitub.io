@@ -1,0 +1,30 @@
+{
+  "name": "Le Corner Saint-Germain",
+  "color": "#494728",
+  "color2": "#3B3A20",
+  "phone": "01 43 54 34 44",
+  "address": "92 Bd Saint-Germain 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-corner-saint-germain/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le_corner_saint_germain/",
+  "heroUrl": "https://app.cartefidelavis.com/le-corner-saint-germain/hero.jpg",
+  "tagline": "Le Corner Saint-Germain — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-corner-saint-germain/logo.jpg"
+}

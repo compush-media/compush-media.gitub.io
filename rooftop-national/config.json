@@ -1,0 +1,30 @@
+{
+  "name": "Rooftop National",
+  "color": "#7E6144",
+  "color2": "#674F37",
+  "phone": "01 80 97 22 80",
+  "address": "243 Rue Saint-Martin 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/rooftop-national/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/hotelnationaldesartsetmetiers",
+  "heroUrl": "https://app.cartefidelavis.com/rooftop-national/hero.jpg",
+  "tagline": "Rooftop National — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/rooftop-national/logo.jpg"
+}

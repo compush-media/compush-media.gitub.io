@@ -1,0 +1,30 @@
+{
+  "name": "Les Parisiens Restaurant by Thibault Sombardier",
+  "color": "#084068",
+  "color2": "#063455",
+  "phone": "01 42 96 65 43",
+  "address": "1 Rue du Pré aux Clercs 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-parisiens-restaurant-by-thibault-sombardier/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurant_les_parisiens/",
+  "heroUrl": "https://app.cartefidelavis.com/les-parisiens-restaurant-by-thibault-sombardier/hero.jpg",
+  "tagline": "Les Parisiens Restaurant by Thibault Sombardier — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-parisiens-restaurant-by-thibault-sombardier/logo.jpg"
+}

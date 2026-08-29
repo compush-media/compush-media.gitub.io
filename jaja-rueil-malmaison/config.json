@@ -1,0 +1,30 @@
+{
+  "name": "Jaja Rueil-Malmaison",
+  "color": "#C35658",
+  "color2": "#9F4648",
+  "phone": "09 50 17 38 47",
+  "address": "181 Av. du 18 Juin 1940 92500 Rueil-Malmaison",
+  "logoUrl": "https://app.cartefidelavis.com/jaja-rueil-malmaison/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/jaja_rueilmalmaison/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/jaja-rueil-malmaison/hero.jpg",
+  "tagline": "Jaja Rueil-Malmaison — Rueil-Malmaison",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Rueil-Malmaison",
+  "iconUrl": "https://app.cartefidelavis.com/jaja-rueil-malmaison/logo.jpg"
+}

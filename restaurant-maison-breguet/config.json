@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant Maison Bréguet",
+  "color": "#303D62",
+  "color2": "#273250",
+  "phone": "01 43 38 04 31",
+  "address": "8 R. Bréguet 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-maison-breguet/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/maisonbreguet/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-maison-breguet/hero.jpg",
+  "tagline": "Second home for travelers and lovers of culture",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-maison-breguet/logo.jpg"
+}

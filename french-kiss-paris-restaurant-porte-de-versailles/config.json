@@ -1,0 +1,30 @@
+{
+  "name": "French Kiss Paris Restaurant Porte de Versailles",
+  "color": "#232C5B",
+  "color2": "#1C244A",
+  "phone": "01 84 19 01 01",
+  "address": "1 Rue du Moulin 92170 Vanves",
+  "logoUrl": "https://app.cartefidelavis.com/french-kiss-paris-restaurant-porte-de-versailles/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/frenchkiss.bordeaux",
+  "heroUrl": "https://app.cartefidelavis.com/french-kiss-paris-restaurant-porte-de-versailles/hero.jpg",
+  "tagline": "French Kiss Paris Restaurant Porte de Versailles — Vanves",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Vanves",
+  "iconUrl": "https://app.cartefidelavis.com/french-kiss-paris-restaurant-porte-de-versailles/logo.jpg"
+}

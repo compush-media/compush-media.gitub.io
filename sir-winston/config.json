@@ -1,0 +1,30 @@
+{
+  "name": "Sir Winston",
+  "color": "#672D3C",
+  "color2": "#542431",
+  "phone": "01 40 67 17 37",
+  "address": "5 Rue de Presbourg 75116 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/sir-winston/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/sirwinstonrestaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/sir-winston/hero.jpg",
+  "tagline": "Sir Winston — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/sir-winston/logo.jpg"
+}

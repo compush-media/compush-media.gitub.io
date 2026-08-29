@@ -1,0 +1,30 @@
+{
+  "name": "Le Paradis du Fruit - Bastille",
+  "color": "#214F36",
+  "color2": "#1B402C",
+  "phone": "09 77 45 33 10",
+  "address": "12 Pl. de la Bastille 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-bastille/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/leparadisdufruit?igsh=MXZmcDg4dHV3bWxjYg==",
+  "heroUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-bastille/hero.jpg",
+  "tagline": "Le Paradis du Fruit - Bastille — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-bastille/logo.jpg"
+}

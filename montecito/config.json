@@ -1,0 +1,30 @@
+{
+  "name": "Montecito",
+  "color": "#611036",
+  "color2": "#4F0D2C",
+  "phone": "01 80 40 76 40",
+  "address": "27 - 29 Bd des Capucines 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/montecito/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/montecitorestaurantparis/",
+  "heroUrl": "https://app.cartefidelavis.com/montecito/hero.jpg",
+  "tagline": "Montecito — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/montecito/logo.jpg"
+}

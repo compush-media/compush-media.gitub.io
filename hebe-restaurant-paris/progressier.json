@@ -1,0 +1,22 @@
+{
+  "name": "HEBE restaurant - Paris",
+  "short_name": "HEBE restaurant - Paris",
+  "start_url": "/hebe-restaurant-paris/index.html",
+  "scope": "/hebe-restaurant-paris/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#4F3C2B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

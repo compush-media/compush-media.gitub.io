@@ -1,0 +1,30 @@
+{
+  "name": "Les Petits Crus",
+  "color": "#7D1434",
+  "color2": "#66102A",
+  "phone": "09 74 64 12 01",
+  "address": "13 Rue St Sabin 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-petits-crus/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lespetitscrus/",
+  "heroUrl": "https://app.cartefidelavis.com/les-petits-crus/hero.jpg",
+  "tagline": "Les Petits Crus — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-petits-crus/logo.jpg"
+}

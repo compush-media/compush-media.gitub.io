@@ -1,0 +1,30 @@
+{
+  "name": "Chouchou - Restaurant Asnières",
+  "color": "#C68753",
+  "color2": "#A26E44",
+  "phone": "01 40 86 30 87",
+  "address": "11 Av. de la Paix 92600 Asnières-sur-Seine",
+  "logoUrl": "https://app.cartefidelavis.com/chouchou-restaurant-asnieres/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/chouchou_asnieres",
+  "heroUrl": "https://app.cartefidelavis.com/chouchou-restaurant-asnieres/hero.jpg",
+  "tagline": "Chouchou - Restaurant Asnières — Asnières-sur-Seine",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Asnières-sur-Seine",
+  "iconUrl": "https://app.cartefidelavis.com/chouchou-restaurant-asnieres/logo.jpg"
+}

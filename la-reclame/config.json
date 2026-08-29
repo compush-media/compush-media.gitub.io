@@ -1,0 +1,30 @@
+{
+  "name": "LA RÉCLAME",
+  "color": "#C59C54",
+  "color2": "#A17F44",
+  "phone": "01 42 26 24 57",
+  "address": "34 R. des Petites Écuries 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-reclame/logo.jpg",
+  "instagramUrl": "https://instagram.com/la_reclame/",
+  "heroUrl": "https://app.cartefidelavis.com/la-reclame/hero.jpg",
+  "tagline": "LA RÉCLAME — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-reclame/logo.jpg"
+}

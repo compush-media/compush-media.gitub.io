@@ -1,0 +1,30 @@
+{
+  "name": "Khayma rooftop",
+  "color": "#3920EB",
+  "color2": "#2E1AC0",
+  "phone": "06 78 46 19 84",
+  "address": "9-11 Pl. du Colonel Fabien 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/khayma-rooftop/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/khaymarooftop_official?igsh=MTlmcDQzejZ2dzc5cQ==",
+  "heroUrl": "https://app.cartefidelavis.com/khayma-rooftop/hero.jpg",
+  "tagline": "Khayma rooftop — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/khayma-rooftop/logo.jpg"
+}

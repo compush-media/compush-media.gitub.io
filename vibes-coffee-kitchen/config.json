@@ -1,0 +1,30 @@
+{
+  "name": "Vibes Coffee & Kitchen",
+  "color": "#923D11",
+  "color2": "#77320D",
+  "phone": "06 78 68 69 85",
+  "address": "32B Rue Poncelet 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/vibes-coffee-kitchen/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/vibescoffeeparis/",
+  "heroUrl": "https://app.cartefidelavis.com/vibes-coffee-kitchen/hero.jpg",
+  "tagline": "Vibes Coffee & Kitchen — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/vibes-coffee-kitchen/logo.jpg"
+}

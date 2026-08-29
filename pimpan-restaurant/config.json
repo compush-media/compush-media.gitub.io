@@ -1,0 +1,30 @@
+{
+  "name": "Pimpan Restaurant",
+  "color": "#358CE3",
+  "color2": "#2B72BA",
+  "phone": "01 81 69 00 60",
+  "address": "4 Rue Danton 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/pimpan-restaurant/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/damedesarts/",
+  "heroUrl": "https://app.cartefidelavis.com/pimpan-restaurant/hero.jpg",
+  "tagline": "Pimpan Restaurant — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pimpan-restaurant/logo.jpg"
+}

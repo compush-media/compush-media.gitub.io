@@ -1,0 +1,30 @@
+{
+  "name": "Laho Rooftop",
+  "color": "#D06420",
+  "color2": "#AA521A",
+  "phone": "01 85 34 48 89",
+  "address": "5-9 Rue Van Gogh 75012 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/laho-rooftop/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/laho.rooftop/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/laho-rooftop/hero.jpg",
+  "tagline": "Laho Rooftop — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/laho-rooftop/logo.jpg"
+}

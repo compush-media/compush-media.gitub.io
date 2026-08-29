@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant et Bar - Edgar & Achille",
+  "color": "#7F6244",
+  "color2": "#685037",
+  "phone": "01 40 41 05 69",
+  "address": "31 Rue d'Alexandrie 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-et-bar-edgar-achille/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/hotel_edgaretachille/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-et-bar-edgar-achille/hero.jpg",
+  "tagline": "Restaurant et Bar - Edgar & Achille — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-et-bar-edgar-achille/logo.jpg"
+}

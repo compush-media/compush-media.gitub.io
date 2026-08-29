@@ -1,0 +1,30 @@
+{
+  "name": "Le Hibou - Paris",
+  "color": "#274930",
+  "color2": "#1F3B27",
+  "phone": "01 43 54 96 91",
+  "address": "16 Carr de l'Odéon 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-hibou-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le_hibou_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/le-hibou-paris/hero.jpg",
+  "tagline": "Le Hibou - Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-hibou-paris/logo.jpg"
+}

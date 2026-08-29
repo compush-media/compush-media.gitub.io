@@ -1,0 +1,30 @@
+{
+  "name": "Peniche Le Diamant Bleu",
+  "color": "#090967",
+  "color2": "#070754",
+  "phone": "06 28 88 88 88",
+  "address": "2 Rue du Ranelagh 75016 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/peniche-le-diamant-bleu/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le.diamant.bleu/",
+  "heroUrl": "https://app.cartefidelavis.com/peniche-le-diamant-bleu/hero.jpg",
+  "tagline": "Peniche Le Diamant Bleu — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/peniche-le-diamant-bleu/logo.jpg"
+}

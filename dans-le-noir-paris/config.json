@@ -1,0 +1,30 @@
+{
+  "name": "Dans le Noir ? Paris",
+  "color": "#6A0E06",
+  "color2": "#560B04",
+  "phone": "01 42 77 98 04",
+  "address": "51 R. Quincampoix 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/dans-le-noir-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/danslenoirparis",
+  "heroUrl": "https://app.cartefidelavis.com/dans-le-noir-paris/hero.jpg",
+  "tagline": "Dans le Noir ? Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/dans-le-noir-paris/logo.jpg"
+}

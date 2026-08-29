@@ -1,0 +1,30 @@
+{
+  "name": "BLOOM GARDEN Restaurant & Bar à cocktails",
+  "color": "#C96E50",
+  "color2": "#A45A41",
+  "phone": "01 83 64 38 30",
+  "address": "23 R. du Château Landon 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bloom-garden-restaurant-bar-a-cocktails/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bloomgarden.restaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/bloom-garden-restaurant-bar-a-cocktails/hero.jpg",
+  "tagline": "BLOOM GARDEN Restaurant & Bar à cocktails — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bloom-garden-restaurant-bar-a-cocktails/logo.jpg"
+}

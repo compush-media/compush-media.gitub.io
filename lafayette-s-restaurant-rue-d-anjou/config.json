@@ -1,0 +1,30 @@
+{
+  "name": "Lafayette's restaurant rue d'Anjou",
+  "color": "#5C3614",
+  "color2": "#4B2C10",
+  "phone": "01 40 17 04 77",
+  "address": "8 Rue d'Anjou 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/lafayette-s-restaurant-rue-d-anjou/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lafayettesparis/",
+  "heroUrl": "https://app.cartefidelavis.com/lafayette-s-restaurant-rue-d-anjou/hero.jpg",
+  "tagline": "𝐌𝐚𝐢𝐬𝐨𝐧 𝐇𝐢𝐬𝐭𝐨𝐫𝐢𝐪𝐮𝐞 𝐝𝐞𝐩𝐮𝐢𝐬 𝟏𝟕𝟐𝟖 Open 7/7 +33 1 40 17 04 77",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/lafayette-s-restaurant-rue-d-anjou/logo.jpg"
+}

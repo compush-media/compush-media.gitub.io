@@ -1,0 +1,30 @@
+{
+  "name": "Restaurant le Serpentine",
+  "color": "#EB6D2E",
+  "color2": "#C05925",
+  "phone": "01 89 89 28 29",
+  "address": "11 Av. Mac-Mahon 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-le-serpentine/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/leserpentine_restaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-le-serpentine/hero.jpg",
+  "tagline": "Restaurant le Serpentine — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-le-serpentine/logo.jpg"
+}

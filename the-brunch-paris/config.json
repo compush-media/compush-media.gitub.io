@@ -1,0 +1,30 @@
+{
+  "name": "The Brunch Paris",
+  "color": "#294C87",
+  "color2": "#213E6E",
+  "phone": "09 87 49 99 10",
+  "address": "8 Rue de Berri 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/the-brunch-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/thebrunch_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/the-brunch-paris/hero.jpg",
+  "tagline": "The Brunch Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/the-brunch-paris/logo.jpg"
+}

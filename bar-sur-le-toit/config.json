@@ -1,0 +1,30 @@
+{
+  "name": "Bar sur le Toit",
+  "color": "#D44D44",
+  "color2": "#AD3F37",
+  "phone": "01 55 07 85 07",
+  "address": "de l’hôtel La Fantaisie 24 Rue Cadet 7ème Étage 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bar-sur-le-toit/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lafantaisieparis/",
+  "heroUrl": "https://app.cartefidelavis.com/bar-sur-le-toit/hero.jpg",
+  "tagline": "Home of Joy Parisian home of @leitmotivhotels",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bar-sur-le-toit/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "The Beans on Fire",
+  "color": "#E83136",
+  "color2": "#BE282C",
+  "phone": "01 43 55 94 73",
+  "address": "Boutique & Atelier à l'angle RDC 7 Rue du Général Blaise 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/the-beans-on-fire/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/thebeansonfire/",
+  "heroUrl": "https://app.cartefidelavis.com/the-beans-on-fire/hero.jpg",
+  "tagline": "The Beans on Fire — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/the-beans-on-fire/logo.jpg"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "La Cafête Perchée",
+  "short_name": "La Cafête Perchée",
+  "start_url": "/la-cafete-perchee/index.html",
+  "scope": "/la-cafete-perchee/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#9E7A3E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

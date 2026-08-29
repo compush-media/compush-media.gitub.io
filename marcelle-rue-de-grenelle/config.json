@@ -1,0 +1,30 @@
+{
+  "name": "Marcelle - Rue de Grenelle",
+  "color": "#664A37",
+  "color2": "#533C2D",
+  "phone": "01 40 60 12 12",
+  "address": "159 Rue de Grenelle 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/marcelle-rue-de-grenelle/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurant_marcelle/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/marcelle-rue-de-grenelle/hero.jpg",
+  "tagline": "Marcelle - Rue de Grenelle — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/marcelle-rue-de-grenelle/logo.jpg"
+}

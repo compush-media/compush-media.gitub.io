@@ -1,0 +1,30 @@
+{
+  "name": "Pink Mamma",
+  "color": "#7E6143",
+  "color2": "#674F36",
+  "phone": "09 73 03 40 29",
+  "address": "20bis Rue de Douai 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/pink-mamma/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bigmamma.uk/",
+  "heroUrl": "https://app.cartefidelavis.com/pink-mamma/hero.jpg",
+  "tagline": "Pink Mamma — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pink-mamma/logo.jpg"
+}

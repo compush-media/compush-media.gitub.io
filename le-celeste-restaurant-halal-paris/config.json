@@ -1,0 +1,30 @@
+{
+  "name": "Le Céleste | Restaurant Halal Paris",
+  "color": "#033D6E",
+  "color2": "#02325A",
+  "phone": "06 71 44 02 74",
+  "address": "1 Rue Paul Bourget 75013 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/le-celeste-restaurant-halal-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lecelesterestaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/le-celeste-restaurant-halal-paris/hero.jpg",
+  "tagline": "Le Céleste | Restaurant Halal Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-celeste-restaurant-halal-paris/logo.jpg"
+}

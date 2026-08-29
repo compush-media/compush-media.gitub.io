@@ -1,0 +1,30 @@
+{
+  "name": "Immersion Montmartre - Brunch & Coffee",
+  "color": "#B66023",
+  "color2": "#954E1C",
+  "phone": "01 42 36 18 19",
+  "address": "93 R. des Martyrs 75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/immersion-montmartre-brunch-coffee/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/immersionparis_/",
+  "heroUrl": "https://app.cartefidelavis.com/immersion-montmartre-brunch-coffee/hero.jpg",
+  "tagline": "Immersion Montmartre - Brunch & Coffee — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/immersion-montmartre-brunch-coffee/logo.jpg"
+}

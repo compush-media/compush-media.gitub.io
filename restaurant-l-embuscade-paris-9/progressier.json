@@ -1,0 +1,22 @@
+{
+  "name": "Restaurant L'Embuscade Paris 9",
+  "short_name": "Restaurant L'Embuscade Paris 9",
+  "start_url": "/restaurant-l-embuscade-paris-9/index.html",
+  "scope": "/restaurant-l-embuscade-paris-9/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#BD212F",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Kanpai Paris",
+  "color": "#E82324",
+  "color2": "#BE1C1D",
+  "phone": "09 88 08 66 86",
+  "address": "19 Rue Bréa 75006 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/kanpai-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/kanpai_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/kanpai-paris/hero.jpg",
+  "tagline": "Kanpai Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kanpai-paris/logo.jpg"
+}

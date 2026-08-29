@@ -1,0 +1,30 @@
+{
+  "name": "TOO TacTac",
+  "color": "#E46534",
+  "color2": "#BA522A",
+  "phone": "01 78 90 79 80",
+  "address": "65 Rue Bruneseau 75013 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/too-tactac/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/toohotelparis/",
+  "heroUrl": "https://app.cartefidelavis.com/too-tactac/hero.jpg",
+  "tagline": "TOO TacTac — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/too-tactac/logo.jpg"
+}

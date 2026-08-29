@@ -1,0 +1,30 @@
+{
+  "name": "Bistrot du Jardin",
+  "color": "#284949",
+  "color2": "#203B3B",
+  "phone": "09 85 12 30 66",
+  "address": "33 Rue Berger 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bistrot-du-jardin/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bistrot_jardin/",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-du-jardin/hero.jpg",
+  "tagline": "Bistrot du Jardin — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-du-jardin/logo.jpg"
+}

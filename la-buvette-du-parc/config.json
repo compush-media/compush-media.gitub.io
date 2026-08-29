@@ -1,0 +1,30 @@
+{
+  "name": "La Buvette du Parc",
+  "color": "#CA5B2F",
+  "color2": "#A54A26",
+  "phone": "01 44 18 06 77",
+  "address": "35 Rue Leblanc 75015 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-buvette-du-parc/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/buvetteduparcandrecitroen/",
+  "heroUrl": "https://app.cartefidelavis.com/la-buvette-du-parc/hero.jpg",
+  "tagline": "La Buvette du Parc — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-buvette-du-parc/logo.jpg"
+}

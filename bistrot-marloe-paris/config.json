@@ -1,0 +1,30 @@
+{
+  "name": "Bistrot Marloe Paris",
+  "color": "#21284F",
+  "color2": "#1B2040",
+  "phone": "01 53 76 44 44",
+  "address": "12 rue du Commandant Rivière 10 Rue d'Artois 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bistrot-marloe-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bistrot_marloe/",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-marloe-paris/hero.jpg",
+  "tagline": "Bistrot Marloe Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-marloe-paris/logo.jpg"
+}

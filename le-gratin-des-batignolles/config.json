@@ -1,0 +1,26 @@
+{
+  "name": "Le Gratin des Batignolles",
+  "color": "#9E7A3E",
+  "color2": "06 69 47 85 22",
+  "phone": "96 Rue Lemercier 75017 Paris",
+  "instagramUrl": "https://www.instagram.com/legratindesbatignolles/",
+  "tagline": "Le Gratin des Batignolles — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

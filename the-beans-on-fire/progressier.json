@@ -1,0 +1,22 @@
+{
+  "name": "The Beans on Fire",
+  "short_name": "The Beans on Fire",
+  "start_url": "/the-beans-on-fire/index.html",
+  "scope": "/the-beans-on-fire/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#E83136",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

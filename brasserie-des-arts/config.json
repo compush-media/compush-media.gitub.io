@@ -1,0 +1,26 @@
+{
+  "name": "Brasserie des Arts",
+  "color": "#9E7A3E",
+  "color2": "01 81 70 45 70",
+  "phone": "28 Rue Saint-André des Arts 75006 Paris",
+  "instagramUrl": "https://www.instagram.com/brasserie_des_arts/",
+  "tagline": "Brasserie des Arts — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

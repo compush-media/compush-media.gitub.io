@@ -1,0 +1,30 @@
+{
+  "name": "La Gaufrerie",
+  "color": "#B19567",
+  "color2": "#917A54",
+  "phone": "01 42 33 05 89",
+  "address": "5 Rue Marie Stuart 75002 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-gaufrerie/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lagaufrerie/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/la-gaufrerie/hero.jpg",
+  "tagline": "La Gaufrerie — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-gaufrerie/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Polpo Brasserie",
+  "color": "#123C6C",
+  "color2": "#0E3158",
+  "phone": "01 41 34 32 86",
+  "address": "47 Quai Charles Pasqua 92300 Levallois-Perret",
+  "logoUrl": "https://app.cartefidelavis.com/polpo-brasserie/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/polpobrasserie/",
+  "heroUrl": "https://app.cartefidelavis.com/polpo-brasserie/hero.jpg",
+  "tagline": "En pause estivale 🌴 We’ll be back le 4 septembre !",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Levallois-Perret",
+  "iconUrl": "https://app.cartefidelavis.com/polpo-brasserie/logo.jpg"
+}

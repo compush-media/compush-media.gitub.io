@@ -1,0 +1,30 @@
+{
+  "name": "Figuig",
+  "color": "#F3C525",
+  "color2": "#C7A11E",
+  "phone": "01 43 80 69 34",
+  "address": "13 Rue Brey 75017 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/figuig/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurantfiguig/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/figuig/hero.jpg",
+  "tagline": "Figuig — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/figuig/logo.jpg"
+}

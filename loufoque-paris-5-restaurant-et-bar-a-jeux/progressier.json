@@ -1,0 +1,22 @@
+{
+  "name": "Loufoque Paris 5 - Restaurant et bar à jeux",
+  "short_name": "Loufoque Paris 5 - Restaurant et bar à jeux",
+  "start_url": "/loufoque-paris-5-restaurant-et-bar-a-jeux/index.html",
+  "scope": "/loufoque-paris-5-restaurant-et-bar-a-jeux/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#00703B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Boca",
+  "color": "#666939",
+  "color2": "#53562E",
+  "phone": "09 74 64 11 49",
+  "address": "11bis Rue Blanche 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/boca/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurant_boca/",
+  "heroUrl": "https://app.cartefidelavis.com/boca/hero.jpg",
+  "tagline": "Boca — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/boca/logo.jpg"
+}

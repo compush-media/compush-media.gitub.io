@@ -1,0 +1,30 @@
+{
+  "name": "Matignon",
+  "color": "#B29766",
+  "color2": "#917B53",
+  "phone": "01 42 89 64 72",
+  "address": "3 Av. Matignon 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/matignon/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/matignonparisofficiel/",
+  "heroUrl": "https://app.cartefidelavis.com/matignon/hero.jpg",
+  "tagline": "Restaurant & Club",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/matignon/logo.jpg"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Au Pied de Cochon",
+  "short_name": "Au Pied de Cochon",
+  "start_url": "/au-pied-de-cochon/index.html",
+  "scope": "/au-pied-de-cochon/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#D1242A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

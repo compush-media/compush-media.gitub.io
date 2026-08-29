@@ -1,0 +1,29 @@
+{
+  "name": "Gritte - Restaurant & coffee shop",
+  "color": "#9E7A3E",
+  "color2": "06 27 04 73 03",
+  "phone": "32 Rue Louise Michel 92300 Levallois-Perret",
+  "logoUrl": "https://app.cartefidelavis.com/gritte-restaurant-coffee-shop/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/wix",
+  "heroUrl": "https://app.cartefidelavis.com/gritte-restaurant-coffee-shop/hero.jpg",
+  "tagline": "Gritte - Restaurant & coffee shop — Levallois-Perret",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Levallois-Perret",
+  "iconUrl": "https://app.cartefidelavis.com/gritte-restaurant-coffee-shop/logo.jpg"
+}

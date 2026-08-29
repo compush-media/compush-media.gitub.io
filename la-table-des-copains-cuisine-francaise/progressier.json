@@ -1,0 +1,22 @@
+{
+  "name": "La Table des Copains - Cuisine Française",
+  "short_name": "La Table des Copains - Cuisine Française",
+  "start_url": "/la-table-des-copains-cuisine-francaise/index.html",
+  "scope": "/la-table-des-copains-cuisine-francaise/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#0B4A7E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

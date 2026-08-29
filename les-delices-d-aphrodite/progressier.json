@@ -1,0 +1,22 @@
+{
+  "name": "Les Délices d'Aphrodite",
+  "short_name": "Les Délices d'Aphrodite",
+  "start_url": "/les-delices-d-aphrodite/index.html",
+  "scope": "/les-delices-d-aphrodite/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#EBA901",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

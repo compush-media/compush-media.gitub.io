@@ -1,0 +1,30 @@
+{
+  "name": "Les Indécises",
+  "color": "#A0402A",
+  "color2": "#833422",
+  "phone": "01 43 57 26 00",
+  "address": "2 Rue des Trois Bornes 75011 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-indecises/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesindecises.paris11/",
+  "heroUrl": "https://app.cartefidelavis.com/les-indecises/hero.jpg",
+  "tagline": "Les Indécises — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-indecises/logo.jpg"
+}

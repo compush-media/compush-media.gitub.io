@@ -1,0 +1,30 @@
+{
+  "name": "Loufoque Paris 5 - Restaurant et bar à jeux",
+  "color": "#00703B",
+  "color2": "#005B30",
+  "phone": "09 83 70 55 26",
+  "address": "57 Rue Galande 75005 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/loufoque-paris-5-restaurant-et-bar-a-jeux/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/loufoque_ludique/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/loufoque-paris-5-restaurant-et-bar-a-jeux/hero.jpg",
+  "tagline": "Loufoque Paris 5 - Restaurant et bar à jeux — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/loufoque-paris-5-restaurant-et-bar-a-jeux/logo.jpg"
+}

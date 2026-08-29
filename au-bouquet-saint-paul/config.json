@@ -1,0 +1,30 @@
+{
+  "name": "Au Bouquet Saint Paul",
+  "color": "#B46573",
+  "color2": "#93525E",
+  "phone": "01 80 86 43 82",
+  "address": "85 Rue Saint-Antoine 75004 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/au-bouquet-saint-paul/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bouquetsaintpaul/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/au-bouquet-saint-paul/hero.jpg",
+  "tagline": "Au Bouquet Saint Paul — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/au-bouquet-saint-paul/logo.jpg"
+}

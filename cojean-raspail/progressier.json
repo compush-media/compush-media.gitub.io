@@ -1,0 +1,22 @@
+{
+  "name": "Cojean Raspail",
+  "short_name": "Cojean Raspail",
+  "start_url": "/cojean-raspail/index.html",
+  "scope": "/cojean-raspail/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#3C98DC",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Restaurant La Table du Caviste bio Paris 17",
+  "short_name": "Restaurant La Table du Caviste bio Paris 17",
+  "start_url": "/restaurant-la-table-du-caviste-bio-paris-17/index.html",
+  "scope": "/restaurant-la-table-du-caviste-bio-paris-17/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#4A4228",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Casa Luca",
+  "color": "#AB7964",
+  "color2": "#8C6352",
+  "phone": "01 47 20 20 40",
+  "address": "82 Av. Marceau 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/casa-luca/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/casa_luca_paris/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/casa-luca/hero.jpg",
+  "tagline": "Casa Luca — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/casa-luca/logo.jpg"
+}

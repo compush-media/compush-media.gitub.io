@@ -1,0 +1,30 @@
+{
+  "name": "Marcel",
+  "color": "#4B3125",
+  "color2": "#3D281E",
+  "phone": "01 42 22 62 62",
+  "address": "15 Rue de Babylone 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/marcel/logo.jpg",
+  "instagramUrl": "https://instagram.com/restaurantmarcel",
+  "heroUrl": "https://app.cartefidelavis.com/marcel/hero.jpg",
+  "tagline": "📍15 rue de Babylone 7e Paris, France 🚴🏼 Deliveroo ✉️ Vos événements",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/marcel/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Brasserie La Lorraine",
+  "color": "#B91010",
+  "color2": "#970D0D",
+  "phone": "01 56 21 22 00",
+  "address": "2 Pl. des Ternes 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/brasserie-la-lorraine/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/brasserielalorraine/",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-la-lorraine/hero.jpg",
+  "tagline": "Brasserie La Lorraine — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-la-lorraine/logo.jpg"
+}

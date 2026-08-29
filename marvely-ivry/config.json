@@ -1,0 +1,30 @@
+{
+  "name": "Marvely Ivry",
+  "color": "#254386",
+  "color2": "#1E366D",
+  "phone": "09 60 17 31 35",
+  "address": "61bis Rue Marat 94200 Ivry-sur-Seine",
+  "logoUrl": "https://app.cartefidelavis.com/marvely-ivry/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/marvely_officiel/",
+  "heroUrl": "https://app.cartefidelavis.com/marvely-ivry/hero.jpg",
+  "tagline": "Marvely Ivry — Ivry-sur-Seine",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Ivry-sur-Seine",
+  "iconUrl": "https://app.cartefidelavis.com/marvely-ivry/logo.jpg"
+}

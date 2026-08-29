@@ -1,0 +1,30 @@
+{
+  "name": "La Chaufferie",
+  "color": "#E74916",
+  "color2": "#BD3B12",
+  "phone": "01 86 04 31 61",
+  "address": "2 Bd de Denain 75010 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/la-chaufferie/logo.jpg",
+  "instagramUrl": "http://instagram.com/cafe_la_chaufferie/",
+  "heroUrl": "https://app.cartefidelavis.com/la-chaufferie/hero.jpg",
+  "tagline": "La Chaufferie — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-chaufferie/logo.jpg"
+}

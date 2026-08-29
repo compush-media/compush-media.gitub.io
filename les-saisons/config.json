@@ -1,0 +1,30 @@
+{
+  "name": "Les Saisons",
+  "color": "#601024",
+  "color2": "#4E0D1D",
+  "phone": "01 48 78 15 18",
+  "address": "52 Rue Lamartine 75009 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/les-saisons/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurantlessaisons/",
+  "heroUrl": "https://app.cartefidelavis.com/les-saisons/hero.jpg",
+  "tagline": "Les Saisons — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-saisons/logo.jpg"
+}

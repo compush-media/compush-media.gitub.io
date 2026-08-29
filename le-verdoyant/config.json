@@ -1,0 +1,30 @@
+{
+  "name": "Le Verdoyant",
+  "color": "#83A00E",
+  "color2": "#6B830B",
+  "phone": "01 88 94 97 93",
+  "address": "11 Rue Eugénie Eboué 92600 Asnières-sur-Seine",
+  "logoUrl": "https://app.cartefidelavis.com/le-verdoyant/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/leverdoyant.asnieres/",
+  "heroUrl": "https://app.cartefidelavis.com/le-verdoyant/hero.jpg",
+  "tagline": "Le Verdoyant — Asnières-sur-Seine",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Asnières-sur-Seine",
+  "iconUrl": "https://app.cartefidelavis.com/le-verdoyant/logo.jpg"
+}

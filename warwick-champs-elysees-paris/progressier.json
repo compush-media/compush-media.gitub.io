@@ -1,0 +1,22 @@
+{
+  "name": "Warwick Champs-Elysées Paris",
+  "short_name": "Warwick Champs-Elysées Paris",
+  "start_url": "/warwick-champs-elysees-paris/index.html",
+  "scope": "/warwick-champs-elysees-paris/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#403766",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

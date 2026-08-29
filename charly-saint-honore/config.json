@@ -1,0 +1,30 @@
+{
+  "name": "CHARLY SAINT-HONORÉ",
+  "color": "#BD985B",
+  "color2": "#9A7C4A",
+  "phone": "01 42 60 36 67",
+  "address": "36 Pl. du Marché Saint-Honoré 75001 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/charly-saint-honore/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/charlysainthonore/",
+  "heroUrl": "https://app.cartefidelavis.com/charly-saint-honore/hero.jpg",
+  "tagline": "CHARLY SAINT-HONORÉ — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/charly-saint-honore/logo.jpg"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Popu Bistro à Pizza",
+  "color": "#014F92",
+  "color2": "#004077",
+  "phone": "01 40 60 73 76",
+  "address": "12 Rue du Champ de Mars 75007 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/popu-bistro-a-pizza/logo.jpg",
+  "instagramUrl": "https://instagram.com/popu.pizza",
+  "heroUrl": "https://app.cartefidelavis.com/popu-bistro-a-pizza/hero.jpg",
+  "tagline": "Popu Bistro à Pizza — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/popu-bistro-a-pizza/logo.jpg"
+}

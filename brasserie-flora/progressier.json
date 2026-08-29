@@ -1,0 +1,22 @@
+{
+  "name": "Brasserie Flora",
+  "short_name": "Brasserie Flora",
+  "start_url": "/brasserie-flora/index.html",
+  "scope": "/brasserie-flora/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#FE1B53",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

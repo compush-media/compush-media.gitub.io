@@ -1,0 +1,22 @@
+{
+  "name": "Maslow 1er",
+  "short_name": "Maslow 1er",
+  "start_url": "/maslow-1er/index.html",
+  "scope": "/maslow-1er/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#F95902",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "L'ABORDAGE Paris 8",
+  "color": "#B49864",
+  "color2": "#937C52",
+  "phone": "01 45 22 15 49",
+  "address": "2 Pl. Henri Bergson 75008 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/l-abordage-paris-8/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/abordageparis8/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/l-abordage-paris-8/hero.jpg",
+  "tagline": "L'ABORDAGE Paris 8 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/l-abordage-paris-8/logo.jpg"
+}
