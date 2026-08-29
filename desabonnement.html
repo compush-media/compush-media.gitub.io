@@ -76,7 +76,11 @@
         "apikey":        SUPA_KEY,
         "Authorization": "Bearer " + SUPA_KEY,
         "Content-Type":  "application/json",
-        "Prefer":        "return=minimal,resolution=ignore-duplicates"
+        // PAS de « resolution=ignore-duplicates » : PostgREST le traite
+        // comme un upsert, qui reclame le droit UPDATE en plus d'INSERT. La
+        // politique n'accorde que l'insertion, a dessein — le doublon revient
+        // donc en 409, et le code plus bas le traite comme un succes.
+        "Prefer":        "return=minimal"
       },
       body: JSON.stringify({ email: email, source: src,
                              user_agent: navigator.userAgent })
