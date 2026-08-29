@@ -28,3 +28,18 @@ dm_videos/*-wallet.png
 # aucun coût d'API. Aucune raison de publier, dans un dépôt public, la liste
 # des prospects à qui l'on a fait une vidéo.
 dm_videos/hebergement.json
+
+# Copies mortes des images d'offres.
+#
+# Le générateur dépose 12 PNG dans <slug>/images/offres/ pour CHAQUE wallet —
+# 29 Mo par restaurant. Or aucune page ne les regarde : toutes pointent vers
+# /_template/images/offres/, le dossier partagé. Balayage des 5 224 fichiers
+# HTML, JS, JSON et CSS du dépôt le 29/08/2026 : zéro référence relative.
+#
+# 2 376 fichiers, 5,40 Go, pour 12 images distinctes copiées 199 fois. Le site
+# publié passe de 5,77 Go à 0,36 Go — sous le plafond de 1 Go de GitHub Pages,
+# pour la première fois.
+#
+# _template n'est pas concerné : ses fichiers sont déjà suivis, et .gitignore
+# n'a aucun effet sur ce qui l'est.
+*/images/offres/
