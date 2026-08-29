@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Désabonnement — Fidelavis</title>
+<style>
+  :root { --fond:#f6efe5; --carte:#fff; --encre:#1d2321; --doux:#5c6763;
+          --trait:#e3ddd2; --ok:#1f6b4f; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center;
+         justify-content:center; background:var(--fond); color:var(--encre);
+         font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+         padding:24px; }
+  .carte { background:var(--carte); border:1px solid var(--trait); border-radius:14px;
+           padding:34px 30px; max-width:460px; width:100%; text-align:center; }
+  h1 { font-size:21px; margin:0 0 14px; letter-spacing:-.01em; }
+  p { margin:0 0 12px; color:var(--doux); }
+  .adresse { font-weight:600; color:var(--encre); word-break:break-all; }
+  .etat { font-size:15px; margin-top:18px; padding-top:16px; border-top:1px solid var(--trait); }
+  .ok { color:var(--ok); font-weight:600; }
+  .err { color:#a3352c; }
+  button { font:inherit; font-weight:600; background:var(--encre); color:#fff;
+           border:0; border-radius:9px; padding:12px 22px; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  button:focus-visible { outline:3px solid var(--ok); outline-offset:2px; }
+  .pied { margin-top:20px; font-size:13px; color:var(--doux); }
+</style>
+</head>
+<body>
+  <main class="carte">
+    <h1>Ne plus recevoir nos messages</h1>
+    <p id="intro">Confirmez et nous n'écrirons plus à cette adresse.</p>
+    <p class="adresse" id="adresse"></p>
+    <button id="btn" type="button">Me désabonner</button>
+    <div class="etat" id="etat" hidden></div>
+    <p class="pied">Fidelavis — carte de fidélité pour restaurants</p>
+  </main>
+<script>
+(function () {
+  // L'adresse arrive en clair dans l'URL. C'est le fonctionnement normal d'un
+  // lien de désabonnement : le destinataire ne peut retirer QUE sa propre
+  // adresse, celle qu'il connaît déjà. Rien n'est lisible depuis cette page —
+  // la politique Supabase n'autorise que l'insertion.
+  var SUPA_URL = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+  var SUPA_KEY = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
+  var p     = new URLSearchParams(location.search);
+  var email = (p.get("e") || p.get("email") || "").trim();
+  var src   = (p.get("src") || "").trim();
+  var zone  = document.getElementById("adresse");
+  var btn   = document.getElementById("btn");
+  var etat  = document.getElementById("etat");
+
+  function dire(txt, classe) {
+    etat.hidden = false;
+    etat.className = "etat " + (classe || "");
+    etat.textContent = txt;
+  }
+
+  if (!email) {
+    document.getElementById("intro").textContent =
+      "Le lien est incomplet : l'adresse à retirer n'y figure pas.";
+    btn.disabled = true;
+    dire("Répondez simplement à notre message et nous la retirerons à la main.", "err");
+    return;
+  }
+  zone.textContent = email;
+
+  btn.addEventListener("click", function () {
+    btn.disabled = true;
+    dire("Enregistrement…");
+    fetch(SUPA_URL + "/rest/v1/desabonnements", {
+      method: "POST",
+      headers: {
+        "apikey":        SUPA_KEY,
+        "Authorization": "Bearer " + SUPA_KEY,
+        "Content-Type":  "application/json",
+        "Prefer":        "return=minimal,resolution=ignore-duplicates"
+      },
+      body: JSON.stringify({ email: email, source: src,
+                             user_agent: navigator.userAgent })
+    }).then(function (r) {
+      // 409 = déjà désabonné. Pour la personne, c'est un succès : elle voulait
+      // ne plus rien recevoir, et c'est le cas.
+      if (r.ok || r.status === 409) {
+        dire("C'est fait. Vous ne recevrez plus de message de notre part.", "ok");
+        btn.hidden = true;
+      } else {
+        dire("L'enregistrement a échoué. Répondez à notre message et nous "
+             + "vous retirerons à la main.", "err");
+        btn.disabled = false;
+      }
+    }).catch(function () {
+      dire("Connexion impossible. Répondez à notre message et nous vous "
+           + "retirerons à la main.", "err");
+      btn.disabled = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>
