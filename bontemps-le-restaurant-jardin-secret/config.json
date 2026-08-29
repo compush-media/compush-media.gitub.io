@@ -1,12 +1,14 @@
 {
-  "name": "Resto1",
-  "color": "#B8924F",
-  "color2": "#9E7A3E",
-  "phone": "",
-  "address": "",
-  "googleReview": "",
-  "reservationUrl": "",
-  "logoUrl": "",
+  "name": "Bontemps Le Restaurant \"Jardin secret\"",
+  "color": "#FCC11D",
+  "color2": "#CE9E17",
+  "phone": "01 42 74 11 55",
+  "address": "57 Rue de Bretagne 75003 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/bontemps-le-restaurant-jardin-secret/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bontempsparis/",
+  "heroUrl": "https://app.cartefidelavis.com/bontemps-le-restaurant-jardin-secret/hero.jpg",
+  "tagline": "Bontemps Le Restaurant \"Jardin secret\" — Paris",
+  "category": "brunch",
   "offre_jour": {
     "active": false,
     "titre": "",
@@ -15,12 +17,14 @@
     "date_fin": ""
   },
   "plan": "essentiel",
-  "subscriptionStatus": "trialing",
-  "setupPaid": false,
-  "trialEndDate": "",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
   "billingEmail": "",
   "stripeCustomerId": "",
   "stripeSubscriptionId": "",
   "nextBillingDate": "",
-  "invoices": []
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bontemps-le-restaurant-jardin-secret/logo.jpg"
 }
