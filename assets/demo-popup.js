@@ -28,10 +28,13 @@
 
   const slug = (PATH.match(/^\/([^/]+)\//) || [, ""])[1] || "";
 
-  // 2) Déjà fermé pendant la session ?
-  try { if (sessionStorage.getItem(SS_CLOSED_KEY) === "true") return; } catch (e) {}
+  // 2) Déjà fermé pendant la session ? On ne renvoie plus le pop-up, mais on
+  //    ne quitte plus non plus : la barre d'activation doit rester, sinon
+  //    cette visite-là n'a aucune porte vers le test gratuit.
+  let dejaFerme = false;
+  try { dejaFerme = sessionStorage.getItem(SS_CLOSED_KEY) === "true"; } catch (e) {}
 
-  // 3) Test gratuit déjà activé pour ce resto ?
+  // 3) Test gratuit déjà activé pour ce resto ? Là, plus rien à proposer.
   try { if (localStorage.getItem("fidelavis_test_actif_" + slug) === "1") return; } catch (e) {}
 
   /* ── Images du parcours (déposer les vraies photos à ces chemins ;
@@ -120,6 +123,28 @@
   .fdp-dot.on{background:#E0463E;width:22px;border-radius:5px;}
   .fdp-step{text-align:center;font-size:12.5px;font-weight:800;color:#b3a596;
     text-transform:uppercase;letter-spacing:.6px;margin:2px 0 10px;}
+
+  /* Barre permanente — la seule porte vers l'activation une fois le pop-up
+     fermé. Sans elle, « Continuer la visite » condamnait définitivement
+     l'accès au test : /activation-test-gratuit/ n'était atteignable QUE
+     depuis l'écran 6 du pop-up, sept clics plus loin. */
+  /* Aucun fond dégradé : chaque wallet a ses propres couleurs, et un voile
+     blanc se verrait comme une tache sur les établissements aux fonds
+     sombres. La pastille porte son ombre, elle se détache seule. */
+  .fdp-bar{position:fixed;left:0;right:0;bottom:0;z-index:2147482000;
+    display:flex;justify-content:center;padding:0 14px 12px;pointer-events:none;
+    transform:translateY(130%);transition:transform .36s cubic-bezier(.22,1,.36,1);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;}
+  @supports(padding:max(0px)){.fdp-bar{padding-bottom:max(12px,env(safe-area-inset-bottom));}}
+  .fdp-bar.fdp-bar-on{transform:none;}
+  .fdp-bar button{pointer-events:auto;appearance:none;border:none;cursor:pointer;
+    display:inline-flex;align-items:center;gap:9px;font-family:inherit;
+    background:#E0463E;color:#fff;font-size:15.5px;font-weight:800;
+    padding:14px 24px;border-radius:999px;box-shadow:0 8px 24px rgba(224,70,62,.36);
+    transition:transform .12s,filter .15s;max-width:100%;}
+  .fdp-bar button:hover{filter:brightness(1.05);}
+  .fdp-bar button:active{transform:scale(.97);}
+  .fdp-bar small{display:block;font-weight:700;font-size:12px;opacity:.86;}
   `;
 
   /* ── Helpers ──────────────────────────────────────────────────────── */
@@ -140,19 +165,66 @@
   }
 
   let state = 0;                 // écran courant
-  let ov, card, body, foot;
+  let ov, card, body, foot, barre;
+
+  /* ── Mesure ───────────────────────────────────────────────────────────
+     On ne savait rien de ce qui se passe dans ce pop-up : aucun événement
+     n'était émis. 32 démonstrations vues, zéro activation, et aucun moyen
+     de dire si les gens abandonnaient à l'écran 1 ou à l'écran 5.
+     Un événement par écran, et un pour chaque porte vers l'activation. */
+  const ECRANS = { 0: "accueil", 1: "parcours_1", 2: "parcours_2",
+                   3: "parcours_3", 4: "parcours_4", 5: "dashboard",
+                   6: "offre" };
+
+  function suivre(quoi) {
+    try {
+      if (window.Fidelavis && typeof window.Fidelavis.track === "function") {
+        window.Fidelavis.track("demo_popup", { demo: true, src: quoi });
+      }
+    } catch (e) {}
+  }
 
   function close() {
     try { sessionStorage.setItem(SS_CLOSED_KEY, "true"); } catch (e) {}
+    suivre("ferme_" + (ECRANS[state] || state));
     ov.classList.remove("fdp-show");
     document.documentElement.style.overflow = "";
     setTimeout(function () { if (ov && ov.parentNode) ov.parentNode.removeChild(ov); }, 320);
+    montrerBarre();
   }
-  function go(i) { state = i; render(); }
+  function go(i) { state = i; render(); suivre(ECRANS[i] || String(i)); }
 
-  function activate() {
+  function activate(origine) {
+    suivre("activation_" + (origine || "popup"));
     // Redirige vers la page d'inscription au test gratuit
     location.href = "/activation-test-gratuit/?restaurant=" + encodeURIComponent(slug);
+  }
+
+  /* ── La barre permanente ──────────────────────────────────────────── */
+  function montrerBarre() {
+    if (barre || document.querySelector(".fdp-bar")) return;
+    injecterStyle();
+    barre = el("div", "fdp-bar");
+    const b = el("button", null,
+      "<span>🎁</span><span>Activer mon test gratuit"
+      + "<small>30 jours offerts · sans engagement</small></span>");
+    b.onclick = function () { activate("barre"); };
+    barre.appendChild(b);
+    document.body.appendChild(barre);
+    // De la place sous le dernier élément : sans ça, la pastille recouvre la
+    // fin de page sur les wallets dont le contenu descend jusqu'en bas.
+    try {
+      document.body.style.paddingBottom =
+        (barre.getBoundingClientRect().height || 80) + 14 + "px";
+    } catch (e) {}
+    // Pas de requestAnimationFrame ici : il ne se déclenche PAS dans un onglet
+    // d'arrière-plan, et la barre restait alors figée 225 px sous l'écran —
+    // exactement le cas d'un lien d'e-mail ouvert dans un nouvel onglet qu'on
+    // ne consulte que plus tard. Le setTimeout, lui, part toujours ; les 20 ms
+    // laissent au navigateur le temps d'enregistrer l'état initial pour que la
+    // transition s'anime au lieu de sauter.
+    setTimeout(function () { barre.classList.add("fdp-bar-on"); }, 20);
+    suivre("barre_affichee");
   }
 
   /* ── Rendu des écrans ─────────────────────────────────────────────── */
@@ -174,7 +246,13 @@
       b1.onclick = function () { go(1); };
       const b2 = el("button", "fdp-btn fdp-ghost", "Continuer la visite");
       b2.onclick = close;
-      foot.appendChild(b1); foot.appendChild(b2);
+      // Sortie directe : l'e-mail qui amène ici annonce « l'essai de 30 jours
+      // s'active sous la démonstration ». Obliger celui qui vient pour ça à
+      // traverser six écrans de pédagogie, c'est lui faire payer une visite
+      // guidée dont il n'a pas besoin.
+      const b3 = el("button", "fdp-link", "Activer directement mon test gratuit");
+      b3.onclick = function () { activate("accueil"); };
+      foot.appendChild(b1); foot.appendChild(b2); foot.appendChild(b3);
 
     } else if (state >= 1 && state <= 4) {
       /* — Parcours client (4 étapes) — */
@@ -232,7 +310,7 @@
       body.appendChild(inner);
 
       const cta = el("button", "fdp-btn fdp-primary", "Activer mon test gratuit");
-      cta.onclick = activate;
+      cta.onclick = function () { activate("offre"); };
       const link = el("button", "fdp-link", "Continuer la visite");
       link.onclick = close;
       foot.appendChild(cta); foot.appendChild(link);
@@ -248,11 +326,15 @@
   }
 
   /* ── Construction & affichage ─────────────────────────────────────── */
-  function build() {
+  function injecterStyle() {
     if (document.getElementById("fdp-style") == null) {
       const st = el("style"); st.id = "fdp-style"; st.textContent = CSS;
       document.head.appendChild(st);
     }
+  }
+
+  function build() {
+    injecterStyle();
     ov = el("div", "fdp-ov");
     card = el("div", "fdp-card");
     const head = el("div", "fdp-head");
@@ -275,14 +357,21 @@
     document.body.appendChild(ov);
     document.documentElement.style.overflow = "hidden";   // verrou de scroll
     render();
+    suivre("accueil");
     requestAnimationFrame(function () { ov.classList.add("fdp-show"); });
   }
 
   function arm() {
+    // Pop-up déjà fermé plus tôt dans la session : on ne le remet pas, mais
+    // la barre doit être là — c'est justement la visite où il n'aurait plus
+    // eu aucun moyen d'activer.
+    if (dejaFerme) { montrerBarre(); return; }
     setTimeout(function () {
       // re-vérif au moment d'afficher (l'utilisateur a pu activer entre-temps)
-      try { if (sessionStorage.getItem(SS_CLOSED_KEY) === "true") return; } catch (e) {}
       try { if (localStorage.getItem("fidelavis_test_actif_" + slug) === "1") return; } catch (e) {}
+      try {
+        if (sessionStorage.getItem(SS_CLOSED_KEY) === "true") { montrerBarre(); return; }
+      } catch (e) {}
       if (document.querySelector(".fdp-ov")) return;
       build();
     }, POPUP_DELAY_SECONDS * 1000);
