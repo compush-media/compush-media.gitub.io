@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/l-arbre-a-cafe-torrefacteur-cafe-de-specialite-sentier/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/l-arbre-a-cafe-torrefacteur-cafe-de-specialite-sentier/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJV0KEoxdu5kcRNQ5kjFpQ1T4"
 }

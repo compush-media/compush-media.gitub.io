@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/auteuil-brasserie/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/auteuil-brasserie/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJEcNXrLB65kcR6leyh3yLQpk"
 }

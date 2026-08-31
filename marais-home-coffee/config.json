@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/marais-home-coffee/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/marais-home-coffee/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJBej5gwhu5kcRgC-vp58l54M"
 }

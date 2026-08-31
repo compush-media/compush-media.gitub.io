@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-charlot/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-charlot/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ647DhQZu5kcR4Ss8Lzg3I_Q"
 }

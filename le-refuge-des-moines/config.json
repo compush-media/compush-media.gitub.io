@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-refuge-des-moines/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-refuge-des-moines/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ67ZNfqxv5kcRYBva_t7EMp0"
 }

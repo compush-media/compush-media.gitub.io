@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/amazonia-restaurant-halal-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/amazonia-restaurant-halal-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJJ5Gea0xv5kcRlZ3xMGHT1_k"
 }

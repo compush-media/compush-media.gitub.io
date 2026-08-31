@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/acai-and-you-maubeuge-all-week-brunch-coffee/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/acai-and-you-maubeuge-all-week-brunch-coffee/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJs-B4Lu9v5kcRqjyVhmi15BE"
 }

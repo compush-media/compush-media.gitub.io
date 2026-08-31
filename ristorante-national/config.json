@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/ristorante-national/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/ristorante-national/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJdZJAehpu5kcRZZKmjXQrRXg"
 }

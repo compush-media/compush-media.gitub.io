@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/datil/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/datil/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJix2wynBv5kcREclRmmNBD24"
 }

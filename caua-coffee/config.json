@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/caua-coffee/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/caua-coffee/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzTH6m7pt5kcRXA049vokRTg"
 }

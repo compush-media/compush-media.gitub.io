@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/les-grands-gamins-bar-a-jeux-de-societe-et-boutique/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/les-grands-gamins-bar-a-jeux-de-societe-et-boutique/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJLxpQNNBv5kcRu5VHAe1DCbQ"
 }

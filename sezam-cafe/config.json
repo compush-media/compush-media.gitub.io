@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/sezam-cafe/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/sezam-cafe/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJV5R3vr1v5kcRqZ2KXvgIDPA"
 }

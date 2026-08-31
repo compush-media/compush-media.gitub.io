@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/sip-babylone/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/sip-babylone/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJNcRVD9Rx5kcRmx-0pkRqu_g"
 }

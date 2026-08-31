@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/tosca/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/tosca/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJj_BTxM5v5kcRa3eWCZ2aRvA"
 }

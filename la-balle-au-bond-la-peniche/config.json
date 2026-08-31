@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-balle-au-bond-la-peniche/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-balle-au-bond-la-peniche/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJuV-0ZShu5kcR-cP6vlVLQTQ"
 }

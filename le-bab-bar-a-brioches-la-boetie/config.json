@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-bab-bar-a-brioches-la-boetie/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-bab-bar-a-brioches-la-boetie/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJc8MmprVv5kcRktel-tEJRa0"
 }

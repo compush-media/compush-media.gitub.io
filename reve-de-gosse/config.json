@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/reve-de-gosse/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/reve-de-gosse/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJJ-UL3mlv5kcReaslcLqAr7A"
 }

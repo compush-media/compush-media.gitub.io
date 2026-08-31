@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-d-auteur-specialty-coffee-shop-roaster/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-d-auteur-specialty-coffee-shop-roaster/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJyXgSNGtx5kcRA1_dub1akkI"
 }

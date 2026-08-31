@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Boulogne-Billancourt",
-  "iconUrl": "https://app.cartefidelavis.com/acai-and-you-all-week-brunch-coffee/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/acai-and-you-all-week-brunch-coffee/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ24zThyV75kcRuMhkRDC-Pgk"
 }

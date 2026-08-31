@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/nossa-churrasqueira-paris-5/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/nossa-churrasqueira-paris-5/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJF1YWa-Zx5kcRjFqF_4bEghM"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-le-gabriel/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-le-gabriel/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJA1PHDM9v5kcRsdD0Snjw06k"
 }

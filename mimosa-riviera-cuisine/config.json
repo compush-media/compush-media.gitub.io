@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/mimosa-riviera-cuisine/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/mimosa-riviera-cuisine/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJhbBxhIJv5kcRx7K-fVVs9Xs"
 }

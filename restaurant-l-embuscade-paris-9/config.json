@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-l-embuscade-paris-9/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-l-embuscade-paris-9/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJK0hynkhu5kcR5_N4MTI0kNE"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-place-verte/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-place-verte/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ03hHSuVt5kcRbOXfLcoK4rs"
 }

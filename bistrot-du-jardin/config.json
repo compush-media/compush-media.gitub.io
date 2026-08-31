@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/bistrot-du-jardin/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-du-jardin/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJMS35GiJu5kcRNFJH5Orj-3A"
 }

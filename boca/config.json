@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/boca/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/boca/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJmbMGsUlu5kcRrpB90ZB2lQU"
 }

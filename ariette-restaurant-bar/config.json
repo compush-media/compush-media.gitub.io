@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/ariette-restaurant-bar/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/ariette-restaurant-bar/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJJ--8R4Zz5kcR1qti393TERY"
 }

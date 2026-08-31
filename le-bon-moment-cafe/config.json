@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-bon-moment-cafe/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-bon-moment-cafe/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJx4dvvh5x5kcRND0lWvWzjA4"
 }

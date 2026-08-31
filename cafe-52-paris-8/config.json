@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-52-paris-8/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-52-paris-8/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ0ymlALRv5kcR3sURUkofptY"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/temple-chapon/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/temple-chapon/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJgT7D-5Vv5kcR1G_2tvPKrBE"
 }

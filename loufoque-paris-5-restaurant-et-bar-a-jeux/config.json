@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/loufoque-paris-5-restaurant-et-bar-a-jeux/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/loufoque-paris-5-restaurant-et-bar-a-jeux/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJt04EwJRx5kcR30cYDU4Ze2c"
 }

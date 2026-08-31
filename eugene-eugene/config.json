@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Puteaux",
-  "iconUrl": "https://app.cartefidelavis.com/eugene-eugene/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/eugene-eugene/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ06sy5R5l5kcRVMcznQN7gDM"
 }

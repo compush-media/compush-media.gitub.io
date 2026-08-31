@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-brigade-oberkampf-restaurant-paris-11/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-brigade-oberkampf-restaurant-paris-11/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ_8y80vpt5kcRaJTI0HDQA8U"
 }

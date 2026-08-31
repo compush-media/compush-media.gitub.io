@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Bois-Colombes",
-  "iconUrl": "https://app.cartefidelavis.com/zemzem/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/zemzem/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJrfw7YDhl5kcRDhwjhQvAqMk"
 }

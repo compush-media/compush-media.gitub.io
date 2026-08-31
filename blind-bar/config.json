@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/blind-bar/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/blind-bar/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJDyvH1tpv5kcR5Trgk-IuWsc"
 }

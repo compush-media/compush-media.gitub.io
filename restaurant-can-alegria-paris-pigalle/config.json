@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-can-alegria-paris-pigalle/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-can-alegria-paris-pigalle/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJs81H3kVu5kcRl15R15_7vuI"
 }

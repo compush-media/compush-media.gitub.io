@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/loui-s-corner/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/loui-s-corner/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJveXCWgpu5kcRZO5axZhmU9U"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/kape-cafe-philippin/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/kape-cafe-philippin/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ8TkNiCNt5kcRnspJ3lP5F5w"
 }

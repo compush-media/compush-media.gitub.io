@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/maison-perchee/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/maison-perchee/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJCam68hJx5kcRjN6lYV7IjK4"
 }

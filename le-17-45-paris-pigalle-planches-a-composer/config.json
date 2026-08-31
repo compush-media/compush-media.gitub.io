@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-17-45-paris-pigalle-planches-a-composer/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-17-45-paris-pigalle-planches-a-composer/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzaIvebpv5kcRKANCAo3_4Pw"
 }

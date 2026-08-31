@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/les-parigots/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/les-parigots/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJiZ5-zw5u5kcR47xeriAuKI0"
 }

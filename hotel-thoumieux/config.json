@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/hotel-thoumieux/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/hotel-thoumieux/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJmf7lrNlv5kcR7TiGblf1J4w"
 }

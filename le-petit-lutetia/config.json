@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-petit-lutetia/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-petit-lutetia/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQbl4Oi1w5kcReJP1pryXC6g"
 }

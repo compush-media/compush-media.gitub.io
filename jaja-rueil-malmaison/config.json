@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Rueil-Malmaison",
-  "iconUrl": "https://app.cartefidelavis.com/jaja-rueil-malmaison/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/jaja-rueil-malmaison/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ71KT7PNl5kcRAdU6rzD3iLY"
 }

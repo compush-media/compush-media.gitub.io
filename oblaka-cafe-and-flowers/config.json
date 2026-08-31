@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/oblaka-cafe-and-flowers/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/oblaka-cafe-and-flowers/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJf1Ctlzhv5kcR-c-2cYgBnEo"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/pepita-pizza-pasta/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/pepita-pizza-pasta/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJy_lEu0Rx5kcRpu2kGyoyj3s"
 }

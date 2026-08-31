@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/les-jardins-du-presbourg/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/les-jardins-du-presbourg/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJFYaILH5v5kcR5e2-iBo08us"
 }

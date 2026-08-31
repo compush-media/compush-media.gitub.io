@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cubana-cafe-paris-bar-restaurant-fumoir-latino-cubain/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cubana-cafe-paris-bar-restaurant-fumoir-latino-cubain/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJgyEj4c5x5kcRCzd6ghcItvg"
 }

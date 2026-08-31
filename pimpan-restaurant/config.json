@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/pimpan-restaurant/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/pimpan-restaurant/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJVTtcB4px5kcRuM3xnujhHjc"
 }

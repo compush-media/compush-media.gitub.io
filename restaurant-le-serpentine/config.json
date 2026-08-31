@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-le-serpentine/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-le-serpentine/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJFTA-m3Rv5kcRnUwNPABW2Gs"
 }

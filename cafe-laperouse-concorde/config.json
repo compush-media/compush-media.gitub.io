@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-laperouse-concorde/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-laperouse-concorde/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJy0uxFbFv5kcRY5pz2Ruz8aM"
 }

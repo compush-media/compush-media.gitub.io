@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/brutus-batignolles/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/brutus-batignolles/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJVVUZX7Fv5kcRdSoRBT3M51U"
 }

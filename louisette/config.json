@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/louisette/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/louisette/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJC_LUShdv5kcRJg8SUEkor_Y"
 }

@@ -25,5 +25,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/maison-sauvage/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/maison-sauvage/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJyVj_KNlx5kcRbFfMxtB3dtQ"
 }

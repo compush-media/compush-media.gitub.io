@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/aux-cerises/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/aux-cerises/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJAXPlGR9w5kcRx_M9drJWPlc"
 }

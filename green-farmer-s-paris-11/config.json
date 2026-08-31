@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/green-farmer-s-paris-11/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/green-farmer-s-paris-11/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJPx326fxt5kcRr-p-tuVH8dI"
 }

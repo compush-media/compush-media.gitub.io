@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-comptoir-general/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-comptoir-general/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJZYI0ygtu5kcRdYe6wVTkZDQ"
 }

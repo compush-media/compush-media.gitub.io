@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/yansai/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/yansai/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJU_-MsVlv5kcRR6i7seYe0yw"
 }

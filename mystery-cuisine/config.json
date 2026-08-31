@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/mystery-cuisine/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/mystery-cuisine/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJdwzq0CRu5kcRyo60Jjzc94M"
 }

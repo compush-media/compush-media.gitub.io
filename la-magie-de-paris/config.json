@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-magie-de-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-magie-de-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJIfMK1nlv5kcRUxMiFhpM51Q"
 }

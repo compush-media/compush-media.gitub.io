@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/brasserie-des-pres/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-des-pres/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJm_Si8glx5kcRd7Uq3X0ww6k"
 }

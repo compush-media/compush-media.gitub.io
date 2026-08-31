@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/les-parisiens-restaurant-by-thibault-sombardier/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/les-parisiens-restaurant-by-thibault-sombardier/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQ8pJ8F9v5kcRyvHV5QVQ6eQ"
 }

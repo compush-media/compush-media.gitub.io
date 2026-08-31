@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-reminet/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-reminet/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ97Am-eNx5kcRrHETX9OPXhQ"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/odette-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/odette-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJEwT42-Bx5kcRc5RI4Q8zZUg"
 }

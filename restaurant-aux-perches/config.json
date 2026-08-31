@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-aux-perches/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-aux-perches/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJz432B3hx5kcRp9BF9kr3jZs"
 }

@@ -24,5 +24,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-mabillon-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-mabillon-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJGQ8UCNlx5kcRIVo-QK6PldY"
 }

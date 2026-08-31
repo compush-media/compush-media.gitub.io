@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Vanves",
-  "iconUrl": "https://app.cartefidelavis.com/french-kiss-paris-restaurant-porte-de-versailles/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/french-kiss-paris-restaurant-porte-de-versailles/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJRcrhnxxx5kcRlhQCg4raXu0"
 }

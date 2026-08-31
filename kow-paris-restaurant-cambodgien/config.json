@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/kow-paris-restaurant-cambodgien/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/kow-paris-restaurant-cambodgien/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJkWrquqZt5kcR1a76-YQCaP8"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/pink-flamingo-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/pink-flamingo-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJo6vYGslz5kcRGOop6M3Var4"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/riviera-fuga/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/riviera-fuga/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJRQJBH5Fv5kcRFXwf6qpaz6E"
 }

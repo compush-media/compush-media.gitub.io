@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/crispy-soul-paris-11/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/crispy-soul-paris-11/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQUCQckVt5kcRQ4aTg8-k1Gw"
 }

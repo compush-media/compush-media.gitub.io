@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-jardin-du-roy-restaurant-saint-michel/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-jardin-du-roy-restaurant-saint-michel/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJa4AGkuBx5kcR2Z3JOleU0Nc"
 }

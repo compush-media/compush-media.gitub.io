@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/the-beans-on-fire/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/the-beans-on-fire/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJi1uEM4Jv5kcRxhpmH7d-vEo"
 }

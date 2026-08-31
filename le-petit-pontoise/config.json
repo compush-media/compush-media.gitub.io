@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-petit-pontoise/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-petit-pontoise/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJiREQYeRx5kcRSCall_h0zg4"
 }

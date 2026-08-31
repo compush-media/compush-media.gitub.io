@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Issy-les-Moulineaux",
-  "iconUrl": "https://app.cartefidelavis.com/l-ile/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/l-ile/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJgVgbgI565kcRHiD7j6jHn90"
 }

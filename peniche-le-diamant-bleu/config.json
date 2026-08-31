@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/peniche-le-diamant-bleu/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/peniche-le-diamant-bleu/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ7xcsyvRx5kcRGaJ8F1QnedE"
 }

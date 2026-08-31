@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-truffiere/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-truffiere/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJK5zijfvq5UcRsDJR-boQBLk"
 }

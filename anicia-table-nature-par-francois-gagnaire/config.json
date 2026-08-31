@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/anicia-table-nature-par-francois-gagnaire/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/anicia-table-nature-par-francois-gagnaire/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJBf6gVc1x5kcRIrSgr_ptdNM"
 }

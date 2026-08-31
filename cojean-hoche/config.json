@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cojean-hoche/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cojean-hoche/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJqx9CMZJv5kcR05Lq2XrXlIM"
 }

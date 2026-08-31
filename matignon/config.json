@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/matignon/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/matignon/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJEQS3gsVv5kcRbr1JV8Iulpk"
 }

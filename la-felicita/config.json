@@ -25,5 +25,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-felicita/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-felicita/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJk16wp8Fz5kcRkHv9uQxB30M"
 }

@@ -25,5 +25,6 @@
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
   "iconUrl": "https://app.cartefidelavis.com/brother-sister-brunch-lunch-dinner/logo.jpg",
-  "email": ""
+  "email": "",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJdUz6M39z5kcRS3UgKCSDgks"
 }

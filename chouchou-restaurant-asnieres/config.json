@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Asnières-sur-Seine",
-  "iconUrl": "https://app.cartefidelavis.com/chouchou-restaurant-asnieres/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/chouchou-restaurant-asnieres/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJseHhfhBv5kcRtPgk3UVL4Yg"
 }

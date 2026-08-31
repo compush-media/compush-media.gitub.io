@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/invithe-gourmand-paris-14-alesia/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/invithe-gourmand-paris-14-alesia/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ5d4y8phx5kcR3GVptfHfess"
 }

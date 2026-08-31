@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Levallois-Perret",
-  "iconUrl": "https://app.cartefidelavis.com/p-tit-coco-levallois/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/p-tit-coco-levallois/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzfAOVV1v5kcRPgYety2QoyY"
 }

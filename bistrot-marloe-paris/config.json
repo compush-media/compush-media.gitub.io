@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/bistrot-marloe-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-marloe-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJM8DKkMZv5kcRe2LMETsCb4w"
 }

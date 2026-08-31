@@ -28,5 +28,6 @@
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
   "iconUrl": "https://app.cartefidelavis.com/bacini/logo.jpg",
-  "trialEndDate": ""
+  "trialEndDate": "",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ-ZwivRZv5kcRp7SNNBl-dPw"
 }

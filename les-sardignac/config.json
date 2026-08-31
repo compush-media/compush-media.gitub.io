@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/les-sardignac/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/les-sardignac/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJe2O8zT9u5kcRrGEbv5wiQLQ"
 }

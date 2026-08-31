@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-rooftop-de-la-tour-d-argent-le-toit-de-la-tour/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-rooftop-de-la-tour-d-argent-le-toit-de-la-tour/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJqxywGvFx5kcR6hrvz5VrCAM"
 }

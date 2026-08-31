@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/smith-son-cafe/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/smith-son-cafe/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJVetqey1u5kcRurQ0Lt3JeE4"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/sain-boulangerie/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/sain-boulangerie/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJHQU--ZFv5kcRcwIcuGLKvJo"
 }

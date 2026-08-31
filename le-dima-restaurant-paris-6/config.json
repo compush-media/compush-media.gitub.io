@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-dima-restaurant-paris-6/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-dima-restaurant-paris-6/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJuY93I69x5kcRBothQ4lUtW8"
 }

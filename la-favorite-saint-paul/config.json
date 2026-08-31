@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-favorite-saint-paul/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-favorite-saint-paul/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJLzNS_f1x5kcRddZsjaX7X5Y"
 }

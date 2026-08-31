@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-fluo-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-fluo-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJadSJY0Bv5kcRzeKD1J_DpwQ"
 }

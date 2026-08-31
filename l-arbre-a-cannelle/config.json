@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/l-arbre-a-cannelle/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/l-arbre-a-cannelle/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJnTCFH_Bx5kcR913i8WEqo_4"
 }

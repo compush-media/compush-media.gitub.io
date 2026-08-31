@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/monsieur-bleu/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/monsieur-bleu/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJNWYQDudv5kcRj-kwX_6y0Sc"
 }

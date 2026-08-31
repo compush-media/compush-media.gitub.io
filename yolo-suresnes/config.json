@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Suresnes",
-  "iconUrl": "https://app.cartefidelavis.com/yolo-suresnes/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/yolo-suresnes/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJs7CPSG1l5kcRCUbfSiywBgo"
 }

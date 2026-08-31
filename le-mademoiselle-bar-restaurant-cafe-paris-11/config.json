@@ -22,5 +22,6 @@
   "nextBillingDate": "",
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
-  "city": "Paris"
+  "city": "Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJf_myrHZy5kcRo30-t9Ssqv8"
 }

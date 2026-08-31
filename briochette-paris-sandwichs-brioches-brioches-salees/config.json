@@ -25,5 +25,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/briochette-paris-sandwichs-brioches-brioches-salees/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/briochette-paris-sandwichs-brioches-brioches-salees/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ8W3H-b9v5kcRNfYZgBVH5S4"
 }

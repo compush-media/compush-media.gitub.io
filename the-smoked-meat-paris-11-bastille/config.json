@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/the-smoked-meat-paris-11-bastille/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/the-smoked-meat-paris-11-bastille/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJl3NW2pJt5kcRndMKzmHQzWE"
 }

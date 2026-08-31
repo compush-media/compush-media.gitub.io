@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Asnières-sur-Seine",
-  "iconUrl": "https://app.cartefidelavis.com/origen-cafe-brunch/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/origen-cafe-brunch/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQxXaBR9v5kcRbt69hcL6oGc"
 }

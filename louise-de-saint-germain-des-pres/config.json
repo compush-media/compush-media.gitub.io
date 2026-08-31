@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/louise-de-saint-germain-des-pres/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/louise-de-saint-germain-des-pres/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJczdntN5x5kcR0WZAZHVFVKM"
 }

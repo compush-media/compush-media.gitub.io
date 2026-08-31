@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/ground-to-grow-restaurant-vegan-yoga-meditation/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/ground-to-grow-restaurant-vegan-yoga-meditation/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJZeTmJ1xv5kcROTwS4E3cXbU"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Colombes",
-  "iconUrl": "https://app.cartefidelavis.com/the-ranch-restaurant-colombes/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/the-ranch-restaurant-colombes/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ3ZQz6kdk5kcRljMqi9B6LmE"
 }

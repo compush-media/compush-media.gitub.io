@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-plage-parisienne/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-plage-parisienne/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJqTEw_hhw5kcREzqGg44O1oo"
 }

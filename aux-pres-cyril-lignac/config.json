@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/aux-pres-cyril-lignac/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/aux-pres-cyril-lignac/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJweL4Iddx5kcR0kJEsE0MU1U"
 }

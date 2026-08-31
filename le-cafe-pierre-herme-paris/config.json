@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-cafe-pierre-herme-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-cafe-pierre-herme-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJLcANk1Fx5kcRpmQKntUMEwc"
 }

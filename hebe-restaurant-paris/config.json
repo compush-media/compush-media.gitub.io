@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/hebe-restaurant-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/hebe-restaurant-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQdunt0tx5kcRIrgL_d-HMEk"
 }

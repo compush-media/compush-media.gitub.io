@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/brasserie-gisele/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-gisele/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJN6M5TABu5kcRAl3tPgJqK_g"
 }

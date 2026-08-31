@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/emma-duvere-patisserie-salon-de-the/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/emma-duvere-patisserie-salon-de-the/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ4SMxHvxt5kcROPRsc1jRrrk"
 }

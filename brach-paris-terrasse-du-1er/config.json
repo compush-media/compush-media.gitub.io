@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/brach-paris-terrasse-du-1er/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/brach-paris-terrasse-du-1er/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ-QxCMDNl5kcR9gcRnRVUgnQ"
 }

@@ -25,5 +25,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/10eme-ciel-rooftop-bar-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/10eme-ciel-rooftop-bar-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJU4okj7xx5kcRMcnAPBM9J_A"
 }

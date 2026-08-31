@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-blanc/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-blanc/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ1_6EiiNu5kcRRapypySl-9I"
 }

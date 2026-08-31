@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/wild-the-moon-gravilliers-organic-food-juice-bar/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/wild-the-moon-gravilliers-organic-food-juice-bar/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJf46dLAVu5kcRw8l_Dl04Dg8"
 }

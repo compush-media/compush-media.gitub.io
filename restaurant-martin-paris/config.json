@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-martin-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-martin-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJs6fiHw9u5kcRAmzCfXfQU4A"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Puteaux",
-  "iconUrl": "https://app.cartefidelavis.com/mama-s-diner/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/mama-s-diner/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJJZIpAA5l5kcRHGQhctyXuMk"
 }

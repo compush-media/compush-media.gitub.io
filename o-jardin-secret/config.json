@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Suresnes",
-  "iconUrl": "https://app.cartefidelavis.com/o-jardin-secret/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/o-jardin-secret/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJoxuyFcxk5kcRIWDhZaoMvBU"
 }

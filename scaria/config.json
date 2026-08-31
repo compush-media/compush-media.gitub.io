@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/scaria/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/scaria/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ0cF8Oftt5kcRyyS3Ax2es4M"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/bar-a-tapas-paris-restaurant-maison-brochettes-cocktails-brunch/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/bar-a-tapas-paris-restaurant-maison-brochettes-cocktails-brunch/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJy80qJNBv5kcRnXiLPAF7ja0"
 }

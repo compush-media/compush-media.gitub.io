@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Asnières-sur-Seine",
-  "iconUrl": "https://app.cartefidelavis.com/le-verdoyant/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-verdoyant/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ25s364Rv5kcRqm0vzCrfrM0"
 }

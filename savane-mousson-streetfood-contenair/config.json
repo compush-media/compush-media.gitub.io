@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/savane-mousson-streetfood-contenair/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/savane-mousson-streetfood-contenair/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ1QjV_Edp5kcRUJk5_rJLTZM"
 }

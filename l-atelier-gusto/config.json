@@ -27,5 +27,6 @@
   "invoices": [],
   "city": "Paris",
   "walletTemplate": "templates/brunch-resto",
-  "iconUrl": "https://app.cartefidelavis.com/l-atelier-gusto/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/l-atelier-gusto/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJv543wW5t5kcR7C1QdkZs6XI"
 }

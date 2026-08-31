@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/kraft-la-bonne-table/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/kraft-la-bonne-table/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJkeDnenVx5kcRZ06pEIdB4TM"
 }

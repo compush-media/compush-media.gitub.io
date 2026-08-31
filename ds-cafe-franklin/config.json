@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/ds-cafe-franklin/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/ds-cafe-franklin/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJkfUK3MVv5kcRd5tYizJj5Cw"
 }

@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-bouquet-d-alesia/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-bouquet-d-alesia/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJR-5zQKZx5kcRdi5y0f8sTfE"
 }

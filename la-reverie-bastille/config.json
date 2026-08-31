@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-reverie-bastille/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-reverie-bastille/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJMSc5Xndz5kcRBzp8A4GV8o0"
 }

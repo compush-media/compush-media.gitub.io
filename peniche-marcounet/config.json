@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/peniche-marcounet/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/peniche-marcounet/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQUPlmeRx5kcRgdLD_VS7-h4"
 }

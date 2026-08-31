@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/terrass-rooftop-bar/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/terrass-rooftop-bar/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ7Vvi1E9u5kcRaO8-U8Eje2I"
 }

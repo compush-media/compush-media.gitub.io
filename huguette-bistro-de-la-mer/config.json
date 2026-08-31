@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/huguette-bistro-de-la-mer/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/huguette-bistro-de-la-mer/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJZ6UXGNlx5kcRkussL8qcmrI"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Puteaux",
-  "iconUrl": "https://app.cartefidelavis.com/ds-cafe-la-defense/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/ds-cafe-la-defense/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJVWanKNhl5kcRRRXJCZiQswU"
 }

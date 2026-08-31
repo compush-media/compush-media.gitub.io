@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-grand-cafe-fauchon/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-grand-cafe-fauchon/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJM0kSdTNu5kcR33gR4aNoKj0"
 }

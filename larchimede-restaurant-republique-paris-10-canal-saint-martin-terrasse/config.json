@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/larchimede-restaurant-republique-paris-10-canal-saint-martin-terrasse/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/larchimede-restaurant-republique-paris-10-canal-saint-martin-terrasse/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJJahFcvFv5kcRZ9w_gYq5KQE"
 }

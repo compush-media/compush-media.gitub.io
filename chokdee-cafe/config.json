@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/chokdee-cafe/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/chokdee-cafe/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJu32JjsJv5kcR90CD1QaaxHs"
 }

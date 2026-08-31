@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Ivry-sur-Seine",
-  "iconUrl": "https://app.cartefidelavis.com/marvely-ivry/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/marvely-ivry/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJgWaAyRVz5kcRGHmgNr17A20"
 }

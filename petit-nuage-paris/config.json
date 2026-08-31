@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/petit-nuage-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/petit-nuage-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJYTlnkv1t5kcRCRMYO7I03wE"
 }

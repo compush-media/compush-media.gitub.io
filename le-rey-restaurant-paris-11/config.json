@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-rey-restaurant-paris-11/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-rey-restaurant-paris-11/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJSU5Svfdt5kcR8zByKLB8DOU"
 }

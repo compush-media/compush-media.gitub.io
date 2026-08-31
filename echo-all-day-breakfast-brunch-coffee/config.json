@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/echo-all-day-breakfast-brunch-coffee/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/echo-all-day-breakfast-brunch-coffee/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ4c2fLhFu5kcR7G3ee168g6Q"
 }

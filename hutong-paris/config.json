@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/hutong-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/hutong-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJIePag-tx5kcREVcnf5vU_IY"
 }

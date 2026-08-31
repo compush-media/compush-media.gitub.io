@@ -25,5 +25,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/tigermilk-south-pigalle-paris-9/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/tigermilk-south-pigalle-paris-9/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJI-kjrBNv5kcRUtML1HoZaao"
 }

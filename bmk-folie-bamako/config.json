@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/bmk-folie-bamako/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/bmk-folie-bamako/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ9TBUxm1t5kcR-6s5Y-0Frjg"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/tout-le-monde-en-parle-restaurant-festif-anniversaire-paris-15-montparnasse-club/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/tout-le-monde-en-parle-restaurant-festif-anniversaire-paris-15-montparnasse-club/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJNxei6Mxx5kcRyG2NQ-ovCl4"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/kodawari-ramen-tsukiji/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/kodawari-ramen-tsukiji/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJme1o5vVv5kcRzuT1Uxyk-Rc"
 }

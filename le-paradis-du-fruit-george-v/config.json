@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-george-v/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-george-v/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJq7uJdcJv5kcRlKVcTiuwdLE"
 }

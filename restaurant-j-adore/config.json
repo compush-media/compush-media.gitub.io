@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-j-adore/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-j-adore/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJN6AaIDtv5kcRnkFxwxeDieQ"
 }

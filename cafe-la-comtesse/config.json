@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-la-comtesse/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-la-comtesse/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJqx3I-iZw5kcRB-onhdgkHSY"
 }

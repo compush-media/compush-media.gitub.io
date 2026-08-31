@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-p-tit-piano/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-p-tit-piano/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJg5DO-ypv5kcRLo19dFCDJ6w"
 }

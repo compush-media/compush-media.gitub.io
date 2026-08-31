@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/chez-carrie/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/chez-carrie/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJIV1aKcJv5kcRbcT9zmwH3ck"
 }

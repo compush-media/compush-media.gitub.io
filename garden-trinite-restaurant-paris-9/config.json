@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/garden-trinite-restaurant-paris-9/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/garden-trinite-restaurant-paris-9/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJp3D8XdZv5kcRJf4EN9BOa24"
 }

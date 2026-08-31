@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/jaipur-cafe-i-restaurant-indien-brunch-a-volonte-buffet-a-volonte/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/jaipur-cafe-i-restaurant-indien-brunch-a-volonte-buffet-a-volonte/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJJ-6SLGtu5kcRs7VCAOSPRYg"
 }

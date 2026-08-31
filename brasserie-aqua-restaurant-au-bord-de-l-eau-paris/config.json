@@ -22,5 +22,6 @@
   "nextBillingDate": "",
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
-  "city": "Suresnes"
+  "city": "Suresnes",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ6yUZBNNk5kcRX6D05dMqR8w"
 }

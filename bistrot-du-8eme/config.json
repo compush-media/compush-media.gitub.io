@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/bistrot-du-8eme/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-du-8eme/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJC1aJ4sBv5kcRTDa5f6A7dR4"
 }

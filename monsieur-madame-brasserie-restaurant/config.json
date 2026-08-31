@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/monsieur-madame-brasserie-restaurant/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/monsieur-madame-brasserie-restaurant/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJrbePm1Jv5kcRTx9Fd4xYBvQ"
 }

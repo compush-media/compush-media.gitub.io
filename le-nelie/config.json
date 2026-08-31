@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-nelie/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-nelie/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJH8uHosdv5kcRXe9Q_X5TvDA"
 }

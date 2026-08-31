@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-cristal/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-cristal/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJaX_IM8Fx5kcRA0MHU7pbV8w"
 }

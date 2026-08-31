@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Bercy Village - Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-3bis-bar-a-jeux-paris-12/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-3bis-bar-a-jeux-paris-12/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJv5W2kA5z5kcRewNmmN4KzIY"
 }

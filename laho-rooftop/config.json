@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/laho-rooftop/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/laho-rooftop/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJD6u0drZz5kcR2h0a3NazekU"
 }

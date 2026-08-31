@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/sir-winston/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/sir-winston/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ_-T1qu5v5kcRe3IO6MMMl-o"
 }

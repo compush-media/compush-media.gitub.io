@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-hotel-chouchou/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-hotel-chouchou/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJBS3PYMFv5kcR6fzBAZCvW1w"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/the-living-kitchen-by-zoku-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/the-living-kitchen-by-zoku-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJubVaXDdv5kcR5tUoCP8TLSo"
 }

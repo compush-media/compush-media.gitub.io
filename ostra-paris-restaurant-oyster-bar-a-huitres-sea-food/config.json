@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/ostra-paris-restaurant-oyster-bar-a-huitres-sea-food/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/ostra-paris-restaurant-oyster-bar-a-huitres-sea-food/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ6YUKZmVx5kcR8wbDeph029E"
 }

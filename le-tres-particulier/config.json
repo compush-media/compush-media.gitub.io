@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-tres-particulier/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-tres-particulier/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJc0b_cFBu5kcROcUV0fEH8IA"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-les-passerelles/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-les-passerelles/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJHUMVlD9u5kcRmx1xT1_5_8Y"
 }

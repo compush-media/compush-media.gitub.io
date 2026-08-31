@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/l-insolite/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/l-insolite/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJtxZeb3Jt5kcRqe3jQMBgEzA"
 }

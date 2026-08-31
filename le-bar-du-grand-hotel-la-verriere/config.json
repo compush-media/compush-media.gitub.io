@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-bar-du-grand-hotel-la-verriere/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-bar-du-grand-hotel-la-verriere/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJRfaiODFu5kcRct9yfYPxTvA"
 }

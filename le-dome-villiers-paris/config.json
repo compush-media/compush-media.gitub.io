@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-dome-villiers-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-dome-villiers-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJDz4kiAVv5kcRP3sU-wLlmoU"
 }

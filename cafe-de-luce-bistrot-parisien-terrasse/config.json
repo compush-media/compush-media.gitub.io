@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-de-luce-bistrot-parisien-terrasse/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-de-luce-bistrot-parisien-terrasse/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJERDTe1xv5kcRYJ_ltcqznqY"
 }

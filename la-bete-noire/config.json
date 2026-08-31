@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-bete-noire/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-bete-noire/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ18aVNMFx5kcRbY23i47sh0Y"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-maison-breguet/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-maison-breguet/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJO8cbsMtt5kcReCSr7Zs2a4o"
 }

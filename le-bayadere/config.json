@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-bayadere/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-bayadere/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJC176M8Fv5kcRb3-WUr0Wmq0"
 }

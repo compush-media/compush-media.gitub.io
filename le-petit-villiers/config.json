@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-petit-villiers/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-petit-villiers/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJO8WQsb1v5kcR785xrgiNalc"
 }

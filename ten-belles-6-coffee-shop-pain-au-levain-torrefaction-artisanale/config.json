@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/ten-belles-6-coffee-shop-pain-au-levain-torrefaction-artisanale/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/ten-belles-6-coffee-shop-pain-au-levain-torrefaction-artisanale/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJr6K0cJ9x5kcR0bAIb-trvFk"
 }

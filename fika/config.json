@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/fika/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/fika/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJwbq-PO9v5kcRZWnYOFMfjjA"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/the-place-to-gare-de-l-est/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/the-place-to-gare-de-l-est/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJH1_HQWJv5kcRlsLG7J1YW14"
 }

@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/bistrot-mon-cafe/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-mon-cafe/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJqXiwrQ5y5kcRgk1FHyBuPuM"
 }

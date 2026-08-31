@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/rooftop-nijinsky/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/rooftop-nijinsky/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJB4L2Rwtv5kcRyNLCeQ0P34A"
 }

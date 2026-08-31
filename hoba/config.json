@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/hoba/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/hoba/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJyaM3v9Nv5kcR44TRV_FgDhg"
 }

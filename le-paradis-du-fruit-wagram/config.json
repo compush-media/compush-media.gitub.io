@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-wagram/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-wagram/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJXVA5N-tv5kcR9AS-y7LGJUI"
 }

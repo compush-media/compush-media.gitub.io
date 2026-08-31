@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-rempart-bastille/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-rempart-bastille/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJDf4jgf9x5kcRB6AIVMypZS4"
 }

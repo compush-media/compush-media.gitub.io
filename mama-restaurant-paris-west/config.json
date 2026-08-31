@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/mama-restaurant-paris-west/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/mama-restaurant-paris-west/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJaQnWVRdx5kcREX0D9Ip5T2M"
 }

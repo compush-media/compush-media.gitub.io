@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/creperie-l-atelier-artisan-crepier-mabillon/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/creperie-l-atelier-artisan-crepier-mabillon/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJW1lTmtlx5kcRoyPm4hGIodw"
 }

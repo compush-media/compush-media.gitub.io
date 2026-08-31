@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-terrasse-du-7/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-terrasse-du-7/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJVSYy3CZw5kcRgGfNwyyALUU"
 }

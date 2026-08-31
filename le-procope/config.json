@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-procope/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-procope/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJdQn7zN5x5kcRhKnVo8EDJS0"
 }

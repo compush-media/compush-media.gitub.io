@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-et-bar-edgar-achille/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-et-bar-edgar-achille/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzzTT0Ghv5kcRMH6fwQWudEs"
 }

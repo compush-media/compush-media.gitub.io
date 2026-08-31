@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/extraction-coffee-paris-18/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/extraction-coffee-paris-18/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ_9rICnFv5kcRkbN6WBtS9DE"
 }

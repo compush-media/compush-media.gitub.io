@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/ober-mamma/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/ober-mamma/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ9wPDGP1t5kcRuU-2tWgnWOQ"
 }

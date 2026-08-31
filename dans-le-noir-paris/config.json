@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/dans-le-noir-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/dans-le-noir-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJU9o2_htu5kcRrH3WFyPlKvQ"
 }

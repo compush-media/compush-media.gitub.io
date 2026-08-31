@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/papa-poule/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/papa-poule/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQ4LwDchz5kcRbjhDVBekF5U"
 }

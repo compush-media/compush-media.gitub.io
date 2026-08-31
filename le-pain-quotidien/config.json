@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-pain-quotidien/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-pain-quotidien/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJRbWo1y9u5kcRhNr-b12ApWQ"
 }

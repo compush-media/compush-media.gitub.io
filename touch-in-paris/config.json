@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/touch-in-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/touch-in-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ99gahDNu5kcRgCkXIpe7tN0"
 }

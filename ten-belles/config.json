@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/ten-belles/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/ten-belles/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJF_DrCQtu5kcRg88oK6BS03Q"
 }

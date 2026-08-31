@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/montecito/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/montecito/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJmUvQT1Bv5kcR79OwJXUw4eE"
 }

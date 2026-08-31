@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-diva-des-pres/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-diva-des-pres/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJFxCm1Ylx5kcR3zje0Un7i10"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/onze-a-table/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/onze-a-table/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ_5AjG6pt5kcRhGWe1wHOKfU"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/joia-par-helene-darroze/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/joia-par-helene-darroze/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJPf2x-Ehv5kcRCwfXoR7Zu3o"
 }

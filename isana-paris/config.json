@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/isana-paris/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/isana-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJVVWFYkdu5kcRQ9R9dK1nsSA"
 }

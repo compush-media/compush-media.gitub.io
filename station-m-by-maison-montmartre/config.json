@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/station-m-by-maison-montmartre/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/station-m-by-maison-montmartre/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJDRm7Xudv5kcR9SZcEp7t_1o"
 }

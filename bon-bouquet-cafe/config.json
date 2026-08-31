@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/bon-bouquet-cafe/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/bon-bouquet-cafe/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJPxXD_mRv5kcR85S7z6ef4Uk"
 }

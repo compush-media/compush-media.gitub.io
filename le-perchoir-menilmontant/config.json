@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-perchoir-menilmontant/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-perchoir-menilmontant/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ0VXY1fFt5kcRGteWrI2wjxQ"
 }

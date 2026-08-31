@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/bloom-garden-restaurant-bar-a-cocktails/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/bloom-garden-restaurant-bar-a-cocktails/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJA1n6SqJv5kcRjEMCcj0PbI4"
 }

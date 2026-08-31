@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Neuilly-sur-Seine",
-  "iconUrl": "https://app.cartefidelavis.com/le-durand-dupont/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-durand-dupont/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJi60GBWFl5kcRXGgwX9B9AvU"
 }

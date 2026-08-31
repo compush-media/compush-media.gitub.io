@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/peniche-l-eau-et-les-reves-restaurant-cafe-librairie-botanique/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/peniche-l-eau-et-les-reves-restaurant-cafe-librairie-botanique/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJDcLPIc5t5kcRBbp_Fnk2kvw"
 }

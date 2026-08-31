@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-cafe-sarah-maison-sarah-lavoine-paris-75002/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-cafe-sarah-maison-sarah-lavoine-paris-75002/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJIZistU9v5kcRUxr1WfWmji4"
 }

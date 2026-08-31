@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Levallois-Perret",
-  "iconUrl": "https://app.cartefidelavis.com/polpo-brasserie/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/polpo-brasserie/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzXaj139v5kcRc6dd8aEdUS4"
 }

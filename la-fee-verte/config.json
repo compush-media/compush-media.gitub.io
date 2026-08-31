@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-fee-verte/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-fee-verte/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJA4QdIvht5kcRdCNfJxHBkiM"
 }

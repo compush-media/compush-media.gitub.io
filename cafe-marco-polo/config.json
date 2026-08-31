@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-marco-polo/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-marco-polo/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJNeacFDVu5kcRkM6gzCDt0u0"
 }

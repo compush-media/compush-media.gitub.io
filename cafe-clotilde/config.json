@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-clotilde/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-clotilde/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJR1H8ggNx5kcRtlEW_Xy72ZM"
 }

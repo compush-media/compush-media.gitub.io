@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/coutume-babylone-torrefacteur-coffee-shop-brunch/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/coutume-babylone-torrefacteur-coffee-shop-brunch/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJqyageCxw5kcRTKbr3dU5HD4"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/la-compagnie-du-cafe-coffee-brunch/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/la-compagnie-du-cafe-coffee-brunch/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJYUGhCkdu5kcRzUSXGbKcKHI"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/restaurant-belleval/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-belleval/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJXXYR1VRv5kcRycCxkKLEl9w"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/rooftop-bar-dame-des-arts/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/rooftop-bar-dame-des-arts/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJx_zbRt5x5kcR3y0xHbPqe7w"
 }

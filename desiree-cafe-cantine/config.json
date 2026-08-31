@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/desiree-cafe-cantine/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/desiree-cafe-cantine/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJt9Awb1ht5kcRCr_4bEmnx_U"
 }

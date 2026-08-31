@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/pedzouille-la-grange/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/pedzouille-la-grange/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJx6FWq69x5kcRJ4EFegO5w0o"
 }

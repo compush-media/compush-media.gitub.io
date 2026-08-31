@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/savane-mousson-restaurant-paris-11/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/savane-mousson-restaurant-paris-11/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJdd0wv7Rt5kcRi_B10XJ7e8c"
 }

@@ -27,5 +27,6 @@
   "invoices": [],
   "city": "Levallois-Perret",
   "walletTemplate": "templates/brunch-resto",
-  "iconUrl": "https://app.cartefidelavis.com/asko/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/asko/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJlZPDKSVv5kcR8nXB7BgOkHU"
 }

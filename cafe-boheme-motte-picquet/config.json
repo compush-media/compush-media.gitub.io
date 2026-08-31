@@ -25,5 +25,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-boheme-motte-picquet/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-boheme-motte-picquet/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJc7Kkf4Rx5kcRdN3Nynxk6Xs"
 }

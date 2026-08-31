@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/jo-and-nana-cakes/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/jo-and-nana-cakes/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJVVVkt5Vv5kcRfPFs5W7tESs"
 }

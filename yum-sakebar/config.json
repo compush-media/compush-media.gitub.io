@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/yum-sakebar/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/yum-sakebar/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJk_hmvNpv5kcReca9xRpcXZg"
 }

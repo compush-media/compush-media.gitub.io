@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-bastille/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/le-paradis-du-fruit-bastille/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ23Dh_gBy5kcRzPM5-excrWI"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/les-ombres/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/les-ombres/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJyUMltOBv5kcRA7jwd8jibAw"
 }

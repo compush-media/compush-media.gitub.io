@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/coutume-hotel-mathis/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/coutume-hotel-mathis/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJL3mnUa9v5kcR3-A_lx8rDtA"
 }

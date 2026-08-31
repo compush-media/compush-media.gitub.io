@@ -27,5 +27,6 @@
   "invoices": [],
   "city": "Paris",
   "walletTemplate": "templates/brunch-resto",
-  "iconUrl": "https://app.cartefidelavis.com/miura/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/miura/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJZyuVIxpv5kcRtkDmqst7tQ4"
 }

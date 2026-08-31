@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/gaston/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/gaston/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJq5DhQ65v5kcRpk157r50vqY"
 }

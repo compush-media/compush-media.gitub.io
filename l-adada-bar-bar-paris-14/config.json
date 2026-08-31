@@ -27,5 +27,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/l-adada-bar-bar-paris-14/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/l-adada-bar-bar-paris-14/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJEUAhastx5kcRZ5CjvZuHSv8"
 }

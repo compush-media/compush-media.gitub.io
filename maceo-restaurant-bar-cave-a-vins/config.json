@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/maceo-restaurant-bar-cave-a-vins/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/maceo-restaurant-bar-cave-a-vins/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ3y43NTtu5kcRgQ_8uyo5du8"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/au-petit-riche/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/au-petit-riche/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJiS_6Fjlu5kcRlTC1oqEVTac"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/season-amelot/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/season-amelot/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJkTuaOFFt5kcR9W2oXEQq-Q0"
 }

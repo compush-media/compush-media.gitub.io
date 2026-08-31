@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/cafe-de-l-eglise/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/cafe-de-l-eglise/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJTUwXYGtu5kcR8za5MuoEKrA"
 }

@@ -26,5 +26,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/april-cafe-coffee-shop-cafe-poussette-paris-10eme/logo.jpg"
+  "iconUrl": "https://app.cartefidelavis.com/april-cafe-coffee-shop-cafe-poussette-paris-10eme/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJH7vpU-hv5kcRsOt0BpuemwQ"
 }
