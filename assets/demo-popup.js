@@ -272,19 +272,24 @@
       inner.appendChild(el("h2", "fdp-h", "Bienvenue dans votre démonstration Fidelavis"));
       inner.appendChild(el("p", "fdp-sub", "Votre restaurant est déjà configuré."));
       inner.appendChild(el("p", "fdp-p",
-        "Découvrez en quelques étapes le parcours vécu par vos clients, puis activez gratuitement votre test Fidelavis."));
+        "Activez votre test gratuit en un clic — 30 jours, sans engagement. "
+        + "Ou découvrez d'abord le parcours vécu par vos clients."));
       body.appendChild(inner);
 
-      const b1 = el("button", "fdp-btn fdp-primary", "Voir le parcours client");
-      b1.onclick = function () { go(1); };
-      const b2 = el("button", "fdp-btn fdp-ghost", "Continuer la visite");
-      b2.onclick = close;
-      // Sortie directe : l'e-mail qui amène ici annonce « l'essai de 30 jours
-      // s'active sous la démonstration ». Obliger celui qui vient pour ça à
-      // traverser six écrans de pédagogie, c'est lui faire payer une visite
-      // guidée dont il n'a pas besoin.
-      const b3 = el("button", "fdp-link", "Activer directement mon test gratuit");
-      b3.onclick = function () { activate("accueil"); };
+      // L'ACTIVATION EN PREMIER, la visite guidée ensuite.
+      //
+      // C'était l'inverse : « Voir le parcours client » en gros et en rouge,
+      // l'activation en petit lien souligné tout en bas. Résultat mesuré du
+      // 01/09/2026 : sur 33 ouvertures du pop-up — dont 5 par de vrais
+      // prospects — le parcours client a été lancé ZÉRO fois. Pas « peu » :
+      // jamais. L'action principale de l'écran était celle que personne ne
+      // voulait, et l'e-mail qui amène ici promet justement l'activation.
+      const b1 = el("button", "fdp-btn fdp-primary", "Activer mon test gratuit");
+      b1.onclick = function () { activate("accueil"); };
+      const b2 = el("button", "fdp-btn fdp-ghost", "Voir le parcours client");
+      b2.onclick = function () { go(1); };
+      const b3 = el("button", "fdp-link", "Continuer la visite");
+      b3.onclick = close;
       foot.appendChild(b1); foot.appendChild(b2); foot.appendChild(b3);
 
     } else if (state >= 1 && state <= 4) {
