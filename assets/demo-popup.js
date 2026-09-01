@@ -28,6 +28,38 @@
 
   const slug = (PATH.match(/^\/([^/]+)\//) || [, ""])[1] || "";
 
+  /* ── Antivirus de messagerie ──────────────────────────────────────────
+     Certaines passerelles de messagerie ouvrent les liens avant de délivrer
+     le message, en BROUILLANT les paramètres pour ne rien déclencher de
+     traçable. Le 01/09/2026 : ?ref=cbaavf&src=fzbvy_dubhe sur /bonnie/demo/
+     — substitution stable (g–z en ROT13, a–f en rotation, chiffres +3), et
+     le chemin laissé intact puisque sans lui la page ne s'ouvre pas.
+
+     Elles échappent aux deux filtres de core.js : navigator.webdriver est
+     faux et l'agent annonce « Chrome/142 sur Windows ». Elles exécutent le
+     JavaScript et restent 12 à 24 secondes — indiscernables d'un visiteur,
+     sauf par là : assembler.py pose TOUJOURS ref = slug du chemin. Si les
+     deux divergent, la requête a été réécrite en route.
+
+     20 fausses visites et 24 ouvertures de pop-up en 30 heures, dont un
+     restaurant qui ne devait sa qualification « chaud » qu'à ça.  */
+  const _q = new URLSearchParams(location.search);
+  const _ref = _q.get("ref");
+  if (_ref && slug && _ref !== slug) return;
+
+  // Nos propres ouvertures depuis le back-office : core.js les écarte déjà
+  // pour demo_view, mais l'instrumentation du pop-up appelait track()
+  // directement, sans passer par ce filtre. Le 31/08 elle a enregistré un
+  // « activation_barre » qui était un essai maison, et je l'ai pris pour le
+  // premier clic d'un prospect.
+  function posteInterne() {
+    try {
+      if (_q.get("src") === "interne" || _q.get("fv_interne") === "1") return true;
+      if (localStorage.getItem("fv_poste_interne") === "1") return true;
+    } catch (e) {}
+    return location.hostname === "localhost" || location.hostname === "127.0.0.1";
+  }
+
   // 2) Déjà fermé pendant la session ? On ne renvoie plus le pop-up, mais on
   //    ne quitte plus non plus : la barre d'activation doit rester, sinon
   //    cette visite-là n'a aucune porte vers le test gratuit.
@@ -177,6 +209,7 @@
                    6: "offre" };
 
   function suivre(quoi) {
+    if (posteInterne()) return;      // nos essais ne sont pas des prospects
     try {
       if (window.Fidelavis && typeof window.Fidelavis.track === "function") {
         window.Fidelavis.track("demo_popup", { demo: true, src: quoi });
@@ -362,10 +395,21 @@
   }
 
   function arm() {
-    // Pop-up déjà fermé plus tôt dans la session : on ne le remet pas, mais
-    // la barre doit être là — c'est justement la visite où il n'aurait plus
-    // eu aucun moyen d'activer.
-    if (dejaFerme) { montrerBarre(); return; }
+    // La barre AVANT le pop-up, pas seulement après.
+    //
+    // Elle n'apparaissait qu'à la fermeture. Or sur les 5 prospects qui ont
+    // ouvert le pop-up le 01/09, aucun ne l'a fermé : ils sont partis en le
+    // laissant ouvert. La barre — le correctif censé rendre l'activation
+    // atteignable — était donc invisible pour exactement ceux qu'elle
+    // devait servir.
+    //
+    // Posée à 2 s, elle est déjà en place quand le pop-up arrive à 5 s, et
+    // elle reste si celui-ci ne s'affiche jamais : session déjà fermée,
+    // erreur de chargement, ou script du pop-up en échec.
+    setTimeout(montrerBarre, 2000);
+
+    // Pop-up déjà fermé plus tôt dans la session : on ne le remet pas.
+    if (dejaFerme) return;
     setTimeout(function () {
       // re-vérif au moment d'afficher (l'utilisateur a pu activer entre-temps)
       try { if (localStorage.getItem("fidelavis_test_actif_" + slug) === "1") return; } catch (e) {}

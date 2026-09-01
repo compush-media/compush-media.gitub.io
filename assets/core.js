@@ -481,6 +481,23 @@
     var F = window.Fidelavis;
     if (!F || !F.trackOnce) return;
     var slug = (F.getRestoSlug && F.getRestoSlug()) || "";
+
+    // Antivirus de messagerie : il ouvre le lien avant que le destinataire
+    // ne le voie, en BROUILLANT les paramètres pour ne rien déclencher de
+    // traçable — ?ref=cbaavf&src=fzbvy_dubhe sur /bonnie/demo/, constaté le
+    // 01/09/2026. Le chemin reste intact, sinon la page ne s'ouvrirait pas.
+    //
+    // Les deux filtres du dessus ne l'attrapent pas : navigator.webdriver
+    // est faux, et l'agent annonce Chrome 142 sur Windows. Il exécute le
+    // JavaScript et « reste » 12 à 24 secondes.
+    //
+    // assembler.py pose TOUJOURS ref = slug du chemin (ligne 46). Quand les
+    // deux divergent, la requête a été réécrite en route : ce n'est pas un
+    // restaurateur. 20 fausses visites en 30 heures, et un lead qui ne
+    // devait sa qualification « chaud » qu'à elles.
+    var ref = p.get("ref");
+    if (ref && slug && ref !== slug) return;
+
     var src  = p.get("src") || "direct";
     F.trackOnce("demo_view", "fv_demo_view_" + slug, {
       demo: true,
