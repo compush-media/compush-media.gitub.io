@@ -117,6 +117,24 @@
     </div>
   </div>
 
+<!-- Le slug du restaurant, sous le nom que core.js sait lire.
+     getRestoSlug() regarde ?resto=, puis le premier segment du chemin — qui
+     vaut ici « activation-test-gratuit », le même pour tout le monde. Sans
+     cet alias, chaque événement de cette page serait attribué à un
+     restaurant fantôme. Script SANS defer : il s'exécute avant core.js. -->
+<script>
+(function(){
+  try {
+    var p = new URLSearchParams(location.search);
+    var s = (p.get("restaurant") || "").trim();
+    if (s && !p.get("resto")) {
+      p.set("resto", s);
+      history.replaceState(null, "", location.pathname + "?" + p.toString());
+    }
+  } catch (e) {}
+})();
+</script>
+<script src="/assets/core.js" defer></script>
 <script>
 (function(){
   "use strict";
@@ -144,6 +162,61 @@
   var err  = document.getElementById("err");
   var btn  = document.getElementById("submitBtn");
 
+  /* ── Mesure du dernier tronçon ────────────────────────────────────────
+     Cette page n'avait aucune instrumentation. On savait qui cliquait
+     « Activer » sur la démonstration, jamais ce qu'il devenait ensuite :
+     arrivé et reparti sans rien saisir, bloqué sur un champ, ou parti au
+     bout. Le 31/08/2026 un clic est arrivé jusqu'ici et s'est perdu — sans
+     moyen de dire où.
+
+     Les étapes : page (arrivée) · saisie (premier champ rempli) ·
+     refus_<motif> (validation) · envoi · ok / lien_echec · abandon.  */
+  var T0 = Date.now();
+  var aSaisi = false, aEnvoye = false;
+
+  // Nos propres passages ne sont pas des prospects. core.js n'écarte le
+  // poste interne que pour les pages de démonstration ; ici l'appel à
+  // track() est direct, donc le contrôle doit être refait. C'est l'oubli
+  // exact qui, le 31/08, a fait passer un essai maison pour le premier clic
+  // d'un restaurateur.
+  function posteInterne() {
+    try {
+      if (params.get("src") === "interne" || params.get("fv_interne") === "1") return true;
+      if (localStorage.getItem("fv_poste_interne") === "1") return true;
+    } catch (e) {}
+    return location.hostname === "localhost" || location.hostname === "127.0.0.1";
+  }
+
+  function mesurer(etape) {
+    if (posteInterne()) return;
+    try {
+      if (window.Fidelavis && typeof window.Fidelavis.track === "function") {
+        window.Fidelavis.track("activation", {
+          demo: true, src: etape,
+          duree: Math.round((Date.now() - T0) / 1000)
+        });
+      }
+    } catch (e) {}
+  }
+
+  // core.js est chargé en defer : il n'existe pas encore quand ce bloc
+  // s'exécute. On attend le chargement complet pour marquer l'arrivée.
+  window.addEventListener("load", function(){ mesurer("page"); });
+
+  // Le premier champ rempli sépare « il a regardé » de « il a commencé ».
+  form.addEventListener("input", function(){
+    if (aSaisi) return;
+    aSaisi = true;
+    mesurer("saisie");
+  }, { once: false });
+
+  // Parti sans valider. pagehide plutôt que unload : c'est le seul que
+  // Safari mobile déclenche de façon fiable.
+  window.addEventListener("pagehide", function(){
+    if (aEnvoye) return;
+    mesurer(aSaisi ? "abandon_en_cours_de_saisie" : "abandon_sans_saisie");
+  });
+
   function showErr(m){ err.textContent = m; err.style.display = "block"; }
 
   form.addEventListener("submit", function(e){
@@ -161,16 +234,25 @@
     };
 
     if (!data.resto || !data.gerant || !data.email || !data.phone || !data.addr || !data.cp || !data.ville) {
+      mesurer("refus_champs_manquants");
       return showErr("Merci de compléter tous les champs.");
     }
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) {
+      mesurer("refus_email_invalide");
       return showErr("Veuillez saisir un email valide.");
     }
 
+    aEnvoye = true;               // l'abandon ne doit plus se déclencher
+    mesurer("envoi");
     btn.disabled = true;
     btn.textContent = "Activation en cours…";
 
     function finish(lienOk) {
+      // « ok » veut dire inscrit ET lien parti. Quand l'envoi du lien
+      // échoue, le restaurateur voit l'écran de confirmation mais ne
+      // recevra jamais rien : ce n'est pas la même chose, et ça ne doit pas
+      // être compté pareil.
+      mesurer(lienOk === false ? "lien_echec" : "ok");
       // État local : test actif (évite la réouverture du pop-up). Le compteur
       // de clients ne sert plus à rien depuis le retrait du plafond — c'est la
       // date qui termine l'essai.
