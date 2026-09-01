@@ -29,6 +29,30 @@ dm_videos/*-wallet.png
 # des prospects à qui l'on a fait une vidéo.
 dm_videos/hebergement.json
 
+# Les fichiers de prospection eux-mêmes — retirés du suivi le 01/09/2026.
+#
+# La règle ci-dessus valait pour hebergement.json ; ceux-ci disaient la même
+# chose, en plus détaillé, et étaient publiés depuis le début :
+#
+#   dispatch_queue.csv     9 241 lignes — nom, Instagram, démo, wallet, et le
+#   dispatch_queue.json    message d'approche préparé, pour toute la base
+#   report.json            les restaurants réellement filmés, c'est-à-dire
+#                          les leads les plus chauds, nommés
+#   restaurants_demo.*     la file de travail
+#
+# Une liste de prospection publiée, c'est le ciblage commercial offert à
+# quiconque ouvre le dépôt. Aucune page du site n'en a besoin : seule
+# pipeline/dispatch.html les lisait, et elle sait aussi charger un fichier
+# local depuis le disque.
+#
+# Ils restent sur la machine qui les produit. L'historique garde les
+# anciennes versions — les effacer vraiment demanderait de le réécrire.
+dm_videos/dispatch_queue.csv
+dm_videos/dispatch_queue.json
+dm_videos/report.json
+dm_videos/restaurants_demo.csv
+dm_videos/restaurants_demo.xlsx
+
 # Copies mortes des images d'offres.
 #
 # Le générateur dépose 12 PNG dans <slug>/images/offres/ pour CHAQUE wallet —

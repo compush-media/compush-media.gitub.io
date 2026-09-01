@@ -1,8 +1,56 @@
 [
   {
-    "restaurant": "anima",
-    "source": "screenshots/anima-wallet.png",
-    "generated": "anima-iphone.png",
+    "restaurant": "green-farmer-s-paris-11",
+    "source": "screenshots/green-farmer-s-paris-11-wallet.png",
+    "generated": "green-farmer-s-paris-11-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "the-living-kitchen-by-zoku-paris",
+    "source": "screenshots/the-living-kitchen-by-zoku-paris-wallet.png",
+    "generated": "the-living-kitchen-by-zoku-paris-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "french-kiss-paris-restaurant-porte-de-versailles",
+    "source": "screenshots/french-kiss-paris-restaurant-porte-de-versailles-wallet.png",
+    "generated": "french-kiss-paris-restaurant-porte-de-versailles-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "laho-rooftop",
+    "source": "screenshots/laho-rooftop-wallet.png",
+    "generated": "laho-rooftop-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "le-pain-quotidien",
+    "source": "screenshots/le-pain-quotidien-wallet.png",
+    "generated": "le-pain-quotidien-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "les-ombres",
+    "source": "screenshots/les-ombres-wallet.png",
+    "generated": "les-ombres-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "le-jardin-du-raphael",
+    "source": "screenshots/le-jardin-du-raphael-wallet.png",
+    "generated": "le-jardin-du-raphael-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "le-17-45-paris-pigalle-planches-a-composer",
+    "source": "screenshots/le-17-45-paris-pigalle-planches-a-composer-wallet.png",
+    "generated": "le-17-45-paris-pigalle-planches-a-composer-iphone.png",
+    "status": "success"
+  },
+  {
+    "restaurant": "restaurant-le-gabriel",
+    "source": "screenshots/restaurant-le-gabriel-wallet.png",
+    "generated": "restaurant-le-gabriel-iphone.png",
     "status": "success"
   }
 ]
