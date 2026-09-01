@@ -56,6 +56,16 @@
     try {
       if (_q.get("src") === "interne" || _q.get("fv_interne") === "1") return true;
       if (localStorage.getItem("fv_poste_interne") === "1") return true;
+      // Le même contrôle que core.js, qui manquait ici : une démonstration
+      // ouverte DEPUIS le back-office n'est jamais une visite de
+      // restaurateur. core.js le fait, pas ce fichier — d'où des événements
+      // de pop-up enregistrés le 01/09 alors que le demo_view correspondant
+      // était bien écarté. Deux fichiers qui décident séparément finissent
+      // toujours par diverger.
+      if (/\/fidelavis-admin\//.test(document.referrer || "")) {
+        localStorage.setItem("fv_poste_interne", "1");
+        return true;
+      }
     } catch (e) {}
     return location.hostname === "localhost" || location.hostname === "127.0.0.1";
   }
