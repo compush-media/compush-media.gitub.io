@@ -43,6 +43,12 @@
   .submit:active{transform:scale(.99);}
   .submit:disabled{opacity:.6;cursor:default;filter:none;transform:none;}
   .fine{font-size:12.5px;color:#a99c8d;text-align:center;margin-top:14px;line-height:1.5;}
+  /* Le prix. Assez lisible pour qu'on ne puisse pas dire qu'il etait cache,
+     assez sobre pour ne pas voler la vedette au bouton. */
+  .prix{font-size:13.5px;line-height:1.5;color:#6f6256;background:#faf6f0;
+    border:1px solid var(--line);border-radius:12px;padding:11px 14px;
+    margin:0 0 20px;}
+  .prix b{color:#241a12;}
   /* Confirmation */
   .ok{display:none;text-align:center;padding:14px 6px 6px;}
   .ok .ic{width:84px;height:84px;border-radius:50%;background:var(--green-bg);color:var(--green);
@@ -68,6 +74,20 @@
         <li><span class="c">✓</span> QR code inclus</li>
         <li><span class="c">✓</span> Sans engagement</li>
       </ul>
+
+      <!-- LE PRIX, ecrit avant qu'on ne le demande.
+           La page promettait « 30 jours offerts, sans engagement » et ne
+           mentionnait jamais les 79 €. Quelqu'un qui se demande « et
+           apres ? » sans trouver la reponse hesite — non parce que le prix
+           est trop eleve, mais parce qu'il est absent. Le taire jusqu'a la
+           facture serait de toute facon un mauvais calcul : il se decouvre
+           au pire moment, celui ou l'on doit payer. -->
+      <!-- « resiliable en un clic » a failli etre ecrit ici. Aucune page de
+           resiliation en libre-service n'existe, et le site vitrine ne promet
+           que « sans engagement ». Une promesse d'interface qu'on ne tient
+           pas se decouvre au pire moment : celui ou l'on veut partir. -->
+      <p class="prix">Ensuite <b>79 €/mois</b>, sans engagement.
+        Aucune carte bancaire demandée aujourd’hui.</p>
 
       <!-- DEUX CHAMPS, dont un pré-rempli.
            Il y en avait sept : gérant, téléphone, adresse, code postal et
