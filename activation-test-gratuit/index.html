@@ -69,36 +69,25 @@
         <li><span class="c">✓</span> Sans engagement</li>
       </ul>
 
+      <!-- DEUX CHAMPS, dont un pré-rempli.
+           Il y en avait sept : gérant, téléphone, adresse, code postal et
+           ville en plus. Le 07/09/2026, deux visiteurs sont arrivés sur cette
+           page depuis leur démonstration et sont repartis sans saisir un seul
+           caractère (activation · abandon_sans_saisie).
+           Aucun des cinq champs retirés ne sert à DÉMARRER l'essai : le lien
+           d'accès part par e-mail, et l'adresse postale ne sert qu'à expédier
+           les cartes NFC — qui arrivent avec l'abonnement, donc après. On les
+           demandera au moment où ils serviront, dans le tableau de bord. -->
       <form id="form" novalidate>
         <label for="resto">Nom du restaurant <span class="req">*</span></label>
         <input id="resto" name="resto" type="text" autocomplete="organization" required />
 
-        <label for="gerant">Nom du gérant <span class="req">*</span></label>
-        <input id="gerant" name="gerant" type="text" autocomplete="name" required />
-
-        <label for="email">Email <span class="req">*</span></label>
+        <label for="email">Votre email <span class="req">*</span></label>
         <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required />
-
-        <label for="phone">Téléphone <span class="req">*</span></label>
-        <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
-
-        <label for="addr">Adresse d’envoi <span class="req">*</span></label>
-        <input id="addr" name="addr" type="text" autocomplete="street-address" required />
-
-        <div class="row">
-          <div class="col">
-            <label for="cp">Code postal <span class="req">*</span></label>
-            <input id="cp" name="cp" type="text" autocomplete="postal-code" inputmode="numeric" required />
-          </div>
-          <div class="col">
-            <label for="ville">Ville <span class="req">*</span></label>
-            <input id="ville" name="ville" type="text" autocomplete="address-level2" required />
-          </div>
-        </div>
 
         <div class="err" id="err"></div>
         <button type="submit" class="submit" id="submitBtn">Valider mon test gratuit</button>
-        <p class="fine">🔒 Données utilisées uniquement pour préparer votre test. Sans engagement, résiliable à tout moment.</p>
+        <p class="fine">🔒 Rien d’autre à remplir : votre lien d’accès part sur cette adresse. Sans engagement, résiliable à tout moment.</p>
       </form>
     </div>
 
@@ -223,19 +212,19 @@
     e.preventDefault();
     err.style.display = "none";
 
+    // Les cinq champs retirés du formulaire partent quand même, vides : le
+    // proxy GAS et la notification agence attendent cette forme depuis le
+    // début. Changer le contrat des deux en même temps que le formulaire,
+    // c'est se priver de savoir lequel casse si quelque chose casse.
     var data = {
       resto:  restoInput.value.trim(),
-      gerant: document.getElementById("gerant").value.trim(),
       email:  document.getElementById("email").value.trim(),
-      phone:  document.getElementById("phone").value.trim(),
-      addr:   document.getElementById("addr").value.trim(),
-      cp:     document.getElementById("cp").value.trim(),
-      ville:  document.getElementById("ville").value.trim()
+      gerant: "", phone: "", addr: "", cp: "", ville: ""
     };
 
-    if (!data.resto || !data.gerant || !data.email || !data.phone || !data.addr || !data.cp || !data.ville) {
+    if (!data.resto || !data.email) {
       mesurer("refus_champs_manquants");
-      return showErr("Merci de compléter tous les champs.");
+      return showErr("Merci d’indiquer le nom du restaurant et votre email.");
     }
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) {
       mesurer("refus_email_invalide");
@@ -318,10 +307,11 @@
         _template:    "table",
         "Restaurant": data.resto,
         "Slug":       slug,
-        "Gérant":     data.gerant,
         "Email":      data.email,
-        "Téléphone":  data.phone,
-        "Adresse":    data.addr + ", " + data.cp + " " + data.ville,
+        // Gérant, téléphone et adresse ne sont plus demandés à l'activation
+        // (formulaire réduit le 07/09). Les afficher vides donnerait « Adresse
+        // : , » dans la notification — une ligne qui laisse croire à un bug.
+        "À collecter": "gérant, téléphone et adresse d’envoi — au moment des cartes NFC",
         "Statut":     "test_gratuit_actif — 30 jours"
       })
     })
