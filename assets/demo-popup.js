@@ -120,15 +120,15 @@
 
   /* ── CSS (injecté une seule fois, classes préfixées fdp-) ─────────── */
   const CSS = `
-  /* Au-dessus de Progressier (2147483643), qui passait devant le pop-up ET
-     devant la barre : sa pastille « F » de 65 px, ancrée en bas à droite,
-     recouvrait la fin de « Activer mon test gratuit » — le seul bouton qui
-     mène à la vente — et mordait sur le bouton fantôme du pop-up. */
-     La pastille, PAS son conteneur : elle est elle-même en position:fixed,
-     ancrée à bottom:17px. Déplacer .progressier-widget la laissait donc
-     exactement où elle était — vérifié en ligne, elle chevauchait encore la
-     barre après le premier correctif. Un enfant fixed se positionne sur la
-     fenêtre, jamais sur son parent. */
+  /* Progressier porte un z-index de 2147483643, au-dessus du pop-up et de la
+     barre : sa pastille « F » de 65 px, ancrée en bas à droite, recouvrait la
+     fin de « Activer mon test gratuit » — le seul bouton qui mène à la vente —
+     et mordait sur le bouton fantôme du pop-up. Les deux passent au-dessus,
+     et la pastille monte au-dessus de la barre.
+     On vise la pastille, PAS son conteneur .progressier-widget : elle est
+     elle-même en position:fixed, ancrée à bottom:17px, et un enfant fixed se
+     positionne sur la fenêtre, jamais sur son parent. Déplacer le conteneur
+     la laissait exactement où elle était. */
   .progressier-widget-icon{bottom:104px!important;}
   .fdp-ov{position:fixed;inset:0;z-index:2147483646;display:flex;align-items:flex-end;
     justify-content:center;background:rgba(24,18,14,.58);backdrop-filter:blur(3px);
