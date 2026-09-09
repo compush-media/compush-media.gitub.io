@@ -124,7 +124,12 @@
      devant la barre : sa pastille « F » de 65 px, ancrée en bas à droite,
      recouvrait la fin de « Activer mon test gratuit » — le seul bouton qui
      mène à la vente — et mordait sur le bouton fantôme du pop-up. */
-  .progressier-widget{bottom:104px!important;}
+     La pastille, PAS son conteneur : elle est elle-même en position:fixed,
+     ancrée à bottom:17px. Déplacer .progressier-widget la laissait donc
+     exactement où elle était — vérifié en ligne, elle chevauchait encore la
+     barre après le premier correctif. Un enfant fixed se positionne sur la
+     fenêtre, jamais sur son parent. */
+  .progressier-widget-icon{bottom:104px!important;}
   .fdp-ov{position:fixed;inset:0;z-index:2147483646;display:flex;align-items:flex-end;
     justify-content:center;background:rgba(24,18,14,.58);backdrop-filter:blur(3px);
     -webkit-backdrop-filter:blur(3px);opacity:0;transition:opacity .28s ease;
