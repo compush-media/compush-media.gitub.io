@@ -11,8 +11,23 @@
 (function () {
   "use strict";
 
-  /* ===== RÉGLAGE PRINCIPAL ============================================== */
-  const POPUP_DELAY_SECONDS = 5;          // ← délai avant apparition (modifiable)
+  /* ===== RÉGLAGE PRINCIPAL ==============================================
+     0,4 s, et non 5 : l'explication doit précéder l'écran qu'elle explique.
+
+     À 5 s, le restaurateur passait cinq secondes seul devant la carte de sa
+     CLIENTE — « Bonjour Axelle », la photo d'une inconnue, et quatre cases
+     réclamant « le code affiché en caisse ». Il a cliqué sur un lien promettant
+     la carte de SON restaurant ; le seul démenti était une barre de 10,5 px en
+     haut de page. Mesuré le 08/09/2026 sur les quatre seules visites réelles :
+     6 s, 6 s, 10 s, 12 s. Les deux départs à 6 s tombent à la seconde où le
+     pop-up apparaissait — il arrivait après le jugement, pas avant.
+
+     Pas 0 non plus : le premier rendu de la page est à ~600 ms, l'écouteur
+     part au DOMContentLoaded (~550 ms). 400 ms laissent la carte s'afficher —
+     ses couleurs, son logo — avant que le pop-up ne la recouvre. Un pop-up sur
+     une page blanche ressemble à une erreur de chargement.
+     ===================================================================== */
+  const POPUP_DELAY_SECONDS = 0.4;        // ← délai avant apparition (modifiable)
   /* ===================================================================== */
 
   const SS_CLOSED_KEY = "fidelavis_demo_popup_closed";
@@ -105,7 +120,12 @@
 
   /* ── CSS (injecté une seule fois, classes préfixées fdp-) ─────────── */
   const CSS = `
-  .fdp-ov{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:flex-end;
+  /* Au-dessus de Progressier (2147483643), qui passait devant le pop-up ET
+     devant la barre : sa pastille « F » de 65 px, ancrée en bas à droite,
+     recouvrait la fin de « Activer mon test gratuit » — le seul bouton qui
+     mène à la vente — et mordait sur le bouton fantôme du pop-up. */
+  .progressier-widget{bottom:104px!important;}
+  .fdp-ov{position:fixed;inset:0;z-index:2147483646;display:flex;align-items:flex-end;
     justify-content:center;background:rgba(24,18,14,.58);backdrop-filter:blur(3px);
     -webkit-backdrop-filter:blur(3px);opacity:0;transition:opacity .28s ease;
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
@@ -173,7 +193,7 @@
   /* Aucun fond dégradé : chaque wallet a ses propres couleurs, et un voile
      blanc se verrait comme une tache sur les établissements aux fonds
      sombres. La pastille porte son ombre, elle se détache seule. */
-  .fdp-bar{position:fixed;left:0;right:0;bottom:0;z-index:2147482000;
+  .fdp-bar{position:fixed;left:0;right:0;bottom:0;z-index:2147483645;
     display:flex;justify-content:center;padding:0 14px 12px;pointer-events:none;
     transform:translateY(130%);transition:transform .36s cubic-bezier(.22,1,.36,1);
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;}
@@ -280,10 +300,40 @@
       /* — Accueil — */
       inner.appendChild(el("span", "fdp-eyebrow", "✨ Démonstration"));
       inner.appendChild(el("h2", "fdp-h", "Bienvenue dans votre démonstration Fidelavis"));
-      inner.appendChild(el("p", "fdp-sub", "Votre restaurant est déjà configuré."));
+
+      // Nommer l'écran de derrière AVANT qu'il ne soit lu de travers.
+      //
+      // Il porte « Bonjour Axelle », la photo d'une inconnue et quatre cases
+      // réclamant « le code affiché en caisse » : c'est la carte du CLIENT.
+      // Le restaurateur, lui, arrive d'un e-mail promettant la sienne. Sans
+      // cette phrase, il conclut en deux secondes qu'on s'est trompé de
+      // destinataire — et le reste du pop-up ne sert plus à rien.
+      const sub = el("p", "fdp-sub",
+        "L'écran derrière est celui de votre client : sa carte, son prénom, "
+        + "son avantage. Le vôtre est déjà configuré.");
+      inner.appendChild(sub);
+
+      // Le nom du restaurant vaut mieux que « le vôtre », mais il n'est pas
+      // disponible à 400 ms : loadConfig() est asynchrone et le cache
+      // fv_resto_name_<slug> ne se remplit qu'à la visite SUIVANTE — jamais
+      // pour un prospect, qui ne vient qu'une fois. On affiche donc la phrase
+      // générique tout de suite, et on la précise si la config arrive. Si
+      // elle n'arrive pas, rien ne bouge : le texte reste juste.
+      try {
+        const F = window.Fidelavis;
+        if (F && F.loadConfig) {
+          F.loadConfig().then(function (cfg) {
+            if (cfg && cfg.name && sub.isConnected) {
+              sub.textContent = "L'écran derrière est celui de votre client : "
+                + "sa carte, son prénom, son avantage. Celui de "
+                + cfg.name + " est déjà configuré.";
+            }
+          }).catch(function () {});
+        }
+      } catch (e) {}
+
       inner.appendChild(el("p", "fdp-p",
-        "Activez votre test gratuit en un clic — 30 jours, sans engagement. "
-        + "Ou découvrez d'abord le parcours vécu par vos clients."));
+        "Activez votre test gratuit en un clic — 30 jours, sans engagement."));
       body.appendChild(inner);
 
       // L'ACTIVATION EN PREMIER, la visite guidée ensuite.
@@ -298,7 +348,10 @@
       b1.onclick = function () { activate("accueil"); };
       const b2 = el("button", "fdp-btn fdp-ghost", "Voir le parcours client");
       b2.onclick = function () { go(1); };
-      const b3 = el("button", "fdp-link", "Continuer la visite");
+      // « Continuer la visite » ne disait pas où l'on continuait. Fermer
+      // renvoyait sur la carte d'Axelle, sans que rien n'ait annoncé que
+      // c'était le but. Le libellé nomme désormais la destination.
+      const b3 = el("button", "fdp-link", "Voir la carte de mon client");
       b3.onclick = close;
       foot.appendChild(b1); foot.appendChild(b2); foot.appendChild(b3);
 
@@ -418,10 +471,14 @@
     // atteignable — était donc invisible pour exactement ceux qu'elle
     // devait servir.
     //
-    // Posée à 2 s, elle est déjà en place quand le pop-up arrive à 5 s, et
-    // elle reste si celui-ci ne s'affiche jamais : session déjà fermée,
+    // Posée à 200 ms, elle est déjà en place quand le pop-up arrive à 400 ms,
+    // et elle reste si celui-ci ne s'affiche jamais : session déjà fermée,
     // erreur de chargement, ou script du pop-up en échec.
-    setTimeout(montrerBarre, 2000);
+    //
+    // Elle attendait 2 s, quand le pop-up en attendait 5. Le pop-up passé à
+    // 0,4 s, ce délai-là l'aurait fait apparaître DERRIÈRE lui — invisible
+    // pour qui ferme en une seconde, c'est-à-dire le cas qu'elle traite.
+    setTimeout(montrerBarre, 200);
 
     // Pop-up déjà fermé plus tôt dans la session : on ne le remet pas.
     if (dejaFerme) return;
