@@ -1,8 +1,8 @@
 {
   "name": "MÔM",
-  "color": "#9E7A3E",
-  "color2": "01 80 87 13 15",
-  "phone": "4-6 Rue Pierre Demours 75017 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 80 87 13 15",
   "logoUrl": "https://app.cartefidelavis.com/mom/logo.jpg",
   "instagramUrl": "https://www.instagram.com/bistrot_mom.paris/",
   "heroUrl": "https://app.cartefidelavis.com/mom/hero.jpg",
@@ -26,5 +26,6 @@
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
   "iconUrl": "https://app.cartefidelavis.com/mom/logo.jpg",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJAUeN9ZJv5kcR-oNIMK-dZC8"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJAUeN9ZJv5kcR-oNIMK-dZC8",
+  "address": "4-6 Rue Pierre Demours 75017 Paris"
 }

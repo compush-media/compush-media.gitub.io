@@ -1,8 +1,8 @@
 {
   "name": "Balou Paris 3",
-  "color": "#9E7A3E",
-  "color2": "01 42 72 70 45",
-  "phone": "9-11 Rue aux Ours 75003 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 42 72 70 45",
   "instagramUrl": "https://www.instagram.com/brasseriebalou",
   "tagline": "Balou Paris 3 — Paris",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJeWycGJNv5kcRUfNFr8VBbMc"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJeWycGJNv5kcRUfNFr8VBbMc",
+  "address": "9-11 Rue aux Ours 75003 Paris"
 }

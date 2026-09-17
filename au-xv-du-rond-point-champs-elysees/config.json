@@ -1,8 +1,8 @@
 {
   "name": "Au XV Du Rond Point (Champs-Élysées)",
-  "color": "#9E7A3E",
-  "color2": "01 43 59 34 02",
-  "phone": "8 Rue Jean Mermoz 75008 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 43 59 34 02",
   "logoUrl": "https://app.cartefidelavis.com/au-xv-du-rond-point-champs-elysees/logo.jpg",
   "instagramUrl": "https://www.instagram.com/wix",
   "heroUrl": "https://app.cartefidelavis.com/au-xv-du-rond-point-champs-elysees/hero.jpg",
@@ -26,5 +26,6 @@
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
   "iconUrl": "https://app.cartefidelavis.com/au-xv-du-rond-point-champs-elysees/logo.jpg",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJAfszkcVv5kcRDoDOEQVLSaI"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJAfszkcVv5kcRDoDOEQVLSaI",
+  "address": "8 Rue Jean Mermoz 75008 Paris"
 }

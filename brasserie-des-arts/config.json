@@ -1,9 +1,12 @@
 {
   "name": "Brasserie des Arts",
-  "color": "#9E7A3E",
-  "color2": "01 81 70 45 70",
-  "phone": "28 Rue Saint-André des Arts 75006 Paris",
+  "color": "#5E3712",
+  "color2": "#4D2D0E",
+  "phone": "01 81 70 45 70",
+  "address": "28 Rue Saint-André des Arts 75006 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ-Wjoti9x5kcRok1nIizw4wg",
   "instagramUrl": "https://www.instagram.com/brasserie_des_arts/",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-des-arts/hero.jpg",
   "tagline": "Brasserie des Arts — Paris",
   "category": "brunch",
   "offre_jour": {
@@ -22,6 +25,5 @@
   "nextBillingDate": "",
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
-  "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ-Wjoti9x5kcRok1nIizw4wg"
+  "city": "Paris"
 }

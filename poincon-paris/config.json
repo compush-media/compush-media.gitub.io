@@ -1,8 +1,8 @@
 {
   "name": "Poinçon Paris",
-  "color": "#9E7A3E",
-  "color2": "01 56 36 00 09",
-  "phone": "124 Av. du Général Leclerc 75014 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 56 36 00 09",
   "instagramUrl": "https://www.instagram.com/poincon1867/",
   "tagline": "Poinçon Paris — Paris",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJBcqIjGNx5kcR2Ed-JuDhAPo"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJBcqIjGNx5kcR2Ed-JuDhAPo",
+  "address": "124 Av. du Général Leclerc 75014 Paris"
 }

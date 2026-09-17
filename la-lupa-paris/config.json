@@ -1,8 +1,8 @@
 {
   "name": "La Lupa Paris",
-  "color": "#9E7A3E",
-  "color2": "07 84 92 06 55",
-  "phone": "20 Rue Richer 75009 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "07 84 92 06 55",
   "instagramUrl": "https://www.instagram.com/neuviemecru/",
   "tagline": "La Lupa Paris — Paris",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ_7n1Ta9v5kcREpS4BuMbSlM"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ_7n1Ta9v5kcREpS4BuMbSlM",
+  "address": "20 Rue Richer 75009 Paris"
 }

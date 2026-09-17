@@ -1,8 +1,8 @@
 {
   "name": "Café Gisèle",
-  "color": "#9E7A3E",
-  "color2": "01 42 01 28 56",
-  "phone": "68 Bd Saint-Germain 75005 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 42 01 28 56",
   "instagramUrl": "https://www.instagram.com/cafegisele_paris/",
   "tagline": "Café Gisèle — Paris",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJYdWo2uZx5kcRqqBKfGULDD8"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJYdWo2uZx5kcRqqBKfGULDD8",
+  "address": "68 Bd Saint-Germain 75005 Paris"
 }

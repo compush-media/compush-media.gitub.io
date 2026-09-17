@@ -1,8 +1,8 @@
 {
   "name": "Truffes Folies",
-  "color": "#9E7A3E",
-  "color2": "01 42 89 43 06",
-  "phone": "48 Rue de Berri 75008 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 42 89 43 06",
   "instagramUrl": "https://www.instagram.com/truffes_folies/",
   "tagline": "Truffes Folies — Paris",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJUddGHsdv5kcRbVSJmHRaXYU"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJUddGHsdv5kcRbVSJmHRaXYU",
+  "address": "48 Rue de Berri 75008 Paris"
 }

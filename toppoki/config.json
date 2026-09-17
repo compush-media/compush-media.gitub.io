@@ -1,8 +1,8 @@
 {
   "name": "Toppoki",
-  "color": "#9E7A3E",
-  "color2": "01 42 39 24 57",
-  "phone": "109 Bd Saint-Germain 75006 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 42 39 24 57",
   "instagramUrl": "https://www.instagram.com/toppoki_odeon/",
   "tagline": "Toppoki — Paris",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzUM4Y5hx5kcRZww7LwRXFuE"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzUM4Y5hx5kcRZww7LwRXFuE",
+  "address": "109 Bd Saint-Germain 75006 Paris"
 }

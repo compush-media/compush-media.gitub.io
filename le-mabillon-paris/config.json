@@ -1,8 +1,8 @@
 {
   "name": "Le Mabillon - Paris",
-  "color": "#9E7A3E",
-  "color2": "01 43 26 62 93",
-  "phone": "164 Bd Saint-Germain 75006 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 43 26 62 93",
   "logoUrl": "https://app.cartefidelavis.com/le-mabillon-paris/logo.jpg",
   "instagramUrl": "https://www.instagram.com/le_mabillon_paris/",
   "tagline": "Le Mabillon - Paris — Paris",
@@ -25,5 +25,6 @@
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
   "iconUrl": "https://app.cartefidelavis.com/le-mabillon-paris/logo.jpg",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJGQ8UCNlx5kcRIVo-QK6PldY"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJGQ8UCNlx5kcRIVo-QK6PldY",
+  "address": "164 Bd Saint-Germain 75006 Paris"
 }

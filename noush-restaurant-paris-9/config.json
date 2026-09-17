@@ -1,9 +1,12 @@
 {
   "name": "Noûsh - Restaurant Paris 9",
-  "color": "#9E7A3E",
-  "color2": "09 87 35 15 82",
-  "phone": "Enseigne bleue 60 Rue Saint-Lazare 75009 Paris",
+  "color": "#7C5D42",
+  "color2": "#654C36",
+  "phone": "09 87 35 15 82",
+  "address": "Enseigne bleue 60 Rue Saint-Lazare 75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ28h8M5Nv5kcRiV8ei8Z14RY",
   "instagramUrl": "https://www.instagram.com/noushparis",
+  "heroUrl": "https://app.cartefidelavis.com/noush-restaurant-paris-9/hero.jpg",
   "tagline": "Noûsh - Restaurant Paris 9 — Paris",
   "category": "brunch",
   "offre_jour": {
@@ -22,6 +25,5 @@
   "nextBillingDate": "",
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
-  "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ28h8M5Nv5kcRiV8ei8Z14RY"
+  "city": "Paris"
 }

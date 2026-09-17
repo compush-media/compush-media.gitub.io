@@ -1,8 +1,8 @@
 {
   "name": "Marais Home Coffee",
-  "color": "#9E7A3E",
-  "color2": "01 42 72 32 51",
-  "phone": "41 Bd du Temple 75003 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 42 72 32 51",
   "logoUrl": "https://app.cartefidelavis.com/marais-home-coffee/logo.jpg",
   "instagramUrl": "https://www.instagram.com/mhc.coffee/?hl=fr",
   "heroUrl": "https://app.cartefidelavis.com/marais-home-coffee/hero.jpg",
@@ -27,5 +27,6 @@
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
   "iconUrl": "https://app.cartefidelavis.com/marais-home-coffee/logo.jpg",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJBej5gwhu5kcRgC-vp58l54M"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJBej5gwhu5kcRgC-vp58l54M",
+  "address": "41 Bd du Temple 75003 Paris"
 }

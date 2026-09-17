@@ -1,8 +1,8 @@
 {
   "name": "Félix Café",
-  "color": "#9E7A3E",
-  "color2": "09 80 89 72 75",
-  "phone": "40 Bd de Reuilly 75012 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "09 80 89 72 75",
   "instagramUrl": "https://www.instagram.com/leburon2019/",
   "tagline": "Félix Café — Paris",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJrycYWmly5kcRnzzsoYTEVEc"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJrycYWmly5kcRnzzsoYTEVEc",
+  "address": "40 Bd de Reuilly 75012 Paris"
 }

@@ -1,8 +1,8 @@
 {
   "name": "WILD AND THE MOON",
-  "color": "#9E7A3E",
-  "color2": "09 72 66 22 96",
-  "phone": "19 Pl. du Marché Saint-Honoré 75001 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "09 72 66 22 96",
   "logoUrl": "https://app.cartefidelavis.com/wild-and-the-moon/logo.jpg",
   "instagramUrl": "https://www.instagram.com/wildandthemoon/",
   "tagline": "WILD AND THE MOON — Paris",
@@ -25,5 +25,6 @@
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
   "iconUrl": "https://app.cartefidelavis.com/wild-and-the-moon/logo.jpg",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJn3Fa9O5v5kcRxVkaL3BFGgQ"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJn3Fa9O5v5kcRxVkaL3BFGgQ",
+  "address": "19 Pl. du Marché Saint-Honoré 75001 Paris"
 }

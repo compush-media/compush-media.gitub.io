@@ -1,8 +1,8 @@
 {
   "name": "Parenthèse Eat & Drink",
-  "color": "#9E7A3E",
-  "color2": "01 47 70 28 90",
-  "phone": "9 Rue de Mazagran 75010 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 47 70 28 90",
   "instagramUrl": "https://www.instagram.com/parenthesebrunch/?hl=fr",
   "tagline": "Parenthèse Eat & Drink — Paris",
   "category": "brunch",
@@ -24,5 +24,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJfyCuzAhv5kcRrB-Hs_7K8fs"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJfyCuzAhv5kcRrB-Hs_7K8fs",
+  "address": "9 Rue de Mazagran 75010 Paris"
 }

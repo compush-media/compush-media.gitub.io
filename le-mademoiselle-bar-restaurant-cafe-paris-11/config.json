@@ -1,8 +1,10 @@
 {
   "name": "Le Mademoiselle - Bar - Restaurant - Café Paris 11",
-  "color": "#9E7A3E",
-  "color2": "01 57 40 78 68",
-  "phone": "14 Av. Philippe Auguste 75011 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 57 40 78 68",
+  "address": "14 Av. Philippe Auguste 75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJf_myrHZy5kcRo30-t9Ssqv8",
   "instagramUrl": "https://www.instagram.com/lemademoiselle.nation/",
   "tagline": "Le Mademoiselle - Bar - Restaurant - Café Paris 11 — Paris",
   "category": "brunch",
@@ -22,6 +24,5 @@
   "nextBillingDate": "",
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
-  "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJf_myrHZy5kcRo30-t9Ssqv8"
+  "city": "Paris"
 }

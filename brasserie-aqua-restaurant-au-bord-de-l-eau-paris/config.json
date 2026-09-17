@@ -1,8 +1,8 @@
 {
   "name": "Brasserie Aqua - Restaurant au bord de l'eau - Paris",
-  "color": "#9E7A3E",
-  "color2": "01 49 29 50 50",
-  "phone": "5 Quai Marcel Dassault 92150 Suresnes",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 49 29 50 50",
   "instagramUrl": "https://www.instagram.com/aquarestaurantsuresnes/",
   "tagline": "Brasserie Aqua - Restaurant au bord de l'eau - Paris — Suresnes",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Suresnes",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ6yUZBNNk5kcRX6D05dMqR8w"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ6yUZBNNk5kcRX6D05dMqR8w",
+  "address": "5 Quai Marcel Dassault 92150 Suresnes"
 }

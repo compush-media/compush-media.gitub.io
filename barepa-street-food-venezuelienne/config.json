@@ -1,8 +1,8 @@
 {
   "name": "Barepa - Street Food Vénézuélienne",
-  "color": "#9E7A3E",
-  "color2": "09 86 11 10 58",
-  "phone": "67 Rue des Dames 75017 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "09 86 11 10 58",
   "instagramUrl": "https://www.google.com/url?q=https%3A%2F%2Fwww.instagram.com%2Fbarepa.paris%2F&sa=D&sntz=1&usg=AOvVaw3Aj7xrjdYDKSzjVrFWZP3R",
   "tagline": "Barepa - Street Food Vénézuélienne — Paris",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ4ZvovkJv5kcRWAhg3-1Rq4Q"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ4ZvovkJv5kcRWAhg3-1Rq4Q",
+  "address": "67 Rue des Dames 75017 Paris"
 }

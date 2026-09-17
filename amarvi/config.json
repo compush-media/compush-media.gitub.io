@@ -1,8 +1,8 @@
 {
   "name": "Amarvi",
-  "color": "#9E7A3E",
-  "color2": "01 42 02 00 02",
-  "phone": "9 Rue Cujas 75005 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 42 02 00 02",
   "instagramUrl": "https://www.instagram.com/amarvi.paris/",
   "tagline": "Amarvi — Paris",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ9yaYiR1x5kcRu6acvSRSIbc"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ9yaYiR1x5kcRu6acvSRSIbc",
+  "address": "9 Rue Cujas 75005 Paris"
 }

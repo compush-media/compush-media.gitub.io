@@ -4,8 +4,10 @@
   "color2": "#83643F",
   "phone": "01 43 80 52 16",
   "address": "8 Av. de la Grande Armée 75017 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQQT1Vexv5kcRLZEM18nBEY0",
   "logoUrl": "https://app.cartefidelavis.com/brasserie-nai/logo.jpg",
   "instagramUrl": "https://www.instagram.com/nai.brasserie/",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-nai/hero.jpg",
   "tagline": "Brasserie Naï — Paris",
   "category": "brunch",
   "offre_jour": {
@@ -25,6 +27,5 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "iconUrl": "https://app.cartefidelavis.com/brasserie-nai/logo.jpg",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQQT1Vexv5kcRLZEM18nBEY0"
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-nai/logo.jpg"
 }

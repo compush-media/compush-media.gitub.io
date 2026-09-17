@@ -1,8 +1,8 @@
 {
   "name": "Le Pré",
-  "color": "#9E7A3E",
-  "color2": "07 83 89 33 97",
-  "phone": "4-6 Rue du Four 75006 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "07 83 89 33 97",
   "instagramUrl": "https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.instagram.com%2Flepresaintgermain%3Ffbclid%3DIwcGRvZgVleHRuA2FlbQIxMABicmlkETFtQzN6cVd6S2lycVU4c292c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHnijQg9jteoLKL9sFZHTPzasNgjOGoNbCV2HzVgmLLZtffS7Dv-NtYXnu4Nq_aem_jB1tKpYHPY2RyA_tS4YYQg&h=AUBT4vpWY3MER0fwk6gO6uLuLPUFfcELgqN_DLv4Uy2_Ery_eOkSYta3F_MTVVdmxvhufPIvA6-LL3royS_QKXRuPBn04BEyOvz5jcKlTRNlM7oP4JDIXkQLKk5Z-Tj9M2rbYh0Jy2us0ZJRnjUcT6uS_g",
   "tagline": "Le Pré — Paris",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ5ZNSo9lx5kcR5gczpxCzmJM"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ5ZNSo9lx5kcR5gczpxCzmJM",
+  "address": "4-6 Rue du Four 75006 Paris"
 }

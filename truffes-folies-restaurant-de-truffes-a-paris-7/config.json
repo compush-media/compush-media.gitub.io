@@ -1,8 +1,8 @@
 {
   "name": "Truffes Folies – Restaurant de truffes à Paris 7",
-  "color": "#9E7A3E",
-  "color2": "01 44 18 05 41",
-  "phone": "37 Rue Malar 75007 Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "01 44 18 05 41",
   "instagramUrl": "https://www.instagram.com/truffes_folies/",
   "tagline": "Truffes Folies – Restaurant de truffes à Paris 7 — Paris",
   "category": "brunch",
@@ -23,5 +23,6 @@
   "invoices": [],
   "walletTemplate": "templates/brunch-resto",
   "city": "Paris",
-  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJG37xJtlv5kcRjAd4_VtLBl8"
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJG37xJtlv5kcRjAd4_VtLBl8",
+  "address": "37 Rue Malar 75007 Paris"
 }
