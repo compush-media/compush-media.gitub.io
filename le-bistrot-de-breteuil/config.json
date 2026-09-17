@@ -1,0 +1,31 @@
+{
+  "name": "Le Bistrot de Breteuil",
+  "color": "#B91213",
+  "color2": "#970E0F",
+  "phone": "0143700210",
+  "address": "3 Pl. de Breteuil  75007 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ1yTxzi9w5kcRNH64GF0KAXk",
+  "logoUrl": "https://app.cartefidelavis.com/le-bistrot-de-breteuil/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bistrotbreteuil/",
+  "heroUrl": "https://app.cartefidelavis.com/le-bistrot-de-breteuil/hero.jpg",
+  "tagline": "Le Bistrot de Breteuil — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-bistrot-de-breteuil/logo.jpg"
+}

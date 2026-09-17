@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Votre espace fidélité</title>
+  <script src="../assets/core.js"></script>
+  <style>
+    :root { --gold:#b8924f; }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;font-family:system-ui,-apple-system,Arial,sans-serif;
+      background:linear-gradient(180deg,#fbfaf8,#f6f2ec);
+      display:flex;align-items:center;justify-content:center;
+      min-height:100vh;padding:20px;text-align:center;color:#1d1d1d;
+    }
+    .card {
+      background:#fff;border-radius:20px;padding:36px 28px;
+      box-shadow:0 18px 50px rgba(0,0,0,.09);max-width:420px;width:100%;
+    }
+    .logo { width:72px;height:72px;border-radius:16px;object-fit:cover;margin:0 auto 16px;display:block; }
+    .logo-placeholder {
+      width:72px;height:72px;border-radius:16px;background:linear-gradient(135deg,#B8924F,#9E7A3E);
+      display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+      font-size:28px;color:#fff;
+    }
+    h1 { margin:0 0 8px;font-size:22px;font-weight:900;color:#1a1a1a; }
+    p  { margin:0 0 24px;font-size:14px;color:#6f6f6f;line-height:1.5; }
+    .btn {
+      display:block;width:100%;padding:16px;border:none;border-radius:14px;
+      background:linear-gradient(135deg,#B8924F,#9E7A3E);
+      color:#fff;font-size:15px;font-weight:700;font-family:inherit;
+      cursor:pointer;text-decoration:none;box-shadow:0 6px 18px rgba(184,146,79,.3);
+    }
+    .spinner {
+      width:36px;height:36px;border:3px solid #f0ebe3;
+      border-top-color:#B8924F;border-radius:50%;
+      animation:spin .7s linear infinite;margin:0 auto 20px;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="spinner" id="spinner"></div>
+    <p id="msg" style="margin:0;color:#999;font-size:14px;">Chargement de votre espace…</p>
+  </div>
+
+  <script>
+  (function() {
+    var RESTO = (function() {
+      var m = location.pathname.match(/^\/([^/]+)\//);
+      return m ? m[1] : '';
+    })();
+
+    if (!RESTO) { location.replace('/'); return; }
+
+    var SITE = 'https://app.cartefidelavis.com';
+    var COUPON_URL  = SITE + '/' + RESTO + '/index.html';
+    var INSTALL_URL = SITE + '/' + RESTO + '/installapps-page.html';
+
+    // Indicateurs de connaissances locales du client pour CE restaurant
+    var isRegistered = (
+      localStorage.getItem('fv_registered_' + RESTO) === '1' ||
+      localStorage.getItem('is_registered')           === '1' ||
+      localStorage.getItem('fv_onboarding_done')      === '1'
+    );
+
+    var pwaReady = (
+      localStorage.getItem('fidelavis_pwa_ready_' + RESTO) === 'true' ||
+      window.matchMedia('(display-mode: standalone)').matches
+    );
+
+    function goToCoupon() {
+      location.replace(COUPON_URL);
+    }
+
+    function goToInstall() {
+      var dest = INSTALL_URL + '?redirect=' + encodeURIComponent(COUPON_URL);
+      location.replace(dest);
+    }
+
+    // Charger config.json pour afficher le nom du resto si nécessaire
+    fetch('/' + RESTO + '/config.json', { cache: 'no-store' })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .catch(function() { return null; })
+      .then(function(cfg) {
+        var name = (cfg && cfg.name) || RESTO;
+        document.getElementById('msg').textContent = 'Ouverture de votre espace ' + name + '…';
+
+        if (isRegistered || pwaReady) {
+          // Client connu → page coupon directement
+          setTimeout(goToCoupon, 400);
+        } else {
+          // Client inconnu → page d'installation
+          setTimeout(goToInstall, 500);
+        }
+      });
+  })();
+  </script>
+</body>
+</html>

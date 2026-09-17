@@ -1,0 +1,31 @@
+{
+  "name": "Le Florentin",
+  "color": "#5C3514",
+  "color2": "#4B2B10",
+  "phone": "0142601342",
+  "address": "10 Rue Saint-Florentin  75001 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJD4fUlTJu5kcR8C_Iv7vb8yo",
+  "logoUrl": "https://app.cartefidelavis.com/le-florentin/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/leflorentin.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/le-florentin/hero.jpg",
+  "tagline": "Le Florentin — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-florentin/logo.jpg"
+}

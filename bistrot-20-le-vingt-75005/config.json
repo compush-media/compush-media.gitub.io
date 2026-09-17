@@ -1,0 +1,31 @@
+{
+  "name": "Bistrot 20 Le Vingt 75005",
+  "color": "#935A4F",
+  "color2": "#784940",
+  "phone": "09 73 12 61 79",
+  "address": "20 Rue Saint-Séverin 75005 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJyTE-6ndv5kcRHDwh_Ld_yCk",
+  "logoUrl": "https://app.cartefidelavis.com/bistrot-20-le-vingt-75005/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bistrot.20/",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-20-le-vingt-75005/hero.jpg",
+  "tagline": "Bistrot 20 Le Vingt 75005 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-20-le-vingt-75005/logo.jpg"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "L'Almanach Montmartre",
+  "color": "#A47958",
+  "color2": "#866348",
+  "phone": "0685018723",
+  "address": "35 Rue Ramey  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJgVJbdP9v5kcRGbh8E9SiIHk",
+  "heroUrl": "https://app.cartefidelavis.com/l-almanach-montmartre/hero.jpg",
+  "tagline": "L'Almanach Montmartre — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

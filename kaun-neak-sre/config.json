@@ -1,0 +1,28 @@
+{
+  "name": "Kaun Neak Sre",
+  "color": "#956046",
+  "color2": "#7A4E39",
+  "phone": "0140369732",
+  "address": "10 Rue Boucry  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJK-LBrX1u5kcRjSLKwWf5CFk",
+  "heroUrl": "https://app.cartefidelavis.com/kaun-neak-sre/hero.jpg",
+  "tagline": "Kaun Neak Sre — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

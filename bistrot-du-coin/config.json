@@ -1,0 +1,28 @@
+{
+  "name": "Bistrot du Coin",
+  "color": "#5F432D",
+  "color2": "#4D3624",
+  "phone": "0144679262",
+  "address": "73 Av. Ledru Rollin  75012 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJs4jCMARy5kcRAkLX3fxyFqs",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-du-coin/hero.jpg",
+  "tagline": "Bistrot du Coin — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

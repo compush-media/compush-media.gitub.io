@@ -1,0 +1,31 @@
+{
+  "name": "Valma Brasserie Provençale - Paris 10",
+  "color": "#0F2062",
+  "color2": "#0C1A50",
+  "phone": "01 40 36 89 22",
+  "address": "45 Quai de Valmy 75010 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ3eIklglu5kcRpX9JYrT_Vlc",
+  "logoUrl": "https://app.cartefidelavis.com/valma-brasserie-provencale-paris-10/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/valma.brasserie/",
+  "heroUrl": "https://app.cartefidelavis.com/valma-brasserie-provencale-paris-10/hero.jpg",
+  "tagline": "Valma Brasserie Provençale - Paris 10 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/valma-brasserie-provencale-paris-10/logo.jpg"
+}

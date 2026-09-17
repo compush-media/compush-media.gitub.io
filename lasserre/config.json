@@ -1,0 +1,31 @@
+{
+  "name": "Lasserre",
+  "color": "#AF9D6A",
+  "color2": "#8F8056",
+  "phone": "0143590213",
+  "address": "17 Av. Franklin Delano Roosevelt  75008 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ8xc0xtpv5kcRG2Qj7G2kO88",
+  "logoUrl": "https://app.cartefidelavis.com/lasserre/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lasserrerestaurant",
+  "heroUrl": "https://app.cartefidelavis.com/lasserre/hero.jpg",
+  "tagline": "Lasserre — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/lasserre/logo.jpg"
+}

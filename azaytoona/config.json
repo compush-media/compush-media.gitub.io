@@ -1,0 +1,31 @@
+{
+  "name": "Azaytoona",
+  "color": "#4B4228",
+  "color2": "#3D3620",
+  "phone": "0142572468",
+  "address": "3 Rue Simart  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJWbDVEGdu5kcRuKVvRbZwWKA",
+  "logoUrl": "https://app.cartefidelavis.com/azaytoona/logo.jpg",
+  "instagramUrl": "http://instagram.com/azaytoonaparis",
+  "heroUrl": "https://app.cartefidelavis.com/azaytoona/hero.jpg",
+  "tagline": "Azaytoona — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/azaytoona/logo.jpg"
+}

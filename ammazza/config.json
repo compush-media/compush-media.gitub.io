@@ -1,0 +1,31 @@
+{
+  "name": "Ammazza",
+  "color": "#AF906A",
+  "color2": "#8F7656",
+  "phone": "01 48 05 81 68",
+  "address": "5 Rue St Sabin 75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJWfKDugBy5kcR-VjoebzyB58",
+  "logoUrl": "https://app.cartefidelavis.com/ammazza/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ammazza_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/ammazza/hero.jpg",
+  "tagline": "Ammazza — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ammazza/logo.jpg"
+}

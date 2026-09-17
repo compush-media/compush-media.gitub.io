@@ -1,0 +1,28 @@
+{
+  "name": "Léon - Tapa's Bar Restaurant",
+  "color": "#492B27",
+  "color2": "#3B231F",
+  "phone": "0662872537",
+  "address": "50 Rue Léon  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJRSyqGWRu5kcRJLpYs4zxIyM",
+  "heroUrl": "https://app.cartefidelavis.com/leon-tapa-s-bar-restaurant/hero.jpg",
+  "tagline": "Léon - Tapa's Bar Restaurant — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

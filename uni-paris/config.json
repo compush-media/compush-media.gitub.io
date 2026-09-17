@@ -1,0 +1,31 @@
+{
+  "name": "UNI Paris",
+  "color": "#B39B65",
+  "color2": "#927F52",
+  "phone": "0189405434",
+  "address": "10 Rue de la Tremoille  75008 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJqWSqseFv5kcRPtkUlLuOZF0",
+  "logoUrl": "https://app.cartefidelavis.com/uni-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/uni.france/",
+  "heroUrl": "https://app.cartefidelavis.com/uni-paris/hero.jpg",
+  "tagline": "UNI Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/uni-paris/logo.jpg"
+}

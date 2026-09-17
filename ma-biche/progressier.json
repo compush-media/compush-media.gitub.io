@@ -1,0 +1,22 @@
+{
+  "name": "Ma Biche",
+  "short_name": "Ma Biche",
+  "start_url": "/ma-biche/index.html",
+  "scope": "/ma-biche/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#9A2528",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

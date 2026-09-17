@@ -1,0 +1,22 @@
+{
+  "name": "Brasserie de l'Hôtel du Nord",
+  "short_name": "Brasserie de l'Hôtel du Nord",
+  "start_url": "/brasserie-de-l-hotel-du-nord/index.html",
+  "scope": "/brasserie-de-l-hotel-du-nord/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#B4483B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Ata",
+  "color": "#5F442A",
+  "color2": "#4D3722",
+  "phone": "0987415467",
+  "address": "07 Rue René Boulanger  75010 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJf6lCNw5u5kcRz4oEXJ8kqq8",
+  "heroUrl": "https://app.cartefidelavis.com/ata/hero.jpg",
+  "tagline": "Ata — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

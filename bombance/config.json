@@ -1,0 +1,31 @@
+{
+  "name": "Bombance",
+  "color": "#39426B",
+  "color2": "#2E3657",
+  "phone": "0145354462",
+  "address": "40 Rue des Blancs Manteaux  75004 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJBeetLDRv5kcRqLSnz94ajQI",
+  "logoUrl": "https://app.cartefidelavis.com/bombance/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bombance_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/bombance/hero.jpg",
+  "tagline": "Bombance — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bombance/logo.jpg"
+}

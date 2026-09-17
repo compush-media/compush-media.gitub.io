@@ -1,0 +1,28 @@
+{
+  "name": "Chez Mamy",
+  "color": "#5B2A16",
+  "color2": "#4A2212",
+  "phone": "0143487468",
+  "address": "3 Rue Jules Vallès  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJlUcnxGZz5kcRiF2tJCf0NLw",
+  "heroUrl": "https://app.cartefidelavis.com/chez-mamy/hero.jpg",
+  "tagline": "Chez Mamy — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

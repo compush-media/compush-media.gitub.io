@@ -1,0 +1,31 @@
+{
+  "name": "Bittikesu",
+  "color": "#B89761",
+  "color2": "#967B4F",
+  "phone": "5 Rue Crillon  75004 Paris",
+  "address": "https://search.google.com/local/writereview?placeid=ChIJ4bgIErNx5kcRpHIO8G2rX9M",
+  "logoUrl": "https://app.cartefidelavis.com/bittikesu/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bittikesu_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/bittikesu/hero.jpg",
+  "tagline": "Bittikesu — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bittikesu/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ4bgIErNx5kcRpHIO8G2rX9M"
+}

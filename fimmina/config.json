@@ -1,0 +1,31 @@
+{
+  "name": "Fimmina",
+  "color": "#E13878",
+  "color2": "#B82D62",
+  "phone": "0954162034",
+  "address": "43 Rue Laffitte  75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJVyS6_vJv5kcRczHAlkqvutE",
+  "logoUrl": "https://app.cartefidelavis.com/fimmina/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/fimminapizzeria___?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+  "heroUrl": "https://app.cartefidelavis.com/fimmina/hero.jpg",
+  "tagline": "Fimmina — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/fimmina/logo.jpg"
+}

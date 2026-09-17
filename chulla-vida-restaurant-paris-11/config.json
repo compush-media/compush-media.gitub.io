@@ -1,0 +1,31 @@
+{
+  "name": "Chulla Vida - Restaurant - Paris 11",
+  "color": "#272C49",
+  "color2": "#1F243B",
+  "phone": "0769236727",
+  "address": "37 Rue Servan  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJn5gV0y1t5kcR79BLnmgLNj0",
+  "logoUrl": "https://app.cartefidelavis.com/chulla-vida-restaurant-paris-11/logo.jpg",
+  "instagramUrl": "https://instagram.com/chullavidaparis",
+  "heroUrl": "https://app.cartefidelavis.com/chulla-vida-restaurant-paris-11/hero.jpg",
+  "tagline": "Chulla Vida - Restaurant - Paris 11 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/chulla-vida-restaurant-paris-11/logo.jpg"
+}

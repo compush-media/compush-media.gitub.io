@@ -1,0 +1,28 @@
+{
+  "name": "Sushi-B",
+  "color": "#AF8F6A",
+  "color2": "#8F7556",
+  "phone": "0140265287",
+  "address": "5 Rue Rameau  75002 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ9Z6nGDtu5kcRgc34rnb__eA",
+  "heroUrl": "https://app.cartefidelavis.com/sushi-b/hero.jpg",
+  "tagline": "Sushi-B — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Pizza Venezia",
+  "color": "#6388B6",
+  "color2": "#516F95",
+  "phone": "0147863009",
+  "address": "48 Rue Pierre Brossolette  92700 Colombes",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ5YchjrJl5kcR5u1Q94Tu-iU",
+  "logoUrl": "https://app.cartefidelavis.com/pizza-venezia/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/venezia",
+  "heroUrl": "https://app.cartefidelavis.com/pizza-venezia/hero.jpg",
+  "tagline": "Pizza Venezia — Colombes",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Colombes",
+  "iconUrl": "https://app.cartefidelavis.com/pizza-venezia/logo.jpg"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Pizzico",
+  "color": "#492730",
+  "color2": "#3B1F27",
+  "phone": "0980325011",
+  "address": "38 Rue de Clignancourt  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJRxQ9-zhv5kcRUPInHKaDejk",
+  "heroUrl": "https://app.cartefidelavis.com/pizzico/hero.jpg",
+  "tagline": "Pizzico — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

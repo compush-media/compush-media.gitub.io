@@ -1,0 +1,29 @@
+{
+  "name": "Shawar'Mama - Paris 11",
+  "color": "#4D3723",
+  "color2": "#3F2D1C",
+  "phone": "06 67 66 61 84",
+  "address": "49 Rue de Montreuil 75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJM-_5MORz5kcR5qvFaLlvkRw",
+  "instagramUrl": "https://www.instagram.com/shawarmama.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/shawar-mama-paris-11/hero.jpg",
+  "tagline": "Shawar'Mama - Paris 11 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Les Rupins - Restaurant Parisien",
+  "color": "#213A6D",
+  "color2": "#1B2F59",
+  "phone": "0153199704",
+  "address": "35 Bd de Magenta  75010 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ38_szA1u5kcRtZZK4AhbCpQ",
+  "logoUrl": "https://app.cartefidelavis.com/les-rupins-restaurant-parisien/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesrupins/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/les-rupins-restaurant-parisien/hero.jpg",
+  "tagline": "Les Rupins - Restaurant Parisien — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-rupins-restaurant-parisien/logo.jpg"
+}

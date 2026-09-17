@@ -1,0 +1,28 @@
+{
+  "name": "Le bistrot",
+  "color": "#806042",
+  "color2": "#684E36",
+  "phone": "0981272440",
+  "address": "151 Ave Parmentier  75010 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJt0U2Qydt5kcROPVhr3BuGyQ",
+  "heroUrl": "https://app.cartefidelavis.com/le-bistrot/hero.jpg",
+  "tagline": "Le bistrot — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

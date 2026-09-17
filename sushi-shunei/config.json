@@ -1,0 +1,31 @@
+{
+  "name": "Sushi Shunei",
+  "color": "#182C58",
+  "color2": "#132448",
+  "phone": "0644661131",
+  "address": "3 Rue Audran  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJOZNwHS1v5kcRnO0W988mtRo",
+  "logoUrl": "https://app.cartefidelavis.com/sushi-shunei/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/sushishunei/",
+  "heroUrl": "https://app.cartefidelavis.com/sushi-shunei/hero.jpg",
+  "tagline": "Sushi Shunei — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/sushi-shunei/logo.jpg"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "PRIMAVERA - Pizzeria Paris 10",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "0140381164",
+  "address": "16 Pl. Jacques Bonsergent  75010 Paris",
+  "heroUrl": "https://app.cartefidelavis.com/primavera-pizzeria-paris-10/hero.jpg",
+  "tagline": "PRIMAVERA - Pizzeria Paris 10 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ5bf9MKpv5kcRN-e2fuq07so"
+}

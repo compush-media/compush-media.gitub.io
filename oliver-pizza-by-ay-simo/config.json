@@ -1,0 +1,28 @@
+{
+  "name": "OLIVER PIZZA By Ay-simo",
+  "color": "#AF8D6A",
+  "color2": "#8F7356",
+  "phone": "0753210994",
+  "address": "86 Rue Jean-Pierre Timbaud  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzekyh0tt5kcRiykyTerua9s",
+  "heroUrl": "https://app.cartefidelavis.com/oliver-pizza-by-ay-simo/hero.jpg",
+  "tagline": "OLIVER PIZZA By Ay-simo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Piccolo Caratello",
+  "color": "#C58154",
+  "color2": "#A16944",
+  "phone": "0142521754",
+  "address": "8 Rue Audran  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJo9zqBiBv5kcR-cOzdNzXt5E",
+  "heroUrl": "https://app.cartefidelavis.com/piccolo-caratello/hero.jpg",
+  "tagline": "Piccolo Caratello — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

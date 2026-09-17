@@ -1,0 +1,28 @@
+{
+  "name": "Le Saint Sébastien",
+  "color": "#674B37",
+  "color2": "#543D2D",
+  "phone": "0649752790",
+  "address": "42 Rue Saint-Sébastien  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJfeigXs9t5kcRtpeq9DfcWXk",
+  "heroUrl": "https://app.cartefidelavis.com/le-saint-sebastien/hero.jpg",
+  "tagline": "Le Saint Sébastien — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

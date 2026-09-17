@@ -1,0 +1,22 @@
+{
+  "name": "All In Sushi - Sushi près de moi   restaurant Turenne   près de la place des Vosges - marais",
+  "short_name": "All In Sushi - Sushi près de moi   restaurant Turenne   près de la place des Vosges - marais",
+  "start_url": "/all-in-sushi-sushi-pres-de-moi-restaurant-turenne-pres-de-la-place-des-vosges-marais/index.html",
+  "scope": "/all-in-sushi-sushi-pres-de-moi-restaurant-turenne-pres-de-la-place-des-vosges-marais/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#253CEE",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

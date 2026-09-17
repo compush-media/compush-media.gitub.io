@@ -1,0 +1,22 @@
+{
+  "name": "Vice Versa · Restaurant italien  di qualità",
+  "short_name": "Vice Versa · Restaurant italien  di qualità",
+  "start_url": "/vice-versa-restaurant-italien-di-qualita/index.html",
+  "scope": "/vice-versa-restaurant-italien-di-qualita/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#62210E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

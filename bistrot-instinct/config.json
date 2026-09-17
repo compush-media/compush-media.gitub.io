@@ -1,0 +1,31 @@
+{
+  "name": "Bistrot Instinct",
+  "color": "#BA5F94",
+  "color2": "#984D79",
+  "phone": "0142789306",
+  "address": "19 Rue de Picardie  75003 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzX94Mqpv5kcR789tzbYvWzc",
+  "logoUrl": "https://app.cartefidelavis.com/bistrot-instinct/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bistrotinstinct",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-instinct/hero.jpg",
+  "tagline": "Bistrot Instinct — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-instinct/logo.jpg"
+}

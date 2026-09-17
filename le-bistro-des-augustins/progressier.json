@@ -1,0 +1,22 @@
+{
+  "name": "Le Bistro des Augustins",
+  "short_name": "Le Bistro des Augustins",
+  "start_url": "/le-bistro-des-augustins/index.html",
+  "scope": "/le-bistro-des-augustins/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#493427",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

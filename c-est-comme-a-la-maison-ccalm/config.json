@@ -1,0 +1,31 @@
+{
+  "name": "C’est Comme À La Maison - CCALM",
+  "color": "#0B4C83",
+  "color2": "#093E6B",
+  "phone": "0756977268",
+  "address": "6 Rue Geoffroy l'Angevin  75004 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJk6d8saxv5kcR2COb5BoXYpo",
+  "logoUrl": "https://app.cartefidelavis.com/c-est-comme-a-la-maison-ccalm/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/resto.ccalm/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/c-est-comme-a-la-maison-ccalm/hero.jpg",
+  "tagline": "C’est Comme À La Maison - CCALM — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/c-est-comme-a-la-maison-ccalm/logo.jpg"
+}

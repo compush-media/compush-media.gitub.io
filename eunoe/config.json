@@ -1,0 +1,29 @@
+{
+  "name": "Eunoé",
+  "color": "#A57759",
+  "color2": "#876148",
+  "phone": "0767968636",
+  "address": "6 Rue Rochebrune  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJOUI0wipt5kcR8PGfUPvkm4g",
+  "instagramUrl": "https://paa.ge/eunoerestaurant/fr?fbclid=PAZXh0bgNhZW0CMTEAAaf_UceZMDlMatdLCnNXHuNbdaMkI7ZzhOkqAiFoR8-pWq2NlWjy4dHYbO6Pnw_aem_meFQfEhh-3LT0imxWYHtUg&referrer=https%3A%2F%2Fl.instagram.com%2F",
+  "heroUrl": "https://app.cartefidelavis.com/eunoe/hero.jpg",
+  "tagline": "Eunoé — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

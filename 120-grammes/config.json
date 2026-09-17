@@ -1,0 +1,31 @@
+{
+  "name": "120 Grammes",
+  "color": "#124866",
+  "color2": "#0E3B53",
+  "phone": "0980467054",
+  "address": "4 Rue Des Trois Couronnes  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ3wk1q_Vt5kcRVlMPvdLkZSA",
+  "logoUrl": "https://app.cartefidelavis.com/120-grammes/logo.jpg",
+  "instagramUrl": "https://instagram.com/120grammes.paris",
+  "heroUrl": "https://app.cartefidelavis.com/120-grammes/hero.jpg",
+  "tagline": "120 Grammes — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/120-grammes/logo.jpg"
+}

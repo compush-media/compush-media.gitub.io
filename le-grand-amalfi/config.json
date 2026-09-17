@@ -1,0 +1,31 @@
+{
+  "name": "Le Grand Amalfi",
+  "color": "#165A38",
+  "color2": "#12492D",
+  "phone": "0142496815",
+  "address": "9 Quai de Montebello  75005 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJD5g6OvJx5kcRnX2Dg_k1l28",
+  "logoUrl": "https://app.cartefidelavis.com/le-grand-amalfi/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/amalfi.restaurants/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/le-grand-amalfi/hero.jpg",
+  "tagline": "Le Grand Amalfi — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-grand-amalfi/logo.jpg"
+}

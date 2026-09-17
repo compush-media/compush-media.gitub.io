@@ -1,0 +1,22 @@
+{
+  "name": "Cafe Blanchet Paris",
+  "short_name": "Cafe Blanchet Paris",
+  "start_url": "/cafe-blanchet-paris/index.html",
+  "scope": "/cafe-blanchet-paris/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#49272B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

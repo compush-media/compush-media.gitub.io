@@ -1,0 +1,31 @@
+{
+  "name": "Le Coin des Amis",
+  "color": "#492A27",
+  "color2": "#3B221F",
+  "phone": "0142523036",
+  "address": "50 Rue du Mont-Cenis  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJCSK4OFxu5kcR2LNZM286-UE",
+  "logoUrl": "https://app.cartefidelavis.com/le-coin-des-amis/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lecoindesamis_montmartre/",
+  "heroUrl": "https://app.cartefidelavis.com/le-coin-des-amis/hero.jpg",
+  "tagline": "Le Coin des Amis — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-coin-des-amis/logo.jpg"
+}

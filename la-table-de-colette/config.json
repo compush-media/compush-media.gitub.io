@@ -1,0 +1,31 @@
+{
+  "name": "La Table de Colette",
+  "color": "#ED8E2B",
+  "color2": "#C27423",
+  "phone": "0146331859",
+  "address": "17 Rue Laplace  75005 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJS8Gh5a5x5kcRaT1Myj2lgjg",
+  "logoUrl": "https://app.cartefidelavis.com/la-table-de-colette/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/latabledecoletteparis/",
+  "heroUrl": "https://app.cartefidelavis.com/la-table-de-colette/hero.jpg",
+  "tagline": "La Table de Colette — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-table-de-colette/logo.jpg"
+}

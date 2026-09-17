@@ -1,0 +1,31 @@
+{
+  "name": "Mozzafiato Paris – Pizzeria Artisanale 11e Arrondissement",
+  "color": "#154FA0",
+  "color2": "#114083",
+  "phone": "0615625638",
+  "address": "152 Rue de Charonne  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJIyTwaDRt5kcROpzYCjWpnyU",
+  "logoUrl": "https://app.cartefidelavis.com/mozzafiato-paris-pizzeria-artisanale-11e-arrondissement/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/mozzafiato_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/mozzafiato-paris-pizzeria-artisanale-11e-arrondissement/hero.jpg",
+  "tagline": "Mozzafiato Paris – Pizzeria Artisanale 11e Arrondissement — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/mozzafiato-paris-pizzeria-artisanale-11e-arrondissement/logo.jpg"
+}

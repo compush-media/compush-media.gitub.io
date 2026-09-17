@@ -1,0 +1,31 @@
+{
+  "name": "Bistro Saint Dominique",
+  "color": "#D9AA3F",
+  "color2": "#B18B33",
+  "phone": "01 45 55 80 42",
+  "address": "131 Rue Saint-Dominique 75007 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJKaLFod9v5kcRuo0gHWkGfzE",
+  "logoUrl": "https://app.cartefidelavis.com/bistro-saint-dominique/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bistrosaintdominique/",
+  "heroUrl": "https://app.cartefidelavis.com/bistro-saint-dominique/hero.jpg",
+  "tagline": "Bistro Saint Dominique — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistro-saint-dominique/logo.jpg"
+}

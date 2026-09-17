@@ -1,0 +1,31 @@
+{
+  "name": "Le Paris 17",
+  "color": "#2B4051",
+  "color2": "#233442",
+  "phone": "01 45 74 75 27",
+  "address": "41 Rue Guersant 75017 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJrdVn241v5kcRP9t539L1QoI",
+  "logoUrl": "https://app.cartefidelavis.com/le-paris-17/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurant_le_paris_17",
+  "heroUrl": "https://app.cartefidelavis.com/le-paris-17/hero.jpg",
+  "tagline": "Le Paris 17 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-paris-17/logo.jpg"
+}

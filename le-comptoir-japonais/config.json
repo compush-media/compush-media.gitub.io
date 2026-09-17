@@ -1,0 +1,28 @@
+{
+  "name": "Le Comptoir Japonais",
+  "color": "#5974A6",
+  "color2": "#485F88",
+  "phone": "0610240653",
+  "address": "3 Rue Ternaux  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQwlrkfxt5kcRgQ7r6zcAt0A",
+  "heroUrl": "https://app.cartefidelavis.com/le-comptoir-japonais/hero.jpg",
+  "tagline": "Le Comptoir Japonais — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

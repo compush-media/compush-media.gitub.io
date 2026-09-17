@@ -1,0 +1,29 @@
+{
+  "name": "Pasticcio",
+  "color": "#324927",
+  "color2": "#293B1F",
+  "phone": "0142583422",
+  "address": "19 Rue Joseph Dijon  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJc4J3VnNv5kcRilQMFdh9_io",
+  "instagramUrl": "https://www.instagram.com/p/CmoGi_QoA8U/",
+  "heroUrl": "https://app.cartefidelavis.com/pasticcio/hero.jpg",
+  "tagline": "Pasticcio — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

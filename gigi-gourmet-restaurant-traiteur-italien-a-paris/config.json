@@ -1,0 +1,31 @@
+{
+  "name": "Gigi Gourmet - Restaurant & Traiteur Italien à Paris",
+  "color": "#61422B",
+  "color2": "#4F3623",
+  "phone": "0611600771",
+  "address": "120 Rue St Denis  75002 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJG9oBjMlv5kcRXmh8EBEuPX0",
+  "logoUrl": "https://app.cartefidelavis.com/gigi-gourmet-restaurant-traiteur-italien-a-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/gigigourmet.fr/",
+  "heroUrl": "https://app.cartefidelavis.com/gigi-gourmet-restaurant-traiteur-italien-a-paris/hero.jpg",
+  "tagline": "Gigi Gourmet - Restaurant & Traiteur Italien à Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/gigi-gourmet-restaurant-traiteur-italien-a-paris/logo.jpg"
+}

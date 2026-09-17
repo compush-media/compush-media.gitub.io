@@ -1,0 +1,31 @@
+{
+  "name": "Shin Izakaya",
+  "color": "#493A27",
+  "color2": "#3B2F1F",
+  "phone": "0172685059",
+  "address": "6 Rue des Ciseaux  75006 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJkdrXVTRx5kcRmnLSDP3K9BA",
+  "logoUrl": "https://app.cartefidelavis.com/shin-izakaya/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/tsukiziparis/",
+  "heroUrl": "https://app.cartefidelavis.com/shin-izakaya/hero.jpg",
+  "tagline": "Shin Izakaya — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/shin-izakaya/logo.jpg"
+}

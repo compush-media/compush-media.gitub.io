@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Impression QR Code – Fidelavis</title>
+  <style>
+    :root { --brand: #b6152b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: #f4f6f9;
+      color: #1c1c2e;
+    }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      background: var(--brand);
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(182,21,43,.35);
+    }
+    .toolbar-title { font-weight: 800; font-size: 16px; }
+    .toolbar-sub   { font-size: 12px; opacity: .75; margin-top: 2px; }
+    .btn-print {
+      background: #fff;
+      color: var(--brand);
+      border: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .btn-print:hover { background: #f3f4f6; }
+    .btn-back {
+      display: inline-block;
+      background: rgba(255,255,255,.18);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,.4);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .btn-back:hover { background: rgba(255,255,255,.28); }
+
+    /* ── Info banner ── */
+    .info-bar {
+      background: #dbeafe;
+      color: #1e40af;
+      text-align: center;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* ── A4 wrapper ── */
+    .page-wrapper {
+      display: flex;
+      justify-content: center;
+      padding: 30px 20px 50px;
+    }
+
+    /* ── A4 ── */
+    .a4 {
+      width: 210mm;
+      height: 297mm;
+      background: #fff;
+      box-shadow: 0 4px 40px rgba(0,0,0,.18);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    /* ── A6 card ── */
+    .a6 {
+      width: 105mm;
+      height: 148.5mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 7mm 6mm 10mm;
+      border: 1px dashed #d1d5db;
+      position: relative;
+      overflow: hidden;
+      gap: 0;
+    }
+
+    .a6-logo {
+      font-size: 10px;
+      font-weight: 900;
+      color: var(--brand);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 3mm;
+    }
+
+    .a6-emoji {
+      font-size: 22px;
+      margin-bottom: 2mm;
+    }
+
+    .a6-headline {
+      font-size: 13px;
+      font-weight: 900;
+      color: #1c1c2e;
+      text-align: center;
+      margin-bottom: 1.5mm;
+      line-height: 1.25;
+    }
+
+    .a6-tagline {
+      font-size: 9.5px;
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 4.5mm;
+      line-height: 1.5;
+      max-width: 78mm;
+    }
+
+    .a6-qr-wrap {
+      background: #fff;
+      border: 3px solid #f3f4f6;
+      border-radius: 10px;
+      padding: 3mm;
+      margin-bottom: 4mm;
+      box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    }
+
+    .a6-qr {
+      display: block;
+      width: 38mm;
+      height: 38mm;
+    }
+
+    .a6-cta {
+      background: var(--brand);
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 999px;
+      text-align: center;
+      letter-spacing: .3px;
+      margin-bottom: 3mm;
+    }
+
+    .a6-rewards {
+      display: flex;
+      gap: 4mm;
+      justify-content: center;
+      margin-bottom: 2mm;
+    }
+    .a6-reward-chip {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 999px;
+      font-size: 8px;
+      font-weight: 700;
+      color: #374151;
+      padding: 2px 7px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .a6-footer {
+      position: absolute;
+      bottom: 4mm;
+      font-size: 7.5px;
+      color: #d1d5db;
+      font-weight: 600;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+
+    /* ── Découpe mark ── */
+    .a6::after {
+      content: '✂';
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      font-size: 9px;
+      color: #d1d5db;
+    }
+
+    /* ── Skeleton ── */
+    .skel {
+      display: inline-block;
+      background: linear-gradient(90deg,#e5e7eb 25%,#f9fafb 50%,#e5e7eb 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 4px;
+      width: 60px;
+      height: 12px;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    /* ── Print ── */
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white; }
+      .page-wrapper { padding: 0; }
+      .a4 {
+        width: 210mm;
+        height: 297mm;
+        box-shadow: none;
+        page-break-after: always;
+      }
+      .a6 { border: 1px dashed #bbb; }
+      .a6::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Toolbar ── -->
+<div class="toolbar no-print">
+  <div>
+    <div class="toolbar-title">🖨️ Impression QR Code – Cartes fidélité</div>
+    <div class="toolbar-sub">Imprimez, découpez les 4 cartes A6 et posez-les sur vos tables</div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <a class="btn-back" href="espace-admin.html">← Retour</a>
+    <button class="btn-print" onclick="window.print()">🖨️ Imprimer</button>
+  </div>
+</div>
+
+<!-- ── Info ── -->
+<div class="info-bar no-print">
+  💡 Format A4 · 4 cartes A6 prêtes à découper · Posez-les sur vos tables ou au comptoir
+</div>
+
+<!-- ── A4 Page ── -->
+<div class="page-wrapper">
+  <div class="a4" id="a4page">
+    <div class="a6" id="card0"></div>
+    <div class="a6" id="card1"></div>
+    <div class="a6" id="card2"></div>
+    <div class="a6" id="card3"></div>
+  </div>
+</div>
+
+<script>
+/* ── Déterminer le slug du restaurant ── */
+const SITE = (() => {
+  const m = location.pathname.match(/^\/([^/]+)\//);
+  if (m && !['assets', 'data', 'fidelavis-admin'].includes(m[1])) return m[1];
+  return localStorage.getItem('fv_last_resto') || '';
+})();
+
+/* ── Guard auth ── */
+const AUTH_KEY = `admin_${SITE}`;
+if (SITE && !localStorage.getItem(AUTH_KEY)) {
+  window.location.href = 'login.html';
+}
+
+/* Pas de garde de role ici, et c'est delibere. Le panneau « Equipe »
+   d'espace-admin annonce a l'employe l'acces au « QR d'installation » : ces
+   cartes A6 ne sont que ce QR, mis en page pour l'imprimante. La page ne
+   montre ni chiffre d'affaires, ni statistiques, ni reglages — seulement le
+   nom de l'enseigne et son lien NFC public. Un employe qui recharge les
+   cartes des tables est dans son role. Voir a l'inverse billing.html,
+   state_resto.html et reputation-google.html, reservees au responsable. */
+
+/* ── URL NFC ── */
+const nfcUrl = `${location.origin}/${SITE}/indexnfc.html`;
+const qrUrl  = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&color=1c1c2e&bgcolor=ffffff&data=${encodeURIComponent(nfcUrl)}`;
+
+/* ── Construire le contenu d'une carte A6 ── */
+function buildCard(restoName, brandColor) {
+  const color = brandColor || '#b6152b';
+  return `
+    <div class="a6-logo">★ Fidelavis</div>
+    <div class="a6-emoji">🎁</div>
+    <div class="a6-headline" style="color:${color};">${restoName}</div>
+    <p class="a6-tagline">
+      Rejoignez notre programme de fidélité<br>
+      et profitez d'<strong>avantages exclusifs</strong> à chaque visite !
+    </p>
+    <div class="a6-qr-wrap">
+      <img class="a6-qr" src="${qrUrl}" alt="QR Code fidélité ${restoName}" />
+    </div>
+    <div class="a6-cta" style="background:${color};">📱 Scannez — c'est gratuit &amp; sans app à télécharger</div>
+    <div class="a6-rewards">
+      <span class="a6-reward-chip">🎫 Coupons</span>
+      <span class="a6-reward-chip">⭐ Points fidélité</span>
+      <span class="a6-reward-chip">🎉 Offres exclusives</span>
+    </div>
+    <span class="a6-footer">fidelavis.com</span>
+  `;
+}
+
+/* ── Charger config.json ── */
+fetch(`/${SITE}/config.json`)
+  .then(r => r.json())
+  .then(cfg => {
+    const name  = cfg.name  || SITE;
+    const color = cfg.color || '#b6152b';
+    document.documentElement.style.setProperty('--brand', color);
+    const html = buildCard(name, color);
+    for (let i = 0; i < 4; i++) document.getElementById('card' + i).innerHTML = html;
+  })
+  .catch(() => {
+    const html = buildCard(SITE || 'Mon Restaurant', '#b6152b');
+    for (let i = 0; i < 4; i++) document.getElementById('card' + i).innerHTML = html;
+  });
+</script>
+
+</body>
+</html>

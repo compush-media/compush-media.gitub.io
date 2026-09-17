@@ -1,0 +1,31 @@
+{
+  "name": "Pizzamore Paris - Pizzeria Montparnasse",
+  "color": "#24563D",
+  "color2": "#1D4632",
+  "phone": "0171246399",
+  "address": "121 Av. du Maine  75014 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJo7z6w4Vx5kcRBUa6EeE5kK0",
+  "logoUrl": "https://app.cartefidelavis.com/pizzamore-paris-pizzeria-montparnasse/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pizzamore_paris/?hl=en",
+  "heroUrl": "https://app.cartefidelavis.com/pizzamore-paris-pizzeria-montparnasse/hero.jpg",
+  "tagline": "Pizzamore Paris - Pizzeria Montparnasse — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pizzamore-paris-pizzeria-montparnasse/logo.jpg"
+}

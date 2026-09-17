@@ -1,0 +1,29 @@
+{
+  "name": "L'Echoppe de Paris",
+  "color": "#A17D57",
+  "color2": "#846647",
+  "phone": "0153279539",
+  "address": "16 Rue Léon Frot  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJOU00wApy5kcR30-Tz7FdYEE",
+  "instagramUrl": "https://instagram.com",
+  "heroUrl": "https://app.cartefidelavis.com/l-echoppe-de-paris/hero.jpg",
+  "tagline": "L'Echoppe de Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

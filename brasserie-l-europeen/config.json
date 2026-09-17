@@ -1,0 +1,31 @@
+{
+  "name": "Brasserie L'Européen",
+  "color": "#494727",
+  "color2": "#3B3A1F",
+  "phone": "0143439970",
+  "address": "21 bis Bd Diderot  75012 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJG8QItARy5kcR2o92U4mIRjc",
+  "logoUrl": "https://app.cartefidelavis.com/brasserie-l-europeen/logo.jpg",
+  "instagramUrl": "http://www.instagram.com/brasserieleuropeen",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-l-europeen/hero.jpg",
+  "tagline": "Brasserie L'Européen — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-l-europeen/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Bistro V",
+  "color": "#110FF0",
+  "color2": "#0D0CC4",
+  "phone": "0985121421",
+  "address": "56 Bd de Port-Royal  75005 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ75aAHutx5kcRjWpAj2XGzg0",
+  "logoUrl": "https://app.cartefidelavis.com/bistro-v/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lebistrov_/",
+  "heroUrl": "https://app.cartefidelavis.com/bistro-v/hero.jpg",
+  "tagline": "Bistro V — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistro-v/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Justine",
+  "color": "#026E4F",
+  "color2": "#015A40",
+  "phone": "0143574403",
+  "address": "96 Rue Oberkampf  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ2al2S-Vt5kcRcfurdLIB4DA",
+  "logoUrl": "https://app.cartefidelavis.com/justine/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/brasserie_justine/",
+  "heroUrl": "https://app.cartefidelavis.com/justine/hero.jpg",
+  "tagline": "Justine — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/justine/logo.jpg"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Ristorante Pulcinella",
+  "color": "#A18256",
+  "color2": "#846A46",
+  "phone": "0146064694",
+  "address": "17 Rue Damrémont  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJccSrs1Fu5kcR1YN7dFWA3d8",
+  "instagramUrl": "https://instagram.com/pulcinella75018",
+  "heroUrl": "https://app.cartefidelavis.com/ristorante-pulcinella/hero.jpg",
+  "tagline": "Ristorante Pulcinella — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

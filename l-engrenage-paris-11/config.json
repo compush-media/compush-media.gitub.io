@@ -1,0 +1,28 @@
+{
+  "name": "L'Engrenage Paris 11",
+  "color": "#0B4D66",
+  "color2": "#093F53",
+  "phone": "0143380478",
+  "address": "82 Rue Jean-Pierre Timbaud  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJAb2luYht5kcRFvIUChp-FVU",
+  "heroUrl": "https://app.cartefidelavis.com/l-engrenage-paris-11/hero.jpg",
+  "tagline": "L'Engrenage Paris 11 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

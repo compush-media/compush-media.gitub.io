@@ -1,0 +1,22 @@
+{
+  "name": "Café Restaurant Suzanne (Purple Food)",
+  "short_name": "Café Restaurant Suzanne (Purple Food)",
+  "start_url": "/cafe-restaurant-suzanne-purple-food/index.html",
+  "scope": "/cafe-restaurant-suzanne-purple-food/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#273D49",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

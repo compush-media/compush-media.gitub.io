@@ -1,0 +1,22 @@
+{
+  "name": "Les Demoiselles Restaurant Paris 17eme",
+  "short_name": "Les Demoiselles Restaurant Paris 17eme",
+  "start_url": "/les-demoiselles-restaurant-paris-17eme/index.html",
+  "scope": "/les-demoiselles-restaurant-paris-17eme/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#493327",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

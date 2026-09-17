@@ -1,0 +1,31 @@
+{
+  "name": "Casa Di Marco Paris 19",
+  "color": "#7F6144",
+  "color2": "#684F37",
+  "phone": "0956009918",
+  "address": "50 Av. Simon Bolivar  75019 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ42dzeABt5kcRZEPw9aReTF4",
+  "logoUrl": "https://app.cartefidelavis.com/casa-di-marco-paris-19/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/casa_dimarco/",
+  "heroUrl": "https://app.cartefidelavis.com/casa-di-marco-paris-19/hero.jpg",
+  "tagline": "Casa Di Marco Paris 19 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/casa-di-marco-paris-19/logo.jpg"
+}

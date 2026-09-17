@@ -1,0 +1,31 @@
+{
+  "name": "Jones",
+  "color": "#BA8F5F",
+  "color2": "#98754D",
+  "phone": "0980753208",
+  "address": "43 Rue Godefroy Cavaignac  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJDXxdvwly5kcRIKCw1301aTc",
+  "logoUrl": "https://app.cartefidelavis.com/jones/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/jonesrestaurantparis/",
+  "heroUrl": "https://app.cartefidelavis.com/jones/hero.jpg",
+  "tagline": "Jones — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/jones/logo.jpg"
+}

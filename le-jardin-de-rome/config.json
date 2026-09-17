@@ -1,0 +1,28 @@
+{
+  "name": "Le Jardin de Rome",
+  "color": "#947850",
+  "color2": "#796241",
+  "phone": "0145222042",
+  "address": "52 Rue de Rome  75008 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzXVjHrVv5kcRyBDRZvhS23Q",
+  "heroUrl": "https://app.cartefidelavis.com/le-jardin-de-rome/hero.jpg",
+  "tagline": "Le Jardin de Rome — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

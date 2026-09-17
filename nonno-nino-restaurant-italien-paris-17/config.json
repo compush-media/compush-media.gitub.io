@@ -1,0 +1,31 @@
+{
+  "name": "Nonno Nino - Restaurant Italien Paris 17",
+  "color": "#E5C833",
+  "color2": "#BBA429",
+  "phone": "01 49 26 09 74",
+  "address": "10 Rue Bremontier 75017 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJow0Soj1v5kcRRTr4S07xAyI",
+  "logoUrl": "https://app.cartefidelavis.com/nonno-nino-restaurant-italien-paris-17/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/nonnonino_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/nonno-nino-restaurant-italien-paris-17/hero.jpg",
+  "tagline": "Nonno Nino - Restaurant Italien Paris 17 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/nonno-nino-restaurant-italien-paris-17/logo.jpg"
+}

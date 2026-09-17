@@ -1,0 +1,31 @@
+{
+  "name": "Les Têtes Brûlées",
+  "color": "#274931",
+  "color2": "#1F3B28",
+  "phone": "0651196775",
+  "address": "1 bis Rue Jean Mermoz  75008 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJDRI3FzVv5kcRYchPZqTL06w",
+  "logoUrl": "https://app.cartefidelavis.com/les-tetes-brulees/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/les_tetesbrulees/",
+  "heroUrl": "https://app.cartefidelavis.com/les-tetes-brulees/hero.jpg",
+  "tagline": "Les Têtes Brûlées — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-tetes-brulees/logo.jpg"
+}

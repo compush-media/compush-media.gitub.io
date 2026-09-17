@@ -1,0 +1,31 @@
+{
+  "name": "Espace Japonais Manekineko de Montmartre",
+  "color": "#4A2639",
+  "color2": "#3C1F2E",
+  "phone": "7 Rue Pierre Picard  75018 Paris",
+  "address": "https://search.google.com/local/writereview?placeid=ChIJw4EDz2Bv5kcRe55zelQyI_o",
+  "logoUrl": "https://app.cartefidelavis.com/espace-japonais-manekineko-de-montmartre/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/manekinekodemontmartre18/",
+  "heroUrl": "https://app.cartefidelavis.com/espace-japonais-manekineko-de-montmartre/hero.jpg",
+  "tagline": "Espace Japonais à Montmartre depuis 2005",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/espace-japonais-manekineko-de-montmartre/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJw4EDz2Bv5kcRe55zelQyI_o"
+}

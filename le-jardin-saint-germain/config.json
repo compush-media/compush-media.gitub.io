@@ -1,0 +1,31 @@
+{
+  "name": "Le Jardin Saint-Germain",
+  "color": "#494827",
+  "color2": "#3B3B1F",
+  "phone": "0955918904",
+  "address": "9 Rue de l'Éperon  75006 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ2WJikopx5kcR6QwgcDC7rNA",
+  "logoUrl": "https://app.cartefidelavis.com/le-jardin-saint-germain/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurantlejardinsaintgermain/",
+  "heroUrl": "https://app.cartefidelavis.com/le-jardin-saint-germain/hero.jpg",
+  "tagline": "Le Jardin Saint-Germain — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-jardin-saint-germain/logo.jpg"
+}

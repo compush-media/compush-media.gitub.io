@@ -1,0 +1,31 @@
+{
+  "name": "Lou Cantou",
+  "color": "#E6CC32",
+  "color2": "#BCA729",
+  "phone": "09 88 40 20 95",
+  "address": "Accès par le 61 rue de Provence 35 Cité d'Antin 75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJj8NwnTdu5kcRcs4nzhLx4ag",
+  "logoUrl": "https://app.cartefidelavis.com/lou-cantou/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/loucantouparis9/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/lou-cantou/hero.jpg",
+  "tagline": "Lou Cantou — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/lou-cantou/logo.jpg"
+}

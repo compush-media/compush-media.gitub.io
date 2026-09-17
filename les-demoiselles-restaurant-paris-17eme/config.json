@@ -1,0 +1,31 @@
+{
+  "name": "Les Demoiselles Restaurant Paris 17eme",
+  "color": "#493327",
+  "color2": "#3B291F",
+  "phone": "01 58 57 90 93",
+  "address": "23 Rue Léon Jost 75017 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJP1mKHr5v5kcRuQ5dR4pjJEs",
+  "logoUrl": "https://app.cartefidelavis.com/les-demoiselles-restaurant-paris-17eme/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesdemoisellesparis17/",
+  "heroUrl": "https://app.cartefidelavis.com/les-demoiselles-restaurant-paris-17eme/hero.jpg",
+  "tagline": "Les Demoiselles Restaurant Paris 17eme — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-demoiselles-restaurant-paris-17eme/logo.jpg"
+}

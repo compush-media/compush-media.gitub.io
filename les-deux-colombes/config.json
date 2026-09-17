@@ -1,0 +1,31 @@
+{
+  "name": "Les Deux Colombes",
+  "color": "#2F3A57",
+  "color2": "#262F47",
+  "phone": "01 42 03 04 32",
+  "address": "4 Rue de la Colombe 75004 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ-Xrnlutx5kcRyHCw-v2UJy8",
+  "logoUrl": "https://app.cartefidelavis.com/les-deux-colombes/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesdeuxcolombes/",
+  "heroUrl": "https://app.cartefidelavis.com/les-deux-colombes/hero.jpg",
+  "tagline": "Les Deux Colombes — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-deux-colombes/logo.jpg"
+}

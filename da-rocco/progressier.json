@@ -1,0 +1,22 @@
+{
+  "name": "Da Rocco",
+  "short_name": "Da Rocco",
+  "start_url": "/da-rocco/index.html",
+  "scope": "/da-rocco/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#AF8F6A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

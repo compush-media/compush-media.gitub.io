@@ -1,0 +1,31 @@
+{
+  "name": "Kinugawa Rive Gauche",
+  "color": "#6B0508",
+  "color2": "#570406",
+  "phone": "0181690749",
+  "address": "55 Av. de Saxe  75007 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJOW0mDwBx5kcR3Av4lEyNMmw",
+  "logoUrl": "https://app.cartefidelavis.com/kinugawa-rive-gauche/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/kinugawaofficial/",
+  "heroUrl": "https://app.cartefidelavis.com/kinugawa-rive-gauche/hero.jpg",
+  "tagline": "Kinugawa Rive Gauche — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kinugawa-rive-gauche/logo.jpg"
+}

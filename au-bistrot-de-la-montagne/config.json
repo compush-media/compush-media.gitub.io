@@ -1,0 +1,28 @@
+{
+  "name": "Au Bistrot de la Montagne",
+  "color": "#9C6625",
+  "color2": "#7F531E",
+  "phone": "0146335663",
+  "address": "38 Rue de la Montagne Ste Geneviève  75005 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ7b57b-Zx5kcROWUrojQ9dLE",
+  "heroUrl": "https://app.cartefidelavis.com/au-bistrot-de-la-montagne/hero.jpg",
+  "tagline": "Au Bistrot de la Montagne — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

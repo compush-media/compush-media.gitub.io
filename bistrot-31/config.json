@@ -1,0 +1,31 @@
+{
+  "name": "Bistrot 31",
+  "color": "#CCC04D",
+  "color2": "#A79D3F",
+  "phone": "0142245231",
+  "address": "31 Av. Théophile Gautier  75016 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ96U23qh65kcRTAgsz7H2F0U",
+  "logoUrl": "https://app.cartefidelavis.com/bistrot-31/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/b.31paris/",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-31/hero.jpg",
+  "tagline": "Bistrot 31 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-31/logo.jpg"
+}

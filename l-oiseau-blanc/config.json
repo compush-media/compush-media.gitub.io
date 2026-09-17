@@ -1,0 +1,31 @@
+{
+  "name": "L'Oiseau Blanc",
+  "color": "#586DA3",
+  "color2": "#485985",
+  "phone": "01 58 12 67 30",
+  "address": "19 Av. Kléber 75116 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJZXST6-5v5kcR2yYcipYCUqA",
+  "logoUrl": "https://app.cartefidelavis.com/l-oiseau-blanc/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/thepeninsulaparis/",
+  "heroUrl": "https://app.cartefidelavis.com/l-oiseau-blanc/hero.jpg",
+  "tagline": "L'Oiseau Blanc — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/l-oiseau-blanc/logo.jpg"
+}

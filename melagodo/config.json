@@ -1,0 +1,31 @@
+{
+  "name": "Melagodo",
+  "color": "#364927",
+  "color2": "#2C3B1F",
+  "phone": "0987076701",
+  "address": "10 Rue Nélaton  75015 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJuydi56Zx5kcRC0kh-pV5jwM",
+  "logoUrl": "https://app.cartefidelavis.com/melagodo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/melagodoparis/",
+  "heroUrl": "https://app.cartefidelavis.com/melagodo/hero.jpg",
+  "tagline": "Melagodo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/melagodo/logo.jpg"
+}

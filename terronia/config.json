@@ -1,0 +1,31 @@
+{
+  "name": "Terronia",
+  "color": "#273149",
+  "color2": "#1F283B",
+  "phone": "0142384296",
+  "address": "Terronia  11 Rue des Boulangers  75005 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJCeQ69-9x5kcRvXSNXzPUpy4",
+  "logoUrl": "https://app.cartefidelavis.com/terronia/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/terronia_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/terronia/hero.jpg",
+  "tagline": "Terronia — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/terronia/logo.jpg"
+}

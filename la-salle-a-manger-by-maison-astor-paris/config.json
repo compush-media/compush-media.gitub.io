@@ -1,0 +1,28 @@
+{
+  "name": "La Salle à Manger by Maison Astor Paris",
+  "color": "#4D3923",
+  "color2": "#3F2E1C",
+  "phone": "0153050535",
+  "address": "11 Rue d'Astorg  75008 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJl7nQHpJv5kcRd9Cwc3g3a-c",
+  "heroUrl": "https://app.cartefidelavis.com/la-salle-a-manger-by-maison-astor-paris/hero.jpg",
+  "tagline": "La Salle à Manger by Maison Astor Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

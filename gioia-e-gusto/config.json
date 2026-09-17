@@ -1,0 +1,31 @@
+{
+  "name": "Gioia e Gusto",
+  "color": "#7E5F21",
+  "color2": "#674D1B",
+  "phone": "0142943586",
+  "address": "49 Rue de Laborde  75008 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJodG21D9v5kcRY3MShxiVTOY",
+  "logoUrl": "https://app.cartefidelavis.com/gioia-e-gusto/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/gioia_e_gusto_paris/?hl=en",
+  "heroUrl": "https://app.cartefidelavis.com/gioia-e-gusto/hero.jpg",
+  "tagline": "Gioia e Gusto — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/gioia-e-gusto/logo.jpg"
+}

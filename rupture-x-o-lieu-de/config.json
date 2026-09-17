@@ -1,0 +1,29 @@
+{
+  "name": "RUPTURE x Ô Lieu de",
+  "color": "#604728",
+  "color2": "#4E3A20",
+  "phone": "0769373451",
+  "address": "6 Rue Jean-Pierre Timbaud  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJLfgnpDBv5kcRio1IWz1pj90",
+  "instagramUrl": "https://www.instagram.com/olieude/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/rupture-x-o-lieu-de/hero.jpg",
+  "tagline": "RUPTURE x Ô Lieu de — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

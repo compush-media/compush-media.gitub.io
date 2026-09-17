@@ -1,0 +1,28 @@
+{
+  "name": "La French Poke",
+  "color": "#A58159",
+  "color2": "#876948",
+  "phone": "0666473358",
+  "address": "53 Rue de la Fontaine au Roi  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJdamUtdxt5kcRmL2sZHzHJy4",
+  "heroUrl": "https://app.cartefidelavis.com/la-french-poke/hero.jpg",
+  "tagline": "La French Poke — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

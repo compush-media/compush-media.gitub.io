@@ -1,0 +1,22 @@
+{
+  "name": "Chulla Vida - Restaurant - Paris 11",
+  "short_name": "Chulla Vida - Restaurant - Paris 11",
+  "start_url": "/chulla-vida-restaurant-paris-11/index.html",
+  "scope": "/chulla-vida-restaurant-paris-11/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#272C49",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

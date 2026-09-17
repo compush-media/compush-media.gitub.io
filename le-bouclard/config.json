@@ -1,0 +1,31 @@
+{
+  "name": "Le Bouclard",
+  "color": "#5B3715",
+  "color2": "#4A2D11",
+  "phone": "0145226001",
+  "address": "1 Rue Cavallotti  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJTeeL601u5kcRbVVD0lisOD0",
+  "logoUrl": "https://app.cartefidelavis.com/le-bouclard/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le_bouclard/",
+  "heroUrl": "https://app.cartefidelavis.com/le-bouclard/hero.jpg",
+  "tagline": "Le Bouclard — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-bouclard/logo.jpg"
+}

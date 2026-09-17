@@ -1,0 +1,31 @@
+{
+  "name": "Pantobaguette",
+  "color": "#D83F13",
+  "color2": "#B1330F",
+  "phone": "0188484070",
+  "address": "16 Rue Eugène Sue  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ7d54995v5kcR9py3YclSxSY",
+  "logoUrl": "https://app.cartefidelavis.com/pantobaguette/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pantobaguette",
+  "heroUrl": "https://app.cartefidelavis.com/pantobaguette/hero.jpg",
+  "tagline": "Pantobaguette — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pantobaguette/logo.jpg"
+}

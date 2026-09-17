@@ -1,0 +1,22 @@
+{
+  "name": "Piccolo Caratello",
+  "short_name": "Piccolo Caratello",
+  "start_url": "/piccolo-caratello/index.html",
+  "scope": "/piccolo-caratello/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#C58154",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

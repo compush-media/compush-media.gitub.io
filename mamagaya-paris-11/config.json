@@ -1,0 +1,28 @@
+{
+  "name": "MAMAGAYA PARIS 11",
+  "color": "#C09F58",
+  "color2": "#9D8248",
+  "phone": "0148055689",
+  "address": "74 Rue Jean-Pierre Timbaud  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJVVXx5uRt5kcROzQdXPiHfGU",
+  "heroUrl": "https://app.cartefidelavis.com/mamagaya-paris-11/hero.jpg",
+  "tagline": "MAMAGAYA PARIS 11 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

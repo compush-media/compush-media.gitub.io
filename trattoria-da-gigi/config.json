@@ -1,0 +1,28 @@
+{
+  "name": "Trattoria Da Gigi",
+  "color": "#684A38",
+  "color2": "#553C2D",
+  "phone": "0651265240",
+  "address": "105 Rue Saint-Maur  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJU0RZyvpt5kcR78yq81xmcBU",
+  "heroUrl": "https://app.cartefidelavis.com/trattoria-da-gigi/hero.jpg",
+  "tagline": "Trattoria Da Gigi — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

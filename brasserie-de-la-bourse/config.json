@@ -1,0 +1,31 @@
+{
+  "name": "Brasserie de la Bourse",
+  "color": "#BC3343",
+  "color2": "#9A2936",
+  "phone": "0142367666",
+  "address": "27 Rue Jean-Jacques Rousseau  75001 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJLTXauyNu5kcRfE2jvCNL1Is",
+  "logoUrl": "https://app.cartefidelavis.com/brasserie-de-la-bourse/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/brasseriedelabourseparis/",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-de-la-bourse/hero.jpg",
+  "tagline": "Brasserie de la Bourse — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-de-la-bourse/logo.jpg"
+}

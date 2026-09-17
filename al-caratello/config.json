@@ -1,0 +1,31 @@
+{
+  "name": "Al Caratello",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "0142622423",
+  "address": "5 Rue Audran  75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/al-caratello/logo.jpg",
+  "instagramUrl": "https://instagram.com/alcaratelloparis",
+  "heroUrl": "https://app.cartefidelavis.com/al-caratello/hero.jpg",
+  "tagline": "Al Caratello — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/al-caratello/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJV5GuvhVv5kcR5Jdo8wzrmjY"
+}

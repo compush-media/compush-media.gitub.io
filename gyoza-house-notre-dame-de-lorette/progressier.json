@@ -1,0 +1,22 @@
+{
+  "name": "GYOZA HOUSE - NOTRE DAME DE LORETTE",
+  "short_name": "GYOZA HOUSE - NOTRE DAME DE LORETTE",
+  "start_url": "/gyoza-house-notre-dame-de-lorette/index.html",
+  "scope": "/gyoza-house-notre-dame-de-lorette/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#7F6244",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

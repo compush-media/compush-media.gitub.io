@@ -1,0 +1,31 @@
+{
+  "name": "SAMOURÏCE onigiri Paris",
+  "color": "#FEED01",
+  "color2": "#D0C200",
+  "phone": "0615373332",
+  "address": "203 Rue du Faubourg Saint-Antoine  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJHxEqSlFv5kcRDmO9lq1Vge0",
+  "logoUrl": "https://app.cartefidelavis.com/samourice-onigiri-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/samourice/",
+  "heroUrl": "https://app.cartefidelavis.com/samourice-onigiri-paris/hero.jpg",
+  "tagline": "SAMOURÏCE onigiri Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/samourice-onigiri-paris/logo.jpg"
+}

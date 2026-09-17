@@ -1,0 +1,22 @@
+{
+  "name": "Nonno Nino - Restaurant Italien Paris 17",
+  "short_name": "Nonno Nino - Restaurant Italien Paris 17",
+  "start_url": "/nonno-nino-restaurant-italien-paris-17/index.html",
+  "scope": "/nonno-nino-restaurant-italien-paris-17/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#E5C833",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

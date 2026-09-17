@@ -1,0 +1,31 @@
+{
+  "name": "Jules Jo",
+  "color": "#5E3812",
+  "color2": "#4D2D0E",
+  "phone": "0177329191",
+  "address": "28 Rue Hermel  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJn_VTZF5u5kcRd5FwoPb19xE",
+  "logoUrl": "https://app.cartefidelavis.com/jules-jo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/julesjo.paris/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/jules-jo/hero.jpg",
+  "tagline": "Jules Jo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/jules-jo/logo.jpg"
+}

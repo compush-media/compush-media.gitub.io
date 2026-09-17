@@ -1,0 +1,22 @@
+{
+  "name": "Le Nouveau Paris restaurant neuilly sur seine ile de la jatte",
+  "short_name": "Le Nouveau Paris restaurant neuilly sur seine ile de la jatte",
+  "start_url": "/le-nouveau-paris-restaurant-neuilly-sur-seine-ile-de-la-jatte/index.html",
+  "scope": "/le-nouveau-paris-restaurant-neuilly-sur-seine-ile-de-la-jatte/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#61432B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

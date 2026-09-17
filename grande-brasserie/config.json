@@ -1,0 +1,31 @@
+{
+  "name": "Grande Brasserie",
+  "color": "#273749",
+  "color2": "#1F2D3B",
+  "phone": "0975809972",
+  "address": "6 Rue de la Bastille  75004 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ-2gmGJxz5kcR4TeT2GHQ59Y",
+  "logoUrl": "https://app.cartefidelavis.com/grande-brasserie/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/grande_brasserie_bastille/",
+  "heroUrl": "https://app.cartefidelavis.com/grande-brasserie/hero.jpg",
+  "tagline": "Grande Brasserie — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/grande-brasserie/logo.jpg"
+}

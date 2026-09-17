@@ -1,0 +1,31 @@
+{
+  "name": "Distrada",
+  "color": "#F4BE24",
+  "color2": "#C89B1D",
+  "phone": "0172384776",
+  "address": "69 Rue de Croulebarbe  75013 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ1dg0Ukhx5kcRsKJoRgGO4wU",
+  "logoUrl": "https://app.cartefidelavis.com/distrada/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/distrada_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/distrada/hero.jpg",
+  "tagline": "Distrada — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/distrada/logo.jpg"
+}

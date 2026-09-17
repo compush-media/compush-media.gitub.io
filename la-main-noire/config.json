@@ -1,0 +1,31 @@
+{
+  "name": "La Main Noire",
+  "color": "#492F27",
+  "color2": "#3B261F",
+  "phone": "12 Rue Cavallotti 75018 Paris",
+  "address": "https://search.google.com/local/writereview?placeid=ChIJCwv8MlBv5kcRu_qjFr854hg",
+  "logoUrl": "https://app.cartefidelavis.com/la-main-noire/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/la.main.noire/",
+  "heroUrl": "https://app.cartefidelavis.com/la-main-noire/hero.jpg",
+  "tagline": "La Main Noire — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-main-noire/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJCwv8MlBv5kcRu_qjFr854hg"
+}

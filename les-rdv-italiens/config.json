@@ -1,0 +1,28 @@
+{
+  "name": "Les RDV Italiens",
+  "color": "#61432A",
+  "color2": "#4F3622",
+  "phone": "0660699228",
+  "address": "151 Rue du Faubourg Poissonnière  75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJNRgQVrJv5kcRS0U-8VpiCGk",
+  "heroUrl": "https://app.cartefidelavis.com/les-rdv-italiens/hero.jpg",
+  "tagline": "Les RDV Italiens — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

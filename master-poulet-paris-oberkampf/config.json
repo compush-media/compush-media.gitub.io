@@ -1,0 +1,28 @@
+{
+  "name": "MASTER POULET - Paris Oberkampf",
+  "color": "#806745",
+  "color2": "#685438",
+  "phone": "0983319757",
+  "address": "156 Rue Oberkampf  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJt7Sbwe1t5kcRAKBGrXPHSkg",
+  "heroUrl": "https://app.cartefidelavis.com/master-poulet-paris-oberkampf/hero.jpg",
+  "tagline": "MASTER POULET - Paris Oberkampf — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

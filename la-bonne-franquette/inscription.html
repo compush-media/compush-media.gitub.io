@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Rejoindre le Club</title>
+
+  <!-- ✅ Core commun -->
+  <script src="../assets/core.js"></script>
+  <!-- ✅ Supabase (Phase 2 — double-write avec Brevo) -->
+  <script src="../assets/supabase-config.js"></script>
+  <!-- ✅ Manifest + Progressier (push notifications) -->
+  <link rel="manifest" href="progressier.json"/>
+  <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+  <script>(function(){var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';var c=s?localStorage.getItem('fv_brand_'+s):null;if(c)document.documentElement.style.setProperty('--gold',c);if(!s)return;fetch('/'+s+'/config.json').then(function(r){return r.json();}).then(function(d){var col=d&&d.color;if(!col)return;document.documentElement.style.setProperty('--gold',col);try{localStorage.setItem('fv_brand_'+s,col);}catch(_){}}).catch(function(){});})();</script>
+
+  <!-- ✅ trackEventFidelavis fourni par core.js (chargé avant ce script) — pas de redéfinition locale -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Bulle « F » d'installation injectée par Progressier : elle flottait
+       au-dessus des liens Confidentialité et CGU, et proposait d'installer
+       la carte à quelqu'un qui n'est pas encore inscrit — sur cette page le
+       seul geste utile est de remplir le formulaire. index.html la masque
+       déjà ; merci.html la garde, l'installation ayant du sens juste après
+       l'inscription. */
+    .progressier-widget { display: none !important; }
+
+    /* ─────────────────────────────────────────────────────────────
+       Page d'inscription, atteinte depuis la page NFC.
+
+       Refonte du 16/08/2026, en suite de indexnfc.html. Elle demandait
+       « Où devons-nous envoyer votre -10% ? » et son bouton disait
+       « Activer ma réduction -10% » — une remise que la plupart des
+       établissements n'accordent pas.
+
+       Elle rappelle désormais la récompense réelle juste avant le
+       formulaire : c'est l'instant où le client hésite à donner son
+       e-mail, et où il a besoin de savoir ce qu'il obtient.
+       ───────────────────────────────────────────────────────────── */
+    :root {
+      --marque:  #B8924F;
+      --marque2: #9E7A3E;
+      --encre:   #1d1d1f;
+      --gris:    #6b6b70;
+      --fond:    #faf7f2;
+      --carte:   #ffffff;
+      --ligne:   rgba(0,0,0,.07);
+      --ombre:   0 6px 28px rgba(0,0,0,.09);
+      --rouge:   #c0392b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--fond); color: var(--encre);
+      min-height: 100dvh; padding-bottom: 90px;
+    }
+
+    .banniere { position: relative; height: 118px; overflow: hidden; background: var(--marque); }
+    .banniere img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .banniere::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 40px;
+      background: var(--fond); border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    }
+    .medaillon {
+      position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%);
+      width: 76px; height: 76px; border-radius: 50%;
+      background: #fff; border: 3px solid #fff; box-shadow: var(--ombre);
+      display: grid; place-items: center; overflow: hidden; z-index: 2;
+    }
+    .medaillon img { width: 100%; height: 100%; object-fit: cover; }
+    .medaillon .initiales { font-weight: 800; font-size: 22px; color: var(--marque); }
+
+    .page { max-width: 480px; margin: 0 auto; padding: 14px 20px 0; text-align: center; }
+
+    .presence {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; border: 1px solid var(--ligne); border-radius: 999px;
+      padding: 6px 14px; font-size: 12.5px; font-weight: 600; white-space: nowrap;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05); margin-bottom: 12px;
+    }
+    .presence .point { width: 9px; height: 9px; border-radius: 50%; background: #1a9e5c; }
+
+    h1 { font-size: 22px; font-weight: 800; line-height: 1.22; letter-spacing: -.3px; }
+    .sous-titre { margin-top: 5px; font-size: 13.5px; color: var(--gris); }
+
+    /* ── Rappel de la récompense, juste avant le formulaire ─────── */
+    /* Bande compacte : le rappel doit motiver sans repousser le
+       formulaire hors de l'écran. Sur un nom long, l'ancienne carte
+       coûtait 142 px et le bouton d'envoi tombait à 942 px. */
+    .rappel {
+      margin-top: 14px; background: var(--carte); border: 1px solid var(--ligne);
+      border-radius: 14px; padding: 11px 14px; box-shadow: 0 3px 14px rgba(0,0,0,.06);
+      display: flex; gap: 11px; align-items: center; text-align: left;
+    }
+    .rappel .visuel {
+      flex-shrink: 0; width: 42px; height: 42px; border-radius: 10px;
+      display: grid; place-items: center; font-size: 21px; overflow: hidden;
+      background: linear-gradient(135deg, rgba(184,146,79,.14), rgba(158,122,62,.10));
+    }
+    .rappel .visuel img { width: 100%; height: 100%; object-fit: cover; }
+    .rappel .intitule {
+      font-size: 10px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase;
+      color: var(--marque2); margin-bottom: 4px;
+    }
+    .rappel .titre { font-size: 14.5px; font-weight: 800; line-height: 1.25; }
+    .rappel .detail { margin-top: 2px; font-size: 11.5px; color: var(--gris); line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* ── Réassurance ───────────────────────────────────────────── */
+    .rassure {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+      margin-top: 16px; padding: 13px 4px;
+      background: var(--carte); border: 1px solid var(--ligne); border-radius: 16px;
+    }
+    .rassure > div { text-align: center; padding: 0 4px; }
+    .rassure .ico { font-size: 18px; }
+    .rassure .quoi { margin-top: 4px; font-size: 12px; font-weight: 800; }
+    .rassure .pourquoi { margin-top: 2px; font-size: 10.5px; color: var(--gris); line-height: 1.4; }
+
+    /* ── Formulaire ────────────────────────────────────────────── */
+    .carte {
+      margin-top: 14px; background: var(--carte); border: 1px solid var(--ligne);
+      border-radius: 18px; padding: 18px 18px 20px; box-shadow: var(--ombre); text-align: left;
+    }
+    .carte h2 { font-size: 15.5px; font-weight: 800; line-height: 1.3; margin-bottom: 14px; }
+    .carte .amorce { margin-top: 6px; margin-bottom: 16px; font-size: 13px; color: var(--gris); line-height: 1.5; }
+
+    .bv-loading { padding: 26px 0; text-align: center; color: var(--gris); font-size: 14px; }
+    .bv-field { margin-bottom: 13px; }
+    .bv-label { display: block; margin-bottom: 5px; font-size: 12px; font-weight: 800; color: var(--gris); }
+    .bv-input {
+      width: 100%; padding: 13px 14px; border: 1.5px solid var(--ligne); border-radius: 11px;
+      font-family: inherit; font-size: 16px; background: var(--fond); color: var(--encre);
+    }
+    .bv-input:focus { outline: none; border-color: var(--marque); box-shadow: 0 0 0 3px rgba(184,146,79,.14); }
+    .bv-btn {
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      width: 100%; margin-top: 6px; padding: 16px 18px;
+      background: linear-gradient(135deg, var(--marque), var(--marque2));
+      color: #fff; border: none; border-radius: 13px;
+      font-family: inherit; font-size: 16.5px; font-weight: 800; cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,.15);
+    }
+    .bv-btn:active { transform: translateY(1px); }
+    .bv-btn:disabled { opacity: .6; cursor: not-allowed; }
+    .bv-privacy { margin-top: 11px; text-align: center; font-size: 11px; color: var(--gris); line-height: 1.5; }
+    .bv-error {
+      display: none; margin-top: 11px; padding: 10px 12px; border-radius: 10px;
+      background: rgba(192,57,43,.07); border: 1px solid rgba(192,57,43,.22);
+      color: var(--rouge); font-size: 12.5px;
+    }
+
+    .pied { margin-top: 20px; font-size: 11.5px; color: var(--gris); }
+
+    /* ── Barre légale ──────────────────────────────────────────── */
+    .sticky {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      background: rgba(250,247,242,.95); backdrop-filter: blur(10px);
+      border-top: 1px solid var(--ligne);
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    }
+    .stickyInner { max-width: 480px; margin: 0 auto; display: flex; gap: 10px; justify-content: center; }
+    .btnLink {
+      font-size: 12px; font-weight: 700; color: var(--gris); text-decoration: none;
+      padding: 7px 13px; border: 1px solid var(--ligne); border-radius: 999px; background: #fff;
+    }
+
+    @media (max-width: 360px) {
+      h1 { font-size: 21px; }
+      .rappel { flex-direction: column; text-align: center; }
+    }
+  </style>
+
+
+  <!-- ✅ Détection retour après soumission (paramètre URL ?submitted=1 conservé pour compatibilité) -->
+  <script>
+  (function(){
+    const params = new URLSearchParams(location.search);
+    if (params.get("submitted") !== "1") return;
+
+    const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+    const now = Date.now();
+
+    try{
+      localStorage.setItem("is_registered", "1");
+      localStorage.setItem("fv_onboarding_done", "1");
+      localStorage.setItem(`fv_registered_${RESTO}`, "1");
+      localStorage.setItem(`fv_registered_at_${RESTO}`, String(now));
+    }catch(e){}
+
+    // ✅ Cookie de persistance pour PWA standalone iOS (localStorage isolé de Safari)
+    window.Fidelavis?.setAuthCookie?.();
+    /* Cookie d'appartenance à CE club. Les notifications ne sont plus
+       étiquetées que pour les membres, et sur iOS le stockage local de la
+       carte installée est séparé de celui de Safari où l'inscription a
+       lieu : seul un cookie traverse cette frontière. Écrit ici pour ne
+       pas dépendre d'un chargement de page ultérieur. */
+    try { document.cookie = 'fv_member_' + RESTO + '=1; path=/; max-age=31536000; SameSite=Lax'; } catch(_) {}
+
+    const dedupKey = `signup_${RESTO}`;
+    const last = Number(localStorage.getItem(dedupKey) || "0");
+
+    if (!last || (now - last) > 86400000) {
+      try { localStorage.setItem(dedupKey, String(now)); } catch(e){}
+
+      try {
+        window.Fidelavis?.track?.("signup", {
+          src: "ghl_redirect_inscription",
+          page: "inscription",
+          resto: RESTO
+        });
+      } catch(e){}
+
+      try {
+        window.trackEventFidelavis?.("form_submit", RESTO, {
+          src: "ghl_redirect_inscription",
+          demo: location.pathname.includes("/demo/") ? "1" : "0"
+        });
+      } catch(e){}
+    }
+
+    params.delete("submitted");
+    const clean = location.pathname + (params.toString() ? "?" + params.toString() : "");
+    try { history.replaceState({}, document.title, clean); } catch(e){}
+
+    setTimeout(() => window.location.replace("redit.html"), 220);
+  })();
+  </script>
+</head>
+
+<body>
+
+  <div class="banniere">
+    <img id="photo" alt="" />
+    <div class="medaillon"><span class="initiales" id="initiales">·</span></div>
+  </div>
+
+  <div class="page">
+
+    <div class="presence">
+      <span class="point"></span>
+      Vous êtes sur place aujourd'hui
+    </div>
+
+    <h1>Votre avantage vous attend 🎁</h1>
+    <p class="sous-titre">Rejoignez le Club <span id="nomClub">Fidelavis</span> pour en profiter</p>
+
+    <!-- Rappel de la récompense AVANT le formulaire : c'est l'instant où
+         le client hésite à donner son e-mail. Même source que la page NFC,
+         pour qu'il ne lise pas deux promesses différentes en deux écrans. -->
+    <div class="rappel">
+      <div class="visuel" id="cadeauVisuel">🎁</div>
+      <div>
+        <div class="intitule" id="cadeauIntitule">Cadeau de bienvenue</div>
+        <div class="titre"  id="cadeauTitre">Un avantage vous attend</div>
+        <div class="detail" id="cadeauDetail">Choisi par l'établissement — vous le découvrez juste après votre inscription.</div>
+      </div>
+    </div>
+
+    <div class="carte" id="card">
+      <h2>Où envoyer votre avantage&nbsp;?</h2>
+
+      <div id="brevoLoading" class="bv-loading">Chargement…</div>
+
+      <form id="brevoForm" style="display:none" onsubmit="submitBrevoForm(event)" novalidate>
+        <div class="bv-field">
+          <label class="bv-label" for="bvPrenom">Prénom</label>
+          <input class="bv-input" type="text" id="bvPrenom"
+            placeholder="Votre prénom" autocomplete="given-name" />
+        </div>
+        <div class="bv-field">
+          <label class="bv-label" for="bvEmail">Email *</label>
+          <input class="bv-input" type="email" id="bvEmail"
+            placeholder="votre@email.com" required autocomplete="email" />
+        </div>
+        <button class="bv-btn" type="submit" id="bvSubmitBtn">
+          🎁 Recevoir mon avantage
+        </button>
+        <div class="bv-privacy">
+          🔒 Aucun spam · Données non partagées · Désinscription en 1 clic
+        </div>
+        <div class="bv-error" id="bvError"></div>
+      </form>
+    </div>
+
+    <div class="rassure">
+      <div>
+        <div class="ico">⚡</div>
+        <div class="quoi">Rapide</div>
+        <div class="pourquoi">10 secondes</div>
+      </div>
+      <div>
+        <div class="ico">🎁</div>
+        <div class="quoi">Gratuit</div>
+        <div class="pourquoi">Sans engagement</div>
+      </div>
+      <div>
+        <div class="ico">🔒</div>
+        <div class="quoi">Sécurisé</div>
+        <div class="pourquoi">Données protégées</div>
+      </div>
+    </div>
+
+    <div class="pied">❤️ Merci de soutenir les commerces locaux 🌿</div>
+  </div>
+
+  <div class="sticky">
+    <div class="stickyInner">
+      <a class="btnLink" id="ppBtn" href="/privacy.html">🔐 Confidentialité</a>
+      <a class="btnLink" id="cguBtn" href="/cgu.html">📄 CGU</a>
+    </div>
+  </div>
+
+
+  <script>
+  var _brevoConfig = null; // accessible par submitBrevoForm (hors IIFE)
+  (function(){
+    const RESTO = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+
+    try {
+      if (!sessionStorage.getItem("fv_session_id")) {
+        sessionStorage.setItem("fv_session_id", "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2,8));
+      }
+    } catch(e){}
+
+    try {
+      if (!localStorage.getItem("device_id")) {
+        localStorage.setItem("device_id", "dev_" + Math.random().toString(36).slice(2,10));
+      }
+    } catch(e){}
+
+    try{
+      const key = `scan_to_signup_${RESTO}_${new Date().toISOString().slice(0,10)}`;
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
+        // ✅ Un seul appel — core.js gère un iframe unique par envoi
+        window.Fidelavis?.track?.("scan_to_signup", {
+          src: "inscription",
+          page: "inscription",
+          resto: RESTO
+        });
+      }
+    }catch(e){}
+
+    const from = encodeURIComponent(location.pathname);
+    document.getElementById("ppBtn").href  = "/privacy.html?from=" + from;
+    document.getElementById("cguBtn").href = "/cgu.html?from=" + from;
+
+    // ─── Formulaire Brevo ────────────────────────────────────
+    // _brevoConfig déclaré globalement avant l'IIFE
+    // Charge config.json pour lire brevoListId et brevoGasUrl
+    (async function initBrevoForm() {
+      try {
+        const res = await fetch("/" + RESTO + "/config.json", { cache: "no-store" });
+        if (res.ok) _brevoConfig = await res.json();
+      } catch(_) {}
+      document.getElementById("brevoLoading").style.display = "none";
+      document.getElementById("brevoForm").style.display = "block";
+    })();
+    // ────────────────────────────────────────────────────────
+  })();
+  </script>
+
+  <script>
+  function submitBrevoForm(e) {
+    e.preventDefault();
+    const email  = document.getElementById("bvEmail").value.trim();
+    const prenom = document.getElementById("bvPrenom").value.trim();
+    const errDiv = document.getElementById("bvError");
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errDiv.style.display = "block";
+      errDiv.textContent   = "Veuillez saisir un email valide.";
+      return;
+    }
+    errDiv.style.display = "none";
+
+    const btn = document.getElementById("bvSubmitBtn");
+    btn.disabled    = true;
+    btn.textContent = "Inscription en cours…";
+
+    const RESTO   = window.Fidelavis?.rememberLastResto?.() || window.Fidelavis?.getRestoSlug?.() || "resto1";
+    const listId  = _brevoConfig?.brevoListId  || 0;
+    // URL Brevo GAS : depuis config.json si configuré, sinon URL par défaut
+    const gasUrl  = _brevoConfig?.brevoGasUrl  || "https://script.google.com/macros/s/AKfycbymE_s4YOfYR4fiG0oSQZJqzDrN-grr4EMrena-YOc0WU5xk3qf6hHNV96lVKknncDnqA/exec";
+    const now     = Date.now();
+
+    // ── Envoi vers Brevo via GAS (fire-and-forget) ──
+    
+    /* La condition exigeait un listId non nul. Or brevoListId est absent des 97
+       config.json : listId valait donc toujours 0, et cet appel n'est jamais
+       parti. Aucun contact Brevo n'a jamais ete cree par une inscription, et
+       aucun e-mail de bienvenue n'a jamais ete envoye.
+
+       Le serveur sait pourtant faire : subscribeContact appelle
+       _getOrCreateListForResto(resto) quand listId vaut 0, et cree la liste du
+       restaurant a la volee. C'est le client qui ne l'appelait pas.
+
+       On envoie donc toujours, en transmettant listId tel quel — 0 compris. */
+    if (gasUrl) {
+      try {
+        const sp = new URLSearchParams();
+        sp.append("data", JSON.stringify({
+          action:    "subscribe",
+          email:     email,
+          firstName: prenom,
+          listId:    listId,
+          resto:     RESTO
+        }));
+        navigator.sendBeacon(gasUrl, sp);
+      } catch(_) {}
+    }
+
+    // ── Phase 2 : double-write Supabase (fire-and-forget) ──
+    // Brevo reste la source de vérité tant que Supabase n'est pas validé.
+    // Si Supabase indisponible → silencieux, aucun impact UX.
+    try {
+      if (window.fvSupa && window.fvSupa.isReady()) {
+        const deviceId = localStorage.getItem("device_id") || null;
+        window.fvSupa.registerClient(RESTO, email, prenom, deviceId, "brevo_form")
+          .then(r => console.log("[Fidelavis] Supabase client:", r));
+      }
+    } catch(_) {}
+
+    // ── Persistance localStorage (même logique qu'avec GHL) ──
+    try {
+      localStorage.setItem("is_registered",              "1");
+      localStorage.setItem("fv_onboarding_done",         "1");
+      localStorage.setItem("fv_registered_"    + RESTO,  "1");
+      localStorage.setItem("fv_registered_at_" + RESTO,  String(now));
+      if (email) {
+        localStorage.setItem("user_email", email);
+        try { document.cookie = "fv_email=" + encodeURIComponent(email) + "; path=/; max-age=31536000; SameSite=Lax"; } catch(_) {}
+      }
+      if (prenom) {
+        localStorage.setItem("fv_firstname",          prenom);   // affiché après « Bonjour »
+        localStorage.setItem("fv_firstname_" + RESTO, prenom);
+        // Cookie partagé Safari ↔ PWA standalone (localStorage isolé sur iOS)
+        try { document.cookie = "fv_firstname=" + encodeURIComponent(prenom) + "; path=/; max-age=31536000; SameSite=Lax"; } catch(_) {}
+      }
+    } catch(_) {}
+
+    // Cookie PWA iOS standalone (localStorage isolé de Safari)
+    window.Fidelavis?.setAuthCookie?.();
+    /* Cookie d'appartenance à CE club. Les notifications ne sont plus
+       étiquetées que pour les membres, et sur iOS le stockage local de la
+       carte installée est séparé de celui de Safari où l'inscription a
+       lieu : seul un cookie traverse cette frontière. Écrit ici pour ne
+       pas dépendre d'un chargement de page ultérieur. */
+    try { document.cookie = 'fv_member_' + RESTO + '=1; path=/; max-age=31536000; SameSite=Lax'; } catch(_) {}
+
+    // ── Étiquetage Progressier ──
+    // Les 98 wallets partagent un seul compte Progressier. Sans étiquette,
+    // une notification part à TOUS les abonnés : le « Happy Hour » d'un
+    // brunch du 11e arriverait chez les clients d'un café de Neuilly.
+    // Le slug devient l'étiquette, et l'envoi la cible.
+    try {
+      if (window.progressier && typeof window.progressier.add === "function") {
+        window.progressier.add({ id: email, email: email, tags: RESTO });
+      }
+    } catch(_) {}
+
+    // ── Tracking ──
+    const dedupKey = "signup_brevo_" + RESTO;
+    const last     = Number(localStorage.getItem(dedupKey) || "0");
+    if (!last || (now - last) > 86400000) {
+      try { localStorage.setItem(dedupKey, String(now)); } catch(_) {}
+      try {
+        window.Fidelavis?.track?.("signup", {
+          src:   "brevo_form",
+          page:  "inscription",
+          resto: RESTO
+        });
+      } catch(_) {}
+    }
+
+    // ── Redirection vers merci ──
+    setTimeout(() => window.location.replace("redit.html"), 400);
+  }
+  </script>
+
+  <!-- Présentation : photo, logo, couleurs et rappel de la récompense.
+       Même source que la page NFC (offre_jour), pour que le client ne lise
+       pas deux promesses différentes en deux écrans. -->
+  <script>
+  (function(){
+    function initiales(nom){
+      var mots = String(nom || "").replace(/[^\p{L}\p{N} ]/gu, " ").trim().split(/\s+/);
+      if (!mots[0]) return "·";
+      return (mots.length > 1 ? mots[0][0] + mots[1][0] : mots[0].slice(0, 2)).toUpperCase();
+    }
+
+    (async function(){
+      var cfg = null;
+      try { cfg = await window.Fidelavis?.loadConfig?.(); } catch(e){}
+      cfg = cfg || {};
+
+      var nom = cfg.name || "";
+      if (nom) {
+        document.getElementById("nomClub").textContent = nom;
+        document.title = "Rejoindre le Club " + nom;
+      }
+
+      if (cfg.color)  document.documentElement.style.setProperty("--marque",  cfg.color);
+      if (cfg.color2) document.documentElement.style.setProperty("--marque2", cfg.color2);
+
+      var photo = document.getElementById("photo");
+      if (cfg.heroUrl) { photo.src = cfg.heroUrl; photo.alt = nom ? ("Chez " + nom) : ""; }
+      else photo.remove();
+
+      var med = document.querySelector(".medaillon");
+      document.getElementById("initiales").textContent = initiales(nom);
+      if (cfg.logoUrl) {
+        var img = new Image(); img.alt = nom;
+        img.onload = function(){ med.innerHTML = ""; med.appendChild(img); };
+        img.src = cfg.logoUrl;
+      }
+
+      // Deux sources, dans l'ordre qu'applique déjà la page d'accueil du
+      // wallet (index.html) — mes pages ne lisaient que la seconde, et un
+      // restaurateur ayant rempli son calendrier n'aurait rien vu s'afficher :
+      //
+      //   1. monthlyOffers[mois] — le calendrier d'offres sur 12 mois. Il est
+      //      indexé par mois, donc toujours à jour par construction.
+      //   2. activeCoupon — le coupon du mois, saisi ponctuellement. Affiché
+      //      seulement s'il est bien du mois en cours : ceux trouvés en base
+      //      dataient de juin alors qu'on était en août, et annoncer un café
+      //      offert périmé expose le client à un refus au comptoir.
+      //
+      // offre_jour n'entre pas ici : c'est une promotion ponctuelle poussée
+      // en notification, pas l'avantage permanent du membre.
+      var MOIS = ["janvier","février","mars","avril","mai","juin",
+                  "juillet","août","septembre","octobre","novembre","décembre"];
+      var maintenant = new Date();
+
+      function imageOffre(v){
+        v = String(v || "").trim();
+        if (!v) return "";
+        if (/^https?:\/\//.test(v)) return v;
+        if (/^offre-\d+\.jpg$/i.test(v)) return "https://app.cartefidelavis.com/assets/offres/" + v.toLowerCase();
+        return "";
+      }
+
+      var titre = "", detail = "", image = "";
+
+      var cal = Array.isArray(cfg.monthlyOffers) ? cfg.monthlyOffers[maintenant.getMonth()] : null;
+      if (cal && String(cal.title || "").trim()) {
+        titre = String(cal.title).trim();
+        image = imageOffre(cal.image);
+      } else {
+        var c = cfg.activeCoupon || {};
+        var t = String(c.title || "").trim();
+        var duMois = false;
+        if (t) {
+          var m = String(c.month || "").trim().toLowerCase();
+          if (m) {
+            duMois = (m === MOIS[maintenant.getMonth()]);
+          } else if (c.updatedAt) {
+            var u = new Date(c.updatedAt);
+            duMois = !isNaN(u) && u.getMonth() === maintenant.getMonth()
+                               && u.getFullYear() === maintenant.getFullYear();
+          }
+          // Ni mois ni date d'enregistrement : valeur posée à la création du
+          // wallet, jamais choisie par le restaurateur. On ne la promet pas.
+        }
+        if (duMois) {
+          titre  = t;
+          detail = String(c.description || "").trim();
+          image  = imageOffre(c.imageUrl);
+        }
+      }
+
+      if (titre) {
+        document.getElementById("cadeauTitre").textContent  = titre;
+        document.getElementById("cadeauDetail").textContent = detail || "Offert par l'établissement.";
+        if (image) {
+          var v = document.getElementById("cadeauVisuel");
+          var im = new Image(); im.alt = "";
+          im.onload = function(){ v.innerHTML = ""; v.appendChild(im); };
+          im.src = image;
+        }
+      }
+      // Sinon : le texte par défaut reste. Il ne promet rien de chiffré ni de
+      // daté, il est donc toujours vrai.
+    })();
+  })();
+  </script>
+
+</body>
+</html>

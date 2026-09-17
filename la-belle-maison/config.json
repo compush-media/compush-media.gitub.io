@@ -1,0 +1,31 @@
+{
+  "name": "La Belle Maison",
+  "color": "#79462D",
+  "color2": "#633924",
+  "phone": "0142580066",
+  "address": "88 Rue Lepic  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJs5FnbQBv5kcRqv75IMiKVmE",
+  "logoUrl": "https://app.cartefidelavis.com/la-belle-maison/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/labellemaison.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/la-belle-maison/hero.jpg",
+  "tagline": "La Belle Maison — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-belle-maison/logo.jpg"
+}

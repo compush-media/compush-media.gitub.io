@@ -1,0 +1,28 @@
+{
+  "name": "Bar Brasserie La Piscine",
+  "color": "#C99E13",
+  "color2": "#A4810F",
+  "phone": "0175575786",
+  "address": "5 Pl. Hébert  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJxbHSNnxu5kcRh1MWoKQIuig",
+  "heroUrl": "https://app.cartefidelavis.com/bar-brasserie-la-piscine/hero.jpg",
+  "tagline": "Bar Brasserie La Piscine — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

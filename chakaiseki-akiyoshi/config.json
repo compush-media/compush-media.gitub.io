@@ -1,0 +1,31 @@
+{
+  "name": "Chakaiseki Akiyoshi",
+  "color": "#81613F",
+  "color2": "#694F33",
+  "phone": "59 Rue Letellier  75015 Paris",
+  "address": "https://search.google.com/local/writereview?placeid=ChIJXZOfs6Zx5kcRLQByGMVUS1A",
+  "logoUrl": "https://app.cartefidelavis.com/chakaiseki-akiyoshi/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/chakaiseki_akiyoshi/",
+  "heroUrl": "https://app.cartefidelavis.com/chakaiseki-akiyoshi/hero.jpg",
+  "tagline": "Chakaiseki Akiyoshi — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/chakaiseki-akiyoshi/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJXZOfs6Zx5kcRLQByGMVUS1A"
+}

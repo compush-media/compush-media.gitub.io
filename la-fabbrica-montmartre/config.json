@@ -1,0 +1,31 @@
+{
+  "name": "La Fabbrica Montmartre",
+  "color": "#984A76",
+  "color2": "#7C3C60",
+  "phone": "0142551425",
+  "address": "46 Rue Caulaincourt  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJxZ0eXlBu5kcRs4pJJiUTF4E",
+  "logoUrl": "https://app.cartefidelavis.com/la-fabbrica-montmartre/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lafabbricaparis",
+  "heroUrl": "https://app.cartefidelavis.com/la-fabbrica-montmartre/hero.jpg",
+  "tagline": "La Fabbrica Montmartre — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-fabbrica-montmartre/logo.jpg"
+}

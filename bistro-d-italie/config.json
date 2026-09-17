@@ -1,0 +1,28 @@
+{
+  "name": "Bistro d'italie",
+  "color": "#493227",
+  "color2": "#3B291F",
+  "phone": "0140559000",
+  "address": "4 Rue du Général Lanrezac  75017 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ9SKW6-xv5kcRf8n7amCTKTc",
+  "heroUrl": "https://app.cartefidelavis.com/bistro-d-italie/hero.jpg",
+  "tagline": "Bistro d'italie — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

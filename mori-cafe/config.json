@@ -1,0 +1,31 @@
+{
+  "name": "Mori café",
+  "color": "#275B35",
+  "color2": "#1F4A2B",
+  "phone": "0148061972",
+  "address": "2 Rue des Taillandiers  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJsV6fjq9z5kcRPAUi1NQc3SI",
+  "logoUrl": "https://app.cartefidelavis.com/mori-cafe/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/moricafeparis/",
+  "heroUrl": "https://app.cartefidelavis.com/mori-cafe/hero.jpg",
+  "tagline": "Mori café — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/mori-cafe/logo.jpg"
+}

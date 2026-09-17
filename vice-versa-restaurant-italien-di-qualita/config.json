@@ -1,0 +1,31 @@
+{
+  "name": "Vice Versa · Restaurant italien  di qualità",
+  "color": "#62210E",
+  "color2": "#501B0B",
+  "phone": "0980448624",
+  "address": "71 Rue des Voies du Bois PARKING au n°77  92700 Colombes",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ96mnBbhl5kcRP68kx0_a1f4",
+  "logoUrl": "https://app.cartefidelavis.com/vice-versa-restaurant-italien-di-qualita/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/viceversacolombes?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+  "heroUrl": "https://app.cartefidelavis.com/vice-versa-restaurant-italien-di-qualita/hero.jpg",
+  "tagline": "Vice Versa · Restaurant italien  di qualità — Colombes",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Colombes",
+  "iconUrl": "https://app.cartefidelavis.com/vice-versa-restaurant-italien-di-qualita/logo.jpg"
+}

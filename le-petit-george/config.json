@@ -1,0 +1,31 @@
+{
+  "name": "Le Petit George",
+  "color": "#92834F",
+  "color2": "#776B40",
+  "phone": "0142891097",
+  "address": "37 Rue Washington  75008 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJO0lHD8Fv5kcROQxLadQQUy0",
+  "logoUrl": "https://app.cartefidelavis.com/le-petit-george/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurantlepetitgeorge/",
+  "heroUrl": "https://app.cartefidelavis.com/le-petit-george/hero.jpg",
+  "tagline": "Le Petit George — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-petit-george/logo.jpg"
+}

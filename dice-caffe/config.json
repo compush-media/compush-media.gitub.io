@@ -1,0 +1,31 @@
+{
+  "name": "DICE Caffè",
+  "color": "#1E2D53",
+  "color2": "#182444",
+  "phone": "0142715973",
+  "address": "11 Rue du Pas de la Mule  75004 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJM99S_v9t5kcRj02d6p01blw",
+  "logoUrl": "https://app.cartefidelavis.com/dice-caffe/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/dicecaffe/",
+  "heroUrl": "https://app.cartefidelavis.com/dice-caffe/hero.jpg",
+  "tagline": "DICE Caffè — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/dice-caffe/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Café Francoeur",
+  "color": "#C4191A",
+  "color2": "#A01415",
+  "phone": "01 53 28 00 15",
+  "address": "129 Rue Caulaincourt 75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJT7f3blxu5kcRjiC5XDzFLas",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-francoeur/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/cafefrancoeur/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-francoeur/hero.jpg",
+  "tagline": "Café Francoeur — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-francoeur/logo.jpg"
+}

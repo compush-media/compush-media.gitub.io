@@ -1,0 +1,22 @@
+{
+  "name": "Café Charbon",
+  "short_name": "Café Charbon",
+  "start_url": "/cafe-charbon/index.html",
+  "scope": "/cafe-charbon/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#CC8F4D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

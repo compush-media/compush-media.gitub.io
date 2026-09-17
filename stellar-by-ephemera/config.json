@@ -1,0 +1,31 @@
+{
+  "name": "Stellar by Ephemera",
+  "color": "#493727",
+  "color2": "#3B2D1F",
+  "phone": "45 Rue Saint-Sébastien 75011 Paris",
+  "address": "https://search.google.com/local/writereview?placeid=ChIJrbxjimxt5kcR8wRf2dLRao4",
+  "logoUrl": "https://app.cartefidelavis.com/stellar-by-ephemera/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ephemeragroup/",
+  "heroUrl": "https://app.cartefidelavis.com/stellar-by-ephemera/hero.jpg",
+  "tagline": "Stellar by Ephemera — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/stellar-by-ephemera/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJrbxjimxt5kcR8wRf2dLRao4"
+}

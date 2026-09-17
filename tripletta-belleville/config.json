@@ -1,0 +1,31 @@
+{
+  "name": "Tripletta Belleville",
+  "color": "#58A479",
+  "color2": "#488663",
+  "phone": "0142547280",
+  "address": "88 Bd de Belleville  75020 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJgd8RVu9t5kcRYm0mLIWqfv4",
+  "logoUrl": "https://app.cartefidelavis.com/tripletta-belleville/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/triplettapizza/",
+  "heroUrl": "https://app.cartefidelavis.com/tripletta-belleville/hero.jpg",
+  "tagline": "Tripletta Belleville — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/tripletta-belleville/logo.jpg"
+}

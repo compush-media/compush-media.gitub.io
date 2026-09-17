@@ -1,0 +1,31 @@
+{
+  "name": "Salsamenteria di Parma",
+  "color": "#5A3C16",
+  "color2": "#493112",
+  "phone": "0148245894",
+  "address": "40 Rue Saint-Georges  75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ305xh0du5kcR6_CXF78fgFg",
+  "logoUrl": "https://app.cartefidelavis.com/salsamenteria-di-parma/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/salsamenteriadiparma/",
+  "heroUrl": "https://app.cartefidelavis.com/salsamenteria-di-parma/hero.jpg",
+  "tagline": "Salsamenteria di Parma — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/salsamenteria-di-parma/logo.jpg"
+}

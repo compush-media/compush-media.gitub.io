@@ -1,0 +1,22 @@
+{
+  "name": "Les Rupins - Restaurant Parisien",
+  "short_name": "Les Rupins - Restaurant Parisien",
+  "start_url": "/les-rupins-restaurant-parisien/index.html",
+  "scope": "/les-rupins-restaurant-parisien/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#213A6D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

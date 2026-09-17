@@ -1,0 +1,31 @@
+{
+  "name": "In Casa",
+  "color": "#478369",
+  "color2": "#3A6B56",
+  "phone": "0155439364",
+  "address": "23 Rue Desaix  75015 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJNy1QaKBx5kcRnhf-qtbfRvw",
+  "logoUrl": "https://app.cartefidelavis.com/in-casa/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/incasaparis15/",
+  "heroUrl": "https://app.cartefidelavis.com/in-casa/hero.jpg",
+  "tagline": "In Casa — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/in-casa/logo.jpg"
+}

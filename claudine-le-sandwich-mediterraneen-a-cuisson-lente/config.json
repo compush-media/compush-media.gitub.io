@@ -1,0 +1,31 @@
+{
+  "name": "Claudine — Le sandwich méditerranéen à cuisson lente",
+  "color": "#1E3B52",
+  "color2": "#183043",
+  "phone": "0652592136",
+  "address": "53 Rue du Chemin Vert  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJaXg2o9tt5kcRAmFxcYxGHok",
+  "logoUrl": "https://app.cartefidelavis.com/claudine-le-sandwich-mediterraneen-a-cuisson-lente/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/claudine_slowdwich/",
+  "heroUrl": "https://app.cartefidelavis.com/claudine-le-sandwich-mediterraneen-a-cuisson-lente/hero.jpg",
+  "tagline": "Claudine — Le sandwich méditerranéen à cuisson lente — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/claudine-le-sandwich-mediterraneen-a-cuisson-lente/logo.jpg"
+}

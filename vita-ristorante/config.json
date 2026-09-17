@@ -1,0 +1,31 @@
+{
+  "name": "Vita Ristorante",
+  "color": "#26069F",
+  "color2": "#1F0482",
+  "phone": "0143294062",
+  "address": "9 Rue de l'École de Médecine  75006 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJFzwR6UVx5kcRnrQTWYKgjSE",
+  "logoUrl": "https://app.cartefidelavis.com/vita-ristorante/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/vita_ristorante/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/vita-ristorante/hero.jpg",
+  "tagline": "Vita Ristorante — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/vita-ristorante/logo.jpg"
+}

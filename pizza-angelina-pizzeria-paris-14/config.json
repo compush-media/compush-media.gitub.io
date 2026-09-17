@@ -1,0 +1,31 @@
+{
+  "name": "Pizza Angelina - Pizzeria Paris 14",
+  "color": "#992731",
+  "color2": "#7D1F28",
+  "phone": "0983484401",
+  "address": "197 Rue Raymond Losserand  75014 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJLR9z9ftx5kcRA7C3t-0dNTg",
+  "logoUrl": "https://app.cartefidelavis.com/pizza-angelina-pizzeria-paris-14/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pizza_angelina/?hl=en",
+  "heroUrl": "https://app.cartefidelavis.com/pizza-angelina-pizzeria-paris-14/hero.jpg",
+  "tagline": "Pizza Angelina - Pizzeria Paris 14 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pizza-angelina-pizzeria-paris-14/logo.jpg"
+}

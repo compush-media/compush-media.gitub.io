@@ -1,0 +1,28 @@
+{
+  "name": "Yansai Paris 17 - Restaurant Asiatique",
+  "color": "#806245",
+  "color2": "#685038",
+  "phone": "0146277386",
+  "address": "47 Rue des Moines  75017 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJIeV--21v5kcRj2cxHdN31VI",
+  "heroUrl": "https://app.cartefidelavis.com/yansai-paris-17-restaurant-asiatique/hero.jpg",
+  "tagline": "Yansai Paris 17 - Restaurant Asiatique — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

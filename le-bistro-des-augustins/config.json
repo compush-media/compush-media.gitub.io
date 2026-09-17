@@ -1,0 +1,28 @@
+{
+  "name": "Le Bistro des Augustins",
+  "color": "#493427",
+  "color2": "#3B2A1F",
+  "phone": "0143540441",
+  "address": "39 Quai des Grands Augustins  75006 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ4zpdo99x5kcRn-0vKiMMPhU",
+  "heroUrl": "https://app.cartefidelavis.com/le-bistro-des-augustins/hero.jpg",
+  "tagline": "Le Bistro des Augustins — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

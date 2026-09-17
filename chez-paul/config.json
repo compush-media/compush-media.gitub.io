@@ -1,0 +1,31 @@
+{
+  "name": "Chez Paul",
+  "color": "#591717",
+  "color2": "#481212",
+  "phone": "0147003457",
+  "address": "13 Rue de Charonne  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJU7fr_AZy5kcRAGgjMC05WUk",
+  "logoUrl": "https://app.cartefidelavis.com/chez-paul/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurantchezpaul/",
+  "heroUrl": "https://app.cartefidelavis.com/chez-paul/hero.jpg",
+  "tagline": "Chez Paul — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/chez-paul/logo.jpg"
+}

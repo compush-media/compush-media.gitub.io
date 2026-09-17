@@ -1,0 +1,28 @@
+{
+  "name": "Da Rocco",
+  "color": "#AF8F6A",
+  "color2": "#8F7556",
+  "phone": "0145556612",
+  "address": "119 Rue de Grenelle  75007 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJsegK79Vv5kcRJ-jRvtLxDfs",
+  "heroUrl": "https://app.cartefidelavis.com/da-rocco/hero.jpg",
+  "tagline": "Da Rocco — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Brasserie Martin",
+  "color": "#273649",
+  "color2": "#1F2C3B",
+  "phone": "0148053436",
+  "address": "24 Rue Saint-Ambroise  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJuU_y2Spt5kcR4zgRjp_YWEc",
+  "logoUrl": "https://app.cartefidelavis.com/brasserie-martin/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lanouvellegarde/",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-martin/hero.jpg",
+  "tagline": "Brasserie Martin — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-martin/logo.jpg"
+}

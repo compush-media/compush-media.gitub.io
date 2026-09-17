@@ -1,0 +1,31 @@
+{
+  "name": "Le Coq & Fils - the Poultry House",
+  "color": "#6379B1",
+  "color2": "#516391",
+  "phone": "0142598289",
+  "address": "98 Rue Lepic  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJTQ7TuVpu5kcRSvp5FZSHjzc",
+  "logoUrl": "https://app.cartefidelavis.com/le-coq-fils-the-poultry-house/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lecoq_fils/",
+  "heroUrl": "https://app.cartefidelavis.com/le-coq-fils-the-poultry-house/hero.jpg",
+  "tagline": "Le Coq & Fils - the Poultry House — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-coq-fils-the-poultry-house/logo.jpg"
+}

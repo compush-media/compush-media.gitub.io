@@ -1,0 +1,31 @@
+{
+  "name": "Bistrot Caché",
+  "color": "#304927",
+  "color2": "#273B1F",
+  "phone": "0663358421",
+  "address": "13 Rue Saint-Paul  75004 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJK4oNgf5x5kcRU4Lib9VEiNo",
+  "logoUrl": "https://app.cartefidelavis.com/bistrot-cache/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bistrot_cache",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-cache/hero.jpg",
+  "tagline": "Bistrot Caché — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-cache/logo.jpg"
+}

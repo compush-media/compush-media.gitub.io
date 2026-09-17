@@ -1,0 +1,28 @@
+{
+  "name": "Café restaurant de la Paix",
+  "color": "#493127",
+  "color2": "#3B281F",
+  "phone": "0144720824",
+  "address": "33 Rue de la Chapelle  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ3-QCzHxu5kcRr-NC_CeZNoA",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-restaurant-de-la-paix/hero.jpg",
+  "tagline": "Café restaurant de la Paix — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

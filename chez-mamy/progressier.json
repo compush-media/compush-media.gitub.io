@@ -1,0 +1,22 @@
+{
+  "name": "Chez Mamy",
+  "short_name": "Chez Mamy",
+  "start_url": "/chez-mamy/index.html",
+  "scope": "/chez-mamy/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#5B2A16",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

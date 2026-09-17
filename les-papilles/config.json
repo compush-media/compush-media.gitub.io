@@ -1,0 +1,28 @@
+{
+  "name": "Les Papilles",
+  "color": "#61432A",
+  "color2": "#4F3622",
+  "phone": "0143252079",
+  "address": "30 Rue Gay-Lussac  75005 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJPUUb7MJx5kcReXIHwe3cQrw",
+  "heroUrl": "https://app.cartefidelavis.com/les-papilles/hero.jpg",
+  "tagline": "Les Papilles — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

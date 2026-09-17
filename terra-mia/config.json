@@ -1,0 +1,28 @@
+{
+  "name": "Terra Mia",
+  "color": "#AF8C6A",
+  "color2": "#8F7256",
+  "phone": "0954477170",
+  "address": "118 Bd du Montparnasse  75014 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJAQA8Nc9x5kcRIqFSkSm0V3g",
+  "heroUrl": "https://app.cartefidelavis.com/terra-mia/hero.jpg",
+  "tagline": "Terra Mia — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

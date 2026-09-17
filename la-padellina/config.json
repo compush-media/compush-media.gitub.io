@@ -1,0 +1,28 @@
+{
+  "name": "La Padellina",
+  "color": "#225944",
+  "color2": "#1B4837",
+  "phone": "0142811501",
+  "address": "1 Rue Chaptal  75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzWpVB-pv5kcRMuKD-Q8QzZM",
+  "heroUrl": "https://app.cartefidelavis.com/la-padellina/hero.jpg",
+  "tagline": "La Padellina — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

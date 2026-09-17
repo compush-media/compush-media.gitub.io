@@ -1,0 +1,31 @@
+{
+  "name": "Eataly Paris Marais",
+  "color": "#A47F58",
+  "color2": "#866848",
+  "phone": "01 83 65 81 00",
+  "address": "37 Rue Sainte-Croix de la Bretonnerie 75004 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJUSmUXUFv5kcR2GGP6Dn34pw",
+  "logoUrl": "https://app.cartefidelavis.com/eataly-paris-marais/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/eatalyparis/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/eataly-paris-marais/hero.jpg",
+  "tagline": "Eataly Paris Marais — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/eataly-paris-marais/logo.jpg"
+}

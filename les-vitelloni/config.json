@@ -1,0 +1,31 @@
+{
+  "name": "Les Vitelloni",
+  "color": "#F00606",
+  "color2": "#C40404",
+  "phone": "0148873845",
+  "address": "4 Rue Dupetit-Thouars  75003 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJl6Mbw91v5kcR7lSFYIf-7iQ",
+  "logoUrl": "https://app.cartefidelavis.com/les-vitelloni/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesvitelloni/",
+  "heroUrl": "https://app.cartefidelavis.com/les-vitelloni/hero.jpg",
+  "tagline": "Les Vitelloni — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-vitelloni/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "PAGAILLE - Restaurant- Paris 18",
+  "color": "#AF896A",
+  "color2": "#8F7056",
+  "phone": "0745015363",
+  "address": "46 Rue Ramey  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJq-BU7yFv5kcR05H3kPXxjtI",
+  "logoUrl": "https://app.cartefidelavis.com/pagaille-restaurant-paris-18/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pagaille_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/pagaille-restaurant-paris-18/hero.jpg",
+  "tagline": "PAGAILLE - Restaurant- Paris 18 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pagaille-restaurant-paris-18/logo.jpg"
+}

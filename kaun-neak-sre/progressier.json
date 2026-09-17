@@ -1,0 +1,22 @@
+{
+  "name": "Kaun Neak Sre",
+  "short_name": "Kaun Neak Sre",
+  "start_url": "/kaun-neak-sre/index.html",
+  "scope": "/kaun-neak-sre/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#956046",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

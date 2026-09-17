@@ -1,0 +1,22 @@
+{
+  "name": "Mozzafiato Paris – Pizzeria Artisanale 11e Arrondissement",
+  "short_name": "Mozzafiato Paris – Pizzeria Artisanale 11e Arrondissement",
+  "start_url": "/mozzafiato-paris-pizzeria-artisanale-11e-arrondissement/index.html",
+  "scope": "/mozzafiato-paris-pizzeria-artisanale-11e-arrondissement/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#154FA0",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Lüük Sandwich",
+  "color": "#7F5C44",
+  "color2": "#684B37",
+  "phone": "0142589390",
+  "address": "16 Rue de Clignancourt  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ-z2cI2hu5kcRHSFC26Dp1Eo",
+  "heroUrl": "https://app.cartefidelavis.com/luuk-sandwich/hero.jpg",
+  "tagline": "Lüük Sandwich — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

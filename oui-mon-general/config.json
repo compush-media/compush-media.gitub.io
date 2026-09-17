@@ -1,0 +1,31 @@
+{
+  "name": "Oui Mon Général !",
+  "color": "#4C60B5",
+  "color2": "#3E4E94",
+  "phone": "0147837666",
+  "address": "14 Rue du Général Bertrand  75007 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQzUcpy9x5kcR9JZ7dlhGc74",
+  "logoUrl": "https://app.cartefidelavis.com/oui-mon-general/logo.jpg",
+  "instagramUrl": "http://instagram.com/oui.mon.general",
+  "heroUrl": "https://app.cartefidelavis.com/oui-mon-general/hero.jpg",
+  "tagline": "Oui Mon Général ! — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/oui-mon-general/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "BENKAY TEPPAN-YAKI",
+  "color": "#B3637F",
+  "color2": "#925168",
+  "phone": "0140582126",
+  "address": "61 Quai de Grenelle  75015 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJZxFlNARw5kcRQsQt_VTUIuQ",
+  "logoUrl": "https://app.cartefidelavis.com/benkay-teppan-yaki/logo.jpg",
+  "instagramUrl": "https://instagram.com/benkayparis/",
+  "heroUrl": "https://app.cartefidelavis.com/benkay-teppan-yaki/hero.jpg",
+  "tagline": "BENKAY TEPPAN-YAKI — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/benkay-teppan-yaki/logo.jpg"
+}

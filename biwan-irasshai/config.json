@@ -1,0 +1,31 @@
+{
+  "name": "BIWAN ⸱ iRASSHAi",
+  "color": "#173659",
+  "color2": "#122C48",
+  "phone": "0184743530",
+  "address": "40 Rue du Louvre  75001 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJd_EcKQBv5kcRMor0baYZ9ho",
+  "logoUrl": "https://app.cartefidelavis.com/biwan-irasshai/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/irasshai.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/biwan-irasshai/hero.jpg",
+  "tagline": "BIWAN ⸱ iRASSHAi — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/biwan-irasshai/logo.jpg"
+}

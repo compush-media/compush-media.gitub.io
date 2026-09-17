@@ -1,0 +1,22 @@
+{
+  "name": "The Brooklyn Pizzeria",
+  "short_name": "The Brooklyn Pizzeria",
+  "start_url": "/the-brooklyn-pizzeria/index.html",
+  "scope": "/the-brooklyn-pizzeria/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#5E3412",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

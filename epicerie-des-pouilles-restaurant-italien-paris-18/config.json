@@ -1,0 +1,28 @@
+{
+  "name": "Épicerie des pouilles - Restaurant Italien Paris 18",
+  "color": "#364E65",
+  "color2": "#2C3F52",
+  "phone": "0144852462",
+  "address": "Epicérie des Pouilles  181 Rue Ordener  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQzCAid1v5kcRtIOJxEbhKWE",
+  "heroUrl": "https://app.cartefidelavis.com/epicerie-des-pouilles-restaurant-italien-paris-18/hero.jpg",
+  "tagline": "Épicerie des pouilles - Restaurant Italien Paris 18 — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

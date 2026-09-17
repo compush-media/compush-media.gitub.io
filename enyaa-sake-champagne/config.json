@@ -1,0 +1,31 @@
+{
+  "name": "EnYaa - Saké & Champagne",
+  "color": "#CBBA4E",
+  "color2": "#A6983F",
+  "phone": "0140267825",
+  "address": "37 Rue de Montpensier  75001 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJjxOJ0CRu5kcRVnY2i7_RCXs",
+  "logoUrl": "https://app.cartefidelavis.com/enyaa-sake-champagne/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurant_enyaa/",
+  "heroUrl": "https://app.cartefidelavis.com/enyaa-sake-champagne/hero.jpg",
+  "tagline": "EnYaa - Saké & Champagne — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/enyaa-sake-champagne/logo.jpg"
+}

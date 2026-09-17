@@ -1,0 +1,28 @@
+{
+  "name": "Le Nouveau Paris restaurant neuilly sur seine ile de la jatte",
+  "color": "#61432B",
+  "color2": "#4F3623",
+  "phone": "0146246612",
+  "address": "Ile De La Jatte  204 Bd Bineau  92200 Neuilly-sur-Seine",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJB94xEXdl5kcR3gN3ksks_0w",
+  "heroUrl": "https://app.cartefidelavis.com/le-nouveau-paris-restaurant-neuilly-sur-seine-ile-de-la-jatte/hero.jpg",
+  "tagline": "Le Nouveau Paris restaurant neuilly sur seine ile de la jatte — Neuilly-sur-Seine",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Neuilly-sur-Seine"
+}

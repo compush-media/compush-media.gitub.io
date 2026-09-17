@@ -1,0 +1,28 @@
+{
+  "name": "La Dolce Vita",
+  "color": "#4D3523",
+  "color2": "#3F2B1C",
+  "phone": "0142063279",
+  "address": "d'Azir  14 Rue Vicq d'Azir  75010 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJR6oj3t9t5kcR9IEDBokw-7s",
+  "heroUrl": "https://app.cartefidelavis.com/la-dolce-vita/hero.jpg",
+  "tagline": "La Dolce Vita — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

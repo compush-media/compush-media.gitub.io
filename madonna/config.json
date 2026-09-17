@@ -1,0 +1,31 @@
+{
+  "name": "Madonna",
+  "color": "#3B5027",
+  "color2": "#30411F",
+  "phone": "0147705908",
+  "address": "52 Rue La Fayette  75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJG8bUciJv5kcR9D09u3PTJQ0",
+  "logoUrl": "https://app.cartefidelavis.com/madonna/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/madonna.osteria/",
+  "heroUrl": "https://app.cartefidelavis.com/madonna/hero.jpg",
+  "tagline": "Madonna — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/madonna/logo.jpg"
+}

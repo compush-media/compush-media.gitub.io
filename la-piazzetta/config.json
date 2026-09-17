@@ -1,0 +1,28 @@
+{
+  "name": "LA PIAZZETTA",
+  "color": "#A27C58",
+  "color2": "#846548",
+  "phone": "0953844959",
+  "address": "32 Rue des Vallées  92700 Colombes",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJIYUgar5l5kcRGsbtjUkVD9E",
+  "heroUrl": "https://app.cartefidelavis.com/la-piazzetta/hero.jpg",
+  "tagline": "LA PIAZZETTA — Colombes",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Colombes"
+}

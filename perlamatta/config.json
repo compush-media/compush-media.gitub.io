@@ -1,0 +1,31 @@
+{
+  "name": "Perlamatta",
+  "color": "#FCD110",
+  "color2": "#CEAB0D",
+  "phone": "0175575913",
+  "address": "114 Rue de la Convention  75015 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJcRP5681x5kcRubZn1DNT7sU",
+  "logoUrl": "https://app.cartefidelavis.com/perlamatta/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/perlamattaparis/",
+  "heroUrl": "https://app.cartefidelavis.com/perlamatta/hero.jpg",
+  "tagline": "Perlamatta — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/perlamatta/logo.jpg"
+}

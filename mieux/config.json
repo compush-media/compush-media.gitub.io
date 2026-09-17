@@ -1,0 +1,31 @@
+{
+  "name": "Mieux",
+  "color": "#654026",
+  "color2": "#52341F",
+  "phone": "01 71 32 46 73",
+  "address": "21 Rue Saint-Lazare 75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ7Ylc4Vhv5kcRZAgTOtQB0_Q",
+  "logoUrl": "https://app.cartefidelavis.com/mieux/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/mieux_paris/?fbclid=IwAR2BxI1nCyGKjwjWGShXnwPad11BrlANLuesHcSfT1nFbKVkCC72cQkoFkQ",
+  "heroUrl": "https://app.cartefidelavis.com/mieux/hero.jpg",
+  "tagline": "Mieux — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/mieux/logo.jpg"
+}

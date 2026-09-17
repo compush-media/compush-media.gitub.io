@@ -1,0 +1,31 @@
+{
+  "name": "Nawab Paris",
+  "color": "#B8924F",
+  "color2": "#9E7A3E",
+  "phone": "0146278528",
+  "address": "174 Rue Ordener  75018 Paris",
+  "logoUrl": "https://app.cartefidelavis.com/nawab-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/nawab.paris/?igsh=MWlxcnF4d24wc2x6eg%3D%3D",
+  "heroUrl": "https://app.cartefidelavis.com/nawab-paris/hero.jpg",
+  "tagline": "Nawab Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/nawab-paris/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJR9qaCFdu5kcRhJV8tQxnij0"
+}

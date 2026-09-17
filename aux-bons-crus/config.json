@@ -1,0 +1,31 @@
+{
+  "name": "AUX BONS CRUS",
+  "color": "#7A430A",
+  "color2": "#643608",
+  "phone": "0145672113",
+  "address": "54 Rue Godefroy Cavaignac  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJq6p-vPdt5kcRvi3E28iRlrs",
+  "logoUrl": "https://app.cartefidelavis.com/aux-bons-crus/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/auxbonscrusparis/",
+  "heroUrl": "https://app.cartefidelavis.com/aux-bons-crus/hero.jpg",
+  "tagline": "AUX BONS CRUS — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/aux-bons-crus/logo.jpg"
+}

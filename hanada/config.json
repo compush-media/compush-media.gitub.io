@@ -1,0 +1,31 @@
+{
+  "name": "HANADA",
+  "color": "#B39766",
+  "color2": "#927B53",
+  "phone": "0744318070",
+  "address": "15 Quai Voltaire  75007 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJcz7vuM5v5kcRTFPcS3IrFUU",
+  "logoUrl": "https://app.cartefidelavis.com/hanada/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/hanadaparis/",
+  "heroUrl": "https://app.cartefidelavis.com/hanada/hero.jpg",
+  "tagline": "Restaurant by @d.hanada Dinner only: 7pm & 9.30pm • Mon-Fri",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/hanada/logo.jpg"
+}

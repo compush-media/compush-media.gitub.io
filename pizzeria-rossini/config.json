@@ -1,0 +1,31 @@
+{
+  "name": "Pizzeria Rossini",
+  "color": "#21620E",
+  "color2": "#1B500B",
+  "phone": "0142591791",
+  "address": "150 Rue Damrémont  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJEQBjclhu5kcR9JigwIsk2U8",
+  "logoUrl": "https://app.cartefidelavis.com/pizzeria-rossini/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/rossini.paris/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/pizzeria-rossini/hero.jpg",
+  "tagline": "Pizzeria Rossini — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pizzeria-rossini/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Les Collonges",
+  "color": "#1E97FA",
+  "color2": "#187BCD",
+  "phone": "0173755457",
+  "address": "12 Rue Francœur  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJI_WUP9xv5kcRdJMr_uzQqEg",
+  "logoUrl": "https://app.cartefidelavis.com/les-collonges/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lescollonges?igsh=MWw2YmExdTZzbHJieA",
+  "heroUrl": "https://app.cartefidelavis.com/les-collonges/hero.jpg",
+  "tagline": "Les Collonges — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-collonges/logo.jpg"
+}

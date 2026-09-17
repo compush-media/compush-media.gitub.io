@@ -1,0 +1,31 @@
+{
+  "name": "Pomoli Restaurant",
+  "color": "#911D0E",
+  "color2": "#76170B",
+  "phone": "0142052000",
+  "address": "1 Pass. Ruelle  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ1QG9cJNv5kcRP4jB_xpKBUY",
+  "logoUrl": "https://app.cartefidelavis.com/pomoli-restaurant/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pomoli.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/pomoli-restaurant/hero.jpg",
+  "tagline": "Pomoli Restaurant — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pomoli-restaurant/logo.jpg"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Popine Sacré Coeur",
+  "color": "#5D3613",
+  "color2": "#4C2C0F",
+  "phone": "0142574729",
+  "address": "10 Rue Dancourt  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJmeahkUNu5kcR4_gTFzy2r40",
+  "heroUrl": "https://app.cartefidelavis.com/popine-sacre-coeur/hero.jpg",
+  "tagline": "Popine Sacré Coeur — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

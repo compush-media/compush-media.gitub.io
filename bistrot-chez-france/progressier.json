@@ -1,0 +1,22 @@
+{
+  "name": "Bistrot Chez France",
+  "short_name": "Bistrot Chez France",
+  "start_url": "/bistrot-chez-france/index.html",
+  "scope": "/bistrot-chez-france/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#AF866A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

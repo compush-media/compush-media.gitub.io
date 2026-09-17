@@ -1,0 +1,31 @@
+{
+  "name": "MUSA - Oberkampf",
+  "color": "#E42118",
+  "color2": "#BA1B13",
+  "phone": "0952511378",
+  "address": "117 Rue Saint-Maur  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJm7yhp59t5kcR21yQLC3Z7U8",
+  "logoUrl": "https://app.cartefidelavis.com/musa-oberkampf/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/musa_collectif/",
+  "heroUrl": "https://app.cartefidelavis.com/musa-oberkampf/hero.jpg",
+  "tagline": "MUSA - Oberkampf — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/musa-oberkampf/logo.jpg"
+}

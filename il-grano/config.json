@@ -1,0 +1,31 @@
+{
+  "name": "Il Grano",
+  "color": "#47A91C",
+  "color2": "#3A8A16",
+  "phone": "0183819220",
+  "address": "212 Bis Bd Pereire  75017 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJq6pm-Yxv5kcRTVc7Uz21_08",
+  "logoUrl": "https://app.cartefidelavis.com/il-grano/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ilgrano_restaurant",
+  "heroUrl": "https://app.cartefidelavis.com/il-grano/hero.jpg",
+  "tagline": "Il Grano — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/il-grano/logo.jpg"
+}

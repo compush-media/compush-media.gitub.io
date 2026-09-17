@@ -1,0 +1,31 @@
+{
+  "name": "Mon Paris !",
+  "color": "#332D5B",
+  "color2": "#29244A",
+  "phone": "01 42 94 86 03",
+  "address": "6 Rue Édouard VII 75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJyxZFUDFu5kcRQusse1jDsHs",
+  "logoUrl": "https://app.cartefidelavis.com/mon-paris/logo.jpg",
+  "instagramUrl": "https://instagram.com/monparisresto/",
+  "heroUrl": "https://app.cartefidelavis.com/mon-paris/hero.jpg",
+  "tagline": "Mon Paris ! — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/mon-paris/logo.jpg"
+}

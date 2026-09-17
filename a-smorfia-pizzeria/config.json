@@ -1,0 +1,31 @@
+{
+  "name": "A Smorfia Pizzeria",
+  "color": "#836244",
+  "color2": "#6B5037",
+  "phone": "0171974589",
+  "address": "158 Rue Saint-Maur  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJpQC1MmVt5kcROSolTViv2TQ",
+  "logoUrl": "https://app.cartefidelavis.com/a-smorfia-pizzeria/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/asmorfiapizzaparis/",
+  "heroUrl": "https://app.cartefidelavis.com/a-smorfia-pizzeria/hero.jpg",
+  "tagline": "A Smorfia Pizzeria — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/a-smorfia-pizzeria/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Tentazioni - Trattoria Lepic",
+  "color": "#212B4F",
+  "color2": "#1B2340",
+  "phone": "0142649054",
+  "address": "86 bis Rue Lepic  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJk3aiAFBu5kcRsyY1qYtc0tY",
+  "logoUrl": "https://app.cartefidelavis.com/tentazioni-trattoria-lepic/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/tentazioniparis/",
+  "heroUrl": "https://app.cartefidelavis.com/tentazioni-trattoria-lepic/hero.jpg",
+  "tagline": "Tentazioni - Trattoria Lepic — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/tentazioni-trattoria-lepic/logo.jpg"
+}

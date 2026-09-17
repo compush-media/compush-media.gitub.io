@@ -1,0 +1,31 @@
+{
+  "name": "Le Servan",
+  "color": "#D17D47",
+  "color2": "#AB663A",
+  "phone": "0155285182",
+  "address": "32 Rue Saint-Maur  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJDxNp1_Bt5kcRfBQ1nlGxQoQ",
+  "logoUrl": "https://app.cartefidelavis.com/le-servan/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/jolyne_cave/",
+  "heroUrl": "https://app.cartefidelavis.com/le-servan/hero.jpg",
+  "tagline": "Le Servan — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-servan/logo.jpg"
+}

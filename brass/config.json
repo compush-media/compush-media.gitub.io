@@ -1,0 +1,31 @@
+{
+  "name": "BRASS",
+  "color": "#B19067",
+  "color2": "#917654",
+  "phone": "0143737344",
+  "address": "131 Bd Saint-Germain  75006 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJAwbRTABx5kcR_dE0UrjoRjc",
+  "logoUrl": "https://app.cartefidelavis.com/brass/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/brass.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/brass/hero.jpg",
+  "tagline": "BRASS — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brass/logo.jpg"
+}

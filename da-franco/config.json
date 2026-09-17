@@ -1,0 +1,31 @@
+{
+  "name": "Da Franco",
+  "color": "#007047",
+  "color2": "#005B3A",
+  "phone": "0145724120",
+  "address": "21 Rue Ruhmkorff  75017 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJvZpOFYxv5kcRpa2fFQ3JocY",
+  "logoUrl": "https://app.cartefidelavis.com/da-franco/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/dafrancoparis",
+  "heroUrl": "https://app.cartefidelavis.com/da-franco/hero.jpg",
+  "tagline": "Da Franco — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/da-franco/logo.jpg"
+}

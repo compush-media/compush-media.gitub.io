@@ -1,0 +1,31 @@
+{
+  "name": "Les Fous de l'Ile",
+  "color": "#AE9649",
+  "color2": "#8E7A3B",
+  "phone": "0143257667",
+  "address": "33 Rue des Deux Ponts  75004 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJRVHK6vxx5kcRuRbWm20W4NI",
+  "logoUrl": "https://app.cartefidelavis.com/les-fous-de-l-ile/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesfousdelile/",
+  "heroUrl": "https://app.cartefidelavis.com/les-fous-de-l-ile/hero.jpg",
+  "tagline": "Les Fous de l'Ile — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-fous-de-l-ile/logo.jpg"
+}

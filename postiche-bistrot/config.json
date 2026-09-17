@@ -1,0 +1,31 @@
+{
+  "name": "Postiche bistrot",
+  "color": "#7D6043",
+  "color2": "#664E36",
+  "phone": "0140289904",
+  "address": "62 Rue Jean-Jacques Rousseau  75001 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJs4UcjiJu5kcRQlhrvpRBBmU",
+  "logoUrl": "https://app.cartefidelavis.com/postiche-bistrot/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/postichebistrot/",
+  "heroUrl": "https://app.cartefidelavis.com/postiche-bistrot/hero.jpg",
+  "tagline": "Postiche bistrot — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/postiche-bistrot/logo.jpg"
+}

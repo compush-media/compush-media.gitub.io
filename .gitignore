@@ -4,6 +4,21 @@
 node_modules/
 package-lock.json
 
+# Les douze images d'offres pèsent 28 Mo, et new-restaurant.sh en dépose une
+# copie dans CHAQUE dossier de restaurant. 937 dossiers : 25 Go sur le disque,
+# tous identiques. Seule la copie du gabarit est publiée — les 660 wallets déjà
+# en ligne n'en portent aucune et fonctionnent, les pages y font référence en
+# relatif.
+#
+# Un « git add -A » enverrait les 937 copies, soit 7,9 Go pour un lot de 279
+# dossiers. C'est la raison pour laquelle la routine de publication n'utilise
+# jamais « git add -A » ; cette règle rend la protection structurelle plutôt
+# que procédurale. Constaté le 17/09/2026 en publiant les 279 nouveaux wallets.
+#
+# _template/images/offres/ n'est pas concerné : ses fichiers sont déjà suivis,
+# et .gitignore reste sans effet sur ce que git suit déjà.
+*/images/offres/
+
 # Intermédiaires green-screen (régénérables)
 
 # Vignettes extraites de la video finale a des horodatages fixes, regenerees

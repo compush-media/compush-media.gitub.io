@@ -1,0 +1,31 @@
+{
+  "name": "Le Bistrot des Martyrs",
+  "color": "#592518",
+  "color2": "#481E13",
+  "phone": "0148785221",
+  "address": "52 Bis R. des Martyrs  75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJY23xx9xv5kcRsCYQ7yVrmOE",
+  "logoUrl": "https://app.cartefidelavis.com/le-bistrot-des-martyrs/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/le_bistrot_des_martyrs?igsh=YzlqZjl5eHNrbXFx",
+  "heroUrl": "https://app.cartefidelavis.com/le-bistrot-des-martyrs/hero.jpg",
+  "tagline": "Le Bistrot des Martyrs — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-bistrot-des-martyrs/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Restaurant TÊT",
+  "color": "#14545C",
+  "color2": "#10444B",
+  "phone": "01 73 75 02 70",
+  "address": "10 Bd du Temple 75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJmzf7HSVv5kcRQm9fjbuImo4",
+  "logoUrl": "https://app.cartefidelavis.com/restaurant-tet/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/restaurant.tet/",
+  "heroUrl": "https://app.cartefidelavis.com/restaurant-tet/hero.jpg",
+  "tagline": "Restaurant TÊT — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/restaurant-tet/logo.jpg"
+}

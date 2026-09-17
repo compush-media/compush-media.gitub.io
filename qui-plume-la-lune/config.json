@@ -1,0 +1,29 @@
+{
+  "name": "Qui plume la lune",
+  "color": "#6B4339",
+  "color2": "#57362E",
+  "phone": "01 48 07 45 48",
+  "address": "50 Rue Amelot 75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJp4qdOP5t5kcRBK5zybICJt8",
+  "instagramUrl": "https://www.instagram.com/quiplumelalune.restaurant/?hl=fr",
+  "heroUrl": "https://app.cartefidelavis.com/qui-plume-la-lune/hero.jpg",
+  "tagline": "Qui plume la lune — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Bistro Saint Dominique",
+  "short_name": "Bistro Saint Dominique",
+  "start_url": "/bistro-saint-dominique/index.html",
+  "scope": "/bistro-saint-dominique/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#D9AA3F",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

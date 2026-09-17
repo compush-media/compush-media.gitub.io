@@ -1,0 +1,31 @@
+{
+  "name": "All In Sushi - Sushi près de moi   restaurant Turenne   près de la place des Vosges - marais",
+  "color": "#253CEE",
+  "color2": "#1E31C3",
+  "phone": "0142710178",
+  "address": "40 Rue de Turenne  75003 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJJZbiTQBu5kcR0CGMbjplrHc",
+  "logoUrl": "https://app.cartefidelavis.com/all-in-sushi-sushi-pres-de-moi-restaurant-turenne-pres-de-la-place-des-vosges-marais/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/allinsushi/",
+  "heroUrl": "https://app.cartefidelavis.com/all-in-sushi-sushi-pres-de-moi-restaurant-turenne-pres-de-la-place-des-vosges-marais/hero.jpg",
+  "tagline": "All In Sushi - Sushi près de moi   restaurant Turenne   près de la place des Vosges - marais — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/all-in-sushi-sushi-pres-de-moi-restaurant-turenne-pres-de-la-place-des-vosges-marais/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "BISTROT KINZO",
+  "color": "#384D67",
+  "color2": "#2D3F54",
+  "phone": "0148245749",
+  "address": "13 Rue Rougemont  75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJOw-KKP9v5kcRi1QDm5ojkXI",
+  "logoUrl": "https://app.cartefidelavis.com/bistrot-kinzo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/bistrotkinzo",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-kinzo/hero.jpg",
+  "tagline": "Cuisine franco-japonaise par le chef @edwarduchiyama #bistrotkinzo",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/bistrot-kinzo/logo.jpg"
+}

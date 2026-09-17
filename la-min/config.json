@@ -1,0 +1,29 @@
+{
+  "name": "La MiNהארץ",
+  "color": "#7F4527",
+  "color2": "#68381F",
+  "phone": "01 73 71 47 15",
+  "address": "45 Rue de Montreuil 75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ1dINIrBz5kcRpaHwCQkrDdY",
+  "instagramUrl": "https://www.instagram.com/la_min_paris/",
+  "heroUrl": "https://app.cartefidelavis.com/la-min/hero.jpg",
+  "tagline": "La MiNהארץ — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

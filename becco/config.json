@@ -1,0 +1,31 @@
+{
+  "name": "Becco",
+  "color": "#49272A",
+  "color2": "#3B1F22",
+  "phone": "0140163421",
+  "address": "3 Rue de Maubeuge  75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJgWQhdABv5kcRLKpsx8W_-Ys",
+  "logoUrl": "https://app.cartefidelavis.com/becco/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/becco_trattoria/",
+  "heroUrl": "https://app.cartefidelavis.com/becco/hero.jpg",
+  "tagline": "Becco — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/becco/logo.jpg"
+}

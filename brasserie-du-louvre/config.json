@@ -1,0 +1,31 @@
+{
+  "name": "Brasserie du Louvre",
+  "color": "#7C6042",
+  "color2": "#654E36",
+  "phone": "0144583721",
+  "address": "Place André Malraux  Paris  Île-de-France  France  75001  75001 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJUZFuuSVu5kcRfY5Fd2TUlRQ",
+  "logoUrl": "https://app.cartefidelavis.com/brasserie-du-louvre/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/brasseriedulouvre/",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-du-louvre/hero.jpg",
+  "tagline": "Brasserie du Louvre — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-du-louvre/logo.jpg"
+}

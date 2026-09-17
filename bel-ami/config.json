@@ -1,0 +1,29 @@
+{
+  "name": "Bel-Ami",
+  "color": "#653A0C",
+  "color2": "#522F09",
+  "phone": "0145224556",
+  "address": "128 Bd de Clichy  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJOxqYz01u5kcR0J23wEcwEiM",
+  "instagramUrl": "https://www.instagram.com/#",
+  "heroUrl": "https://app.cartefidelavis.com/bel-ami/hero.jpg",
+  "tagline": "Bel-Ami — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

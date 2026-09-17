@@ -1,0 +1,31 @@
+{
+  "name": "Le Rennequin",
+  "color": "#3A6C40",
+  "color2": "#2F5834",
+  "phone": "0981594685",
+  "address": "67 Rue Rennequin  75017 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJR6x6JIxv5kcRiJIjuotszys",
+  "logoUrl": "https://app.cartefidelavis.com/le-rennequin/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lerennequin/?hl=en",
+  "heroUrl": "https://app.cartefidelavis.com/le-rennequin/hero.jpg",
+  "tagline": "Le Rennequin — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-rennequin/logo.jpg"
+}

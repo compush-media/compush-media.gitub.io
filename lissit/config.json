@@ -1,0 +1,31 @@
+{
+  "name": "Lissit",
+  "color": "#274049",
+  "color2": "#1F343B",
+  "phone": "0180872268",
+  "address": "48 Rue de la Folie Méricourt  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJR_eEDABt5kcRRXQdrbSdxus",
+  "logoUrl": "https://app.cartefidelavis.com/lissit/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lissit__",
+  "heroUrl": "https://app.cartefidelavis.com/lissit/hero.jpg",
+  "tagline": "Lissit — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/lissit/logo.jpg"
+}

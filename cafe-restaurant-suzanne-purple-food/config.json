@@ -1,0 +1,31 @@
+{
+  "name": "Café Restaurant Suzanne (Purple Food)",
+  "color": "#273D49",
+  "color2": "#1F323B",
+  "phone": "0146065440",
+  "address": "64 Rue Lamarck  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJsXCb_l5v5kcRI1bKXCSkTFg",
+  "logoUrl": "https://app.cartefidelavis.com/cafe-restaurant-suzanne-purple-food/logo.jpg",
+  "instagramUrl": "https://instagram.com/suzanne_cafe_restaurant/",
+  "heroUrl": "https://app.cartefidelavis.com/cafe-restaurant-suzanne-purple-food/hero.jpg",
+  "tagline": "Café Restaurant Suzanne (Purple Food) — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/cafe-restaurant-suzanne-purple-food/logo.jpg"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Giulia - Pizza & Pasta",
+  "short_name": "Giulia - Pizza & Pasta",
+  "start_url": "/giulia-pizza-pasta/index.html",
+  "scope": "/giulia-pizza-pasta/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#492D27",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

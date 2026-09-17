@@ -1,0 +1,31 @@
+{
+  "name": "Les copains d’abord",
+  "color": "#7C2116",
+  "color2": "#651B12",
+  "phone": "0766354026",
+  "address": "35 Rue Véron  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ55FL6apv5kcRv-HGGFkKR4g",
+  "logoUrl": "https://app.cartefidelavis.com/les-copains-d-abord/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lescopainsdabord_bistro",
+  "heroUrl": "https://app.cartefidelavis.com/les-copains-d-abord/hero.jpg",
+  "tagline": "Les copains d’abord — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-copains-d-abord/logo.jpg"
+}

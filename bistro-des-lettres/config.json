@@ -1,0 +1,28 @@
+{
+  "name": "Bistro des Lettres",
+  "color": "#976342",
+  "color2": "#7B5136",
+  "phone": "0173717239",
+  "address": "52 Bd Saint-Germain  75005 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJI7jEef5x5kcRkWRFsJD96So",
+  "heroUrl": "https://app.cartefidelavis.com/bistro-des-lettres/hero.jpg",
+  "tagline": "Bistro des Lettres — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

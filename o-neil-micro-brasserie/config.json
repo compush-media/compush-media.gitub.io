@@ -1,0 +1,28 @@
+{
+  "name": "O'Neil - Micro-brasserie",
+  "color": "#62452B",
+  "color2": "#503823",
+  "phone": "0974641712",
+  "address": "20 Rue des Canettes  75006 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ-4wd8dlx5kcRpL6wEprqxLc",
+  "heroUrl": "https://app.cartefidelavis.com/o-neil-micro-brasserie/hero.jpg",
+  "tagline": "O'Neil - Micro-brasserie — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

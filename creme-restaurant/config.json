@@ -1,0 +1,31 @@
+{
+  "name": "Crème Restaurant",
+  "color": "#325E56",
+  "color2": "#294D46",
+  "phone": "0142556164",
+  "address": "18 Rue Eugène Sue  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJlzZ5eiFv5kcRTu7djqaJZUw",
+  "logoUrl": "https://app.cartefidelavis.com/creme-restaurant/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/creme_restaurant?igsh=OHhhOWFqcHpzZmF1",
+  "heroUrl": "https://app.cartefidelavis.com/creme-restaurant/hero.jpg",
+  "tagline": "Crème Restaurant — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/creme-restaurant/logo.jpg"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Bululu Arepera",
+  "color": "#61230F",
+  "color2": "#4F1C0C",
+  "phone": "0142549625",
+  "address": "Metro  lamarck caulaincourt  20 Rue de la Font du But  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJTXiF2ltu5kcRsHtp1bPHuNM",
+  "heroUrl": "https://app.cartefidelavis.com/bululu-arepera/hero.jpg",
+  "tagline": "Bululu Arepera — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Brasserie les Petits Carreaux",
+  "color": "#EA2F37",
+  "color2": "#BF262D",
+  "phone": "09 74 64 16 67",
+  "address": "17 Rue des Petits Carreaux 75002 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ04XikBdu5kcRkaY1wsg9qoY",
+  "logoUrl": "https://app.cartefidelavis.com/brasserie-les-petits-carreaux/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lespetitscarreauxmontorgueil/",
+  "heroUrl": "https://app.cartefidelavis.com/brasserie-les-petits-carreaux/hero.jpg",
+  "tagline": "Brasserie les Petits Carreaux — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/brasserie-les-petits-carreaux/logo.jpg"
+}

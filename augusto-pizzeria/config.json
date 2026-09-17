@@ -1,0 +1,31 @@
+{
+  "name": "Augusto Pizzeria",
+  "color": "#001470",
+  "color2": "#00105B",
+  "phone": "0142400364",
+  "address": "14 Rue Victor Massé  75009 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ64LXkEZu5kcR0Wi9ChTyJQg",
+  "logoUrl": "https://app.cartefidelavis.com/augusto-pizzeria/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/augusto_pizzeria/",
+  "heroUrl": "https://app.cartefidelavis.com/augusto-pizzeria/hero.jpg",
+  "tagline": "Partner Molino Quaglia @farinapetra",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/augusto-pizzeria/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Le Bel Canto – Restaurant Lyrique Paris",
+  "color": "#E63235",
+  "color2": "#BC292B",
+  "phone": "0142783018",
+  "address": "72 Quai de l'Hôtel de ville  75004 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJL0aYwOJx5kcRChA0_ZgzHuw",
+  "logoUrl": "https://app.cartefidelavis.com/le-bel-canto-restaurant-lyrique-paris/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/belcanto_restaurants/",
+  "heroUrl": "https://app.cartefidelavis.com/le-bel-canto-restaurant-lyrique-paris/hero.jpg",
+  "tagline": "Le Bel Canto – Restaurant Lyrique Paris — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-bel-canto-restaurant-lyrique-paris/logo.jpg"
+}

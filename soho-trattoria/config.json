@@ -1,0 +1,31 @@
+{
+  "name": "SoHo Trattoria",
+  "color": "#5F7F0B",
+  "color2": "#4D6809",
+  "phone": "33 Rue St Jacques 75005 Paris",
+  "address": "https://search.google.com/local/writereview?placeid=ChIJy4UZhJxx5kcRc9zdPKCmXcs",
+  "logoUrl": "https://app.cartefidelavis.com/soho-trattoria/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/sohotrattoria/",
+  "heroUrl": "https://app.cartefidelavis.com/soho-trattoria/hero.jpg",
+  "tagline": "SoHo Trattoria — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/soho-trattoria/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJy4UZhJxx5kcRc9zdPKCmXcs"
+}

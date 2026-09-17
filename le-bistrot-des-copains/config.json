@@ -1,0 +1,29 @@
+{
+  "name": "Le bistrot des copains",
+  "color": "#5F3312",
+  "color2": "#4D290E",
+  "phone": "01 47 84 89 48",
+  "address": "47 Rue Felix Faure 92700 Colombes",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJC7Auu7Vl5kcR_NsE9TutWAI",
+  "instagramUrl": "https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.instagram.com%2Flebistrotdescopains_colombes%3Ffbclid%3DIwcGRvZgVleHRuA2FlbQIxMABicmlkETFtQzN6cVd6S2lycVU4c292c3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHmX0hH2OLVlyom24iWio93eKxvkvphMTE_Y2iZnzIyw76jU3JgtsTzwvVhk8_aem_UtAZsn3PKD4P3_fjCwpofg&h=AUB_3U85F0SrXa70iqCBwIrFf9lxMeg8n6qes-F3kHD_fuAkLZAo0khg_aqsLj-5t9Ec5h7FAu25uOf0vtGsO2e7Ssc5fbrNtfcvcCqMbl-dL1NWIbDOQGjncrrzC5fiW28eapMAj_TTnRemzYHCcwlQ9w",
+  "heroUrl": "https://app.cartefidelavis.com/le-bistrot-des-copains/hero.jpg",
+  "tagline": "Le bistrot des copains — Colombes",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Colombes"
+}

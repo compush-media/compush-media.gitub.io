@@ -1,0 +1,31 @@
+{
+  "name": "Da Alfredo",
+  "color": "#63422B",
+  "color2": "#513623",
+  "phone": "0145628868",
+  "address": "182 Bd Haussmann  75008 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJQ8brQyZv5kcRDHeSGyX4-o8",
+  "logoUrl": "https://app.cartefidelavis.com/da-alfredo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/da_alfredoparis/",
+  "heroUrl": "https://app.cartefidelavis.com/da-alfredo/hero.jpg",
+  "tagline": "Da Alfredo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/da-alfredo/logo.jpg"
+}

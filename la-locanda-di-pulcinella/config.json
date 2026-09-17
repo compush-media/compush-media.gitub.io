@@ -1,0 +1,29 @@
+{
+  "name": "La Locanda di Pulcinella",
+  "color": "#493627",
+  "color2": "#3B2C1F",
+  "phone": "0142230948",
+  "address": "17 Rue Damrémont  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJO8bMdyFv5kcRgNUsT4Qt9oc",
+  "instagramUrl": "https://www.instagram.com/la_locanda_di_pulcinella_/",
+  "heroUrl": "https://app.cartefidelavis.com/la-locanda-di-pulcinella/hero.jpg",
+  "tagline": "La Locanda di Pulcinella — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

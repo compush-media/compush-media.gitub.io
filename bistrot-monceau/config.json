@@ -1,0 +1,28 @@
+{
+  "name": "Bistrot Monceau",
+  "color": "#A47F58",
+  "color2": "#866848",
+  "phone": "0667788032",
+  "address": "8 Rue de Logelbach  75017 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJB8KtNa1v5kcRNswpv03Ibx0",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-monceau/hero.jpg",
+  "tagline": "Bistrot Monceau — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

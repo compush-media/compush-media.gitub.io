@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Installer l'app</title>
+
+<script src="../assets/core.js"></script>
+
+<link rel="manifest" href="progressier.json"/>
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<script>if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(function(){});}</script>
+<script>(function(){var m=location.pathname.match(/^\/([^/]+)\//);var s=m?m[1]:'';var c=s?localStorage.getItem('fv_brand_'+s):null;if(c)document.documentElement.style.setProperty('--gold',c);if(!s)return;fetch('/'+s+'/config.json').then(function(r){return r.json();}).then(function(d){var col=d&&d.color;if(col){document.documentElement.style.setProperty('--gold',col);try{localStorage.setItem('fv_brand_'+s,col);}catch(_){}}var nom=d&&d.name;if(nom){document.getElementById('title').textContent='📲 Installer l’app '+nom;document.getElementById('sub').textContent='Installez l’application '+nom+' pour retrouver votre cadeau de bienvenue et vos avantages à chaque visite.';}}).catch(function(){});})();</script>
+
+<style>
+:root{
+  --gold:#b8924f;
+  --bg:#f6efe5;
+  --card:#ffffff;
+  --ink:#1d1d1d;
+  --muted:#6b6b6b;
+  --line:rgba(0,0,0,0.08);
+  --shadow:0 18px 40px rgba(0,0,0,0.12);
+  --radius:22px;
+}
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background:
+    radial-gradient(1200px 600px at 50% -120px, rgba(184,146,79,0.18), transparent 60%),
+    linear-gradient(180deg, #f7f0e8 0%, #f4eadf 100%);
+  color:var(--ink);
+  padding:22px 14px 110px;
+  text-align:center;
+}
+.wrap{ max-width:520px; margin:0 auto; }
+
+/* Bulle d'installation flottante de Progressier : cette page EST déjà
+   l'expérience d'installation dédiée. La garder en plus créait deux
+   invitations superposées — elle recouvrait la pastille "Aucun engagement". */
+.progressier-widget { display: none !important; }
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.75);
+  border:1px solid var(--line);
+  box-shadow:0 10px 18px rgba(0,0,0,0.05);
+  font-weight:950;
+  font-size:13px;
+  color:#3b3b3b;
+}
+.dot{
+  width:8px;height:8px;border-radius:99px;
+  background:#1f8a4c;
+  box-shadow:0 0 0 6px rgba(31,138,76,0.12);
+}
+
+h1{
+  margin:14px 0 6px;
+  font-size:28px;
+  font-weight:950;
+  letter-spacing:-0.4px;
+}
+.sub{
+  margin:0 0 18px;
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.4;
+}
+
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:20px 18px;
+  box-shadow:0 20px 55px rgba(0,0,0,.10);
+  border:1px solid var(--line);
+  text-align:left;
+}
+.big{
+  font-weight:950;
+  font-size:16px;
+  margin:0 0 14px;
+}
+
+.steps{ }
+.step{
+  display:flex;
+  gap:12px;
+  margin:0 0 12px;
+  font-size:14px;
+  color:#2f2f2f;
+  line-height:1.4;
+}
+.step:last-child{ margin-bottom:0; }
+.num{
+  width:28px;height:28px;
+  border-radius:10px;
+  background:rgba(184,146,79,0.18);
+  color:#6f5522;
+  display:grid;
+  place-items:center;
+  font-weight:950;
+  flex:0 0 auto;
+}
+/* Icone iOS reelle a droite de chaque etape. Dessinees en SVG plutot
+   qu'en emoji : le carre-fleche du partage, les trois points et le plus
+   n'ont pas d'equivalent emoji fidele, et le client doit reconnaitre
+   exactement le symbole qu'il cherche sur son ecran. */
+.step-txt{ flex:1 1 auto; }
+.ios-ico{
+  flex:0 0 auto;
+  width:30px;height:30px;
+  display:grid;place-items:center;
+  color:#3b3b3b;
+  align-self:center;
+}
+.ios-ico svg{ width:20px;height:20px;display:block; }
+
+.sticky{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg, rgba(246,239,229,0.0) 0%, rgba(246,239,229,0.92) 28%, rgba(246,239,229,0.98) 100%);
+  backdrop-filter: blur(10px);
+  z-index:50;
+}
+.ctaWrap{
+  max-width:520px;
+  margin:0 auto;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:12px;
+  box-shadow:0 16px 30px rgba(0,0,0,0.10);
+  text-align:center;
+}
+.btn{
+  display:block;
+  width:100%;
+  border:0;
+  cursor:pointer;
+  border-radius:16px;
+  padding:15px 12px;
+  font-weight:950;
+  font-size:15px;
+  letter-spacing:-0.2px;
+  color:#fff;
+  background:linear-gradient(135deg, var(--gold), #9E7A3E);
+  box-shadow:0 14px 26px rgba(184,146,79,0.28);
+  font-family:inherit;
+}
+.lien{
+  display:inline-block;
+  margin-top:10px;
+  font-size:13px;
+  font-weight:800;
+  color:var(--muted);
+  background:none;
+  border:0;
+  cursor:pointer;
+  font-family:inherit;
+  text-decoration:underline;
+}
+
+.hidden{ display:none !important; }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="badge"><span class="dot"></span>Installation requise (1 seule fois)</div>
+
+  <h1 id="title">📲 Installer l'app</h1>
+  <p class="sub" id="sub">Installez l'application pour retrouver votre cadeau de bienvenue et vos avantages à chaque visite.</p>
+
+  <div class="card">
+    <p class="big">🎁 Votre cadeau de bienvenue vous attend.</p>
+
+    <div class="steps hidden" id="iosSteps">
+      <div class="step">
+        <div class="num">1</div>
+        <div class="step-txt">Appuyez sur <b>Partager</b>.</div>
+        <div class="ios-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 15V3"/><path d="m8 7 4-4 4 4"/>
+            <path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/>
+          </svg>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div class="step-txt">Si besoin, touchez <b>En voir plus</b>.</div>
+        <div class="ios-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9"/>
+            <circle cx="8" cy="12" r="1.1" fill="currentColor" stroke="none"/>
+            <circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/>
+            <circle cx="16" cy="12" r="1.1" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div class="step-txt">Choisissez <b>Sur l'écran d'accueil</b>, puis <b>Ajouter</b>.</div>
+        <div class="ios-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <rect x="3.5" y="3.5" width="17" height="17" rx="4"/>
+            <path d="M12 8.5v7M8.5 12h7"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps hidden" id="androidSteps">
+      <div class="step"><div class="num">1</div><div>Appuyez sur <b>Installer maintenant</b> ci-dessous.</div></div>
+      <div class="step"><div class="num">2</div><div>Validez. L'app apparaît sur votre écran d'accueil ✅</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sticky">
+  <div class="ctaWrap">
+    <button class="btn" id="installBtn" type="button">📲 Installer maintenant</button>
+  </div>
+</div>
+
+<script>
+function isStandalone(){
+  return window.matchMedia("(display-mode: standalone)").matches ||
+         window.navigator.standalone === true;
+}
+function isIOS(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+// Déjà installée -> inscription (direct)
+if (isStandalone()){
+  window.location.href = "./index.html";
+}
+
+const iosSteps = document.getElementById("iosSteps");
+const androidSteps = document.getElementById("androidSteps");
+const installBtn = document.getElementById("installBtn");
+const ios = isIOS();
+
+if (ios){
+  iosSteps.classList.remove("hidden");
+
+  /* Aucun bouton sur iPhone. Il affichait « Voir comment faire » et faisait
+     defiler vers la carte des etapes — deja visible a l'ecran : il ne
+     faisait donc rien. Et aucun bouton ne peut faire mieux, iOS
+     n'autorisant pas une page web a ouvrir la feuille de partage. La
+     consigne EST l'action ici ; un bouton inerte laisse croire le
+     contraire et fait attendre un effet qui ne viendra pas. */
+  document.querySelector(".sticky").remove();
+} else {
+  androidSteps.classList.remove("hidden");
+
+  // Le bouton ne changeait que son propre texte sans jamais déclencher
+  // l'installation : window.progressier.install() est la méthode qui rejoue
+  // l'événement beforeinstallprompt que le SDK capture au chargement de la
+  // page. Sans cet appel, un client Android n'installait rien en cliquant.
+  installBtn.addEventListener("click", () => {
+    if (window.progressier && typeof window.progressier.install === "function") {
+      window.progressier.install().catch(function(){});
+    }
+  });
+}
+
+/* « J'ai deja installe l'app » a ete retire : il renvoyait vers merci.html,
+   dont le bouton principal renvoie ici — un client qui ne voulait pas
+   installer tournait donc en rond entre les deux pages. Il n'a pas besoin de
+   sortie ici : merci.html, la page precedente, offre deja « Plus tard, voir
+   mon compte ». Et celui qui a reellement installe l'app l'ouvre depuis son
+   ecran d'accueil : isStandalone() le renvoie alors directement a sa carte. */
+</script>
+
+<!-- =====================================================
+     TRACKING / STATISTIQUES — non-visuel
+     Utilise window.Fidelavis (core.js) pour envoyer
+     les événements vers Google Sheets via Apps Script.
+===================================================== -->
+<script>
+(function(){
+  // Initialiser session ID
+  try {
+    if (!sessionStorage.getItem("fv_session_id")) {
+      sessionStorage.setItem(
+        "fv_session_id",
+        "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8)
+      );
+    }
+  } catch(e){}
+
+  var RESTO = (window.Fidelavis && window.Fidelavis.getRestoSlug)
+    ? window.Fidelavis.getRestoSlug()
+    : (new URLSearchParams(location.search).get("resto") || "resto2");
+
+  // 1. Capture email depuis l'URL GoHighLevel (?email=...)
+  try {
+    var urlEmail = new URLSearchParams(location.search).get("email");
+    if (urlEmail && urlEmail.indexOf("@") !== -1 && urlEmail.length < 300) {
+      localStorage.setItem("user_email", urlEmail);
+    }
+  } catch(e){}
+
+  // 2. Marquer l'utilisateur comme inscrit + tracker signup
+  //    (GHL peut rediriger ici directement après le formulaire)
+  try {
+    var now = Date.now();
+    var dedupKey = "signup_" + RESTO;
+    var last = Number(localStorage.getItem(dedupKey) || "0");
+
+    if (!last || (now - last) > 86400000) {
+      localStorage.setItem(dedupKey, String(now));
+      localStorage.setItem("is_registered",            "1");
+      localStorage.setItem("fv_onboarding_done",       "1");
+      localStorage.setItem("fv_registered_" + RESTO,   "1");
+      localStorage.setItem("fv_registered_at_" + RESTO, String(now));
+
+      if (window.Fidelavis && window.Fidelavis.track) {
+        window.Fidelavis.track("signup", { src: "ghl_redit", resto: RESTO });
+      }
+    }
+  } catch(e){}
+
+  // 3. Page view (une seule fois par session)
+  try {
+    var viewKey = "redit_view_" + RESTO;
+    if (!sessionStorage.getItem(viewKey)) {
+      sessionStorage.setItem(viewKey, "1");
+      if (window.Fidelavis && window.Fidelavis.track) {
+        window.Fidelavis.track("redit_view", { src: "redit", resto: RESTO });
+      }
+    }
+  } catch(e){}
+
+  // ✅ Cookie de persistance pour PWA standalone iOS (localStorage isolé de Safari)
+  window.Fidelavis?.setAuthCookie?.();
+
+  // ✅ Installation confirmée (Android Chrome uniquement — iOS ne déclenche pas appinstalled)
+  window.addEventListener("appinstalled", function() {
+    window.Fidelavis?.track?.("install", { src: "pwa_appinstalled", page: "redit" });
+  });
+
+  // 4. Tracking install_click (s'ajoute au listener existant)
+  //    Le bouton n'existe que sur Android : sur iPhone la barre entiere est
+  //    retiree, aucun bouton ne pouvant declencher la feuille de partage.
+  try {
+    var btn = document.getElementById("installBtn");
+    if (btn) {
+      btn.addEventListener("click", function(){
+        // ✅ "install_attempt" = nom attendu par le Dashboard (KPI "Installs tentatives")
+        if (window.Fidelavis && window.Fidelavis.track) {
+          window.Fidelavis.track("install_attempt", { src: "redit", resto: RESTO });
+        }
+      });
+    }
+  } catch(e){}
+
+  /* Le suivi « install_confirmed » sur le bouton « J'ai installé » est
+     supprime avec ce bouton. Il ne mesurait de toute facon qu'une
+     declaration du client, pas une installation reelle — l'evenement
+     appinstalled, lui, est emis par le navigateur et reste ecoute
+     ci-dessus. */
+
+})();
+</script>
+</body>
+</html>

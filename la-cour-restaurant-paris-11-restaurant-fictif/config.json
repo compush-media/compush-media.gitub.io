@@ -1,0 +1,31 @@
+{
+  "name": "La Cour Restaurant Paris 11 (Restaurant fictif)",
+  "color": "#444928",
+  "color2": "#373B20",
+  "phone": "2 Rue de la Folie Méricourt  75011 Paris",
+  "address": "https://search.google.com/local/writereview?placeid=ChIJAa3WdFlt5kcRIirxgOcM15c",
+  "logoUrl": "https://app.cartefidelavis.com/la-cour-restaurant-paris-11-restaurant-fictif/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lacour.paris75/",
+  "heroUrl": "https://app.cartefidelavis.com/la-cour-restaurant-paris-11-restaurant-fictif/hero.jpg",
+  "tagline": "La Cour Restaurant Paris 11 (Restaurant fictif) — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-cour-restaurant-paris-11-restaurant-fictif/logo.jpg",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJAa3WdFlt5kcRIirxgOcM15c"
+}

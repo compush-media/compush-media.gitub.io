@@ -1,0 +1,31 @@
+{
+  "name": "La Bonne Franquette",
+  "color": "#572619",
+  "color2": "#471F14",
+  "phone": "0142520242",
+  "address": "2 rue des Saules  18 Rue Saint-Rustique  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ0yzFOVtu5kcRiITJiLo-hAs",
+  "logoUrl": "https://app.cartefidelavis.com/la-bonne-franquette/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/la_bonne_franquette/",
+  "heroUrl": "https://app.cartefidelavis.com/la-bonne-franquette/hero.jpg",
+  "tagline": "La Bonne Franquette — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/la-bonne-franquette/logo.jpg"
+}

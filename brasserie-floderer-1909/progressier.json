@@ -1,0 +1,22 @@
+{
+  "name": "Brasserie Floderer -1909",
+  "short_name": "Brasserie Floderer -1909",
+  "start_url": "/brasserie-floderer-1909/index.html",
+  "scope": "/brasserie-floderer-1909/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#B5070A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

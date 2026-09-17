@@ -1,0 +1,31 @@
+{
+  "name": "LES PLANQUÉS",
+  "color": "#243B4C",
+  "color2": "#1D303E",
+  "phone": "0782270872",
+  "address": "19 Rue Oberkampf  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJzZjbdP1t5kcRLc_axPP36dc",
+  "logoUrl": "https://app.cartefidelavis.com/les-planques/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lesplanques",
+  "heroUrl": "https://app.cartefidelavis.com/les-planques/hero.jpg",
+  "tagline": "LES PLANQUÉS — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/les-planques/logo.jpg"
+}

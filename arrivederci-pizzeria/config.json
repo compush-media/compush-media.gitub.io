@@ -1,0 +1,28 @@
+{
+  "name": "Arrivederci Pizzeria",
+  "color": "#B78862",
+  "color2": "#966F50",
+  "phone": "0177324557",
+  "address": "47 Rue Gay-Lussac  75005 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJYzW1_Olx5kcRnpyk_aDvbXU",
+  "heroUrl": "https://app.cartefidelavis.com/arrivederci-pizzeria/hero.jpg",
+  "tagline": "Arrivederci Pizzeria — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "KOKO BISTRO - Japonais",
+  "color": "#BB865E",
+  "color2": "#996D4D",
+  "phone": "0140341595",
+  "address": "14 Quai de la Loire  75019 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ9QyuU9ht5kcRPXLdMI1-bpo",
+  "instagramUrl": "https://www.instagram.com/kokobistro/",
+  "heroUrl": "https://app.cartefidelavis.com/koko-bistro-japonais/hero.jpg",
+  "tagline": "KOKO BISTRO - Japonais — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

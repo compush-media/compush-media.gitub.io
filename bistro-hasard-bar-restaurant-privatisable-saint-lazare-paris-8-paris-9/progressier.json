@@ -1,0 +1,22 @@
+{
+  "name": "Bistro Hasard Bar & Restaurant Privatisable Saint-Lazare Paris 8 / Paris 9",
+  "short_name": "Bistro Hasard Bar & Restaurant Privatisable Saint-Lazare Paris 8 / Paris 9",
+  "start_url": "/bistro-hasard-bar-restaurant-privatisable-saint-lazare-paris-8-paris-9/index.html",
+  "scope": "/bistro-hasard-bar-restaurant-privatisable-saint-lazare-paris-8-paris-9/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#9A0D04",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

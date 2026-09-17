@@ -1,0 +1,31 @@
+{
+  "name": "Pianovins",
+  "color": "#654D36",
+  "color2": "#523F2C",
+  "phone": "0981689405",
+  "address": "46 Rue Trousseau  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJp8ypkghy5kcRB-RvBC7_Lp8",
+  "logoUrl": "https://app.cartefidelavis.com/pianovins/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/pianovins/",
+  "heroUrl": "https://app.cartefidelavis.com/pianovins/hero.jpg",
+  "tagline": "by @emmanuel_sudres75 et @raphsudres",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/pianovins/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Nikko 🇯🇵",
+  "color": "#06C068",
+  "color2": "#049D55",
+  "phone": "0147427481",
+  "address": "11 Rue de la Michodière  75002 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJPXPpcDpu5kcRD4WoBtEFXkk",
+  "logoUrl": "https://app.cartefidelavis.com/nikko/logo.jpg",
+  "instagramUrl": "//www.instagram.com/ubereats",
+  "heroUrl": "https://app.cartefidelavis.com/nikko/hero.jpg",
+  "tagline": "the answer is probably delivery",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/nikko/logo.jpg"
+}

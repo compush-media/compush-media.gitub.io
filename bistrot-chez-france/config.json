@@ -1,0 +1,28 @@
+{
+  "name": "Bistrot Chez France",
+  "color": "#AF866A",
+  "color2": "#8F6D56",
+  "phone": "0140679654",
+  "address": "9 Rue Amélie  75007 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJXdI4-9hv5kcRPEXgEQCpoIg",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-chez-france/hero.jpg",
+  "tagline": "Bistrot Chez France — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

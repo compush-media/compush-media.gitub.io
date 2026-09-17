@@ -1,0 +1,31 @@
+{
+  "name": "GUSTO ITALIA",
+  "color": "#27374A",
+  "color2": "#1F2D3C",
+  "phone": "0175430484",
+  "address": "15 Rue des Acacias  75017 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJZZFEn0lv5kcRtjywRooNgiA",
+  "logoUrl": "https://app.cartefidelavis.com/gusto-italia/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/italia_gusto/",
+  "heroUrl": "https://app.cartefidelavis.com/gusto-italia/hero.jpg",
+  "tagline": "GUSTO ITALIA — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/gusto-italia/logo.jpg"
+}

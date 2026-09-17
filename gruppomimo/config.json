@@ -1,0 +1,31 @@
+{
+  "name": "Gruppomimo",
+  "color": "#C91713",
+  "color2": "#A4120F",
+  "phone": "01 72 68 50 35",
+  "address": "24 Rue Keller 75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJGzHuJ7Nz5kcRG-yyDd568bM",
+  "logoUrl": "https://app.cartefidelavis.com/gruppomimo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/gruppomimo/",
+  "heroUrl": "https://app.cartefidelavis.com/gruppomimo/hero.jpg",
+  "tagline": "Gruppomimo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/gruppomimo/logo.jpg"
+}

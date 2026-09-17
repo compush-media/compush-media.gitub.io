@@ -1,0 +1,31 @@
+{
+  "name": "Ti Amo",
+  "color": "#EB1749",
+  "color2": "#C0123B",
+  "phone": "0142362231",
+  "address": "25 Rue de la Reynie  75001 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ140PRQBv5kcRsmNjG7gLbCY",
+  "logoUrl": "https://app.cartefidelavis.com/ti-amo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/tiamo_paris",
+  "heroUrl": "https://app.cartefidelavis.com/ti-amo/hero.jpg",
+  "tagline": "Ti Amo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/ti-amo/logo.jpg"
+}

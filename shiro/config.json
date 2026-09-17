@@ -1,0 +1,31 @@
+{
+  "name": "SHIRO",
+  "color": "#AF986A",
+  "color2": "#8F7C56",
+  "phone": "01 71 25 26 93",
+  "address": "168 Bd Saint-Germain 75006 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJedgdvH5x5kcRmuo2q7c976w",
+  "logoUrl": "https://app.cartefidelavis.com/shiro/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/shiro.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/shiro/hero.jpg",
+  "tagline": "SHIRO — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/shiro/logo.jpg"
+}

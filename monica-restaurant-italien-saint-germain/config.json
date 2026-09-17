@@ -1,0 +1,31 @@
+{
+  "name": "Monica - Restaurant italien Saint Germain",
+  "color": "#6D0A03",
+  "color2": "#590802",
+  "phone": "0780941603",
+  "address": "1 Rue Gozlin  75006 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJIc6zQItx5kcRvyNGB7TDQS8",
+  "logoUrl": "https://app.cartefidelavis.com/monica-restaurant-italien-saint-germain/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/chez_monica/",
+  "heroUrl": "https://app.cartefidelavis.com/monica-restaurant-italien-saint-germain/hero.jpg",
+  "tagline": "Perfil profissional ➡️ @monicamattos.advogada",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/monica-restaurant-italien-saint-germain/logo.jpg"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Il Covo",
+  "color": "#203A50",
+  "color2": "#1A2F41",
+  "phone": "0182070053",
+  "address": "104 Rue Saint-Maur  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJeV8E5a9t5kcRJD6tfA_HC8s",
+  "logoUrl": "https://app.cartefidelavis.com/il-covo/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/ilcovo.paris/",
+  "heroUrl": "https://app.cartefidelavis.com/il-covo/hero.jpg",
+  "tagline": "Il Covo — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/il-covo/logo.jpg"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Le Potager du Père Thierry",
+  "color": "#5D3713",
+  "color2": "#4C2D0F",
+  "phone": "0153282620",
+  "address": "16 Rue des Trois Frères  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJOU9wfUNu5kcRxwPNlRCS10E",
+  "heroUrl": "https://app.cartefidelavis.com/le-potager-du-pere-thierry/hero.jpg",
+  "tagline": "Le Potager du Père Thierry — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

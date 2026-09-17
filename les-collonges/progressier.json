@@ -1,0 +1,22 @@
+{
+  "name": "Les Collonges",
+  "short_name": "Les Collonges",
+  "start_url": "/les-collonges/index.html",
+  "scope": "/les-collonges/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#1E97FA",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

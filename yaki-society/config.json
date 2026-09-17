@@ -1,0 +1,31 @@
+{
+  "name": "Yaki Society",
+  "color": "#493B27",
+  "color2": "#3B301F",
+  "phone": "0140349450",
+  "address": "11 Rue Marie et Louise  75010 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJ7R42frtv5kcRkc9Js9jZZ-E",
+  "logoUrl": "https://app.cartefidelavis.com/yaki-society/logo.jpg",
+  "instagramUrl": "https://instagram.com/yakisociety",
+  "heroUrl": "https://app.cartefidelavis.com/yaki-society/hero.jpg",
+  "tagline": "Yaki Society — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/yaki-society/logo.jpg"
+}

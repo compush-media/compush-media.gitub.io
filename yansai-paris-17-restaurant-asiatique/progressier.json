@@ -1,0 +1,22 @@
+{
+  "name": "Yansai Paris 17 - Restaurant Asiatique",
+  "short_name": "Yansai Paris 17 - Restaurant Asiatique",
+  "start_url": "/yansai-paris-17-restaurant-asiatique/index.html",
+  "scope": "/yansai-paris-17-restaurant-asiatique/",
+  "display": "standalone",
+  "background_color": "#f6efe5",
+  "theme_color": "#806245",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

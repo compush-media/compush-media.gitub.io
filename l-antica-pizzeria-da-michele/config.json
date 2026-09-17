@@ -1,0 +1,31 @@
+{
+  "name": "L'Antica Pizzeria Da Michele",
+  "color": "#4B3A25",
+  "color2": "#3D2F1E",
+  "phone": "0145850239",
+  "address": "19 Rue du Faubourg Saint-Antoine  75011 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJda6SMgBz5kcRsIdfyi4r5wg",
+  "logoUrl": "https://app.cartefidelavis.com/l-antica-pizzeria-da-michele/logo.jpg",
+  "instagramUrl": "https://instagram.com/damicheleparis",
+  "heroUrl": "https://app.cartefidelavis.com/l-antica-pizzeria-da-michele/hero.jpg",
+  "tagline": "L'Antica Pizzeria Da Michele — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/l-antica-pizzeria-da-michele/logo.jpg"
+}

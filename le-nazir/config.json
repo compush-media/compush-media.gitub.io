@@ -1,0 +1,31 @@
+{
+  "name": "Le Nazir",
+  "color": "#C27056",
+  "color2": "#9F5B46",
+  "phone": "0146060717",
+  "address": "56 Rue des Abbesses  75018 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJs_HZ8U9u5kcRlHtidCVyl0M",
+  "logoUrl": "https://app.cartefidelavis.com/le-nazir/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/lenazirparis/",
+  "heroUrl": "https://app.cartefidelavis.com/le-nazir/hero.jpg",
+  "tagline": "Le Nazir — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/le-nazir/logo.jpg"
+}

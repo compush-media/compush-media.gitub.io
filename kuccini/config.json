@@ -1,0 +1,31 @@
+{
+  "name": "KUCCINI",
+  "color": "#484927",
+  "color2": "#3B3B1F",
+  "phone": "0183567664",
+  "address": "165 Rue St Denis  75002 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJZ6Lq7hlu5kcRgr98_sCefbo",
+  "logoUrl": "https://app.cartefidelavis.com/kuccini/logo.jpg",
+  "instagramUrl": "https://www.instagram.com/kuccini_paris",
+  "heroUrl": "https://app.cartefidelavis.com/kuccini/hero.jpg",
+  "tagline": "KUCCINI — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/kuccini/logo.jpg"
+}

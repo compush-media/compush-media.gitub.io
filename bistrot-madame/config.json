@@ -1,0 +1,28 @@
+{
+  "name": "BISTROT Madame",
+  "color": "#494927",
+  "color2": "#3B3B1F",
+  "phone": "0140399427",
+  "address": "1 Rue Saint-Marc  75002 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJexiObqlv5kcRWdZbcfHBjMo",
+  "heroUrl": "https://app.cartefidelavis.com/bistrot-madame/hero.jpg",
+  "tagline": "BISTROT Madame — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris"
+}

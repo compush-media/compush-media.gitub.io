@@ -1,0 +1,31 @@
+{
+  "name": "Papelini - Faubourg Saint Denis",
+  "color": "#654B36",
+  "color2": "#523D2C",
+  "phone": "0148249805",
+  "address": "74 Rue du Faubourg Saint-Denis  75010 Paris",
+  "googleReview": "https://search.google.com/local/writereview?placeid=ChIJsbf6URJu5kcRbLnc8iqFGps",
+  "logoUrl": "https://app.cartefidelavis.com/papelini-faubourg-saint-denis/logo.jpg",
+  "instagramUrl": "https://instagram.com/papeliniparis",
+  "heroUrl": "https://app.cartefidelavis.com/papelini-faubourg-saint-denis/hero.jpg",
+  "tagline": "Papelini - Faubourg Saint Denis — Paris",
+  "category": "brunch",
+  "offre_jour": {
+    "active": false,
+    "titre": "",
+    "description": "",
+    "image": "",
+    "date_fin": ""
+  },
+  "plan": "essentiel",
+  "subscriptionStatus": "active",
+  "setupPaid": true,
+  "billingEmail": "",
+  "stripeCustomerId": "",
+  "stripeSubscriptionId": "",
+  "nextBillingDate": "",
+  "invoices": [],
+  "walletTemplate": "templates/brunch-resto",
+  "city": "Paris",
+  "iconUrl": "https://app.cartefidelavis.com/papelini-faubourg-saint-denis/logo.jpg"
+}
