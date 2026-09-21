@@ -138,7 +138,12 @@
   <a class="cta" id="cta" href="#">Activer mon test gratuit
     <span class="petit">30 jours, sans engagement</span></a>
 
-  <a class="secondaire" id="lienDemo" href="../demo/">Voir aussi la carte de fidélité →</a>
+  <!-- « demo/ » et non « ../demo/ » : cette page est /slug/vos-avis.html, donc
+       « .. » remonte à la racine du site et mène à /demo/, qui n'existe pas.
+       Le lien rendait 404 sur les 940 pages. Le script réécrit l'adresse à
+       partir du slug ; ce href-ci n'est que le repli si le script ne tourne
+       pas, et il est correct tel quel. -->
+  <a class="secondaire" id="lienDemo" href="demo/">Voir aussi la carte de fidélité →</a>
 
   <p class="mention">Fidelavis rédige les réponses. Vous gardez la main : rien
     n'est publié sur Google sans vous.</p>
@@ -230,7 +235,14 @@
   document.getElementById("cta").addEventListener("click", function () {
     suivre("avis_pro", "activation");
   });
-  document.getElementById("lienDemo").addEventListener("click", function () {
+  /* L'adresse de la démonstration se construit sur le slug, jamais en
+     relatif. Même raison que pour config.json plus haut : le chemin relatif
+     dépend de l'URL exacte servie, et une visite sur /slug/vos-avis (sans
+     .html) ou avec une barre finale ne résout pas pareil. Le slug, lui, ne
+     change pas. */
+  var lienDemo = document.getElementById("lienDemo");
+  if (slug) { lienDemo.href = "/" + slug + "/demo/"; }
+  lienDemo.addEventListener("click", function () {
     suivre("avis_pro", "vers_demo");
   });
 
