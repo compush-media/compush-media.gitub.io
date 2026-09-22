@@ -1,0 +1,568 @@
+<title>Wallet La Garenne-Colombes</title>
+
+<script>
+  // Configuration de la page publiée — générée par construire-statique.js.
+  window.GARENNE_API = "https://rtdiaeskmyjjwohirhzj.supabase.co/functions/v1/garenne-colombes/signup";
+  // Vide = aucun traceur, donc aucun bandeau cookies. Renseignez
+  // META_PIXEL_ID et relancez ce script quand le pixel existera.
+  window.META_PIXEL_ID = "";
+</script>
+<style>
+  :root{
+    --bg:#F6F4EE;
+    --ink:#1C2620;
+    --ink-soft:#4B5A50;
+    --accent:#2F6F4E;
+    --accent-ink:#F6F4EE;
+    --accent-2:#C97A2E;
+    --card:#FFFFFF;
+    --line:#DCD8CB;
+    --shadow: 0 1px 2px rgba(28,38,32,.06), 0 8px 24px rgba(28,38,32,.06);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12160F;
+      --ink:#ECE8DD;
+      --ink-soft:#AFB6A6;
+      --accent:#63BE8E;
+      --accent-ink:#0E1A13;
+      --accent-2:#E3A15C;
+      --card:#191F17;
+      --line:#2B332A;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12160F;
+    --ink:#ECE8DD;
+    --ink-soft:#AFB6A6;
+    --accent:#63BE8E;
+    --accent-ink:#0E1A13;
+    --accent-2:#E3A15C;
+    --card:#191F17;
+    --line:#2B332A;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans', system-ui, sans-serif;
+    padding-inline:20px;
+    padding-block: 48px 64px;
+  }
+  .wrap{max-width:640px;margin:0 auto;}
+
+  .eyebrow{
+    font-family:'Oswald', system-ui, sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    font-size:12.5px;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:600;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px;height:7px;border-radius:50%;
+    background:var(--accent2, var(--accent));
+    display:inline-block;
+  }
+
+  h1{
+    font-family:'Oswald', system-ui, sans-serif;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+    font-size:clamp(30px, 7vw, 46px);
+    line-height:1.06;
+    margin: 14px 0 0;
+    text-wrap:balance;
+  }
+  h1 em{
+    font-style:normal;
+    color:var(--accent);
+  }
+
+  .sub{
+    font-size:17px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    max-width:52ch;
+    margin: 16px 0 0;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    padding: 22px;
+    margin-top:30px;
+  }
+
+  .role-toggle{
+    display:flex;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .role-toggle label{
+    flex:1;
+    text-align:center;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:10px 8px;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    cursor:pointer;
+    user-select:none;
+    transition:border-color .15s, color .15s, background .15s;
+  }
+  .role-toggle input{position:absolute;opacity:0;pointer-events:none;}
+  .role-toggle input:checked + span{color:var(--accent-ink);}
+  .role-toggle label:has(input:checked){
+    background:var(--accent);
+    border-color:var(--accent);
+    color:var(--accent-ink);
+  }
+  .role-toggle label:has(input:focus-visible){
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+
+  form .row{display:flex;gap:8px;flex-wrap:wrap;}
+  input[type="email"], input[type="text"]{
+    flex:1;
+    min-width:180px;
+    font:inherit;
+    font-size:15px;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--bg);
+    color:var(--ink);
+  }
+  input[type="email"]:focus, input[type="text"]:focus{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+  }
+
+  button{
+    font:inherit;
+    font-weight:700;
+    font-size:15px;
+    background:var(--accent);
+    color:var(--accent-ink);
+    border:none;
+    border-radius:10px;
+    padding:12px 20px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  button:hover{filter:brightness(1.06);}
+  button:active{filter:brightness(.96);}
+
+  .microcopy{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:10px;
+  }
+
+  .confirm{
+    display:none;
+    align-items:center;
+    gap:10px;
+    padding:14px 16px;
+    border-radius:10px;
+    background:var(--accent);
+    color:var(--accent-ink);
+    font-weight:600;
+    font-size:14.5px;
+  }
+  .confirm.show{display:flex;}
+
+  .erreur{
+    margin-top:10px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--accent-2);
+  }
+  .erreur[hidden]{display:none;}
+
+  .rgpd{
+    font-size:11.5px;
+    line-height:1.5;
+    color:var(--ink-soft);
+    margin:14px 0 0;
+    padding-top:12px;
+    border-top:1px solid var(--line);
+  }
+  .rgpd a{
+    color:var(--accent);
+    text-decoration:underline;
+    text-underline-offset:2px;
+  }
+
+  .bandeau{
+    position:fixed;
+    left:0;right:0;bottom:0;
+    z-index:50;
+    display:flex;
+    gap:16px;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    padding:16px 20px;
+    background:var(--card);
+    border-top:1px solid var(--line);
+    box-shadow:0 -8px 24px rgba(28,38,32,.10);
+  }
+  .bandeau[hidden]{display:none;}
+  .bandeau-texte{flex:1 1 320px;min-width:0;}
+  .bandeau-texte strong{
+    display:block;
+    font-family:'Oswald', system-ui, sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-size:12.5px;
+    color:var(--ink);
+    margin-bottom:4px;
+  }
+  .bandeau-texte p{
+    margin:0;
+    font-size:12.5px;
+    line-height:1.5;
+    color:var(--ink-soft);
+    max-width:64ch;
+  }
+  .bandeau-actions{display:flex;gap:8px;flex:0 0 auto;}
+  /* Refuser doit être aussi simple qu'accepter : même taille, même place,
+     un seul clic. C'est la condition que la CNIL vérifie en premier. */
+  .bandeau-actions button{flex:1;padding:11px 22px;font-size:14px;}
+  .bandeau-actions .secondaire{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--line);
+  }
+  .bandeau-actions .secondaire:hover{filter:none;border-color:var(--ink-soft);}
+  @media (max-width:560px){
+    .bandeau-actions{width:100%;}
+  }
+  /* Le bandeau est fixe : on dégage la place pour ne pas masquer le pied. */
+  body:has(.bandeau:not([hidden])){padding-bottom:210px;}
+
+  .lien-cookies{
+    background:none;
+    border:none;
+    padding:0;
+    font:inherit;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    text-decoration:underline;
+    text-underline-offset:2px;
+    cursor:pointer;
+  }
+  .lien-cookies:hover{color:var(--ink);filter:none;}
+  .lien-cookies[hidden]{display:none;}
+
+  button[disabled]{
+    opacity:.6;
+    cursor:progress;
+    filter:none;
+  }
+
+  .steps{
+    margin-top:56px;
+    display:grid;
+    gap:16px;
+  }
+  .steps h2{
+    font-family:'Oswald', system-ui, sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 4px;
+  }
+  .step{
+    display:grid;
+    grid-template-columns:34px 1fr;
+    gap:14px;
+    align-items:start;
+    padding-block:14px;
+    border-top:1px solid var(--line);
+  }
+  .step:first-of-type{border-top:none;padding-top:8px;}
+  .step .n{
+    font-family:'Oswald', system-ui, sans-serif;
+    font-size:18px;
+    font-weight:600;
+    color:var(--accent);
+  }
+  .step p{margin:0;font-size:14.5px;line-height:1.5;color:var(--ink-soft);}
+  .step strong{color:var(--ink);font-weight:600;}
+
+  footer{
+    margin-top:56px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  footer .brand{font-weight:700;color:var(--ink);}
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap">
+
+<div class="wrap">
+  <p class="eyebrow">La Garenne-Colombes · 92</p>
+  <h1>Les bons plans de vos commer&ccedil;ants, <em>dans une seule appli.</em></h1>
+  <p class="sub">Fini les douze comptes Instagram &agrave; suivre pour ne rater aucune promo. Un seul endroit pour les actus, les avis et les bons plans des commerces de votre ville &mdash; en cours de test &agrave; La Garenne-Colombes.</p>
+
+  <div class="card">
+    <div class="role-toggle" role="radiogroup" aria-label="Vous &ecirc;tes">
+      <label for="role-habitant">
+        <input type="radio" name="role" id="role-habitant" value="habitant" checked>
+        <span>Habitant</span>
+      </label>
+      <label for="role-commercant">
+        <input type="radio" name="role" id="role-commercant" value="commercant">
+        <span>Commer&ccedil;ant</span>
+      </label>
+    </div>
+
+    <form id="signup-form" novalidate>
+      <div class="row">
+        <input type="email" id="email" name="email" placeholder="votre@email.fr" autocomplete="email" required inputmode="email">
+        <button type="submit">Me pr&eacute;venir au lancement</button>
+      </div>
+      <p class="microcopy">Aucun spam. Un seul e-mail, le jour du lancement &agrave; La Garenne-Colombes.</p>
+      <p class="erreur" id="erreur-msg" role="alert" aria-live="polite" hidden></p>
+      <p class="rgpd">
+        Vos donn&eacute;es &mdash; adresse e-mail et profil (habitant ou commer&ccedil;ant) &mdash;
+        servent uniquement &agrave; vous pr&eacute;venir du lancement &agrave; La Garenne-Colombes.
+        Elles sont trait&eacute;es par notre prestataire d&rsquo;emailing et ne sont jamais vendues.
+        D&eacute;sinscription en un clic dans chaque e-mail&nbsp;; acc&egrave;s, rectification et
+        suppression sur simple demande &agrave;
+        <a href="mailto:support@fidelavis.com">support@fidelavis.com</a>.
+        <a href="https://cartefidelavis.com/privacy.html" target="_blank" rel="noopener">Politique de confidentialit&eacute;</a>.
+      </p>
+    </form>
+
+    <div class="confirm" id="confirm-msg">
+      <span aria-hidden="true">&#10003;</span>
+      <span>Inscrit&nbsp;! On vous pr&eacute;vient d&egrave;s que &ccedil;a ouvre.</span>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h2>Comment &ccedil;a marchera</h2>
+    <div class="step">
+      <span class="n">01</span>
+      <p><strong>Vous vous inscrivez</strong> ici, ou vous scannez une carte chez un commer&ccedil;ant partenaire.</p>
+    </div>
+    <div class="step">
+      <span class="n">02</span>
+      <p><strong>Vous recevez les actus</strong> des commerces pr&egrave;s de chez vous &mdash; nouveaut&eacute;s, promos, &eacute;v&eacute;nements &mdash; publi&eacute;es directement par les commer&ccedil;ants.</p>
+    </div>
+    <div class="step">
+      <span class="n">03</span>
+      <p><strong>Vous profitez des bons plans</strong> exclusifs r&eacute;serv&eacute;s aux inscrits, sans rien installer ni cr&eacute;er de compte compliqu&eacute;.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span><span class="brand">Wallet La Garenne-Colombes</span> &mdash; projet en test</span>
+    <span>
+      <button type="button" class="lien-cookies" id="gerer-cookies" hidden>G&eacute;rer les cookies</button>
+    </span>
+    <span>Une initiative Fidelavis</span>
+  </footer>
+</div>
+
+
+<div class="bandeau" id="bandeau-cookies" role="region" aria-labelledby="bandeau-titre" hidden>
+  <div class="bandeau-texte">
+    <strong id="bandeau-titre">Mesure de nos publicit&eacute;s</strong>
+    <p>Nous aimerions d&eacute;poser un traceur Meta pour savoir quelles publicit&eacute;s Instagram
+    am&egrave;nent des inscriptions. Il n&rsquo;est d&eacute;pos&eacute; qu&rsquo;avec votre accord&nbsp;:
+    votre inscription fonctionne exactement pareil si vous refusez.</p>
+  </div>
+  <div class="bandeau-actions">
+    <button type="button" class="secondaire" id="cookies-refuser">Refuser</button>
+    <button type="button" id="cookies-accepter">Accepter</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ─── Consentement publicitaire ───────────────────────────────────────────
+  // Le pixel Meta n'est chargé qu'après un « Accepter » explicite. Tant que
+  // le visiteur n'a pas choisi, AUCUNE requête ne part vers Meta : le script
+  // fbevents.js n'est même pas demandé.
+  var CLE = 'garenne_consentement_pub';
+  var SIX_MOIS = 182 * 24 * 60 * 60 * 1000;   // au-delà, on redemande (CNIL)
+
+  var bandeau  = document.getElementById('bandeau-cookies');
+  var lienGerer = document.getElementById('gerer-cookies');
+  var pixelPossible = typeof window.META_PIXEL_ID === 'string' && window.META_PIXEL_ID !== '';
+  var consentement = null;
+  var pixelCharge = false;
+
+  function lireChoix(){
+    // localStorage peut lever (navigation privée, cookies bloqués) : sans
+    // mémoire on redemandera au prochain passage, ce qui est le bon défaut.
+    try{
+      var brut = localStorage.getItem(CLE);
+      if(!brut) return null;
+      var enregistre = JSON.parse(brut);
+      if(!enregistre || (Date.now() - enregistre.date) > SIX_MOIS) return null;
+      return enregistre.choix;
+    }catch(e){ return null; }
+  }
+
+  function ecrireChoix(choix){
+    try{
+      localStorage.setItem(CLE, JSON.stringify({choix: choix, date: Date.now()}));
+    }catch(e){}
+  }
+
+  function chargerPixel(){
+    if(pixelCharge || !pixelPossible) return;
+    pixelCharge = true;
+    /* eslint-disable */
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    /* eslint-enable */
+    window.fbq('init', window.META_PIXEL_ID);
+    window.fbq('track', 'PageView');
+  }
+
+  // Seul point d'entrée du suivi : sans consentement, rien ne part.
+  function suivre(evenement, parametres){
+    if(consentement !== 'accepte') return;
+    if(typeof window.fbq === 'function') window.fbq('track', evenement, parametres);
+  }
+
+  function appliquer(choix, memoriser){
+    consentement = choix;
+    if(memoriser) ecrireChoix(choix);
+    bandeau.hidden = true;
+    lienGerer.hidden = !pixelPossible;
+    if(choix === 'accepte') chargerPixel();
+  }
+
+  if(pixelPossible){
+    var deja = lireChoix();
+    if(deja) appliquer(deja, false);
+    else bandeau.hidden = false;   // pas de choix : on demande, sans rien charger
+
+    document.getElementById('cookies-accepter')
+      .addEventListener('click', function(){ appliquer('accepte', true); });
+    document.getElementById('cookies-refuser')
+      .addEventListener('click', function(){ appliquer('refuse', true); });
+
+    lienGerer.addEventListener('click', function(){
+      // Retirer son accord doit être possible à tout moment. Un pixel déjà
+      // chargé ne se décharge pas : on efface le choix et on recharge.
+      try{ localStorage.removeItem(CLE); }catch(e){}
+      if(pixelCharge) location.reload();
+      else { consentement = null; bandeau.hidden = false; lienGerer.hidden = true; }
+    });
+  }
+
+  // ─── Formulaire ──────────────────────────────────────────────────────────
+  var form       = document.getElementById('signup-form');
+  var confirmMsg = document.getElementById('confirm-msg');
+  var erreurMsg  = document.getElementById('erreur-msg');
+  var champEmail = document.getElementById('email');
+  var bouton     = form.querySelector('button[type="submit"]');
+  var libelle    = bouton.innerHTML;
+  var enCours    = false;
+
+  function erreur(texte){
+    erreurMsg.textContent = texte;
+    erreurMsg.hidden = false;
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(enCours) return;
+
+    var email = champEmail.value.trim();
+    if(!email || !email.includes('@')){
+      champEmail.focus();
+      erreur('Indiquez une adresse e-mail valide.');
+      return;
+    }
+    // Les boutons de rôle sont hors du <form> : on les lit sur le document.
+    var choix = document.querySelector('input[name="role"]:checked');
+    var role  = choix ? choix.value : 'habitant';
+
+    erreurMsg.hidden = true;
+    enCours = true;
+    bouton.disabled = true;
+    bouton.textContent = 'Inscription\u2026';
+
+    // L'endpoint se déduit de l'URL de la page : le navigateur connaît le
+    // chemin réel, que le serveur ne voit pas toujours — une Edge Function
+    // reçoit « /garenne-colombes » alors que le public appelle
+    // « /functions/v1/garenne-colombes ».
+    var api = window.GARENNE_API
+              || (location.pathname.replace(/\/+$/, '') + '/signup');
+
+    fetch(api, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, role: role, source: 'landing' })
+    })
+    .catch(function(){
+      // fetch ne rejette que sur panne réseau : message dédié.
+      throw new Error('Connexion impossible. V\u00e9rifiez votre r\u00e9seau et r\u00e9essayez.');
+    })
+    .then(function(reponse){
+      return reponse.json().catch(function(){ return {}; }).then(function(data){
+        if(!reponse.ok){
+          throw new Error(data.error || 'Inscription impossible pour le moment.');
+        }
+        return data;
+      });
+    })
+    .then(function(){
+      // Conversion Meta : uniquement quand le serveur a confirmé l'inscription,
+      // et uniquement si le visiteur a accepté le traceur.
+      suivre('Lead', {
+        content_name: 'wallet-garenne-colombes',
+        content_category: role
+      });
+      form.style.display = 'none';
+      confirmMsg.classList.add('show');
+    })
+    .catch(function(err){
+      erreur(err.message || 'Inscription impossible pour le moment.');
+    })
+    .then(function(){
+      enCours = false;
+      bouton.disabled = false;
+      bouton.innerHTML = libelle;
+    });
+  });
+})();
+</script>
