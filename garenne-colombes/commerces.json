@@ -1,0 +1,5 @@
+{
+  "_lisez_moi": "Les commerces participants du test La Garenne-Colombes. Le slug est le nom du dossier dans le dépôt des wallets (app.cartefidelavis.com/SLUG/). Ajouter un commerce = ajouter son slug ici, puis relancer construire-statique.js. La page lit le reste (nom, logo, catégorie, offre du jour) dans le config.json du commerce : rien à recopier.",
+  "ville": "La Garenne-Colombes",
+  "commerces": []
+}

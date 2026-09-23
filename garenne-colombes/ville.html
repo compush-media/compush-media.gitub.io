@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>Wallet La Garenne-Colombes</title>
+<title>Bons plans des commerçants — La Garenne-Colombes</title>
 
 <script>
   // Configuration de la page publiée — générée par construire-statique.js.
@@ -326,15 +326,115 @@
   }
   footer .brand{font-weight:700;color:var(--ink);}
 </style>
+<style>
+  /* ─── Page ville ─────────────────────────────────────────────────────── */
+  .maj{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin:6px 0 0;
+  }
+  .commerces{
+    margin-top:30px;
+    display:grid;
+    gap:14px;
+  }
+  .commerce{
+    display:grid;
+    grid-template-columns:52px 1fr;
+    gap:14px;
+    align-items:start;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    padding:16px;
+    text-decoration:none;
+    color:inherit;
+  }
+  .commerce:hover{border-color:var(--accent);}
+  .commerce .logo{
+    width:52px;height:52px;
+    border-radius:12px;
+    object-fit:cover;
+    background:var(--bg);
+    border:1px solid var(--line);
+  }
+  .commerce .sansLogo{
+    display:grid;place-items:center;
+    font-family:'Oswald', system-ui, sans-serif;
+    font-size:20px;font-weight:600;
+    color:var(--accent);
+  }
+  .commerce h3{
+    margin:0;
+    font-family:'Oswald', system-ui, sans-serif;
+    text-transform:uppercase;
+    letter-spacing:.02em;
+    font-size:16px;
+    line-height:1.2;
+  }
+  .commerce .cat{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin:2px 0 0;
+  }
+  .offre{
+    margin-top:10px;
+    padding:10px 12px;
+    border-radius:10px;
+    background:color-mix(in srgb, var(--accent) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  .offre strong{
+    display:block;
+    font-size:14px;
+    color:var(--ink);
+  }
+  .offre p{
+    margin:3px 0 0;
+    font-size:13px;
+    line-height:1.45;
+    color:var(--ink-soft);
+  }
+  .offre .fin{
+    display:block;
+    margin-top:5px;
+    font-size:11.5px;
+    color:var(--accent);
+    font-weight:600;
+  }
+  .sansOffre{
+    margin:10px 0 0;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+  .vide{
+    background:var(--card);
+    border:1px dashed var(--line);
+    border-radius:16px;
+    padding:24px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:14px;
+    line-height:1.55;
+  }
+  .vide strong{display:block;color:var(--ink);margin-bottom:6px;}
+</style>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap">
 
 <div class="wrap">
-  <p class="eyebrow">La Garenne-Colombes · 92</p>
-  <h1>Les bons plans de vos commer&ccedil;ants, <em>dans une seule appli.</em></h1>
-  <p class="sub">Fini les douze comptes Instagram &agrave; suivre pour ne rater aucune promo. Un seul endroit pour les actus, les avis et les bons plans des commerces de votre ville &mdash; en cours de test &agrave; La Garenne-Colombes.</p>
+  <p class="eyebrow">La Garenne-Colombes &middot; 92</p>
+  <h1>Les bons plans de vos <em>commer&ccedil;ants</em>.</h1>
+  <p class="sub">Les offres du moment chez les commerces participants de la ville. Scannez la carte chez l&rsquo;un d&rsquo;eux pour recevoir les suivantes.</p>
+  <p class="maj" id="maj"></p>
 
-  <div class="card">
+  <div class="commerces" id="commerces">
+    <div class="vide">Chargement des commerces&hellip;</div>
+  </div>
+
+  <div class="card" style="margin-top:34px">
     <div class="role-toggle" role="radiogroup" aria-label="Vous &ecirc;tes">
       <label for="role-habitant">
         <input type="radio" name="role" id="role-habitant" value="habitant" checked>
@@ -349,13 +449,13 @@
     <form id="signup-form" novalidate>
       <div class="row">
         <input type="email" id="email" name="email" placeholder="votre@email.fr" autocomplete="email" required inputmode="email">
-        <button type="submit">Me pr&eacute;venir au lancement</button>
+        <button type="submit">Recevoir les bons plans</button>
       </div>
-      <p class="microcopy">Aucun spam. Un seul e-mail, le jour du lancement &agrave; La Garenne-Colombes.</p>
+      <p class="microcopy">Aucun spam. Les nouveaut&eacute;s des commerces de La Garenne-Colombes, rien d&rsquo;autre.</p>
       <p class="erreur" id="erreur-msg" role="alert" aria-live="polite" hidden></p>
       <p class="rgpd">
         Vos donn&eacute;es &mdash; adresse e-mail et profil (habitant ou commer&ccedil;ant) &mdash;
-        servent uniquement &agrave; vous pr&eacute;venir du lancement &agrave; La Garenne-Colombes.
+        servent uniquement &agrave; vous envoyer les bons plans des commerces de La Garenne-Colombes.
         Elles sont trait&eacute;es par notre prestataire d&rsquo;emailing et ne sont jamais vendues.
         D&eacute;sinscription en un clic dans chaque e-mail&nbsp;; acc&egrave;s, rectification et
         suppression sur simple demande &agrave;
@@ -366,23 +466,7 @@
 
     <div class="confirm" id="confirm-msg">
       <span aria-hidden="true">&#10003;</span>
-      <span>Inscrit&nbsp;! On vous pr&eacute;vient d&egrave;s que &ccedil;a ouvre.</span>
-    </div>
-  </div>
-
-  <div class="steps">
-    <h2>Comment &ccedil;a marchera</h2>
-    <div class="step">
-      <span class="n">01</span>
-      <p><strong>Vous vous inscrivez</strong> ici, ou vous scannez une carte chez un commer&ccedil;ant partenaire.</p>
-    </div>
-    <div class="step">
-      <span class="n">02</span>
-      <p><strong>Vous recevez les actus</strong> des commerces pr&egrave;s de chez vous &mdash; nouveaut&eacute;s, promos, &eacute;v&eacute;nements &mdash; publi&eacute;es directement par les commer&ccedil;ants.</p>
-    </div>
-    <div class="step">
-      <span class="n">03</span>
-      <p><strong>Vous profitez des bons plans</strong> exclusifs r&eacute;serv&eacute;s aux inscrits, sans rien installer ni cr&eacute;er de compte compliqu&eacute;.</p>
+      <span>Inscrit&nbsp;! Vous recevrez les prochains bons plans.</span>
     </div>
   </div>
 
@@ -394,7 +478,6 @@
     <span>Une initiative Fidelavis</span>
   </footer>
 </div>
-
 
 <div class="bandeau" id="bandeau-cookies" role="region" aria-labelledby="bandeau-titre" hidden>
   <div class="bandeau-texte">
@@ -409,6 +492,113 @@
   </div>
 </div>
 
+
+<script>
+(function(){
+  // Les commerces participants viennent de commerces.json ; tout le reste
+  // (nom, logo, catégorie, offre du jour) est lu dans le config.json de
+  // chaque commerce. Rien n'est recopié : le commerçant pilote sa propre
+  // fiche depuis son admin, cette page ne fait que la relire.
+  // Surchargeable au build (WALLET_BASE) : sert à éprouver le rendu des
+  // offres sur des fiches de test, sans toucher aux commerces réels.
+  var BASE = window.WALLET_BASE || 'https://app.cartefidelavis.com/';
+  var cible = document.getElementById('commerces');
+  var maj = document.getElementById('maj');
+
+  function echappe(t){
+    var d = document.createElement('div');
+    d.textContent = t == null ? '' : String(t);
+    return d.innerHTML;
+  }
+
+  var MOIS = ['janvier','f\u00e9vrier','mars','avril','mai','juin','juillet',
+              'ao\u00fbt','septembre','octobre','novembre','d\u00e9cembre'];
+
+  // « 2027-06-30 » est une date de fichier, pas une date qu'on montre à un
+  // habitant. Si le format est inattendu, on rend la valeur telle quelle
+  // plutôt que d'afficher « Invalid Date ».
+  function dateLisible(iso){
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || '').trim());
+    if(!m) return iso;
+    var jour = parseInt(m[3], 10);
+    return (jour === 1 ? '1er' : jour) + ' ' + MOIS[parseInt(m[2], 10) - 1] + ' ' + m[1];
+  }
+
+  function offreValide(o){
+    if(!o || !o.active || !o.titre) return false;
+    // Une offre dont la date de fin est passée ne doit plus s'afficher :
+    // un « -20 % jusqu'au 3 mars » en juillet décrédibilise toute la page.
+    if(o.date_fin){
+      var fin = new Date(o.date_fin + 'T23:59:59');
+      if(!isNaN(fin) && fin < new Date()) return false;
+    }
+    return true;
+  }
+
+  function carte(slug, cfg){
+    var nom = cfg.name || slug;
+    var initiale = nom.trim().charAt(0).toUpperCase();
+    var logo = cfg.logoUrl
+      ? '<img class="logo" src="' + echappe(cfg.logoUrl) + '" alt="" loading="lazy">'
+      : '<div class="logo sansLogo">' + echappe(initiale) + '</div>';
+
+    var bloc;
+    if(offreValide(cfg.offre_jour)){
+      var o = cfg.offre_jour;
+      bloc = '<div class="offre"><strong>' + echappe(o.titre) + '</strong>'
+           + (o.description ? '<p>' + echappe(o.description) + '</p>' : '')
+           + (o.date_fin ? '<span class="fin">Jusqu\u2019au ' + echappe(dateLisible(o.date_fin)) + '</span>' : '')
+           + '</div>';
+    } else {
+      bloc = '<p class="sansOffre">Pas d\u2019offre en cours \u2014 scannez la carte sur place pour ne pas rater la prochaine.</p>';
+    }
+
+    return '<a class="commerce" href="' + BASE + encodeURIComponent(slug) + '/">'
+         + logo
+         + '<div><h3>' + echappe(nom) + '</h3>'
+         + (cfg.category ? '<p class="cat">' + echappe(cfg.category) + '</p>' : '')
+         + bloc + '</div></a>';
+  }
+
+  fetch('commerces.json', {cache: 'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(liste){
+      var slugs = (liste && liste.commerces) || [];
+      if(!slugs.length){
+        cible.innerHTML = '<div class="vide"><strong>Les premiers commerces arrivent.</strong>'
+          + 'Le test d\u00e9marre \u00e0 La Garenne-Colombes. Laissez votre adresse ci-dessous '
+          + 'et vous saurez d\u00e8s qu\u2019il y a des bons plans pr\u00e8s de chez vous.</div>';
+        return;
+      }
+      // Un commerce injoignable ne doit pas vider la page : chaque fiche est
+      // récupérée indépendamment, les échecs sont simplement omis.
+      return Promise.all(slugs.map(function(slug){
+        return fetch(BASE + encodeURIComponent(slug) + '/config.json', {cache: 'no-store'})
+          .then(function(r){ return r.ok ? r.json() : null; })
+          .then(function(cfg){ return cfg ? {slug: slug, cfg: cfg} : null; })
+          .catch(function(){ return null; });
+      })).then(function(fiches){
+        var ok = fiches.filter(Boolean);
+        if(!ok.length){
+          cible.innerHTML = '<div class="vide">Les commerces sont momentan\u00e9ment injoignables. R\u00e9essayez dans un instant.</div>';
+          return;
+        }
+        // Les commerces qui ont une offre en cours passent devant.
+        ok.sort(function(a, b){
+          return (offreValide(b.cfg.offre_jour) ? 1 : 0) - (offreValide(a.cfg.offre_jour) ? 1 : 0);
+        });
+        cible.innerHTML = ok.map(function(f){ return carte(f.slug, f.cfg); }).join('');
+        var n = ok.filter(function(f){ return offreValide(f.cfg.offre_jour); }).length;
+        maj.textContent = ok.length + ' commerce' + (ok.length > 1 ? 's' : '')
+          + ' participant' + (ok.length > 1 ? 's' : '')
+          + (n ? ' \u00b7 ' + n + ' bon' + (n > 1 ? 's' : '') + ' plan' + (n > 1 ? 's' : '') + ' en cours' : '');
+      });
+    })
+    .catch(function(){
+      cible.innerHTML = '<div class="vide">Liste des commerces indisponible pour le moment.</div>';
+    });
+})();
+</script>
 <script>
 (function(){
   // ─── Consentement publicitaire ───────────────────────────────────────────
