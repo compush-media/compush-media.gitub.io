@@ -516,6 +516,13 @@
     var choix = document.querySelector('input[name="role"]:checked');
     var role  = choix ? choix.value : 'habitant';
 
+    // D'où vient cette inscription : ?s=crm pour les commerçants démarchés,
+    // « landing » par défaut pour la publicité. Les deux populations ne se
+    // lisent pas ensemble — un commerçant démarché n'est pas un habitant
+    // touché par une annonce.
+    var recu = new URLSearchParams(location.search).get('s') || '';
+    var source = recu.toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 30) || 'landing';
+
     erreurMsg.hidden = true;
     enCours = true;
     bouton.disabled = true;
@@ -531,7 +538,7 @@
     fetch(api, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, role: role, source: 'landing' })
+      body: JSON.stringify({ email: email, role: role, source: source })
     })
     .catch(function(){
       // fetch ne rejette que sur panne réseau : message dédié.
