@@ -132,16 +132,31 @@
     </div>
   </div>
 
-  <h2>Et pour en recevoir plus</h2>
-  <p class="intro">Le problème n'est pas seulement de répondre. C'est que les
-    clients contents ne pensent jamais à écrire.</p>
+  <!-- Deux versions de ce bloc, selon « sansCarte » dans config.json.
+       Le titre d'origine était « Et pour en recevoir plus » : c'était la carte
+       de fidélité qui en obtenait plus, en demandant l'avis au moment du
+       cadeau. Hors restauration, la carte n'a pas de sens — et sans elle le
+       produit ne sait plus EN OBTENIR, seulement surveiller et rédiger.
+       Garder l'ancien titre ailleurs aurait promis ce qu'on ne fait pas. -->
+  <h2 id="titreBloc">Et pour en recevoir plus</h2>
+  <p class="intro" id="introBloc">Le problème n'est pas seulement de répondre.
+    C'est que les clients contents ne pensent jamais à écrire.</p>
 
-  <ul class="liste">
+  <ul class="liste" id="listeCarte">
     <li>Votre carte de fidélité propose l'avis <b>au moment où le client vient
       de recevoir son avantage</b> — l'instant où il est le mieux disposé, et
       où il a déjà son téléphone en main.</li>
     <li>Il arrive sur votre fiche Google <b>en un geste</b>, sans rien
       installer ni chercher.</li>
+    <li>Vous suivez tout depuis votre espace : les avis reçus, ceux auxquels
+      vous avez répondu, ceux qui attendent.</li>
+  </ul>
+
+  <ul class="liste" id="listeAvis" hidden>
+    <li>Dès qu'un avis paraît, <b>vous êtes prévenu dans l'heure</b>. Vous
+      n'avez plus à aller regarder.</li>
+    <li>La réponse arrive <b>déjà rédigée</b>, dans votre ton. Vous la
+      relisez, vous la collez.</li>
     <li>Vous suivez tout depuis votre espace : les avis reçus, ceux auxquels
       vous avez répondu, ceux qui attendent.</li>
   </ul>
@@ -216,6 +231,22 @@
       if (c.color2) document.documentElement.style.setProperty("--brand-2", c.color2);
       var l = document.getElementById("logo");
       if (c.logoUrl) { l.src = c.logoUrl; l.hidden = false; }
+
+      /* « sansCarte » : hors restauration, la carte de fidélité n'a pas de
+         sens — un coiffeur n'a pas de table où poser un support. Le produit
+         se réduit alors à surveiller les avis et rédiger les réponses, ce
+         que ce bloc dit, sans promettre d'en obtenir davantage. Le lien vers
+         la démonstration de la carte disparaît avec. */
+      if (c.sansCarte) {
+        document.getElementById("titreBloc").textContent = "Comment ça se passe";
+        document.getElementById("introBloc").textContent =
+          "Répondre à un avis prend un quart d'heure quand il faut trouver le "
+          + "ton juste. C'est ce quart d'heure qu'on vous rend.";
+        document.getElementById("listeCarte").hidden = true;
+        document.getElementById("listeAvis").hidden = false;
+        document.getElementById("lienDemo").hidden = true;
+      }
+
       var cta = document.getElementById("cta");
       cta.href = "/activation-test-gratuit/?restaurant=" + encodeURIComponent(slug)
                + "&resto=" + encodeURIComponent(c.name || slug) + "&src=avis";
