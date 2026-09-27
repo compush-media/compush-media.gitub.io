@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#C8206A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fidelavis">
+<link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<title>Vidéo – Les Commerces de La Garenne</title>
+<style>
+  .tt{margin:16px 2px 4px;}
+  .tabs{display:flex;gap:8px;margin:14px 0 12px;}
+  .panel{font-size:14.5px;line-height:1.55;}
+  .merci{display:flex;gap:10px;align-items:center;background:var(--ok-soft);color:var(--ok);border-radius:16px;padding:14px;font-weight:900;margin:18px 0 12px;}
+  .merci .ck{width:30px;height:30px;border-radius:50%;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+</style>
+</head>
+<body>
+<div id="demo"></div>
+<div id="bar"></div>
+<main class="ct">
+  <div id="player"></div>
+  <div class="tt" id="tt"></div>
+
+  <div class="tabs">
+    <button class="chip on" type="button" data-tab="resume">Résumé</button>
+    <button class="chip" type="button" data-tab="avis">Avis clients</button>
+    <button class="chip" type="button" data-tab="infos">Infos</button>
+  </div>
+  <div class="panel" id="panel"></div>
+
+  <!-- Étape 8 : après la vidéo -->
+  <div id="merci" class="merci hide"><span class="ck">✓</span>Merci d'avoir découvert cette adresse !</div>
+  <div id="cta" style="margin-top:18px"></div>
+  <div class="acts" id="acts" style="margin-top:12px"></div>
+
+  <div id="notif" class="card hide" style="margin-top:12px;display:flex;gap:10px;align-items:center">
+    <span style="font-size:22px">🔔</span>
+    <p style="flex:1;font-size:14px"><b>Être prévenu des prochaines vidéos</b></p>
+    <button class="chip" id="btnNotif" type="button">Activer</button>
+  </div>
+
+  <div class="sec-title"><h2>Découvrir d'autres commerces</h2><a href="/la-garenne/decouvrir.html">Tout voir</a></div>
+  <div class="rail" id="autres"></div>
+</main>
+
+<script>
+/* Étapes 7 et 8 — vidéo complète puis actions. */
+(function(){
+  var slug = HL.qs('s').toLowerCase().replace(/[^a-z0-9-]/g,'');
+  var vid  = HL.qs('v'), pubId = HL.qs('pub');
+  document.getElementById('bar').innerHTML = HL.brandbar(true);
+  HL.nav('decouvrir');
+  if (HL.qs('bienvenue')) setTimeout(function(){ HL.toast('Bienvenue ! Voici la vidéo complète'); }, 300);
+
+  HL.charger().then(function(d){
+    var c = d.parSlug[slug];
+    if (!c) { location.replace(HL.BASE + 'app.html'); return; }
+    if (c.demo) document.getElementById('demo').innerHTML = '<div class="bandeau-demo">Commerce de démonstration</div>';
+    var v = c.videos.filter(function(x){ return x.id === vid; })[0] || c.videos[0];
+    var pub = pubId ? d.pubs.filter(function(p){ return p.id === pubId && p.format === 'video'; })[0] : null;
+    var cat = HL.CATEGORIES[c.categorie] || {label:''};
+    document.title = c.nom + ' – Les Commerces de La Garenne';
+
+    function apres(){
+      document.getElementById('merci').classList.remove('hide');
+      document.getElementById('merci').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    if (v) {
+      var p = HL.player(document.getElementById('player'), {
+        video: v, contexte: pub ? 'sponsorise' : 'video', wide: true,
+        sponsorise: !!pub, pubId: pub && pub.id, etiquette: pub ? '' : c.nom, onEnd: apres
+      });
+    }
+    var secondes = v && v.duree;
+    var durTxt = secondes ? ' – ' + (secondes < 60 ? secondes + ' s' : Math.round(secondes / 60) + ' min') : '';
+
+    document.getElementById('tt').innerHTML =
+      '<h1>' + HL.esc(c.nom) + '</h1>' +
+      '<p class="muted" style="margin-top:4px">' + HL.esc(v ? v.titre : cat.label) + durTxt + '</p>';
+
+    var panels = {
+      resume: '<p>' + HL.esc(v ? v.description : c.accroche) + '</p>',
+      avis: c.avis
+        ? '<p><span class="stars">★★★★★</span> <b>' + String(c.avis.note).replace('.', ',') + '/5</b> · ' + c.avis.nombre + ' avis ' + HL.esc(c.avis.source) + '</p>' +
+          '<p class="small muted" style="margin-top:6px">Note publique relevée sur ' + HL.esc(c.avis.source) + '. Les avis ne sont ni rédigés ni sélectionnés par Fidelavis.</p>'
+        : '<p class="muted">Pas encore d\'avis publics relevés pour ce commerce.</p>',
+      infos: '<p>📍 ' + HL.esc(c.adresse || '') + '</p><p style="margin-top:6px">🕒 ' + HL.esc(c.horaires || '') + '</p>' +
+             '<p style="margin-top:10px"><a href="' + HL.BASE + 'commerce.html?s=' + encodeURIComponent(c.slug) + '">Voir la fiche du commerce ›</a></p>'
+    };
+    function montrer(k){
+      document.getElementById('panel').innerHTML = panels[k];
+      Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'), function(b){ b.classList.toggle('on', b.getAttribute('data-tab') === k); });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'), function(b){
+      b.addEventListener('click', function(){ montrer(b.getAttribute('data-tab')); });
+    });
+    montrer('resume');
+
+    // Bouton d'action choisi par le commerçant pour cette vidéo (ou la pub)
+    var type = (pub && pub.cta) || (v && v.cta) || 'itineraire';
+    document.getElementById('cta').innerHTML = HL.ctaHtml(type, c, pub ? 'sponsorise' : 'video');
+
+    // Actions secondaires
+    var fav = HL.favoris().indexOf(c.slug) !== -1;
+    var iti = HL.cta('itineraire', c);
+    document.getElementById('acts').innerHTML =
+      '<button class="act' + (fav ? ' on' : '') + '" id="btnFav" type="button"><span class="ic">' + (fav ? '❤️' : '🤍') + '</span><span id="favLbl">' + (fav ? 'Dans vos favoris' : 'Ajouter aux favoris') + '</span></button>' +
+      (c.offre && type !== 'offre' ? '<a class="act" href="' + HL.BASE + 'offre.html?s=' + encodeURIComponent(c.slug) + '" data-hl="offre_ouverte" data-slug="' + HL.esc(c.slug) + '" data-src="video"><span class="ic">🎁</span>Voir son offre</a>' : '') +
+      (type !== 'itineraire' ? '<a class="act" href="' + HL.esc(iti.href) + '" target="_blank" rel="noopener" data-hl="itineraire_clic" data-slug="' + HL.esc(c.slug) + '" data-src="video"><span class="ic">📍</span>Itinéraire</a>' : '') +
+      '<button class="act" type="button" data-tab-go="avis"><span class="ic">⭐</span>Voir les avis</button>';
+    document.getElementById('btnFav').addEventListener('click', function(){
+      var on = HL.basculerFavori(c.slug);
+      this.classList.toggle('on', on);
+      this.querySelector('.ic').textContent = on ? '❤️' : '🤍';
+      document.getElementById('favLbl').textContent = on ? 'Dans vos favoris' : 'Ajouter aux favoris';
+    });
+    document.querySelector('[data-tab-go]').addEventListener('click', function(){
+      montrer('avis'); document.querySelector('.tabs').scrollIntoView({behavior:'smooth'});
+    });
+
+    if ('Notification' in window && Notification.permission === 'default' && HL.isStandalone()) {
+      document.getElementById('notif').classList.remove('hide');
+      document.getElementById('btnNotif').addEventListener('click', function(){ HL.notifs(c.slug); document.getElementById('notif').classList.add('hide'); });
+    }
+
+    // Autres commerces : vidéos des autres commerçants, jamais de pub ici
+    var autres = [];
+    d.commerces.forEach(function(o){ if (o.slug !== c.slug && o.videos[0]) autres.push(o.videos[0]); });
+    document.getElementById('autres').innerHTML = autres.map(function(x){ return HL.vcardHtml(x, 'apres_video'); }).join('');
+  });
+})();
+</script>
+</body>
+</html>

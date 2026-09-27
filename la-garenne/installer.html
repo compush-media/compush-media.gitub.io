@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#C8206A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fidelavis">
+<link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<script>
+  /* Le manifeste propre au commerce doit être en place avant l'ajout à
+     l'écran d'accueil : son start_url (app.html?first=<slug>) est ce qui
+     rouvre l'appli installée sur la bonne vidéo, y compris sur iPhone où
+     l'appli ne voit pas la mémoire de Safari. */
+  (function(){
+    var s = (new URLSearchParams(location.search).get('s') || '').toLowerCase().replace(/[^a-z0-9-]/g,'');
+    if (s) {
+      document.getElementById('mf').href = '/la-garenne/manifests/' + s + '.json';
+      try { localStorage.setItem('hl_pending', s); } catch(e) {}
+    }
+  })();
+</script>
+<title>Installer l'appli – Les Commerces de La Garenne</title>
+<style>
+  .hd{text-align:center;padding:18px 16px 6px;}
+  .hd img{width:72px;height:72px;border-radius:18px;margin:0 auto 12px;box-shadow:var(--shadow);}
+  .hd p{margin-top:6px;}
+  .step{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:16px;padding:14px;box-shadow:var(--shadow);margin-bottom:10px;}
+  .step .n{width:30px;height:30px;border-radius:50%;background:var(--rose);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .step b{display:block;font-size:15px;margin:4px 0 4px;}
+  .step p{font-size:13.5px;color:var(--muted);line-height:1.5;}
+  .ios-bar{display:flex;justify-content:space-around;align-items:center;background:#F2F2F4;border-radius:14px;padding:10px;margin-top:10px;font-size:11px;color:#555;}
+  .ios-bar .share{width:42px;height:42px;border-radius:50%;border:2px solid var(--rose);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--rose);animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(200,32,106,.35);}50%{box-shadow:0 0 0 8px rgba(200,32,106,0);}}
+  details summary{cursor:pointer;list-style:none;}
+  details summary::-webkit-details-marker{display:none;}
+  .ok{background:var(--ok-soft);color:var(--ok);border-radius:14px;padding:14px;font-weight:700;text-align:center;margin:10px 0;}
+</style>
+</head>
+<body class="sans-nav">
+<div class="hd">
+  <img src="/la-garenne/icons/icon-192.png" alt="">
+  <h1>Les Commerces de La Garenne</h1>
+  <p class="muted" id="sous">L'appli gratuite des vidéos, offres et bons plans de vos commerçants.</p>
+</div>
+<main class="ct">
+
+  <details class="step">
+    <summary style="display:flex;gap:12px;align-items:flex-start;">
+      <span class="n">1</span><div><b>En savoir plus</b><p>Gratuit, sans compte ni mot de passe. Touchez pour lire.</p></div>
+    </summary>
+    <p style="margin:10px 0 0 42px">Vous y trouvez les vidéos et les avantages des commerces de La Garenne-Colombes.
+    Pas de compte, pas de publicité intrusive. Les notifications ne s'activent que si vous le demandez,
+    et se désactivent à tout moment. <a href="https://cartefidelavis.com/privacy.html" target="_blank" rel="noopener">Confidentialité</a>.</p>
+  </details>
+
+  <div class="step">
+    <span class="n">2</span>
+    <div style="flex:1">
+      <b>Installez gratuitement notre appli</b>
+      <p>Ajoutez Les Commerces de La Garenne à votre écran d'accueil : la vidéo complète s'ouvrira directement.</p>
+      <div id="android" class="hide" style="margin-top:12px">
+        <button class="btn" id="btnInstall" type="button"><span>Installer l'appli</span><span class="arr">›</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" id="iosStep">
+    <span class="n">3</span>
+    <div style="flex:1">
+      <b id="s3t">Ajoutez-la à l'écran d'accueil</b>
+      <p id="s3p">Appuyez sur <b style="display:inline">Partager</b> (le carré avec la flèche ↑) en bas de Safari,
+      puis sur <b style="display:inline">« Sur l'écran d'accueil »</b>. Parfois caché sous « Plus ».</p>
+      <div class="ios-bar" id="iosBar"><span>Options</span><span class="share">⬆︎</span><span>Annuler</span></div>
+    </div>
+  </div>
+
+  <div id="apres" class="ok hide">✅ Installée. Ouvrez « Fidelavis » depuis votre écran d'accueil pour voir la vidéo complète.</div>
+
+  <button class="lien" id="web" type="button">Continuer sans installer</button>
+</main>
+
+<script>
+/* Étape 5 — installation.
+   Android / Chrome : installation en un appui (beforeinstallprompt).
+   iPhone : Apple interdit l'installation automatique, on guide en 3 gestes. */
+(function(){
+  var slug = HL.qs('s').toLowerCase().replace(/[^a-z0-9-]/g,'');
+  HL.track('install_page', slug, HL.isIOS ? 'ios' : (HL.isAndroid ? 'android' : 'autre'));
+
+  if (HL.isStandalone()) { location.replace(HL.BASE + 'app.html' + (slug ? '?first=' + slug : '')); return; }
+
+  HL.charger().then(function(d){
+    var c = d.parSlug[slug];
+    if (c) document.getElementById('sous').textContent = c.nom + ' : la vidéo complète vous attend, avec tous les avantages des commerces de La Garenne-Colombes.';
+  });
+
+  var promptEvt = null;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault(); promptEvt = e;
+    document.getElementById('android').classList.remove('hide');
+    document.getElementById('iosStep').classList.add('hide');
+  });
+  window.addEventListener('appinstalled', function(){
+    HL.track('install_ok', slug, 'appinstalled');
+    document.getElementById('apres').classList.remove('hide');
+  });
+
+  if (!HL.isIOS) {
+    // Android sans invite (déjà refusée, navigateur tiers) ou ordinateur.
+    document.getElementById('iosBar').classList.add('hide');
+    document.getElementById('s3t').textContent = HL.isAndroid ? 'Ou depuis le menu du navigateur' : 'Ouvrez cette page sur votre téléphone';
+    document.getElementById('s3p').textContent = HL.isAndroid
+      ? 'Menu ⋮ en haut à droite, puis « Installer l\'application » ou « Ajouter à l\'écran d\'accueil ».'
+      : 'L\'appli s\'installe depuis un iPhone ou un Android. Scannez le QR code du commerce avec votre téléphone.';
+  }
+
+  document.getElementById('btnInstall').addEventListener('click', function(){
+    if (!promptEvt) return;
+    HL.track('install_invite', slug, 'android');
+    promptEvt.prompt();
+    promptEvt.userChoice.then(function(r){
+      promptEvt = null;
+      HL.track(r.outcome === 'accepted' ? 'install_acceptee' : 'install_refusee', slug, 'android');
+      if (r.outcome === 'accepted') document.getElementById('apres').classList.remove('hide');
+    });
+  });
+
+  document.getElementById('web').addEventListener('click', function(){
+    HL.track('install_ignoree', slug, 'installer');
+    location.href = HL.BASE + (slug ? 'video.html?s=' + encodeURIComponent(slug) + '&web=1' : 'app.html');
+  });
+})();
+</script>
+</body>
+</html>

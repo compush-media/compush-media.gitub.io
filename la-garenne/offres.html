@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#C8206A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fidelavis">
+<link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<title>Offres – Les Commerces de La Garenne</title>
+</head>
+<body>
+<div id="bar"></div>
+<main class="ct">
+  <h1 style="margin:6px 0 4px">Vos avantages</h1>
+  <p class="muted small" style="margin-bottom:14px">Chaque offre s'utilise en caisse : le commerçant saisit son code sur votre téléphone.</p>
+  <div class="clist" id="liste"></div>
+</main>
+<script>
+(function(){
+  document.getElementById('bar').innerHTML = HL.brandbar(false);
+  HL.nav('offres');
+  var mois = new Date().toISOString().slice(0,7);
+  HL.charger().then(function(d){
+    var l = d.commerces.filter(function(c){ return c.offre; });
+    document.getElementById('liste').innerHTML = l.length ? l.map(function(c){
+      var utilisee = HL.ls('hl_offre_' + c.slug + '_' + mois);
+      return '<a class="offre" href="' + HL.BASE + 'offre.html?s=' + encodeURIComponent(c.slug) + '" data-hl="offre_ouverte" data-slug="' + HL.esc(c.slug) + '" data-src="offres"' + (utilisee ? ' style="opacity:.55"' : '') + '>' +
+        '<div class="ph" style="background-image:url(\'' + HL.esc(c.offre.image || c.photo || '') + '\')"></div>' +
+        '<div><p class="t">' + HL.esc(c.offre.titre) + '</p><p class="s">' + HL.esc(c.nom) + (utilisee ? ' · utilisée ce mois-ci' : '') + '</p></div></a>';
+    }).join('') : '<p class="muted">Pas d\'offre en cours.</p>';
+  });
+})();
+</script>
+</body>
+</html>

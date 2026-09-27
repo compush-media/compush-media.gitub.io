@@ -1,0 +1,166 @@
+/* Fidelavis Hyperlocal — La Garenne-Colombes
+   Feuille commune à toutes les pages du parcours habitant. */
+:root{
+  --cream:#FBF6F1;
+  --card:#FFFFFF;
+  --ink:#1D2340;
+  --muted:#6B6F80;
+  --line:#EFE4DA;
+  --rose:#C8206A;
+  --rose-dark:#A0154F;
+  --rose-soft:#FCE8F1;
+  --ok:#1F8A4C;
+  --ok-soft:#E3F4EA;
+  --sponso:#8A5A00;
+  --sponso-soft:#FFF3D6;
+  --radius:18px;
+  --shadow:0 2px 14px rgba(29,35,64,.08);
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0 auto;max-width:440px;min-height:100vh;
+  font-family:'Lato',-apple-system,system-ui,sans-serif;
+  background:var(--cream);color:var(--ink);
+  padding-bottom:calc(84px + env(safe-area-inset-bottom));
+}
+body.sans-nav{padding-bottom:32px;}
+h1,h2,h3{margin:0;font-family:'Playfair Display',Georgia,serif;line-height:1.15;}
+h1{font-size:26px;}
+h2{font-size:19px;}
+h3{font-size:16px;}
+p{margin:0;}
+a{color:inherit;}
+button{font-family:inherit;cursor:pointer;}
+img{display:block;max-width:100%;}
+.ct{padding:0 16px;}
+.muted{color:var(--muted);}
+.small{font-size:13px;}
+
+/* ── En-tête marque ── */
+.brandbar{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;}
+.brandbar img{width:34px;height:34px;border-radius:9px;}
+.brandbar .nm{font-weight:900;font-size:14px;line-height:1.15;}
+.brandbar .by{font-size:11px;color:var(--muted);}
+.brandbar .back{margin-right:2px;background:none;border:0;font-size:24px;color:var(--ink);padding:0 4px;line-height:1;}
+
+/* ── Boutons ── */
+.btn{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  width:100%;min-height:52px;padding:0 22px;border:0;border-radius:30px;
+  background:var(--rose);color:#fff;font-size:16px;font-weight:700;text-decoration:none;
+  box-shadow:0 6px 20px rgba(200,32,106,.28);
+}
+.btn:active{transform:scale(.98);}
+.btn .arr{font-size:22px;opacity:.85;}
+.btn.sec{background:var(--card);color:var(--ink);box-shadow:none;border:1px solid var(--line);justify-content:center;}
+.lien{display:block;text-align:center;font-size:13.5px;color:var(--muted);text-decoration:underline;padding:12px;background:none;border:0;width:100%;}
+
+/* ── Cartes ── */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;}
+.sec-title{display:flex;align-items:baseline;justify-content:space-between;margin:22px 0 10px;}
+.sec-title a{font-size:13px;color:var(--rose);text-decoration:none;font-weight:700;}
+
+/* ── Badges ── */
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--rose-soft);color:var(--rose-dark);}
+.tag.sponso{background:var(--sponso-soft);color:var(--sponso);}
+.tag.demo{background:#EEF0F6;color:#4A5070;}
+
+/* ── Lecteur vidéo ── */
+.player{position:relative;border-radius:var(--radius);overflow:hidden;background:#111;aspect-ratio:9/12;}
+.player.wide{aspect-ratio:16/10;}
+.player video{width:100%;height:100%;object-fit:cover;display:block;background:#111;}
+.player .poster{position:absolute;inset:0;background-size:cover;background-position:center;}
+.player .play{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:68px;height:68px;border-radius:50%;border:0;background:rgba(255,255,255,.92);
+  display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.3);
+}
+.player .play::after{content:"";margin-left:5px;border-left:20px solid var(--ink);border-top:13px solid transparent;border-bottom:13px solid transparent;}
+.player.lecture .play,.player.lecture .poster{display:none;}
+.player .ovl{position:absolute;left:0;right:0;bottom:0;padding:44px 14px 12px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.72));pointer-events:none;}
+.player .ovl .t{font-weight:700;font-size:15px;line-height:1.3;}
+.player.lecture .ovl{padding-top:12px;background:linear-gradient(transparent,rgba(0,0,0,.45));}
+.player.lecture .ovl .t{display:none;}
+.player .bar{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:11.5px;pointer-events:auto;}
+.player .prog{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.35);overflow:hidden;}
+.player .prog i{display:block;height:100%;width:0;background:#fff;}
+.player .son{background:rgba(0,0,0,.45);color:#fff;border:0;border-radius:999px;font-size:11.5px;padding:4px 9px;}
+.player .etiq{position:absolute;top:10px;left:10px;z-index:2;}
+.player .lock{
+  position:absolute;inset:0;z-index:3;display:none;flex-direction:column;justify-content:flex-end;
+  padding:16px;background:rgba(15,17,30,.72);
+}
+.player.fini .lock{display:flex;}
+
+/* ── Cartes vidéo (carrousel / fil) ── */
+.rail{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 16px 6px;margin:0 -16px;scrollbar-width:none;}
+.rail::-webkit-scrollbar{display:none;}
+.vcard{flex:0 0 150px;scroll-snap-align:start;text-decoration:none;color:inherit;}
+.vcard .th{position:relative;height:200px;border-radius:14px;overflow:hidden;background:#222 center/cover;}
+.vcard .th::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:0;height:0;border-left:16px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5));}
+.vcard .th .tag{position:absolute;top:8px;left:8px;}
+.vcard .nm{font-weight:700;font-size:13.5px;margin-top:6px;}
+.vcard .ds{font-size:12px;color:var(--muted);}
+
+/* ── Liste commerces ── */
+.clist{display:grid;gap:10px;}
+.crow{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:16px;padding:10px;box-shadow:var(--shadow);text-decoration:none;color:inherit;}
+.crow .ph{width:62px;height:62px;border-radius:12px;background:var(--rose-soft) center/cover;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.crow .nm{font-weight:700;font-size:15px;}
+.crow .ds{font-size:12.5px;color:var(--muted);margin-top:2px;}
+.crow .of{font-size:12px;color:var(--rose-dark);font-weight:700;margin-top:4px;}
+
+/* ── Catégories ── */
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.cat{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:inherit;font-size:11.5px;font-weight:700;text-align:center;}
+.cat .ic{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;background:var(--card);box-shadow:var(--shadow);}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+.chip{flex-shrink:0;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+/* ── Actions (grille 2x2) ── */
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.act{display:flex;align-items:center;gap:10px;background:var(--card);border:0;border-radius:14px;padding:14px 12px;box-shadow:var(--shadow);font-size:14px;font-weight:700;color:var(--ink);text-decoration:none;text-align:left;}
+.act .ic{font-size:22px;}
+.act.on{background:var(--rose-soft);}
+
+/* ── Pub fixe ── */
+.pub{position:relative;display:block;background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);text-decoration:none;color:inherit;border:1px dashed #E5C98A;}
+.pub .vis{height:130px;background:#ddd center/cover;}
+.pub .bd{padding:12px 14px;}
+.pub .bd .t{font-weight:900;font-size:15px;margin:6px 0 2px;}
+.pub .bd .go{display:inline-block;margin-top:8px;font-weight:700;color:var(--rose);font-size:14px;}
+.pub-legende{font-size:11px;color:var(--muted);margin-top:4px;text-align:right;}
+
+/* ── Offre ── */
+.offre{display:flex;gap:12px;align-items:center;background:var(--rose-soft);border-radius:16px;padding:12px;text-decoration:none;color:inherit;}
+.offre .ph{width:58px;height:58px;border-radius:50%;background:#fff center/cover;flex-shrink:0;}
+.offre .t{font-weight:900;font-size:15px;}
+.offre .s{font-size:12.5px;color:var(--rose-dark);margin-top:2px;}
+
+/* ── Barre de navigation ── */
+.nav{
+  position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:440px;
+  display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line);
+  padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:20;
+}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:var(--muted);text-decoration:none;}
+.nav a .ic{font-size:20px;line-height:1;}
+.nav a.on{color:var(--rose);}
+
+/* ── Divers ── */
+.search{display:flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:0 16px;height:46px;box-shadow:var(--shadow);}
+.search input{flex:1;border:0;outline:0;font:inherit;font-size:15px;background:none;color:var(--ink);}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:all .25s;z-index:50;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.bandeau-demo{background:#EEF0F6;color:#4A5070;font-size:11.5px;text-align:center;padding:5px 10px;}
+.stars{color:#E8A317;}
+.row{display:flex;align-items:center;gap:8px;}
+.hide{display:none!important;}
+
+/* Pastille d'installation Progressier : le parcours a sa propre page
+   d'installation et sa propre invite sur l'accueil. La pastille couvrait
+   le bouton principal et les liens au-dessus de la barre : masquée ici.
+   On vise la pastille elle-même, pas son conteneur (voir 8d96deb7). */
+.progressier-widget-icon{display:none!important;}

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#C8206A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fidelavis">
+<link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<title>À découvrir près de chez moi – Les Commerces de La Garenne</title>
+<style>
+  .item{margin-bottom:22px;}
+  .item .pied{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;}
+  .item .pied a.nm{font-weight:900;text-decoration:none;}
+  .item .pied .btn{width:auto;min-height:40px;font-size:14px;padding:0 16px;box-shadow:none;}
+  .item .legende{font-size:11px;color:var(--muted);margin-top:4px;}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<main class="ct">
+  <h1 style="margin:6px 0 4px">À découvrir près de chez moi</h1>
+  <p class="muted small" style="margin-bottom:14px">Les vidéos des commerçants de La Garenne. Touchez pour lire, le son reste coupé tant que vous ne l'activez pas.</p>
+  <div class="chips" id="filtres" style="margin-bottom:16px"></div>
+  <div id="fil"></div>
+</main>
+
+<script>
+/* Fil vidéo. Règle publicitaire : une vidéo sponsorisée au plus pour cinq
+   vidéos de commerçants, jamais en première position, toujours signalée. */
+(function(){
+  document.getElementById('bar').innerHTML = HL.brandbar(false);
+  HL.nav('decouvrir');
+  var FILTRES = [['tout','Tout'],['portrait','Portraits'],['nouveaute','Nouveautés'],['evenement','Événements'],['offre','Avec offre']];
+  var actif = HL.qs('f') || 'tout';
+
+  HL.charger().then(function(d){
+    var videos = [];
+    d.commerces.forEach(function(c){ videos = videos.concat(c.videos); });
+    videos.sort(function(a,b){ return (b.debut||'').localeCompare(a.debut||''); });
+    var pubs = d.pubs.filter(function(p){ return p.format === 'video' && p.emplacement === 'decouvrir'; });
+
+    function rendre(){
+      document.getElementById('filtres').innerHTML = FILTRES.map(function(f){
+        return '<button class="chip' + (f[0] === actif ? ' on' : '') + '" type="button" data-f="' + f[0] + '">' + f[1] + '</button>';
+      }).join('');
+      var liste = videos.filter(function(v){
+        if (actif === 'tout') return true;
+        if (actif === 'offre') return !!v.commerce.offre;
+        return v.type === actif;
+      });
+      var ids = pubs.map(function(p){ return p.video.id; });
+      var organiques = liste.filter(function(v){ return ids.indexOf(v.id) === -1; });
+
+      // Construction : [org, org, SPONSO, org, org, org, org, SPONSO, …]
+      var items = [], pi = 0;
+      organiques.forEach(function(v, i){
+        items.push({v: v});
+        if ((i === 1 || (i > 1 && (i - 1) % 5 === 0)) && pi < pubs.length) items.push({v: pubs[pi].video, pub: pubs[pi++]});
+      });
+
+      var fil = document.getElementById('fil');
+      fil.innerHTML = '';
+      if (!items.length) { fil.innerHTML = '<p class="muted">Aucune vidéo dans cette rubrique pour le moment.</p>'; return; }
+      items.forEach(function(it, i){
+        var c = it.v.commerce, div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = '<div class="pl"></div>' +
+          '<div class="pied"><div><a class="nm" href="' + HL.BASE + 'commerce.html?s=' + encodeURIComponent(c.slug) + '">' + HL.esc(c.nom) + '</a>' +
+          '<p class="small muted">' + HL.esc(it.v.titre) + '</p></div>' +
+          HL.ctaHtml((it.pub && it.pub.cta) || it.v.cta, c, it.pub ? 'sponsorise' : 'decouvrir', 'btn') + '</div>' +
+          (it.pub ? '<p class="legende">Vidéo sponsorisée · diffusion payée par ' + HL.esc(c.nom) + '</p>' : '');
+        fil.appendChild(div);
+        HL.player(div.querySelector('.pl'), { video: it.v, contexte: it.pub ? 'sponsorise' : 'decouvrir', sponsorise: !!it.pub, pubId: it.pub && it.pub.id, etiquette: it.pub ? '' : c.nom });
+        if (it.pub) HL.impression(div, it.pub, 'decouvrir');
+      });
+    }
+    document.getElementById('filtres').addEventListener('click', function(e){
+      var b = e.target.closest('[data-f]'); if (!b) return;
+      actif = b.getAttribute('data-f'); rendre();
+    });
+    rendre();
+  });
+})();
+</script>
+</body>
+</html>

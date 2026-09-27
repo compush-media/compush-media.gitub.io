@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#C8206A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fidelavis">
+<link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<title>Commerces – Les Commerces de La Garenne</title>
+</head>
+<body>
+<div id="bar"></div>
+<main class="ct">
+  <h1 id="titre" style="margin:6px 0 12px">Les commerces</h1>
+  <form class="search" id="rech" style="margin-bottom:12px">
+    <span aria-hidden="true">🔍</span>
+    <input type="search" id="q" placeholder="Rechercher un commerce…" aria-label="Rechercher un commerce">
+  </form>
+  <div class="chips" id="cats" style="margin-bottom:14px"></div>
+  <div class="clist" id="liste"></div>
+</main>
+<script>
+/* Annuaire : recherche, catégories et favoris (?fav=1). */
+(function(){
+  document.getElementById('bar').innerHTML = HL.brandbar(false);
+  var fav = HL.qs('fav') === '1';
+  HL.nav(fav ? 'favoris' : 'commerces');
+  var cat = HL.qs('cat'), q = HL.qs('q');
+  document.getElementById('q').value = q;
+  if (fav) document.getElementById('titre').textContent = 'Vos favoris';
+
+  HL.charger().then(function(d){
+    var cats = [];
+    d.commerces.forEach(function(c){ if (cats.indexOf(c.categorie) === -1) cats.push(c.categorie); });
+    function norm(t){ return (t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+    function rendre(){
+      document.getElementById('cats').innerHTML = ['<button class="chip' + (!cat ? ' on' : '') + '" data-c="">Tous</button>'].concat(cats.map(function(k){
+        var m = HL.CATEGORIES[k] || {ic:'🏪', label:k};
+        return '<button class="chip' + (k === cat ? ' on' : '') + '" data-c="' + HL.esc(k) + '">' + m.ic + ' ' + HL.esc(m.label) + '</button>';
+      })).join('');
+      var favs = HL.favoris(), nq = norm(q);
+      var liste = d.commerces.filter(function(c){
+        if (fav && favs.indexOf(c.slug) === -1) return false;
+        if (cat && c.categorie !== cat) return false;
+        if (nq && norm(c.nom + ' ' + c.accroche + ' ' + (HL.CATEGORIES[c.categorie]||{}).label).indexOf(nq) === -1) return false;
+        return true;
+      });
+      document.getElementById('liste').innerHTML = liste.length ? liste.map(HL.commerceRowHtml).join('')
+        : '<p class="muted">' + (fav ? 'Touchez 🤍 sur la fiche d\'un commerce pour le retrouver ici.' : 'Aucun commerce ne correspond.') + '</p>';
+    }
+    document.getElementById('cats').addEventListener('click', function(e){
+      var b = e.target.closest('[data-c]'); if (!b) return; cat = b.getAttribute('data-c'); rendre();
+    });
+    document.getElementById('rech').addEventListener('submit', function(e){ e.preventDefault(); });
+    document.getElementById('q').addEventListener('input', function(){ q = this.value; rendre(); });
+    if (q) HL.track('recherche', null, q.slice(0, 40));
+    rendre();
+  });
+})();
+</script>
+</body>
+</html>

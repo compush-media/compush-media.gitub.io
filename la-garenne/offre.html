@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#C8206A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fidelavis">
+<link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<title>Offre – Les Commerces de La Garenne</title>
+<style>
+  .vis{height:180px;border-radius:var(--radius);background:#eee center/cover;margin-bottom:14px;}
+  .pins{display:flex;justify-content:center;gap:10px;margin:14px 0 8px;}
+  .pins input{width:52px;height:58px;border-radius:14px;border:1.5px solid var(--line);background:#fff;text-align:center;font:900 26px 'Lato',sans-serif;color:var(--ink);outline:none;-webkit-appearance:none;}
+  .pins input:focus{border-color:var(--rose);box-shadow:0 0 0 3px var(--rose-soft);}
+  .res{border-radius:14px;padding:14px;font-weight:700;text-align:center;margin-top:12px;}
+  .res.ok{background:var(--ok-soft);color:var(--ok);}
+  .res.ko{background:#FDECEC;color:#B23B3B;}
+  .res.info{background:var(--sponso-soft);color:var(--sponso);}
+</style>
+</head>
+<body>
+<div id="demo"></div>
+<div id="bar"></div>
+<main class="ct" id="main"></main>
+
+<script>
+/* Utilisation d'une offre en caisse, sans logiciel de caisse.
+   L'habitant tend son téléphone ; le commerçant saisit le code à 4 chiffres
+   affiché dans son espace Fidelavis (même PIN tournant que les wallets,
+   ±2 minutes de tolérance). C'est la seule « utilisation » comptée. */
+(function(){
+  var SECRET_KEY = 'OFFLINE123';
+  function simpleHash(str){ var h=0; for(var i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))%1000000007; } return h; }
+  function pinA(off){ return (simpleHash(SECRET_KEY + (Math.floor(Date.now()/60000)+off)) % 10000).toString().padStart(4,'0'); }
+  function pinOk(p){ return [-2,-1,0,1,2].some(function(o){ return pinA(o) === p; }); }
+
+  var slug = HL.qs('s').toLowerCase().replace(/[^a-z0-9-]/g,'');
+  var mois = new Date().toISOString().slice(0,7);
+  var cle  = 'hl_offre_' + slug + '_' + mois;
+  document.getElementById('bar').innerHTML = HL.brandbar(true);
+  HL.nav('offres');
+
+  HL.charger().then(function(d){
+    var c = d.parSlug[slug];
+    if (!c || !c.offre) { location.replace(HL.BASE + 'offres.html'); return; }
+    if (c.demo) document.getElementById('demo').innerHTML = '<div class="bandeau-demo">Commerce de démonstration</div>';
+    HL.trackUnique('offre_vue', c.slug, 'offre', 'offre_' + c.slug + '_' + HL.jour());
+    var o = c.offre;
+    var fin = o.fin ? new Date(o.fin + 'T12:00:00').toLocaleDateString('fr-FR', {day:'numeric', month:'long'}) : '';
+
+    document.getElementById('main').innerHTML =
+      '<div class="vis" style="background-image:url(\'' + HL.esc(o.image || c.photo || '') + '\')"></div>' +
+      '<span class="tag">Offre du pass · ' + HL.esc(c.nom) + '</span>' +
+      '<h1 style="margin:10px 0 8px">' + HL.esc(o.titre) + '</h1>' +
+      '<p class="muted small">' + HL.esc(o.conditions || '') + (fin ? ' Valable jusqu\'au ' + fin + '.' : '') + '</p>' +
+      '<div class="card" style="margin-top:18px;text-align:center">' +
+        '<h3>Utiliser en caisse</h3>' +
+        '<p class="small muted" style="margin-top:6px">Montrez cet écran au commerçant : il saisit son code.</p>' +
+        '<div class="pins" id="pins">' + [0,1,2,3].map(function(i){ return '<input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Chiffre ' + (i+1) + '">'; }).join('') + '</div>' +
+        '<button class="btn" id="valider" type="button" style="margin-top:12px"><span>Valider l\'offre</span><span class="arr">›</span></button>' +
+        '<div id="res"></div>' +
+      '</div>' +
+      '<a class="lien" href="' + HL.BASE + 'commerce.html?s=' + encodeURIComponent(c.slug) + '">Voir la fiche de ' + HL.esc(c.nom) + '</a>';
+
+    var boxes = Array.prototype.slice.call(document.querySelectorAll('#pins input'));
+    var res = document.getElementById('res'), btn = document.getElementById('valider');
+    function msg(cls, t){ res.innerHTML = '<div class="res ' + cls + '">' + t + '</div>'; }
+
+    if (HL.ls(cle)) {
+      boxes.forEach(function(b){ b.disabled = true; }); btn.disabled = true; btn.style.opacity = .5;
+      msg('info', 'Offre déjà utilisée ce mois-ci. Elle revient le mois prochain.');
+      return;
+    }
+    boxes.forEach(function(b, i){
+      b.addEventListener('input', function(){ b.value = b.value.replace(/\D/g,'').slice(0,1); if (b.value && i < 3) boxes[i+1].focus(); });
+      b.addEventListener('keydown', function(e){
+        if (e.key === 'Backspace' && !b.value && i > 0) { boxes[i-1].focus(); boxes[i-1].value = ''; }
+        if (e.key === 'Enter') valider();
+      });
+    });
+    btn.addEventListener('click', valider);
+
+    function valider(){
+      var code = boxes.map(function(b){ return b.value; }).join('');
+      if (!/^\d{4}$/.test(code)) { msg('info', 'Saisissez les 4 chiffres du code commerçant.'); return; }
+      if (!pinOk(code)) { HL.track('offre_code_faux', c.slug, 'pin'); msg('ko', 'Code incorrect. Vérifiez le code affiché en caisse.'); return; }
+      HL.ls(cle, String(Date.now()));
+      HL.track('offre_utilisee', c.slug, 'pin');
+      boxes.forEach(function(b){ b.disabled = true; }); btn.disabled = true; btn.style.opacity = .5;
+      msg('ok', '🎉 Offre validée le ' + new Date().toLocaleString('fr-FR', {day:'numeric', month:'long', hour:'2-digit', minute:'2-digit'}) + '. Bonne visite !');
+    }
+  });
+})();
+</script>
+</body>
+</html>

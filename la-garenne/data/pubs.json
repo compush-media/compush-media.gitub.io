@@ -1,0 +1,29 @@
+{
+  "_lisez_moi": "Publicités programmées par l'association. format: fixe | video. statut: demande | programmee | terminee. emplacement: accueil (fixe, 1 à la fois, sous les offres) | decouvrir (video, jamais en 1re position, 1 pour 5 vidéos). debut/fin inclus (AAAA-MM-JJ). Une pub vidéo référence une vidéo déjà publiée du commerce (videoId).",
+  "pubs": [
+    {
+      "id": "pub-fixe-cafe-vallees-oct",
+      "format": "fixe",
+      "statut": "programmee",
+      "emplacement": "accueil",
+      "slug": "cafe-des-vallees",
+      "visuel": "/assets/heros/banniere-2.jpg",
+      "titre": "Nouveau : le café du mois",
+      "texte": "Un éthiopien fruité, torréfié sur place cette semaine.",
+      "cta": "itineraire",
+      "debut": "2026-09-22",
+      "fin": "2026-10-19"
+    },
+    {
+      "id": "pub-video-fleuri-atelier",
+      "format": "video",
+      "statut": "programmee",
+      "emplacement": "decouvrir",
+      "slug": "atelier-fleuri",
+      "videoId": "fleuri-atelier",
+      "cta": "reserver",
+      "debut": "2026-09-22",
+      "fin": "2026-10-11"
+    }
+  ]
+}

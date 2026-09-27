@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#C8206A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fidelavis">
+<link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<title>Commerce – Les Commerces de La Garenne</title>
+<style>
+  .id{margin:16px 2px 12px;}
+  .id .ds{font-size:13.5px;color:var(--muted);margin-top:4px;}
+  .quick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .infos p{font-size:14.5px;line-height:1.55;margin-bottom:6px;}
+</style>
+</head>
+<body>
+<div id="demo"></div>
+<div id="bar"></div>
+<main class="ct">
+  <!-- Vidéo du commerçant en tête de fiche. Aucune publicité d'un autre commerce sur cette page. -->
+  <div id="player"></div>
+  <div class="id" id="id"></div>
+  <div class="quick" id="quick"></div>
+  <div id="offre"></div>
+  <div id="autresVideos"></div>
+  <div class="sec-title"><h2>Infos pratiques</h2></div>
+  <div class="card infos" id="infos"></div>
+</main>
+
+<script>
+(function(){
+  var slug = HL.qs('s').toLowerCase().replace(/[^a-z0-9-]/g,'');
+  document.getElementById('bar').innerHTML = HL.brandbar(true);
+  HL.nav('commerces');
+
+  HL.charger().then(function(d){
+    var c = d.parSlug[slug];
+    if (!c) { location.replace(HL.BASE + 'commerces.html'); return; }
+    if (c.demo) document.getElementById('demo').innerHTML = '<div class="bandeau-demo">Commerce de démonstration</div>';
+    document.title = c.nom + ' – Les Commerces de La Garenne';
+    HL.trackUnique('fiche_vue', c.slug, HL.isStandalone() ? 'appli' : 'web', 'fiche_' + c.slug + '_' + HL.jour());
+    var cat = HL.CATEGORIES[c.categorie] || {label:''};
+
+    if (c.videos[0]) HL.player(document.getElementById('player'), { video: c.videos[0], contexte: 'fiche', wide: true, etiquette: typeLabel(c.videos[0].type) });
+    else if (c.photo) document.getElementById('player').innerHTML = '<div class="player wide"><div class="poster" style="background-image:url(\'' + HL.esc(c.photo) + '\')"></div></div>';
+
+    document.getElementById('id').innerHTML =
+      '<h1>' + HL.esc(c.nom) + '</h1>' +
+      '<p class="ds">' + HL.esc(cat.label) + ' · ' + HL.esc(c.quartier || '') + ' · ' + HL.esc(c.horaires || '') + '</p>' +
+      (c.avis ? '<p class="ds"><span class="stars">★</span> ' + String(c.avis.note).replace('.', ',') + '/5 · ' + c.avis.nombre + ' avis ' + HL.esc(c.avis.source) + '</p>' : '');
+
+    var fav = HL.favoris().indexOf(c.slug) !== -1;
+    var q = [HL.cta('itineraire', c), HL.cta('contacter', c)];
+    if (c.reservation) q.push(HL.cta('reserver', c));
+    document.getElementById('quick').innerHTML = q.map(function(a, i){
+      var t = ['itineraire','contacter','reserver'][i];
+      return '<a class="chip" href="' + HL.esc(a.href) + '" target="_blank" rel="noopener" data-hl="cta_clic" data-slug="' + HL.esc(c.slug) + '" data-src="fiche:' + t + '">' + a.ic + ' ' + HL.esc(a.label) + '</a>';
+    }).join('') + '<button class="chip" id="fav" type="button">' + (fav ? '❤️ Favori' : '🤍 Favori') + '</button>';
+    document.getElementById('fav').addEventListener('click', function(){
+      this.textContent = HL.basculerFavori(c.slug) ? '❤️ Favori' : '🤍 Favori';
+    });
+
+    if (c.offre) document.getElementById('offre').innerHTML =
+      '<a class="offre" href="' + HL.BASE + 'offre.html?s=' + encodeURIComponent(c.slug) + '" data-hl="offre_ouverte" data-slug="' + HL.esc(c.slug) + '" data-src="fiche">' +
+      '<div class="ph" style="background-image:url(\'' + HL.esc(c.offre.image || '') + '\')"></div>' +
+      '<div style="flex:1"><span class="tag">Offre du pass</span><p class="t" style="margin-top:4px">' + HL.esc(c.offre.titre) + '</p><p class="s">Utiliser en caisse ›</p></div></a>';
+
+    if (c.videos.length > 1) document.getElementById('autresVideos').innerHTML =
+      '<div class="sec-title"><h2>Ses autres vidéos</h2></div><div class="rail">' +
+      c.videos.slice(1).map(function(v){ return HL.vcardHtml(v, 'fiche'); }).join('') + '</div>';
+
+    document.getElementById('infos').innerHTML =
+      '<p>' + HL.esc(c.accroche || '') + '</p>' +
+      '<p>📍 ' + HL.esc(c.adresse || '') + '</p>' +
+      '<p>🕒 ' + HL.esc(c.horaires || '') + '</p>' +
+      (c.tel ? '<p>📞 ' + HL.esc(c.tel) + '</p>' : '');
+  });
+
+  function typeLabel(t){ return {portrait:'Portrait', nouveaute:'Nouveauté', evenement:'Événement', offre:'Offre'}[t] || ''; }
+})();
+</script>
+</body>
+</html>

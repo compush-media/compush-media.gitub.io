@@ -1,0 +1,199 @@
+{
+  "_lisez_moi": "Commerces du pilote La Garenne-Colombes. statut: en_attente | valide | refuse (validation par l'association). Vidéos et offres: statut brouillon | a_moderer | publiee | refusee, plus debut/fin (AAAA-MM-JJ). cta: offre | itineraire | reserver | contacter. Si le commerce a un wallet Fidelavis, renseigner \"wallet\" avec son slug: nom, logo, photo, téléphone et adresse sont alors lus dans son config.json. Les fiches marquées demo:true sont fictives.",
+  "ville": "La Garenne-Colombes",
+  "commerces": [
+    {
+      "slug": "le-comptoir",
+      "demo": true,
+      "statut": "valide",
+      "nom": "Le Comptoir",
+      "categorie": "restaurant",
+      "accroche": "Brunch, cuisine maison et produits du marché, à deux pas de l'église.",
+      "adresse": "12 rue de l'Exemple, 92250 La Garenne-Colombes",
+      "quartier": "Centre",
+      "tel": "0100000000",
+      "horaires": "Mar–Dim · 9h–15h",
+      "photo": "/assets/heros/banniere-3.jpg",
+      "avis": {
+        "note": 4.6,
+        "nombre": 126,
+        "source": "Google"
+      },
+      "reservation": "",
+      "offre": {
+        "statut": "publiee",
+        "titre": "Café offert avec votre brunch",
+        "conditions": "Une fois par mois et par personne, sur présentation de l'appli. Non cumulable.",
+        "image": "/assets/offres/offre-1.jpg",
+        "debut": "2026-09-01",
+        "fin": "2026-12-31"
+      },
+      "videos": [
+        {
+          "id": "comptoir-portrait",
+          "statut": "publiee",
+          "type": "portrait",
+          "titre": "Le portrait complet",
+          "description": "L'histoire du Comptoir racontée par sa fondatrice : le marché du samedi, les recettes de famille et le brunch qui a fait sa réputation.",
+          "src": "/la-garenne/videos-demo/le-comptoir.mp4",
+          "affiche": "/la-garenne/videos-demo/le-comptoir.jpg",
+          "sousTitres": "/la-garenne/sous-titres/comptoir-portrait.vtt",
+          "cta": "offre",
+          "debut": "2026-09-01",
+          "fin": "2026-12-31",
+          "duree": 24
+        }
+      ]
+    },
+    {
+      "slug": "maison-arnaud",
+      "demo": true,
+      "statut": "valide",
+      "nom": "Maison Arnaud",
+      "categorie": "boulangerie",
+      "accroche": "Pain au levain, viennoiseries pur beurre, fournée toutes les deux heures.",
+      "adresse": "4 avenue de l'Exemple, 92250 La Garenne-Colombes",
+      "quartier": "Marché",
+      "tel": "0100000001",
+      "horaires": "Lun–Sam · 7h–20h",
+      "photo": "/assets/heros/banniere-6.jpg",
+      "avis": {
+        "note": 4.8,
+        "nombre": 212,
+        "source": "Google"
+      },
+      "offre": {
+        "statut": "publiee",
+        "titre": "-10 % dès 15 € d'achat",
+        "conditions": "Une fois par mois, hors commandes spéciales.",
+        "image": "/assets/offres/offre-8.jpg",
+        "debut": "2026-09-01",
+        "fin": "2026-11-30"
+      },
+      "videos": [
+        {
+          "id": "arnaud-fournee",
+          "statut": "publiee",
+          "type": "nouveaute",
+          "titre": "La nouvelle baguette de tradition",
+          "description": "Trois jours de fermentation : le boulanger montre ce qui change.",
+          "src": "/la-garenne/videos-demo/maison-arnaud.mp4",
+          "affiche": "/la-garenne/videos-demo/maison-arnaud.jpg",
+          "cta": "itineraire",
+          "debut": "2026-09-15",
+          "fin": "2026-10-31",
+          "duree": 24
+        }
+      ]
+    },
+    {
+      "slug": "atelier-fleuri",
+      "demo": true,
+      "statut": "valide",
+      "nom": "L'Atelier Fleuri",
+      "categorie": "fleuriste",
+      "accroche": "Fleurs de saison, bouquets sur mesure et ateliers le samedi.",
+      "adresse": "30 rue de l'Exemple, 92250 La Garenne-Colombes",
+      "quartier": "Charlebourg",
+      "tel": "0100000002",
+      "horaires": "Mar–Dim · 9h30–19h30",
+      "photo": "/assets/heros/banniere-5.jpg",
+      "offre": {
+        "statut": "publiee",
+        "titre": "Un brin de saison offert",
+        "conditions": "Pour tout bouquet acheté, une fois par mois.",
+        "image": "/assets/offres/offre-2.jpg",
+        "debut": "2026-09-01",
+        "fin": "2026-12-31"
+      },
+      "videos": [
+        {
+          "id": "fleuri-atelier",
+          "statut": "publiee",
+          "type": "evenement",
+          "titre": "Atelier couronne d'automne, samedi 11 octobre",
+          "description": "Huit places, matériel fourni. Réservation en boutique ou par téléphone.",
+          "src": "/la-garenne/videos-demo/atelier-fleuri.mp4",
+          "affiche": "/la-garenne/videos-demo/atelier-fleuri.jpg",
+          "cta": "reserver",
+          "debut": "2026-09-20",
+          "fin": "2026-10-11",
+          "duree": 24
+        }
+      ]
+    },
+    {
+      "slug": "cave-garenne",
+      "demo": true,
+      "statut": "valide",
+      "nom": "La Cave de la Garenne",
+      "categorie": "caviste",
+      "accroche": "Vins nature et vignerons indépendants, dégustation le vendredi soir.",
+      "adresse": "8 boulevard de l'Exemple, 92250 La Garenne-Colombes",
+      "quartier": "Centre",
+      "tel": "0100000003",
+      "horaires": "Mar–Sam · 10h–20h",
+      "photo": "/assets/heros/banniere-4.jpg",
+      "offre": null,
+      "videos": [
+        {
+          "id": "cave-degustation",
+          "statut": "publiee",
+          "type": "evenement",
+          "titre": "Dégustation du vendredi",
+          "description": "Chaque vendredi, trois vins d'un même vigneron à découvrir.",
+          "src": "/la-garenne/videos-demo/cave-garenne.mp4",
+          "affiche": "/la-garenne/videos-demo/cave-garenne.jpg",
+          "cta": "contacter",
+          "debut": "2026-09-01",
+          "fin": "2026-12-31",
+          "duree": 24
+        }
+      ]
+    },
+    {
+      "slug": "cafe-des-vallees",
+      "demo": true,
+      "statut": "valide",
+      "nom": "Café des Vallées",
+      "categorie": "cafe",
+      "accroche": "Torréfaction artisanale et pâtisseries maison.",
+      "adresse": "2 place de l'Exemple, 92250 La Garenne-Colombes",
+      "quartier": "Les Vallées",
+      "tel": "0100000004",
+      "horaires": "Lun–Sam · 8h–18h",
+      "photo": "/assets/heros/banniere-2.jpg",
+      "offre": {
+        "statut": "publiee",
+        "titre": "Le 2e café à moitié prix",
+        "conditions": "Sur place uniquement, une fois par mois.",
+        "image": "/assets/offres/offre-1.jpg",
+        "debut": "2026-09-01",
+        "fin": "2026-12-31"
+      },
+      "videos": [
+        {
+          "id": "vallees-torrefaction",
+          "statut": "publiee",
+          "type": "portrait",
+          "titre": "Notre torréfaction, grain par grain",
+          "description": "Comment on choisit et torréfie nos cafés.",
+          "src": "/la-garenne/videos-demo/cafe-des-vallees.mp4",
+          "affiche": "/la-garenne/videos-demo/cafe-des-vallees.jpg",
+          "cta": "itineraire",
+          "debut": "2026-09-01",
+          "fin": "2026-12-31",
+          "duree": 24
+        }
+      ]
+    },
+    {
+      "slug": "boutique-refusee-exemple",
+      "demo": true,
+      "statut": "en_attente",
+      "nom": "Commerce en attente de validation",
+      "categorie": "mode",
+      "videos": []
+    }
+  ]
+}
