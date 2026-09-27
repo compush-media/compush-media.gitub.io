@@ -7,6 +7,18 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Fidelavis">
 <link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<script>
+  /* Fichier d'installation propre au commerce, sur TOUTES les pages : on peut
+     ajouter l'appli à l'écran d'accueil depuis n'importe laquelle (souvent
+     depuis l'extrait vidéo, sans passer par installer.html). Son start_url
+     app.html?first=<slug> rouvre l'appli sur la vidéo du bon commerce.
+     Commerce connu par ?s= ou, à défaut, par celui qui a amené l'habitant. */
+  (function(){
+    var s = (new URLSearchParams(location.search).get('s') || '').toLowerCase().replace(/[^a-z0-9-]/g,'');
+    if (!s) { try { var src = JSON.parse(localStorage.getItem('hl_source') || 'null'); s = (src && src.slug || '').replace(/[^a-z0-9-]/g,''); } catch(e) {} }
+    if (s) document.getElementById('mf').href = '/la-garenne/manifests/' + s + '.json';
+  })();
+</script>
 <link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
 <script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,16 +26,10 @@
 <link rel="stylesheet" href="/la-garenne/hl.css">
 <script src="/la-garenne/hl.js"></script>
 <script>
-  /* Le manifeste propre au commerce doit être en place avant l'ajout à
-     l'écran d'accueil : son start_url (app.html?first=<slug>) est ce qui
-     rouvre l'appli installée sur la bonne vidéo, y compris sur iPhone où
-     l'appli ne voit pas la mémoire de Safari. */
+  // Android : l'appli installée partage cette mémoire, elle y retrouve le commerce.
   (function(){
     var s = (new URLSearchParams(location.search).get('s') || '').toLowerCase().replace(/[^a-z0-9-]/g,'');
-    if (s) {
-      document.getElementById('mf').href = '/la-garenne/manifests/' + s + '.json';
-      try { localStorage.setItem('hl_pending', s); } catch(e) {}
-    }
+    if (s) { try { localStorage.setItem('hl_pending', s); } catch(e) {} }
   })();
 </script>
 <title>Installer l'appli – Les Commerces de La Garenne</title>
