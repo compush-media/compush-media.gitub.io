@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Espace commerçant – Les Commerces de La Garenne</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<style>
+  label{display:block;font-size:13px;font-weight:700;margin:14px 0 6px;}
+  input{width:100%;height:48px;border-radius:12px;border:1.5px solid var(--line);padding:0 14px;font:inherit;font-size:16px;background:#fff;color:var(--ink);}
+  input:focus{outline:none;border-color:var(--rose);box-shadow:0 0 0 3px var(--rose-soft);}
+  .err{color:#B23B3B;font-size:13.5px;font-weight:700;margin-top:12px;min-height:18px;}
+</style>
+</head>
+<body class="sans-nav">
+<div id="bar"></div>
+<main class="ct">
+  <h1 style="margin:10px 0 6px">Espace commerçant</h1>
+  <p class="muted" id="sous">Vos statistiques, votre code caisse et votre QR code.</p>
+  <form class="card" id="f" style="margin-top:18px" novalidate>
+    <label for="user">Identifiant</label>
+    <input id="user" autocomplete="username" required>
+    <label for="pass">Mot de passe</label>
+    <input id="pass" type="password" autocomplete="current-password" required>
+    <button class="btn" type="submit" style="margin-top:18px"><span>Se connecter</span><span class="arr">›</span></button>
+    <p class="err" id="err" role="alert"></p>
+  </form>
+  <p class="small muted" style="margin-top:14px;text-align:center">Pas encore d'identifiant ? Demandez-le à l'association des commerçants.</p>
+</main>
+<script>
+/* Même connexion que les espaces admin des wallets : fv_admin_login
+   renvoie un jeton de 12 h, stocké sous fv_session_<slug>. */
+(function(){
+  var SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+  var SUPA_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
+  var slug = HL.qs('s').toLowerCase().replace(/[^a-z0-9-]/g,'');
+  document.getElementById('bar').innerHTML = HL.brandbar(false);
+  var err = document.getElementById('err');
+  if (!slug) { err.textContent = 'Lien incomplet : il manque le commerce.'; return; }
+  HL.charger().then(function(d){
+    var c = d.parSlug[slug];
+    if (c) document.getElementById('sous').textContent = c.nom + ' : vos statistiques, votre code caisse et votre QR code.';
+  });
+
+  document.getElementById('f').addEventListener('submit', function(e){
+    e.preventDefault();
+    var u = document.getElementById('user').value.trim(), p = document.getElementById('pass').value;
+    if (!u || !p) { err.textContent = 'Renseignez votre identifiant et votre mot de passe.'; return; }
+    err.textContent = '';
+    fetch(SUPA_URL + '/rest/v1/rpc/fv_admin_login', {
+      method: 'POST',
+      headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_slug: slug, p_username: u, p_password: p })
+    }).then(function(r){
+      if (!r.ok) throw new Error('service');
+      return r.json();
+    }).then(function(j){
+      if (!j || !j.ok || !j.token) { err.textContent = 'Identifiant ou mot de passe incorrect.'; return; }
+      HL.ls('fv_session_' + slug, j.token);
+      HL.ls('fv_session_exp_' + slug, j.expires_at || '');
+      location.replace(HL.BASE + 'pro/tableau.html?s=' + encodeURIComponent(slug));
+    }).catch(function(){
+      err.textContent = 'Connexion impossible pour le moment. Réessayez dans quelques minutes.';
+    });
+  });
+})();
+</script>
+</body>
+</html>
