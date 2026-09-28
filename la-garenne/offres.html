@@ -40,12 +40,13 @@
   HL.nav('offres');
   var mois = new Date().toISOString().slice(0,7);
   HL.charger().then(function(d){
-    var l = d.commerces.filter(function(c){ return c.offre; });
+    var l = d.commerces.filter(function(c){ return c.offre && HL.dureeOffre(c.offre); })
+      .sort(function(a,b){ return (a.offre.fin || '9999').localeCompare(b.offre.fin || '9999'); });
     document.getElementById('liste').innerHTML = l.length ? l.map(function(c){
-      var utilisee = HL.ls('hl_offre_' + c.slug + '_' + mois);
-      return '<a class="offre" href="' + HL.BASE + 'offre.html?s=' + encodeURIComponent(c.slug) + '" data-hl="offre_ouverte" data-slug="' + HL.esc(c.slug) + '" data-src="offres"' + (utilisee ? ' style="opacity:.55"' : '') + '>' +
-        '<div class="ph" style="background-image:url(\'' + HL.esc(c.offre.image || c.photo || '') + '\')"></div>' +
-        '<div><p class="t">' + HL.esc(c.offre.titre) + '</p><p class="s">' + HL.esc(c.nom) + (utilisee ? ' · utilisée ce mois-ci' : '') + '</p></div></a>';
+      var h = HL.offreHtml(c, 'offres');
+      // Déjà utilisée ce mois-ci sur cet appareil : on l'atténue et on le dit.
+      if (HL.ls('hl_offre_' + c.slug + '_' + mois)) h = h.replace('class="offre"', 'class="offre" style="opacity:.55"').replace('</p><span', ' · utilisée ce mois-ci</p><span');
+      return h;
     }).join('') : '<p class="muted">Pas d\'offre en cours.</p>';
   });
 })();

@@ -49,13 +49,12 @@
   if (fav) document.getElementById('titre').textContent = 'Vos favoris';
 
   HL.charger().then(function(d){
-    var cats = [];
-    d.commerces.forEach(function(c){ if (cats.indexOf(c.categorie) === -1) cats.push(c.categorie); });
+    var cats = Object.keys(HL.CATEGORIES);   // toutes, même vides (« Bientôt »)
     function norm(t){ return (t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
     function rendre(){
       document.getElementById('cats').innerHTML = ['<button class="chip' + (!cat ? ' on' : '') + '" data-c="">Tous</button>'].concat(cats.map(function(k){
-        var m = HL.CATEGORIES[k] || {ic:'🏪', label:k};
-        return '<button class="chip' + (k === cat ? ' on' : '') + '" data-c="' + HL.esc(k) + '">' + m.ic + ' ' + HL.esc(m.label) + '</button>';
+        var m = HL.CATEGORIES[k];
+        return '<button class="chip' + (k === cat ? ' on' : '') + '" data-c="' + HL.esc(k) + '">' + HL.esc(m.label) + '</button>';
       })).join('');
       var favs = HL.favoris(), nq = norm(q);
       var liste = d.commerces.filter(function(c){
@@ -65,7 +64,9 @@
         return true;
       });
       document.getElementById('liste').innerHTML = liste.length ? liste.map(HL.commerceRowHtml).join('')
-        : '<p class="muted">' + (fav ? 'Touchez 🤍 sur la fiche d\'un commerce pour le retrouver ici.' : 'Aucun commerce ne correspond.') + '</p>';
+        : '<p class="muted">' + (fav ? 'Touchez « Favori » sur la fiche d\'un commerce pour le retrouver ici.'
+            : cat && !q ? (HL.CATEGORIES[cat] ? HL.CATEGORIES[cat].label : 'Cette catégorie') + ' : bientôt à La Garenne. Les premières adresses arrivent.'
+            : 'Aucun commerce ne correspond.') + '</p>';
     }
     document.getElementById('cats').addEventListener('click', function(e){
       var b = e.target.closest('[data-c]'); if (!b) return; cat = b.getAttribute('data-c'); rendre();

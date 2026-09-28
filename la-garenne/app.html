@@ -34,8 +34,9 @@
   .bienvenue{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-start;justify-content:center;padding-top:60px;background:rgba(251,246,241,.96);}
   .bienvenue .card{display:flex;gap:12px;align-items:center;max-width:360px;margin:0 16px;}
   .bienvenue .ck{width:36px;height:36px;border-radius:50%;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0;}
-  .notif{display:flex;gap:12px;align-items:center;}
-  .notif .ic{font-size:26px;}
+  .notif{display:flex;gap:12px;align-items:center;margin-top:22px;}
+  .notif .ic{width:44px;height:44px;border-radius:14px;background:var(--rose-soft);color:var(--rose);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .notif .chip{background:var(--rose);color:#fff;border-color:var(--rose);white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -44,37 +45,34 @@
 <section class="hero">
   <h1>Les bonnes adresses de La Garenne-Colombes</h1>
   <form class="search" action="/la-garenne/commerces.html">
-    <span aria-hidden="true">🔍</span>
+    <span id="icnRecherche"></span>
     <input type="search" name="q" placeholder="Rechercher un commerce…" aria-label="Rechercher un commerce">
   </form>
 </section>
 
+<!-- Accueil = ce qui est nouveau cette semaine. L'annuaire complet vit dans l'onglet Commerces. -->
 <main class="ct">
-  <div class="cats" id="cats" style="margin-top:18px"></div>
+  <nav class="cats" id="cats" aria-label="Catégories" style="margin-top:18px"></nav>
 
-  <div class="sec-title"><h2>À la une cette semaine</h2><a href="/la-garenne/decouvrir.html">Tout voir</a></div>
-  <div class="rail" id="rail"></div>
+  <div class="semaine" id="semaine"></div>
 
   <div class="sec-title"><h2>Offres de la semaine</h2><a href="/la-garenne/offres.html">Toutes</a></div>
   <div class="clist" id="offres"></div>
 
-  <!-- Publicité fixe : une seule, sous les offres, jamais en premier écran -->
+  <!-- Encart sponsorisé : un seul, juste après les offres (jamais avant) pour
+       une vraie visibilité du commerçant qui paie. -->
   <div id="pub" style="margin-top:22px"></div>
 
-  <div id="notif" class="card notif hide" style="margin-top:22px">
-    <span class="ic">🔔</span>
-    <div style="flex:1"><b>Nouvelles vidéos et bons plans</b><p class="small muted">Une notification par semaine au plus. Désactivable à tout moment.</p></div>
-    <button class="chip" id="btnNotif" type="button">Activer</button>
-  </div>
+  <div class="sec-title"><h2>À la une cette semaine</h2><a href="/la-garenne/decouvrir.html">Tout voir</a></div>
+  <div class="rail" id="rail"></div>
 
-  <div id="installer" class="card notif hide" style="margin-top:22px">
-    <span class="ic">📲</span>
-    <div style="flex:1"><b>Installer l'appli</b><p class="small muted">Retrouvez vos commerces en un geste depuis l'écran d'accueil.</p></div>
-    <a class="chip" id="lienInstaller" href="/la-garenne/installer.html">Installer</a>
+  <div id="notif" class="card notif hide">
+    <span class="ic" id="icnAlerte"></span>
+    <div style="flex:1"><b>Ne ratez pas les bons plans de La Garenne</b>
+      <p class="small muted">Nouvelles adresses, vidéos et offres de la semaine. Une notification maximum par semaine.</p></div>
   </div>
+  <button class="btn hide" id="btnNotif" type="button" style="margin-top:10px"><span>Activer les alertes</span><span class="arr">›</span></button>
 
-  <div class="sec-title"><h2>Tous les commerces</h2><a href="/la-garenne/commerces.html">Annuaire</a></div>
-  <div class="clist" id="liste"></div>
 </main>
 
 <script>
@@ -104,24 +102,39 @@
   HL.nav('accueil');
   HL.track('accueil_vue', null, HL.isStandalone() ? 'appli' : 'web');
 
-  if (HL.isStandalone()) {
-    if ('Notification' in window && Notification.permission === 'default') document.getElementById('notif').classList.remove('hide');
-    document.getElementById('btnNotif').addEventListener('click', function(){ HL.notifs(null); document.getElementById('notif').classList.add('hide'); });
-  } else {
-    var s = HL.getSource();
-    document.getElementById('installer').classList.remove('hide');
-    if (s) document.getElementById('lienInstaller').href = HL.BASE + 'installer.html?s=' + encodeURIComponent(s.slug);
-  }
+  document.getElementById('icnRecherche').innerHTML = HL.icone('recherche', 20);
+  document.getElementById('icnAlerte').innerHTML = HL.icone('alerte', 24);
+
+  /* Alertes : dans l'appli installée, on demande l'autorisation sur appui ;
+     dans le navigateur, les alertes passent par l'installation. */
+  var notif = document.getElementById('notif'), btnNotif = document.getElementById('btnNotif');
+  var peutDemander = HL.isStandalone() && 'Notification' in window && Notification.permission === 'default';
+  if (peutDemander || !HL.isStandalone()) { notif.classList.remove('hide'); btnNotif.classList.remove('hide'); }
+  btnNotif.setAttribute('data-hl', 'alertes_bouton'); btnNotif.setAttribute('data-src', HL.isStandalone() ? 'appli' : 'web');
+  btnNotif.addEventListener('click', function(){
+    if (HL.isStandalone()) { HL.notifs(null); notif.classList.add('hide'); btnNotif.classList.add('hide'); return; }
+    var src = HL.getSource();
+    location.href = HL.BASE + 'installer.html' + (src ? '?s=' + encodeURIComponent(src.slug) : '');
+  });
 
   HL.charger().then(function(d){
-    // Catégories présentes dans le réseau
-    var vues = {};
-    document.getElementById('cats').innerHTML = d.commerces.filter(function(c){
-      if (vues[c.categorie]) return false; vues[c.categorie] = 1; return true;
-    }).slice(0, 4).map(function(c){
-      var k = HL.CATEGORIES[c.categorie] || {ic:'🏪', label:c.categorie};
-      return '<a class="cat" href="' + HL.BASE + 'commerces.html?cat=' + encodeURIComponent(c.categorie) + '"><span class="ic">' + k.ic + '</span>' + HL.esc(k.label) + '</a>';
-    }).join('');
+    // Catégories : toutes, dans l'ordre fixé, « Bientôt » quand elles sont vides
+    var nb = {};
+    d.commerces.forEach(function(c){ nb[c.categorie] = (nb[c.categorie] || 0) + 1; });
+    var cats = '<a class="cat" href="' + HL.BASE + 'commerces.html"><span class="ic">' + HL.icone('tout', 26) + '</span>Tout</a>';
+    Object.keys(HL.CATEGORIES).forEach(function(k){
+      var m = HL.CATEGORIES[k];
+      cats += nb[k]
+        ? '<a class="cat" href="' + HL.BASE + 'commerces.html?cat=' + k + '"><span class="ic">' + HL.icone(m.ic, 26) + '</span>' + HL.esc(m.label) + '</a>'
+        : '<button class="cat bientot" type="button" data-bientot="' + HL.esc(m.label) + '"><span class="ic">' + HL.icone(m.ic, 26) + '</span>' + HL.esc(m.label) + '<span class="bt">Bientôt</span></button>';
+    });
+    var catsEl = document.getElementById('cats');
+    catsEl.innerHTML = cats;
+    catsEl.addEventListener('click', function(e){
+      var b = e.target.closest('[data-bientot]'); if (!b) return;
+      HL.track('categorie_bientot', null, b.getAttribute('data-bientot'));
+      HL.toast(b.getAttribute('data-bientot') + ' : bientôt à La Garenne');
+    });
 
     // À la une : vidéos des commerçants, les plus récentes d'abord.
     // Une vidéo sponsorisée peut s'y glisser, jamais en première position.
@@ -134,21 +147,25 @@
     document.getElementById('rail').innerHTML = html.join('');
     if (pubV) { var el = document.getElementById('pub-' + pubV.id); if (el) HL.impression(el, pubV, 'accueil'); }
 
-    // Offres
-    document.getElementById('offres').innerHTML = d.commerces.filter(function(c){ return c.offre; }).slice(0,3).map(function(c){
-      return '<a class="offre" href="' + HL.BASE + 'offre.html?s=' + encodeURIComponent(c.slug) + '" data-hl="offre_ouverte" data-slug="' + HL.esc(c.slug) + '" data-src="accueil">' +
-        '<div class="ph" style="background-image:url(\'' + HL.esc(c.offre.image || c.photo || '') + '\')"></div>' +
-        '<div><p class="t">' + HL.esc(c.offre.titre) + '</p><p class="s">' + HL.esc(c.nom) + '</p></div></a>';
-    }).join('');
+    // Offres actives, celles qui finissent le plus tôt d'abord
+    var offres = d.commerces.filter(function(c){ return c.offre && HL.dureeOffre(c.offre); })
+      .sort(function(a,b){ return (a.offre.fin || '9999').localeCompare(b.offre.fin || '9999'); });
+    document.getElementById('offres').innerHTML = offres.slice(0,3).map(function(c){ return HL.offreHtml(c, 'accueil'); }).join('');
 
-    // Publicité fixe : une seule à la fois
+    // Cette semaine à La Garenne : ce qui est nouveau depuis 7 jours
+    var nouvelles = videos.filter(function(v){ return HL.recent(v); }).length;
+    function pl(n, un, plusieurs){ return n + ' ' + (n > 1 ? plusieurs : un); }
+    document.getElementById('semaine').innerHTML =
+      '<span class="ic">' + HL.icone('semaine', 22) + '</span><div><b>Cette semaine à La Garenne</b><p>' +
+      (nouvelles ? pl(nouvelles, 'nouvelle vidéo', 'nouvelles vidéos') : pl(videos.length, 'vidéo à découvrir', 'vidéos à découvrir')) +
+      ' · ' + pl(offres.length, 'offre', 'offres') + '</p></div>';
+
+    // Encart sponsorisé : un seul à la fois
     var pubF = d.pubs.filter(function(p){ return p.format === 'fixe' && p.emplacement === 'accueil'; })[0];
     if (pubF) {
       document.getElementById('pub').innerHTML = HL.pubFixeHtml(pubF, 'accueil');
       HL.impression(document.getElementById('pub-' + pubF.id), pubF, 'accueil');
     }
-
-    document.getElementById('liste').innerHTML = d.commerces.map(HL.commerceRowHtml).join('');
   });
 })();
 </script>

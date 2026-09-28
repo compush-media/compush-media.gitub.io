@@ -12,15 +12,45 @@
   var SUPA_KEY = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
   var BASE = "/la-garenne/";
 
+  /* Catégories affichées sur l'accueil et l'annuaire, dans cet ordre, même
+     vides : une catégorie sans commerce annonce « Bientôt ». */
   var CATEGORIES = {
-    restaurant: { label: "Restaurants", ic: "🍽️" },
-    cafe:       { label: "Cafés",       ic: "☕" },
-    boulangerie:{ label: "Boulangeries",ic: "🥐" },
-    fleuriste:  { label: "Fleuristes",  ic: "💐" },
-    caviste:    { label: "Cavistes",    ic: "🍷" },
-    beaute:     { label: "Beauté",      ic: "💇" },
-    mode:       { label: "Mode",        ic: "👗" }
+    restaurant:  { label: "Restaurants",  ic: "restaurant" },
+    boulangerie: { label: "Boulangeries", ic: "boulangerie" },
+    cafe:        { label: "Cafés",        ic: "cafe" },
+    fleuriste:   { label: "Fleuristes",   ic: "fleuriste" },
+    caviste:     { label: "Cavistes",     ic: "caviste" },
+    beaute:      { label: "Beauté",       ic: "beaute" },
+    mode:        { label: "Mode",         ic: "mode" },
+    boutique:    { label: "Boutiques",    ic: "boutique" }
   };
+
+  /* Icônes au trait, homogènes (24 × 24, currentColor) : elles remplacent
+     progressivement les emojis, en commençant par la navigation et les
+     catégories. */
+  var TRACES = {
+    accueil:     '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+    videos:      '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/>',
+    commerces:   '<path d="M3 9l2-5h14l2 5"/><path d="M3 9h18"/><path d="M5 9v11h14V9"/><path d="M10 20v-5h4v5"/>',
+    favoris:     '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+    offres:      '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+    tout:        '<rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/>',
+    restaurant:  '<path d="M7 3v18"/><path d="M4.5 3v5a2.5 2.5 0 0 0 5 0V3"/><path d="M17 21V3c-2 1-3.5 3.5-3.5 7.5H17"/>',
+    boulangerie: '<path d="M6 11a3.5 3.5 0 0 1 0-7h12a3.5 3.5 0 0 1 0 7v8a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1z"/><path d="M10 8v2"/><path d="M14 8v2"/>',
+    cafe:        '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8.5 3v3"/><path d="M12.5 3v3"/>',
+    fleuriste:   '<path d="M12 13c-3.3 0-6-2.7-6-6V4l3 2 3-3 3 3 3-2v3c0 3.3-2.7 6-6 6z"/><path d="M12 13v8"/><path d="M12 18c-2 0-4-1-5-3"/>',
+    caviste:     '<path d="M7 3h10v4a5 5 0 0 1-10 0z"/><path d="M12 12v8"/><path d="M8 20h8"/>',
+    beaute:      '<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/>',
+    mode:        '<path d="M8 3 3 6l2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0z"/>',
+    boutique:    '<path d="M5 8h14l-1 13H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+    recherche:   '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+    semaine:     '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="m9.5 14.5 1.8 1.8 3.2-3.3"/>',
+    alerte:      '<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>'
+  };
+  function icone(nom, taille) {
+    var t = taille || 24;
+    return '<svg class="icn" width="' + t + '" height="' + t + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (TRACES[nom] || TRACES.commerces) + "</svg>";
+  }
 
   /* ── petits outils ── */
   function qs(n) { return new URLSearchParams(location.search).get(n) || ""; }
@@ -342,11 +372,41 @@
   }
 
   function commerceRowHtml(c) {
-    var cat = CATEGORIES[c.categorie] || { ic: "🏪", label: c.categorie };
+    var cat = CATEGORIES[c.categorie] || { ic: "commerces", label: c.categorie };
     return '<a class="crow" href="' + BASE + "commerce.html?s=" + encodeURIComponent(c.slug) + '">' +
-      '<div class="ph" style="' + (c.photo ? "background-image:url('" + esc(c.photo) + "')" : "") + '">' + (c.photo ? "" : cat.ic) + "</div>" +
+      '<div class="ph" style="' + (c.photo ? "background-image:url('" + esc(c.photo) + "')" : "") + '">' + (c.photo ? "" : icone(cat.ic, 26)) + "</div>" +
       '<div><p class="nm">' + esc(c.nom) + '</p><p class="ds">' + esc(cat.label) + " · " + esc(c.quartier || c.adresse || "") + "</p>" +
       (c.offre ? '<p class="of">🎁 ' + esc(c.offre.titre) + "</p>" : "") + "</div></a>";
+  }
+
+  /* ── Durée d'une offre, dite comme on la dirait en boutique ──
+     « Dernier jour », « Jusqu'à dimanche », « Jusqu'au mardi 7 »,
+     « Jusqu'au 31 déc. ». urgent = 2 jours ou moins. */
+  var JOURS = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+  function dureeOffre(o) {
+    if (!o || !o.fin) return { texte: "Offre permanente", urgent: false };
+    var auj = new Date(); auj.setHours(12, 0, 0, 0);
+    var fin = new Date(o.fin + "T12:00:00");
+    var j = Math.round((fin - auj) / 86400000);
+    if (j < 0) return null;
+    if (j === 0) return { texte: "Dernier jour", urgent: true };
+    var avantDimanche = (7 - auj.getDay()) % 7;
+    if (j <= avantDimanche) return { texte: "Jusqu'à " + JOURS[fin.getDay()], urgent: j <= 2 };
+    if (j <= 13) return { texte: "Jusqu'au " + JOURS[fin.getDay()] + " " + fin.getDate(), urgent: false };
+    return { texte: "Jusqu'au " + fin.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }), urgent: false };
+  }
+  function recent(o, jours) {
+    if (!o || !o.debut) return false;
+    var lim = new Date(); lim.setDate(lim.getDate() - ((jours || 7) - 1));
+    return o.debut >= lim.toISOString().slice(0, 10);
+  }
+  function offreHtml(c, src) {
+    var d = dureeOffre(c.offre);
+    return '<a class="offre" href="' + BASE + "offre.html?s=" + encodeURIComponent(c.slug) + '" data-hl="offre_ouverte" data-slug="' + esc(c.slug) + '" data-src="' + esc(src) + '">' +
+      '<div class="ph" style="background-image:url(\'' + esc(c.offre.image || c.photo || "") + '\')"></div>' +
+      '<div style="flex:1;min-width:0"><p class="t">' + esc(c.offre.titre) + '</p><p class="s">' + esc(c.nom) + "</p>" +
+      (d ? '<span class="duree' + (d.urgent ? " urgent" : "") + '">' + (recent(c.offre) ? "Nouveau · " : "") + esc(d.texte) + "</span>" : "") +
+      "</div></a>";
   }
 
   /* ── Favoris (sur l'appareil) ── */
@@ -386,16 +446,16 @@
 
   function nav(actif) {
     var items = [
-      ["accueil", "app.html", "🏠", "Accueil"],
-      ["decouvrir", "decouvrir.html", "▶️", "Découvrir"],
-      ["commerces", "commerces.html", "🏪", "Commerces"],
-      ["favoris", "commerces.html?fav=1", "♡", "Favoris"],
-      ["offres", "offres.html", "🎁", "Offres"]
+      ["accueil", "app.html", "accueil", "Accueil"],
+      ["decouvrir", "decouvrir.html", "videos", "Vidéos"],
+      ["commerces", "commerces.html", "commerces", "Commerces"],
+      ["favoris", "commerces.html?fav=1", "favoris", "Favoris"],
+      ["offres", "offres.html", "offres", "Offres"]
     ];
     var n = document.createElement("nav");
     n.className = "nav";
     n.innerHTML = items.map(function (i) {
-      return '<a href="' + BASE + i[1] + '"' + (i[0] === actif ? ' class="on"' : "") + '><span class="ic">' + i[2] + "</span>" + i[3] + "</a>";
+      return '<a href="' + BASE + i[1] + '"' + (i[0] === actif ? ' class="on" aria-current="page"' : "") + '><span class="ic">' + icone(i[2], 22) + "</span>" + i[3] + "</a>";
     }).join("");
     document.body.appendChild(n);
   }
@@ -408,7 +468,7 @@
   }
 
   window.HL = {
-    BASE: BASE, CATEGORIES: CATEGORIES,
+    BASE: BASE, CATEGORIES: CATEGORIES, icone: icone,
     qs: qs, esc: esc, ls: ls, mmss: mmss, jour: jour,
     isStandalone: isStandalone, isIOS: isIOS, isAndroid: isAndroid,
     track: track, trackUnique: trackUnique,
@@ -416,6 +476,7 @@
     charger: charger, cta: cta, ctaHtml: ctaHtml, player: player,
     impression: impression, pubFixeHtml: pubFixeHtml, vcardHtml: vcardHtml, commerceRowHtml: commerceRowHtml,
     favoris: favoris, basculerFavori: basculerFavori, notifs: notifs,
+    dureeOffre: dureeOffre, recent: recent, offreHtml: offreHtml,
     toast: toast, nav: nav, brandbar: brandbar
   };
 })();

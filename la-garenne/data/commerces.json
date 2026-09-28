@@ -116,7 +116,7 @@
           "src": "/la-garenne/videos-demo/atelier-fleuri.mp4",
           "affiche": "/la-garenne/videos-demo/atelier-fleuri.jpg",
           "cta": "reserver",
-          "debut": "2026-09-20",
+          "debut": "2026-09-25",
           "fin": "2026-10-11",
           "duree": 24
         }
@@ -168,8 +168,8 @@
         "titre": "Le 2e café à moitié prix",
         "conditions": "Sur place uniquement, une fois par mois.",
         "image": "/assets/offres/offre-1.jpg",
-        "debut": "2026-09-01",
-        "fin": "2026-12-31"
+        "debut": "2026-09-28",
+        "fin": "2026-10-04"
       },
       "videos": [
         {
