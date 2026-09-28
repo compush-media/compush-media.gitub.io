@@ -180,7 +180,21 @@
   function charger() {
     if (_data) return _data;
     function get(u) { return fetch(u, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
-    _data = Promise.all([get(BASE + "data/commerces.json"), get(BASE + "data/pubs.json")]).then(function (res) {
+    /* Source : Supabase (hl_public, ce que l'association a publié). En
+       secours seulement, les fichiers data/*.json du dépôt. */
+    function source() {
+      return fetch(SUPA_URL + "/rest/v1/rpc/hl_public", {
+        method: "POST", cache: "no-store",
+        headers: { apikey: SUPA_KEY, Authorization: "Bearer " + SUPA_KEY, "Content-Type": "application/json" },
+        body: "{}"
+      }).then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); })
+        .then(function (j) {
+          if (!j || !Array.isArray(j.commerces)) throw new Error("vide");
+          return [{ ville: j.ville, commerces: j.commerces }, { pubs: j.pubs || [], coup_de_coeur: j.coup_de_coeur || {} }];
+        })
+        .catch(function () { return Promise.all([get(BASE + "data/commerces.json"), get(BASE + "data/pubs.json")]); });
+    }
+    _data = source().then(function (res) {
       var commerces = ((res[0] && res[0].commerces) || []).filter(function (c) { return c.statut === "valide"; });
       return Promise.all(commerces.map(function (c) {
         if (!c.wallet) return c;

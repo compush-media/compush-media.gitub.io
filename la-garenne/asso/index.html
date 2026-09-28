@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Espace association – Les Commerces de La Garenne</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<style>
+  body{max-width:1040px;padding-bottom:40px;}
+  .tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:6px 0 18px;}
+  .tabs .chip .nb{display:inline-block;min-width:18px;margin-left:6px;padding:0 6px;border-radius:999px;background:var(--rose);color:#fff;font-size:11px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
+  .tile{background:var(--card);border-radius:16px;padding:14px;box-shadow:var(--shadow);}
+  .tile .lb{font-size:12.5px;color:var(--muted);font-weight:700;}
+  .tile .v{font:900 28px/1.15 'Lato',sans-serif;margin-top:4px;}
+  .tile .ex{font-size:12px;color:var(--muted);}
+  .tw{overflow-x:auto;background:var(--card);border-radius:16px;box-shadow:var(--shadow);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th,td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{font-size:12px;color:var(--muted);white-space:nowrap;}
+  td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;}
+  tr.clic{cursor:pointer;} tr.clic:hover td{background:#FFF9F4;}
+  .st{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px;background:#EEF0F6;color:#4A5070;white-space:nowrap;}
+  .st.valide,.st.publiee,.st.programmee{background:var(--ok-soft);color:var(--ok);}
+  .st.en_attente,.st.a_moderer,.st.demande{background:var(--sponso-soft);color:var(--sponso);}
+  .st.refuse,.st.refusee,.st.suspendu,.st.annulee{background:#FDECEC;color:#B23B3B;}
+  .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+  .form .large{grid-column:1/-1;}
+  label.f{display:block;font-size:12.5px;font-weight:700;color:var(--ink);}
+  label.f span{display:block;margin-bottom:5px;}
+  label.f input,label.f select,label.f textarea{width:100%;min-height:42px;border-radius:10px;border:1.5px solid var(--line);padding:8px 12px;font:inherit;font-size:14.5px;background:#fff;color:var(--ink);}
+  label.f textarea{min-height:70px;resize:vertical;}
+  label.f input:focus,label.f select:focus,label.f textarea:focus{outline:none;border-color:var(--rose);box-shadow:0 0 0 3px var(--rose-soft);}
+  label.ck{display:flex;gap:8px;align-items:center;font-size:13.5px;font-weight:700;}
+  .bloc{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px;}
+  .bloc h3{margin-bottom:12px;}
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0;}
+  .bar .btn{width:auto;min-height:44px;font-size:15px;}
+  .b2{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;color:var(--ink);}
+  .b2.ok{background:var(--ok);color:#fff;border-color:var(--ok);}
+  .b2.ko{color:#B23B3B;border-color:#F0C4C4;}
+  .msg{font-size:13.5px;font-weight:700;}
+  .msg.ok{color:var(--ok);} .msg.ko{color:#B23B3B;}
+  .alerte{background:var(--sponso-soft);color:var(--sponso);border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:12px;}
+  .check{list-style:none;padding:0;margin:8px 0 12px;font-size:13.5px;}
+  .check li{padding:3px 0;}
+  .file{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line);}
+  .file:last-child{border-bottom:0;}
+  .file .ph{width:84px;height:84px;border-radius:12px;background:#eee center/cover;flex-shrink:0;}
+  .vide{color:var(--muted);font-size:14px;padding:12px 0;}
+  #login{max-width:420px;margin:30px auto;}
+</style>
+</head>
+<body class="sans-nav">
+<div id="bar"></div>
+<main class="ct">
+  <div id="login" class="hide">
+    <h1 style="margin-bottom:6px">Espace association</h1>
+    <p class="muted" style="margin-bottom:16px">Validation des commerces, modération, publicités et résultats du réseau.</p>
+    <form class="bloc" id="f" novalidate>
+      <label class="f"><span>Identifiant</span><input id="user" autocomplete="username"></label>
+      <label class="f" style="margin-top:12px"><span>Mot de passe</span><input id="pass" type="password" autocomplete="current-password"></label>
+      <button class="btn" type="submit" style="margin-top:16px"><span>Se connecter</span><span class="arr">›</span></button>
+      <p class="msg ko" id="err" role="alert" style="margin-top:10px"></p>
+    </form>
+  </div>
+
+  <div id="app" class="hide">
+    <div class="row" style="justify-content:space-between;flex-wrap:wrap">
+      <h1>Espace association</h1>
+      <button class="lien" id="sortir" type="button" style="width:auto;padding:6px 0">Se déconnecter</button>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Rubriques"></nav>
+    <section id="vue"></section>
+  </div>
+</main>
+
+<script>
+(function(){
+  var SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+  var SUPA_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
+  var CLE = 'fv_session_la-garenne';
+  var esc = HL.esc, fmt = new Intl.NumberFormat('fr-FR');
+  var D = null, STATS = null, onglet = HL.qs('o') || 'reseau', jours = 30;
+  document.getElementById('bar').innerHTML = HL.brandbar(false);
+
+  function rpc(nom, corps){
+    return fetch(SUPA_URL + '/rest/v1/rpc/' + nom, {
+      method: 'POST',
+      headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(corps || {})
+    }).then(function(r){ if (!r.ok) throw new Error('Service indisponible (' + r.status + ')'); return r.json(); });
+  }
+  function jeton(){ return HL.ls(CLE) || ''; }
+  function connexion(msg){
+    document.getElementById('app').classList.add('hide');
+    document.getElementById('login').classList.remove('hide');
+    if (msg) document.getElementById('err').textContent = msg;
+  }
+
+  /* ── Connexion : fv_admin_login, compte superadmin ou association ── */
+  document.getElementById('f').addEventListener('submit', function(e){
+    e.preventDefault();
+    var u = document.getElementById('user').value.trim(), p = document.getElementById('pass').value, err = document.getElementById('err');
+    if (!u || !p) { err.textContent = 'Renseignez votre identifiant et votre mot de passe.'; return; }
+    err.textContent = '';
+    rpc('fv_admin_login', { p_slug: 'la-garenne', p_username: u, p_password: p }).then(function(j){
+      if (!j || !j.ok || !j.token) { err.textContent = 'Identifiant ou mot de passe incorrect.'; return; }
+      if (j.role !== 'superadmin' && j.role !== 'association') { err.textContent = 'Ce compte n\'a pas accès à l\'espace association.'; return; }
+      HL.ls(CLE, j.token);
+      demarrer();
+    }).catch(function(){ err.textContent = 'Connexion impossible pour le moment.'; });
+  });
+  document.getElementById('sortir').addEventListener('click', function(){ HL.ls(CLE, null); connexion(''); });
+
+  function charger(){
+    return Promise.all([rpc('hl_admin_data', { p_token: jeton() }), rpc('hl_admin_stats', { p_token: jeton(), p_days: jours })]).then(function(r){
+      if (!r[0].ok || !r[1].ok) throw { session: true };
+      D = r[0]; STATS = r[1];
+    });
+  }
+  function demarrer(){
+    if (!jeton()) { connexion(''); return; }
+    charger().then(function(){
+      document.getElementById('login').classList.add('hide');
+      document.getElementById('app').classList.remove('hide');
+      rendre();
+    }).catch(function(e){
+      if (e && e.session) { HL.ls(CLE, null); connexion('Session expirée : reconnectez-vous.'); }
+      else connexion('Service indisponible pour le moment.');
+    });
+  }
+
+  /* ── Aides ── */
+  var STATUTS_C = { en_attente: 'En attente', valide: 'Validé', refuse: 'Refusé', suspendu: 'Suspendu' };
+  var STATUTS_M = { brouillon: 'Brouillon', a_moderer: 'À modérer', publiee: 'Publiée', refusee: 'Refusée' };
+  var STATUTS_P = { demande: 'Demande', programmee: 'Programmée', terminee: 'Terminée', annulee: 'Annulée' };
+  var CTAS = { offre: 'Voir l\'offre', itineraire: 'Itinéraire', reserver: 'Réserver', contacter: 'Contacter' };
+  function st(k, lib){ return '<span class="st ' + esc(k) + '">' + esc((lib || {})[k] || k || '—') + '</span>'; }
+  function n(x){ return fmt.format(x || 0); }
+  function dateFr(d){ return d ? new Date(d + 'T12:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'; }
+  function aujourdhui(){ var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function commerce(slug){ return D.commerces.filter(function(c){ return c.slug === slug; })[0]; }
+  function nom(slug){ var c = commerce(slug); return c ? (c.doc.nom || slug) : slug; }
+  function opts(map, v){ return Object.keys(map).map(function(k){ return '<option value="' + esc(k) + '"' + (k === v ? ' selected' : '') + '>' + esc(map[k]) + '</option>'; }).join(''); }
+  function champ(lab, k, v, type, extra){
+    if (type === 'textarea') return '<label class="f ' + (extra || '') + '"><span>' + lab + '</span><textarea data-k="' + k + '">' + esc(v == null ? '' : v) + '</textarea></label>';
+    if (type && type.select) return '<label class="f ' + (extra || '') + '"><span>' + lab + '</span><select data-k="' + k + '">' + opts(type.select, v) + '</select></label>';
+    if (type === 'checkbox') return '<label class="ck ' + (extra || '') + '"><input type="checkbox" data-k="' + k + '"' + (v ? ' checked' : '') + '> ' + lab + '</label>';
+    return '<label class="f ' + (extra || '') + '"><span>' + lab + '</span><input type="' + (type || 'text') + '" data-k="' + k + '" value="' + esc(v == null ? '' : v) + '"></label>';
+  }
+  // Relit un formulaire en objet : data-k="offre.titre", "videos.0.titre"…
+  function lire(racine){
+    var o = {};
+    Array.prototype.forEach.call(racine.querySelectorAll('[data-k]'), function(el){
+      var v = el.type === 'checkbox' ? el.checked : el.type === 'number' ? (el.value === '' ? null : Number(el.value)) : el.value.trim();
+      var parts = el.getAttribute('data-k').split('.'), cur = o;
+      parts.forEach(function(p, i){
+        var cle = /^\d+$/.test(p) ? +p : p;
+        if (i === parts.length - 1) cur[cle] = v;
+        else { if (cur[cle] == null) cur[cle] = /^\d+$/.test(parts[i+1]) ? [] : {}; cur = cur[cle]; }
+      });
+    });
+    return o;
+  }
+
+  /* ── File de modération : commerces en attente, offres et vidéos à modérer ── */
+  function aModerer(){
+    var l = [];
+    D.commerces.forEach(function(c){
+      if (c.statut === 'en_attente') l.push({ type: 'commerce', c: c });
+      if (c.doc.offre && c.doc.offre.statut === 'a_moderer') l.push({ type: 'offre', c: c });
+      (c.doc.videos || []).forEach(function(v, i){ if (v.statut === 'a_moderer') l.push({ type: 'video', c: c, v: v, i: i }); });
+    });
+    D.pubs.forEach(function(p){ if (p.statut === 'demande') l.push({ type: 'pub', p: p }); });
+    return l;
+  }
+
+  function rendre(){
+    var nb = aModerer().length;
+    var T = [['reseau','Réseau'],['valider','À valider'],['commerces','Commerces'],['pubs','Publicités'],['cdc','Coup de cœur']];
+    document.getElementById('tabs').innerHTML = T.map(function(t){
+      return '<button class="chip' + (t[0] === onglet ? ' on' : '') + '" data-o="' + t[0] + '">' + t[1] + (t[0] === 'valider' && nb ? '<span class="nb">' + nb + '</span>' : '') + '</button>';
+    }).join('');
+    ({ reseau: vueReseau, valider: vueValider, commerces: vueCommerces, pubs: vuePubs, cdc: vueCdc })[onglet]();
+  }
+  document.getElementById('tabs').addEventListener('click', function(e){
+    var b = e.target.closest('[data-o]'); if (!b) return;
+    onglet = b.getAttribute('data-o'); history.replaceState(null, '', '?o=' + onglet); rendre();
+  });
+  var vue = document.getElementById('vue');
+
+  /* ── Réseau : résultats de tout le pilote, chaque indicateur à part ── */
+  function vueReseau(){
+    var tot = { scans: 0, installations: 0, vues: 0, clics: 0, utilisations: 0, pub_affichages: 0, pub_clics: 0 };
+    STATS.commerces.forEach(function(c){ Object.keys(tot).forEach(function(k){ tot[k] += c[k] || 0; }); });
+    var actifs = D.commerces.filter(function(c){ return c.statut === 'valide'; }).length;
+    var parSlug = {}; STATS.commerces.forEach(function(c){ parSlug[c.slug] = c; });
+    vue.innerHTML =
+      '<div class="row" style="justify-content:space-between;flex-wrap:wrap;margin-bottom:12px"><h2>Résultats du réseau</h2><div class="chips" id="per">' +
+      [7,30,90].map(function(j){ return '<button class="chip' + (j === jours ? ' on' : '') + '" data-j="' + j + '">' + j + ' jours</button>'; }).join('') + '</div></div>' +
+      '<div class="grid">' +
+        tile('Habitants actifs', STATS.habitants, 'appareils ayant utilisé l\'appli') +
+        tile('Commerces actifs', actifs, 'validés et visibles') +
+        tile('Scans QR / NFC', tot.scans, 'dans tous les commerces') +
+        tile('Installations', tot.installations, 'attribuées au commerce scanné') +
+        tile('Vues vidéo', tot.vues, '≥ 3 s regardées') +
+        tile('Clics', tot.clics, 'sur les boutons d\'action') +
+        tile('Utilisations en caisse', tot.utilisations, 'offres validées au code') +
+        tile('Pubs : affichages / clics', tot.pub_affichages, n(tot.pub_clics) + ' clics') +
+      '</div>' +
+      '<p class="small muted" style="margin:10px 0 18px">Aucun taux n\'est calculé entre ces chiffres : ce ne sont pas les mêmes personnes d\'une étape à l\'autre. Une vue n\'est pas une vente.</p>' +
+      '<div class="tw"><table><thead><tr><th>Commerce</th><th>Statut</th><th class="n">Scans</th><th class="n">Install.</th><th class="n">Vues</th><th class="n">Clics</th><th class="n">Offres vues</th><th class="n">Utilisations</th><th></th></tr></thead><tbody>' +
+      D.commerces.map(function(c){
+        var s = parSlug[c.slug] || {};
+        return '<tr><td><b>' + esc(c.doc.nom || c.slug) + '</b></td><td>' + st(c.statut, STATUTS_C) + '</td>' +
+          ['scans','installations','vues','clics','offres_vues','utilisations'].map(function(k){ return '<td class="n">' + n(s[k]) + '</td>'; }).join('') +
+          '<td><a href="' + HL.BASE + 'pro/tableau.html?s=' + encodeURIComponent(c.slug) + '" target="_blank" rel="noopener" class="small">Détail ›</a></td></tr>';
+      }).join('') + '</tbody></table></div>';
+    document.getElementById('per').addEventListener('click', function(e){
+      var b = e.target.closest('[data-j]'); if (!b) return; jours = +b.getAttribute('data-j');
+      rpc('hl_admin_stats', { p_token: jeton(), p_days: jours }).then(function(j){ if (j.ok) { STATS = j; rendre(); } });
+    });
+  }
+  function tile(lb, v, ex){ return '<div class="tile"><p class="lb">' + lb + '</p><p class="v">' + n(v) + '</p><p class="ex">' + ex + '</p></div>'; }
+
+  /* ── À valider : contrôles avant diffusion ── */
+  function vueValider(){
+    var l = aModerer();
+    vue.innerHTML = '<h2 style="margin-bottom:12px">À valider</h2><div class="bloc" id="file">' +
+      (l.length ? l.map(itemHtml).join('') : '<p class="vide">Rien à valider pour le moment.</p>') + '</div>';
+    l.forEach(function(it, k){ if (it.type === 'video') controlerVideo(it.v, 'chk-' + k); });
+    document.getElementById('file').addEventListener('click', function(e){
+      var b = e.target.closest('[data-act]'); if (!b) return;
+      decider(l[+b.getAttribute('data-i')], b.getAttribute('data-act'), b);
+    });
+  }
+  function itemHtml(it, k){
+    var boutons = '<div class="bar" style="margin:8px 0 0"><button class="b2 ok" data-act="ok" data-i="' + k + '">' +
+      (it.type === 'commerce' ? 'Valider le commerce' : it.type === 'pub' ? 'Programmer' : 'Publier') + '</button>' +
+      '<button class="b2 ko" data-act="ko" data-i="' + k + '">Refuser</button></div>';
+    if (it.type === 'commerce') {
+      var c = it.c.doc;
+      return '<div class="file"><div class="ph" style="background-image:url(\'' + esc(c.photo || '') + '\')"></div><div style="flex:1"><span class="st en_attente">Nouveau commerce</span>' +
+        '<p style="margin-top:6px"><b>' + esc(c.nom) + '</b> · ' + esc((HL.CATEGORIES[c.categorie] || {}).label || c.categorie || '') + '</p>' +
+        '<p class="small muted">' + esc(c.adresse || 'Adresse manquante') + ' · ' + esc(c.tel || 'téléphone manquant') + '</p>' +
+        '<ul class="check">' + ok(!!c.adresse, 'Adresse renseignée') + ok(!!c.categorie, 'Catégorie choisie') + ok(/92250|garenne/i.test(c.adresse || ''), 'Situé à La Garenne-Colombes') + '</ul>' + boutons + '</div></div>';
+    }
+    if (it.type === 'offre') {
+      var o = it.c.doc.offre;
+      return '<div class="file"><div class="ph" style="background-image:url(\'' + esc(o.image || '') + '\')"></div><div style="flex:1"><span class="st a_moderer">Offre</span>' +
+        '<p style="margin-top:6px"><b>' + esc(o.titre || 'Sans titre') + '</b> · ' + esc(it.c.doc.nom) + '</p><p class="small muted">' + esc(o.conditions || 'Conditions manquantes') + '</p>' +
+        '<ul class="check">' + ok(!!o.conditions, 'Conditions d\'utilisation écrites') + ok(!!o.fin, 'Date de fin : ' + dateFr(o.fin)) + ok(!o.fin || o.fin >= aujourdhui(), 'Pas déjà expirée') + '</ul>' + boutons + '</div></div>';
+    }
+    if (it.type === 'video') {
+      var v = it.v;
+      return '<div class="file"><div class="ph" style="background-image:url(\'' + esc(v.affiche || '') + '\')"></div><div style="flex:1"><span class="st a_moderer">Vidéo</span>' +
+        '<p style="margin-top:6px"><b>' + esc(v.titre || 'Sans titre') + '</b> · ' + esc(it.c.doc.nom) + '</p>' +
+        (v.src ? '<p class="small"><a href="' + esc(v.src) + '" target="_blank" rel="noopener">Regarder la vidéo ›</a></p>' : '') +
+        '<ul class="check" id="chk-' + k + '">' +
+          ok(/\.mp4(\?|$)/i.test(v.src || ''), 'Format MP4') +
+          ok(v.duree && v.duree <= 90, 'Durée : ' + (v.duree ? v.duree + ' s' : 'non renseignée') + ' (90 s maximum conseillé)') +
+          '<li data-poids>… Poids en cours de vérification</li>' +
+          ok(!!v.sousTitres, 'Sous-titres fournis (recommandé)', true) +
+          ok(!!v.affiche, 'Image d\'affiche') +
+          ok(!!v.droits_ok, 'Le commerçant atteste détenir les droits sur les images, la musique et les personnes filmées') +
+          ok(!!v.fin, 'Date de fin : ' + dateFr(v.fin)) +
+          ok(!!CTAS[v.cta], 'Bouton d\'action : ' + (CTAS[v.cta] || 'aucun')) +
+        '</ul>' + boutons + '</div></div>';
+    }
+    var p = it.p;
+    return '<div class="file"><div class="ph" style="background-image:url(\'' + esc(p.doc.visuel || '') + '\')"></div><div style="flex:1"><span class="st demande">Demande de publicité</span>' +
+      '<p style="margin-top:6px"><b>' + (p.format === 'video' ? 'Vidéo sponsorisée' : 'Publicité fixe') + '</b> · ' + esc(nom(p.slug)) + '</p>' +
+      '<p class="small muted">Du ' + dateFr(p.debut) + ' au ' + dateFr(p.fin) + '</p>' +
+      '<ul class="check">' + ok(!!p.debut && !!p.fin, 'Dates de diffusion') + conflits(p).map(function(t){ return ok(false, t); }).join('') + '</ul>' + boutons + '</div></div>';
+  }
+  function ok(b, t, conseil){ return '<li>' + (b ? '✅' : conseil ? '💡' : '⚠️') + ' ' + esc(t) + '</li>'; }
+  // Poids du fichier : lu dans l'en-tête HTTP quand le serveur le donne.
+  function controlerVideo(v, id){
+    var li = function(){ var ul = document.getElementById(id); return ul && ul.querySelector('[data-poids]'); };
+    if (!v.src) { if (li()) li().textContent = '⚠️ Aucun fichier vidéo'; return; }
+    fetch(v.src, { method: 'HEAD' }).then(function(r){
+      var o = +r.headers.get('content-length'); var el = li(); if (!el) return;
+      if (!r.ok) el.textContent = '⚠️ Fichier introuvable (' + r.status + ')';
+      else if (!o) el.textContent = '💡 Poids inconnu (lien externe) : vérifier à la main';
+      else el.textContent = (o <= 20e6 ? '✅' : '⚠️') + ' Poids : ' + (o / 1e6).toFixed(1).replace('.', ',') + ' Mo (20 Mo maximum)';
+    }).catch(function(){ var el = li(); if (el) el.textContent = '💡 Poids non vérifiable (lien externe)'; });
+  }
+  function decider(it, act, bouton){
+    var motif = '';
+    if (act === 'ko') { motif = prompt('Motif du refus (visible par le commerçant) :') || ''; if (!motif) return; }
+    bouton.disabled = true;
+    var p;
+    if (it.type === 'pub') {
+      var pub = JSON.parse(JSON.stringify(it.p)); pub.statut = act === 'ok' ? 'programmee' : 'annulee';
+      if (motif) pub.doc.motif_refus = motif;
+      p = rpc('hl_admin_save_pub', { p_token: jeton(), p_pub: pub });
+    } else {
+      var c = it.c, doc = JSON.parse(JSON.stringify(c.doc)), statut = c.statut;
+      if (it.type === 'commerce') { statut = act === 'ok' ? 'valide' : 'refuse'; if (motif) doc.motif_refus = motif; }
+      if (it.type === 'offre') { doc.offre.statut = act === 'ok' ? 'publiee' : 'refusee'; if (motif) doc.offre.motif_refus = motif; }
+      if (it.type === 'video') { doc.videos[it.i].statut = act === 'ok' ? 'publiee' : 'refusee'; if (motif) doc.videos[it.i].motif_refus = motif; }
+      p = rpc('hl_admin_save_commerce', { p_token: jeton(), p_slug: c.slug, p_statut: statut, p_doc: doc });
+    }
+    p.then(function(j){
+      if (!j.ok) throw new Error(j.reason || 'refusé');
+      HL.toast(act === 'ok' ? 'Validé et publié' : 'Refusé');
+      return charger().then(rendre);
+    }).catch(function(e){ bouton.disabled = false; alert('Enregistrement impossible : ' + e.message); });
+  }
+
+  /* ── Commerces : liste et fiche éditable ── */
+  function vueCommerces(){
+    vue.innerHTML = '<div class="row" style="justify-content:space-between;margin-bottom:12px"><h2>Commerces</h2><button class="b2" id="nouveau">+ Ajouter un commerce</button></div>' +
+      '<div class="tw"><table><thead><tr><th>Commerce</th><th>Catégorie</th><th>Statut</th><th>Offre</th><th>Vidéos</th><th>Modifié</th></tr></thead><tbody>' +
+      D.commerces.map(function(c){
+        var v = c.doc.videos || [];
+        return '<tr class="clic" data-s="' + esc(c.slug) + '"><td><b>' + esc(c.doc.nom || c.slug) + '</b><br><span class="small muted">' + esc(c.slug) + (c.doc.demo ? ' · démo' : '') + '</span></td>' +
+          '<td>' + esc((HL.CATEGORIES[c.doc.categorie] || {}).label || '') + '</td><td>' + st(c.statut, STATUTS_C) + '</td>' +
+          '<td>' + (c.doc.offre ? st(c.doc.offre.statut, STATUTS_M) : '<span class="small muted">aucune</span>') + '</td>' +
+          '<td>' + v.length + (v.some(function(x){ return x.statut === 'a_moderer'; }) ? ' ' + st('a_moderer', STATUTS_M) : '') + '</td>' +
+          '<td class="small muted">' + new Date(c.updated_at).toLocaleDateString('fr-FR') + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+    vue.querySelector('tbody').addEventListener('click', function(e){ var tr = e.target.closest('[data-s]'); if (tr) editerCommerce(commerce(tr.getAttribute('data-s'))); });
+    document.getElementById('nouveau').addEventListener('click', function(){ editerCommerce(null); });
+  }
+
+  function editerCommerce(c){
+    var neuf = !c;
+    c = c || { slug: '', statut: 'en_attente', doc: { nom: '', categorie: 'restaurant', videos: [] } };
+    var d = c.doc, o = d.offre || null, cats = {}; Object.keys(HL.CATEGORIES).forEach(function(k){ cats[k] = HL.CATEGORIES[k].label; });
+    var TYPES = { portrait: 'Portrait', nouveaute: 'Nouveauté', evenement: 'Événement', offre: 'Offre' };
+    function videoHtml(v, i){
+      return '<div class="bloc" style="box-shadow:none;border:1px solid var(--line)"><div class="row" style="justify-content:space-between;margin-bottom:10px"><b>Vidéo ' + (i + 1) + '</b>' +
+        '<button class="b2 ko" type="button" data-suppr="' + i + '">Retirer</button></div><div class="form">' +
+        champ('Identifiant', 'videos.' + i + '.id', v.id) + champ('Statut', 'videos.' + i + '.statut', v.statut || 'a_moderer', { select: STATUTS_M }) +
+        champ('Type', 'videos.' + i + '.type', v.type || 'portrait', { select: TYPES }) + champ('Titre', 'videos.' + i + '.titre', v.titre) +
+        champ('Description', 'videos.' + i + '.description', v.description, 'textarea', 'large') +
+        champ('Lien du fichier MP4', 'videos.' + i + '.src', v.src, 'url', 'large') + champ('Image d\'affiche', 'videos.' + i + '.affiche', v.affiche) +
+        champ('Sous-titres (.vtt)', 'videos.' + i + '.sousTitres', v.sousTitres) + champ('Durée (s)', 'videos.' + i + '.duree', v.duree, 'number') +
+        champ('Bouton d\'action', 'videos.' + i + '.cta', v.cta || 'offre', { select: CTAS }) +
+        champ('Début de diffusion', 'videos.' + i + '.debut', v.debut, 'date') + champ('Fin de diffusion', 'videos.' + i + '.fin', v.fin, 'date') +
+        champ('Droits sur les images, la musique et les personnes filmées attestés par le commerçant', 'videos.' + i + '.droits_ok', v.droits_ok, 'checkbox', 'large') +
+        (v.motif_refus ? champ('Motif de refus', 'videos.' + i + '.motif_refus', v.motif_refus, null, 'large') : '') +
+        '</div></div>';
+    }
+    vue.innerHTML = '<button class="lien" id="retour" type="button" style="width:auto;padding:0 0 10px;text-align:left">‹ Tous les commerces</button>' +
+      '<h2 style="margin-bottom:12px">' + (neuf ? 'Nouveau commerce' : esc(d.nom)) + '</h2>' +
+      '<div id="manif"></div>' +
+      '<div id="ed">' +
+      '<div class="bloc"><h3>Fiche</h3><div class="form">' +
+        (neuf ? '<label class="f"><span>Identifiant (dans l\'adresse, ex. maison-dupont)</span><input id="slug" pattern="[a-z0-9-]+"></label>' : '') +
+        '<label class="f"><span>Statut</span><select id="statut">' + opts(STATUTS_C, c.statut) + '</select></label>' +
+        champ('Nom', 'nom', d.nom) + champ('Catégorie', 'categorie', d.categorie, { select: cats }) +
+        champ('Accroche', 'accroche', d.accroche, 'textarea', 'large') + champ('Adresse', 'adresse', d.adresse, null, 'large') +
+        champ('Quartier', 'quartier', d.quartier) + champ('Téléphone', 'tel', d.tel, 'tel') + champ('Horaires', 'horaires', d.horaires) +
+        champ('Photo (URL)', 'photo', d.photo) + champ('Lien de réservation', 'reservation', d.reservation, 'url') +
+        champ('Wallet Fidelavis (slug, facultatif)', 'wallet', d.wallet) +
+        champ('Note des avis', 'avis.note', d.avis && d.avis.note, 'number') + champ('Nombre d\'avis', 'avis.nombre', d.avis && d.avis.nombre, 'number') +
+        champ('Source des avis', 'avis.source', (d.avis && d.avis.source) || 'Google') +
+        champ('Notes internes de l\'association (jamais publiées)', 'notes_association', d.notes_association, 'textarea', 'large') +
+        champ('Commerce de démonstration', 'demo', d.demo, 'checkbox', 'large') +
+      '</div></div>' +
+      '<div class="bloc"><h3>Offre</h3><label class="ck" style="margin-bottom:10px"><input type="checkbox" id="aOffre"' + (o ? ' checked' : '') + '> Ce commerce propose une offre</label>' +
+        '<div class="form" id="offreF">' +
+        champ('Statut', 'offre.statut', (o && o.statut) || 'a_moderer', { select: STATUTS_M }) + champ('Titre', 'offre.titre', o && o.titre) +
+        champ('Conditions', 'offre.conditions', o && o.conditions, 'textarea', 'large') + champ('Image (URL)', 'offre.image', o && o.image) +
+        champ('Début', 'offre.debut', o && o.debut, 'date') + champ('Fin', 'offre.fin', o && o.fin, 'date') +
+        '</div></div>' +
+      '<div class="bloc"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">Vidéos</h3><button class="b2" type="button" id="ajVideo">+ Ajouter une vidéo</button></div>' +
+        '<div id="videos">' + (d.videos || []).map(videoHtml).join('') + '</div></div>' +
+      '</div>' +
+      '<div class="bar"><button class="btn" id="enreg" type="button"><span>Enregistrer</span><span class="arr">›</span></button><span class="msg" id="msg"></span>' +
+      (neuf ? '' : '<a class="b2" href="' + HL.BASE + 'commerce.html?s=' + encodeURIComponent(c.slug) + '" target="_blank" rel="noopener">Voir la fiche publique ›</a>') + '</div>';
+
+    function majOffre(){ document.getElementById('offreF').style.display = document.getElementById('aOffre').checked ? '' : 'none'; }
+    document.getElementById('aOffre').addEventListener('change', majOffre); majOffre();
+    document.getElementById('retour').addEventListener('click', vueCommerces);
+    var videos = JSON.parse(JSON.stringify(d.videos || []));
+    function relireVideos(){ var lu = lire(document.getElementById('videos')); return (lu.videos || []).filter(Boolean); }
+    document.getElementById('ajVideo').addEventListener('click', function(){
+      videos = relireVideos(); var s = (neuf ? (document.getElementById('slug').value || 'video') : c.slug);
+      videos.push({ id: s + '-' + Date.now().toString(36), statut: 'a_moderer', type: 'portrait', cta: 'offre' });
+      document.getElementById('videos').innerHTML = videos.map(videoHtml).join('');
+    });
+    document.getElementById('videos').addEventListener('click', function(e){
+      var b = e.target.closest('[data-suppr]'); if (!b) return;
+      if (!confirm('Retirer cette vidéo de la fiche ?')) return;
+      videos = relireVideos(); videos.splice(+b.getAttribute('data-suppr'), 1);
+      document.getElementById('videos').innerHTML = videos.map(videoHtml).join('');
+    });
+    if (!neuf) verifierManifeste(c.slug);
+
+    document.getElementById('enreg').addEventListener('click', function(){
+      var msg = document.getElementById('msg'), slug = neuf ? document.getElementById('slug').value.trim().toLowerCase() : c.slug;
+      if (!/^[a-z0-9-]{2,60}$/.test(slug)) { msg.className = 'msg ko'; msg.textContent = 'Identifiant : lettres minuscules, chiffres et tirets.'; return; }
+      if (neuf && commerce(slug)) { msg.className = 'msg ko'; msg.textContent = 'Cet identifiant existe déjà.'; return; }
+      var lu = lire(document.getElementById('ed'));
+      var doc = Object.assign({}, d, lu);
+      doc.videos = (lu.videos || []).filter(Boolean);
+      doc.offre = document.getElementById('aOffre').checked ? lu.offre : null;
+      if (doc.avis && !doc.avis.note) delete doc.avis;
+      if (!doc.nom) { msg.className = 'msg ko'; msg.textContent = 'Le nom est obligatoire.'; return; }
+      var ids = doc.videos.map(function(v){ return v.id; });
+      if (ids.some(function(x, i){ return !x || ids.indexOf(x) !== i; })) { msg.className = 'msg ko'; msg.textContent = 'Chaque vidéo doit avoir un identifiant unique.'; return; }
+      msg.className = 'msg'; msg.textContent = 'Enregistrement…';
+      rpc('hl_admin_save_commerce', { p_token: jeton(), p_slug: slug, p_statut: document.getElementById('statut').value, p_doc: doc }).then(function(j){
+        if (!j.ok) throw new Error(j.reason || 'refusé');
+        return charger().then(function(){ msg.className = 'msg ok'; msg.textContent = 'Enregistré. Visible dans l\'appli au prochain chargement.'; if (neuf) editerCommerce(commerce(slug)); });
+      }).catch(function(e){ msg.className = 'msg ko'; msg.textContent = 'Enregistrement impossible : ' + e.message; });
+    });
+  }
+  // Sans son fichier d'installation, l'appli installée depuis ce commerce
+  // s'ouvrirait sur l'accueil au lieu de sa vidéo (fichier à ajouter au dépôt).
+  function verifierManifeste(slug){
+    fetch(HL.BASE + 'manifests/' + encodeURIComponent(slug) + '.json', { method: 'HEAD', cache: 'no-store' }).then(function(r){
+      if (!r.ok) document.getElementById('manif').innerHTML = '<p class="alerte">Fichier d\'installation <b>manifests/' + esc(slug) + '.json</b> absent du site : l\'appli installée depuis son QR code s\'ouvrira sur l\'accueil au lieu de sa vidéo. Il faut l\'ajouter au dépôt avant d\'imprimer son QR code.</p>';
+    });
+  }
+
+  /* ── Publicités : programmation, relais, chevauchements ── */
+  function conflits(p){
+    if (p.format !== 'fixe' || !p.debut || !p.fin) return [];
+    return D.pubs.filter(function(q){
+      return q.id !== p.id && q.format === 'fixe' && q.emplacement === p.emplacement && q.statut === 'programmee' && q.debut && q.fin && q.debut <= p.fin && q.fin >= p.debut;
+    }).map(function(q){ return 'Chevauche « ' + nom(q.slug) + ' » (' + dateFr(q.debut) + ' → ' + dateFr(q.fin) + ') : une seule s\'affiche à la fois, celle qui commence en premier.'; });
+  }
+  function etat(p){
+    var j = aujourdhui();
+    if (p.statut !== 'programmee') return st(p.statut, STATUTS_P);
+    if (p.fin && p.fin < j) return '<span class="st">Terminée</span>';
+    if (p.debut && p.debut > j) return '<span class="st demande">À venir</span>';
+    return '<span class="st programmee">En ligne</span>';
+  }
+  function vuePubs(){
+    var l = D.pubs.slice().sort(function(a,b){ return (b.debut || '').localeCompare(a.debut || ''); });
+    vue.innerHTML = '<div class="row" style="justify-content:space-between;margin-bottom:12px"><h2>Publicités</h2><button class="b2" id="nouvelle">+ Programmer une publicité</button></div>' +
+      '<p class="small muted" style="margin-bottom:12px">Accueil : une publicité fixe à la fois, en tête des offres de la semaine. Découvrir : une vidéo sponsorisée au plus pour cinq vidéos. À la fin d\'une publicité, la suivante prend le relais ; sans publicité, le Coup de cœur s\'affiche.</p>' +
+      '<div class="tw"><table><thead><tr><th>Commerce</th><th>Format</th><th>Diffusion</th><th>État</th><th>Alerte</th></tr></thead><tbody>' +
+      (l.length ? l.map(function(p){
+        var cf = conflits(p);
+        return '<tr class="clic" data-p="' + esc(p.id) + '"><td><b>' + esc(nom(p.slug)) + '</b><br><span class="small muted">' + esc(p.id) + '</span></td>' +
+          '<td>' + (p.format === 'video' ? 'Vidéo sponsorisée' : 'Publicité fixe') + (p.doc.cta === 'offre' ? '<br><span class="small muted">présente l\'offre</span>' : '') + '</td>' +
+          '<td>' + dateFr(p.debut) + ' → ' + dateFr(p.fin) + '</td><td>' + etat(p) + '</td><td>' + (cf.length ? '⚠️ chevauchement' : '') + '</td></tr>';
+      }).join('') : '<tr><td colspan="5" class="vide">Aucune publicité.</td></tr>') + '</tbody></table></div>';
+    vue.querySelector('tbody').addEventListener('click', function(e){ var tr = e.target.closest('[data-p]'); if (tr) editerPub(D.pubs.filter(function(p){ return p.id === tr.getAttribute('data-p'); })[0]); });
+    document.getElementById('nouvelle').addEventListener('click', function(){ editerPub(null); });
+  }
+  function editerPub(p){
+    var neuf = !p;
+    p = p || { id: '', slug: (D.commerces[0] || {}).slug, format: 'fixe', statut: 'programmee', emplacement: 'accueil', debut: aujourdhui(), fin: '', doc: { cta: 'offre' } };
+    var coms = {}; D.commerces.filter(function(c){ return c.statut === 'valide'; }).forEach(function(c){ coms[c.slug] = c.doc.nom; });
+    vue.innerHTML = '<button class="lien" id="retour" type="button" style="width:auto;padding:0 0 10px;text-align:left">‹ Toutes les publicités</button>' +
+      '<h2 style="margin-bottom:12px">' + (neuf ? 'Nouvelle publicité' : 'Publicité · ' + esc(nom(p.slug))) + '</h2><div id="alertesPub"></div>' +
+      '<div class="bloc" id="ed"><div class="form">' +
+        champ('Commerce', 'slug', p.slug, { select: coms }) +
+        champ('Format', 'format', p.format, { select: { fixe: 'Publicité fixe (accueil)', video: 'Vidéo sponsorisée (Découvrir et À la une)' } }) +
+        champ('Statut', 'statut', p.statut, { select: STATUTS_P }) +
+        champ('Début', 'debut', p.debut, 'date') + champ('Fin', 'fin', p.fin, 'date') +
+        champ('Bouton d\'action', 'doc.cta', p.doc.cta, { select: CTAS }) +
+        '<div class="large" id="partFixe"><div class="form">' +
+          '<p class="small muted large">Avec le bouton « Voir l\'offre », la carte présente l\'offre publiée du commerce (titre, validité) : laissez titre et texte vides.</p>' +
+          champ('Visuel (URL)', 'doc.visuel', p.doc.visuel, null, 'large') + champ('Titre', 'doc.titre', p.doc.titre) + champ('Texte court', 'doc.texte', p.doc.texte) +
+        '</div></div>' +
+        '<div class="large" id="partVideo"><label class="f"><span>Vidéo publiée du commerce</span><select data-k="doc.videoId" id="videoId"></select></label></div>' +
+      '</div></div>' +
+      '<div class="bar"><button class="btn" id="enreg" type="button"><span>Enregistrer</span><span class="arr">›</span></button><span class="msg" id="msg"></span>' +
+      (neuf ? '' : '<button class="b2 ko" id="suppr" type="button">Supprimer</button>') + '</div>';
+    var ed = document.getElementById('ed');
+    function maj(){
+      var lu = lire(ed), c = commerce(lu.slug);
+      document.getElementById('partFixe').style.display = lu.format === 'fixe' ? '' : 'none';
+      document.getElementById('partVideo').style.display = lu.format === 'video' ? '' : 'none';
+      var vids = ((c && c.doc.videos) || []).filter(function(v){ return v.statut === 'publiee'; });
+      var sel = document.getElementById('videoId'), cur = sel.value || p.doc.videoId;
+      sel.innerHTML = vids.length ? vids.map(function(v){ return '<option value="' + esc(v.id) + '"' + (v.id === cur ? ' selected' : '') + '>' + esc(v.titre) + '</option>'; }).join('') : '<option value="">Aucune vidéo publiée</option>';
+      var al = [];
+      if (lu.format === 'fixe' && lu.doc.cta === 'offre' && !(c && c.doc.offre && c.doc.offre.statut === 'publiee')) al.push('Ce commerce n\'a pas d\'offre publiée : la carte ne s\'affichera pas.');
+      if (lu.format === 'fixe' && lu.doc.cta === 'offre' && c && c.doc.offre && c.doc.offre.fin && lu.fin && c.doc.offre.fin < lu.fin) al.push('L\'offre se termine le ' + dateFr(c.doc.offre.fin) + ', avant la publicité : la carte disparaîtra à cette date.');
+      if (lu.format === 'video' && !vids.length) al.push('Ce commerce n\'a aucune vidéo publiée.');
+      al = al.concat(conflits({ id: p.id, format: lu.format, emplacement: lu.format === 'video' ? 'decouvrir' : 'accueil', debut: lu.debut, fin: lu.fin }));
+      document.getElementById('alertesPub').innerHTML = al.map(function(t){ return '<p class="alerte">' + esc(t) + '</p>'; }).join('');
+    }
+    ed.addEventListener('change', maj); maj();
+    document.getElementById('retour').addEventListener('click', vuePubs);
+    if (!neuf) document.getElementById('suppr').addEventListener('click', function(){
+      if (!confirm('Supprimer définitivement cette publicité ? Ses statistiques restent comptées.')) return;
+      rpc('hl_admin_delete_pub', { p_token: jeton(), p_id: p.id }).then(function(){ return charger(); }).then(vuePubs);
+    });
+    document.getElementById('enreg').addEventListener('click', function(){
+      var msg = document.getElementById('msg'), lu = lire(ed);
+      if (!lu.debut || !lu.fin) { msg.className = 'msg ko'; msg.textContent = 'Indiquez les dates de début et de fin.'; return; }
+      if (lu.fin < lu.debut) { msg.className = 'msg ko'; msg.textContent = 'La fin est avant le début.'; return; }
+      var pub = { id: p.id || ('pub-' + lu.slug + '-' + lu.debut), slug: lu.slug, format: lu.format, statut: lu.statut,
+        emplacement: lu.format === 'video' ? 'decouvrir' : 'accueil', debut: lu.debut, fin: lu.fin,
+        doc: Object.assign({}, p.doc, lu.doc) };
+      if (pub.format === 'video') { delete pub.doc.visuel; delete pub.doc.titre; delete pub.doc.texte; if (!pub.doc.videoId) { msg.className = 'msg ko'; msg.textContent = 'Choisissez une vidéo publiée.'; return; } }
+      else delete pub.doc.videoId;
+      msg.className = 'msg'; msg.textContent = 'Enregistrement…';
+      rpc('hl_admin_save_pub', { p_token: jeton(), p_pub: pub }).then(function(j){
+        if (!j.ok) throw new Error(j.reason || 'refusé');
+        return charger().then(function(){ msg.className = 'msg ok'; msg.textContent = 'Enregistrée.'; p = D.pubs.filter(function(x){ return x.id === pub.id; })[0]; });
+      }).catch(function(e){ msg.className = 'msg ko'; msg.textContent = 'Enregistrement impossible : ' + e.message; });
+    });
+  }
+
+  /* ── Coup de cœur : l'emplacement quand aucune publicité n'est en ligne ── */
+  function vueCdc(){
+    var cur = ((D.reglages || {}).coup_de_coeur || {}).slug || '';
+    var j = aujourdhui();
+    var l = D.commerces.filter(function(c){ return c.statut === 'valide' && c.doc.offre && c.doc.offre.statut === 'publiee' && (!c.doc.offre.fin || c.doc.offre.fin >= j); });
+    vue.innerHTML = '<h2 style="margin-bottom:8px">Coup de cœur de la semaine</h2>' +
+      '<p class="muted" style="margin-bottom:14px">Quand aucune publicité n\'est en ligne, la grande carte en tête des offres présente ce commerce, avec un badge « Coup de cœur » et sans mention payante.</p>' +
+      '<div class="bloc">' +
+      '<label class="ck" style="padding:8px 0"><input type="radio" name="cdc" value=""' + (!cur ? ' checked' : '') + '> Automatique : l\'offre qui se termine le plus tôt</label>' +
+      l.map(function(c){ return '<label class="ck" style="padding:8px 0"><input type="radio" name="cdc" value="' + esc(c.slug) + '"' + (c.slug === cur ? ' checked' : '') + '> ' + esc(c.doc.nom) + ' · <span class="muted" style="font-weight:400">' + esc(c.doc.offre.titre) + '</span></label>'; }).join('') +
+      '<div class="bar"><button class="btn" id="enreg" type="button"><span>Enregistrer</span><span class="arr">›</span></button><span class="msg" id="msg"></span></div></div>';
+    document.getElementById('enreg').addEventListener('click', function(){
+      var v = (vue.querySelector('input[name=cdc]:checked') || {}).value || '', msg = document.getElementById('msg');
+      rpc('hl_admin_set_reglage', { p_token: jeton(), p_cle: 'coup_de_coeur', p_valeur: { slug: v } }).then(function(r){
+        if (!r.ok) throw new Error(r.reason);
+        return charger().then(function(){ msg.className = 'msg ok'; msg.textContent = 'Enregistré.'; });
+      }).catch(function(e){ msg.className = 'msg ko'; msg.textContent = 'Enregistrement impossible : ' + e.message; });
+    });
+  }
+
+  demarrer();
+})();
+</script>
+</body>
+</html>
