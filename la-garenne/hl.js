@@ -66,9 +66,15 @@
     } catch (e) { return null; }
   }
   function jour() { return new Date().toISOString().slice(0, 10); }
+  // Date du jour à l'heure du téléphone (et non UTC) : une offre qui finit
+  // le 4 disparaît à minuit à La Garenne, pas à 2 h du matin.
+  function jourLocal() {
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
   function actif(o) {
     // Période de diffusion : bornes incluses, absentes = pas de borne.
-    var j = jour();
+    var j = jourLocal();
     return (!o.debut || o.debut <= j) && (!o.fin || o.fin >= j);
   }
   function mmss(s) {
@@ -204,7 +210,7 @@
           }
         });
         pubs = pubs.filter(function (p) { return p.format !== "video" || p.video; });
-        return { commerces: list, parSlug: parSlug, pubs: pubs, ville: (res[0] && res[0].ville) || "La Garenne-Colombes" };
+        return { commerces: list, parSlug: parSlug, pubs: pubs, coupDeCoeur: ((res[1] && res[1].coup_de_coeur) || {}).slug || "", ville: (res[0] && res[0].ville) || "La Garenne-Colombes" };
       });
     });
     return _data;
@@ -348,15 +354,40 @@
   }
 
   /* ── Publicité fixe ── */
+  /* Carte sponsorisée : grande photo, badge très visible, puis soit l'offre
+     publiée du commerce (cta "offre"), soit un titre et un texte libres. */
   function pubFixeHtml(p, contexte) {
     var c = p.commerce, a = cta(p.cta, c, p.url);
-    return '<a class="pub" id="pub-' + esc(p.id) + '" href="' + esc(a.href) + '"' + (a.ext ? ' target="_blank" rel="noopener"' : "") +
+    var o = p.cta === "offre" ? c.offre : null;
+    var validite = "";
+    if (o) {
+      var d = dureeOffre(o);
+      var avantDimanche = (7 - new Date().getDay()) % 7, fin = new Date(o.fin + "T12:00:00"), auj = new Date(); auj.setHours(12, 0, 0, 0);
+      validite = o.fin && Math.round((fin - auj) / 86400000) <= avantDimanche ? "Cette semaine seulement" : (d ? d.texte : "");
+    }
+    return '<a class="pub' + (o ? " premium" : "") + '" id="pub-' + esc(p.id) + '" href="' + esc(a.href) + '"' + (a.ext ? ' target="_blank" rel="noopener"' : "") +
       ' data-hl="pub_clic" data-slug="' + esc(c.slug) + '" data-src="' + esc(p.id + ":" + contexte) + '">' +
-      '<div class="vis" style="background-image:url(\'' + esc(p.visuel) + '\')"></div>' +
-      '<div class="bd"><span class="tag sponso">Sponsorisé</span>' +
-      '<p class="t">' + esc(p.titre) + '</p><p class="small muted">' + esc(p.texte) + "</p>" +
+      '<div class="vis" style="background-image:url(\'' + esc(p.visuel || (o && o.image) || c.photo || "") + '\')"><span class="tag sponso">Sponsorisé</span></div>' +
+      '<div class="bd">' +
+      (o
+        ? '<p class="t">' + esc(o.titre) + '</p><p class="nm">' + esc(c.nom) + "</p>" + (validite ? '<span class="duree">' + esc(validite) + "</span>" : "")
+        : '<p class="t">' + esc(p.titre) + '</p><p class="small muted">' + esc(p.texte) + "</p>") +
       '<span class="go">' + esc(a.label) + " ›</span></div></a>" +
       '<p class="pub-legende">Encart payé par ' + esc(c.nom) + "</p>";
+  }
+
+  /* Coup de cœur : l'emplacement de la carte sponsorisée quand aucune pub
+     n'est active. Même grande carte, mais badge « Coup de cœur », pas de
+     mention payante : un choix gratuit de l'association, jamais une pub. */
+  function coupDeCoeurHtml(c, contexte) {
+    var o = c.offre, d = dureeOffre(o);
+    return '<a class="pub premium cdc" href="' + BASE + "offre.html?s=" + encodeURIComponent(c.slug) + '"' +
+      ' data-hl="coup_de_coeur_clic" data-slug="' + esc(c.slug) + '" data-src="' + esc(contexte) + '">' +
+      '<div class="vis" style="background-image:url(\'' + esc(o.image || c.photo || "") + '\')"><span class="tag cdc">♥ Coup de cœur</span></div>' +
+      '<div class="bd"><p class="t">' + esc(o.titre) + '</p><p class="nm">' + esc(c.nom) + "</p>" +
+      (d ? '<span class="duree">' + esc(d.texte) + "</span>" : "") +
+      '<span class="go">Voir l\'offre ›</span></div></a>' +
+      '<p class="pub-legende">Choisi par l\'association des commerçants</p>';
   }
 
   /* ── Carte vidéo (rail / fil) ── */
@@ -398,7 +429,8 @@
   function recent(o, jours) {
     if (!o || !o.debut) return false;
     var lim = new Date(); lim.setDate(lim.getDate() - ((jours || 7) - 1));
-    return o.debut >= lim.toISOString().slice(0, 10);
+    var l = lim.getFullYear() + "-" + String(lim.getMonth() + 1).padStart(2, "0") + "-" + String(lim.getDate()).padStart(2, "0");
+    return o.debut >= l;
   }
   function offreHtml(c, src) {
     var d = dureeOffre(c.offre);
@@ -476,7 +508,7 @@
     charger: charger, cta: cta, ctaHtml: ctaHtml, player: player,
     impression: impression, pubFixeHtml: pubFixeHtml, vcardHtml: vcardHtml, commerceRowHtml: commerceRowHtml,
     favoris: favoris, basculerFavori: basculerFavori, notifs: notifs,
-    dureeOffre: dureeOffre, recent: recent, offreHtml: offreHtml,
+    dureeOffre: dureeOffre, recent: recent, offreHtml: offreHtml, coupDeCoeurHtml: coupDeCoeurHtml,
     toast: toast, nav: nav, brandbar: brandbar
   };
 })();

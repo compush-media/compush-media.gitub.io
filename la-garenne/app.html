@@ -57,11 +57,10 @@
   <div class="semaine" id="semaine"></div>
 
   <div class="sec-title"><h2>Offres de la semaine</h2><a href="/la-garenne/offres.html">Toutes</a></div>
+  <!-- Le commerce sponsorisé paie pour la première place et la plus grande
+       surface de la section : sa carte passe avant les offres standards. -->
+  <div id="pub" style="margin-bottom:14px"></div>
   <div class="clist" id="offres"></div>
-
-  <!-- Encart sponsorisé : un seul, juste après les offres (jamais avant) pour
-       une vraie visibilité du commerçant qui paie. -->
-  <div id="pub" style="margin-top:22px"></div>
 
   <div class="sec-title"><h2>À la une cette semaine</h2><a href="/la-garenne/decouvrir.html">Tout voir</a></div>
   <div class="rail" id="rail"></div>
@@ -150,7 +149,26 @@
     // Offres actives, celles qui finissent le plus tôt d'abord
     var offres = d.commerces.filter(function(c){ return c.offre && HL.dureeOffre(c.offre); })
       .sort(function(a,b){ return (a.offre.fin || '9999').localeCompare(b.offre.fin || '9999'); });
-    document.getElementById('offres').innerHTML = offres.slice(0,3).map(function(c){ return HL.offreHtml(c, 'accueil'); }).join('');
+    // Emplacement en tête des offres :
+    // 1. la pub active qui a commencé en premier (les suivantes prennent le
+    //    relais d'elles-mêmes à leur date de début) ;
+    // 2. sinon le « Coup de cœur » de l'association, jamais marqué sponsorisé.
+    var pubF = d.pubs.filter(function(p){
+      return p.format === 'fixe' && p.emplacement === 'accueil' && (p.cta !== 'offre' || p.commerce.offre);
+    }).sort(function(a,b){ return (a.debut || '').localeCompare(b.debut || '') || (a.fin || '').localeCompare(b.fin || ''); })[0];
+    var enTete = null;   // commerce dont l'offre occupe déjà la grande carte
+    if (pubF) {
+      document.getElementById('pub').innerHTML = HL.pubFixeHtml(pubF, 'accueil');
+      HL.impression(document.getElementById('pub-' + pubF.id), pubF, 'accueil');
+      if (pubF.cta === 'offre') enTete = pubF.slug;
+    } else if (offres.length) {
+      var choisi = d.parSlug[d.coupDeCoeur];
+      var cdc = choisi && choisi.offre && HL.dureeOffre(choisi.offre) ? choisi : offres[0];
+      document.getElementById('pub').innerHTML = HL.coupDeCoeurHtml(cdc, 'accueil');
+      enTete = cdc.slug;
+    }
+    var standards = offres.filter(function(c){ return c.slug !== enTete; });
+    document.getElementById('offres').innerHTML = standards.slice(0,3).map(function(c){ return HL.offreHtml(c, 'accueil'); }).join('');
 
     // Cette semaine à La Garenne : ce qui est nouveau depuis 7 jours
     var nouvelles = videos.filter(function(v){ return HL.recent(v); }).length;
@@ -160,12 +178,6 @@
       (nouvelles ? pl(nouvelles, 'nouvelle vidéo', 'nouvelles vidéos') : pl(videos.length, 'vidéo à découvrir', 'vidéos à découvrir')) +
       ' · ' + pl(offres.length, 'offre', 'offres') + '</p></div>';
 
-    // Encart sponsorisé : un seul à la fois
-    var pubF = d.pubs.filter(function(p){ return p.format === 'fixe' && p.emplacement === 'accueil'; })[0];
-    if (pubF) {
-      document.getElementById('pub').innerHTML = HL.pubFixeHtml(pubF, 'accueil');
-      HL.impression(document.getElementById('pub-' + pubF.id), pubF, 'accueil');
-    }
   });
 })();
 </script>
