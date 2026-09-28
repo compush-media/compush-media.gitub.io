@@ -98,7 +98,8 @@
   function n(x){ return fmt.format(Math.round(x || 0)); }
 
   function versConnexion(){ location.replace(HL.BASE + 'pro/connexion.html?s=' + encodeURIComponent(slug)); }
-  var jeton = HL.ls('fv_session_' + slug);
+  // Session du commerce, ou à défaut celle de l'espace association (tous les commerces du pilote).
+  var jeton = HL.ls('fv_session_' + slug) || HL.ls('fv_session_la-garenne');
   if (!slug) { document.getElementById('nom').textContent = 'Lien incomplet'; return; }
   if (!APERCU && !jeton) { versConnexion(); return; }
   if (APERCU) document.getElementById('apercu').innerHTML = '<p class="note" style="background:#EEF0F6;color:#4A5070">Aperçu avec des chiffres fictifs. Connectez-vous pour voir les vôtres.</p>';

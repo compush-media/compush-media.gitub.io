@@ -59,7 +59,7 @@
 <main class="ct">
   <div id="login" class="hide">
     <h1 style="margin-bottom:6px">Espace association</h1>
-    <p class="muted" style="margin-bottom:16px">Validation des commerces, modération, publicités et résultats du réseau.</p>
+    <p class="muted" style="margin-bottom:16px">Compte association ou superadmin. Validation des commerces, modération, publicités et résultats du réseau.</p>
     <form class="bloc" id="f" novalidate>
       <label class="f"><span>Identifiant</span><input id="user" autocomplete="username"></label>
       <label class="f" style="margin-top:12px"><span>Mot de passe</span><input id="pass" type="password" autocomplete="current-password"></label>
@@ -107,7 +107,12 @@
     var u = document.getElementById('user').value.trim(), p = document.getElementById('pass').value, err = document.getElementById('err');
     if (!u || !p) { err.textContent = 'Renseignez votre identifiant et votre mot de passe.'; return; }
     err.textContent = '';
-    rpc('fv_admin_login', { p_slug: 'la-garenne', p_username: u, p_password: p }).then(function(j){
+    // Comptes « association » d'abord (fv_private.hl_comptes), puis les
+    // admins Fidelavis : seul le superadmin y a accès à cet espace.
+    rpc('hl_asso_login', { p_username: u, p_password: p }).then(function(j){
+      if (j && j.ok && j.token) return j;
+      return rpc('fv_admin_login', { p_slug: 'la-garenne', p_username: u, p_password: p });
+    }).then(function(j){
       if (!j || !j.ok || !j.token) { err.textContent = 'Identifiant ou mot de passe incorrect.'; return; }
       if (j.role !== 'superadmin' && j.role !== 'association') { err.textContent = 'Ce compte n\'a pas accès à l\'espace association.'; return; }
       HL.ls(CLE, j.token);
@@ -182,10 +187,12 @@
   function rendre(){
     var nb = aModerer().length;
     var T = [['reseau','Réseau'],['valider','À valider'],['commerces','Commerces'],['pubs','Publicités'],['cdc','Coup de cœur']];
+    if (D.role === 'superadmin') T.push(['comptes','Comptes']);
+    if (onglet === 'comptes' && D.role !== 'superadmin') onglet = 'reseau';
     document.getElementById('tabs').innerHTML = T.map(function(t){
       return '<button class="chip' + (t[0] === onglet ? ' on' : '') + '" data-o="' + t[0] + '">' + t[1] + (t[0] === 'valider' && nb ? '<span class="nb">' + nb + '</span>' : '') + '</button>';
     }).join('');
-    ({ reseau: vueReseau, valider: vueValider, commerces: vueCommerces, pubs: vuePubs, cdc: vueCdc })[onglet]();
+    ({ reseau: vueReseau, valider: vueValider, commerces: vueCommerces, pubs: vuePubs, cdc: vueCdc, comptes: vueComptes })[onglet]();
   }
   document.getElementById('tabs').addEventListener('click', function(e){
     var b = e.target.closest('[data-o]'); if (!b) return;
@@ -524,6 +531,52 @@
         if (!r.ok) throw new Error(r.reason);
         return charger().then(function(){ msg.className = 'msg ok'; msg.textContent = 'Enregistré.'; });
       }).catch(function(e){ msg.className = 'msg ko'; msg.textContent = 'Enregistrement impossible : ' + e.message; });
+    });
+  }
+
+  /* ── Comptes « association » : créés par le superadmin, qui tape lui-même
+     le mot de passe. Ils n'ouvrent que cet espace et les tableaux de bord
+     des commerces du pilote, jamais les espaces admin des restaurants. ── */
+  function vueComptes(){
+    vue.innerHTML = '<h2 style="margin-bottom:8px">Comptes association</h2>' +
+      '<p class="muted" style="margin-bottom:14px">Pour les membres de l\'association. Ces comptes ouvrent cet espace et les tableaux de bord des commerces du pilote, jamais les espaces admin des restaurants ni vos autres outils Fidelavis.</p>' +
+      '<div class="tw" style="margin-bottom:16px"><table><thead><tr><th>Identifiant</th><th>État</th><th>Dernière connexion</th><th></th></tr></thead><tbody id="lc"><tr><td colspan="4" class="vide">Chargement…</td></tr></tbody></table></div>' +
+      '<div class="bloc"><h3 id="fcTitre">Nouveau compte</h3><div class="form">' +
+        '<label class="f"><span>Identifiant (ex. asso.garenne)</span><input id="cu" autocomplete="off" autocapitalize="none"></label>' +
+        '<label class="f"><span>Mot de passe (10 caractères minimum)</span><input id="cp" type="password" autocomplete="new-password"></label>' +
+        '<label class="f"><span>Confirmer le mot de passe</span><input id="cp2" type="password" autocomplete="new-password"></label>' +
+        '<label class="ck" style="align-self:end;padding-bottom:10px"><input type="checkbox" id="ca" checked> Compte actif</label>' +
+      '</div><p class="small muted" style="margin-top:8px">Pour un compte existant, laissez le mot de passe vide pour le garder.</p>' +
+      '<div class="bar"><button class="btn" id="enreg" type="button"><span>Enregistrer le compte</span><span class="arr">›</span></button><span class="msg" id="msg"></span></div></div>';
+    function liste(){
+      rpc('hl_admin_comptes', { p_token: jeton() }).then(function(j){
+        var lc = document.getElementById('lc'); if (!lc) return;
+        if (!j.ok) { lc.innerHTML = '<tr><td colspan="4" class="vide">' + esc(j.reason) + '</td></tr>'; return; }
+        lc.innerHTML = j.comptes.length ? j.comptes.map(function(c){
+          return '<tr><td><b>' + esc(c.username) + '</b></td><td>' + (c.is_active ? '<span class="st valide">Actif</span>' : '<span class="st suspendu">Désactivé</span>') + '</td>' +
+            '<td class="small muted">' + (c.last_login_at ? new Date(c.last_login_at).toLocaleString('fr-FR') : 'jamais') + '</td>' +
+            '<td><button class="b2" data-u="' + esc(c.username) + '" data-a="' + (c.is_active ? '1' : '0') + '">Modifier</button></td></tr>';
+        }).join('') : '<tr><td colspan="4" class="vide">Aucun compte pour le moment.</td></tr>';
+      });
+    }
+    liste();
+    document.getElementById('lc').addEventListener('click', function(e){
+      var b = e.target.closest('[data-u]'); if (!b) return;
+      document.getElementById('cu').value = b.getAttribute('data-u');
+      document.getElementById('ca').checked = b.getAttribute('data-a') === '1';
+      document.getElementById('fcTitre').textContent = 'Modifier « ' + b.getAttribute('data-u') + ' »';
+      document.getElementById('cp').focus();
+    });
+    document.getElementById('enreg').addEventListener('click', function(){
+      var u = document.getElementById('cu').value.trim().toLowerCase(), p1 = document.getElementById('cp').value, p2 = document.getElementById('cp2').value, msg = document.getElementById('msg');
+      if (p1 !== p2) { msg.className = 'msg ko'; msg.textContent = 'Les deux mots de passe ne sont pas identiques.'; return; }
+      msg.className = 'msg'; msg.textContent = 'Enregistrement…';
+      rpc('hl_admin_save_compte', { p_token: jeton(), p_username: u, p_password: p1 || null, p_actif: document.getElementById('ca').checked }).then(function(j){
+        if (!j.ok) throw new Error(j.reason || 'refusé');
+        document.getElementById('cp').value = ''; document.getElementById('cp2').value = '';
+        msg.className = 'msg ok'; msg.textContent = 'Compte « ' + u + ' » enregistré. Transmettez le mot de passe à la personne de vive voix, pas par e-mail.';
+        liste();
+      }).catch(function(e){ msg.className = 'msg ko'; msg.textContent = 'Impossible : ' + e.message; });
     });
   }
 
