@@ -182,6 +182,9 @@
       if (c.statut === 'en_attente') l.push({ type: 'commerce', c: c });
       if (c.doc.offre && c.doc.offre.statut === 'a_moderer') l.push({ type: 'offre', c: c });
       (c.doc.videos || []).forEach(function(v, i){ if (v.statut === 'a_moderer') l.push({ type: 'video', c: c, v: v, i: i }); });
+      var pr = c.doc.propositions || {};
+      if (pr.offre && pr.offre.statut === 'a_moderer') l.push({ type: 'prop_offre', c: c });
+      (pr.videos || []).forEach(function(v){ if (v.statut === 'a_moderer') l.push({ type: 'prop_video', c: c, v: v }); });
     });
     if (ville()) D.pubs.forEach(function(p){ if (p.statut === 'demande') l.push({ type: 'pub', p: p }); });
     return l;
@@ -252,7 +255,7 @@
     var l = aModerer();
     vue.innerHTML = '<h2 style="margin-bottom:12px">À valider</h2><div class="bloc" id="file">' +
       (l.length ? l.map(itemHtml).join('') : '<p class="vide">Rien à valider pour le moment.</p>') + '</div>';
-    l.forEach(function(it, k){ if (it.type === 'video') controlerVideo(it.v, 'chk-' + k); });
+    l.forEach(function(it, k){ if (it.type === 'video' || (it.type === 'prop_video' && !it.v.poids)) controlerVideo(it.v, 'chk-' + k); });
     document.getElementById('file').addEventListener('click', function(e){
       var b = e.target.closest('[data-act]'); if (!b) return;
       decider(l[+b.getAttribute('data-i')], b.getAttribute('data-act'), b);
@@ -291,6 +294,31 @@
           ok(!!CTAS[v.cta], 'Bouton d\'action : ' + (CTAS[v.cta] || 'aucun')) +
         '</ul>' + boutons + '</div></div>';
     }
+    if (it.type === 'prop_offre') {
+      var po = it.c.doc.propositions.offre, actuelle = it.c.doc.offre && it.c.doc.offre.statut === 'publiee' ? it.c.doc.offre : null;
+      return '<div class="file"><div class="ph" style="background-image:url(\'' + esc(po.image || '') + '\')"></div><div style="flex:1"><span class="st a_moderer">Offre proposée par le commerçant</span>' +
+        '<p style="margin-top:6px"><b>' + esc(po.titre) + '</b> · ' + esc(it.c.doc.nom) + '</p><p class="small muted">' + esc(po.conditions) + '</p>' +
+        '<p class="small muted">Du ' + dateFr(po.debut) + ' au ' + dateFr(po.fin) + ' · envoyée le ' + new Date(po.soumis_le).toLocaleDateString('fr-FR') + '</p>' +
+        (actuelle ? '<p class="small" style="margin-top:4px">Remplacera l\'offre en ligne : « ' + esc(actuelle.titre) + ' »</p>' : '') +
+        '<ul class="check">' + ok(!!po.conditions, 'Conditions d\'utilisation écrites') + ok(po.fin >= aujourdhui(), 'Date de fin à venir : ' + dateFr(po.fin)) +
+          ok(!!po.image, 'Photo fournie', true) + '</ul>' + boutons + '</div></div>';
+    }
+    if (it.type === 'prop_video') {
+      var pv = it.v, remplacee = (it.c.doc.videos || []).filter(function(x){ return x.id === pv.id && x.statut === 'publiee'; })[0];
+      return '<div class="file"><div class="ph" style="background-image:url(\'' + esc(pv.affiche || '') + '\')"></div><div style="flex:1"><span class="st a_moderer">Vidéo proposée par le commerçant</span>' +
+        '<p style="margin-top:6px"><b>' + esc(pv.titre) + '</b> · ' + esc(it.c.doc.nom) + '</p>' +
+        (pv.description ? '<p class="small muted">' + esc(pv.description) + '</p>' : '') +
+        '<p class="small"><a href="' + esc(pv.src) + '" target="_blank" rel="noopener">Regarder la vidéo ›</a>' + (remplacee ? ' · remplacera « ' + esc(remplacee.titre) + ' »' : '') + '</p>' +
+        '<ul class="check" id="chk-' + k + '">' +
+          ok(/\.mp4(\?|$)/i.test(pv.src || ''), 'Format MP4') +
+          ok(pv.duree && pv.duree <= 90, 'Durée : ' + (pv.duree ? pv.duree + ' s' : 'inconnue') + ' (90 s maximum conseillé)') +
+          '<li data-poids>' + (pv.poids ? (pv.poids <= 20e6 ? '✅' : '💡') + ' Poids : ' + (pv.poids / 1e6).toFixed(1).replace('.', ',') + ' Mo' + (pv.poids > 20e6 ? ' (lourd pour un téléphone)' : '') : '… Poids en cours de vérification') + '</li>' +
+          ok(!!pv.sousTitres, 'Sous-titres fournis (recommandé)', true) + ok(!!pv.affiche, 'Image d\'affiche') +
+          ok(!!pv.droits_ok, 'Le commerçant atteste détenir les droits sur les images, la musique et les personnes filmées') +
+          ok(!!pv.fin, 'Diffusion du ' + dateFr(pv.debut) + ' au ' + dateFr(pv.fin)) + ok(!!CTAS[pv.cta], 'Bouton : ' + (CTAS[pv.cta] || 'aucun')) +
+          '<li>👀 Regardez-la en entier : contenu fidèle au commerce, rien de choquant, pas de musique ni de marque protégées</li>' +
+        '</ul>' + boutons + '</div></div>';
+    }
     var p = it.p;
     return '<div class="file"><div class="ph" style="background-image:url(\'' + esc(p.doc.visuel || '') + '\')"></div><div style="flex:1"><span class="st demande">Demande de publicité</span>' +
       '<p style="margin-top:6px"><b>' + (p.format === 'video' ? 'Vidéo sponsorisée' : 'Publicité fixe') + '</b> · ' + esc(nom(p.slug)) + '</p>' +
@@ -314,7 +342,10 @@
     if (act === 'ko') { motif = prompt('Motif du refus (visible par le commerçant) :') || ''; if (!motif) return; }
     bouton.disabled = true;
     var p;
-    if (it.type === 'pub') {
+    if (it.type === 'prop_offre' || it.type === 'prop_video') {
+      p = rpc('hl_admin_moderer', { p_token: jeton(), p_slug: it.c.slug, p_type: it.type === 'prop_offre' ? 'offre' : 'video',
+        p_id: it.v ? it.v.id : null, p_decision: act === 'ok' ? 'publier' : 'refuser', p_motif: motif || null });
+    } else if (it.type === 'pub') {
       var pub = JSON.parse(JSON.stringify(it.p)); pub.statut = act === 'ok' ? 'programmee' : 'annulee';
       if (motif) pub.doc.motif_refus = motif;
       p = rpc('hl_admin_save_pub', { p_token: jeton(), p_pub: pub });
@@ -630,12 +661,15 @@
   function vueComptes(){
     vue.innerHTML = '<h2 style="margin-bottom:8px">' + (ville() ? 'Comptes des associations' : 'Comptes de ' + esc(nomAsso(D.association))) + '</h2>' +
       '<p class="muted" style="margin-bottom:14px">' + (ville() ? '' : 'Pour les bénévoles de votre association. ') + 'Ces comptes ouvrent cet espace et les tableaux de bord des commerces du pilote, jamais les espaces admin des restaurants ni vos autres outils Fidelavis.</p>' +
-      '<div class="tw" style="margin-bottom:16px"><table><thead><tr><th>Identifiant</th>' + (ville() ? '<th>Association</th>' : '') + '<th>État</th><th>Dernière connexion</th><th></th></tr></thead><tbody id="lc"><tr><td colspan="4" class="vide">Chargement…</td></tr></tbody></table></div>' +
+      '<div class="tw" style="margin-bottom:16px"><table><thead><tr><th>Identifiant</th><th>Type</th>' + (ville() ? '<th>Association</th>' : '') + '<th>État</th><th>Dernière connexion</th><th></th></tr></thead><tbody id="lc"><tr><td colspan="4" class="vide">Chargement…</td></tr></tbody></table></div>' +
       '<div class="bloc"><h3 id="fcTitre">Nouveau compte</h3><div class="form">' +
         '<label class="f"><span>Identifiant (ex. asso.garenne)</span><input id="cu" autocomplete="off" autocapitalize="none"></label>' +
         '<label class="f"><span>Mot de passe (10 caractères minimum)</span><input id="cp" type="password" autocomplete="new-password"></label>' +
         '<label class="f"><span>Confirmer le mot de passe</span><input id="cp2" type="password" autocomplete="new-password"></label>' +
-        (ville() ? '<label class="f"><span>Association</span><select id="cas"><option value="">— Choisir —</option>' +
+        '<label class="f"><span>Type de compte</span><select id="crole"><option value="association">Membre de l\'association</option><option value="commercant">Commerçant (son offre et ses vidéos)</option></select></label>' +
+        '<label class="f" id="lcom" hidden><span>Commerce</span><select id="ccom"><option value="">— Choisir —</option>' +
+          D.commerces.map(function(c){ return '<option value="' + esc(c.slug) + '">' + esc(c.doc.nom || c.slug) + '</option>'; }).join('') + '</select></label>' +
+        (ville() ? '<label class="f" id="lasso"><span>Association</span><select id="cas"><option value="">— Choisir —</option>' +
           (D.associations || []).map(function(a){ return '<option value="' + esc(a.slug) + '">' + esc(a.nom) + '</option>'; }).join('') + '</select></label>' : '') +
         '<label class="ck" style="align-self:end;padding-bottom:10px"><input type="checkbox" id="ca" checked> Compte actif</label>' +
       '</div><p class="small muted" style="margin-top:8px">Pour un compte existant, laissez le mot de passe vide pour le garder.</p>' +
@@ -645,18 +679,26 @@
         var lc = document.getElementById('lc'); if (!lc) return;
         if (!j.ok) { lc.innerHTML = '<tr><td colspan="4" class="vide">' + esc(j.reason) + '</td></tr>'; return; }
         lc.innerHTML = j.comptes.length ? j.comptes.map(function(c){
-          return '<tr><td><b>' + esc(c.username) + '</b></td>' + (ville() ? '<td class="small">' + (c.association ? esc(nomAsso(c.association)) : '<span class="st suspendu">Non rattaché</span>') + '</td>' : '') + '<td>' + (c.is_active ? '<span class="st valide">Actif</span>' : '<span class="st suspendu">Désactivé</span>') + '</td>' +
+          return '<tr><td><b>' + esc(c.username) + '</b></td><td class="small">' + (c.role === 'commercant' ? 'Commerçant · ' + esc(nom(c.commerce)) : 'Association') + '</td>' + (ville() ? '<td class="small">' + (c.association ? esc(nomAsso(c.association)) : '<span class="st suspendu">Non rattaché</span>') + '</td>' : '') + '<td>' + (c.is_active ? '<span class="st valide">Actif</span>' : '<span class="st suspendu">Désactivé</span>') + '</td>' +
             '<td class="small muted">' + (c.last_login_at ? new Date(c.last_login_at).toLocaleString('fr-FR') : 'jamais') + '</td>' +
-            '<td><button class="b2" data-u="' + esc(c.username) + '" data-a="' + (c.is_active ? '1' : '0') + '" data-as="' + esc(c.association || '') + '">Modifier</button></td></tr>';
+            '<td><button class="b2" data-u="' + esc(c.username) + '" data-a="' + (c.is_active ? '1' : '0') + '" data-as="' + esc(c.association || '') + '" data-role="' + esc(c.role || 'association') + '" data-com="' + esc(c.commerce || '') + '">Modifier</button></td></tr>';
         }).join('') : '<tr><td colspan="4" class="vide">Aucun compte pour le moment.</td></tr>';
       });
     }
     liste();
+    // Commerçant : on choisit son commerce ; membre : son association (ville).
+    function majType(){
+      var com = document.getElementById('crole').value === 'commercant';
+      document.getElementById('lcom').hidden = !com;
+      if (document.getElementById('lasso')) document.getElementById('lasso').hidden = com;
+    }
+    document.getElementById('crole').addEventListener('change', majType);
     document.getElementById('lc').addEventListener('click', function(e){
       var b = e.target.closest('[data-u]'); if (!b) return;
       document.getElementById('cu').value = b.getAttribute('data-u');
       document.getElementById('ca').checked = b.getAttribute('data-a') === '1';
       if (document.getElementById('cas')) document.getElementById('cas').value = b.getAttribute('data-as');
+      document.getElementById('crole').value = b.getAttribute('data-role'); document.getElementById('ccom').value = b.getAttribute('data-com'); majType();
       document.getElementById('fcTitre').textContent = 'Modifier « ' + b.getAttribute('data-u') + ' »';
       document.getElementById('cp').focus();
     });
@@ -664,11 +706,14 @@
       var u = document.getElementById('cu').value.trim().toLowerCase(), p1 = document.getElementById('cp').value, p2 = document.getElementById('cp2').value, msg = document.getElementById('msg');
       if (p1 !== p2) { msg.className = 'msg ko'; msg.textContent = 'Les deux mots de passe ne sont pas identiques.'; return; }
       msg.className = 'msg'; msg.textContent = 'Enregistrement…';
+      var role = document.getElementById('crole').value;
       rpc('hl_admin_save_compte', { p_token: jeton(), p_username: u, p_password: p1 || null, p_actif: document.getElementById('ca').checked,
-        p_association: ville() ? document.getElementById('cas').value : null }).then(function(j){
+        p_association: ville() && role === 'association' ? document.getElementById('cas').value : null,
+        p_role: role, p_commerce: role === 'commercant' ? document.getElementById('ccom').value : null }).then(function(j){
         if (!j.ok) throw new Error(j.reason || 'refusé');
         document.getElementById('cp').value = ''; document.getElementById('cp2').value = '';
-        msg.className = 'msg ok'; msg.textContent = 'Compte « ' + u + ' » enregistré. Transmettez le mot de passe à la personne de vive voix, pas par e-mail.';
+        msg.className = 'msg ok'; msg.textContent = 'Compte « ' + u + ' » enregistré. Transmettez le mot de passe de vive voix, pas par e-mail.' +
+          (role === 'commercant' ? ' Lien de connexion du commerçant : app.cartefidelavis.com/la-garenne/pro/connexion.html' : '');
         liste();
       }).catch(function(e){ msg.className = 'msg ko'; msg.textContent = 'Impossible : ' + e.message; });
     });

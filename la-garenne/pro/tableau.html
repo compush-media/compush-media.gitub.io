@@ -51,6 +51,8 @@
   </div>
   <div id="apercu"></div>
 
+  <a class="btn" id="lienContenu" href="#" style="margin-bottom:14px"><span>Proposer mon offre et mes vidéos</span><span class="arr">›</span></a>
+
   <!-- Code caisse du moment : le commerçant le saisit sur le téléphone du client -->
   <div class="card pin">
     <div><p class="small muted"><b>Votre code caisse</b></p><p class="code" id="pin">····</p></div>
@@ -103,6 +105,12 @@
   if (!slug) { document.getElementById('nom').textContent = 'Lien incomplet'; return; }
   if (!APERCU && !jeton) { versConnexion(); return; }
   if (APERCU) document.getElementById('apercu').innerHTML = '<p class="note" style="background:#EEF0F6;color:#4A5070">Aperçu avec des chiffres fictifs. Connectez-vous pour voir les vôtres.</p>';
+
+  // Seul le compte du commerçant propose du contenu ; l'association, elle,
+  // modifie la fiche depuis son espace.
+  var lc = document.getElementById('lienContenu');
+  if (APERCU || !HL.ls('fv_session_' + slug)) lc.style.display = 'none';
+  else lc.href = HL.BASE + 'pro/contenu.html?s=' + encodeURIComponent(slug);
 
   document.getElementById('sortir').addEventListener('click', function(){
     HL.ls('fv_session_' + slug, null); HL.ls('fv_session_exp_' + slug, null); versConnexion();

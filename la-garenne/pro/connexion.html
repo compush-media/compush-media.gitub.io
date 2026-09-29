@@ -39,7 +39,8 @@
   var slug = HL.qs('s').toLowerCase().replace(/[^a-z0-9-]/g,'');
   document.getElementById('bar').innerHTML = HL.brandbar(false);
   var err = document.getElementById('err');
-  if (!slug) { err.textContent = 'Lien incomplet : il manque le commerce.'; return; }
+  // Sans commerce dans le lien, seuls les comptes du pilote peuvent se
+  // connecter : un commerçant est de toute façon renvoyé vers le sien.
   HL.charger().then(function(d){
     var c = d.parSlug[slug];
     if (c) document.getElementById('sous').textContent = c.nom + ' : vos statistiques, votre code caisse et votre QR code.';
@@ -50,18 +51,26 @@
     var u = document.getElementById('user').value.trim(), p = document.getElementById('pass').value;
     if (!u || !p) { err.textContent = 'Renseignez votre identifiant et votre mot de passe.'; return; }
     err.textContent = '';
-    fetch(SUPA_URL + '/rest/v1/rpc/fv_admin_login', {
-      method: 'POST',
-      headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ p_slug: slug, p_username: u, p_password: p })
-    }).then(function(r){
-      if (!r.ok) throw new Error('service');
-      return r.json();
+    function appel(nom, corps){
+      return fetch(SUPA_URL + '/rest/v1/rpc/' + nom, {
+        method: 'POST',
+        headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify(corps)
+      }).then(function(r){ if (!r.ok) throw new Error('service'); return r.json(); });
+    }
+    // Comptes du pilote (commerçant ou association) d'abord, puis admins Fidelavis.
+    appel('hl_asso_login', { p_username: u, p_password: p }).then(function(j){
+      if (j && j.ok && j.token) return j;
+      if (!slug) return null;
+      return appel('fv_admin_login', { p_slug: slug, p_username: u, p_password: p });
     }).then(function(j){
       if (!j || !j.ok || !j.token) { err.textContent = 'Identifiant ou mot de passe incorrect.'; return; }
-      HL.ls('fv_session_' + slug, j.token);
-      HL.ls('fv_session_exp_' + slug, j.expires_at || '');
-      location.replace(HL.BASE + 'pro/tableau.html?s=' + encodeURIComponent(slug));
+      // Un commerçant est renvoyé vers SON commerce, quel que soit le lien suivi.
+      var cible = j.role === 'commercant' && j.commerce ? j.commerce : slug;
+      if (j.role === 'association') { HL.ls('fv_session_la-garenne', j.token); location.replace(HL.BASE + 'asso/'); return; }
+      if (!cible) { err.textContent = 'Lien incomplet : il manque le commerce.'; return; }
+      HL.ls('fv_session_' + cible, j.token); HL.ls('fv_session_exp_' + cible, j.expires_at || '');
+      location.replace(HL.BASE + 'pro/tableau.html?s=' + encodeURIComponent(cible));
     }).catch(function(){
       err.textContent = 'Connexion impossible pour le moment. Réessayez dans quelques minutes.';
     });

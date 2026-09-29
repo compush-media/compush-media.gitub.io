@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Mon offre et mes vidéos – Les Commerces de La Garenne</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<style>
+  body{max-width:720px;}
+  .bloc{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px;}
+  .bloc h3{margin-bottom:10px;}
+  .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+  .form .large{grid-column:1/-1;}
+  label.f{display:block;font-size:12.5px;font-weight:700;}
+  label.f span{display:block;margin-bottom:5px;}
+  label.f input,label.f select,label.f textarea{width:100%;min-height:44px;border-radius:10px;border:1.5px solid var(--line);padding:8px 12px;font:inherit;font-size:15px;background:#fff;color:var(--ink);}
+  label.f textarea{min-height:70px;resize:vertical;}
+  label.f input:focus,label.f select:focus,label.f textarea:focus{outline:none;border-color:var(--rose);box-shadow:0 0 0 3px var(--rose-soft);}
+  label.ck{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;}
+  label.ck input{margin-top:3px;width:18px;height:18px;flex-shrink:0;}
+  .etat{border-radius:12px;padding:10px 12px;font-size:13.5px;margin-bottom:12px;}
+  .etat.attente{background:var(--sponso-soft);color:var(--sponso);}
+  .etat.refus{background:#FDECEC;color:#B23B3B;}
+  .etat.ligne{background:var(--ok-soft);color:var(--ok);}
+  .item{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);}
+  .item:last-child{border-bottom:0;}
+  .item .ph{width:64px;height:64px;border-radius:10px;background:#eee center/cover;flex-shrink:0;}
+  .item .b2{margin-left:auto;}
+  .b2{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13.5px;color:var(--ink);white-space:nowrap;}
+  .b2.ko{color:#B23B3B;border-color:#F0C4C4;}
+  [hidden]{display:none!important;}
+  .fichier{display:block;border:2px dashed var(--line);border-radius:14px;padding:16px;text-align:center;font-size:14px;cursor:pointer;background:#FFFCFA;}
+  .fichier.ok{border-color:var(--ok);background:var(--ok-soft);}
+  .apercu{display:flex;gap:12px;align-items:center;margin-top:10px;}
+  .apercu img{width:90px;height:120px;object-fit:cover;border-radius:10px;background:#eee;}
+  .prog{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:10px;}
+  .prog i{display:block;height:100%;width:0;background:var(--rose);transition:width .2s;}
+  .msg{font-size:13.5px;font-weight:700;margin-top:10px;}
+  .msg.ok{color:var(--ok);} .msg.ko{color:#B23B3B;}
+  .conseils{font-size:13px;color:var(--muted);line-height:1.55;margin:0 0 12px 18px;padding:0;}
+</style>
+</head>
+<body class="sans-nav">
+<div id="bar"></div>
+<main class="ct">
+  <a class="lien" id="retour" href="#" style="width:auto;text-align:left;padding:0 0 8px">‹ Mon tableau de bord</a>
+  <h1 id="nom">…</h1>
+  <p class="muted small" id="sous" style="margin:4px 0 16px"></p>
+
+  <section class="bloc" id="blocOffre"><h3>Mon offre</h3><div id="offre"></div></section>
+  <section class="bloc" id="blocVideos"><h3>Mes vidéos</h3><div id="videos"></div></section>
+</main>
+
+<script>
+/* Espace commerçant : proposer son offre et ses vidéos.
+   Tout part en proposition vers l'association, qui publie ou refuse avec
+   un motif. Ce qui est déjà en ligne le reste jusqu'à la validation. */
+(function(){
+  var SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+  var SUPA_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
+  var esc = HL.esc;
+  var slug = HL.qs('s').toLowerCase().replace(/[^a-z0-9-]/g,'');
+  var jeton = HL.ls('fv_session_' + slug);
+  var D = null;
+  var CTAS = { offre: 'Voir l\'offre', itineraire: 'Itinéraire', reserver: 'Réserver', contacter: 'Contacter' };
+  var TYPES = { portrait: 'Présentation du commerce', nouveaute: 'Nouveauté', evenement: 'Événement', offre: 'Offre' };
+  document.getElementById('bar').innerHTML = HL.brandbar(false);
+  document.getElementById('retour').href = HL.BASE + 'pro/tableau.html?s=' + encodeURIComponent(slug);
+
+  function connexion(){ location.replace(HL.BASE + 'pro/connexion.html?s=' + encodeURIComponent(slug)); }
+  if (!slug || !jeton) { connexion(); return; }
+
+  function rpc(nom, corps){
+    return fetch(SUPA_URL + '/rest/v1/rpc/' + nom, {
+      method: 'POST',
+      headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(corps)
+    }).then(function(r){ if (!r.ok) throw new Error('Service indisponible'); return r.json(); });
+  }
+  function dateFr(d){ return d ? new Date(d + 'T12:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) : ''; }
+  function dans(jours){ var d = new Date(); d.setDate(d.getDate() + jours); return d.toISOString().slice(0, 10); }
+  function opts(map, v){ return Object.keys(map).map(function(k){ return '<option value="' + k + '"' + (k === v ? ' selected' : '') + '>' + esc(map[k]) + '</option>'; }).join(''); }
+
+  /* Téléversement : URL signée par hl-televersement, puis envoi direct au
+     stockage avec la progression (XMLHttpRequest, que fetch ne donne pas). */
+  function televerser(fichier, genre, barre){
+    return fetch(SUPA_URL + '/functions/v1/hl-televersement', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jeton: jeton, slug: slug, genre: genre, type: fichier.type || (genre === 'soustitres' ? 'text/vtt' : ''), taille: fichier.size })
+    }).then(function(r){ return r.json(); }).then(function(a){
+      if (!a.ok) throw new Error(a.erreur || 'Envoi refusé');
+      return new Promise(function(ok, ko){
+        var x = new XMLHttpRequest();
+        x.open('PUT', a.url_envoi);
+        x.setRequestHeader('content-type', fichier.type || 'text/vtt');
+        if (barre) x.upload.onprogress = function(e){ if (e.lengthComputable) barre.style.width = Math.round(e.loaded / e.total * 100) + '%'; };
+        x.onload = function(){ x.status < 300 ? ok(a.url_publique) : ko(new Error('Envoi interrompu (' + x.status + ')')); };
+        x.onerror = function(){ ko(new Error('Connexion perdue pendant l\'envoi')); };
+        x.send(fichier);
+      });
+    });
+  }
+
+  function charger(){
+    return rpc('hl_commercant_data', { p_token: jeton }).then(function(j){
+      if (!j.ok) {
+        // Session valable pour le tableau de bord (ville, admin wallet) mais
+        // pas un compte commerçant : on ne la détruit pas, on l'explique.
+        document.getElementById('nom').textContent = 'Réservé au compte du commerçant';
+        document.getElementById('sous').innerHTML = 'Pour proposer une offre ou une vidéo, connectez-vous avec l\'identifiant commerçant remis par votre association. ' +
+          '<a href="' + HL.BASE + 'pro/connexion.html?s=' + encodeURIComponent(slug) + '">Changer de compte</a>';
+        document.getElementById('blocOffre').hidden = true; document.getElementById('blocVideos').hidden = true;
+        return;
+      }
+      D = j;
+      document.getElementById('nom').textContent = j.nom;
+      document.title = j.nom + ' – Mon offre et mes vidéos';
+      document.getElementById('sous').textContent = (j.association ? 'Adhérent de ' + j.association + ' · ' : '') +
+        'Vos propositions sont vérifiées par votre association avant d\'apparaître dans l\'appli.';
+      rendreOffre(); rendreVideos();
+    });
+  }
+
+  /* ── Offre ── */
+  function rendreOffre(){
+    var o = D.offre && D.offre.statut === 'publiee' ? D.offre : null, p = D.propositions.offre;
+    var h = o ? '<div class="etat ligne">En ligne : <b>' + esc(o.titre) + '</b>' + (o.fin ? ', jusqu\'au ' + dateFr(o.fin) : '') + '</div>' : '<p class="muted small" style="margin-bottom:12px">Aucune offre en ligne pour le moment.</p>';
+    if (p && p.statut === 'a_moderer') {
+      h += '<div class="etat attente">En attente de validation : <b>' + esc(p.titre) + '</b> (envoyée le ' + new Date(p.soumis_le).toLocaleDateString('fr-FR') + ').' +
+        ' <button class="b2 ko" type="button" id="annulerOffre" style="margin-left:6px">Annuler</button></div>';
+      document.getElementById('offre').innerHTML = h;
+      document.getElementById('annulerOffre').addEventListener('click', function(){
+        rpc('hl_commercant_annuler', { p_token: jeton, p_type: 'offre' }).then(charger);
+      });
+      return;
+    }
+    if (p && p.statut === 'refusee') h += '<div class="etat refus">Proposition refusée par votre association : ' + esc(p.motif_refus || '') + '<br>Corrigez-la ci-dessous et renvoyez-la.</div>';
+    var base = (p && p.statut === 'refusee') ? p : (o || {});
+    h += '<p class="small" style="margin:4px 0 10px"><b>' + (o ? 'Proposer une nouvelle offre' : 'Proposer une offre') + '</b></p><div class="form" id="fo">' +
+      '<label class="f large"><span>Titre (80 caractères maximum)</span><input id="oTitre" maxlength="80" placeholder="Café offert avec votre brunch" value="' + esc(base.titre || '') + '"></label>' +
+      '<label class="f large"><span>Conditions</span><textarea id="oCond" placeholder="Une fois par mois et par personne, sur présentation de l\'appli.">' + esc(base.conditions || '') + '</textarea></label>' +
+      '<label class="f"><span>Début</span><input type="date" id="oDebut" value="' + esc(base.debut && base.debut >= dans(0) ? base.debut : dans(0)) + '"></label>' +
+      '<label class="f"><span>Fin</span><input type="date" id="oFin" value="' + esc(base.fin && base.fin >= dans(0) ? base.fin : dans(30)) + '"></label>' +
+      '<div class="large"><span class="small" style="font-weight:700">Photo (facultatif)</span><label class="fichier" id="oZone" style="display:block;margin-top:5px">Choisir une photo (JPG ou PNG, 5 Mo maximum)<input type="file" id="oImg" accept="image/jpeg,image/png,image/webp" hidden></label>' +
+        '<div class="apercu" id="oApercu"' + (base.image ? '' : ' hidden') + '><img id="oImgV" src="' + esc(base.image || '') + '" alt=""></div></div>' +
+      '</div><button class="btn" type="button" id="envOffre" style="margin-top:14px"><span>Envoyer à mon association</span><span class="arr">›</span></button><p class="msg" id="mOffre"></p>';
+    document.getElementById('offre').innerHTML = h;
+    var image = base.image || '', fichierImg = null;
+    document.getElementById('oImg').addEventListener('change', function(){
+      fichierImg = this.files[0]; if (!fichierImg) return;
+      if (fichierImg.size > 5 * 1024 * 1024) { fichierImg = null; document.getElementById('mOffre').className = 'msg ko'; document.getElementById('mOffre').textContent = 'Photo trop lourde : 5 Mo maximum.'; return; }
+      document.getElementById('oImgV').src = URL.createObjectURL(fichierImg);
+      document.getElementById('oApercu').hidden = false;
+      document.getElementById('oZone').classList.add('ok');
+      document.getElementById('oZone').firstChild.textContent = fichierImg.name;
+    });
+    document.getElementById('envOffre').addEventListener('click', function(){
+      var m = document.getElementById('mOffre'), b = this;
+      var c = { titre: document.getElementById('oTitre').value.trim(), conditions: document.getElementById('oCond').value.trim(),
+                debut: document.getElementById('oDebut').value, fin: document.getElementById('oFin').value };
+      if (!c.titre) { m.className = 'msg ko'; m.textContent = 'Donnez un titre à votre offre.'; return; }
+      if (!c.conditions) { m.className = 'msg ko'; m.textContent = 'Écrivez les conditions de l\'offre.'; return; }
+      if (!c.fin || c.fin < c.debut) { m.className = 'msg ko'; m.textContent = 'La date de fin doit être après le début.'; return; }
+      b.disabled = true; m.className = 'msg'; m.textContent = fichierImg ? 'Envoi de la photo…' : 'Envoi…';
+      (fichierImg ? televerser(fichierImg, 'image') : Promise.resolve(image)).then(function(url){
+        c.image = url || '';
+        return rpc('hl_commercant_proposer', { p_token: jeton, p_type: 'offre', p_contenu: c });
+      }).then(function(j){
+        if (!j.ok) throw new Error(j.reason);
+        HL.toast('Offre envoyée à votre association');
+        return charger();
+      }).catch(function(e){ b.disabled = false; m.className = 'msg ko'; m.textContent = 'Envoi impossible : ' + e.message; });
+    });
+  }
+
+  /* ── Vidéos ── */
+  function rendreVideos(){
+    var enLigne = (D.videos || []).filter(function(v){ return v.statut === 'publiee'; });
+    var props = (D.propositions.videos || []);
+    var h = '';
+    if (enLigne.length) h += '<p class="small" style="font-weight:700;margin-bottom:4px">En ligne</p>' + enLigne.map(function(v){
+      return '<div class="item"><div class="ph" style="background-image:url(\'' + esc(v.affiche || '') + '\')"></div><div><b>' + esc(v.titre) + '</b><p class="small muted">' + (v.fin ? 'jusqu\'au ' + dateFr(v.fin) : '') + '</p></div>' +
+        '<button class="b2" type="button" data-remplacer="' + esc(v.id) + '">Remplacer</button></div>';
+    }).join('');
+    if (props.length) h += '<p class="small" style="font-weight:700;margin:12px 0 4px">Mes propositions</p>' + props.map(function(v){
+      return '<div class="item"><div class="ph" style="background-image:url(\'' + esc(v.affiche || '') + '\')"></div><div><b>' + esc(v.titre) + '</b>' +
+        (v.statut === 'refusee' ? '<p class="small" style="color:#B23B3B">Refusée : ' + esc(v.motif_refus || '') + '</p>' : '<p class="small" style="color:var(--sponso)">En attente de validation</p>') + '</div>' +
+        '<button class="b2 ko" type="button" data-annuler="' + esc(v.id) + '">' + (v.statut === 'refusee' ? 'Effacer' : 'Annuler') + '</button></div>';
+    }).join('');
+    h += '<div id="formVideo" style="margin-top:14px"></div>';
+    document.getElementById('videos').innerHTML = h;
+    formVideo(null);
+    document.getElementById('videos').onclick = function(e){   // réassigné à chaque rendu, jamais cumulé
+      var a = e.target.closest('[data-annuler]'), r = e.target.closest('[data-remplacer]');
+      if (a) rpc('hl_commercant_annuler', { p_token: jeton, p_type: 'video', p_id: a.getAttribute('data-annuler') }).then(charger);
+      if (r) { formVideo(enLigne.filter(function(v){ return v.id === r.getAttribute('data-remplacer'); })[0]); document.getElementById('formVideo').scrollIntoView({ behavior: 'smooth' }); }
+    };
+  }
+
+  function formVideo(remplace){
+    var f = document.getElementById('formVideo');
+    f.innerHTML = '<p class="small" style="font-weight:700;margin-bottom:6px">' + (remplace ? 'Remplacer « ' + esc(remplace.titre) + ' »' : 'Proposer une vidéo') + '</p>' +
+      '<ul class="conseils"><li>30 à 60 secondes, filmée à la verticale ou en carré</li><li>Elle se lit sans le son : écrivez les informations à l\'écran ou ajoutez des sous-titres</li>' +
+      '<li>Uniquement des images, musiques et personnes dont vous avez l\'accord</li></ul>' +
+      '<label class="fichier" id="vZone">Choisir la vidéo (MP4, 50 Mo maximum)<input type="file" id="vFichier" accept="video/mp4" hidden></label>' +
+      '<div class="apercu" id="vApercu" hidden><img id="vAffiche" alt=""><div class="small" id="vInfos"></div></div>' +
+      '<div class="form" style="margin-top:12px">' +
+        '<label class="f large"><span>Titre</span><input id="vTitre" maxlength="90" value="' + esc(remplace ? remplace.titre : '') + '" placeholder="Notre nouveau menu d\'automne"></label>' +
+        '<label class="f large"><span>Description</span><textarea id="vDesc">' + esc(remplace ? remplace.description || '' : '') + '</textarea></label>' +
+        '<label class="f"><span>Type</span><select id="vType">' + opts(TYPES, remplace ? remplace.type : 'portrait') + '</select></label>' +
+        '<label class="f"><span>Bouton sous la vidéo</span><select id="vCta">' + opts(CTAS, remplace ? remplace.cta : 'itineraire') + '</select></label>' +
+        '<label class="f"><span>Début de diffusion</span><input type="date" id="vDebut" value="' + dans(0) + '"></label>' +
+        '<label class="f"><span>Fin de diffusion</span><input type="date" id="vFin" value="' + esc(remplace && remplace.fin >= dans(0) ? remplace.fin : dans(60)) + '"></label>' +
+        '<div class="large"><span class="small" style="font-weight:700">Sous-titres (facultatif, fichier .vtt)</span><label class="fichier" id="sZone" style="display:block;margin-top:5px;padding:10px">Choisir un fichier .vtt<input type="file" id="vSous" accept=".vtt,text/vtt" hidden></label></div>' +
+        '<label class="ck large"><input type="checkbox" id="vDroits"> J\'atteste détenir les droits sur les images, la musique et l\'accord des personnes filmées, et j\'autorise sa diffusion dans l\'appli des Commerces de La Garenne.</label>' +
+      '</div>' +
+      '<button class="btn" type="button" id="envVideo" style="margin-top:14px"><span>Envoyer à mon association</span><span class="arr">›</span></button>' +
+      '<div class="prog" id="vProg" hidden><i></i></div><p class="msg" id="mVideo"></p>';
+
+    var video = null, duree = null, affiche = null, sous = null, m = document.getElementById('mVideo');
+    function erreur(t){ m.className = 'msg ko'; m.textContent = t; }
+
+    // Contrôles dès le choix du fichier : format, poids, durée, et une image
+    // d'affiche tirée de la vidéo elle-même.
+    document.getElementById('vFichier').addEventListener('change', function(){
+      video = null; duree = null; affiche = null; m.textContent = '';
+      var fic = this.files[0]; if (!fic) return;
+      if (fic.type !== 'video/mp4') return erreur('La vidéo doit être au format MP4. Sur iPhone, choisissez « Plus compatible » dans Réglages › Appareil photo › Formats.');
+      if (fic.size > 50 * 1024 * 1024) return erreur('Vidéo trop lourde (' + (fic.size / 1048576).toFixed(0) + ' Mo) : 50 Mo maximum. Raccourcissez-la ou réduisez sa qualité.');
+      var el = document.createElement('video'); el.muted = true; el.playsInline = true; el.preload = 'metadata';
+      el.src = URL.createObjectURL(fic);
+      el.onloadedmetadata = function(){
+        duree = Math.round(el.duration);
+        if (duree > 180) { erreur('Vidéo trop longue (' + duree + ' s) : 3 minutes maximum, 30 à 60 secondes conseillées.'); return; }
+        el.currentTime = Math.min(1, el.duration / 2);
+      };
+      el.onseeked = function(){
+        var c = document.createElement('canvas'), l = 540;
+        c.width = l; c.height = Math.round(l * el.videoHeight / el.videoWidth) || 720;
+        c.getContext('2d').drawImage(el, 0, 0, c.width, c.height);
+        c.toBlob(function(b){
+          affiche = b; video = fic;
+          document.getElementById('vAffiche').src = URL.createObjectURL(b);
+          document.getElementById('vApercu').hidden = false;
+          document.getElementById('vInfos').innerHTML = '<b>' + esc(fic.name) + '</b><br>' + duree + ' s · ' + (fic.size / 1048576).toFixed(1).replace('.', ',') + ' Mo' +
+            (duree > 90 ? '<br><span style="color:var(--sponso)">Un peu longue : 30 à 60 s retiennent mieux l\'attention.</span>' : '');
+          document.getElementById('vZone').classList.add('ok');
+          document.getElementById('vZone').firstChild.textContent = 'Vidéo prête · changer';
+        }, 'image/jpeg', 0.82);
+      };
+      el.onerror = function(){ erreur('Cette vidéo ne peut pas être lue. Exportez-la en MP4 (H.264).'); };
+    });
+    document.getElementById('vSous').addEventListener('change', function(){
+      sous = this.files[0] || null;
+      if (sous && !/\.vtt$/i.test(sous.name)) { sous = null; return erreur('Les sous-titres doivent être un fichier .vtt.'); }
+      if (sous) { document.getElementById('sZone').classList.add('ok'); document.getElementById('sZone').firstChild.textContent = sous.name; }
+    });
+
+    document.getElementById('envVideo').addEventListener('click', function(){
+      var b = this;
+      var c = { id: remplace ? remplace.id : '', titre: document.getElementById('vTitre').value.trim(), description: document.getElementById('vDesc').value.trim(),
+                type: document.getElementById('vType').value, cta: document.getElementById('vCta').value,
+                debut: document.getElementById('vDebut').value, fin: document.getElementById('vFin').value, droits_ok: document.getElementById('vDroits').checked };
+      if (!video) return erreur('Choisissez d\'abord la vidéo.');
+      if (!c.titre) return erreur('Donnez un titre à la vidéo.');
+      if (!c.fin || c.fin < c.debut) return erreur('La date de fin doit être après le début.');
+      if (!c.droits_ok) return erreur('Cochez l\'attestation sur les droits pour envoyer la vidéo.');
+      b.disabled = true; m.className = 'msg'; m.textContent = 'Envoi de la vidéo… Gardez cette page ouverte.';
+      var prog = document.getElementById('vProg'); prog.hidden = false;
+      televerser(video, 'video', prog.firstChild).then(function(url){
+        c.src = url; c.duree = duree; c.poids = video.size;
+        m.textContent = 'Envoi de l\'image d\'affiche…';
+        return televerser(new File([affiche], 'affiche.jpg', { type: 'image/jpeg' }), 'image');
+      }).then(function(url){
+        c.affiche = url;
+        return sous ? televerser(new File([sous], sous.name, { type: 'text/vtt' }), 'soustitres') : '';
+      }).then(function(url){
+        c.sousTitres = url || '';
+        return rpc('hl_commercant_proposer', { p_token: jeton, p_type: 'video', p_contenu: c });
+      }).then(function(j){
+        if (!j.ok) throw new Error(j.reason);
+        HL.toast('Vidéo envoyée à votre association');
+        return charger();
+      }).catch(function(e){ b.disabled = false; prog.hidden = true; erreur('Envoi impossible : ' + e.message); });
+    });
+  }
+
+  charger().catch(function(){ document.getElementById('nom').textContent = 'Service indisponible pour le moment'; });
+})();
+</script>
+</body>
+</html>
