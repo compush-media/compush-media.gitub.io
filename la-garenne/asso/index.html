@@ -398,7 +398,14 @@
         '<div id="videos">' + (d.videos || []).map(videoHtml).join('') + '</div></div>' +
       '</div>' +
       '<div class="bar"><button class="btn" id="enreg" type="button"><span>Enregistrer</span><span class="arr">›</span></button><span class="msg" id="msg"></span>' +
-      (neuf ? '' : '<a class="b2" href="' + HL.BASE + 'commerce.html?s=' + encodeURIComponent(c.slug) + '" target="_blank" rel="noopener">Voir la fiche publique ›</a>') + '</div>';
+      (neuf ? '' : '<a class="b2" href="' + HL.BASE + 'commerce.html?s=' + encodeURIComponent(c.slug) + '" target="_blank" rel="noopener">Voir la fiche publique ›</a>') + '</div>' +
+      (neuf ? '' : '<div class="bloc" style="border:1px solid #F0C4C4;box-shadow:none;margin-top:18px"><h3>Retirer ou supprimer</h3>' +
+        (c.association ? '<p class="small muted" style="margin-bottom:10px"><b>Retirer de l\'association</b> : le commerce disparaît aussitôt de l\'appli et n\'est plus rattaché à ' + esc(nomAsso(c.association)) + '. Ses statistiques passées sont conservées. La ville peut ensuite le rattacher à une autre association.</p>' +
+          '<button class="b2 ko" type="button" id="retirer">Retirer de l\'association</button>' : '') +
+        (ville() ? '<p class="small muted" style="margin:14px 0 10px"><b>Supprimer définitivement</b> : efface la fiche, l\'offre, les vidéos et les publicités de ce commerce. Irréversible. Les statistiques passées restent comptées.</p>' +
+          '<button class="b2 ko" type="button" id="supprimer">Supprimer définitivement</button>' : '') +
+        (!c.association && !ville() ? '<p class="small muted">Ce commerce n\'est rattaché à aucune association.</p>' : '') +
+        '<p class="msg ko" id="msgSuppr" style="margin-top:10px"></p></div>');
 
     function majOffre(){ document.getElementById('offreF').style.display = document.getElementById('aOffre').checked ? '' : 'none'; }
     document.getElementById('aOffre').addEventListener('change', majOffre); majOffre();
@@ -417,6 +424,29 @@
       document.getElementById('videos').innerHTML = videos.map(videoHtml).join('');
     });
     if (!neuf) verifierManifeste(c.slug);
+
+    // Retirer : masqué de l'appli et détaché de son association.
+    var bRet = document.getElementById('retirer');
+    if (bRet) bRet.addEventListener('click', function(){
+      if (!confirm('Retirer « ' + d.nom + ' » de ' + nomAsso(c.association) + ' ?\n\nIl disparaîtra aussitôt de l\'appli des habitants.')) return;
+      bRet.disabled = true;
+      rpc('hl_admin_retirer_commerce', { p_token: jeton(), p_slug: c.slug }).then(function(j){
+        if (!j.ok) throw new Error(j.reason || 'refusé');
+        return charger().then(function(){ HL.toast('« ' + d.nom + ' » retiré de l\'association'); vueCommerces(); });
+      }).catch(function(e){ bRet.disabled = false; document.getElementById('msgSuppr').textContent = 'Impossible : ' + e.message; });
+    });
+    // Supprimer : ville uniquement, confirmation en tapant l'identifiant.
+    var bSup = document.getElementById('supprimer');
+    if (bSup) bSup.addEventListener('click', function(){
+      var tape = prompt('Suppression définitive de « ' + d.nom + ' » : fiche, offre, vidéos et publicités.\nCette action est irréversible.\n\nPour confirmer, tapez son identifiant : ' + c.slug);
+      if (tape === null) return;
+      if (tape.trim() !== c.slug) { document.getElementById('msgSuppr').textContent = 'Identifiant différent : rien n\'a été supprimé.'; return; }
+      bSup.disabled = true;
+      rpc('hl_admin_supprimer_commerce', { p_token: jeton(), p_slug: c.slug }).then(function(j){
+        if (!j.ok) throw new Error(j.reason || 'refusé');
+        return charger().then(function(){ HL.toast('« ' + d.nom + ' » supprimé définitivement'); vueCommerces(); });
+      }).catch(function(e){ bSup.disabled = false; document.getElementById('msgSuppr').textContent = 'Impossible : ' + e.message; });
+    });
 
     document.getElementById('enreg').addEventListener('click', function(){
       var msg = document.getElementById('msg'), slug = neuf ? document.getElementById('slug').value.trim().toLowerCase() : c.slug;
