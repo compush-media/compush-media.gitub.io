@@ -70,7 +70,7 @@
 
   <div id="app" class="hide">
     <div class="row" style="justify-content:space-between;flex-wrap:wrap">
-      <h1>Espace association</h1>
+      <div><h1>Espace association</h1><p class="small muted" id="qui"></p></div>
       <button class="lien" id="sortir" type="button" style="width:auto;padding:6px 0">Se déconnecter</button>
     </div>
     <nav class="tabs" id="tabs" aria-label="Rubriques"></nav>
@@ -111,13 +111,14 @@
     // admins Fidelavis : seul le superadmin y a accès à cet espace.
     rpc('hl_asso_login', { p_username: u, p_password: p }).then(function(j){
       if (j && j.ok && j.token) return j;
+      if (j && j.reason === 'compte non rattaché à une association') throw { msg: 'Ce compte n\'est rattaché à aucune association : demandez à la ville de le rattacher.' };
       return rpc('fv_admin_login', { p_slug: 'la-garenne', p_username: u, p_password: p });
     }).then(function(j){
       if (!j || !j.ok || !j.token) { err.textContent = 'Identifiant ou mot de passe incorrect.'; return; }
       if (j.role !== 'superadmin' && j.role !== 'association') { err.textContent = 'Ce compte n\'a pas accès à l\'espace association.'; return; }
       HL.ls(CLE, j.token);
       demarrer();
-    }).catch(function(){ err.textContent = 'Connexion impossible pour le moment.'; });
+    }).catch(function(e){ err.textContent = (e && e.msg) || 'Connexion impossible pour le moment.'; });
   });
   document.getElementById('sortir').addEventListener('click', function(){ HL.ls(CLE, null); connexion(''); });
 
@@ -148,6 +149,8 @@
   function n(x){ return fmt.format(x || 0); }
   function dateFr(d){ return d ? new Date(d + 'T12:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'; }
   function aujourdhui(){ var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function ville(){ return D.role === 'superadmin'; }
+  function nomAsso(s){ var a = (D.associations || []).filter(function(x){ return x.slug === s; })[0]; return a ? a.nom : (s || ''); }
   function commerce(slug){ return D.commerces.filter(function(c){ return c.slug === slug; })[0]; }
   function nom(slug){ var c = commerce(slug); return c ? (c.doc.nom || slug) : slug; }
   function opts(map, v){ return Object.keys(map).map(function(k){ return '<option value="' + esc(k) + '"' + (k === v ? ' selected' : '') + '>' + esc(map[k]) + '</option>'; }).join(''); }
@@ -180,19 +183,21 @@
       if (c.doc.offre && c.doc.offre.statut === 'a_moderer') l.push({ type: 'offre', c: c });
       (c.doc.videos || []).forEach(function(v, i){ if (v.statut === 'a_moderer') l.push({ type: 'video', c: c, v: v, i: i }); });
     });
-    D.pubs.forEach(function(p){ if (p.statut === 'demande') l.push({ type: 'pub', p: p }); });
+    if (ville()) D.pubs.forEach(function(p){ if (p.statut === 'demande') l.push({ type: 'pub', p: p }); });
     return l;
   }
 
   function rendre(){
     var nb = aModerer().length;
-    var T = [['reseau','Réseau'],['valider','À valider'],['commerces','Commerces'],['pubs','Publicités'],['cdc','Coup de cœur']];
-    if (D.role === 'superadmin') T.push(['comptes','Comptes']);
-    if (onglet === 'comptes' && D.role !== 'superadmin') onglet = 'reseau';
+    document.getElementById('qui').textContent = ville() ? 'Niveau ville · toutes les associations' : nomAsso(D.association) + ' · vos adhérents';
+    var T = ville()
+      ? [['reseau','Réseau'],['valider','À valider'],['commerces','Commerces'],['pubs','Publicités'],['cdc','Coup de cœur'],['associations','Associations'],['comptes','Comptes']]
+      : [['reseau','Vos résultats'],['valider','À valider'],['commerces','Vos adhérents'],['pubs','Mises en avant'],['comptes','Comptes']];
+    if (!T.some(function(t){ return t[0] === onglet; })) onglet = 'reseau';
     document.getElementById('tabs').innerHTML = T.map(function(t){
       return '<button class="chip' + (t[0] === onglet ? ' on' : '') + '" data-o="' + t[0] + '">' + t[1] + (t[0] === 'valider' && nb ? '<span class="nb">' + nb + '</span>' : '') + '</button>';
     }).join('');
-    ({ reseau: vueReseau, valider: vueValider, commerces: vueCommerces, pubs: vuePubs, cdc: vueCdc, comptes: vueComptes })[onglet]();
+    ({ reseau: vueReseau, valider: vueValider, commerces: vueCommerces, pubs: vuePubs, cdc: vueCdc, associations: vueAssociations, comptes: vueComptes })[onglet]();
   }
   document.getElementById('tabs').addEventListener('click', function(e){
     var b = e.target.closest('[data-o]'); if (!b) return;
@@ -201,16 +206,22 @@
   var vue = document.getElementById('vue');
 
   /* ── Réseau : résultats de tout le pilote, chaque indicateur à part ── */
+  var filtreAsso = '';
   function vueReseau(){
+    var coms = D.commerces.filter(function(c){ return !filtreAsso || (filtreAsso === '-' ? !c.association : c.association === filtreAsso); });
+    var dans = {}; coms.forEach(function(c){ dans[c.slug] = 1; });
     var tot = { scans: 0, installations: 0, vues: 0, clics: 0, utilisations: 0, pub_affichages: 0, pub_clics: 0 };
-    STATS.commerces.forEach(function(c){ Object.keys(tot).forEach(function(k){ tot[k] += c[k] || 0; }); });
-    var actifs = D.commerces.filter(function(c){ return c.statut === 'valide'; }).length;
+    STATS.commerces.forEach(function(c){ if (dans[c.slug]) Object.keys(tot).forEach(function(k){ tot[k] += c[k] || 0; }); });
+    var actifs = coms.filter(function(c){ return c.statut === 'valide'; }).length;
     var parSlug = {}; STATS.commerces.forEach(function(c){ parSlug[c.slug] = c; });
     vue.innerHTML =
-      '<div class="row" style="justify-content:space-between;flex-wrap:wrap;margin-bottom:12px"><h2>Résultats du réseau</h2><div class="chips" id="per">' +
+      '<div class="row" style="justify-content:space-between;flex-wrap:wrap;margin-bottom:12px"><h2>' + (ville() ? 'Résultats du réseau' : 'Résultats de vos adhérents') + '</h2><div class="chips" id="per">' +
       [7,30,90].map(function(j){ return '<button class="chip' + (j === jours ? ' on' : '') + '" data-j="' + j + '">' + j + ' jours</button>'; }).join('') + '</div></div>' +
+      (ville() && (D.associations || []).length ? '<div class="chips" id="fa" style="margin-bottom:12px"><button class="chip' + (!filtreAsso ? ' on' : '') + '" data-a="">Toutes</button>' +
+        D.associations.map(function(a){ return '<button class="chip' + (a.slug === filtreAsso ? ' on' : '') + '" data-a="' + esc(a.slug) + '">' + esc(a.nom) + '</button>'; }).join('') +
+        '<button class="chip' + (filtreAsso === '-' ? ' on' : '') + '" data-a="-">Sans association</button></div>' : '') +
       '<div class="grid">' +
-        tile('Habitants actifs', STATS.habitants, 'appareils ayant utilisé l\'appli') +
+        (filtreAsso ? '' : tile('Habitants actifs', STATS.habitants, ville() ? 'appareils ayant utilisé l\'appli' : 'ayant vu l\'un de vos adhérents')) +
         tile('Commerces actifs', actifs, 'validés et visibles') +
         tile('Scans QR / NFC', tot.scans, 'dans tous les commerces') +
         tile('Installations', tot.installations, 'attribuées au commerce scanné') +
@@ -220,10 +231,10 @@
         tile('Pubs : affichages / clics', tot.pub_affichages, n(tot.pub_clics) + ' clics') +
       '</div>' +
       '<p class="small muted" style="margin:10px 0 18px">Aucun taux n\'est calculé entre ces chiffres : ce ne sont pas les mêmes personnes d\'une étape à l\'autre. Une vue n\'est pas une vente.</p>' +
-      '<div class="tw"><table><thead><tr><th>Commerce</th><th>Statut</th><th class="n">Scans</th><th class="n">Install.</th><th class="n">Vues</th><th class="n">Clics</th><th class="n">Offres vues</th><th class="n">Utilisations</th><th></th></tr></thead><tbody>' +
-      D.commerces.map(function(c){
+      '<div class="tw"><table><thead><tr><th>Commerce</th>' + (ville() ? '<th>Association</th>' : '') + '<th>Statut</th><th class="n">Scans</th><th class="n">Install.</th><th class="n">Vues</th><th class="n">Clics</th><th class="n">Offres vues</th><th class="n">Utilisations</th><th></th></tr></thead><tbody>' +
+      coms.map(function(c){
         var s = parSlug[c.slug] || {};
-        return '<tr><td><b>' + esc(c.doc.nom || c.slug) + '</b></td><td>' + st(c.statut, STATUTS_C) + '</td>' +
+        return '<tr><td><b>' + esc(c.doc.nom || c.slug) + '</b></td>' + (ville() ? '<td class="small">' + esc(nomAsso(c.association) || '—') + '</td>' : '') + '<td>' + st(c.statut, STATUTS_C) + '</td>' +
           ['scans','installations','vues','clics','offres_vues','utilisations'].map(function(k){ return '<td class="n">' + n(s[k]) + '</td>'; }).join('') +
           '<td><a href="' + HL.BASE + 'pro/tableau.html?s=' + encodeURIComponent(c.slug) + '" target="_blank" rel="noopener" class="small">Détail ›</a></td></tr>';
       }).join('') + '</tbody></table></div>';
@@ -231,6 +242,8 @@
       var b = e.target.closest('[data-j]'); if (!b) return; jours = +b.getAttribute('data-j');
       rpc('hl_admin_stats', { p_token: jeton(), p_days: jours }).then(function(j){ if (j.ok) { STATS = j; rendre(); } });
     });
+    var fa = document.getElementById('fa');
+    if (fa) fa.addEventListener('click', function(e){ var b = e.target.closest('[data-a]'); if (!b) return; filtreAsso = b.getAttribute('data-a'); vueReseau(); });
   }
   function tile(lb, v, ex){ return '<div class="tile"><p class="lb">' + lb + '</p><p class="v">' + n(v) + '</p><p class="ex">' + ex + '</p></div>'; }
 
@@ -310,7 +323,7 @@
       if (it.type === 'commerce') { statut = act === 'ok' ? 'valide' : 'refuse'; if (motif) doc.motif_refus = motif; }
       if (it.type === 'offre') { doc.offre.statut = act === 'ok' ? 'publiee' : 'refusee'; if (motif) doc.offre.motif_refus = motif; }
       if (it.type === 'video') { doc.videos[it.i].statut = act === 'ok' ? 'publiee' : 'refusee'; if (motif) doc.videos[it.i].motif_refus = motif; }
-      p = rpc('hl_admin_save_commerce', { p_token: jeton(), p_slug: c.slug, p_statut: statut, p_doc: doc });
+      p = rpc('hl_admin_save_commerce', { p_token: jeton(), p_slug: c.slug, p_statut: statut, p_doc: doc, p_association: c.association || null });
     }
     p.then(function(j){
       if (!j.ok) throw new Error(j.reason || 'refusé');
@@ -321,16 +334,17 @@
 
   /* ── Commerces : liste et fiche éditable ── */
   function vueCommerces(){
-    vue.innerHTML = '<div class="row" style="justify-content:space-between;margin-bottom:12px"><h2>Commerces</h2><button class="b2" id="nouveau">+ Ajouter un commerce</button></div>' +
-      '<div class="tw"><table><thead><tr><th>Commerce</th><th>Catégorie</th><th>Statut</th><th>Offre</th><th>Vidéos</th><th>Modifié</th></tr></thead><tbody>' +
+    vue.innerHTML = '<div class="row" style="justify-content:space-between;margin-bottom:12px"><h2>' + (ville() ? 'Commerces' : 'Vos adhérents') + '</h2><button class="b2" id="nouveau">+ Ajouter un commerce</button></div>' +
+      '<div class="tw"><table><thead><tr><th>Commerce</th>' + (ville() ? '<th>Association</th>' : '') + '<th>Catégorie</th><th>Statut</th><th>Offre</th><th>Vidéos</th><th>Modifié</th></tr></thead><tbody>' +
       D.commerces.map(function(c){
         var v = c.doc.videos || [];
         return '<tr class="clic" data-s="' + esc(c.slug) + '"><td><b>' + esc(c.doc.nom || c.slug) + '</b><br><span class="small muted">' + esc(c.slug) + (c.doc.demo ? ' · démo' : '') + '</span></td>' +
+          (ville() ? '<td class="small">' + esc(nomAsso(c.association) || '—') + '</td>' : '') +
           '<td>' + esc((HL.CATEGORIES[c.doc.categorie] || {}).label || '') + '</td><td>' + st(c.statut, STATUTS_C) + '</td>' +
           '<td>' + (c.doc.offre ? st(c.doc.offre.statut, STATUTS_M) : '<span class="small muted">aucune</span>') + '</td>' +
           '<td>' + v.length + (v.some(function(x){ return x.statut === 'a_moderer'; }) ? ' ' + st('a_moderer', STATUTS_M) : '') + '</td>' +
           '<td class="small muted">' + new Date(c.updated_at).toLocaleDateString('fr-FR') + '</td></tr>';
-      }).join('') + '</tbody></table></div>';
+      }).join('') + (D.commerces.length ? '' : '<tr><td colspan="7" class="vide">Aucun adhérent pour le moment : ajoutez votre premier commerce.</td></tr>') + '</tbody></table></div>';
     vue.querySelector('tbody').addEventListener('click', function(e){ var tr = e.target.closest('[data-s]'); if (tr) editerCommerce(commerce(tr.getAttribute('data-s'))); });
     document.getElementById('nouveau').addEventListener('click', function(){ editerCommerce(null); });
   }
@@ -361,6 +375,9 @@
       '<div class="bloc"><h3>Fiche</h3><div class="form">' +
         (neuf ? '<label class="f"><span>Identifiant (dans l\'adresse, ex. maison-dupont)</span><input id="slug" pattern="[a-z0-9-]+"></label>' : '') +
         '<label class="f"><span>Statut</span><select id="statut">' + opts(STATUTS_C, c.statut) + '</select></label>' +
+        (ville() ? '<label class="f"><span>Association</span><select id="asso"><option value="">— Aucune —</option>' +
+          (D.associations || []).map(function(a){ return '<option value="' + esc(a.slug) + '"' + (a.slug === c.association ? ' selected' : '') + '>' + esc(a.nom) + '</option>'; }).join('') + '</select></label>'
+          : '<p class="small muted large">Adhérent de ' + esc(nomAsso(D.association)) + '</p>') +
         champ('Nom', 'nom', d.nom) + champ('Catégorie', 'categorie', d.categorie, { select: cats }) +
         champ('Accroche', 'accroche', d.accroche, 'textarea', 'large') + champ('Adresse', 'adresse', d.adresse, null, 'large') +
         champ('Quartier', 'quartier', d.quartier) + champ('Téléphone', 'tel', d.tel, 'tel') + champ('Horaires', 'horaires', d.horaires) +
@@ -414,7 +431,8 @@
       var ids = doc.videos.map(function(v){ return v.id; });
       if (ids.some(function(x, i){ return !x || ids.indexOf(x) !== i; })) { msg.className = 'msg ko'; msg.textContent = 'Chaque vidéo doit avoir un identifiant unique.'; return; }
       msg.className = 'msg'; msg.textContent = 'Enregistrement…';
-      rpc('hl_admin_save_commerce', { p_token: jeton(), p_slug: slug, p_statut: document.getElementById('statut').value, p_doc: doc }).then(function(j){
+      rpc('hl_admin_save_commerce', { p_token: jeton(), p_slug: slug, p_statut: document.getElementById('statut').value, p_doc: doc,
+        p_association: ville() ? document.getElementById('asso').value : null }).then(function(j){
         if (!j.ok) throw new Error(j.reason || 'refusé');
         return charger().then(function(){ msg.className = 'msg ok'; msg.textContent = 'Enregistré. Visible dans l\'appli au prochain chargement.'; if (neuf) editerCommerce(commerce(slug)); });
       }).catch(function(e){ msg.className = 'msg ko'; msg.textContent = 'Enregistrement impossible : ' + e.message; });
@@ -444,7 +462,8 @@
   }
   function vuePubs(){
     var l = D.pubs.slice().sort(function(a,b){ return (b.debut || '').localeCompare(a.debut || ''); });
-    vue.innerHTML = '<div class="row" style="justify-content:space-between;margin-bottom:12px"><h2>Publicités</h2><button class="b2" id="nouvelle">+ Programmer une publicité</button></div>' +
+    vue.innerHTML = '<div class="row" style="justify-content:space-between;margin-bottom:12px"><h2>' + (ville() ? 'Publicités' : 'Mises en avant') + '</h2><button class="b2" id="nouvelle">' + (ville() ? '+ Programmer une publicité' : '+ Demander une mise en avant') + '</button></div>' +
+      (ville() ? '' : '<p class="alerte">Les publicités sont programmées par la ville pour toutes les associations. Vous pouvez demander une mise en avant pour l\'un de vos adhérents : la ville l\'accepte, la programme ou vous propose d\'autres dates.</p>') +
       '<p class="small muted" style="margin-bottom:12px">Accueil : une publicité fixe à la fois, en tête des offres de la semaine. Découvrir : une vidéo sponsorisée au plus pour cinq vidéos. À la fin d\'une publicité, la suivante prend le relais ; sans publicité, le Coup de cœur s\'affiche.</p>' +
       '<div class="tw"><table><thead><tr><th>Commerce</th><th>Format</th><th>Diffusion</th><th>État</th><th>Alerte</th></tr></thead><tbody>' +
       (l.length ? l.map(function(p){
@@ -458,14 +477,17 @@
   }
   function editerPub(p){
     var neuf = !p;
-    p = p || { id: '', slug: (D.commerces[0] || {}).slug, format: 'fixe', statut: 'programmee', emplacement: 'accueil', debut: aujourdhui(), fin: '', doc: { cta: 'offre' } };
-    var coms = {}; D.commerces.filter(function(c){ return c.statut === 'valide'; }).forEach(function(c){ coms[c.slug] = c.doc.nom; });
+    p = p || { id: '', slug: (D.commerces[0] || {}).slug, format: 'fixe', statut: ville() ? 'programmee' : 'demande', emplacement: 'accueil', debut: aujourdhui(), fin: '', doc: { cta: 'offre' } };
+    var coms = {}; D.commerces.filter(function(c){ return c.statut === 'valide'; }).forEach(function(c){ coms[c.slug] = c.doc.nom + (ville() && c.association ? ' · ' + nomAsso(c.association) : ''); });
+    var figee = !ville() && !neuf && p.statut !== 'demande';   // déjà traitée par la ville
     vue.innerHTML = '<button class="lien" id="retour" type="button" style="width:auto;padding:0 0 10px;text-align:left">‹ Toutes les publicités</button>' +
-      '<h2 style="margin-bottom:12px">' + (neuf ? 'Nouvelle publicité' : 'Publicité · ' + esc(nom(p.slug))) + '</h2><div id="alertesPub"></div>' +
+      '<h2 style="margin-bottom:12px">' + (neuf ? (ville() ? 'Nouvelle publicité' : 'Demande de mise en avant') : 'Publicité · ' + esc(nom(p.slug))) + '</h2>' +
+      (figee ? '<p class="alerte">Cette publicité a été traitée par la ville (' + esc(STATUTS_P[p.statut] || p.statut) + ') : elle n\'est plus modifiable ici.</p>' : '') +
+      '<div id="alertesPub"></div>' +
       '<div class="bloc" id="ed"><div class="form">' +
         champ('Commerce', 'slug', p.slug, { select: coms }) +
         champ('Format', 'format', p.format, { select: { fixe: 'Publicité fixe (accueil)', video: 'Vidéo sponsorisée (Découvrir et À la une)' } }) +
-        champ('Statut', 'statut', p.statut, { select: STATUTS_P }) +
+        (ville() ? champ('Statut', 'statut', p.statut, { select: STATUTS_P }) : '') +
         champ('Début', 'debut', p.debut, 'date') + champ('Fin', 'fin', p.fin, 'date') +
         champ('Bouton d\'action', 'doc.cta', p.doc.cta, { select: CTAS }) +
         '<div class="large" id="partFixe"><div class="form">' +
@@ -474,9 +496,10 @@
         '</div></div>' +
         '<div class="large" id="partVideo"><label class="f"><span>Vidéo publiée du commerce</span><select data-k="doc.videoId" id="videoId"></select></label></div>' +
       '</div></div>' +
-      '<div class="bar"><button class="btn" id="enreg" type="button"><span>Enregistrer</span><span class="arr">›</span></button><span class="msg" id="msg"></span>' +
-      (neuf ? '' : '<button class="b2 ko" id="suppr" type="button">Supprimer</button>') + '</div>';
+      (figee ? '' : '<div class="bar"><button class="btn" id="enreg" type="button"><span>' + (ville() ? 'Enregistrer' : 'Envoyer la demande') + '</span><span class="arr">›</span></button><span class="msg" id="msg"></span>' +
+      (neuf ? '' : '<button class="b2 ko" id="suppr" type="button">' + (ville() ? 'Supprimer' : 'Retirer la demande') + '</button>') + '</div>');
     var ed = document.getElementById('ed');
+    if (figee) Array.prototype.forEach.call(ed.querySelectorAll('input,select,textarea'), function(x){ x.disabled = true; });
     function maj(){
       var lu = lire(ed), c = commerce(lu.slug);
       document.getElementById('partFixe').style.display = lu.format === 'fixe' ? '' : 'none';
@@ -493,6 +516,7 @@
     }
     ed.addEventListener('change', maj); maj();
     document.getElementById('retour').addEventListener('click', vuePubs);
+    if (figee) { maj(); return; }
     if (!neuf) document.getElementById('suppr').addEventListener('click', function(){
       if (!confirm('Supprimer définitivement cette publicité ? Ses statistiques restent comptées.')) return;
       rpc('hl_admin_delete_pub', { p_token: jeton(), p_id: p.id }).then(function(){ return charger(); }).then(vuePubs);
@@ -501,7 +525,7 @@
       var msg = document.getElementById('msg'), lu = lire(ed);
       if (!lu.debut || !lu.fin) { msg.className = 'msg ko'; msg.textContent = 'Indiquez les dates de début et de fin.'; return; }
       if (lu.fin < lu.debut) { msg.className = 'msg ko'; msg.textContent = 'La fin est avant le début.'; return; }
-      var pub = { id: p.id || ('pub-' + lu.slug + '-' + lu.debut), slug: lu.slug, format: lu.format, statut: lu.statut,
+      var pub = { id: p.id || ('pub-' + lu.slug + '-' + lu.debut), slug: lu.slug, format: lu.format, statut: ville() ? lu.statut : 'demande',
         emplacement: lu.format === 'video' ? 'decouvrir' : 'accueil', debut: lu.debut, fin: lu.fin,
         doc: Object.assign({}, p.doc, lu.doc) };
       if (pub.format === 'video') { delete pub.doc.visuel; delete pub.doc.titre; delete pub.doc.texte; if (!pub.doc.videoId) { msg.className = 'msg ko'; msg.textContent = 'Choisissez une vidéo publiée.'; return; } }
@@ -509,7 +533,7 @@
       msg.className = 'msg'; msg.textContent = 'Enregistrement…';
       rpc('hl_admin_save_pub', { p_token: jeton(), p_pub: pub }).then(function(j){
         if (!j.ok) throw new Error(j.reason || 'refusé');
-        return charger().then(function(){ msg.className = 'msg ok'; msg.textContent = 'Enregistrée.'; p = D.pubs.filter(function(x){ return x.id === pub.id; })[0]; });
+        return charger().then(function(){ msg.className = 'msg ok'; msg.textContent = ville() ? 'Enregistrée.' : 'Demande envoyée à la ville.'; p = D.pubs.filter(function(x){ return x.id === pub.id; })[0]; });
       }).catch(function(e){ msg.className = 'msg ko'; msg.textContent = 'Enregistrement impossible : ' + e.message; });
     });
   }
@@ -534,17 +558,55 @@
     });
   }
 
+  /* ── Associations de la ville (niveau ville) ── */
+  function vueAssociations(){
+    var l = D.associations || [];
+    vue.innerHTML = '<h2 style="margin-bottom:8px">Associations de commerçants</h2>' +
+      '<p class="muted" style="margin-bottom:14px">Chaque association gère ses adhérents, ses comptes et ne voit que les chiffres de ses adhérents. Les publicités et le Coup de cœur restent gérés ici, au niveau ville.</p>' +
+      '<div class="tw" style="margin-bottom:16px"><table><thead><tr><th>Association</th><th>Identifiant</th><th class="n">Adhérents</th><th></th></tr></thead><tbody id="la">' +
+      (l.length ? l.map(function(a){
+        var nbc = D.commerces.filter(function(c){ return c.association === a.slug; }).length;
+        return '<tr><td><b>' + esc(a.nom) + '</b></td><td class="small muted">' + esc(a.slug) + '</td><td class="n">' + nbc + '</td>' +
+          '<td><button class="b2" data-slug="' + esc(a.slug) + '">Modifier</button></td></tr>';
+      }).join('') : '<tr><td colspan="4" class="vide">Aucune association pour le moment.</td></tr>') + '</tbody></table></div>' +
+      '<div class="bloc"><h3 id="faTitre">Nouvelle association</h3><div class="form">' +
+        '<label class="f"><span>Nom</span><input id="an" placeholder="Union des commerçants du Centre"></label>' +
+        '<label class="f"><span>Identifiant (ex. ucc-centre)</span><input id="as" autocapitalize="none"></label>' +
+        '<label class="f large"><span>Logo (URL, facultatif)</span><input id="al" type="url"></label>' +
+      '</div><div class="bar"><button class="btn" id="enreg" type="button"><span>Enregistrer l\'association</span><span class="arr">›</span></button><span class="msg" id="msg"></span></div></div>';
+    var an = document.getElementById('an'), as = document.getElementById('as'), al = document.getElementById('al'), edite = false;
+    an.addEventListener('input', function(){
+      if (edite) return;
+      as.value = an.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0, 60);
+    });
+    document.getElementById('la').addEventListener('click', function(e){
+      var b = e.target.closest('[data-slug]'); if (!b) return;
+      var a = l.filter(function(x){ return x.slug === b.getAttribute('data-slug'); })[0];
+      edite = true; an.value = a.nom; as.value = a.slug; as.disabled = true; al.value = a.logo || '';
+      document.getElementById('faTitre').textContent = 'Modifier « ' + a.nom + ' »';
+    });
+    document.getElementById('enreg').addEventListener('click', function(){
+      var msg = document.getElementById('msg');
+      rpc('hl_admin_save_association', { p_token: jeton(), p_slug: as.value.trim(), p_nom: an.value.trim(), p_logo: al.value.trim() }).then(function(j){
+        if (!j.ok) throw new Error(j.reason || 'refusé');
+        return charger().then(function(){ vueAssociations(); HL.toast('Association enregistrée'); });
+      }).catch(function(e){ msg.className = 'msg ko'; msg.textContent = 'Impossible : ' + e.message; });
+    });
+  }
+
   /* ── Comptes « association » : créés par le superadmin, qui tape lui-même
      le mot de passe. Ils n'ouvrent que cet espace et les tableaux de bord
      des commerces du pilote, jamais les espaces admin des restaurants. ── */
   function vueComptes(){
-    vue.innerHTML = '<h2 style="margin-bottom:8px">Comptes association</h2>' +
-      '<p class="muted" style="margin-bottom:14px">Pour les membres de l\'association. Ces comptes ouvrent cet espace et les tableaux de bord des commerces du pilote, jamais les espaces admin des restaurants ni vos autres outils Fidelavis.</p>' +
-      '<div class="tw" style="margin-bottom:16px"><table><thead><tr><th>Identifiant</th><th>État</th><th>Dernière connexion</th><th></th></tr></thead><tbody id="lc"><tr><td colspan="4" class="vide">Chargement…</td></tr></tbody></table></div>' +
+    vue.innerHTML = '<h2 style="margin-bottom:8px">' + (ville() ? 'Comptes des associations' : 'Comptes de ' + esc(nomAsso(D.association))) + '</h2>' +
+      '<p class="muted" style="margin-bottom:14px">' + (ville() ? '' : 'Pour les bénévoles de votre association. ') + 'Ces comptes ouvrent cet espace et les tableaux de bord des commerces du pilote, jamais les espaces admin des restaurants ni vos autres outils Fidelavis.</p>' +
+      '<div class="tw" style="margin-bottom:16px"><table><thead><tr><th>Identifiant</th>' + (ville() ? '<th>Association</th>' : '') + '<th>État</th><th>Dernière connexion</th><th></th></tr></thead><tbody id="lc"><tr><td colspan="4" class="vide">Chargement…</td></tr></tbody></table></div>' +
       '<div class="bloc"><h3 id="fcTitre">Nouveau compte</h3><div class="form">' +
         '<label class="f"><span>Identifiant (ex. asso.garenne)</span><input id="cu" autocomplete="off" autocapitalize="none"></label>' +
         '<label class="f"><span>Mot de passe (10 caractères minimum)</span><input id="cp" type="password" autocomplete="new-password"></label>' +
         '<label class="f"><span>Confirmer le mot de passe</span><input id="cp2" type="password" autocomplete="new-password"></label>' +
+        (ville() ? '<label class="f"><span>Association</span><select id="cas"><option value="">— Choisir —</option>' +
+          (D.associations || []).map(function(a){ return '<option value="' + esc(a.slug) + '">' + esc(a.nom) + '</option>'; }).join('') + '</select></label>' : '') +
         '<label class="ck" style="align-self:end;padding-bottom:10px"><input type="checkbox" id="ca" checked> Compte actif</label>' +
       '</div><p class="small muted" style="margin-top:8px">Pour un compte existant, laissez le mot de passe vide pour le garder.</p>' +
       '<div class="bar"><button class="btn" id="enreg" type="button"><span>Enregistrer le compte</span><span class="arr">›</span></button><span class="msg" id="msg"></span></div></div>';
@@ -553,9 +615,9 @@
         var lc = document.getElementById('lc'); if (!lc) return;
         if (!j.ok) { lc.innerHTML = '<tr><td colspan="4" class="vide">' + esc(j.reason) + '</td></tr>'; return; }
         lc.innerHTML = j.comptes.length ? j.comptes.map(function(c){
-          return '<tr><td><b>' + esc(c.username) + '</b></td><td>' + (c.is_active ? '<span class="st valide">Actif</span>' : '<span class="st suspendu">Désactivé</span>') + '</td>' +
+          return '<tr><td><b>' + esc(c.username) + '</b></td>' + (ville() ? '<td class="small">' + (c.association ? esc(nomAsso(c.association)) : '<span class="st suspendu">Non rattaché</span>') + '</td>' : '') + '<td>' + (c.is_active ? '<span class="st valide">Actif</span>' : '<span class="st suspendu">Désactivé</span>') + '</td>' +
             '<td class="small muted">' + (c.last_login_at ? new Date(c.last_login_at).toLocaleString('fr-FR') : 'jamais') + '</td>' +
-            '<td><button class="b2" data-u="' + esc(c.username) + '" data-a="' + (c.is_active ? '1' : '0') + '">Modifier</button></td></tr>';
+            '<td><button class="b2" data-u="' + esc(c.username) + '" data-a="' + (c.is_active ? '1' : '0') + '" data-as="' + esc(c.association || '') + '">Modifier</button></td></tr>';
         }).join('') : '<tr><td colspan="4" class="vide">Aucun compte pour le moment.</td></tr>';
       });
     }
@@ -564,6 +626,7 @@
       var b = e.target.closest('[data-u]'); if (!b) return;
       document.getElementById('cu').value = b.getAttribute('data-u');
       document.getElementById('ca').checked = b.getAttribute('data-a') === '1';
+      if (document.getElementById('cas')) document.getElementById('cas').value = b.getAttribute('data-as');
       document.getElementById('fcTitre').textContent = 'Modifier « ' + b.getAttribute('data-u') + ' »';
       document.getElementById('cp').focus();
     });
@@ -571,7 +634,8 @@
       var u = document.getElementById('cu').value.trim().toLowerCase(), p1 = document.getElementById('cp').value, p2 = document.getElementById('cp2').value, msg = document.getElementById('msg');
       if (p1 !== p2) { msg.className = 'msg ko'; msg.textContent = 'Les deux mots de passe ne sont pas identiques.'; return; }
       msg.className = 'msg'; msg.textContent = 'Enregistrement…';
-      rpc('hl_admin_save_compte', { p_token: jeton(), p_username: u, p_password: p1 || null, p_actif: document.getElementById('ca').checked }).then(function(j){
+      rpc('hl_admin_save_compte', { p_token: jeton(), p_username: u, p_password: p1 || null, p_actif: document.getElementById('ca').checked,
+        p_association: ville() ? document.getElementById('cas').value : null }).then(function(j){
         if (!j.ok) throw new Error(j.reason || 'refusé');
         document.getElementById('cp').value = ''; document.getElementById('cp2').value = '';
         msg.className = 'msg ok'; msg.textContent = 'Compte « ' + u + ' » enregistré. Transmettez le mot de passe à la personne de vive voix, pas par e-mail.';

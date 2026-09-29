@@ -93,7 +93,8 @@
       '<p>' + HL.esc(c.accroche || '') + '</p>' +
       '<p>📍 ' + HL.esc(c.adresse || '') + '</p>' +
       '<p>🕒 ' + HL.esc(c.horaires || '') + '</p>' +
-      (c.tel ? '<p>📞 ' + HL.esc(c.tel) + '</p>' : '');
+      (c.tel ? '<p>📞 ' + HL.esc(c.tel) + '</p>' : '') +
+      (c.association && d.associations[c.association] ? '<p class="small muted" style="margin-top:10px">Membre de ' + HL.esc(d.associations[c.association].nom) + '</p>' : '');
   });
 
   function typeLabel(t){ return {portrait:'Portrait', nouveaute:'Nouveauté', evenement:'Événement', offre:'Offre'}[t] || ''; }

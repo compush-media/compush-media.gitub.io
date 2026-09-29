@@ -190,7 +190,7 @@
       }).then(function (r) { if (!r.ok) throw new Error("http"); return r.json(); })
         .then(function (j) {
           if (!j || !Array.isArray(j.commerces)) throw new Error("vide");
-          return [{ ville: j.ville, commerces: j.commerces }, { pubs: j.pubs || [], coup_de_coeur: j.coup_de_coeur || {} }];
+          return [{ ville: j.ville, commerces: j.commerces, associations: j.associations || [] }, { pubs: j.pubs || [], coup_de_coeur: j.coup_de_coeur || {} }];
         })
         .catch(function () { return Promise.all([get(BASE + "data/commerces.json"), get(BASE + "data/pubs.json")]); });
     }
@@ -224,7 +224,8 @@
           }
         });
         pubs = pubs.filter(function (p) { return p.format !== "video" || p.video; });
-        return { commerces: list, parSlug: parSlug, pubs: pubs, coupDeCoeur: ((res[1] && res[1].coup_de_coeur) || {}).slug || "", ville: (res[0] && res[0].ville) || "La Garenne-Colombes" };
+        var assos = {}; ((res[0] && res[0].associations) || []).forEach(function (a) { assos[a.slug] = a; });
+        return { commerces: list, parSlug: parSlug, pubs: pubs, associations: assos, coupDeCoeur: ((res[1] && res[1].coup_de_coeur) || {}).slug || "", ville: (res[0] && res[0].ville) || "La Garenne-Colombes" };
       });
     });
     return _data;
