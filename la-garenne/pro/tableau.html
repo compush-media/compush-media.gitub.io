@@ -116,15 +116,39 @@
     HL.ls('fv_session_' + slug, null); HL.ls('fv_session_exp_' + slug, null); versConnexion();
   });
 
-  /* ── Code caisse : même PIN tournant que les wallets et offre.html ── */
-  var SECRET_KEY = 'OFFLINE123';
-  function simpleHash(str){ var h=0; for(var i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))%1000000007; } return h; }
-  function majPin(){
-    document.getElementById('pin').textContent = (simpleHash(SECRET_KEY + Math.floor(Date.now()/60000)) % 10000).toString().padStart(4,'0');
-    var s = 60 - new Date().getSeconds();
-    document.getElementById('reste').innerHTML = 'Nouveau code dans ' + s + ' s.<br>Saisissez-le sur le téléphone du client.';
+  function rpc(nom, corps){
+    return fetch(SUPA_URL + '/rest/v1/rpc/' + nom, {
+      method: 'POST',
+      headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(corps)
+    }).then(function(r){ if (!r.ok) throw new Error('http'); return r.json(); });
   }
-  majPin(); setInterval(majPin, 1000);
+
+  /* ── Code caisse : propre à ce commerce, donné par le serveur ──
+     Il change chaque minute ; le secret qui le produit ne quitte jamais la
+     base. En aperçu, on n'affiche qu'un code factice. */
+  var finCode = 0;
+  function majPin(){
+    if (APERCU) { document.getElementById('pin').textContent = '1234'; document.getElementById('reste').innerHTML = 'Code factice (aperçu).'; return; }
+    rpc('hl_caisse_code', { p_token: jeton, p_slug: slug }).then(function(j){
+      if (!j.ok) { document.getElementById('pin').textContent = '····'; return; }
+      document.getElementById('pin').textContent = j.code;
+      finCode = Date.now() + j.secondes * 1000;
+      clearTimeout(majPin._t); majPin._t = setTimeout(majPin, j.secondes * 1000 + 300);
+    }).catch(function(){ clearTimeout(majPin._t); majPin._t = setTimeout(majPin, 5000); });
+  }
+  function compte(){
+    if (APERCU || !finCode) return;
+    var s = Math.max(0, Math.round((finCode - Date.now()) / 1000));
+    document.getElementById('reste').innerHTML = 'Nouveau code dans ' + s + ' s.<br>Saisissez-le sur le téléphone du client. ' +
+      '<button class="lien" id="renouv" type="button" style="display:inline;width:auto;padding:0">Code vu par un tiers ?</button>';
+  }
+  document.getElementById('reste').addEventListener('click', function(e){
+    if (!e.target.closest('#renouv')) return;
+    if (!confirm('Changer le secret de votre code caisse ? Les codes vus jusqu\'ici ne marcheront plus.')) return;
+    rpc('hl_caisse_renouveler', { p_token: jeton, p_slug: slug }).then(function(j){ if (j.ok) { HL.toast('Nouveau code caisse'); majPin(); } });
+  });
+  majPin(); setInterval(compte, 1000);
 
   /* ── Données ── */
   function fictif(j){

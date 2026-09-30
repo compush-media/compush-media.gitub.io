@@ -45,13 +45,20 @@
 <script>
 /* Utilisation d'une offre en caisse, sans logiciel de caisse.
    L'habitant tend son téléphone ; le commerçant saisit le code à 4 chiffres
-   affiché dans son espace Fidelavis (même PIN tournant que les wallets,
-   ±2 minutes de tolérance). C'est la seule « utilisation » comptée. */
+   affiché dans son espace. Le code est propre à chaque commerce, change
+   chaque minute et se vérifie sur le serveur (hl_offre_utiliser), qui tient
+   aussi le « une fois par mois » et freine les essais au hasard. C'est la
+   seule « utilisation » comptée, et c'est le serveur qui la compte. */
 (function(){
-  var SECRET_KEY = 'OFFLINE123';
-  function simpleHash(str){ var h=0; for(var i=0;i<str.length;i++){ h=(h*31+str.charCodeAt(i))%1000000007; } return h; }
-  function pinA(off){ return (simpleHash(SECRET_KEY + (Math.floor(Date.now()/60000)+off)) % 10000).toString().padStart(4,'0'); }
-  function pinOk(p){ return [-2,-1,0,1,2].some(function(o){ return pinA(o) === p; }); }
+  var SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+  var SUPA_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
+  function rpc(nom, corps){
+    return fetch(SUPA_URL + '/rest/v1/rpc/' + nom, {
+      method: 'POST',
+      headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(corps)
+    }).then(function(r){ if (!r.ok) throw new Error('http'); return r.json(); });
+  }
 
   var slug = HL.qs('s').toLowerCase().replace(/[^a-z0-9-]/g,'');
   var mois = new Date().toISOString().slice(0,7);
@@ -85,11 +92,12 @@
     var res = document.getElementById('res'), btn = document.getElementById('valider');
     function msg(cls, t){ res.innerHTML = '<div class="res ' + cls + '">' + t + '</div>'; }
 
-    if (HL.ls(cle)) {
-      boxes.forEach(function(b){ b.disabled = true; }); btn.disabled = true; btn.style.opacity = .5;
-      msg('info', 'Offre déjà utilisée ce mois-ci. Elle revient le mois prochain.');
-      return;
-    }
+    function bloquer(){ boxes.forEach(function(b){ b.disabled = true; }); btn.disabled = true; btn.style.opacity = .5; }
+    if (HL.ls(cle)) { bloquer(); msg('info', 'Offre déjà utilisée ce mois-ci. Elle revient le mois prochain.'); return; }
+    // Le serveur fait foi : utilisée ce mois-ci même si ce téléphone l'a oublié.
+    rpc('hl_offre_statut', { p_slug: c.slug, p_device_id: HL.deviceId() }).then(function(j){
+      if (j && j.utilisee) { HL.ls(cle, '1'); bloquer(); msg('info', 'Offre déjà utilisée ce mois-ci. Elle revient le mois prochain.'); }
+    }).catch(function(){});
     boxes.forEach(function(b, i){
       b.addEventListener('input', function(){ b.value = b.value.replace(/\D/g,'').slice(0,1); if (b.value && i < 3) boxes[i+1].focus(); });
       b.addEventListener('keydown', function(e){
@@ -102,11 +110,24 @@
     function valider(){
       var code = boxes.map(function(b){ return b.value; }).join('');
       if (!/^\d{4}$/.test(code)) { msg('info', 'Saisissez les 4 chiffres du code commerçant.'); return; }
-      if (!pinOk(code)) { HL.track('offre_code_faux', c.slug, 'pin'); msg('ko', 'Code incorrect. Vérifiez le code affiché en caisse.'); return; }
-      HL.ls(cle, String(Date.now()));
-      HL.track('offre_utilisee', c.slug, 'pin');
-      boxes.forEach(function(b){ b.disabled = true; }); btn.disabled = true; btn.style.opacity = .5;
-      msg('ok', '🎉 Offre validée le ' + new Date().toLocaleString('fr-FR', {day:'numeric', month:'long', hour:'2-digit', minute:'2-digit'}) + '. Bonne visite !');
+      btn.disabled = true; msg('info', 'Vérification…');
+      rpc('hl_offre_utiliser', { p_slug: c.slug, p_code: code, p_device_id: HL.deviceId() }).then(function(j){
+        btn.disabled = false;
+        if (j.ok) {
+          HL.ls(cle, String(Date.now())); bloquer();
+          msg('ok', '🎉 Offre validée le ' + new Date().toLocaleString('fr-FR', {day:'numeric', month:'long', hour:'2-digit', minute:'2-digit'}) + '. Bonne visite !');
+          return;
+        }
+        var raisons = {
+          code_faux: 'Code incorrect. Vérifiez le code affiché en caisse (il change chaque minute).',
+          deja_utilisee: 'Offre déjà utilisée ce mois-ci. Elle revient le mois prochain.',
+          trop_essais: 'Trop d\'essais. Patientez quelques minutes avant de réessayer.',
+          offre_indisponible: 'Cette offre n\'est plus disponible.'
+        };
+        if (j.reason === 'deja_utilisee') { HL.ls(cle, '1'); bloquer(); }
+        msg(j.reason === 'code_faux' || j.reason === 'trop_essais' ? 'ko' : 'info', raisons[j.reason] || 'Validation impossible pour le moment.');
+        if (j.reason === 'code_faux') { boxes.forEach(function(b){ b.value = ''; }); boxes[0].focus(); }
+      }).catch(function(){ btn.disabled = false; msg('ko', 'Pas de connexion : réessayez dans un instant.'); });
     }
   });
 })();

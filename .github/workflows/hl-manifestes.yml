@@ -1,0 +1,52 @@
+# ──────────────────────────────────────────────────────────────
+#  Pilote La Garenne-Colombes : fichiers d'installation par commerce.
+#
+#  Crée la-garenne/manifests/<slug>.json pour chaque commerce validé par
+#  une association (lu dans Supabase, hl_public). Sans ce fichier, l'appli
+#  installée depuis le QR code d'un commerce s'ouvre sur l'accueil au lieu
+#  de sa vidéo.
+#
+#  Déclencheurs : toutes les 2 heures, ou Actions → Run workflow.
+#  Aucun secret requis (clé publishable, publique par nature).
+#  Pas de [skip ci] dans le commit : GitHub Pages doit republier.
+# ──────────────────────────────────────────────────────────────
+name: Pilote La Garenne · fichiers d'installation
+
+on:
+  schedule:
+    - cron: '17 */2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hl-manifestes
+  cancel-in-progress: false
+
+jobs:
+  manifestes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Générer les fichiers manquants
+        run: python3 .github/scripts/hl_manifestes.py
+
+      - name: Publier s'il y a du nouveau
+        run: |
+          git add la-garenne/manifests
+          if git diff --cached --quiet; then echo "Aucun fichier nouveau."; exit 0; fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Pilote La Garenne : fichiers d'installation des nouveaux commerces"
+          for i in 1 2 3; do
+            git push && exit 0
+            git pull --rebase origin main || true
+          done
+          echo "::error::Push impossible après 3 essais."
+          exit 1

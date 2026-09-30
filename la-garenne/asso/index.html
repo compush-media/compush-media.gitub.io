@@ -500,10 +500,12 @@
     });
   }
   // Sans son fichier d'installation, l'appli installée depuis ce commerce
-  // s'ouvrirait sur l'accueil au lieu de sa vidéo (fichier à ajouter au dépôt).
+  // s'ouvrirait sur l'accueil au lieu de sa vidéo. Il est créé toutes les
+  // 2 heures par .github/workflows/hl-manifestes.yml pour les commerces validés.
   function verifierManifeste(slug){
     fetch(HL.BASE + 'manifests/' + encodeURIComponent(slug) + '.json', { method: 'HEAD', cache: 'no-store' }).then(function(r){
-      if (!r.ok) document.getElementById('manif').innerHTML = '<p class="alerte">Fichier d\'installation <b>manifests/' + esc(slug) + '.json</b> absent du site : l\'appli installée depuis son QR code s\'ouvrira sur l\'accueil au lieu de sa vidéo. Il faut l\'ajouter au dépôt avant d\'imprimer son QR code.</p>';
+      if (!r.ok) document.getElementById('manif').innerHTML = '<p class="alerte">Fichier d\'installation en préparation : il est créé automatiquement dans les 2 heures qui suivent la validation du commerce. ' +
+        'D\'ici là, l\'appli installée depuis son QR code s\'ouvrirait sur l\'accueil au lieu de sa vidéo : attendez ce délai avant de distribuer son QR code.</p>';
     });
   }
 

@@ -518,7 +518,7 @@
     BASE: BASE, CATEGORIES: CATEGORIES, icone: icone,
     qs: qs, esc: esc, ls: ls, mmss: mmss, jour: jour,
     isStandalone: isStandalone, isIOS: isIOS, isAndroid: isAndroid,
-    track: track, trackUnique: trackUnique,
+    track: track, trackUnique: trackUnique, deviceId: deviceId,
     setSource: setSource, getSource: getSource,
     charger: charger, cta: cta, ctaHtml: ctaHtml, player: player,
     impression: impression, pubFixeHtml: pubFixeHtml, vcardHtml: vcardHtml, commerceRowHtml: commerceRowHtml,
