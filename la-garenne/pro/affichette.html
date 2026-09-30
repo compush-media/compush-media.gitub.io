@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Affichettes QR – Les Commerces de La Garenne</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="/la-garenne/hl.js"></script>
+<style>
+  :root{ --rose:#C8206A; --ink:#1D2340; --muted:#6B6F80; --cream:#FBF6F1; --line:#EFE4DA; }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Lato',-apple-system,Arial,sans-serif;background:#E9E4DF;color:var(--ink);}
+
+  /* ── Écran : barre d'outils et aperçu ── */
+  .outils{background:#fff;border-bottom:1px solid var(--line);padding:14px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;position:sticky;top:0;z-index:5;}
+  .outils h1{font:700 19px 'Playfair Display',Georgia,serif;margin:0 auto 0 0;}
+  .outils select{height:40px;border-radius:10px;border:1.5px solid var(--line);padding:0 10px;font:inherit;background:#fff;color:var(--ink);}
+  .outils button{height:42px;border:0;border-radius:999px;background:var(--rose);color:#fff;font:900 15px 'Lato',sans-serif;padding:0 20px;cursor:pointer;}
+  .aide{max-width:900px;margin:18px auto;padding:0 20px;display:grid;gap:14px;}
+  .aide .carte{background:#fff;border-radius:14px;padding:16px;font-size:14.5px;line-height:1.55;}
+  .aide h2{font:700 17px 'Playfair Display',Georgia,serif;margin:0 0 8px;}
+  .aide ol{margin:6px 0 0;padding-left:20px;}
+  .lien{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px;}
+  .lien code{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px;word-break:break-all;user-select:all;}
+  .lien button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:700 13px 'Lato',sans-serif;cursor:pointer;}
+  .apercu{display:grid;justify-content:center;gap:24px;padding:10px 20px 50px;}
+  .feuille{background:#fff;box-shadow:0 6px 30px rgba(0,0,0,.15);width:210mm;height:297mm;transform-origin:top center;}
+  @media (max-width:900px){ .feuille{zoom:.45;} }
+
+  /* ── Feuille A4 ── */
+  .feuille.a6{display:grid;grid-template-columns:105mm 105mm;grid-template-rows:148.5mm 148.5mm;position:relative;}
+  .feuille.a6::before,.feuille.a6::after{content:"";position:absolute;background:repeating-linear-gradient(90deg,#bbb 0 3mm,transparent 3mm 5mm);}
+  .feuille.a6::before{left:0;right:0;top:148.5mm;height:.2mm;}
+  .feuille.a6::after{top:0;bottom:0;left:105mm;width:.2mm;background:repeating-linear-gradient(180deg,#bbb 0 3mm,transparent 3mm 5mm);}
+
+  /* ── Affichette ── */
+  .aff{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;text-align:center;color:var(--ink);background:#fff;}
+  .aff .bande{align-self:stretch;background:var(--rose);color:#fff;display:flex;align-items:center;justify-content:center;gap:2.5mm;}
+  .aff .bande img{border-radius:1.5mm;background:#fff;}
+  .aff .bande b{font-weight:900;}
+  .aff .accroche{font-family:'Playfair Display',Georgia,serif;font-weight:700;line-height:1.1;}
+  .aff .accroche em{font-style:normal;color:var(--rose);}
+  .aff .nom{font-weight:900;letter-spacing:.02em;}
+  .aff .qr{background:#fff;border:.6mm solid var(--ink);display:flex;align-items:center;justify-content:center;}
+  .aff .qr img,.aff .qr canvas{width:100%!important;height:100%!important;image-rendering:pixelated;}
+  .aff .mode{display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ink);}
+  .aff .mode svg{flex-shrink:0;}
+  .aff .offre{background:#FCE8F1;color:#9A1450;font-weight:900;border-radius:3mm;}
+  .aff .pied{margin-top:auto;color:var(--muted);align-self:stretch;border-top:.3mm solid var(--line);}
+
+  /* A6 : 105 × 148,5 mm */
+  .a6 .aff{padding:0 7mm 4mm;}
+  .a6 .bande{margin:0 -7mm;height:11mm;font-size:3.4mm;}
+  .a6 .bande img{width:6.5mm;height:6.5mm;}
+  .a6 .accroche{font-size:6.6mm;margin-top:6mm;}
+  .a6 .nom{font-size:4.2mm;margin-top:2.5mm;}
+  .a6 .qr{width:54mm;height:54mm;margin-top:5mm;padding:2.5mm;border-radius:3mm;}
+  .a6 .mode{font-size:3.3mm;gap:2mm;margin-top:4mm;}
+  .a6 .mode svg{width:6mm;height:6mm;}
+  .a6 .offre{font-size:3.4mm;padding:2mm 4mm;margin-top:3.5mm;}
+  .a6 .pied{font-size:2.8mm;padding-top:2.5mm;}
+
+  /* A4 vitrine : 210 × 297 mm */
+  .feuille.a4 .aff{height:297mm;padding:0 16mm 10mm;}
+  .a4 .bande{margin:0 -16mm;height:24mm;font-size:7mm;}
+  .a4 .bande img{width:14mm;height:14mm;border-radius:3mm;}
+  .a4 .accroche{font-size:15mm;margin-top:16mm;}
+  .a4 .nom{font-size:9mm;margin-top:6mm;}
+  .a4 .qr{width:115mm;height:115mm;margin-top:12mm;padding:5mm;border-radius:6mm;border-width:1.2mm;}
+  .a4 .mode{font-size:6.5mm;gap:4mm;margin-top:9mm;}
+  .a4 .mode svg{width:12mm;height:12mm;}
+  .a4 .offre{font-size:6.5mm;padding:4mm 8mm;margin-top:8mm;border-radius:5mm;}
+  .a4 .pied{font-size:5mm;padding-top:5mm;}
+
+  .vide{max-width:600px;margin:40px auto;background:#fff;border-radius:14px;padding:20px;font-size:15px;}
+
+  /* ── Impression : les feuilles seules, à 100 % ── */
+  @page{size:A4 portrait;margin:0;}
+  @media print{
+    body{background:#fff;}
+    .outils,.aide{display:none!important;}
+    .apercu{display:block;padding:0;}
+    .feuille{box-shadow:none;zoom:1!important;transform:none;page-break-after:always;break-after:page;}
+    .feuille:last-child{page-break-after:auto;break-after:auto;}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body>
+<div class="outils">
+  <h1>Affichettes QR</h1>
+  <label for="format" class="small">Format</label>
+  <select id="format">
+    <option value="a6">Chevalet de comptoir A6 (4 par feuille A4)</option>
+    <option value="a4">Affiche de vitrine A4</option>
+  </select>
+  <button type="button" id="imprimer">Imprimer</button>
+</div>
+
+<div class="aide" id="aide"></div>
+<div class="apercu" id="apercu"></div>
+
+<script>
+/* Affichettes à imprimer pour un ou plusieurs commerces.
+   ?s=slug  ou  ?s=slug1,slug2,…  (espace association : tous ses adhérents).
+   Le QR code mène à la page d'atterrissage du commerce (via=qr) : chaque
+   scan lui est attribué. Il est dessiné ici, sans service externe, pour
+   rester net à l'impression. */
+(function(){
+  var ORIGINE = 'https://app.cartefidelavis.com';
+  var slugs = HL.qs('s').toLowerCase().split(',').map(function(x){ return x.replace(/[^a-z0-9-]/g, ''); }).filter(Boolean);
+  var format = HL.qs('format') === 'a4' ? 'a4' : 'a6';
+  var sel = document.getElementById('format'); sel.value = format;
+  var esc = HL.esc, commerces = [];
+
+  function lien(c, via){ return ORIGINE + HL.BASE + 'c.html?s=' + encodeURIComponent(c.slug) + '&via=' + via; }
+  var NFC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8.5a5 5 0 0 1 0 7"/><path d="M9.5 6a9 9 0 0 1 0 12"/><path d="M13 3.5a13 13 0 0 1 0 17"/><rect x="16" y="6" width="6" height="12" rx="1.5"/></svg>';
+  var APP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M8 12h8"/></svg>';
+
+  function affichette(c){
+    var o = c.offre;
+    return '<div class="aff">' +
+      '<div class="bande"><img src="' + HL.BASE + 'icons/icon-192.png" alt=""><span><b>Les Commerces de La Garenne</b></span></div>' +
+      '<div class="accroche">Découvrez notre histoire <em>en vidéo</em></div>' +
+      '<div class="nom">' + esc(c.nom) + '</div>' +
+      '<div class="qr" data-qr="' + esc(lien(c, 'qr')) + '"></div>' +
+      '<div class="mode">' + APP + '<span>Scannez avec l\'appareil photo</span></div>' +
+      '<div class="mode" style="margin-top:1.5mm">' + NFC + '<span>ou approchez votre téléphone de la carte</span></div>' +
+      (o ? '<div class="offre">Votre avantage : ' + esc(o.titre) + '</div>' : '') +
+      '<div class="pied">Appli gratuite des commerçants de La Garenne-Colombes · sans compte · par Fidelavis</div>' +
+    '</div>';
+  }
+
+  function rendre(){
+    var ap = document.getElementById('apercu');
+    if (!commerces.length) { ap.innerHTML = ''; return; }
+    var pages = [];
+    if (format === 'a6') {
+      // Un chevalet par commerce ; une feuille = 4 chevalets. Pour un seul
+      // commerce, on remplit la feuille (4 exemplaires à découper).
+      var liste = commerces.length === 1 ? [commerces[0], commerces[0], commerces[0], commerces[0]] : commerces;
+      for (var i = 0; i < liste.length; i += 4) pages.push('<div class="feuille a6">' + liste.slice(i, i + 4).map(affichette).join('') + '</div>');
+    } else {
+      commerces.forEach(function(c){ pages.push('<div class="feuille a4">' + affichette(c) + '</div>'); });
+    }
+    ap.innerHTML = pages.join('');
+    Array.prototype.forEach.call(ap.querySelectorAll('[data-qr]'), function(el){
+      new QRCode(el, { text: el.getAttribute('data-qr'), width: 600, height: 600, colorDark: '#1D2340', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+    });
+  }
+
+  function aide(){
+    var un = commerces.length === 1 ? commerces[0] : null;
+    document.getElementById('aide').innerHTML =
+      '<div class="carte"><h2>Imprimer</h2>' +
+        'Imprimez en <b>A4, à 100 %</b> (sans « ajuster à la page »), de préférence sur papier épais ou cartonné. ' +
+        (format === 'a6' ? 'Découpez le long des pointillés : chaque chevalet mesure 10,5 × 14,8 cm et tient dans un porte-menu de comptoir.' : 'L\'affiche se pose en vitrine, à hauteur des yeux.') +
+        ' Scannez une affichette avec votre téléphone avant de les poser : elle doit ouvrir la vidéo de votre commerce.</div>' +
+      '<div class="carte"><h2>Programmer une carte NFC</h2>' +
+        'Avec une carte ou pastille NFC vierge (type NTAG213 ou NTAG215) et l\'application gratuite <b>NFC Tools</b> : ' +
+        '<ol><li>Ouvrez NFC Tools, onglet <b>Écrire</b>, puis <b>Ajouter un enregistrement</b> › <b>URL / URI</b>.</li>' +
+        '<li>Collez l\'adresse ci-dessous' + (un ? '' : ' (celle du commerce concerné)') + ', validez, puis <b>Écrire</b> et approchez la carte du téléphone.</li>' +
+        '<li>Testez en approchant un autre téléphone : la vidéo du commerce doit s\'ouvrir.</li></ol>' +
+        commerces.map(function(c){
+          return '<div class="lien">' + (un ? '' : '<b style="min-width:140px">' + esc(c.nom) + '</b>') + '<code>' + esc(lien(c, 'nfc')) + '</code><button type="button" data-copie="' + esc(lien(c, 'nfc')) + '">Copier</button></div>';
+        }).join('') +
+        '<p style="margin:10px 0 0;color:var(--muted)">L\'adresse NFC se termine par <b>via=nfc</b> : vos statistiques distinguent ainsi les clients venus par la carte de ceux venus par le QR code.</p>' +
+      '</div>';
+  }
+  document.getElementById('aide').addEventListener('click', function(e){
+    var b = e.target.closest('[data-copie]'); if (!b) return;
+    var t = b.getAttribute('data-copie');
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ b.textContent = 'Copié'; setTimeout(function(){ b.textContent = 'Copier'; }, 1500); })
+      .catch(function(){ var code = b.previousElementSibling; var r = document.createRange(); r.selectNodeContents(code); var s = getSelection(); s.removeAllRanges(); s.addRange(r); });
+  });
+
+  sel.addEventListener('change', function(){
+    format = sel.value;
+    history.replaceState(null, '', '?s=' + slugs.join(',') + '&format=' + format);
+    aide(); rendre();
+  });
+  document.getElementById('imprimer').addEventListener('click', function(){ window.print(); });
+
+  HL.charger().then(function(d){
+    commerces = slugs.map(function(s){ return d.parSlug[s]; }).filter(Boolean);
+    var absents = slugs.filter(function(s){ return !d.parSlug[s]; });
+    if (!commerces.length) {
+      document.getElementById('apercu').innerHTML = '<div class="vide">Aucun commerce validé à imprimer. Un commerce doit être validé par son association avant d\'avoir son affichette.</div>';
+      document.getElementById('imprimer').disabled = true;
+      return;
+    }
+    document.title = (commerces.length === 1 ? commerces[0].nom : commerces.length + ' commerces') + ' – Affichettes QR';
+    aide(); rendre();
+    if (absents.length) document.getElementById('aide').insertAdjacentHTML('afterbegin', '<div class="carte" style="background:#FFF3D6;color:#7A5200">Non imprimés car pas encore validés : ' + esc(absents.join(', ')) + '.</div>');
+  });
+})();
+</script>
+</body>
+</html>
