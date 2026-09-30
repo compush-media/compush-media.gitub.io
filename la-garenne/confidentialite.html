@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#C8206A">
+<link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
+<link rel="stylesheet" href="/la-garenne/polices/polices.css">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<title>Confidentialité – Les Commerces de La Garenne</title>
+<style>
+  main.ct{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;padding-bottom:30px;}
+  main.ct > *{min-width:0;}
+  section h2{margin-bottom:8px;}
+  section p,section li{font-size:15px;line-height:1.6;}
+  section ul{margin:6px 0 0;padding-left:20px;display:grid;gap:4px;}
+  .maj{font-size:13px;color:var(--muted);}
+  .tw{overflow-x:auto;background:var(--card);border-radius:14px;box-shadow:var(--shadow);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{font-size:12px;color:var(--muted);}
+  tr:last-child td{border-bottom:0;}
+  .choix{display:grid;gap:12px;}
+  .interrupteur{display:flex;gap:12px;align-items:flex-start;}
+  .interrupteur input{width:22px;height:22px;margin-top:2px;flex-shrink:0;accent-color:var(--rose);}
+  .interrupteur b{display:block;}
+  .ident{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:4px 8px;user-select:all;word-break:break-all;}
+  .msg{font-size:14px;font-weight:700;}
+  .msg.ok{color:var(--ok);}
+  .msg.ko{color:#B23B3B;}
+  .confirmer{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .b2{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;color:var(--ink);}
+  .b2.ko{color:#B23B3B;border-color:#F0C4C4;}
+</style>
+</head>
+<body class="sans-nav">
+<div id="bar"></div>
+<main class="ct">
+  <div>
+    <h1>Confidentialité</h1>
+    <p class="maj">Appli « Les Commerces de La Garenne » · mise à jour le 30 septembre 2026</p>
+  </div>
+
+  <section>
+    <h2>En bref</h2>
+    <ul>
+      <li>L'appli s'utilise <b>sans compte</b> : nous ne vous demandons ni nom, ni e-mail, ni téléphone, ni adresse.</li>
+      <li>Nous ne connaissons pas votre position, ne faisons pas de publicité ciblée et ne vendons aucune donnée.</li>
+      <li>Nous mesurons la fréquentation de façon anonyme, pour que les commerçants sachent si l'appli leur amène des clients. Vous pouvez refuser cette mesure plus bas.</li>
+      <li>Les notifications ne s'activent que si vous le demandez.</li>
+    </ul>
+  </section>
+
+  <section class="card choix" id="choix">
+    <h2 style="margin:0">Vos choix sur cet appareil</h2>
+    <label class="interrupteur" for="mesure">
+      <input type="checkbox" id="mesure">
+      <span><b>Participer à la mesure de fréquentation</b><span class="small muted">Scans, vidéos regardées, clics : comptés sans vous identifier, pour les statistiques des commerçants. Décochez pour que plus rien ne soit mesuré depuis cet appareil.</span></span>
+    </label>
+    <p class="msg" id="mMesure"></p>
+    <div>
+      <p class="small"><b>Identifiant anonyme de cet appareil</b> : <span class="ident" id="ident"></span></p>
+      <p class="small muted" style="margin-top:4px">Tiré au hasard, propre à cette appli, renouvelé tous les 13 mois. Il ne permet pas de savoir qui vous êtes.</p>
+    </div>
+    <div class="confirmer" id="zoneEffacer">
+      <button class="b2 ko" type="button" id="effacer">Effacer mes statistiques</button>
+    </div>
+    <p class="msg" id="mEffacer"></p>
+  </section>
+
+  <section>
+    <h2>Qui est responsable</h2>
+    <p>L'appli est éditée par <b>Compush Media</b> (Fidelavis), entreprise individuelle, 61 boulevard National, 92250 La Garenne-Colombes, SIRET 518 341 995 00018. Directeur de la publication : Jean-Claude Ververt. Contact : <span class="ident">contact@fidelavis.com</span>, 07 44 96 71 70.</p>
+    <p style="margin-top:8px">Compush Media est responsable des traitements décrits ici. Les associations de commerçants et les commerçants ne reçoivent que des chiffres agrégés, jamais de données sur une personne.</p>
+  </section>
+
+  <section>
+    <h2>Ce que nous traitons, pourquoi et combien de temps</h2>
+    <div class="tw"><table>
+      <thead><tr><th>Données</th><th>Pourquoi</th><th>Base légale</th><th>Durée</th></tr></thead>
+      <tbody>
+        <tr><td>Identifiant anonyme de l'appareil, page consultée, action (scan, vue vidéo de 3 s ou plus, clic, installation), commerce concerné, date</td>
+            <td>Statistiques de fréquentation pour les commerçants et les associations</td>
+            <td>Intérêt légitime ; mesure d'audience exemptée de consentement (CNIL), refusable ci-dessus</td>
+            <td>Identifiant : 13 mois. Statistiques : 25 mois</td></tr>
+        <tr><td>Commerce par lequel vous avez découvert l'appli (QR code ou carte NFC)</td>
+            <td>Attribuer votre venue au commerce qui vous a fait connaître l'appli</td>
+            <td>Intérêt légitime (mesure d'audience)</td>
+            <td>Sur votre appareil ; statistiques : 25 mois</td></tr>
+        <tr><td>Utilisation d'une offre : identifiant de l'appareil, commerce, mois</td>
+            <td>Appliquer la règle « une fois par mois » et éviter les abus</td>
+            <td>Exécution du service ; intérêt légitime</td>
+            <td>13 mois</td></tr>
+        <tr><td>Abonnement aux notifications</td>
+            <td>Vous prévenir des nouveautés (une notification par semaine au plus)</td>
+            <td>Consentement, donné dans votre téléphone</td>
+            <td>Jusqu'à ce que vous les désactiviez</td></tr>
+        <tr><td>Favoris, offres déjà utilisées, préférences</td>
+            <td>Faire fonctionner l'appli</td>
+            <td>Nécessaire au service</td>
+            <td>Uniquement sur votre appareil</td></tr>
+        <tr><td>Comptes des commerçants et des associations : identifiant, mot de passe chiffré, dernière connexion</td>
+            <td>Accès à leur espace</td>
+            <td>Exécution du service</td>
+            <td>Durée de la participation au pilote</td></tr>
+        <tr><td>Vidéos et photos publiées par les commerçants</td>
+            <td>Présenter les commerces</td>
+            <td>Exécution du service ; chaque commerçant atteste détenir les droits et l'accord des personnes filmées</td>
+            <td>Pendant leur période de diffusion et la participation du commerce</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small muted" style="margin-top:10px">Nous n'enregistrons ni votre adresse IP, ni votre navigateur, ni ce que vous tapez dans la recherche.</p>
+  </section>
+
+  <section>
+    <h2>Qui y a accès</h2>
+    <ul>
+      <li><b>Compush Media</b>, qui exploite l'appli.</li>
+      <li><b>Les associations de commerçants et les commerçants</b> : uniquement des chiffres agrégés (nombre de scans, de vues, de clics, d'offres utilisées).</li>
+      <li><b>Nos prestataires techniques</b>, qui agissent sur nos instructions :
+        <ul>
+          <li>Supabase (base de données et stockage des vidéos), hébergé à Paris, dans l'Union européenne ;</li>
+          <li>GitHub Pages (Microsoft), qui sert les pages de l'appli depuis les États-Unis, dans le cadre du Data Privacy Framework UE–États-Unis ;</li>
+          <li>Progressier, pour l'installation de l'appli et l'envoi des notifications ;</li>
+          <li>Apple et Google, qui acheminent les notifications jusqu'à votre téléphone si vous les avez activées.</li>
+        </ul></li>
+    </ul>
+    <p style="margin-top:8px">Les boutons « Itinéraire » ouvrent Google Maps ou Plans : ce service applique alors ses propres règles.</p>
+  </section>
+
+  <section>
+    <h2>Traceurs</h2>
+    <p>L'appli n'utilise pas de cookies publicitaires. Elle garde sur votre appareil quelques informations nécessaires à son fonctionnement (favoris, offres déjà utilisées) et l'identifiant anonyme de mesure décrit plus haut. Vous pouvez tout effacer en supprimant l'appli de votre écran d'accueil ou les données du site dans les réglages de votre navigateur.</p>
+  </section>
+
+  <section>
+    <h2>Vos droits</h2>
+    <p>Vous pouvez accéder à vos données, les faire rectifier ou effacer, vous opposer à leur traitement ou en demander la limitation. Comme l'appli ne vous connaît que par l'identifiant anonyme de votre appareil, le plus simple est d'utiliser les choix ci-dessus. Pour toute autre demande, écrivez à <span class="ident">contact@fidelavis.com</span> en indiquant cet identifiant.</p>
+    <p style="margin-top:8px">Si vous estimez que vos droits ne sont pas respectés, vous pouvez saisir la CNIL (cnil.fr).</p>
+  </section>
+
+  <section>
+    <h2>Commerçants et associations</h2>
+    <p>Les comptes sont créés par les associations pour leurs membres et leurs adhérents. Chacun ne voit que ses propres données et les chiffres de ses propres commerces. En publiant une vidéo ou une photo, le commerçant atteste détenir les droits sur les images, la musique et l'accord des personnes filmées. Toute personne qui apparaît dans une vidéo peut en demander le retrait à <span class="ident">contact@fidelavis.com</span>.</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  var SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+  var SUPA_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
+  document.getElementById('bar').innerHTML = HL.brandbar(true);
+
+  var box = document.getElementById('mesure'), m = document.getElementById('mMesure');
+  box.checked = !HL.mesureRefusee();
+  document.getElementById('ident').textContent = HL.deviceId();
+  box.addEventListener('change', function(){
+    HL.refuserMesure(!box.checked);
+    m.className = 'msg ok';
+    m.textContent = box.checked ? 'Mesure réactivée sur cet appareil.' : 'C\'est noté : plus rien n\'est mesuré depuis cet appareil.';
+  });
+
+  // Effacer : confirmation dans la page (les fenêtres de confirmation du
+  // navigateur ne s'affichent pas dans une appli installée sur certains téléphones).
+  var zone = document.getElementById('zoneEffacer'), me = document.getElementById('mEffacer');
+  zone.addEventListener('click', function(e){
+    if (e.target.id === 'effacer') {
+      zone.innerHTML = '<span class="small">Effacer les statistiques liées à cet appareil ?</span>' +
+        '<button class="b2 ko" type="button" id="oui">Oui, effacer</button><button class="b2" type="button" id="non">Annuler</button>';
+    }
+    if (e.target.id === 'non') zone.innerHTML = '<button class="b2 ko" type="button" id="effacer">Effacer mes statistiques</button>';
+    if (e.target.id === 'oui') {
+      e.target.disabled = true;
+      fetch(SUPA_URL + '/rest/v1/rpc/hl_effacer_appareil', {
+        method: 'POST',
+        headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_device_id: HL.deviceId() })
+      }).then(function(r){ return r.json(); }).then(function(j){
+        if (!j.ok) throw new Error();
+        me.className = 'msg ok';
+        me.textContent = 'Statistiques effacées (' + j.evenements + ' enregistrements). Les offres déjà utilisées ce mois-ci restent comptées pour la règle « une fois par mois ».';
+        zone.innerHTML = '<button class="b2 ko" type="button" id="effacer">Effacer mes statistiques</button>';
+      }).catch(function(){
+        me.className = 'msg ko';
+        me.textContent = 'Effacement impossible pour le moment. Réessayez, ou écrivez à contact@fidelavis.com avec votre identifiant.';
+        zone.innerHTML = '<button class="b2 ko" type="button" id="effacer">Effacer mes statistiques</button>';
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

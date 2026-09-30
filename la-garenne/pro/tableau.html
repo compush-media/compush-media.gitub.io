@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Tableau de bord – Les Commerces de La Garenne</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/la-garenne/polices/polices.css">
 <link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/lib/qrcode.min.js"></script>
 <script src="/la-garenne/hl.js"></script>
 <style>
   body{max-width:720px;}
@@ -296,10 +297,13 @@
     document.title = (commerce ? commerce.nom : slug) + ' – Tableau de bord';
     var url = 'https://app.cartefidelavis.com' + HL.BASE + 'c.html?s=' + encodeURIComponent(slug) + '&via=qr';
     document.getElementById('qr').innerHTML =
-      '<img alt="QR code de votre commerce" src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=6&color=1d2340&bgcolor=ffffff&data=' + encodeURIComponent(url) + '">' +
+      '<div id="qrImg" role="img" aria-label="QR code de votre commerce" style="width:120px;height:120px;flex-shrink:0;background:#fff;padding:6px;border-radius:10px"></div>' +
       '<div><p><b>Votre QR code</b></p><p class="small muted" style="margin:4px 0 8px">À poser en caisse ou sur les tables. Chaque scan vous est attribué, même si le client installe l\'appli plus tard.</p>' +
       '<p class="lienqr">' + HL.esc(url) + '</p>' +
       '<a class="chip" href="' + HL.BASE + 'pro/affichette.html?s=' + encodeURIComponent(slug) + '" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px">Imprimer mes affichettes et programmer la carte NFC ›</a></div>';
+    // QR code dessiné sur place (et non par un service externe).
+    try { new QRCode(document.getElementById('qrImg'), { text: url, width: 216, height: 216, colorDark: '#1D2340', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); } catch (e) {}
+    Array.prototype.forEach.call(document.querySelectorAll('#qrImg img, #qrImg canvas'), function(x){ x.style.width = '100%'; x.style.height = '100%'; });
     actualiser();
   });
 })();

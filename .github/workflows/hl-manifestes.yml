@@ -6,6 +6,9 @@
 #  installée depuis le QR code d'un commerce s'ouvre sur l'accueil au lieu
 #  de sa vidéo.
 #
+#  Efface aussi, une fois par jour, les données du pilote arrivées au bout de
+#  leur durée de conservation (RGPD) : hl_purge dans Supabase.
+#
 #  Déclencheurs : toutes les 2 heures, ou Actions → Run workflow.
 #  Aucun secret requis (clé publishable, publique par nature).
 #  Pas de [skip ci] dans le commit : GitHub Pages doit republier.
@@ -33,6 +36,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
+      - name: Effacer les données arrivées à échéance (une fois par jour)
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '17 */2 * * *'
+        run: |
+          heure=$(date -u +%H)
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$heure" != "02" ]; then echo "Pas l'heure (02 h UTC)."; exit 0; fi
+          curl -sf -X POST "https://rtdiaeskmyjjwohirhzj.supabase.co/rest/v1/rpc/hl_purge" \
+            -H "apikey: sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ" \
+            -H "Authorization: Bearer sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ" \
+            -H "Content-Type: application/json" -d '{}'
+          echo
 
       - name: Générer les fichiers manquants
         run: python3 .github/scripts/hl_manifestes.py

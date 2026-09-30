@@ -87,11 +87,24 @@
   var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
   var isAndroid = /Android/.test(navigator.userAgent);
 
+  /* Identifiant anonyme de l'appareil, propre à l'appli (distinct de celui
+     des wallets Fidelavis : aucun croisement), tiré au hasard et renouvelé
+     tous les 13 mois, comme l'exige l'exemption de consentement de la CNIL
+     pour la mesure d'audience. */
+  var TREIZE_MOIS = 395 * 24 * 3600 * 1000;
   function deviceId() {
-    var d = ls("device_id");
-    if (!d) { d = "dev_" + Math.random().toString(36).slice(2, 10); ls("device_id", d); }
+    var d = ls("hl_device"), t = +(ls("hl_device_le") || 0);
+    if (!d || !/^hl_[a-z0-9]{12,40}$/.test(d) || Date.now() - t > TREIZE_MOIS) {
+      var a = new Uint8Array(10);
+      try { crypto.getRandomValues(a); } catch (e) { for (var i = 0; i < a.length; i++) a[i] = Math.random() * 256; }
+      d = "hl_" + Array.prototype.map.call(a, function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
+      ls("hl_device", d); ls("hl_device_le", String(Date.now()));
+    }
     return d;
   }
+  // Refus de la mesure d'audience (page Confidentialité) : plus rien ne part.
+  function mesureRefusee() { return ls("hl_mesure_refusee") === "1"; }
+  function refuserMesure(refus) { ls("hl_mesure_refusee", refus ? "1" : null); }
   function sessionId() {
     try {
       var s = sessionStorage.getItem("fv_session_id");
@@ -109,6 +122,7 @@
   function track(evt, slug, src) {
     // En local : rien ne part vers la base de production.
     if (LOCAL) { console.info("[HL]", "hl_" + evt, slug || "-", src || "-"); return; }
+    if (mesureRefusee()) return;
     try {
       fetch(SUPA_URL + "/rest/v1/events", {
         method: "POST",
@@ -126,13 +140,23 @@
           jour: jour(),
           mois: new Date().getMonth() + 1,
           annee: new Date().getFullYear(),
-          page_url: location.href,
-          user_agent: navigator.userAgent
+          // Minimisation : la page sans paramètres, ni navigateur ni adresse IP.
+          page_url: location.pathname,
+          user_agent: null
         }),
         keepalive: true
       }).catch(function () {});
     } catch (e) {}
   }
+  // Les marques « déjà compté » datées de plus de 2 jours ne servent plus :
+  // on les efface au chargement plutôt que de les garder indéfiniment.
+  try {
+    var limite = new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10);
+    Object.keys(localStorage).forEach(function (k) {
+      var m = k.indexOf("hl_once_") === 0 && k.match(/(\d{4}-\d{2}-\d{2})$/);
+      if (m && m[1] < limite) localStorage.removeItem(k);
+    });
+  } catch (e) {}
   // Une seule fois par appareil et par clé (ex. une vue par vidéo et par jour).
   function trackUnique(evt, slug, src, cle) {
     var k = "hl_once_" + cle;
@@ -518,7 +542,7 @@
     BASE: BASE, CATEGORIES: CATEGORIES, icone: icone,
     qs: qs, esc: esc, ls: ls, mmss: mmss, jour: jour,
     isStandalone: isStandalone, isIOS: isIOS, isAndroid: isAndroid,
-    track: track, trackUnique: trackUnique, deviceId: deviceId,
+    track: track, trackUnique: trackUnique, deviceId: deviceId, mesureRefusee: mesureRefusee, refuserMesure: refuserMesure,
     setSource: setSource, getSource: getSource,
     charger: charger, cta: cta, ctaHtml: ctaHtml, player: player,
     impression: impression, pubFixeHtml: pubFixeHtml, vcardHtml: vcardHtml, commerceRowHtml: commerceRowHtml,
