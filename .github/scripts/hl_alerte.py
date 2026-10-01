@@ -19,6 +19,7 @@ import datetime as dt
 import json
 import os
 import sys
+import urllib.error
 import urllib.request
 
 SUPA_URL = "https://rtdiaeskmyjjwohirhzj.supabase.co"
@@ -29,10 +30,15 @@ ETIQUETTE = "la-garenne"
 
 
 def appel(url, corps, entetes):
+    # Une identité explicite : certains pare-feu refusent l'agent Python par défaut.
+    entetes = {"User-Agent": "fidelavis-hyperlocal/1.0 (+https://app.cartefidelavis.com)", "Accept": "application/json", **entetes}
     req = urllib.request.Request(url, data=json.dumps(corps).encode(), headers=entetes, method="POST")
-    with urllib.request.urlopen(req, timeout=30) as r:
-        texte = r.read().decode() or "{}"
-        return r.status, texte
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return r.status, (r.read().decode() or "{}")
+    except urllib.error.HTTPError as e:
+        # On montre la réponse exacte du service pour savoir quoi corriger.
+        return e.code, e.read().decode(errors="replace")[:500]
 
 
 def nouveautes():
@@ -115,6 +121,9 @@ def main():
 
     statut, reponse = appel(adresse, corps, {"Authorization": f"Bearer {cle}", "Content-Type": "application/json"})
     print(f"Progressier a répondu {statut} : {reponse[:300]}")
+    if statut >= 300:
+        print("::error::Envoi refusé par Progressier : voir la réponse ci-dessus.")
+        return 1
     # Trace dans les statistiques du pilote (sans aucune donnée personnelle).
     try:
         appel(f"{SUPA_URL}/rest/v1/events",
