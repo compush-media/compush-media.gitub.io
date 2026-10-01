@@ -499,11 +499,12 @@
       toast(isIOS ? "Installez l'appli pour recevoir les nouveautés" : "Notifications indisponibles sur ce navigateur");
       return;
     }
+    marquerAbonne(true);
     var p = (window.progressier && typeof window.progressier.subscribe === "function")
       ? Promise.resolve(window.progressier.subscribe()).then(function () { return Notification.permission; })
       : Notification.requestPermission();
     Promise.resolve(p).then(function (r) {
-      if (r === "granted") { marquerAbonne(true); track("notif_accord", slug, "bouton"); toast("C'est noté, on vous préviendra"); }
+      if (r === "granted") { track("notif_accord", slug, "bouton"); toast("C'est noté, on vous préviendra"); }
       else toast("Notifications non activées");
     }).catch(function () {});
   }
@@ -514,13 +515,16 @@
      jour, au cas où l'abonnement aurait été pris par la pastille Progressier. */
   function marquerAbonne(force) {
     try {
-      if (!("Notification" in window) || Notification.permission !== "granted") return;
+      if (!("Notification" in window)) return;
       if (!force && ls("hl_tag_le") === jour()) return;
+      // L'autorisation peut arriver quelques secondes après l'appui (fenêtre
+      // du téléphone, abonnement Progressier) : on l'attend jusqu'à 1 minute.
       var essais = 0;
       (function poser() {
-        if (window.progressier && typeof window.progressier.add === "function") {
-          window.progressier.add({ tags: "la-garenne" }); ls("hl_tag_le", jour());
-        } else if (++essais < 20) setTimeout(poser, 500);
+        var pret = Notification.permission === "granted" && window.progressier && typeof window.progressier.add === "function";
+        if (pret) { window.progressier.add({ tags: "la-garenne" }); ls("hl_tag_le", jour()); return; }
+        if (Notification.permission === "denied") return;
+        if (++essais < (force ? 60 : 20)) setTimeout(poser, 1000);
       })();
     } catch (e) {}
   }
