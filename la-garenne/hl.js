@@ -503,10 +503,28 @@
       ? Promise.resolve(window.progressier.subscribe()).then(function () { return Notification.permission; })
       : Notification.requestPermission();
     Promise.resolve(p).then(function (r) {
-      if (r === "granted") { track("notif_accord", slug, "bouton"); toast("C'est noté, on vous préviendra"); }
+      if (r === "granted") { marquerAbonne(true); track("notif_accord", slug, "bouton"); toast("C'est noté, on vous préviendra"); }
       else toast("Notifications non activées");
     }).catch(function () {});
   }
+
+  /* Étiquette Progressier « la-garenne » : l'alerte hebdomadaire du pilote
+     ne part qu'aux abonnés qui la portent, jamais aux clients des wallets
+     (étiquetés, eux, avec le nom de leur restaurant). Reposée une fois par
+     jour, au cas où l'abonnement aurait été pris par la pastille Progressier. */
+  function marquerAbonne(force) {
+    try {
+      if (!("Notification" in window) || Notification.permission !== "granted") return;
+      if (!force && ls("hl_tag_le") === jour()) return;
+      var essais = 0;
+      (function poser() {
+        if (window.progressier && typeof window.progressier.add === "function") {
+          window.progressier.add({ tags: "la-garenne" }); ls("hl_tag_le", jour());
+        } else if (++essais < 20) setTimeout(poser, 500);
+      })();
+    } catch (e) {}
+  }
+  marquerAbonne(false);
 
   function toast(msg) {
     var t = document.getElementById("toast");

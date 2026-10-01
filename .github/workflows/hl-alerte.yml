@@ -1,0 +1,57 @@
+# ──────────────────────────────────────────────────────────────
+#  Pilote La Garenne-Colombes : alerte hebdomadaire aux habitants.
+#
+#  Le lundi à 9 h (heure de Paris en hiver, 10 h en été), une notification
+#  aux abonnés étiquetés « la-garenne » : nouvelles vidéos et offres de la
+#  semaine. Rien de nouveau = rien d'envoyé. Jamais de publicité.
+#
+#  Secrets requis pour envoyer (Settings › Secrets › Actions) :
+#    PROGRESSIER_API_KEY, PROGRESSIER_ENDPOINT
+#  Sans eux, le workflow affiche l'alerte qu'il aurait envoyée.
+#
+#  Actions › Run workflow : essai, ou alerte rédigée à la main (titre + texte).
+#  Une seule alerte par semaine : n'envoyez pas à la main un lundi déjà servi.
+# ──────────────────────────────────────────────────────────────
+name: Pilote La Garenne · alerte du lundi
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+    inputs:
+      essai:
+        description: 'Seulement afficher, sans envoyer'
+        type: boolean
+        default: true
+      titre:
+        description: 'Titre (50 caractères, facultatif : sinon rédigé automatiquement)'
+        required: false
+        default: ''
+      texte:
+        description: 'Texte (180 caractères, facultatif)'
+        required: false
+        default: ''
+
+concurrency:
+  group: hl-alerte
+  cancel-in-progress: false
+
+jobs:
+  alerte:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Rédiger et envoyer
+        env:
+          PROGRESSIER_API_KEY: ${{ secrets.PROGRESSIER_API_KEY }}
+          PROGRESSIER_ENDPOINT: ${{ secrets.PROGRESSIER_ENDPOINT }}
+          TITRE: ${{ inputs.titre }}
+          TEXTE: ${{ inputs.texte }}
+          ESSAI: ${{ github.event_name == 'workflow_dispatch' && inputs.essai || false }}
+        run: |
+          opts=()
+          if [ "$ESSAI" = "true" ]; then opts+=(--essai); fi
+          python3 .github/scripts/hl_alerte.py --titre "$TITRE" --texte "$TEXTE" "${opts[@]}"

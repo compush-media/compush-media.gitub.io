@@ -100,6 +100,7 @@
   document.getElementById('bar').innerHTML = HL.brandbar(false);
   HL.nav('accueil');
   HL.track('accueil_vue', null, HL.isStandalone() ? 'appli' : 'web');
+  if (HL.qs('src') === 'alerte') HL.track('alerte_ouverte', null, HL.qs('semaine') || null);   // ouverture depuis l'alerte du lundi
 
   document.getElementById('icnRecherche').innerHTML = HL.icone('recherche', 20);
   document.getElementById('icnAlerte').innerHTML = HL.icone('alerte', 24);

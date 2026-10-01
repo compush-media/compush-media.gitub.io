@@ -234,6 +234,12 @@
         tile('Utilisations en caisse', tot.utilisations, 'offres validées au code') +
         tile('Pubs : affichages / clics', tot.pub_affichages, n(tot.pub_clics) + ' clics') +
       '</div>' +
+      // Indicateurs du plan du pilote (ensemble du périmètre, sans filtre par association).
+      (filtreAsso ? '' : '<div class="grid" style="margin-top:10px">' +
+        tile('Habitants revenus', STATS.habitants_revenus, (STATS.habitants ? Math.round(100 * STATS.habitants_revenus / STATS.habitants) : 0) + ' % actifs au moins 2 semaines différentes') +
+        '<div class="tile"><p class="lb">Délai de validation</p><p class="v">' + (STATS.delai_validation_h == null ? '—' : String(STATS.delai_validation_h).replace('.', ',') + ' h') + '</p><p class="ex">médiane, ' + n(STATS.propositions_traitees) + ' proposition(s) traitée(s) · objectif 48 h</p></div>' +
+        (ville() ? tile('Alerte du lundi', STATS.alertes_ouvertes, 'ouvertures de l\'appli depuis ' + n(STATS.alertes_envoyees) + ' alerte(s) envoyée(s)') : '') +
+      '</div>') +
       '<p class="small muted" style="margin:10px 0 18px">Aucun taux n\'est calculé entre ces chiffres : ce ne sont pas les mêmes personnes d\'une étape à l\'autre. Une vue n\'est pas une vente.</p>' +
       '<div class="tw"><table><thead><tr><th>Commerce</th>' + (ville() ? '<th>Association</th>' : '') + '<th>Statut</th><th class="n">Scans</th><th class="n">Install.</th><th class="n">Vues</th><th class="n">Clics</th><th class="n">Offres vues</th><th class="n">Utilisations</th><th></th></tr></thead><tbody>' +
       coms.map(function(c){
