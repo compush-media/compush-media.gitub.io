@@ -1,0 +1,29 @@
+{
+  "name": "Fidelavis · La Garenne",
+  "short_name": "Fidelavis",
+  "description": "Les vidéos, offres et bons plans des commerces de La Garenne-Colombes.",
+  "start_url": "/la-garenne/app.html?first=boutique-refusee-exemple",
+  "scope": "/la-garenne/",
+  "display": "standalone",
+  "background_color": "#FBF6F1",
+  "theme_color": "#C8206A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/la-garenne/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/la-garenne/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/la-garenne/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
