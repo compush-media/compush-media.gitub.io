@@ -53,6 +53,16 @@
   .b2.ko{color:#B23B3B;border-color:#F0C4C4;}
   .tourne{display:inline-block;width:14px;height:14px;border:2px solid var(--sponso);border-top-color:transparent;border-radius:50%;animation:t 1s linear infinite;vertical-align:-2px;margin-right:6px;}
   @keyframes t{to{transform:rotate(360deg)}}
+  .modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .mode{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:14px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;display:grid;gap:4px;}
+  .mode b{font-size:15.5px;} .mode span{font-size:13px;color:var(--muted);line-height:1.4;}
+  .mode .em{font-size:24px;}
+  .mode[aria-pressed="true"]{border-color:var(--rose);background:var(--rose-soft);}
+  .photo{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:start;padding:12px 0;border-top:1px solid var(--line);}
+  .photo:first-of-type{border-top:0;}
+  .photo .vign{width:72px;height:128px;border-radius:10px;background:var(--rose-soft) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--rose);font:900 20px 'Lato',sans-serif;}
+  .photo .haut{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap;}
+  .photo input[data-legp]{width:100%;min-height:42px;border-radius:10px;border:1.5px solid var(--line);padding:8px 12px;font:inherit;font-size:14.5px;margin-top:8px;background:#fff;color:var(--ink);}
   @media (prefers-reduced-motion:reduce){ .tourne{animation:none;} }
 </style>
 </head>
@@ -62,7 +72,12 @@
   <a class="lien" id="retour" href="#" style="width:auto;text-align:left;padding:0">‹ Mon offre et mes vidéos</a>
   <div>
     <h1>Créer ma vidéo</h1>
-    <p class="muted" style="margin-top:4px">Filmez 3 à 5 courtes séquences avec votre téléphone : le montage se fait tout seul. Vous regardez le résultat avant de l'envoyer à votre association.</p>
+    <p class="muted" style="margin-top:4px">Filmez quelques séquences ou choisissez vos photos : le montage se fait tout seul, en 2 à 5 minutes. Vous regardez le résultat avant de l'envoyer à votre association.</p>
+  </div>
+
+  <div class="modes" role="group" aria-label="Type de vidéo">
+    <button class="mode" type="button" data-mode="video" aria-pressed="true"><span class="em">🎬</span><b>Je filme</b><span>3 à 5 courtes séquences avec mon téléphone</span></button>
+    <button class="mode" type="button" data-mode="presentation" aria-pressed="false"><span class="em">🖼️</span><b>Avec mes photos</b><span>3 à 6 photos, les textes viennent de ma fiche</span></button>
   </div>
 
   <section class="bloc" id="blocMontages" hidden>
@@ -83,6 +98,18 @@
     </ul></div>
   </section>
 
+  <section class="bloc" id="blocPhotos" hidden>
+    <h2><span class="num">1</span>Choisissez vos photos</h2>
+    <p class="small muted">3 photos au minimum, 6 au plus. Chaque photo s'anime (zoom lent) avec sa légende, tirée de votre fiche : modifiez-la si vous voulez.</p>
+    <div id="photos" style="margin-top:6px"></div>
+    <div class="conseils"><b>Conseils photo</b><ul>
+      <li>Photos à la verticale de préférence : elles remplissent tout l'écran.</li>
+      <li>La 1<sup>re</sup> photo porte le nom de votre commerce : votre devanture ou votre plus belle photo.</li>
+      <li>Des photos nettes et lumineuses, prises par vous ou dont vous avez les droits.</li>
+      <li>Seulement des personnes d'accord pour apparaître.</li>
+    </ul></div>
+  </section>
+
   <section class="bloc" id="blocTextes">
     <h2><span class="num">2</span>Vos textes</h2>
     <div class="form">
@@ -91,12 +118,12 @@
       <label class="f large"><span>Texte de fin</span><input id="oFin" maxlength="80" placeholder="Retrouvez-nous dans l'appli Les Commerces de La Garenne"></label>
       <label class="f"><span>Bouton de fin</span><select id="oCta"><option value="offre">Voir l'offre</option><option value="itineraire">Itinéraire</option><option value="reserver">Réserver</option><option value="contacter">Contacter</option></select></label>
     </div>
-    <details><summary>Modifier les textes de chaque plan</summary><div class="form" id="legendes"></div></details>
+    <details id="detLegendes"><summary>Modifier les textes de chaque plan</summary><div class="form" id="legendes"></div></details>
   </section>
 
   <section class="bloc">
     <h2><span class="num">3</span>Lancer le montage</h2>
-    <p class="small muted">Le montage prend en général 5 à 15 minutes. Vous pouvez fermer cette page : votre vidéo vous attendra ici.</p>
+    <p class="small muted">Le montage prend en général 2 à 5 minutes. Vous pouvez fermer cette page : votre vidéo vous attendra ici.</p>
     <button class="btn" type="button" id="lancer" style="margin-top:12px"><span>Lancer le montage</span><span class="arr">›</span></button>
     <div class="prog" id="prog" hidden><i></i></div>
     <p class="msg" id="mLancer"></p>
@@ -104,8 +131,9 @@
 </main>
 
 <script>
-/* Création vidéo, étape 1 : le commerçant envoie ses séquences (stockage
-   privé), un serveur de montage les assemble (hl-montage.yml), puis il
+/* Création vidéo : le commerçant envoie ses séquences (étape 1, « Je filme »)
+   ou ses photos (étape 2, « présentation automatique ») dans un stockage
+   privé ; un serveur de montage les assemble (hl-montage.yml), puis il
    prévisualise, retouche et envoie la vidéo à son association. */
 (function(){
   var SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
@@ -113,7 +141,10 @@
   var esc = HL.esc;
   var slug = HL.qs('s').toLowerCase().replace(/[^a-z0-9-]/g,'');
   var jeton = HL.ls('fv_session_' + slug);
-  var commerce = { nom: '', offre: '' };
+  var commerce = { nom: '', offre: '', accroche: '', horaires: '', adresse: '', avis: null };
+  var mode = 'video';
+  var photos = {};            // photo1..photo6 -> { blob, url }
+  var NB_PHOTOS = 6;
   var PLANS = [
     { id: 'devanture', ic: '🏠', titre: 'Votre devanture', ds: 'De l\'extérieur, avec l\'enseigne · 5 à 10 s', requis: true },
     { id: 'interieur', ic: '🪑', titre: 'L\'intérieur de votre commerce', ds: 'Un lent panoramique · 5 à 10 s', requis: true },
@@ -142,10 +173,11 @@
 
   // Séquence brute : URL signée vers le stockage privé, envoi avec progression.
   function televerserRush(fichier, barre){
+    var photo = fichier.type === 'image/jpeg';
     var type = fichier.type || (/\.mov$/i.test(fichier.name) ? 'video/quicktime' : 'video/mp4');
     return fetch(SUPA_URL + '/functions/v1/hl-televersement', {
       method: 'POST', headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jeton: jeton, slug: slug, genre: 'rush', type: type, taille: fichier.size })
+      body: JSON.stringify({ jeton: jeton, slug: slug, genre: photo ? 'rush_photo' : 'rush', type: type, taille: fichier.size })
     }).then(function(r){ return r.json(); }).then(function(a){
       if (!a.ok) throw new Error(a.erreur || 'Envoi refusé');
       return new Promise(function(ok, ko){
@@ -180,9 +212,80 @@
   });
   function erreurPlan(plan, t){ rendrePlans(); var el = document.getElementById('e-' + plan); if (el) { el.className = 'etat ko'; el.textContent = t; } }
   function majBouton(){
-    var n = Object.keys(fichiers).length;
-    document.getElementById('lancer').firstChild.textContent = n >= 3 ? 'Lancer le montage (' + n + ' plans)' : 'Envoyez au moins 3 plans (' + n + '/3)';
+    var p = mode === 'presentation', n = Object.keys(p ? photos : fichiers).length, mot = p ? 'photos' : 'plans';
+    document.getElementById('lancer').firstChild.textContent = n >= 3 ? 'Lancer le montage (' + n + ' ' + mot + ')' : 'Choisissez au moins 3 ' + mot + ' (' + n + '/3)';
   }
+
+  /* ── Choix du mode ── */
+  document.querySelector('.modes').addEventListener('click', function(e){
+    var b = e.target.closest('[data-mode]'); if (!b) return;
+    mode = b.getAttribute('data-mode');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-mode]'), function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    var p = mode === 'presentation';
+    document.getElementById('blocPlans').hidden = p;
+    document.getElementById('blocPhotos').hidden = !p;
+    document.getElementById('lPhrase').hidden = p;
+    document.getElementById('detLegendes').hidden = p;
+    document.getElementById('mLancer').textContent = '';
+    majBouton();
+  });
+
+  /* ── Présentation : photos ── */
+  function adresseCourte(a){ return (a || '').replace(/,?\s*92250\s+La Garenne-Colombes\s*$/i, '').trim(); }
+  function legendesPhotos(){
+    var c = [], av = commerce.avis;
+    if (commerce.offre) c.push('Avec l\'appli : ' + commerce.offre);
+    if (commerce.horaires) c.push('Ouvert ' + commerce.horaires);
+    if (commerce.adresse) c.push(adresseCourte(commerce.adresse));
+    if (av && av.note && av.nombre) c.push('Noté ' + String(Number(av.note).toFixed(1)).replace('.', ',') + ' sur 5 · ' + av.nombre + ' avis');
+    c.push('Ici, à La Garenne-Colombes', 'Au plaisir de vous accueillir');
+    var l = { photo1: commerce.accroche || '' };
+    for (var i = 2; i <= NB_PHOTOS; i++) l['photo' + i] = c[i - 2] || '';
+    return l;
+  }
+  function rendrePhotos(){
+    var leg = legendesPhotos(), h = '';
+    for (var i = 1; i <= NB_PHOTOS; i++) {
+      var id = 'photo' + i, ph = photos[id];
+      var ancien = document.querySelector('[data-legp="' + id + '"]');
+      var valeur = ancien ? ancien.value : leg[id];
+      h += '<div class="photo"><span class="vign"' + (ph ? ' style="background-image:url(' + ph.url + ')"' : '') + '>' + (ph ? '' : i) + '</span><div>' +
+        '<div class="haut"><b style="font-size:15px">' + (i === 1 ? 'Photo principale' : 'Photo ' + i) +
+          (i > 3 ? ' <span class="muted" style="font-weight:400">(facultatif)</span>' : '') + '</b>' +
+        '<label class="choisir">' + (ph ? 'Changer' : 'Choisir') + '<input type="file" accept="image/*" hidden data-photo="' + id + '"></label></div>' +
+        (i === 1 ? '<p class="ds small muted">Avec le nom de votre commerce en grand</p>' : '') +
+        '<input data-legp="' + id + '" maxlength="' + (i === 1 ? 90 : 48) + '" placeholder="' + (i === 1 ? 'Votre accroche' : 'Légende (facultatif)') + '" value="' + esc(valeur) + '" aria-label="Légende de la photo ' + i + '">' +
+        '<p class="etat small" id="ep-' + id + '"></p></div></div>';
+    }
+    document.getElementById('photos').innerHTML = h;
+  }
+  // Toute photo (y compris HEIC sur iPhone) est redessinée en JPEG de 2400 px au plus : léger et lisible par le montage.
+  function versJpeg(f){
+    return new Promise(function(ok, ko){
+      var url = URL.createObjectURL(f), img = new Image();
+      img.onload = function(){
+        var w = img.naturalWidth, hh = img.naturalHeight, k = Math.min(1, 2400 / Math.max(w, hh));
+        if (Math.min(w, hh) < 500) { URL.revokeObjectURL(url); ko(new Error('Photo trop petite : choisissez une photo d\'au moins 500 pixels de côté.')); return; }
+        var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(hh * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        c.toBlob(function(b){ b ? ok(b) : ko(new Error('Photo illisible')); }, 'image/jpeg', 0.86);
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); ko(new Error('Photo illisible : choisissez une photo JPEG ou PNG.')); };
+      img.src = url;
+    });
+  }
+  document.getElementById('photos').addEventListener('change', function(e){
+    var inp = e.target.closest('[data-photo]'); if (!inp) return;
+    var id = inp.getAttribute('data-photo'), f = inp.files[0]; if (!f) return;
+    var el = document.getElementById('ep-' + id);
+    if (el) { el.className = 'etat small muted'; el.textContent = 'Préparation de la photo…'; }
+    versJpeg(f).then(function(b){
+      if (photos[id]) URL.revokeObjectURL(photos[id].url);
+      photos[id] = { blob: b, url: URL.createObjectURL(b) };
+      rendrePhotos(); majBouton();
+    }).catch(function(x){ if (el) { el.className = 'etat ko'; el.textContent = x.message; } });
+  });
 
   /* ── Étape 2 : textes ── */
   function rendreLegendes(){
@@ -195,30 +298,43 @@
   function options(){
     var leg = {};
     Array.prototype.forEach.call(document.querySelectorAll('[data-leg]'), function(i){ if (i.value.trim()) leg[i.getAttribute('data-leg')] = i.value.trim(); });
-    return { titre: document.getElementById('oTitre').value.trim() || commerce.nom, phrase: document.getElementById('oPhrase').value.trim(),
-             fin: document.getElementById('oFin').value.trim(), cta: document.getElementById('oCta').value, legendes: leg };
+    var base = { titre: document.getElementById('oTitre').value.trim() || commerce.nom,
+                 fin: document.getElementById('oFin').value.trim(), cta: document.getElementById('oCta').value };
+    if (mode === 'presentation') {
+      var lp = {};
+      Array.prototype.forEach.call(document.querySelectorAll('[data-legp]'), function(i){ lp[i.getAttribute('data-legp')] = i.value.trim(); });
+      base.mode = 'presentation'; base.legendes = lp;
+      return base;
+    }
+    base.phrase = document.getElementById('oPhrase').value.trim(); base.legendes = leg;
+    return base;
   }
 
   /* ── Étape 3 : lancer ── */
   document.getElementById('lancer').addEventListener('click', function(){
     var b = this, m = document.getElementById('mLancer'), prog = document.getElementById('prog');
-    var plans = PLANS.map(function(p){ return p.id; }).filter(function(p){ return fichiers[p]; });
-    if (plans.length < 3) { m.className = 'msg ko'; m.textContent = 'Envoyez au moins 3 plans : devanture, intérieur et produits par exemple.'; return; }
+    var pres = mode === 'presentation', src = {};
+    if (pres) Object.keys(photos).forEach(function(k){ src[k] = photos[k].blob; }); else src = fichiers;
+    var ordre = pres ? [1, 2, 3, 4, 5, 6].map(function(i){ return 'photo' + i; }) : PLANS.map(function(p){ return p.id; });
+    var plans = ordre.filter(function(p){ return src[p]; });
+    if (plans.length < 3) { m.className = 'msg ko'; m.textContent = pres ? 'Choisissez au moins 3 photos.' : 'Envoyez au moins 3 plans : devanture, intérieur et produits par exemple.'; return; }
     b.disabled = true; prog.hidden = false; m.className = 'msg';
-    var rushes = [], total = plans.reduce(function(s, p){ return s + fichiers[p].size; }, 0), fait = 0;
+    var rushes = [], total = plans.reduce(function(s, p){ return s + src[p].size; }, 0), fait = 0;
     plans.reduce(function(ch, p, i){
       return ch.then(function(){
-        m.textContent = 'Envoi de la séquence ' + (i + 1) + ' sur ' + plans.length + '… Gardez cette page ouverte.';
-        return televerserRush(fichiers[p], function(x){ prog.firstChild.style.width = Math.round(100 * (fait + x * fichiers[p].size) / total) + '%'; })
-          .then(function(chemin){ fait += fichiers[p].size; rushes.push({ plan: p, chemin: chemin, nom: fichiers[p].name.slice(0, 60), taille: fichiers[p].size }); });
+        m.textContent = 'Envoi ' + (pres ? 'de la photo ' : 'de la séquence ') + (i + 1) + ' sur ' + plans.length + '… Gardez cette page ouverte.';
+        return televerserRush(src[p], function(x){ prog.firstChild.style.width = Math.round(100 * (fait + x * src[p].size) / total) + '%'; })
+          .then(function(chemin){ fait += src[p].size; rushes.push({ plan: p, chemin: chemin, nom: (src[p].name || p + '.jpg').slice(0, 60), taille: src[p].size }); });
       });
     }, Promise.resolve()).then(function(){
       m.textContent = 'Préparation du montage…';
       return rpc('hl_montage_creer', { p_token: jeton, p_rushes: rushes, p_options: options() });
     }).then(function(j){
       if (!j.ok) throw new Error(j.reason || 'refusé');
-      fichiers = {}; rendrePlans(); majBouton(); prog.hidden = true; b.disabled = false;
-      m.className = 'msg ok'; m.textContent = 'C\'est parti : votre vidéo sera prête dans 5 à 15 minutes, ci-dessus.';
+      if (pres) { Object.keys(photos).forEach(function(k){ URL.revokeObjectURL(photos[k].url); }); photos = {}; rendrePhotos(); }
+      else { fichiers = {}; rendrePlans(); }
+      majBouton(); prog.hidden = true; b.disabled = false;
+      m.className = 'msg ok'; m.textContent = 'C\'est parti : votre vidéo sera prête dans 2 à 5 minutes, ci-dessus.';
       return charger(true);
     }).catch(function(e){ b.disabled = false; prog.hidden = true; m.className = 'msg ko'; m.textContent = 'Impossible : ' + e.message; });
   });
@@ -240,7 +356,7 @@
     var date = new Date(x.created_at).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
     var h = '<div class="montage" data-id="' + esc(x.id) + '"><div class="rangee">';
     if (x.statut === 'en_attente' || x.statut === 'en_cours')
-      return h + '<span class="st attente"><span class="tourne"></span>' + (x.statut === 'en_cours' ? 'Montage en cours' : 'En file d\'attente') + '</span><span class="small muted">' + date + ' · 5 à 15 minutes</span></div></div>';
+      return h + '<span class="st attente"><span class="tourne"></span>' + (x.statut === 'en_cours' ? 'Montage en cours' : 'En file d\'attente') + '</span><span class="small muted">' + date + ' · 2 à 5 minutes</span></div></div>';
     if (x.statut === 'erreur')
       return h + '<span class="st erreur">Montage impossible</span><span class="small muted">' + date + '</span></div><p class="small">' + esc(x.erreur || '') + '</p>' +
         '<div class="rangee"><button class="b2" data-act="relancer">Réessayer</button><button class="b2 ko" data-act="abandonner">Supprimer</button></div></div>';
@@ -252,11 +368,11 @@
         (r.sousTitres ? '<track kind="subtitles" srclang="fr" label="Français" default src="' + esc(r.sousTitres) + '">' : '') + '</video>' +
       '<details><summary>Demander des modifications</summary><div class="form">' +
         '<label class="f large"><span>Titre</span><input data-m="titre" maxlength="40" value="' + esc(o.titre || '') + '"></label>' +
-        '<label class="f large"><span>Phrase face caméra</span><textarea data-m="phrase" maxlength="220">' + esc(o.phrase || '') + '</textarea></label>' +
+        (o.mode === 'presentation' ? '' : '<label class="f large"><span>Phrase face caméra</span><textarea data-m="phrase" maxlength="220">' + esc(o.phrase || '') + '</textarea></label>') +
         '<label class="f large"><span>Texte de fin</span><input data-m="fin" maxlength="80" value="' + esc(o.fin || '') + '"></label>' +
         '<label class="f"><span>Bouton de fin</span><select data-m="cta">' + Object.keys(CTAS).map(function(k){ return '<option value="' + k + '"' + (k === o.cta ? ' selected' : '') + '>' + CTAS[k] + '</option>'; }).join('') + '</select></label>' +
-        '<div class="large"><span class="small" style="font-weight:700">Plans à retirer</span><div class="rangee" style="margin-top:6px">' +
-          (x.plans || []).map(function(p){ var pl = PLANS.filter(function(q){ return q.id === p; })[0] || { titre: p };
+        '<div class="large"><span class="small" style="font-weight:700">' + (o.mode === 'presentation' ? 'Photos à retirer' : 'Plans à retirer') + '</span><div class="rangee" style="margin-top:6px">' +
+          (x.plans || []).map(function(p){ var pl = PLANS.filter(function(q){ return q.id === p; })[0] || { titre: /^photo\d$/.test(p) ? 'Photo ' + p.slice(5) : p };
             return '<label class="ck"><input type="checkbox" data-retire="' + esc(p) + '"' + ((o.plans_retires || []).indexOf(p) !== -1 ? ' checked' : '') + '> ' + esc(pl.titre) + '</label>'; }).join('') +
         '</div></div></div><div class="rangee" style="margin-top:10px"><button class="b2" data-act="modifier">Refaire le montage</button></div></details>' +
       '<div class="form">' +
@@ -298,11 +414,15 @@
 
   HL.charger().then(function(d){
     var c = d.parSlug[slug];
-    if (c) { commerce.nom = c.nom; commerce.offre = c.offre ? c.offre.titre : ''; }
+    if (c) {
+      commerce.nom = c.nom; commerce.offre = c.offre ? c.offre.titre : '';
+      commerce.accroche = c.accroche || ''; commerce.horaires = c.horaires || ''; commerce.adresse = c.adresse || ''; commerce.avis = c.avis || null;
+    }
     document.getElementById('oTitre').value = commerce.nom;
-    rendrePlans(); rendreLegendes(); majBouton();
+    rendrePlans(); rendrePhotos(); rendreLegendes(); majBouton();
+    if (HL.qs('mode') === 'photos') document.querySelector('[data-mode="presentation"]').click();
     return charger();
-  }).catch(function(){ rendrePlans(); rendreLegendes(); majBouton(); });
+  }).catch(function(){ rendrePlans(); rendrePhotos(); rendreLegendes(); majBouton(); });
 })();
 </script>
 </body>

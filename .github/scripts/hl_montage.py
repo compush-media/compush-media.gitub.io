@@ -8,6 +8,10 @@ et produit pour chacun :
   - une vidéo verticale 1080 × 1920 de 20 à 35 s : chaque plan recadré,
     raccourci, titré, enchaîné en fondu, puis une carte de fin avec le bouton ;
   - une image d'affiche et, s'il a écrit sa phrase, des sous-titres (.vtt).
+Mode « présentation » (options.mode = 'presentation') : pour ceux qui ne
+filment pas, 3 à 6 photos deviennent un diaporama animé (zoom lent, fondus),
+légendé avec les informations de la fiche (accroche, offre, horaires,
+adresse, avis), avec la même carte de fin.
 Le résultat va dans le stockage public hl-medias ; le commerçant le regarde,
 le retouche ou l'envoie à son association.
 
@@ -191,8 +195,37 @@ def monter(plans, options, commerce, dossier):
         morceaux.append(sortie)
         t += longueur
 
-    # Carte de fin : nom, texte, bouton choisi, signature de l'appli.
-    fin_duree = 3.5
+    fin = carte_fin(nom, options, dossier)
+    morceaux.append(fin)
+    t_fin = t
+    t += FIN_DUREE
+
+    liste = os.path.join(dossier, "liste.txt")
+    with open(liste, "w") as h:
+        h.write("".join(f"file '{m}'\n" for m in morceaux))
+    brut = os.path.join(dossier, "brut.mp4")
+    ff("-f", "concat", "-safe", "0", "-i", liste, "-c", "copy", brut)
+    finale, affiche = finaliser(brut, t_fin, dossier)
+
+    vtt = None
+    if phrase and debut_face is not None:
+        def hms(s):
+            return f"{int(s // 3600):02d}:{int(s % 3600 // 60):02d}:{s % 60:06.3f}"
+        vtt = os.path.join(dossier, "sous-titres.vtt")
+        with open(vtt, "w", encoding="utf-8") as h:
+            h.write("WEBVTT\n")
+            for a, b, bloc in morceaux_phrase(phrase, duree_face):
+                h.write(f"\n{hms(debut_face + a)} --> {hms(debut_face + b)}\n" + "\n".join(bloc) + "\n")
+
+    return resultat(finale, affiche, vtt, t)
+
+
+FIN_DUREE = 3.5
+
+
+def carte_fin(nom, options, dossier):
+    """Carte de fin : nom, texte, bouton choisi, signature de l'appli."""
+    fin_duree = FIN_DUREE
     fin_texte = (options.get("fin") or "").strip() or "Retrouvez-nous dans l'appli Les Commerces de La Garenne"
     bouton = CTAS.get(options.get("cta") or "", "Voir dans l'appli")
     vf = [f"[1:v]scale=300:300[ic]", f"[0:v][ic]overlay=(W-w)/2:470"]
@@ -209,16 +242,11 @@ def monter(plans, options, commerce, dossier):
        "-f", "lavfi", "-t", str(fin_duree), "-i", "anullsrc=r=48000:cl=stereo",
        "-filter_complex", graphe, "-map", "[v]", "-map", "2:a:0", "-shortest", "-r", str(IPS),
        "-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-c:a", "aac", "-b:a", "128k", "-ar", "48000", fin)
-    morceaux.append(fin)
-    t_fin = t
-    t += fin_duree
+    return fin
 
-    # Assemblage, petit logo de l'appli sur les plans, son normalisé, lecture rapide.
-    liste = os.path.join(dossier, "liste.txt")
-    with open(liste, "w") as h:
-        h.write("".join(f"file '{m}'\n" for m in morceaux))
-    brut = os.path.join(dossier, "brut.mp4")
-    ff("-f", "concat", "-safe", "0", "-i", liste, "-c", "copy", brut)
+
+def finaliser(brut, t_fin, dossier):
+    """Petit logo de l'appli sur les plans (pas sur la carte de fin), son normalisé, lecture rapide."""
     finale = os.path.join(dossier, "video.mp4")
     marque = texte_ff(dossier, "marque.txt", "Les Commerces de La Garenne")
     graphe = (f"[1:v]scale=86:86[lo];[0:v][lo]overlay=48:60:enable='lt(t,{t_fin:.2f})',"
@@ -230,21 +258,114 @@ def monter(plans, options, commerce, dossier):
        "-movflags", "+faststart", finale)
     affiche = os.path.join(dossier, "affiche.jpg")
     ff("-ss", "1.0", "-i", finale, "-frames:v", "1", "-vf", "scale=540:-2", "-q:v", "3", affiche)
+    return finale, affiche
 
-    vtt = None
-    if phrase and debut_face is not None:
-        def hms(s):
-            return f"{int(s // 3600):02d}:{int(s % 3600 // 60):02d}:{s % 60:06.3f}"
-        vtt = os.path.join(dossier, "sous-titres.vtt")
-        with open(vtt, "w", encoding="utf-8") as h:
-            h.write("WEBVTT\n")
-            for a, b, bloc in morceaux_phrase(phrase, duree_face):
-                h.write(f"\n{hms(debut_face + a)} --> {hms(debut_face + b)}\n" + "\n".join(bloc) + "\n")
 
+def resultat(finale, affiche, vtt, t):
     poids = os.path.getsize(finale)
     if poids > 48 * 1024 * 1024:
         raise Refus("La vidéo montée est trop lourde : retirez un plan ou raccourcissez la phrase face caméra.")
     return {"video": finale, "affiche": affiche, "vtt": vtt, "duree": round(t), "poids": poids}
+
+
+# ── Présentation automatique (photos + fiche) ─────────────────────────────
+PHOTOS = [f"photo{i}" for i in range(1, 7)]
+FONDU = 0.5
+
+
+def adresse_courte(adresse):
+    return re.sub(r",?\s*92250\s+La Garenne-Colombes\s*$", "", (adresse or "").strip(), flags=re.I)
+
+
+def legendes_presentation(commerce):
+    """Une légende par photo, tirée de la fiche ; la 1re photo porte le nom et l'accroche."""
+    c = commerce or {}
+    candidats = []
+    if c.get("offre"):
+        candidats.append(f"Avec l'appli : {c['offre']}")
+    if c.get("horaires"):
+        candidats.append(f"Ouvert {c['horaires']}")
+    if c.get("adresse"):
+        candidats.append(adresse_courte(c["adresse"]))
+    avis = c.get("avis") or {}
+    if avis.get("note") and avis.get("nombre"):
+        note = f"{float(avis['note']):.1f}".replace(".", ",")
+        candidats.append(f"Noté {note} sur 5 · {avis['nombre']} avis")
+    candidats += ["Ici, à La Garenne-Colombes", "Au plaisir de vous accueillir"]
+    leg = {"photo1": c.get("accroche") or ""}
+    for i, p in enumerate(PHOTOS[1:]):
+        leg[p] = candidats[i] if i < len(candidats) else ""
+    return leg
+
+
+def clip_photo(src, rang, titre, legende, duree, dossier):
+    """Une photo recadrée en vertical, animée (zoom avant, arrière ou balayage), avec sa légende."""
+    n = max(2, round(duree * IPS))
+    mouvement = rang % 3
+    if mouvement == 0:
+        zp = f"z='1+0.12*on/{n}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
+    elif mouvement == 1:
+        zp = f"z='1.12-0.12*on/{n}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
+    else:
+        zp = f"z='1.10':x='(iw-iw/zoom)*on/{n}':y='ih/2-(ih/zoom/2)'"
+    # Image agrandie avant zoompan : évite les saccades du zoom au pixel près.
+    vf = [f"scale={2 * L}:{2 * H}:force_original_aspect_ratio=increase", f"crop={2 * L}:{2 * H}", "setsar=1",
+          f"zoompan={zp}:d={n}:s={L}x{H}:fps={IPS}"]
+    # Dégradé sombre vers le bas (bandes superposées) : les légendes restent lisibles sur une photo claire.
+    for j in range(8):
+        y = int(H * (0.48 + j * 0.05))
+        vf.append(f"drawbox=x=0:y={y}:w={L}:h={H - y}:color=black@0.05:t=fill")
+    apparition = "min(1,max(0,(t-0.35)/0.4))"
+    if rang == 0:
+        l_titre = lignes(titre, 18, 2)
+        vf += bloc_texte(dossier, f"pt{rang}", l_titre, 88, int(H * 0.60), POLICE, boite=f"{ROSE}@0.94", alpha=apparition)
+        y = int(H * 0.60) + len(l_titre) * int(88 * 1.32) + 40
+        vf += bloc_texte(dossier, f"pa{rang}", lignes(legende, 30, 3), 46, y, POLICE_TEXTE, boite="black@0.5",
+                         alpha="min(1,max(0,(t-0.8)/0.4))")
+    elif legende:
+        vf += bloc_texte(dossier, f"pl{rang}", lignes(legende, 24, 2), 64, int(H * 0.70), POLICE,
+                         boite=f"{ROSE}@0.92", alpha=apparition)
+    vf.append("format=yuv420p")
+    sortie = os.path.join(dossier, f"p{rang}.mp4")
+    ff("-i", src, "-vf", ",".join(vf), "-frames:v", str(n), "-r", str(IPS), "-an",
+       "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", sortie)
+    return sortie
+
+
+def monter_presentation(plans, options, commerce, dossier):
+    nom = (options.get("titre") or "").strip() or (commerce.get("nom") or "").strip() or "Notre commerce"
+    leg = legendes_presentation(commerce)
+    leg.update({k: v.strip() for k, v in (options.get("legendes") or {}).items() if isinstance(v, str)})
+    if len(plans) < 2:
+        raise Refus("Gardez au moins deux photos pour monter la présentation.")
+    clips, durees = [], []
+    for rang, (plan, src) in enumerate(plans):
+        d = 4.2 if rang == 0 else 3.4
+        clips.append(clip_photo(src, rang, nom, leg.get(plan, ""), d, dossier))
+        durees.append(d)
+    clips.append(carte_fin(nom, options, dossier))
+    durees.append(FIN_DUREE)
+
+    # Fondus enchaînés : chaque plan commence FONDU secondes avant la fin du précédent.
+    entrees, graphe, precedent, decalage = [], [], "[i0]", 0.0
+    for k, c in enumerate(clips):
+        entrees += ["-i", c]
+        # Même base de temps pour tous les plans : xfade l'exige.
+        graphe.append(f"[{k}:v]settb=AVTB,setpts=PTS-STARTPTS,fps={IPS}[i{k}]")
+    for k in range(1, len(clips)):
+        decalage += durees[k - 1] - FONDU
+        sortie = f"[x{k}]" if k < len(clips) - 1 else "[v]"
+        graphe.append(f"{precedent}[i{k}]xfade=transition=fade:duration={FONDU}:offset={decalage:.2f}{sortie}")
+        precedent = sortie
+    t_fin = decalage
+    total = decalage + FIN_DUREE
+    brut = os.path.join(dossier, "brut.mp4")
+    ff(*entrees, "-f", "lavfi", "-t", f"{total:.2f}", "-i", "anullsrc=r=48000:cl=stereo",
+       "-filter_complex", ";".join(graphe), "-map", "[v]", "-map", f"{len(clips)}:a:0", "-shortest",
+       "-r", str(IPS), "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+       "-c:a", "aac", "-b:a", "96k", "-ar", "48000", brut)
+    finale, affiche = finaliser(brut, t_fin, dossier)
+    return resultat(finale, affiche, None, total)
 
 
 # ── File Supabase ─────────────────────────────────────────────────────────
@@ -258,18 +379,20 @@ def televerser(fichier, chemin, type_contenu):
 def traiter(job):
     dossier = tempfile.mkdtemp(prefix="montage-")
     try:
+        presentation = job["options"].get("mode") == "presentation"
+        ordre = PHOTOS if presentation else ORDRE
         retires = set(job["options"].get("plans_retires") or [])
         rushes = sorted((r for r in job["rushes"] if r.get("plan") not in retires),
-                        key=lambda r: ORDRE.index(r["plan"]) if r.get("plan") in ORDRE else 99)
+                        key=lambda r: ordre.index(r["plan"]) if r.get("plan") in ordre else 99)
         if len(rushes) < 2:
-            raise Refus("Gardez au moins deux plans pour monter la vidéo.")
+            raise Refus("Gardez au moins deux " + ("photos" if presentation else "plans") + " pour monter la vidéo.")
         plans = []
         for i, r in enumerate(rushes):
             local = os.path.join(dossier, f"rush{i}{os.path.splitext(r['chemin'])[1]}")
             with open(local, "wb") as h:
                 h.write(api("GET", f"/storage/v1/object/hl-rushes/{r['chemin']}"))
             plans.append((r["plan"], local))
-        res = monter(plans, job["options"], job["commerce"], dossier)
+        res = (monter_presentation if presentation else monter)(plans, job["options"], job["commerce"], dossier)
         base = f"{job['slug']}/montage-{job['id'][:8]}-{os.urandom(3).hex()}"
         resultat = {
             "src": televerser(res["video"], base + ".mp4", "video/mp4"),
@@ -304,20 +427,25 @@ def nettoyer():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--local", help="dossier de séquences nommées devanture.*, interieur.*, … (essai sans Supabase)")
+    ap.add_argument("--local", help="dossier de séquences devanture.*, interieur.*, … ou de photos photo1.* … photo6.* (essai sans Supabase)")
     ap.add_argument("--options", default="{}", help="options JSON pour l'essai local")
     ap.add_argument("--max", type=int, default=6)
     args = ap.parse_args()
 
     if args.local:
+        opts = json.loads(args.options)
+        presentation = opts.get("mode") == "presentation"
         plans = []
-        for plan in ORDRE:
+        for plan in (PHOTOS if presentation else ORDRE):
             for f in sorted(os.listdir(args.local)):
                 if os.path.splitext(f)[0] == plan:
                     plans.append((plan, os.path.join(args.local, f)))
         sortie = os.path.join(args.local, "sortie")
         os.makedirs(sortie, exist_ok=True)
-        res = monter(plans, json.loads(args.options), {"nom": "Le Comptoir", "offre": "Café offert avec votre brunch"}, sortie)
+        demo = {"nom": "Le Comptoir", "offre": "Café offert avec votre brunch", "horaires": "Mar–Dim · 9h–15h",
+                "adresse": "12 rue de l'Exemple, 92250 La Garenne-Colombes", "avis": {"note": 4.6, "nombre": 126},
+                "accroche": "Brunch, cuisine maison et produits du marché, à deux pas de l'église."}
+        res = (monter_presentation if presentation else monter)(plans, opts, demo, sortie)
         print(json.dumps(res, ensure_ascii=False, indent=2))
         return 0
 
