@@ -3,7 +3,8 @@
 #
 #  Toutes les 5 minutes : s'il y a un montage en attente (séquences envoyées
 #  depuis l'espace commerçant), installe ffmpeg et monte la vidéo avec
-#  .github/scripts/hl_montage.py. Sinon, s'arrête en quelques secondes.
+#  .github/scripts/hl_montage.py (avec la transcription du plan face caméra,
+#  faster-whisper, sur ce serveur). Sinon, s'arrête en quelques secondes.
 #  Efface aussi les séquences brutes des montages envoyés ou abandonnés.
 #
 #  Secret requis (Settings › Secrets and variables › Actions) :
@@ -49,6 +50,22 @@ jobs:
       - name: Installer ffmpeg
         if: steps.file.outputs.n != '0'
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
+      # Transcription du plan face caméra, sur ce serveur (aucun service extérieur).
+      - uses: actions/setup-python@v5
+        if: steps.file.outputs.n != '0'
+        with:
+          python-version: '3.12'
+      - name: Modèle de transcription en cache
+        if: steps.file.outputs.n != '0'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-small-v1
+      - name: Installer la transcription
+        if: steps.file.outputs.n != '0'
+        # En cas d'échec, le montage se fait quand même, sans transcription.
+        run: pip install --quiet faster-whisper || echo "::warning::faster-whisper indisponible"
 
       - name: Monter les vidéos et nettoyer
         env:

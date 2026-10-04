@@ -7,7 +7,10 @@ phrase face caméra) et les envoie depuis son espace. Ce script, lancé par
 et produit pour chacun :
   - une vidéo verticale 1080 × 1920 de 20 à 35 s : chaque plan recadré,
     raccourci, titré, enchaîné en fondu, puis une carte de fin avec le bouton ;
-  - une image d'affiche et, s'il a écrit sa phrase, des sous-titres (.vtt).
+  - une image d'affiche et des sous-titres (.vtt) du plan face caméra : ses
+    paroles sont transcrites sur place (faster-whisper, rien n'est envoyé à
+    un service extérieur) et chaque bloc s'affiche quand il le dit. S'il a
+    écrit ou corrigé sa phrase, c'est son texte qui s'affiche, calé sur sa voix.
 Mode « présentation » (options.mode = 'presentation') : pour ceux qui ne
 filment pas, 3 à 6 photos deviennent un diaporama animé (zoom lent, fondus),
 légendé avec les informations de la fiche (accroche, offre, horaires,
@@ -19,6 +22,8 @@ Usage :
   hl_montage.py                       traite la file (secret SUPABASE_SERVICE_ROLE_KEY)
   hl_montage.py --local DOSSIER       monte des fichiers locaux, sans Supabase (essai)
 Variable FFMPEG : chemin de ffmpeg (défaut : « ffmpeg »).
+Variable WHISPER_MODELE : modèle de transcription (défaut : « small »).
+Sans le module faster_whisper, le montage se fait sans transcription.
 
 Les journaux de ce dépôt sont publics : on n'y écrit que des identifiants.
 """
@@ -95,20 +100,76 @@ def lignes(texte, largeur, maxi):
     return l
 
 
-def morceaux_phrase(phrase, duree, largeur=26):
+def morceaux_phrase(phrase, duree, largeur=26, debut=0.2, fin=None):
     """Découpe la phrase en blocs de 2 lignes affichés l'un après l'autre,
-    chacun le temps proportionnel à sa longueur (à peu près celui de la parole)."""
+    chacun le temps proportionnel à sa longueur (à peu près celui de la parole),
+    entre debut et fin (par défaut : toute la durée du plan)."""
     toutes = lignes(phrase, largeur, 99)
     blocs = [toutes[i:i + 2] for i in range(0, len(toutes), 2)]
     if not blocs:
         return []
     total = sum(len(" ".join(b)) for b in blocs)
-    t, sortie = 0.2, []
-    utile = max(0.5, duree - 0.4)
+    t, sortie = debut, []
+    utile = max(0.5, (duree - 0.2 if fin is None else fin) - debut)
     for b in blocs:
         d = utile * len(" ".join(b)) / total
         sortie.append((t, t + d, b))
         t += d
+    return sortie
+
+
+# ── Transcription du plan face caméra ─────────────────────────────────────
+_modele = None
+
+
+def transcrire(src, debut, longueur, dossier):
+    """Mots prononcés [(début, fin, mot)], en secondes depuis le début du plan.
+    None si la transcription est indisponible : le montage continue sans."""
+    global _modele
+    try:
+        from faster_whisper import WhisperModel
+    except ImportError:
+        return None
+    try:
+        wav = os.path.join(dossier, "voix.wav")
+        ff("-ss", f"{debut:.2f}", "-t", f"{longueur:.2f}", "-i", src, "-vn", "-ac", "1", "-ar", "16000", wav)
+        if _modele is None:
+            _modele = WhisperModel(os.environ.get("WHISPER_MODELE", "small"), device="cpu", compute_type="int8")
+        segments, _ = _modele.transcribe(wav, language="fr", word_timestamps=True, vad_filter=True, beam_size=5)
+        mots = [(w.start, w.end, w.word.strip()) for sg in segments for w in (sg.words or []) if w.word.strip()]
+        return mots or None
+    except Exception as e:  # journal public : le type d'erreur seulement, jamais les paroles
+        print(f"transcription impossible ({type(e).__name__}) : montage sans transcription")
+        return None
+
+
+def blocs_mots(mots, duree, largeur=26):
+    """Regroupe les mots en blocs de 2 lignes au plus, coupés aux pauses et aux fins de phrase ;
+    chaque bloc reste affiché jusqu'au suivant (0,9 s au moins)."""
+    blocs = []          # [début, fin, [lignes]]
+    bloc = None
+    for i, (debut, fin, mot) in enumerate(mots):
+        pause = bloc is not None and debut - bloc[1] > 0.7
+        if bloc is None or pause:
+            bloc = [debut, fin, [mot]]
+            blocs.append(bloc)
+        else:
+            essai = bloc[2][-1] + " " + mot
+            if len(essai) <= largeur:
+                bloc[2][-1] = essai
+            elif len(bloc[2]) < 2:
+                bloc[2].append(mot)
+            else:
+                bloc = [debut, fin, [mot]]
+                blocs.append(bloc)
+            bloc[1] = fin
+        # Fin de phrase : le bloc suivant repart sur une nouvelle phrase, s'il est déjà bien rempli.
+        if mot[-1:] in ".!?" and (len(bloc[2]) == 2 or len(bloc[2][0]) > largeur // 2):
+            bloc = None
+    sortie = []
+    for k, (a, b, l) in enumerate(blocs):
+        limite = blocs[k + 1][0] - 0.05 if k + 1 < len(blocs) else duree - 0.1
+        sortie.append((max(0.0, a - 0.05), min(max(b + 0.3, a + 0.9), limite), l))
     return sortie
 
 
@@ -154,7 +215,8 @@ def monter(plans, options, commerce, dossier):
     leg = legendes_par_defaut(options.get("titre") or nom, commerce.get("offre"))
     leg.update({k: v for k, v in (options.get("legendes") or {}).items() if isinstance(v, str) and v.strip()})
     phrase = (options.get("phrase") or "").strip()
-    morceaux, debut_face, duree_face, t = [], None, 0.0, 0.0
+    morceaux, debut_face, t = [], None, 0.0
+    blocs_face, transcription = [], ""
 
     for i, (plan, src) in enumerate(plans):
         duree, a_son = sonde(src)
@@ -170,8 +232,17 @@ def monter(plans, options, commerce, dossier):
         vf = [f"scale={L}:{H}:force_original_aspect_ratio=increase", f"crop={L}:{H}", f"fps={IPS}", "setsar=1",
               f"fade=t=in:st=0:d={fondu}", f"fade=t=out:st={longueur - fondu:.2f}:d={fondu}"]
         if plan == "face":
-            if phrase:
-                for k, (a, b, bloc) in enumerate(morceaux_phrase(phrase, longueur)):
+            mots = transcrire(src, debut, longueur, dossier) if a_son else None
+            if mots:
+                transcription = " ".join(m[2] for m in mots)
+            if phrase and mots:  # son texte, calé entre le premier et le dernier mot prononcés
+                blocs_face = morceaux_phrase(phrase, longueur, debut=max(0.0, mots[0][0] - 0.1), fin=min(longueur - 0.1, mots[-1][1] + 0.4))
+            elif phrase:
+                blocs_face = morceaux_phrase(phrase, longueur)
+            elif mots:
+                blocs_face = blocs_mots(mots, longueur)
+            if blocs_face:
+                for k, (a, b, bloc) in enumerate(blocs_face):
                     vf += bloc_texte(dossier, f"st{i}-{k}", bloc, 52, int(H * 0.78), POLICE_TEXTE, boite="black@0.55",
                                      enable=f"between(t,{a:.2f},{b:.2f})")
         else:
@@ -191,7 +262,7 @@ def monter(plans, options, commerce, dossier):
                "-map", "0:v:0", "-map", "1:a:0", "-shortest", "-r", str(IPS), "-c:v", "libx264", "-preset", "veryfast",
                "-crf", "21", "-c:a", "aac", "-b:a", "128k", "-ar", "48000", sortie)
         if plan == "face":
-            debut_face, duree_face = t, longueur
+            debut_face = t
         morceaux.append(sortie)
         t += longueur
 
@@ -208,16 +279,18 @@ def monter(plans, options, commerce, dossier):
     finale, affiche = finaliser(brut, t_fin, dossier)
 
     vtt = None
-    if phrase and debut_face is not None:
+    if blocs_face and debut_face is not None:
         def hms(s):
             return f"{int(s // 3600):02d}:{int(s % 3600 // 60):02d}:{s % 60:06.3f}"
         vtt = os.path.join(dossier, "sous-titres.vtt")
         with open(vtt, "w", encoding="utf-8") as h:
             h.write("WEBVTT\n")
-            for a, b, bloc in morceaux_phrase(phrase, duree_face):
+            for a, b, bloc in blocs_face:
                 h.write(f"\n{hms(debut_face + a)} --> {hms(debut_face + b)}\n" + "\n".join(bloc) + "\n")
 
-    return resultat(finale, affiche, vtt, t)
+    res = resultat(finale, affiche, vtt, t)
+    res["transcription"] = transcription
+    return res
 
 
 FIN_DUREE = 3.5
@@ -400,6 +473,8 @@ def traiter(job):
             "sousTitres": televerser(res["vtt"], base + ".vtt", "text/vtt") if res["vtt"] else "",
             "duree": res["duree"], "poids": res["poids"],
         }
+        if res.get("transcription"):
+            resultat["transcription"] = res["transcription"][:600]
         rpc("hl_montage_terminer", {"p_id": job["id"], "p_resultat": resultat, "p_erreur": None})
         print(f"montage {job['id'][:8]} prêt · {res['duree']} s · {res['poids'] // 1024} Ko")
     except Refus as e:

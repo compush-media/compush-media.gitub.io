@@ -115,7 +115,7 @@
     <h2><span class="num">2</span>Vos textes</h2>
     <div class="form">
       <label class="f large"><span>Titre de la vidéo (sur la devanture)</span><input id="oTitre" maxlength="40"></label>
-      <label class="f large" id="lPhrase"><span>Ce que vous dites face caméra (affiché en sous-titres)</span><textarea id="oPhrase" maxlength="220" placeholder="Bonjour ! Au Comptoir, tout est fait maison avec les produits du marché. Venez nous voir !"></textarea></label>
+      <label class="f large" id="lPhrase"><span>Ce que vous dites face caméra · facultatif</span><textarea id="oPhrase" maxlength="220" placeholder="Laissez vide : vos paroles sont transcrites automatiquement en sous-titres. Vous pourrez les corriger ensuite."></textarea></label>
       <label class="f large"><span>Texte de fin</span><input id="oFin" maxlength="80" placeholder="Retrouvez-nous dans l'appli Les Commerces de La Garenne"></label>
       <label class="f"><span>Bouton de fin</span><select id="oCta"><option value="offre">Voir l'offre</option><option value="itineraire">Itinéraire</option><option value="reserver">Réserver</option><option value="contacter">Contacter</option></select></label>
     </div>
@@ -151,7 +151,7 @@
     { id: 'interieur', ic: '🪑', titre: 'L\'intérieur de votre commerce', ds: 'Un lent panoramique · 5 à 10 s', requis: true },
     { id: 'produits', ic: '🥐', titre: 'Vos produits ou services', ds: 'De près, en action si possible · 5 à 10 s', requis: true },
     { id: 'equipe', ic: '👋', titre: 'Vous ou votre équipe', ds: 'Au travail, un sourire · 5 à 10 s', requis: false },
-    { id: 'face', ic: '🎙️', titre: 'Une phrase face caméra', ds: 'Présentez-vous en une phrase · 10 s', requis: false }
+    { id: 'face', ic: '🎙️', titre: 'Une phrase face caméra', ds: 'Présentez-vous en une phrase · 10 s · sous-titres automatiques', requis: false }
   ];
   var fichiers = {};          // plan -> File choisi
   var LEG_DEF = function(){ return {
@@ -369,7 +369,8 @@
         (r.sousTitres ? '<track kind="subtitles" srclang="fr" label="Français" default src="' + esc(r.sousTitres) + '">' : '') + '</video>' +
       '<details><summary>Demander des modifications</summary><div class="form">' +
         '<label class="f large"><span>Titre</span><input data-m="titre" maxlength="40" value="' + esc(o.titre || '') + '"></label>' +
-        (o.mode === 'presentation' ? '' : '<label class="f large"><span>Phrase face caméra</span><textarea data-m="phrase" maxlength="220">' + esc(o.phrase || '') + '</textarea></label>') +
+        (o.mode === 'presentation' || !(x.plans || []).some(function(p){ return p === 'face'; }) ? '' :
+          '<label class="f large"><span>Sous-titres du plan face caméra (corrigez si besoin)</span><textarea data-m="phrase" maxlength="600" data-auto="' + esc(r.transcription || '') + '">' + esc(o.phrase || r.transcription || '') + '</textarea></label>') +
         '<label class="f large"><span>Texte de fin</span><input data-m="fin" maxlength="80" value="' + esc(o.fin || '') + '"></label>' +
         '<label class="f"><span>Bouton de fin</span><select data-m="cta">' + Object.keys(CTAS).map(function(k){ return '<option value="' + k + '"' + (k === o.cta ? ' selected' : '') + '>' + CTAS[k] + '</option>'; }).join('') + '</select></label>' +
         '<div class="large"><span class="small" style="font-weight:700">' + (o.mode === 'presentation' ? 'Photos à retirer' : 'Plans à retirer') + '</span><div class="rangee" style="margin-top:6px">' +
@@ -394,6 +395,9 @@
     if (act === 'modifier') {
       var o = {};
       Array.prototype.forEach.call(bloc.querySelectorAll('[data-m]'), function(i){ o[i.getAttribute('data-m')] = i.value.trim(); });
+      // Sous-titres non corrigés : on garde la transcription, calée mot par mot.
+      var ph = bloc.querySelector('[data-m="phrase"]');
+      if (ph && ph.value.trim() === (ph.getAttribute('data-auto') || '').trim()) o.phrase = '';
       o.plans_retires = Array.prototype.filter.call(bloc.querySelectorAll('[data-retire]'), function(i){ return i.checked; }).map(function(i){ return i.getAttribute('data-retire'); });
       b.disabled = true;
       rpc('hl_montage_modifier', { p_token: jeton, p_id: id, p_options: o }).then(function(j){ if (!j.ok) throw new Error(j.reason); charger(); })
