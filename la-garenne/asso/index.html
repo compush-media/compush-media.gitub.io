@@ -10,6 +10,7 @@
 <script src="/la-garenne/hl.js"></script>
 <style>
   body{max-width:1040px;padding-bottom:40px;}
+  [hidden]{display:none!important;}   /* sinon label.f{display:block} l'emporte sur hidden */
   .tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:6px 0 18px;}
   .tabs .chip .nb{display:inline-block;min-width:18px;margin-left:6px;padding:0 6px;border-radius:999px;background:var(--rose);color:#fff;font-size:11px;}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
