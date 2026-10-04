@@ -1,0 +1,62 @@
+# ──────────────────────────────────────────────────────────────
+#  Pilote La Garenne-Colombes : montage automatique des vidéos des commerçants.
+#
+#  Toutes les 5 minutes : s'il y a un montage en attente (séquences envoyées
+#  depuis l'espace commerçant), installe ffmpeg et monte la vidéo avec
+#  .github/scripts/hl_montage.py. Sinon, s'arrête en quelques secondes.
+#  Efface aussi les séquences brutes des montages envoyés ou abandonnés.
+#
+#  Secret requis (Settings › Secrets and variables › Actions) :
+#    SUPABASE_SERVICE_ROLE_KEY   Supabase › Project Settings › API Keys › service_role
+#
+#  Dépôt public : les journaux sont visibles de tous. Le script n'y écrit
+#  que des identifiants de montage, jamais de contenu ni de secret.
+# ──────────────────────────────────────────────────────────────
+name: Pilote La Garenne · montage vidéo
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: hl-montage
+  cancel-in-progress: false
+
+jobs:
+  montage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Y a-t-il un montage à faire ?
+        id: file
+        env:
+          CLE: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -z "$CLE" ]; then echo "::error::Secret SUPABASE_SERVICE_ROLE_KEY absent."; exit 1; fi
+          n=$(curl -sf -X POST "https://rtdiaeskmyjjwohirhzj.supabase.co/rest/v1/rpc/hl_montage_en_attente" \
+                -H "apikey: $CLE" -H "Authorization: Bearer $CLE" -H "Content-Type: application/json" -d '{}' || echo 0)
+          echo "en attente : $n"
+          echo "n=$n" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            .github
+            la-garenne/icons
+
+      - name: Installer ffmpeg
+        if: steps.file.outputs.n != '0'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
+      - name: Monter les vidéos et nettoyer
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ "${{ steps.file.outputs.n }}" = "0" ]; then
+            # Rien à monter : seulement le nettoyage des séquences brutes, sans ffmpeg.
+            python3 .github/scripts/hl_montage.py --max 0
+          else
+            python3 .github/scripts/hl_montage.py
+          fi

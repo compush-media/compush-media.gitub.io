@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Créer ma vidéo – Les Commerces de La Garenne</title>
+<link rel="stylesheet" href="/la-garenne/polices/polices.css">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<style>
+  body{max-width:760px;}
+  main.ct{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding-bottom:40px;}
+  main.ct > *{min-width:0;}
+  [hidden]{display:none!important;}
+  .bloc{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:16px;}
+  .bloc h2{font-size:19px;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+  .num{width:28px;height:28px;border-radius:50%;background:var(--rose);color:#fff;font:900 14px 'Lato',sans-serif;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .plan{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line);}
+  .plan:first-of-type{border-top:0;}
+  .plan .ic{width:44px;height:44px;border-radius:12px;background:var(--rose-soft);color:var(--rose);display:flex;align-items:center;justify-content:center;font-size:20px;}
+  .plan b{display:block;font-size:15px;}
+  .plan .ds{font-size:13px;color:var(--muted);}
+  .plan .etat{font-size:12.5px;font-weight:700;margin-top:3px;}
+  .plan .etat.ok{color:var(--ok);} .plan .etat.ko{color:#B23B3B;}
+  .plan.pret .ic{background:var(--ok-soft);color:var(--ok);}
+  .choisir{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-weight:700;font-size:13.5px;color:var(--ink);white-space:nowrap;cursor:pointer;}
+  .conseils{background:#EEF4FF;color:#28407A;border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.55;margin-top:10px;}
+  .conseils ul{margin:4px 0 0;padding-left:18px;}
+  .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+  .form .large{grid-column:1/-1;}
+  label.f{display:block;font-size:12.5px;font-weight:700;}
+  label.f span{display:block;margin-bottom:5px;}
+  label.f input,label.f select,label.f textarea{width:100%;min-height:44px;border-radius:10px;border:1.5px solid var(--line);padding:8px 12px;font:inherit;font-size:15px;background:#fff;color:var(--ink);}
+  label.f textarea{min-height:64px;resize:vertical;}
+  label.ck{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;}
+  label.ck input{margin-top:3px;width:18px;height:18px;flex-shrink:0;}
+  details summary{cursor:pointer;font-size:13.5px;font-weight:700;color:var(--rose);margin:4px 0 8px;}
+  .prog{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:6px;}
+  .prog i{display:block;height:100%;width:0;background:var(--rose);transition:width .2s;}
+  .msg{font-size:13.5px;font-weight:700;margin-top:8px;}
+  .msg.ok{color:var(--ok);} .msg.ko{color:#B23B3B;}
+  .montage{border-top:1px solid var(--line);padding:14px 0;display:grid;gap:10px;}
+  .montage:first-child{border-top:0;}
+  .montage video{width:100%;max-width:320px;aspect-ratio:9/16;border-radius:14px;background:#111;display:block;}
+  .st{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;}
+  .st.attente{background:var(--sponso-soft);color:var(--sponso);}
+  .st.pret{background:var(--ok-soft);color:var(--ok);}
+  .st.erreur{background:#FDECEC;color:#B23B3B;}
+  .st.envoye{background:#EEF0F6;color:#4A5070;}
+  .rangee{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .b2{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-weight:700;font-size:13.5px;color:var(--ink);}
+  .b2.ko{color:#B23B3B;border-color:#F0C4C4;}
+  .tourne{display:inline-block;width:14px;height:14px;border:2px solid var(--sponso);border-top-color:transparent;border-radius:50%;animation:t 1s linear infinite;vertical-align:-2px;margin-right:6px;}
+  @keyframes t{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){ .tourne{animation:none;} }
+</style>
+</head>
+<body class="sans-nav">
+<div id="bar"></div>
+<main class="ct">
+  <a class="lien" id="retour" href="#" style="width:auto;text-align:left;padding:0">‹ Mon offre et mes vidéos</a>
+  <div>
+    <h1>Créer ma vidéo</h1>
+    <p class="muted" style="margin-top:4px">Filmez 3 à 5 courtes séquences avec votre téléphone : le montage se fait tout seul. Vous regardez le résultat avant de l'envoyer à votre association.</p>
+  </div>
+
+  <section class="bloc" id="blocMontages" hidden>
+    <h2>Mes vidéos montées</h2>
+    <div id="montages"></div>
+  </section>
+
+  <section class="bloc" id="blocPlans">
+    <h2><span class="num">1</span>Filmez et envoyez vos séquences</h2>
+    <p class="small muted">3 plans au minimum. Filmez à la verticale, 5 à 10 secondes chacun.</p>
+    <div id="plans" style="margin-top:6px"></div>
+    <div class="conseils"><b>Conseils de tournage</b><ul>
+      <li>Téléphone tenu à la verticale, à deux mains, sans zoomer.</li>
+      <li>De la lumière : près d'une fenêtre ou en journée pour la devanture.</li>
+      <li>Laissez tourner 1 seconde avant et après le geste : le montage garde le meilleur passage.</li>
+      <li>Pas de musique en fond : l'appli lit les vidéos son coupé, avec les textes à l'écran.</li>
+      <li>Seulement des personnes d'accord pour apparaître, et aucun client reconnaissable sans son accord.</li>
+    </ul></div>
+  </section>
+
+  <section class="bloc" id="blocTextes">
+    <h2><span class="num">2</span>Vos textes</h2>
+    <div class="form">
+      <label class="f large"><span>Titre de la vidéo (sur la devanture)</span><input id="oTitre" maxlength="40"></label>
+      <label class="f large" id="lPhrase"><span>Ce que vous dites face caméra (affiché en sous-titres)</span><textarea id="oPhrase" maxlength="220" placeholder="Bonjour ! Au Comptoir, tout est fait maison avec les produits du marché. Venez nous voir !"></textarea></label>
+      <label class="f large"><span>Texte de fin</span><input id="oFin" maxlength="80" placeholder="Retrouvez-nous dans l'appli Les Commerces de La Garenne"></label>
+      <label class="f"><span>Bouton de fin</span><select id="oCta"><option value="offre">Voir l'offre</option><option value="itineraire">Itinéraire</option><option value="reserver">Réserver</option><option value="contacter">Contacter</option></select></label>
+    </div>
+    <details><summary>Modifier les textes de chaque plan</summary><div class="form" id="legendes"></div></details>
+  </section>
+
+  <section class="bloc">
+    <h2><span class="num">3</span>Lancer le montage</h2>
+    <p class="small muted">Le montage prend en général 5 à 15 minutes. Vous pouvez fermer cette page : votre vidéo vous attendra ici.</p>
+    <button class="btn" type="button" id="lancer" style="margin-top:12px"><span>Lancer le montage</span><span class="arr">›</span></button>
+    <div class="prog" id="prog" hidden><i></i></div>
+    <p class="msg" id="mLancer"></p>
+  </section>
+</main>
+
+<script>
+/* Création vidéo, étape 1 : le commerçant envoie ses séquences (stockage
+   privé), un serveur de montage les assemble (hl-montage.yml), puis il
+   prévisualise, retouche et envoie la vidéo à son association. */
+(function(){
+  var SUPA_URL = 'https://rtdiaeskmyjjwohirhzj.supabase.co';
+  var SUPA_KEY = 'sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ';
+  var esc = HL.esc;
+  var slug = HL.qs('s').toLowerCase().replace(/[^a-z0-9-]/g,'');
+  var jeton = HL.ls('fv_session_' + slug);
+  var commerce = { nom: '', offre: '' };
+  var PLANS = [
+    { id: 'devanture', ic: '🏠', titre: 'Votre devanture', ds: 'De l\'extérieur, avec l\'enseigne · 5 à 10 s', requis: true },
+    { id: 'interieur', ic: '🪑', titre: 'L\'intérieur de votre commerce', ds: 'Un lent panoramique · 5 à 10 s', requis: true },
+    { id: 'produits', ic: '🥐', titre: 'Vos produits ou services', ds: 'De près, en action si possible · 5 à 10 s', requis: true },
+    { id: 'equipe', ic: '👋', titre: 'Vous ou votre équipe', ds: 'Au travail, un sourire · 5 à 10 s', requis: false },
+    { id: 'face', ic: '🎙️', titre: 'Une phrase face caméra', ds: 'Présentez-vous en une phrase · 10 s', requis: false }
+  ];
+  var fichiers = {};          // plan -> File choisi
+  var LEG_DEF = function(){ return {
+    devanture: '', interieur: 'Bienvenue chez ' + (commerce.nom || 'nous'),
+    produits: commerce.offre || 'Fait avec soin, ici à La Garenne', equipe: 'Une équipe qui vous accueille' }; };
+  var CTAS = { offre: 'Voir l\'offre', itineraire: 'Itinéraire', reserver: 'Réserver', contacter: 'Contacter' };
+
+  document.getElementById('bar').innerHTML = HL.brandbar(false);
+  document.getElementById('retour').href = HL.BASE + 'pro/contenu.html?s=' + encodeURIComponent(slug);
+  if (!slug || !jeton) { location.replace(HL.BASE + 'pro/connexion.html?s=' + encodeURIComponent(slug)); return; }
+
+  function rpc(nom, corps){
+    return fetch(SUPA_URL + '/rest/v1/rpc/' + nom, {
+      method: 'POST',
+      headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(corps)
+    }).then(function(r){ if (!r.ok) throw new Error('Service indisponible'); return r.json(); });
+  }
+  function dans(j){ var d = new Date(); d.setDate(d.getDate() + j); return d.toISOString().slice(0, 10); }
+
+  // Séquence brute : URL signée vers le stockage privé, envoi avec progression.
+  function televerserRush(fichier, barre){
+    var type = fichier.type || (/\.mov$/i.test(fichier.name) ? 'video/quicktime' : 'video/mp4');
+    return fetch(SUPA_URL + '/functions/v1/hl-televersement', {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jeton: jeton, slug: slug, genre: 'rush', type: type, taille: fichier.size })
+    }).then(function(r){ return r.json(); }).then(function(a){
+      if (!a.ok) throw new Error(a.erreur || 'Envoi refusé');
+      return new Promise(function(ok, ko){
+        var x = new XMLHttpRequest();
+        x.open('PUT', a.url_envoi);
+        x.setRequestHeader('content-type', type);
+        x.upload.onprogress = function(e){ if (e.lengthComputable && barre) barre(e.loaded / e.total); };
+        x.onload = function(){ x.status < 300 ? ok(a.chemin) : ko(new Error('Envoi interrompu (' + x.status + ')')); };
+        x.onerror = function(){ ko(new Error('Connexion perdue pendant l\'envoi')); };
+        x.send(fichier);
+      });
+    });
+  }
+
+  /* ── Étape 1 : les plans ── */
+  function rendrePlans(){
+    document.getElementById('plans').innerHTML = PLANS.map(function(p){
+      var f = fichiers[p.id];
+      return '<div class="plan' + (f ? ' pret' : '') + '" data-p="' + p.id + '"><span class="ic">' + (f ? '✓' : p.ic) + '</span>' +
+        '<div><b>' + esc(p.titre) + (p.requis ? '' : ' <span class="muted" style="font-weight:400">(facultatif)</span>') + '</b><p class="ds">' + esc(p.ds) + '</p>' +
+        (f ? '<p class="etat ok">' + esc(f.name) + ' · ' + (f.size / 1048576).toFixed(1).replace('.', ',') + ' Mo</p>' : '<p class="etat" id="e-' + p.id + '"></p>') + '</div>' +
+        '<label class="choisir">' + (f ? 'Changer' : 'Choisir') + '<input type="file" accept="video/mp4,video/quicktime,.mov,.mp4" hidden data-plan="' + p.id + '"></label></div>';
+    }).join('');
+  }
+  document.getElementById('plans').addEventListener('change', function(e){
+    var inp = e.target.closest('[data-plan]'); if (!inp) return;
+    var plan = inp.getAttribute('data-plan'), f = inp.files[0]; if (!f) return;
+    var ok = /^video\/(mp4|quicktime)$/.test(f.type) || /\.(mp4|mov)$/i.test(f.name);
+    if (!ok) { erreurPlan(plan, 'Choisissez une vidéo (MP4 ou MOV).'); return; }
+    if (f.size > 50 * 1024 * 1024) { erreurPlan(plan, 'Séquence trop lourde (' + Math.round(f.size / 1048576) + ' Mo) : 50 Mo maximum. Filmez 10 secondes au plus.'); return; }
+    fichiers[plan] = f; rendrePlans(); majBouton();
+  });
+  function erreurPlan(plan, t){ rendrePlans(); var el = document.getElementById('e-' + plan); if (el) { el.className = 'etat ko'; el.textContent = t; } }
+  function majBouton(){
+    var n = Object.keys(fichiers).length;
+    document.getElementById('lancer').firstChild.textContent = n >= 3 ? 'Lancer le montage (' + n + ' plans)' : 'Envoyez au moins 3 plans (' + n + '/3)';
+  }
+
+  /* ── Étape 2 : textes ── */
+  function rendreLegendes(){
+    var d = LEG_DEF();
+    document.getElementById('legendes').innerHTML = ['interieur', 'produits', 'equipe'].map(function(p){
+      var pl = PLANS.filter(function(x){ return x.id === p; })[0];
+      return '<label class="f large"><span>' + esc(pl.titre) + '</span><input data-leg="' + p + '" maxlength="48" value="' + esc(d[p]) + '"></label>';
+    }).join('');
+  }
+  function options(){
+    var leg = {};
+    Array.prototype.forEach.call(document.querySelectorAll('[data-leg]'), function(i){ if (i.value.trim()) leg[i.getAttribute('data-leg')] = i.value.trim(); });
+    return { titre: document.getElementById('oTitre').value.trim() || commerce.nom, phrase: document.getElementById('oPhrase').value.trim(),
+             fin: document.getElementById('oFin').value.trim(), cta: document.getElementById('oCta').value, legendes: leg };
+  }
+
+  /* ── Étape 3 : lancer ── */
+  document.getElementById('lancer').addEventListener('click', function(){
+    var b = this, m = document.getElementById('mLancer'), prog = document.getElementById('prog');
+    var plans = PLANS.map(function(p){ return p.id; }).filter(function(p){ return fichiers[p]; });
+    if (plans.length < 3) { m.className = 'msg ko'; m.textContent = 'Envoyez au moins 3 plans : devanture, intérieur et produits par exemple.'; return; }
+    b.disabled = true; prog.hidden = false; m.className = 'msg';
+    var rushes = [], total = plans.reduce(function(s, p){ return s + fichiers[p].size; }, 0), fait = 0;
+    plans.reduce(function(ch, p, i){
+      return ch.then(function(){
+        m.textContent = 'Envoi de la séquence ' + (i + 1) + ' sur ' + plans.length + '… Gardez cette page ouverte.';
+        return televerserRush(fichiers[p], function(x){ prog.firstChild.style.width = Math.round(100 * (fait + x * fichiers[p].size) / total) + '%'; })
+          .then(function(chemin){ fait += fichiers[p].size; rushes.push({ plan: p, chemin: chemin, nom: fichiers[p].name.slice(0, 60), taille: fichiers[p].size }); });
+      });
+    }, Promise.resolve()).then(function(){
+      m.textContent = 'Préparation du montage…';
+      return rpc('hl_montage_creer', { p_token: jeton, p_rushes: rushes, p_options: options() });
+    }).then(function(j){
+      if (!j.ok) throw new Error(j.reason || 'refusé');
+      fichiers = {}; rendrePlans(); majBouton(); prog.hidden = true; b.disabled = false;
+      m.className = 'msg ok'; m.textContent = 'C\'est parti : votre vidéo sera prête dans 5 à 15 minutes, ci-dessus.';
+      return charger(true);
+    }).catch(function(e){ b.disabled = false; prog.hidden = true; m.className = 'msg ko'; m.textContent = 'Impossible : ' + e.message; });
+  });
+
+  /* ── Mes vidéos montées ── */
+  var suivi = null;
+  function charger(defiler){
+    return rpc('hl_montage_liste', { p_token: jeton }).then(function(j){
+      if (!j.ok) { location.replace(HL.BASE + 'pro/connexion.html?s=' + encodeURIComponent(slug)); return; }
+      var l = j.montages || [];
+      document.getElementById('blocMontages').hidden = !l.length;
+      document.getElementById('montages').innerHTML = l.map(montageHtml).join('');
+      var enCours = l.some(function(x){ return x.statut === 'en_attente' || x.statut === 'en_cours'; });
+      clearTimeout(suivi); if (enCours) suivi = setTimeout(charger, 20000);
+      if (defiler) document.getElementById('blocMontages').scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+  function montageHtml(x){
+    var date = new Date(x.created_at).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    var h = '<div class="montage" data-id="' + esc(x.id) + '"><div class="rangee">';
+    if (x.statut === 'en_attente' || x.statut === 'en_cours')
+      return h + '<span class="st attente"><span class="tourne"></span>' + (x.statut === 'en_cours' ? 'Montage en cours' : 'En file d\'attente') + '</span><span class="small muted">' + date + ' · 5 à 15 minutes</span></div></div>';
+    if (x.statut === 'erreur')
+      return h + '<span class="st erreur">Montage impossible</span><span class="small muted">' + date + '</span></div><p class="small">' + esc(x.erreur || '') + '</p>' +
+        '<div class="rangee"><button class="b2" data-act="relancer">Réessayer</button><button class="b2 ko" data-act="abandonner">Supprimer</button></div></div>';
+    if (x.statut === 'envoye')
+      return h + '<span class="st envoye">Envoyée à votre association</span><span class="small muted">' + date + '</span></div></div>';
+    var r = x.resultat || {}, o = x.options || {};
+    return h + '<span class="st pret">Prête</span><span class="small muted">' + date + ' · ' + (r.duree || '?') + ' s</span></div>' +
+      '<video controls playsinline preload="metadata" poster="' + esc(r.affiche || '') + '" src="' + esc(r.src || '') + '">' +
+        (r.sousTitres ? '<track kind="subtitles" srclang="fr" label="Français" default src="' + esc(r.sousTitres) + '">' : '') + '</video>' +
+      '<details><summary>Demander des modifications</summary><div class="form">' +
+        '<label class="f large"><span>Titre</span><input data-m="titre" maxlength="40" value="' + esc(o.titre || '') + '"></label>' +
+        '<label class="f large"><span>Phrase face caméra</span><textarea data-m="phrase" maxlength="220">' + esc(o.phrase || '') + '</textarea></label>' +
+        '<label class="f large"><span>Texte de fin</span><input data-m="fin" maxlength="80" value="' + esc(o.fin || '') + '"></label>' +
+        '<label class="f"><span>Bouton de fin</span><select data-m="cta">' + Object.keys(CTAS).map(function(k){ return '<option value="' + k + '"' + (k === o.cta ? ' selected' : '') + '>' + CTAS[k] + '</option>'; }).join('') + '</select></label>' +
+        '<div class="large"><span class="small" style="font-weight:700">Plans à retirer</span><div class="rangee" style="margin-top:6px">' +
+          (x.plans || []).map(function(p){ var pl = PLANS.filter(function(q){ return q.id === p; })[0] || { titre: p };
+            return '<label class="ck"><input type="checkbox" data-retire="' + esc(p) + '"' + ((o.plans_retires || []).indexOf(p) !== -1 ? ' checked' : '') + '> ' + esc(pl.titre) + '</label>'; }).join('') +
+        '</div></div></div><div class="rangee" style="margin-top:10px"><button class="b2" data-act="modifier">Refaire le montage</button></div></details>' +
+      '<div class="form">' +
+        '<label class="f"><span>Début de diffusion</span><input type="date" data-e="debut" value="' + dans(0) + '"></label>' +
+        '<label class="f"><span>Fin de diffusion</span><input type="date" data-e="fin" value="' + dans(60) + '"></label>' +
+        '<label class="ck large"><input type="checkbox" data-e="droits"> J\'atteste détenir les droits sur les images et l\'accord des personnes filmées, et j\'autorise sa diffusion dans l\'appli des Commerces de La Garenne.</label>' +
+      '</div>' +
+      '<div class="rangee"><button class="btn" data-act="envoyer" style="width:auto"><span>Envoyer à mon association</span><span class="arr">›</span></button>' +
+      '<button class="b2 ko" data-act="abandonner">Supprimer</button></div><p class="msg" data-msg></p></div>';
+  }
+  document.getElementById('montages').addEventListener('click', function(e){
+    var b = e.target.closest('[data-act]'); if (!b) return;
+    var bloc = b.closest('[data-id]'), id = bloc.getAttribute('data-id'), act = b.getAttribute('data-act');
+    var msg = bloc.querySelector('[data-msg]');
+    function err(t){ if (msg) { msg.className = 'msg ko'; msg.textContent = t; } else alert(t); }
+    if (act === 'abandonner') { rpc('hl_montage_abandonner', { p_token: jeton, p_id: id }).then(function(){ charger(); }); return; }
+    if (act === 'relancer') { rpc('hl_montage_modifier', { p_token: jeton, p_id: id, p_options: {} }).then(function(){ charger(); }); return; }
+    if (act === 'modifier') {
+      var o = {};
+      Array.prototype.forEach.call(bloc.querySelectorAll('[data-m]'), function(i){ o[i.getAttribute('data-m')] = i.value.trim(); });
+      o.plans_retires = Array.prototype.filter.call(bloc.querySelectorAll('[data-retire]'), function(i){ return i.checked; }).map(function(i){ return i.getAttribute('data-retire'); });
+      b.disabled = true;
+      rpc('hl_montage_modifier', { p_token: jeton, p_id: id, p_options: o }).then(function(j){ if (!j.ok) throw new Error(j.reason); charger(); })
+        .catch(function(x){ b.disabled = false; err('Impossible : ' + x.message); });
+      return;
+    }
+    if (act === 'envoyer') {
+      var debut = bloc.querySelector('[data-e="debut"]').value, fin = bloc.querySelector('[data-e="fin"]').value;
+      if (!bloc.querySelector('[data-e="droits"]').checked) return err('Cochez l\'attestation sur les droits pour envoyer la vidéo.');
+      if (!fin || fin < debut) return err('La fin de diffusion doit être après le début.');
+      b.disabled = true;
+      rpc('hl_montage_envoyer', { p_token: jeton, p_id: id, p_contenu: { debut: debut, fin: fin, droits_ok: true, type: 'portrait' } }).then(function(j){
+        if (!j.ok) throw new Error(j.reason);
+        HL.toast('Vidéo envoyée à votre association');
+        return charger();
+      }).catch(function(x){ b.disabled = false; err('Envoi impossible : ' + x.message); });
+    }
+  });
+
+  HL.charger().then(function(d){
+    var c = d.parSlug[slug];
+    if (c) { commerce.nom = c.nom; commerce.offre = c.offre ? c.offre.titre : ''; }
+    document.getElementById('oTitre').value = commerce.nom;
+    rendrePlans(); rendreLegendes(); majBouton();
+    return charger();
+  }).catch(function(){ rendrePlans(); rendreLegendes(); majBouton(); });
+})();
+</script>
+</body>
+</html>

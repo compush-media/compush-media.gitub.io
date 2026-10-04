@@ -51,7 +51,9 @@
   <p class="muted small" id="sous" style="margin:4px 0 16px"></p>
 
   <section class="bloc" id="blocOffre"><h3>Mon offre</h3><div id="offre"></div></section>
-  <section class="bloc" id="blocVideos"><h3>Mes vidéos</h3><div id="videos"></div></section>
+  <section class="bloc" id="blocVideos"><h3>Mes vidéos</h3>
+    <a class="btn" id="lienCreer" href="#" style="margin-bottom:14px"><span>Créer ma vidéo : je filme, le montage se fait tout seul</span><span class="arr">›</span></a>
+    <div id="videos"></div></section>
 </main>
 
 <script>
@@ -69,6 +71,7 @@
   var TYPES = { portrait: 'Présentation du commerce', nouveaute: 'Nouveauté', evenement: 'Événement', offre: 'Offre' };
   document.getElementById('bar').innerHTML = HL.brandbar(false);
   document.getElementById('retour').href = HL.BASE + 'pro/tableau.html?s=' + encodeURIComponent(slug);
+  document.getElementById('lienCreer').href = HL.BASE + 'pro/creer-video.html?s=' + encodeURIComponent(slug);
 
   function connexion(){ location.replace(HL.BASE + 'pro/connexion.html?s=' + encodeURIComponent(slug)); }
   if (!slug || !jeton) { connexion(); return; }
