@@ -297,6 +297,21 @@
         '<button class="son" type="button">🔇 Son coupé</button></div></div>' +
       '<div class="lock">' + (o.lock || "") + "</div>";
 
+    // Grand lecteur : il prend la forme de la vidéo (lue sur l'affiche), pour
+    // qu'une vidéo verticale ne soit pas rognée en haut et en bas.
+    el.style.aspectRatio = ""; el.style.width = "";
+    if (o.wide && v.affiche) {
+      var img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth, h = img.naturalHeight;
+        if (!w || !h || h <= w) return;
+        el.classList.add("vertical");
+        el.style.aspectRatio = w + " / " + h;
+        el.style.width = "min(100%, calc(min(62vh, 680px) * " + (w / h).toFixed(4) + "))";
+      };
+      img.src = v.affiche;
+    }
+
     var vid = el.querySelector("video"), prog = el.querySelector(".prog i"),
         tm = el.querySelector(".tm"), son = el.querySelector(".son");
     var vu = 0, dernier = null, vueEnvoyee = false, completeEnvoyee = false, teaserFini = false;
