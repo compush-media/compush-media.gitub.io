@@ -9,6 +9,7 @@
 #
 #  Secret requis (Settings › Secrets and variables › Actions) :
 #    SUPABASE_SERVICE_ROLE_KEY   Supabase › Project Settings › API Keys › service_role
+#    HEYGEN_API_KEY              vidéos présentées par Anna (déjà utilisé par gen-dm-videos.yml)
 #
 #  Dépôt public : les journaux sont visibles de tous. Le script n'y écrit
 #  que des identifiants de montage, jamais de contenu ni de secret.
@@ -70,6 +71,8 @@ jobs:
       - name: Monter les vidéos et nettoyer
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # Vidéos présentées par Anna (lancées par la ville seulement) : rendu payant.
+          HEYGEN_API_KEY: ${{ secrets.HEYGEN_API_KEY }}
         run: |
           if [ "${{ steps.file.outputs.n }}" = "0" ]; then
             # Rien à monter : seulement le nettoyage des séquences brutes, sans ffmpeg.

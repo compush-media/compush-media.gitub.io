@@ -53,6 +53,11 @@
   .b2.ko{color:#B23B3B;border-color:#F0C4C4;}
   .tourne{display:inline-block;width:14px;height:14px;border:2px solid var(--sponso);border-top-color:transparent;border-radius:50%;animation:t 1s linear infinite;vertical-align:-2px;margin-right:6px;}
   @keyframes t{to{transform:rotate(360deg)}}
+  .aide{background:#FFF7E0;border-radius:16px;padding:16px;display:grid;gap:10px;}
+  .aide h2{font-size:18px;}
+  .aide textarea{width:100%;min-height:110px;border-radius:10px;border:1.5px solid var(--line);padding:8px 12px;font:inherit;font-size:14.5px;background:#fff;color:var(--ink);resize:vertical;}
+  .adire{background:#fff;border-left:4px solid var(--rose);border-radius:10px;padding:12px 14px;font-size:17px;line-height:1.5;font-weight:700;}
+  .aide ul{margin:4px 0 0;padding-left:18px;font-size:13.5px;}
   .modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
   .mode{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:14px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;display:grid;gap:4px;}
   .mode b{font-size:15.5px;} .mode span{font-size:13px;color:var(--muted);line-height:1.4;}
@@ -83,6 +88,17 @@
   <section class="bloc" id="blocMontages" hidden>
     <h2>Mes vidéos montées</h2>
     <div id="montages"></div>
+  </section>
+
+  <section class="aide" id="blocAide">
+    <h2>💡 Vous ne savez pas quoi dire ?</h2>
+    <p class="small">Collez les avis de vos clients (depuis votre fiche Google, par exemple) : on vous propose la phrase à dire face caméra et les textes de vos plans, à partir de ce que vos clients apprécient. Rien n'est conservé.</p>
+    <details id="detAide"><summary>M'aider à trouver quoi dire</summary>
+      <textarea id="aideAvis" maxlength="60000" placeholder="Collez ici 10 à 50 avis. Sans avis, on s'appuie sur votre fiche."></textarea>
+      <button class="b2" type="button" id="aideBtn" style="margin-top:10px">Proposer mes textes</button>
+      <p class="msg" id="aideMsg"></p>
+      <div id="aideRes" hidden></div>
+    </details>
   </section>
 
   <section class="bloc" id="blocPlans">
@@ -226,6 +242,7 @@
     document.getElementById('blocPlans').hidden = p;
     document.getElementById('blocPhotos').hidden = !p;
     document.getElementById('lPhrase').hidden = p;
+    document.getElementById('blocAide').hidden = p;
     document.getElementById('detLegendes').hidden = p;
     document.getElementById('mLancer').textContent = '';
     majBouton();
@@ -286,6 +303,36 @@
       photos[id] = { blob: b, url: URL.createObjectURL(b) };
       rendrePhotos(); majBouton();
     }).catch(function(x){ if (el) { el.className = 'etat ko'; el.textContent = x.message; } });
+  });
+
+  /* ── « M'aider à trouver quoi dire » : Claude lit les avis et propose la phrase
+     face caméra (que le commerçant dit lui-même) et les textes des plans. ── */
+  document.getElementById('aideBtn').addEventListener('click', function(){
+    var b = this, m = document.getElementById('aideMsg'), res = document.getElementById('aideRes');
+    b.disabled = true; m.className = 'msg'; m.textContent = 'Lecture de vos avis… (20 à 60 secondes)';
+    fetch(SUPA_URL + '/functions/v1/hl-avis-texte', { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jeton: jeton, slug: slug, avis: document.getElementById('aideAvis').value.trim() }) })
+    .then(function(r){ return r.json(); }).then(function(j){
+      b.disabled = false;
+      if (!j.ok) throw new Error(j.erreur || 'refusé');
+      var a = j.analyse, lg = a.legendes || {};
+      function liste(l){ return '<ul>' + l.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>'; }
+      res.innerHTML =
+        (a.points_forts && a.points_forts.length ? '<p class="small" style="font-weight:700">Ce que vos clients apprécient</p>' +
+          liste(a.points_forts.map(function(p){ return esc(p.theme) + ' <span class="muted">· ' + p.nb_avis + ' avis</span>'; })) : '') +
+        '<p class="small" style="font-weight:700;margin-top:10px">À dire face caméra</p>' +
+        '<div class="adire">« ' + esc(a.phrase) + ' »</div>' +
+        '<p class="small muted">Dites-la avec vos mots, sans la lire : vos paroles seront sous-titrées automatiquement.</p>' +
+        (a.a_ameliorer && a.a_ameliorer.length ? '<p class="small" style="font-weight:700;margin-top:10px">Pour vous seulement (jamais dans la vidéo)</p>' + liste(a.a_ameliorer.map(esc)) : '');
+      res.hidden = false;
+      // Les textes des plans sont remplis : modifiables dans « Vos textes ».
+      if (lg.devanture) document.getElementById('oTitre').value = lg.devanture.slice(0, 40);
+      ['interieur', 'produits', 'equipe'].forEach(function(p){
+        var i = document.querySelector('[data-leg="' + p + '"]'); if (i && lg[p]) i.value = lg[p].slice(0, 48);
+      });
+      document.getElementById('detLegendes').open = true;
+      m.className = 'msg ok'; m.textContent = 'Textes proposés : les légendes de vos plans sont remplies plus bas, modifiables.';
+    }).catch(function(e){ b.disabled = false; m.className = 'msg ko'; m.textContent = 'Impossible : ' + e.message; });
   });
 
   /* ── Étape 2 : textes ── */

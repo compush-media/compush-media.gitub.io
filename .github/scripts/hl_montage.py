@@ -15,6 +15,12 @@ Mode « présentation » (options.mode = 'presentation') : pour ceux qui ne
 filment pas, 3 à 6 photos deviennent un diaporama animé (zoom lent, fondus),
 légendé avec les informations de la fiche (accroche, offre, horaires,
 adresse, avis), avec la même carte de fin.
+Mode « avatar » (options.mode = 'avatar', lancé par la ville seulement) :
+Anna, avatar HeyGen, lit un texte écrit à partir des avis et de la fiche
+(fonction hl-avis-texte) ; elle est détourée dans un cercle sur les photos
+du commerce, sous-titrée, avec la mention « Présentation générée par IA ».
+Le rendu HeyGen est payant : il est gardé dans hl-rushes et réutilisé tant
+que le texte ne change pas.
 Le résultat va dans le stockage public hl-medias ; le commerçant le regarde,
 le retouche ou l'envoie à son association.
 
@@ -28,6 +34,7 @@ Sans le module faster_whisper, le montage se fait sans transcription.
 Les journaux de ce dépôt sont publics : on n'y écrit que des identifiants.
 """
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -36,6 +43,7 @@ import subprocess
 import sys
 import tempfile
 import textwrap
+import time
 import urllib.error
 import urllib.request
 
@@ -371,8 +379,9 @@ def legendes_presentation(commerce):
     return leg
 
 
-def clip_photo(src, rang, titre, legende, duree, dossier):
-    """Une photo recadrée en vertical, animée (zoom avant, arrière ou balayage), avec sa légende."""
+def clip_photo(src, rang, titre, legende, duree, dossier, y_titre=None):
+    """Une photo recadrée en vertical, animée (zoom avant, arrière ou balayage), avec sa légende.
+    y_titre : position du nom sur la 1re photo (par défaut aux 3/5 de l'image)."""
     n = max(2, round(duree * IPS))
     mouvement = rang % 3
     if mouvement == 0:
@@ -391,8 +400,9 @@ def clip_photo(src, rang, titre, legende, duree, dossier):
     apparition = "min(1,max(0,(t-0.35)/0.4))"
     if rang == 0:
         l_titre = lignes(titre, 18, 2)
-        vf += bloc_texte(dossier, f"pt{rang}", l_titre, 88, int(H * 0.60), POLICE, boite=f"{ROSE}@0.94", alpha=apparition)
-        y = int(H * 0.60) + len(l_titre) * int(88 * 1.32) + 40
+        y0 = int(H * 0.60) if y_titre is None else y_titre
+        vf += bloc_texte(dossier, f"pt{rang}", l_titre, 88, y0, POLICE, boite=f"{ROSE}@0.94", alpha=apparition)
+        y = y0 + len(l_titre) * int(88 * 1.32) + 40
         vf += bloc_texte(dossier, f"pa{rang}", lignes(legende, 30, 3), 46, y, POLICE_TEXTE, boite="black@0.5",
                          alpha="min(1,max(0,(t-0.8)/0.4))")
     elif legende:
@@ -403,6 +413,30 @@ def clip_photo(src, rang, titre, legende, duree, dossier):
     ff("-i", src, "-vf", ",".join(vf), "-frames:v", str(n), "-r", str(IPS), "-an",
        "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", sortie)
     return sortie
+
+
+def enchainer(clips, durees, dossier, nom):
+    """Fondus enchaînés : chaque plan commence FONDU secondes avant la fin du précédent.
+    Ajoute une piste son muette. Renvoie (fichier, début du dernier plan, durée totale)."""
+    entrees, graphe, precedent, decalage = [], [], "[i0]", 0.0
+    for k, c in enumerate(clips):
+        entrees += ["-i", c]
+        # Même base de temps pour tous les plans : xfade l'exige.
+        graphe.append(f"[{k}:v]settb=AVTB,setpts=PTS-STARTPTS,fps={IPS}[i{k}]")
+    for k in range(1, len(clips)):
+        decalage += durees[k - 1] - FONDU
+        sortie = f"[x{k}]" if k < len(clips) - 1 else "[v]"
+        graphe.append(f"{precedent}[i{k}]xfade=transition=fade:duration={FONDU}:offset={decalage:.2f}{sortie}")
+        precedent = sortie
+    if len(clips) == 1:
+        graphe.append("[i0]null[v]")
+    total = decalage + durees[-1]
+    fichier = os.path.join(dossier, nom)
+    ff(*entrees, "-f", "lavfi", "-t", f"{total:.2f}", "-i", "anullsrc=r=48000:cl=stereo",
+       "-filter_complex", ";".join(graphe), "-map", "[v]", "-map", f"{len(clips)}:a:0", "-shortest",
+       "-r", str(IPS), "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+       "-c:a", "aac", "-b:a", "96k", "-ar", "48000", fichier)
+    return fichier, decalage, total
 
 
 def monter_presentation(plans, options, commerce, dossier):
@@ -419,26 +453,175 @@ def monter_presentation(plans, options, commerce, dossier):
     clips.append(carte_fin(nom, options, dossier))
     durees.append(FIN_DUREE)
 
-    # Fondus enchaînés : chaque plan commence FONDU secondes avant la fin du précédent.
-    entrees, graphe, precedent, decalage = [], [], "[i0]", 0.0
-    for k, c in enumerate(clips):
-        entrees += ["-i", c]
-        # Même base de temps pour tous les plans : xfade l'exige.
-        graphe.append(f"[{k}:v]settb=AVTB,setpts=PTS-STARTPTS,fps={IPS}[i{k}]")
-    for k in range(1, len(clips)):
-        decalage += durees[k - 1] - FONDU
-        sortie = f"[x{k}]" if k < len(clips) - 1 else "[v]"
-        graphe.append(f"{precedent}[i{k}]xfade=transition=fade:duration={FONDU}:offset={decalage:.2f}{sortie}")
-        precedent = sortie
-    t_fin = decalage
-    total = decalage + FIN_DUREE
-    brut = os.path.join(dossier, "brut.mp4")
-    ff(*entrees, "-f", "lavfi", "-t", f"{total:.2f}", "-i", "anullsrc=r=48000:cl=stereo",
-       "-filter_complex", ";".join(graphe), "-map", "[v]", "-map", f"{len(clips)}:a:0", "-shortest",
-       "-r", str(IPS), "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
-       "-c:a", "aac", "-b:a", "96k", "-ar", "48000", brut)
+    brut, t_fin, total = enchainer(clips, durees, dossier, "brut.mp4")
     finale, affiche = finaliser(brut, t_fin, dossier)
     return resultat(finale, affiche, None, total)
+
+
+# ── Présentation par Anna (avatar HeyGen) ─────────────────────────────────
+HEYGEN = "https://api.heygen.com/v3/videos"
+HEYGEN_CLE = os.environ.get("HEYGEN_API_KEY", "").strip()
+# Anna (avatar public) et Camille Martin (voix française) : les réglages de la
+# chaîne « vidéos DM » de Fidelavis. Avatar III : environ 0,0167 $ la seconde.
+AVATAR_ID = os.environ.get("HEYGEN_AVATAR_ID", "Anna_public_3_20240108")
+VOIX_ID = os.environ.get("HEYGEN_VOICE_ID", "59bb21cd39f44b8398a64530b83e008f")
+VERT = "#00B140"
+CERCLE, CERCLE_X, CERCLE_Y = 460, (L - 460) // 2, 1000
+
+
+def empreinte_avatar(texte):
+    return hashlib.sha256("|".join([AVATAR_ID, VOIX_ID, texte.strip()]).encode()).hexdigest()[:12]
+
+
+def heygen(methode, url, corps=None):
+    h = {"X-Api-Key": HEYGEN_CLE, "Accept": "application/json", "User-Agent": "fidelavis-montage/1.0"}
+    donnees = None
+    if corps is not None:
+        h["Content-Type"] = "application/json"
+        donnees = json.dumps(corps).encode()
+    req = urllib.request.Request(url, data=donnees, headers=h, method=methode)
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return json.loads(r.read() or b"{}")
+
+
+def rendre_avatar(texte, sortie):
+    """Anna lit le texte sur fond vert ; renvoie le fichier téléchargé. Consomme des crédits HeyGen."""
+    if not HEYGEN_CLE:
+        raise RuntimeError("HEYGEN_API_KEY absent")
+    rep = heygen("POST", HEYGEN, {
+        "type": "avatar", "avatar_id": AVATAR_ID, "voice_id": VOIX_ID, "script": texte.strip(),
+        "aspect_ratio": "9:16", "resolution": "1080p",
+        # Anna ne supporte pas Avatar IV, moteur par défaut de v3 (et 3 à 4 fois plus cher).
+        "engine": {"type": "avatar_iii"},
+        "background": {"type": "color", "value": VERT},
+    })
+    vid = rep.get("id") or rep.get("video_id") or (rep.get("data") or {}).get("video_id") or (rep.get("data") or {}).get("id")
+    if not vid:
+        raise RuntimeError("HeyGen : réponse sans identifiant")
+    limite = time.time() + 20 * 60
+    while time.time() < limite:
+        time.sleep(10)
+        d = heygen("GET", f"{HEYGEN}/{vid}")
+        d = d.get("data") or d
+        if d.get("status") == "completed" and d.get("video_url"):
+            with urllib.request.urlopen(urllib.request.Request(d["video_url"], headers={"User-Agent": "fidelavis-montage/1.0"}), timeout=300) as r, open(sortie, "wb") as h:
+                shutil.copyfileobj(r, h)
+            return sortie
+        if d.get("status") in ("failed", "error"):
+            raise RuntimeError("HeyGen : rendu échoué")
+    raise RuntimeError("HeyGen : délai dépassé")
+
+
+def masque_cercle(chemin, taille):
+    """Masque rond en niveaux de gris (PGM), sans dépendance : blanc dedans, noir dehors, bord adouci."""
+    r = taille / 2
+    lignes_px = bytearray()
+    for y in range(taille):
+        for x in range(taille):
+            d = ((x + 0.5 - r) ** 2 + (y + 0.5 - r) ** 2) ** 0.5
+            lignes_px.append(max(0, min(255, int((r - d) * 255 / 1.5))))
+    with open(chemin, "wb") as h:
+        h.write(f"P5 {taille} {taille} 255\n".encode() + bytes(lignes_px))
+    return chemin
+
+
+def aligner(texte, mots):
+    """Les mots du texte (orthographe exacte) calés sur les temps de la transcription de la voix."""
+    jetons = texte.split()
+    if not mots or not jetons:
+        return []
+    n = len(mots)
+    sortie = []
+    for i, j in enumerate(jetons):
+        k = min(n - 1, round(i * (n - 1) / max(1, len(jetons) - 1)))
+        sortie.append((mots[k][0], mots[k][1], j))
+    return sortie
+
+
+def monter_avatar(plans, options, commerce, avatar, dossier):
+    nom = (options.get("titre") or "").strip() or (commerce.get("nom") or "").strip() or "Notre commerce"
+    texte = (options.get("texte") or "").strip()
+    if len(plans) < 2:
+        raise Refus("Gardez au moins deux photos pour la présentation par Anna.")
+    duree, _ = sonde(avatar)
+    # Fond : les photos du commerce en fondus enchaînés, le temps de la voix.
+    n = len(plans)
+    d = (duree + 0.3 + (n - 1) * FONDU) / n
+    clips = [clip_photo(src, rang, nom, "", d, dossier, y_titre=230) for rang, (plan, src) in enumerate(plans)]
+    fond, _, _ = enchainer(clips, [d] * n, dossier, "fond.mp4")
+
+    # Sous-titres : le texte validé, calé sur la voix d'Anna.
+    mots = transcrire(avatar, 0.0, duree, dossier)
+    blocs = blocs_mots(aligner(texte, mots), duree) if mots else morceaux_phrase(texte, duree)
+    sous = []
+    for k, (a, b, bloc) in enumerate(blocs):
+        sous += bloc_texte(dossier, f"av{k}", bloc, 50, 1500, POLICE_TEXTE, boite="black@0.55",
+                           enable=f"between(t,{a:.2f},{b:.2f})")
+    mention = bloc_texte(dossier, "ia", ["Présentation générée par IA · voix et visage de synthèse"], 30, 1850,
+                         POLICE_TEXTE, couleur="white@0.9", boite="black@0.35")
+    masque = masque_cercle(os.path.join(dossier, "cercle.pgm"), CERCLE + 20)
+    # Anna : détourage du vert, recadrage tête et épaules, cercle ; un disque clair derrière elle.
+    graphe = (
+        "[1:v]chromakey=0x00B140:0.14:0.06,despill=type=green:mix=0.5:expand=0.3,"
+        f"crop=560:560:260:70,scale={CERCLE}:{CERCLE},format=yuva420p,split[a1][a2];"
+        "[a2]alphaextract[aa];"
+        "[2:v]format=gray,split[mg][mp];"
+        f"[mp]scale={CERCLE}:{CERCLE}[m1];"
+        "[aa][m1]blend=all_mode=darken[fa];"
+        "[a1][fa]alphamerge[anna];"
+        f"color=c=0xFBE6EF:s={CERCLE + 20}x{CERCLE + 20}:r={IPS}[disque0];"
+        "[disque0][mg]alphamerge[disque];"
+        f"[0:v][disque]overlay={CERCLE_X - 10}:{CERCLE_Y - 10}:shortest=1[s1];"
+        f"[s1][anna]overlay={CERCLE_X}:{CERCLE_Y}:shortest=1,"
+        + ",".join(sous + mention) + ",format=yuv420p[v]"
+    )
+    graphe = graphe.replace(",,", ",")
+    scene = os.path.join(dossier, "scene.mp4")
+    ff("-i", fond, "-i", avatar, "-loop", "1", "-i", masque, "-filter_complex", graphe,
+       "-map", "[v]", "-map", "1:a:0", "-t", f"{duree:.2f}", "-ac", "2", "-r", str(IPS),
+       "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "aac", "-b:a", "128k", "-ar", "48000", scene)
+
+    fin = carte_fin(nom, options, dossier)
+    liste = os.path.join(dossier, "liste.txt")
+    with open(liste, "w") as h:
+        h.write(f"file '{scene}'\nfile '{fin}'\n")
+    brut = os.path.join(dossier, "brut.mp4")
+    ff("-f", "concat", "-safe", "0", "-i", liste, "-c", "copy", brut)
+    finale, affiche = finaliser(brut, duree, dossier)
+
+    def hms(x):
+        return f"{int(x // 3600):02d}:{int(x % 3600 // 60):02d}:{x % 60:06.3f}"
+    vtt = os.path.join(dossier, "sous-titres.vtt")
+    with open(vtt, "w", encoding="utf-8") as h:
+        h.write("WEBVTT\n")
+        for a, b, bloc in blocs:
+            h.write(f"\n{hms(a)} --> {hms(b)}\n" + "\n".join(bloc) + "\n")
+    return resultat(finale, affiche, vtt, duree + FIN_DUREE)
+
+
+def obtenir_avatar(job, dossier):
+    """Le rendu d'Anna pour ce texte : celui gardé dans hl-rushes s'il existe, sinon un nouveau (payant)."""
+    texte = (job["options"].get("texte") or "").strip()
+    if len(texte) < 20:
+        raise Refus("Le texte d'Anna est trop court.")
+    emp = empreinte_avatar(texte)
+    local = os.path.join(dossier, "avatar.mp4")
+    ancien = job.get("resultat") or {}
+    if ancien.get("avatar_empreinte") == emp and ancien.get("avatar_chemin"):
+        try:
+            with open(local, "wb") as h:
+                h.write(api("GET", f"/storage/v1/object/hl-rushes/{ancien['avatar_chemin']}"))
+            print(f"montage {job['id'][:8]} : rendu d'Anna réutilisé")
+            return local, ancien["avatar_chemin"], emp
+        except urllib.error.HTTPError:
+            pass
+    rendre_avatar(texte, local)
+    chemin = f"{job['slug']}/avatar-{job['id'][:8]}-{emp[:8]}.mp4"
+    with open(local, "rb") as h:
+        api("POST", f"/storage/v1/object/hl-rushes/{chemin}", brut=h.read(), type_contenu="video/mp4",
+            entetes={"x-upsert": "true"})
+    print(f"montage {job['id'][:8]} : rendu d'Anna généré")
+    return local, chemin, emp
 
 
 # ── File Supabase ─────────────────────────────────────────────────────────
@@ -452,7 +635,8 @@ def televerser(fichier, chemin, type_contenu):
 def traiter(job):
     dossier = tempfile.mkdtemp(prefix="montage-")
     try:
-        presentation = job["options"].get("mode") == "presentation"
+        mode = job["options"].get("mode")
+        presentation = mode in ("presentation", "avatar")
         ordre = PHOTOS if presentation else ORDRE
         retires = set(job["options"].get("plans_retires") or [])
         rushes = sorted((r for r in job["rushes"] if r.get("plan") not in retires),
@@ -465,7 +649,13 @@ def traiter(job):
             with open(local, "wb") as h:
                 h.write(api("GET", f"/storage/v1/object/hl-rushes/{r['chemin']}"))
             plans.append((r["plan"], local))
-        res = (monter_presentation if presentation else monter)(plans, job["options"], job["commerce"], dossier)
+        extra = {}
+        if mode == "avatar":
+            avatar, chemin_av, emp = obtenir_avatar(job, dossier)
+            extra = {"avatar_chemin": chemin_av, "avatar_empreinte": emp}
+            res = monter_avatar(plans, job["options"], job["commerce"], avatar, dossier)
+        else:
+            res = (monter_presentation if presentation else monter)(plans, job["options"], job["commerce"], dossier)
         base = f"{job['slug']}/montage-{job['id'][:8]}-{os.urandom(3).hex()}"
         resultat = {
             "src": televerser(res["video"], base + ".mp4", "video/mp4"),
@@ -475,6 +665,7 @@ def traiter(job):
         }
         if res.get("transcription"):
             resultat["transcription"] = res["transcription"][:600]
+        resultat.update(extra)
         rpc("hl_montage_terminer", {"p_id": job["id"], "p_resultat": resultat, "p_erreur": None})
         print(f"montage {job['id'][:8]} prêt · {res['duree']} s · {res['poids'] // 1024} Ko")
     except Refus as e:
@@ -505,11 +696,12 @@ def main():
     ap.add_argument("--local", help="dossier de séquences devanture.*, interieur.*, … ou de photos photo1.* … photo6.* (essai sans Supabase)")
     ap.add_argument("--options", default="{}", help="options JSON pour l'essai local")
     ap.add_argument("--max", type=int, default=6)
+    ap.add_argument("--avatar", help="essai local du mode avatar : vidéo d'Anna sur fond vert déjà rendue")
     args = ap.parse_args()
 
     if args.local:
         opts = json.loads(args.options)
-        presentation = opts.get("mode") == "presentation"
+        presentation = opts.get("mode") in ("presentation", "avatar")
         plans = []
         for plan in (PHOTOS if presentation else ORDRE):
             for f in sorted(os.listdir(args.local)):
@@ -520,7 +712,10 @@ def main():
         demo = {"nom": "Le Comptoir", "offre": "Café offert avec votre brunch", "horaires": "Mar–Dim · 9h–15h",
                 "adresse": "12 rue de l'Exemple, 92250 La Garenne-Colombes", "avis": {"note": 4.6, "nombre": 126},
                 "accroche": "Brunch, cuisine maison et produits du marché, à deux pas de l'église."}
-        res = (monter_presentation if presentation else monter)(plans, opts, demo, sortie)
+        if args.avatar:
+            res = monter_avatar(plans, opts, demo, args.avatar, sortie)
+        else:
+            res = (monter_presentation if presentation else monter)(plans, opts, demo, sortie)
         print(json.dumps(res, ensure_ascii=False, indent=2))
         return 0
 

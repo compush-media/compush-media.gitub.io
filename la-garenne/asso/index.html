@@ -196,13 +196,13 @@
     var nb = aModerer().length;
     document.getElementById('qui').textContent = ville() ? 'Niveau ville · toutes les associations' : nomAsso(D.association) + ' · vos adhérents';
     var T = ville()
-      ? [['reseau','Réseau'],['valider','À valider'],['commerces','Commerces'],['pubs','Publicités'],['cdc','Coup de cœur'],['associations','Associations'],['comptes','Comptes']]
+      ? [['reseau','Réseau'],['valider','À valider'],['commerces','Commerces'],['pubs','Publicités'],['cdc','Coup de cœur'],['anna','Vidéo Anna'],['associations','Associations'],['comptes','Comptes']]
       : [['reseau','Vos résultats'],['valider','À valider'],['commerces','Vos adhérents'],['pubs','Mises en avant'],['comptes','Comptes']];
     if (!T.some(function(t){ return t[0] === onglet; })) onglet = 'reseau';
     document.getElementById('tabs').innerHTML = T.map(function(t){
       return '<button class="chip' + (t[0] === onglet ? ' on' : '') + '" data-o="' + t[0] + '">' + t[1] + (t[0] === 'valider' && nb ? '<span class="nb">' + nb + '</span>' : '') + '</button>';
     }).join('');
-    ({ reseau: vueReseau, valider: vueValider, commerces: vueCommerces, pubs: vuePubs, cdc: vueCdc, associations: vueAssociations, comptes: vueComptes })[onglet]();
+    ({ reseau: vueReseau, valider: vueValider, commerces: vueCommerces, pubs: vuePubs, cdc: vueCdc, anna: vueAnna, associations: vueAssociations, comptes: vueComptes })[onglet]();
   }
   document.getElementById('tabs').addEventListener('click', function(e){
     var b = e.target.closest('[data-o]'); if (!b) return;
@@ -629,6 +629,159 @@
         if (!r.ok) throw new Error(r.reason);
         return charger().then(function(){ msg.className = 'msg ok'; msg.textContent = 'Enregistré.'; });
       }).catch(function(e){ msg.className = 'msg ko'; msg.textContent = 'Enregistrement impossible : ' + e.message; });
+    });
+  }
+
+  /* ── Vidéo Anna (niveau ville) : Claude lit les avis et écrit le texte,
+     l'avatar HeyGen le lit sur les photos du commerce. Chaque rendu est
+     payant : le commerçant valide le texte avant le lancement. ── */
+  var anna = { photos: {}, suivi: null };
+  function vueAnna(){
+    var coms = D.commerces.filter(function(c){ return c.statut === 'valide'; });
+    var h = '<h2 style="margin-bottom:8px">Vidéo présentée par Anna</h2>' +
+      '<p class="muted" style="margin-bottom:14px">Collez les avis du commerce : Claude en tire les points forts et écrit le texte qu\'Anna, présentatrice virtuelle, lira sur les photos du commerce. La vidéo arrive ensuite dans l\'espace du commerçant, qui l\'envoie à son association.</p>' +
+      '<div class="bloc"><h3>1 · Le commerce et ses avis</h3><div class="form">' +
+        '<label class="f"><span>Commerce</span><select id="aCom"><option value="">— Choisir —</option>' +
+          coms.map(function(c){ return '<option value="' + esc(c.slug) + '">' + esc(c.doc.nom || c.slug) + '</option>'; }).join('') + '</select></label>' +
+        '<label class="f large"><span>Avis clients (copiés depuis la fiche Google du commerçant, avec son accord)</span><textarea id="aAvis" style="min-height:160px" placeholder="Collez ici 10 à 100 avis. Les noms des auteurs ne sont pas nécessaires. Rien n\'est conservé."></textarea></label>' +
+      '</div><p class="small muted" id="aNb"></p>' +
+      '<div class="bar"><button class="btn" id="aAnalyser" type="button"><span>Écrire le texte avec Claude</span><span class="arr">›</span></button><span class="msg" id="aMsg1"></span></div></div>' +
+      '<div class="bloc" id="aRes" hidden><h3>2 · Le texte d\'Anna</h3><div id="aAnalyse"></div><div class="form">' +
+        '<label class="f large"><span>Texte lu par Anna (corrigez si besoin, puis faites-le valider au commerçant)</span><textarea id="aTexte" style="min-height:120px;font-weight:400" maxlength="700"></textarea></label>' +
+      '</div><p class="small muted" id="aDuree"></p></div>' +
+      '<div class="bloc" id="aLance" hidden><h3>3 · Photos et lancement</h3>' +
+        '<p class="small muted">2 à 6 photos du commerce, à la verticale de préférence. Le nom du commerce s\'affiche sur la 1<sup>re</sup>.</p>' +
+        '<div class="row" id="aPhotos" style="flex-wrap:wrap;gap:10px;margin:10px 0"></div>' +
+        '<div class="form"><label class="f"><span>Bouton de fin</span><select id="aCta">' + opts(CTAS, 'offre') + '</select></label></div>' +
+        '<label class="ck" style="margin-top:12px"><input type="checkbox" id="aAccord"> Le commerçant a relu ce texte et accepte une vidéo présentée par un avatar, avec la mention « générée par IA ».</label>' +
+        '<div class="bar"><button class="btn" id="aLancer" type="button"><span>Lancer la vidéo Anna</span><span class="arr">›</span></button><span class="msg" id="aMsg2"></span></div></div>' +
+      '<div class="bloc"><h3>Vidéos Anna récentes</h3><div id="aListe"><p class="muted small">Chargement…</p></div></div>';
+    vue.innerHTML = h;
+    anna.photos = {};
+    rendrePhotosAnna();
+    var avis = document.getElementById('aAvis');
+    avis.addEventListener('input', function(){
+      document.getElementById('aNb').textContent = avis.value.trim() ? avis.value.length.toLocaleString('fr-FR') + ' caractères' + (avis.value.length > 60000 ? ' · trop long : 60 000 au plus' : '') : '';
+    });
+    document.getElementById('aTexte').addEventListener('input', dureeAnna);
+    document.getElementById('aAnalyser').addEventListener('click', analyserAnna);
+    document.getElementById('aLancer').addEventListener('click', lancerAnna);
+    document.getElementById('aPhotos').addEventListener('change', choisirPhotoAnna);
+    listeAnna();
+  }
+  function dureeAnna(){
+    var mots = document.getElementById('aTexte').value.trim().split(/\s+/).filter(Boolean).length;
+    var s = Math.round(mots / 2.6);   // débit mesuré de la voix : environ 2,6 mots par seconde
+    document.getElementById('aDuree').textContent = mots + ' mots · environ ' + s + ' s de voix · coût HeyGen estimé ' +
+      (s * 0.0167).toFixed(2).replace('.', ',') + ' $' + (mots > 60 ? ' · un peu long : visez 40 à 55 mots' : '');
+  }
+  function analyserAnna(){
+    var slug = document.getElementById('aCom').value, b = this, m = document.getElementById('aMsg1');
+    var avis = document.getElementById('aAvis').value.trim();
+    if (!slug) { m.className = 'msg ko'; m.textContent = 'Choisissez le commerce.'; return; }
+    if (avis.length > 60000) { m.className = 'msg ko'; m.textContent = '60 000 caractères au plus.'; return; }
+    b.disabled = true; m.className = 'msg'; m.textContent = 'Claude lit les avis… (20 à 60 secondes)';
+    fetch(SUPA_URL + '/functions/v1/hl-avis-texte', { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jeton: jeton(), slug: slug, avis: avis }) })
+    .then(function(r){ return r.json(); }).then(function(j){
+      b.disabled = false;
+      if (!j.ok) throw new Error(j.erreur || 'refusé');
+      var a = j.analyse;
+      function liste(t, l){ return l && l.length ? '<p class="small" style="font-weight:700;margin-top:10px">' + t + '</p><ul class="small" style="margin:4px 0 0;padding-left:18px">' + l.join('') + '</ul>' : ''; }
+      document.getElementById('aAnalyse').innerHTML =
+        '<p class="small muted">' + n(a.nb_avis) + ' avis analysés · accroche proposée : « ' + esc(a.accroche) + ' »</p>' +
+        liste('Points forts', (a.points_forts || []).map(function(p){ return '<li>' + esc(p.theme) + ' <span class="muted">· ' + n(p.nb_avis) + ' avis</span></li>'; })) +
+        liste('À confirmer avec le commerçant', (a.verifications || []).map(function(v){ return '<li>' + esc(v) + '</li>'; })) +
+        liste('À améliorer (pour le commerçant seulement, jamais dans la vidéo)', (a.a_ameliorer || []).map(function(v){ return '<li>' + esc(v) + '</li>'; })) +
+        '<div style="height:12px"></div>';
+      document.getElementById('aTexte').value = a.texte || '';
+      document.getElementById('aRes').hidden = false; document.getElementById('aLance').hidden = false;
+      dureeAnna();
+      m.className = 'msg ok'; m.textContent = 'Texte prêt : relisez-le ci-dessous.';
+      document.getElementById('aRes').scrollIntoView({ behavior: 'smooth' });
+    }).catch(function(e){ b.disabled = false; m.className = 'msg ko'; m.textContent = 'Impossible : ' + e.message; });
+  }
+  function rendrePhotosAnna(){
+    var h = '';
+    for (var i = 1; i <= 6; i++) {
+      var ph = anna.photos['photo' + i];
+      h += '<label style="width:84px;height:150px;border-radius:12px;background:var(--rose-soft) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--rose);font-weight:900;cursor:pointer;border:1.5px dashed var(--line)" data-v="' + i + '">' + (ph ? '' : '+ ' + i) +
+        '<input type="file" accept="image/*" hidden data-photo="photo' + i + '"></label>';
+    }
+    var el = document.getElementById('aPhotos'); el.innerHTML = h;
+    Object.keys(anna.photos).forEach(function(k){ var l = el.querySelector('[data-v="' + k.slice(5) + '"]'); if (l) l.style.backgroundImage = 'url(' + anna.photos[k].url + ')'; });
+  }
+  // Même préparation que dans l'espace commerçant : JPEG de 2400 px au plus.
+  function versJpeg(f){
+    return new Promise(function(ok, ko){
+      var url = URL.createObjectURL(f), img = new Image();
+      img.onload = function(){
+        var w = img.naturalWidth, hh = img.naturalHeight, k = Math.min(1, 2400 / Math.max(w, hh));
+        if (Math.min(w, hh) < 500) { URL.revokeObjectURL(url); ko(new Error('photo trop petite (500 px de côté au moins)')); return; }
+        var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(hh * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        c.toBlob(function(b){ b ? ok(b) : ko(new Error('photo illisible')); }, 'image/jpeg', 0.86);
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); ko(new Error('photo illisible')); };
+      img.src = url;
+    });
+  }
+  function choisirPhotoAnna(e){
+    var inp = e.target.closest('[data-photo]'); if (!inp || !inp.files[0]) return;
+    var id = inp.getAttribute('data-photo'), m = document.getElementById('aMsg2');
+    versJpeg(inp.files[0]).then(function(b){
+      if (anna.photos[id]) URL.revokeObjectURL(anna.photos[id].url);
+      anna.photos[id] = { blob: b, url: URL.createObjectURL(b) }; rendrePhotosAnna(); m.textContent = '';
+    }).catch(function(x){ m.className = 'msg ko'; m.textContent = 'Photo ' + id.slice(5) + ' : ' + x.message; });
+  }
+  function televerserPhoto(slug, blob){
+    return fetch(SUPA_URL + '/functions/v1/hl-televersement', { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jeton: jeton(), slug: slug, genre: 'rush_photo', type: 'image/jpeg', taille: blob.size }) })
+    .then(function(r){ return r.json(); }).then(function(a){
+      if (!a.ok) throw new Error(a.erreur || 'envoi refusé');
+      return fetch(a.url_envoi, { method: 'PUT', headers: { 'content-type': 'image/jpeg' }, body: blob }).then(function(r){
+        if (!r.ok) throw new Error('envoi interrompu (' + r.status + ')'); return a.chemin; });
+    });
+  }
+  function lancerAnna(){
+    var slug = document.getElementById('aCom').value, b = this, m = document.getElementById('aMsg2');
+    var texte = document.getElementById('aTexte').value.trim();
+    var ids = [1, 2, 3, 4, 5, 6].map(function(i){ return 'photo' + i; }).filter(function(k){ return anna.photos[k]; });
+    function ko(t){ m.className = 'msg ko'; m.textContent = t; }
+    if (!slug) return ko('Choisissez le commerce.');
+    if (texte.length < 20) return ko('Le texte est trop court.');
+    if (ids.length < 2) return ko('Ajoutez au moins 2 photos.');
+    if (!document.getElementById('aAccord').checked) return ko('Cochez l\'accord du commerçant.');
+    var c = commerce(slug);
+    if (!confirm('Lancer la vidéo Anna pour ' + (c ? c.doc.nom : slug) + ' ? Le rendu consomme des crédits HeyGen.')) return;
+    b.disabled = true; m.className = 'msg'; m.textContent = 'Envoi des photos…';
+    var rushes = [];
+    ids.reduce(function(ch, k){ return ch.then(function(){ return televerserPhoto(slug, anna.photos[k].blob).then(function(chemin){ rushes.push({ plan: k, chemin: chemin }); }); }); }, Promise.resolve())
+    .then(function(){
+      return rpc('hl_admin_avatar_creer', { p_token: jeton(), p_slug: slug, p_rushes: rushes,
+        p_options: { texte: texte, titre: c ? c.doc.nom : '', cta: document.getElementById('aCta').value } });
+    }).then(function(j){
+      b.disabled = false;
+      if (!j.ok) throw new Error(j.reason || 'refusé');
+      m.className = 'msg ok'; m.textContent = 'C\'est parti : la vidéo sera prête dans 5 à 10 minutes, ci-dessous et dans l\'espace du commerçant.';
+      listeAnna();
+    }).catch(function(e){ b.disabled = false; ko('Impossible : ' + e.message); });
+  }
+  var ST_ANNA = { en_attente: 'En file d\'attente', en_cours: 'Montage en cours', pret: 'Prête · chez le commerçant', erreur: 'Échec', envoye: 'Envoyée à l\'association', abandonne: 'Supprimée' };
+  function listeAnna(){
+    clearTimeout(anna.suivi);
+    rpc('hl_admin_avatar_liste', { p_token: jeton() }).then(function(j){
+      var el = document.getElementById('aListe'); if (!el || !j.ok) return;
+      var l = j.montages || [];
+      el.innerHTML = l.length ? l.map(function(x){
+        return '<div style="border-top:1px solid var(--line);padding:12px 0;display:grid;gap:8px"><div class="row" style="gap:8px;flex-wrap:wrap"><b>' + esc(nom(x.slug)) + '</b>' +
+          '<span class="small muted">' + new Date(x.created_at).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + esc(ST_ANNA[x.statut] || x.statut) + (x.duree ? ' · ' + esc(x.duree) + ' s' : '') + '</span></div>' +
+          (x.erreur ? '<p class="small" style="color:#B23B3B">' + esc(x.erreur) + '</p>' : '') +
+          (x.src ? '<video controls playsinline preload="metadata" style="width:100%;max-width:280px;aspect-ratio:9/16;border-radius:12px;background:#111" poster="' + esc(x.affiche || '') + '" src="' + esc(x.src) + '">' +
+            (x.sousTitres ? '<track kind="subtitles" srclang="fr" label="Français" default src="' + esc(x.sousTitres) + '">' : '') + '</video>' : '') +
+          '<p class="small muted">« ' + esc(x.texte || '') + ' »</p></div>';
+      }).join('') : '<p class="muted small">Aucune vidéo Anna pour le moment.</p>';
+      if (l.some(function(x){ return x.statut === 'en_attente' || x.statut === 'en_cours'; }) && onglet === 'anna') anna.suivi = setTimeout(listeAnna, 20000);
     });
   }
 
