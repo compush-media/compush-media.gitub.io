@@ -1,46 +1,5 @@
 {
-  "_lisez_moi": "SECOURS UNIQUEMENT, copie du 28/09/2026. Les données vivantes sont dans Supabase (tables hl_commerces, hl_pubs, hl_reglages) et se modifient dans l'espace association : /la-garenne/asso/. L'appli ne lit ce fichier que si Supabase ne répond pas. Publicités programmées par l'association. format: fixe | video. statut: demande | programmee | terminee. emplacement: accueil (fixe, 1 à la fois, en tête des « Offres de la semaine » ; cta \"offre\" = la carte présente l'offre publiée du commerce, qui n'est alors pas répétée dans les offres standards) | decouvrir (video, jamais en 1re position, 1 pour 5 vidéos). debut/fin inclus (AAAA-MM-JJ). Une pub vidéo référence une vidéo déjà publiée du commerce (videoId). Relais : quand une pub se termine, la suivante programmée prend sa place ; si plusieurs sont actives, celle qui a commencé en premier passe. Sans pub active, l'emplacement montre le « Coup de cœur » : coup_de_coeur.slug (offre choisie par l'association), sinon l'offre qui se termine le plus tôt. Jamais marqué « Sponsorisé ».",
-  "pubs": [
-    {
-      "id": "pub-offre-cafe-vallees",
-      "format": "fixe",
-      "statut": "programmee",
-      "emplacement": "accueil",
-      "slug": "cafe-des-vallees",
-      "visuel": "/assets/offres/offre-1.jpg",
-      "titre": "",
-      "texte": "",
-      "cta": "offre",
-      "debut": "2026-09-28",
-      "fin": "2026-10-04"
-    },
-    {
-      "id": "pub-offre-maison-arnaud",
-      "format": "fixe",
-      "statut": "programmee",
-      "emplacement": "accueil",
-      "slug": "maison-arnaud",
-      "visuel": "/assets/offres/offre-8.jpg",
-      "titre": "",
-      "texte": "",
-      "cta": "offre",
-      "debut": "2026-10-05",
-      "fin": "2026-10-18"
-    },
-    {
-      "id": "pub-video-fleuri-atelier",
-      "format": "video",
-      "statut": "programmee",
-      "emplacement": "decouvrir",
-      "slug": "atelier-fleuri",
-      "videoId": "fleuri-atelier",
-      "cta": "reserver",
-      "debut": "2026-09-22",
-      "fin": "2026-10-11"
-    }
-  ],
-  "coup_de_coeur": {
-    "slug": "le-comptoir",
-    "_note": "Offre mise en avant gratuitement par l'association quand aucune pub n'est active. Vide = l'offre qui se termine le plus tôt."
-  }
+  "_lisez_moi": "SECOURS UNIQUEMENT, vidée le 6/10/2026 (publicités de démonstration retirées). Les données vivantes sont dans Supabase (tables hl_commerces, hl_pubs, hl_reglages) et se modifient dans l'espace association : /la-garenne/asso/. L'appli ne lit ce fichier que si Supabase ne répond pas. Publicités programmées par l'association. format: fixe | video. statut: demande | programmee | terminee. emplacement: accueil (fixe, 1 à la fois, en tête des « Offres de la semaine » ; cta \"offre\" = la carte présente l'offre publiée du commerce, qui n'est alors pas répétée dans les offres standards) | decouvrir (video, jamais en 1re position, 1 pour 5 vidéos). debut/fin inclus (AAAA-MM-JJ). Une pub vidéo référence une vidéo déjà publiée du commerce (videoId). Relais : quand une pub se termine, la suivante programmée prend sa place ; si plusieurs sont actives, celle qui a commencé en premier passe. Sans pub active, l'emplacement montre le « Coup de cœur » : coup_de_coeur.slug (offre choisie par l'association), sinon l'offre qui se termine le plus tôt. Jamais marqué « Sponsorisé ».",
+  "pubs": [],
+  "coup_de_coeur": {}
 }

@@ -50,6 +50,8 @@
   .check li{padding:3px 0;}
   .file{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line);}
   .file:last-child{border-bottom:0;}
+  .lot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;}
+  .file .sel{width:22px;height:22px;margin-top:30px;flex-shrink:0;accent-color:var(--ok);}
   .file .ph{width:84px;height:84px;border-radius:12px;background:#eee center/cover;flex-shrink:0;}
   .vide{color:var(--muted);font-size:14px;padding:12px 0;}
   #login{max-width:420px;margin:30px auto;}
@@ -259,14 +261,70 @@
   function tile(lb, v, ex){ return '<div class="tile"><p class="lb">' + lb + '</p><p class="v">' + n(v) + '</p><p class="ex">' + ex + '</p></div>'; }
 
   /* ── À valider : contrôles avant diffusion ── */
+  var filtreCat = '';
   function vueValider(){
     var l = aModerer();
-    vue.innerHTML = '<h2 style="margin-bottom:12px">À valider</h2><div class="bloc" id="file">' +
+    // Nouveaux commerces : cases à cocher, filtre par catégorie et validation groupée.
+    var coms = l.filter(function(it){ return it.type === 'commerce'; });
+    var cats = {}; coms.forEach(function(it){ var k = it.c.doc.categorie || ''; cats[k] = (cats[k] || 0) + 1; });
+    if (filtreCat && !cats[filtreCat]) filtreCat = '';
+    var lot = coms.length > 1 ? '<div class="lot" id="lot">' +
+        '<button class="chip' + (!filtreCat ? ' on' : '') + '" data-c="">Tous (' + coms.length + ')</button>' +
+        Object.keys(cats).map(function(k){ return '<button class="chip' + (k === filtreCat ? ' on' : '') + '" data-c="' + esc(k) + '">' + esc((HL.CATEGORIES[k] || {}).label || k || 'Sans catégorie') + ' (' + cats[k] + ')</button>'; }).join('') +
+      '</div><div class="lot"><button class="b2" id="toutCocher" type="button">Tout cocher</button><button class="b2" id="rienCocher" type="button">Tout décocher</button>' +
+        '<button class="b2 ok" id="validerSel" type="button" disabled>Valider la sélection (0)</button><span class="small muted" id="selInfo">Les commerces sans adresse ne peuvent pas être cochés.</span></div>' : '';
+    vue.innerHTML = '<h2 style="margin-bottom:12px">À valider</h2>' + lot + '<div class="bloc" id="file">' +
       (l.length ? l.map(itemHtml).join('') : '<p class="vide">Rien à valider pour le moment.</p>') + '</div>';
     l.forEach(function(it, k){ if (it.type === 'video' || (it.type === 'prop_video' && !it.v.poids)) controlerVideo(it.v, 'chk-' + k); });
-    document.getElementById('file').addEventListener('click', function(e){
+    var file = document.getElementById('file');
+    function visibles(){ return Array.prototype.filter.call(file.querySelectorAll('.sel:not(:disabled)'), function(c){ return c.closest('.file').style.display !== 'none'; }); }
+    function majSel(){
+      var b = document.getElementById('validerSel'); if (!b) return;
+      var n = file.querySelectorAll('.sel:checked').length;
+      b.disabled = !n; b.textContent = 'Valider la sélection (' + n + ')';
+    }
+    function filtrer(){
+      Array.prototype.forEach.call(file.querySelectorAll('.file'), function(el){
+        var c = el.getAttribute('data-cat');
+        el.style.display = !filtreCat || c === filtreCat ? '' : 'none';
+        if (filtreCat && c !== filtreCat) { var x = el.querySelector('.sel'); if (x) x.checked = false; }
+      });
+      majSel();
+    }
+    if (coms.length > 1) {
+      filtrer();
+      document.getElementById('lot').addEventListener('click', function(e){
+        var b = e.target.closest('[data-c]'); if (!b) return;
+        filtreCat = b.getAttribute('data-c'); vueValider();
+      });
+      document.getElementById('toutCocher').addEventListener('click', function(){ visibles().forEach(function(c){ c.checked = true; }); majSel(); });
+      document.getElementById('rienCocher').addEventListener('click', function(){ Array.prototype.forEach.call(file.querySelectorAll('.sel'), function(c){ c.checked = false; }); majSel(); });
+      document.getElementById('validerSel').addEventListener('click', function(){ validerLot(l, Array.prototype.map.call(file.querySelectorAll('.sel:checked'), function(c){ return +c.getAttribute('data-sel'); }), this); });
+    }
+    file.addEventListener('change', function(e){ if (e.target.classList.contains('sel')) majSel(); });
+    file.addEventListener('click', function(e){
       var b = e.target.closest('[data-act]'); if (!b) return;
       decider(l[+b.getAttribute('data-i')], b.getAttribute('data-act'), b);
+    });
+  }
+  // Validation groupée : un enregistrement par commerce, l'un après l'autre.
+  function validerLot(l, indices, bouton){
+    if (!indices.length) return;
+    if (!confirm('Valider ' + indices.length + ' commerce' + (indices.length > 1 ? 's' : '') + ' ? Ils apparaîtront dans l\'appli pour les habitants.')) return;
+    bouton.disabled = true;
+    var info = document.getElementById('selInfo'), faits = 0, echecs = [];
+    indices.reduce(function(ch, k){
+      return ch.then(function(){
+        var c = l[k].c;
+        info.textContent = 'Validation ' + (faits + echecs.length + 1) + ' sur ' + indices.length + '…';
+        return rpc('hl_admin_save_commerce', { p_token: jeton(), p_slug: c.slug, p_statut: 'valide', p_doc: c.doc, p_association: c.association || null })
+          .then(function(j){ if (j.ok) faits++; else echecs.push(c.doc.nom); })
+          .catch(function(){ echecs.push(c.doc.nom); });
+      });
+    }, Promise.resolve()).then(function(){
+      HL.toast(faits + ' commerce' + (faits > 1 ? 's validés' : ' validé'));
+      if (echecs.length) alert('Non validés : ' + echecs.join(', '));
+      return charger().then(rendre);
     });
   }
   function itemHtml(it, k){
@@ -275,7 +333,8 @@
       '<button class="b2 ko" data-act="ko" data-i="' + k + '">Refuser</button></div>';
     if (it.type === 'commerce') {
       var c = it.c.doc;
-      return '<div class="file"><div class="ph" style="background-image:url(\'' + esc(c.photo || '') + '\')"></div><div style="flex:1"><span class="st en_attente">Nouveau commerce</span>' +
+      return '<div class="file" data-cat="' + esc(c.categorie || '') + '"><input type="checkbox" class="sel" data-sel="' + k + '" aria-label="Sélectionner ' + esc(c.nom) + '"' + (c.adresse ? '' : ' disabled title="Adresse manquante"') + '>' +
+        '<div class="ph" style="background-image:url(\'' + esc(c.photo || '') + '\')"></div><div style="flex:1"><span class="st en_attente">Nouveau commerce</span>' +
         '<p style="margin-top:6px"><b>' + esc(c.nom) + '</b> · ' + esc((HL.CATEGORIES[c.categorie] || {}).label || c.categorie || '') + '</p>' +
         '<p class="small muted">' + esc(c.adresse || 'Adresse manquante') + ' · ' + esc(c.tel || 'téléphone manquant') + '</p>' +
         '<ul class="check">' + ok(!!c.adresse, 'Adresse renseignée') + ok(!!c.categorie, 'Catégorie choisie') + ok(/92250|garenne/i.test(c.adresse || ''), 'Situé à La Garenne-Colombes') + '</ul>' + boutons + '</div></div>';
