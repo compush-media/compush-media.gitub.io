@@ -541,13 +541,20 @@ def aligner(texte, mots):
 def monter_avatar(plans, options, commerce, avatar, dossier):
     nom = (options.get("titre") or "").strip() or (commerce.get("nom") or "").strip() or "Notre commerce"
     texte = (options.get("texte") or "").strip()
-    if len(plans) < 2:
-        raise Refus("Gardez au moins deux photos pour la présentation par Anna.")
     duree, _ = sonde(avatar)
-    # Fond : les photos du commerce en fondus enchaînés, le temps de la voix.
-    n = len(plans)
-    d = (duree + 0.3 + (n - 1) * FONDU) / n
-    clips = [clip_photo(src, rang, nom, "", d, dossier, y_titre=230) for rang, (plan, src) in enumerate(plans)]
+    if plans:
+        # Fond : les photos du commerce en fondus enchaînés, le temps de la voix.
+        if len(plans) < 2:
+            raise Refus("Gardez au moins deux photos pour la présentation par Anna.")
+        n = len(plans)
+        d = (duree + 0.3 + (n - 1) * FONDU) / n
+        clips = [clip_photo(src, rang, nom, "", d, dossier, y_titre=230) for rang, (plan, src) in enumerate(plans)]
+    else:
+        # Pas de photo : des cartes aux couleurs de l'appli reprennent la fiche (nom, adresse, horaires, offre).
+        cartes = cartes_fiche(nom, commerce)
+        n = len(cartes)
+        d = (duree + 0.3 + (n - 1) * FONDU) / n
+        clips = [carte_info(dossier, rang, etiquette, texte_carte, d) for rang, (etiquette, texte_carte) in enumerate(cartes)]
     fond, _, _ = enchainer(clips, [d] * n, dossier, "fond.mp4")
 
     # Sous-titres : le texte validé, calé sur la voix d'Anna.
@@ -597,6 +604,54 @@ def monter_avatar(plans, options, commerce, avatar, dossier):
         for a, b, bloc in blocs:
             h.write(f"\n{hms(a)} --> {hms(b)}\n" + "\n".join(bloc) + "\n")
     return resultat(finale, affiche, vtt, duree + FIN_DUREE)
+
+
+CATEGORIES = {"restaurant": "Restaurant", "boulangerie": "Boulangerie", "cafe": "Café", "fleuriste": "Fleuriste",
+              "caviste": "Caviste", "beaute": "Beauté", "mode": "Mode", "boutique": "Boutique"}
+
+
+def cartes_fiche(nom, commerce):
+    """Les cartes du fond sans photo : [(étiquette, texte)], la première porte le nom."""
+    c = commerce or {}
+    sous_titre = " · ".join(x for x in [CATEGORIES.get(c.get("categorie") or "", ""), c.get("quartier") or ""] if x)
+    cartes = [("", nom + ("\n" + sous_titre if sous_titre else ""))]
+    if c.get("adresse"):
+        cartes.append(("ADRESSE", adresse_courte(c["adresse"])))
+    if c.get("horaires"):
+        cartes.append(("HORAIRES", c["horaires"].replace(" ; ", "\n")))
+    if c.get("offre"):
+        cartes.append(("AVEC L'APPLI", c["offre"]))
+    return cartes
+
+
+def carte_info(dossier, rang, etiquette, texte, duree):
+    """Une carte de fond, bleu nuit et rose, texte en haut (Anna occupe le bas de l'image)."""
+    n = max(2, round(duree * IPS))
+    vf = [f"drawbox=x=0:y=0:w={L}:h={H}:color=0x1D2340:t=fill",
+          # Bande rose discrète en haut, rappel de la carte de fin.
+          f"drawbox=x=0:y=0:w={L}:h=12:color={ROSE}:t=fill"]
+    apparition = "min(1,max(0,(t-0.25)/0.4))"
+    lignes_carte = []
+    for k, part in enumerate(texte.split("\n")):
+        lignes_carte += [(l, k) for l in lignes(part, 16 if (rang == 0 and k == 0) else 22, 3)]
+    lignes_carte = lignes_carte[:6]
+    tailles = [110 if (rang == 0 and k == 0) else 70 for _, k in lignes_carte]
+    hauteur = (70 if etiquette else 0) + sum(int(t * 1.3) for t in tailles)
+    # Bloc centré dans la moitié haute, au-dessus du cercle d'Anna.
+    y = max(200, (CERCLE_Y - 20) // 2 + 60 - hauteur // 2)
+    if etiquette:
+        vf += bloc_texte(dossier, f"ce{rang}", [etiquette], 44, y, POLICE, couleur="0xF7A8C9", alpha=apparition)
+        y += 70
+    for i, ((ligne, k), taille) in enumerate(zip(lignes_carte, tailles)):
+        grand = rang == 0 and k == 0
+        vf += bloc_texte(dossier, f"ct{rang}-{i}", [ligne], taille, y, POLICE if grand or not etiquette else POLICE_TEXTE,
+                         couleur="white" if grand or etiquette else "0xF7A8C9", alpha=apparition)
+        y += int(taille * 1.3)
+    vf.append("format=yuv420p")
+    sortie = os.path.join(dossier, f"c{rang}.mp4")
+    ff("-f", "lavfi", "-i", f"color=c=0x1D2340:s={L}x{H}:r={IPS}", "-vf", ",".join(vf), "-frames:v", str(n),
+       "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", sortie)
+    return sortie
 
 
 def obtenir_avatar(job, dossier):
@@ -711,7 +766,8 @@ def main():
         os.makedirs(sortie, exist_ok=True)
         demo = {"nom": "Le Comptoir", "offre": "Café offert avec votre brunch", "horaires": "Mar–Dim · 9h–15h",
                 "adresse": "12 rue de l'Exemple, 92250 La Garenne-Colombes", "avis": {"note": 4.6, "nombre": 126},
-                "accroche": "Brunch, cuisine maison et produits du marché, à deux pas de l'église."}
+                "accroche": "Brunch, cuisine maison et produits du marché, à deux pas de l'église.",
+                "categorie": "restaurant", "quartier": "Centre"}
         if args.avatar:
             res = monter_avatar(plans, opts, demo, args.avatar, sortie)
         else:
@@ -722,7 +778,12 @@ def main():
     if not CLE:
         print("::error::Secret SUPABASE_SERVICE_ROLE_KEY absent : ajoutez-le dans Settings › Secrets › Actions.")
         return 1
+    # Budget de temps : on ne prend plus de nouveau montage au-delà (le workflow se relance s'il en reste).
+    fin = time.time() + float(os.environ.get("HL_BUDGET_MIN", "25")) * 60
     for _ in range(args.max):
+        if time.time() > fin:
+            print("budget de temps atteint : la suite au prochain passage")
+            break
         job = (rpc("hl_montage_suivant") or {}).get("montage")
         if not job:
             break

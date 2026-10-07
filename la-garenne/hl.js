@@ -300,6 +300,13 @@
     // Grand lecteur : il prend la forme de la vidéo (lue sur l'affiche), pour
     // qu'une vidéo verticale ne soit pas rognée en haut et en bas.
     el.style.aspectRatio = ""; el.style.width = "";
+    // Vidéo présentée par Anna : mention IA et moyen pour le commerçant de la faire modifier ou retirer.
+    var note = el.nextElementSibling;
+    if (note && note.classList.contains("ia-note")) note.remove();
+    if (v.ia && o.wide) {
+      el.insertAdjacentHTML("afterend", '<p class="ia-note">Présentation générée par IA à partir des informations publiques du commerce. ' +
+        'Vous êtes le commerçant ? <a href="mailto:contact@fidelavis.com?subject=' + encodeURIComponent("Vidéo de " + (c.nom || "")) + '">Écrivez-nous</a> pour la modifier ou la retirer.</p>');
+    }
     if (o.wide && v.affiche) {
       var img = new Image();
       img.onload = function () {

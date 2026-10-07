@@ -21,6 +21,10 @@ on:
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: write     # pour se relancer quand une longue série n'est pas finie
+
 concurrency:
   group: hl-montage
   cancel-in-progress: false
@@ -28,7 +32,7 @@ concurrency:
 jobs:
   montage:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 330
     steps:
       - name: Y a-t-il un montage à faire ?
         id: file
@@ -78,5 +82,17 @@ jobs:
             # Rien à monter : seulement le nettoyage des séquences brutes, sans ffmpeg.
             python3 .github/scripts/hl_montage.py --max 0
           else
-            python3 .github/scripts/hl_montage.py
+            # Une série de vidéos Anna peut durer des heures : 5 h de travail au plus, puis relance.
+            HL_BUDGET_MIN=300 python3 .github/scripts/hl_montage.py --max 500
           fi
+
+      - name: Relancer s'il reste des montages
+        if: always() && steps.file.outputs.n != '0'
+        env:
+          CLE: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n=$(curl -sf -X POST "https://rtdiaeskmyjjwohirhzj.supabase.co/rest/v1/rpc/hl_montage_en_attente" \
+                -H "apikey: $CLE" -H "Authorization: Bearer $CLE" -H "Content-Type: application/json" -d '{}' || echo 0)
+          echo "encore en attente : $n"
+          if [ "$n" != "0" ]; then gh workflow run hl-montage.yml --repo "$GITHUB_REPOSITORY" --ref main; fi

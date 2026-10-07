@@ -92,9 +92,9 @@
 
   <section class="aide" id="blocAide">
     <h2>💡 Vous ne savez pas quoi dire ?</h2>
-    <p class="small">Collez les avis de vos clients (depuis votre fiche Google, par exemple) : on vous propose la phrase à dire face caméra et les textes de vos plans, à partir de ce que vos clients apprécient. Rien n'est conservé.</p>
+    <p class="small">On lit les avis de vos clients (trouvés sur le web, ou que vous collez) et on vous propose la phrase à dire face caméra et les textes de vos plans, à partir de ce qu'ils apprécient. Rien n'est conservé.</p>
     <details id="detAide"><summary>M'aider à trouver quoi dire</summary>
-      <textarea id="aideAvis" maxlength="60000" placeholder="Collez ici 10 à 50 avis. Sans avis, on s'appuie sur votre fiche."></textarea>
+      <textarea id="aideAvis" maxlength="60000" placeholder="Laissez vide : on cherche vos avis sur le web. Ou collez ici 10 à 50 avis."></textarea>
       <button class="b2" type="button" id="aideBtn" style="margin-top:10px">Proposer mes textes</button>
       <p class="msg" id="aideMsg"></p>
       <div id="aideRes" hidden></div>
@@ -309,9 +309,10 @@
      face caméra (que le commerçant dit lui-même) et les textes des plans. ── */
   document.getElementById('aideBtn').addEventListener('click', function(){
     var b = this, m = document.getElementById('aideMsg'), res = document.getElementById('aideRes');
-    b.disabled = true; m.className = 'msg'; m.textContent = 'Lecture de vos avis… (20 à 60 secondes)';
+    var avis = document.getElementById('aideAvis').value.trim();
+    b.disabled = true; m.className = 'msg'; m.textContent = avis ? 'Lecture de vos avis… (20 à 60 secondes)' : 'Recherche de vos avis sur le web… (30 secondes à 2 minutes)';
     fetch(SUPA_URL + '/functions/v1/hl-avis-texte', { method: 'POST', headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jeton: jeton, slug: slug, avis: document.getElementById('aideAvis').value.trim() }) })
+      body: JSON.stringify({ jeton: jeton, slug: slug, avis: avis, recherche: !avis }) })
     .then(function(r){ return r.json(); }).then(function(j){
       b.disabled = false;
       if (!j.ok) throw new Error(j.erreur || 'refusé');
@@ -319,6 +320,7 @@
       function liste(l){ return '<ul>' + l.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>'; }
       res.innerHTML =
         (a.remarque ? '<p class="small" style="background:#FDECEC;color:#8A2B2B;border-radius:10px;padding:10px 12px;font-weight:700">⚠️ ' + esc(a.remarque) + '</p>' : '') +
+        (a.sources && a.sources.length ? '<p class="small muted">Avis trouvés sur : ' + esc(a.sources.join(', ')) + '</p>' : '') +
         (a.points_forts && a.points_forts.length ? '<p class="small" style="font-weight:700">Ce que vos clients apprécient</p>' +
           liste(a.points_forts.map(function(p){ return esc(p.theme) + ' <span class="muted">· ' + p.nb_avis + ' avis</span>'; })) : '') +
         '<p class="small" style="font-weight:700;margin-top:10px">À dire face caméra</p>' +

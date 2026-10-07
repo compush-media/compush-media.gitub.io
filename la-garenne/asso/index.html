@@ -694,15 +694,22 @@
   /* ── Vidéo Anna (niveau ville) : Claude lit les avis et écrit le texte,
      l'avatar HeyGen le lit sur les photos du commerce. Chaque rendu est
      payant : le commerçant valide le texte avant le lancement. ── */
-  var anna = { photos: {}, suivi: null };
+  var anna = { photos: {}, suivi: null, montages: [], textes: {}, coches: {} };
   function vueAnna(){
-    var coms = D.commerces.filter(function(c){ return c.statut === 'valide'; });
+    var coms = D.commerces.filter(function(c){ return c.statut === 'valide' || c.statut === 'en_attente'; });
     var h = '<h2 style="margin-bottom:8px">Vidéo présentée par Anna</h2>' +
       '<p class="muted" style="margin-bottom:14px">Collez les avis du commerce : Claude en tire les points forts et écrit le texte qu\'Anna, présentatrice virtuelle, lira sur les photos du commerce. La vidéo arrive ensuite dans l\'espace du commerçant, qui l\'envoie à son association.</p>' +
+      '<div class="bloc" id="aSerie"><h3>En série · tous les commerces sans vidéo</h3>' +
+        '<p class="small muted">Claude cherche les avis publics de chaque commerce sur le web, les analyse avec la fiche (nom, catégorie, adresse, horaires, offre) et écrit le texte ; Anna le lit sur des cartes aux couleurs de l\'appli. Vous relisez les textes avant de lancer, puis vous publiez les vidéos.</p>' +
+        '<label class="ck" style="margin-top:8px"><input type="checkbox" id="sWeb" checked> Chercher les avis sur le web (plus long : 30 s à 1 min par commerce, environ 5 centimes)</label>' +
+        '<div class="lot" style="margin-top:10px"><button class="b2" type="button" id="sTout">Tout cocher</button><button class="b2" type="button" id="sRien">Tout décocher</button>' +
+        '<button class="b2" type="button" id="sTextes">Écrire les textes</button><button class="b2 ok" type="button" id="sLancer" disabled>Lancer les vidéos</button></div>' +
+        '<p class="msg" id="sMsg"></p><div id="sListe" style="max-height:560px;overflow:auto"><p class="muted small">Chargement…</p></div></div>' +
+      '<h3 style="margin:18px 0 8px">Ou un commerce à la fois, avec ses avis et ses photos</h3>' +
       '<div class="bloc"><h3>1 · Le commerce et ses avis</h3><div class="form">' +
         '<label class="f"><span>Commerce</span><select id="aCom"><option value="">— Choisir —</option>' +
           coms.map(function(c){ return '<option value="' + esc(c.slug) + '">' + esc(c.doc.nom || c.slug) + '</option>'; }).join('') + '</select></label>' +
-        '<label class="f large"><span>Avis clients (copiés depuis la fiche Google du commerçant, avec son accord)</span><textarea id="aAvis" style="min-height:160px" placeholder="Collez ici 10 à 100 avis. Les noms des auteurs ne sont pas nécessaires. Rien n\'est conservé."></textarea></label>' +
+        '<label class="f large"><span>Avis clients (copiés depuis la fiche Google du commerçant, avec son accord)</span><textarea id="aAvis" style="min-height:160px" placeholder="Laissez vide : Claude cherche lui-même les avis publics sur le web. Ou collez ici 10 à 100 avis. Rien n\'est conservé."></textarea></label>' +
       '</div><p class="small muted" id="aNb"></p>' +
       '<div class="bar"><button class="btn" id="aAnalyser" type="button"><span>Écrire le texte avec Claude</span><span class="arr">›</span></button><span class="msg" id="aMsg1"></span></div></div>' +
       '<div class="bloc" id="aRes" hidden><h3>2 · Le texte d\'Anna</h3><div id="aAnalyse"></div><div class="form">' +
@@ -726,6 +733,15 @@
     document.getElementById('aAnalyser').addEventListener('click', analyserAnna);
     document.getElementById('aLancer').addEventListener('click', lancerAnna);
     document.getElementById('aPhotos').addEventListener('change', choisirPhotoAnna);
+    var sl = document.getElementById('sListe');
+    sl.addEventListener('change', function(e){
+      var c = e.target.closest('[data-sc]'); if (c) { anna.coches[c.getAttribute('data-sc')] = c.checked; majSerie(); }
+      var t = e.target.closest('[data-st]'); if (t) { anna.textes[t.getAttribute('data-st')] = t.value.trim(); majSerie(); }
+    });
+    document.getElementById('sTout').addEventListener('click', function(){ sansVideo().forEach(function(c){ anna.coches[c.slug] = true; }); rendreSerie(); });
+    document.getElementById('sRien').addEventListener('click', function(){ anna.coches = {}; rendreSerie(); });
+    document.getElementById('sTextes').addEventListener('click', ecrireSerie);
+    document.getElementById('sLancer').addEventListener('click', lancerSerie);
     listeAnna();
   }
   function dureeAnna(){
@@ -739,9 +755,9 @@
     var avis = document.getElementById('aAvis').value.trim();
     if (!slug) { m.className = 'msg ko'; m.textContent = 'Choisissez le commerce.'; return; }
     if (avis.length > 60000) { m.className = 'msg ko'; m.textContent = '60 000 caractères au plus.'; return; }
-    b.disabled = true; m.className = 'msg'; m.textContent = 'Claude lit les avis… (20 à 60 secondes)';
+    b.disabled = true; m.className = 'msg'; m.textContent = avis ? 'Claude lit les avis… (20 à 60 secondes)' : 'Claude cherche les avis sur le web et les lit… (30 secondes à 2 minutes)';
     fetch(SUPA_URL + '/functions/v1/hl-avis-texte', { method: 'POST', headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jeton: jeton(), slug: slug, avis: avis }) })
+      body: JSON.stringify({ jeton: jeton(), slug: slug, avis: avis, recherche: !avis }) })
     .then(function(r){ return r.json(); }).then(function(j){
       b.disabled = false;
       if (!j.ok) throw new Error(j.erreur || 'refusé');
@@ -749,7 +765,7 @@
       function liste(t, l){ return l && l.length ? '<p class="small" style="font-weight:700;margin-top:10px">' + t + '</p><ul class="small" style="margin:4px 0 0;padding-left:18px">' + l.join('') + '</ul>' : ''; }
       document.getElementById('aAnalyse').innerHTML =
         (a.remarque ? '<p class="small" style="background:#FDECEC;color:#8A2B2B;border-radius:10px;padding:10px 12px;font-weight:700;margin-bottom:8px">⚠️ ' + esc(a.remarque) + '</p>' : '') +
-        '<p class="small muted">' + n(a.nb_avis) + ' avis analysés · accroche proposée : « ' + esc(a.accroche) + ' »</p>' +
+        '<p class="small muted">' + n(a.nb_avis) + ' avis analysés' + (a.sources && a.sources.length ? ' (' + esc(a.sources.join(', ')) + ')' : '') + ' · accroche proposée : « ' + esc(a.accroche) + ' »</p>' +
         liste('Points forts', (a.points_forts || []).map(function(p){ return '<li>' + esc(p.theme) + ' <span class="muted">· ' + n(p.nb_avis) + ' avis</span></li>'; })) +
         liste('À confirmer avec le commerçant', (a.verifications || []).map(function(v){ return '<li>' + esc(v) + '</li>'; })) +
         liste('À améliorer (pour le commerçant seulement, jamais dans la vidéo)', (a.a_ameliorer || []).map(function(v){ return '<li>' + esc(v) + '</li>'; })) +
@@ -827,20 +843,126 @@
       listeAnna();
     }).catch(function(e){ b.disabled = false; ko('Impossible : ' + e.message); });
   }
-  var ST_ANNA = { en_attente: 'En file d\'attente', en_cours: 'Montage en cours', pret: 'Prête · chez le commerçant', erreur: 'Échec', envoye: 'Envoyée à l\'association', abandonne: 'Supprimée' };
+  /* ── Série : commerces sans vidéo publiée ni vidéo Anna déjà demandée ── */
+  function sansVideo(){
+    var pris = {};
+    anna.montages.forEach(function(m){ if (m.statut !== 'erreur') pris[m.slug] = 1; });
+    return D.commerces.filter(function(c){
+      return (c.statut === 'valide' || c.statut === 'en_attente') && !pris[c.slug] &&
+        !(c.doc.videos || []).some(function(v){ return v.statut === 'publiee'; });
+    }).sort(function(a, b){ return (a.doc.nom || '').localeCompare(b.doc.nom || ''); });
+  }
+  function rendreSerie(){
+    var el = document.getElementById('sListe'); if (!el) return;
+    var l = sansVideo();
+    el.innerHTML = l.length ? l.map(function(c){
+      var t = anna.textes[c.slug];
+      return '<div style="border-top:1px solid var(--line);padding:10px 0;display:grid;gap:6px"><label class="ck"><input type="checkbox" data-sc="' + esc(c.slug) + '"' + (anna.coches[c.slug] ? ' checked' : '') + '> <b>' + esc(c.doc.nom) + '</b> ' +
+        '<span class="small muted">· ' + esc((HL.CATEGORIES[c.doc.categorie] || {}).label || '') + (c.statut === 'en_attente' ? ' · pas encore validé' : '') + '</span></label>' +
+        (t != null ? '<textarea data-st="' + esc(c.slug) + '" maxlength="700" style="width:100%;min-height:76px;border-radius:10px;border:1.5px solid var(--line);padding:8px 12px;font:inherit;font-size:14px">' + esc(t) + '</textarea>' : '') +
+        (anna.infos && anna.infos[c.slug] ? '<p class="small muted">' + esc(anna.infos[c.slug]) + '</p>' : '') +
+        (anna.remarques && anna.remarques[c.slug] ? '<p class="small" style="color:#8A2B2B">⚠️ ' + esc(anna.remarques[c.slug]) + '</p>' : '') + '</div>';
+    }).join('') : '<p class="muted small">Tous les commerces ont une vidéo ou une vidéo Anna en cours.</p>';
+    majSerie();
+  }
+  function choisisSerie(){ return sansVideo().filter(function(c){ return anna.coches[c.slug]; }); }
+  function majSerie(){
+    var ch = choisisSerie(), prets = ch.filter(function(c){ return (anna.textes[c.slug] || '').length >= 20; });
+    var st = document.getElementById('sTextes'), sl = document.getElementById('sLancer'); if (!st) return;
+    var aEcrire = ch.filter(function(c){ return anna.textes[c.slug] == null; }).length;
+    st.textContent = 'Écrire les textes (' + aEcrire + ')'; st.disabled = !aEcrire;
+    var mots = prets.reduce(function(n, c){ return n + anna.textes[c.slug].split(/\s+/).length; }, 0);
+    sl.textContent = 'Lancer les vidéos (' + prets.length + ')' + (prets.length ? ' · environ ' + (mots / 2.6 * 0.0167).toFixed(2).replace('.', ',') + ' $' : '');
+    sl.disabled = !prets.length;
+  }
+  // Textes écrits par Claude, trois commerces à la fois.
+  function ecrireSerie(){
+    var l = choisisSerie().filter(function(c){ return anna.textes[c.slug] == null; }), b = this, m = document.getElementById('sMsg');
+    if (!l.length) return;
+    anna.remarques = anna.remarques || {};
+    var web = document.getElementById('sWeb').checked;
+    b.disabled = true; var faits = 0, echecs = 0, i = 0;
+    m.className = 'msg'; m.textContent = 'Écriture des textes : 0 sur ' + l.length + '…';
+    function suivant(){
+      if (i >= l.length) return Promise.resolve();
+      var c = l[i++];
+      return fetch(SUPA_URL + '/functions/v1/hl-avis-texte', { method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ jeton: jeton(), slug: c.slug, avis: '', recherche: web }) })
+      .then(function(r){ return r.json(); }).then(function(j){
+        if (!j.ok) throw new Error(j.erreur);
+        var a = j.analyse;
+        anna.textes[c.slug] = a.texte || ''; if (a.remarque) anna.remarques[c.slug] = a.remarque;
+        anna.infos = anna.infos || {};
+        anna.infos[c.slug] = j.recherche ? (a.nb_avis ? a.nb_avis + ' avis lus' : 'aucun avis trouvé') + (a.sources && a.sources.length ? ' · ' + a.sources.slice(0, 4).join(', ') : '') +
+          (a.points_forts && a.points_forts.length ? ' · points forts : ' + a.points_forts.slice(0, 3).map(function(p){ return p.theme; }).join(', ') : '') : 'texte écrit à partir de la fiche';
+        faits++;
+      }).catch(function(){ echecs++; }).then(function(){
+        m.textContent = 'Écriture des textes : ' + (faits + echecs) + ' sur ' + l.length + '…'; return suivant();
+      });
+    }
+    Promise.all([suivant(), suivant(), suivant()]).then(function(){
+      b.disabled = false; rendreSerie();
+      m.className = echecs ? 'msg ko' : 'msg ok';
+      m.textContent = faits + ' texte' + (faits > 1 ? 's' : '') + ' écrit' + (faits > 1 ? 's' : '') + (echecs ? ' · ' + echecs + ' échec' + (echecs > 1 ? 's' : '') + ' (réessayez)' : '') + '. Relisez-les ci-dessous avant de lancer.';
+    });
+  }
+  function lancerSerie(){
+    var l = choisisSerie().filter(function(c){ return (anna.textes[c.slug] || '').length >= 20; }), b = this, m = document.getElementById('sMsg');
+    if (!l.length) return;
+    var cout = l.reduce(function(n, c){ return n + anna.textes[c.slug].split(/\s+/).length; }, 0) / 2.6 * 0.0167;
+    if (!confirm('Lancer ' + l.length + ' vidéo' + (l.length > 1 ? 's' : '') + ' Anna ? Coût HeyGen estimé : ' + cout.toFixed(2).replace('.', ',') + ' $. Les rendus se font les uns après les autres (2 à 3 minutes chacun).')) return;
+    b.disabled = true; var faits = 0, echecs = [];
+    l.reduce(function(ch, c){
+      return ch.then(function(){
+        m.className = 'msg'; m.textContent = 'Mise en file : ' + (faits + echecs.length + 1) + ' sur ' + l.length + '…';
+        var offre = c.doc.offre && c.doc.offre.statut === 'publiee';
+        return rpc('hl_admin_avatar_creer', { p_token: jeton(), p_slug: c.slug, p_rushes: [],
+          p_options: { texte: anna.textes[c.slug], titre: c.doc.nom, cta: offre ? 'offre' : 'itineraire', fond: 'fiche' } })
+        .then(function(j){ if (j.ok) { faits++; delete anna.coches[c.slug]; } else echecs.push(c.doc.nom + ' (' + j.reason + ')'); })
+        .catch(function(){ echecs.push(c.doc.nom); });
+      });
+    }, Promise.resolve()).then(function(){
+      b.disabled = false;
+      m.className = echecs.length ? 'msg ko' : 'msg ok';
+      m.textContent = faits + ' vidéo' + (faits > 1 ? 's' : '') + ' en file. Suivez-les plus bas, puis publiez-les.' + (echecs.length ? ' Non lancées : ' + echecs.join(', ') : '');
+      listeAnna();
+    });
+  }
+
+  var ST_ANNA = { en_attente: 'En file d\'attente', en_cours: 'Montage en cours', pret: 'Prête, à publier', erreur: 'Échec', envoye: 'Envoyée à l\'association', abandonne: 'Supprimée' };
   function listeAnna(){
     clearTimeout(anna.suivi);
     rpc('hl_admin_avatar_liste', { p_token: jeton() }).then(function(j){
       var el = document.getElementById('aListe'); if (!el || !j.ok) return;
       var l = j.montages || [];
-      el.innerHTML = l.length ? l.map(function(x){
-        return '<div style="border-top:1px solid var(--line);padding:12px 0;display:grid;gap:8px"><div class="row" style="gap:8px;flex-wrap:wrap"><b>' + esc(nom(x.slug)) + '</b>' +
+      anna.montages = l; rendreSerie();
+      var prets = l.filter(function(x){ return x.statut === 'pret'; });
+      el.innerHTML = (prets.length ? '<div class="lot"><button class="b2" type="button" id="pTout">Tout cocher (' + prets.length + ' prêtes)</button>' +
+          '<button class="b2 ok" type="button" id="pPublier">Publier la sélection</button><span class="small muted">Elles deviennent la vidéo de présentation du commerce dans l\'appli.</span></div>' : '') +
+        (l.length ? l.map(function(x){
+        return '<div style="border-top:1px solid var(--line);padding:12px 0;display:grid;gap:8px"><div class="row" style="gap:8px;flex-wrap:wrap">' +
+          (x.statut === 'pret' ? '<input type="checkbox" data-pub="' + esc(x.id) + '" aria-label="Publier">' : '') + '<b>' + esc(nom(x.slug)) + '</b>' +
           '<span class="small muted">' + new Date(x.created_at).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + esc(ST_ANNA[x.statut] || x.statut) + (x.duree ? ' · ' + esc(x.duree) + ' s' : '') + '</span></div>' +
           (x.erreur ? '<p class="small" style="color:#B23B3B">' + esc(x.erreur) + '</p>' : '') +
           (x.src ? '<video controls playsinline preload="metadata" style="width:100%;max-width:280px;aspect-ratio:9/16;border-radius:12px;background:#111" poster="' + esc(x.affiche || '') + '" src="' + esc(x.src) + '">' +
             (x.sousTitres ? '<track kind="subtitles" srclang="fr" label="Français" default src="' + esc(x.sousTitres) + '">' : '') + '</video>' : '') +
           '<p class="small muted">« ' + esc(x.texte || '') + ' »</p></div>';
-      }).join('') : '<p class="muted small">Aucune vidéo Anna pour le moment.</p>';
+      }).join('') : '<p class="muted small">Aucune vidéo Anna pour le moment.</p>');
+      var pt = document.getElementById('pTout');
+      if (pt) {
+        pt.addEventListener('click', function(){ Array.prototype.forEach.call(el.querySelectorAll('[data-pub]'), function(c){ c.checked = true; }); });
+        document.getElementById('pPublier').addEventListener('click', function(){
+          var ids = Array.prototype.filter.call(el.querySelectorAll('[data-pub]'), function(c){ return c.checked; }).map(function(c){ return c.getAttribute('data-pub'); });
+          if (!ids.length) { alert('Cochez les vidéos à publier.'); return; }
+          if (!confirm('Publier ' + ids.length + ' vidéo' + (ids.length > 1 ? 's' : '') + ' Anna dans l\'appli ?')) return;
+          this.disabled = true;
+          rpc('hl_admin_avatar_publier', { p_token: jeton(), p_ids: ids }).then(function(r){
+            if (!r.ok) throw new Error(r.reason);
+            HL.toast(r.publiees + ' vidéo' + (r.publiees > 1 ? 's publiées' : ' publiée'));
+            return charger().then(listeAnna);
+          }).catch(function(e){ alert('Publication impossible : ' + e.message); });
+        });
+      }
       if (l.some(function(x){ return x.statut === 'en_attente' || x.statut === 'en_cours'; }) && onglet === 'anna') anna.suivi = setTimeout(listeAnna, 20000);
     });
   }

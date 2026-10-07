@@ -65,7 +65,7 @@
 
     document.getElementById('id').innerHTML =
       '<h1>' + HL.esc(c.nom) + '</h1>' +
-      '<p class="ds">' + HL.esc(cat.label) + ' · ' + HL.esc(c.quartier || '') + ' · ' + HL.esc(c.horaires || '') + '</p>' +
+      '<p class="ds">' + [cat.label, c.quartier, c.horaires].filter(Boolean).map(HL.esc).join(' · ') + '</p>' +
       (c.avis ? '<p class="ds"><span class="stars">★</span> ' + String(c.avis.note).replace('.', ',') + '/5 · ' + c.avis.nombre + ' avis ' + HL.esc(c.avis.source) + '</p>' : '');
 
     var fav = HL.favoris().indexOf(c.slug) !== -1;
