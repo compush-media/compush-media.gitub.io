@@ -570,7 +570,7 @@ def monter_avatar(plans, options, commerce, avatar, dossier):
     # Anna : détourage du vert, recadrage tête et épaules, cercle ; un disque clair derrière elle.
     graphe = (
         "[1:v]chromakey=0x00B140:0.14:0.06,despill=type=green:mix=0.5:expand=0.3,"
-        f"crop=560:560:260:70,scale={CERCLE}:{CERCLE},format=yuva420p,split[a1][a2];"
+        f"crop=660:660:210:40,scale={CERCLE}:{CERCLE},format=yuva420p,split[a1][a2];"
         "[a2]alphaextract[aa];"
         "[2:v]format=gray,split[mg][mp];"
         f"[mp]scale={CERCLE}:{CERCLE}[m1];"
