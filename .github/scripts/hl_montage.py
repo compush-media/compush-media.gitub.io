@@ -696,7 +696,8 @@ def traiter(job):
         retires = set(job["options"].get("plans_retires") or [])
         rushes = sorted((r for r in job["rushes"] if r.get("plan") not in retires),
                         key=lambda r: ordre.index(r["plan"]) if r.get("plan") in ordre else 99)
-        if len(rushes) < 2:
+        # Une vidéo Anna peut n'avoir aucune photo (fond « fiche ») ; sinon, deux au moins.
+        if len(rushes) < 2 and not (mode == "avatar" and not rushes):
             raise Refus("Gardez au moins deux " + ("photos" if presentation else "plans") + " pour monter la vidéo.")
         plans = []
         for i, r in enumerate(rushes):

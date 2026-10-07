@@ -765,7 +765,7 @@
       function liste(t, l){ return l && l.length ? '<p class="small" style="font-weight:700;margin-top:10px">' + t + '</p><ul class="small" style="margin:4px 0 0;padding-left:18px">' + l.join('') + '</ul>' : ''; }
       document.getElementById('aAnalyse').innerHTML =
         (a.remarque ? '<p class="small" style="background:#FDECEC;color:#8A2B2B;border-radius:10px;padding:10px 12px;font-weight:700;margin-bottom:8px">⚠️ ' + esc(a.remarque) + '</p>' : '') +
-        '<p class="small muted">' + n(a.nb_avis) + ' avis analysés' + (a.sources && a.sources.length ? ' (' + esc(a.sources.join(', ')) + ')' : '') + ' · accroche proposée : « ' + esc(a.accroche) + ' »</p>' +
+        '<p class="small muted">' + (j.google ? n(j.google.lus) + ' avis Google lus' : n(a.nb_avis) + ' avis analysés' + (a.sources && a.sources.length ? ' (' + esc(a.sources.join(', ')) + ')' : '')) + ' · accroche proposée : « ' + esc(a.accroche) + ' »</p>' +
         liste('Points forts', (a.points_forts || []).map(function(p){ return '<li>' + esc(p.theme) + ' <span class="muted">· ' + n(p.nb_avis) + ' avis</span></li>'; })) +
         liste('À confirmer avec le commerçant', (a.verifications || []).map(function(v){ return '<li>' + esc(v) + '</li>'; })) +
         liste('À améliorer (pour le commerçant seulement, jamais dans la vidéo)', (a.a_ameliorer || []).map(function(v){ return '<li>' + esc(v) + '</li>'; })) +
@@ -893,7 +893,8 @@
         var a = j.analyse;
         anna.textes[c.slug] = a.texte || ''; if (a.remarque) anna.remarques[c.slug] = a.remarque;
         anna.infos = anna.infos || {};
-        anna.infos[c.slug] = j.recherche ? (a.nb_avis ? a.nb_avis + ' avis lus' : 'aucun avis trouvé') + (a.sources && a.sources.length ? ' · ' + a.sources.slice(0, 4).join(', ') : '') +
+        anna.infos[c.slug] = j.recherche ? (j.google ? j.google.lus + ' avis Google lus' + (j.google.note ? ' (note ' + String(j.google.note).replace('.', ',') + '/5 sur ' + (j.google.nombre || '?') + ' avis)' : '')
+            : (a.nb_avis ? a.nb_avis + ' avis lus sur le web' : 'aucun avis trouvé') + (a.sources && a.sources.length ? ' · ' + a.sources.slice(0, 4).join(', ') : '')) +
           (a.points_forts && a.points_forts.length ? ' · points forts : ' + a.points_forts.slice(0, 3).map(function(p){ return p.theme; }).join(', ') : '') : 'texte écrit à partir de la fiche';
         faits++;
       }).catch(function(){ echecs++; }).then(function(){
