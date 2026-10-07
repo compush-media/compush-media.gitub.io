@@ -261,7 +261,7 @@
   function tile(lb, v, ex){ return '<div class="tile"><p class="lb">' + lb + '</p><p class="v">' + n(v) + '</p><p class="ex">' + ex + '</p></div>'; }
 
   /* ── À valider : contrôles avant diffusion ── */
-  var filtreCat = '';
+  var filtreCat = '', rechercheValider = '', filtreAnna = false, annaPretes = {};
   function vueValider(){
     var l = aModerer();
     // Nouveaux commerces : cases à cocher, filtre par catégorie et validation groupée.
@@ -271,7 +271,9 @@
     var lot = coms.length > 1 ? '<div class="lot" id="lot">' +
         '<button class="chip' + (!filtreCat ? ' on' : '') + '" data-c="">Tous (' + coms.length + ')</button>' +
         Object.keys(cats).map(function(k){ return '<button class="chip' + (k === filtreCat ? ' on' : '') + '" data-c="' + esc(k) + '">' + esc((HL.CATEGORIES[k] || {}).label || k || 'Sans catégorie') + ' (' + cats[k] + ')</button>'; }).join('') +
-      '</div><div class="lot"><button class="b2" id="toutCocher" type="button">Tout cocher</button><button class="b2" id="rienCocher" type="button">Tout décocher</button>' +
+      '</div><div class="lot"><input type="search" id="rechValider" placeholder="Rechercher un commerce…" value="' + esc(rechercheValider) + '" style="min-height:42px;border-radius:999px;border:1.5px solid var(--line);padding:8px 16px;font:inherit;font-size:14.5px;min-width:220px;flex:1;max-width:340px">' +
+        (ville() ? '<button class="chip' + (filtreAnna ? ' on' : '') + '" id="filtreAnna" type="button">🎬 Vidéo Anna prête (<span id="nbAnna">…</span>)</button>' : '') + '</div>' +
+      '<div class="lot"><button class="b2" id="toutCocher" type="button">Tout cocher</button><button class="b2" id="rienCocher" type="button">Tout décocher</button>' +
         '<button class="b2 ok" id="validerSel" type="button" disabled>Valider la sélection (0)</button><span class="small muted" id="selInfo">Les commerces sans adresse ne peuvent pas être cochés.</span></div>' : '';
     vue.innerHTML = '<h2 style="margin-bottom:12px">À valider</h2>' + lot + '<div class="bloc" id="file">' +
       (l.length ? l.map(itemHtml).join('') : '<p class="vide">Rien à valider pour le moment.</p>') + '</div>';
@@ -283,16 +285,34 @@
       var n = file.querySelectorAll('.sel:checked').length;
       b.disabled = !n; b.textContent = 'Valider la sélection (' + n + ')';
     }
+    function sansAccent(t){ return (t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
     function filtrer(){
+      var q = sansAccent(rechercheValider.trim());
       Array.prototype.forEach.call(file.querySelectorAll('.file'), function(el){
-        var c = el.getAttribute('data-cat');
-        el.style.display = !filtreCat || c === filtreCat ? '' : 'none';
-        if (filtreCat && c !== filtreCat) { var x = el.querySelector('.sel'); if (x) x.checked = false; }
+        var c = el.getAttribute('data-cat'), nomEl = el.getAttribute('data-nom'), slugEl = el.getAttribute('data-slug');
+        var voir = (!filtreCat || c === filtreCat) &&
+          (!q || (nomEl != null && sansAccent(nomEl).indexOf(q) !== -1)) &&
+          (!filtreAnna || (slugEl != null && annaPretes[slugEl]));
+        el.style.display = voir ? '' : 'none';
+        if (!voir) { var x = el.querySelector('.sel'); if (x) x.checked = false; }
       });
       majSel();
     }
     if (coms.length > 1) {
       filtrer();
+      document.getElementById('rechValider').addEventListener('input', function(){ rechercheValider = this.value; filtrer(); });
+      var fa = document.getElementById('filtreAnna');
+      if (fa) {
+        // Commerces dont la vidéo Anna est prête ou déjà publiée.
+        rpc('hl_admin_avatar_liste', { p_token: jeton() }).then(function(j){
+          annaPretes = {};
+          (j.montages || []).forEach(function(m){ if (m.statut === 'pret' || m.statut === 'envoye') annaPretes[m.slug] = 1; });
+          var n = coms.filter(function(it){ return annaPretes[it.c.slug]; }).length;
+          var el = document.getElementById('nbAnna'); if (el) el.textContent = n;
+          if (filtreAnna) filtrer();
+        });
+        fa.addEventListener('click', function(){ filtreAnna = !filtreAnna; this.classList.toggle('on', filtreAnna); filtrer(); });
+      }
       document.getElementById('lot').addEventListener('click', function(e){
         var b = e.target.closest('[data-c]'); if (!b) return;
         filtreCat = b.getAttribute('data-c'); vueValider();
@@ -333,7 +353,7 @@
       '<button class="b2 ko" data-act="ko" data-i="' + k + '">Refuser</button></div>';
     if (it.type === 'commerce') {
       var c = it.c.doc;
-      return '<div class="file" data-cat="' + esc(c.categorie || '') + '"><input type="checkbox" class="sel" data-sel="' + k + '" aria-label="Sélectionner ' + esc(c.nom) + '"' + (c.adresse ? '' : ' disabled title="Adresse manquante"') + '>' +
+      return '<div class="file" data-cat="' + esc(c.categorie || '') + '" data-nom="' + esc(c.nom || '') + '" data-slug="' + esc(it.c.slug) + '"><input type="checkbox" class="sel" data-sel="' + k + '" aria-label="Sélectionner ' + esc(c.nom) + '"' + (c.adresse ? '' : ' disabled title="Adresse manquante"') + '>' +
         '<div class="ph" style="background-image:url(\'' + esc(c.photo || '') + '\')"></div><div style="flex:1"><span class="st en_attente">Nouveau commerce</span>' +
         '<p style="margin-top:6px"><b>' + esc(c.nom) + '</b> · ' + esc((HL.CATEGORIES[c.categorie] || {}).label || c.categorie || '') + '</p>' +
         '<p class="small muted">' + esc(c.adresse || 'Adresse manquante') + ' · ' + esc(c.tel || 'téléphone manquant') + '</p>' +
