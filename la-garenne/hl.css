@@ -202,3 +202,20 @@ img{display:block;max-width:100%;}
 .vl .rs{font-size:12.5px;color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .source-ville{font-size:11.5px;color:var(--muted);margin-top:8px;}
 .source-ville a{color:var(--muted);}
+
+/* Météo et trafic du jour (accueil) */
+.jour{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:12px 14px;margin-top:14px;display:grid;gap:10px;}
+.jour .mt{display:flex;align-items:center;gap:12px;}
+.jour .em{font-size:34px;line-height:1;}
+.jour .tp{font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:700;}
+.jour .ds{font-size:13px;color:var(--muted);line-height:1.4;}
+.jour .ds b{color:var(--ink);font-weight:700;}
+.jour .lg{display:flex;flex-wrap:wrap;gap:8px;}
+.jour .li{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;font-family:inherit;}
+.jour .li .pt{width:9px;height:9px;border-radius:50%;background:var(--ok);}
+.jour .li.perturbe{border-color:#F3C7A0;background:#FFF4EA;}
+.jour .li.perturbe .pt{background:#E07B24;}
+.jour .msg{font-size:12.5px;line-height:1.45;background:#FFF4EA;border-radius:12px;padding:10px 12px;color:#6B3A10;}
+.jour .msg p+p{margin-top:6px;}
+.jour .sugg{font-size:13px;font-weight:700;color:var(--rose);text-decoration:none;}
+.jour .src{font-size:11px;color:var(--muted);}

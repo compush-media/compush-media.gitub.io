@@ -51,6 +51,9 @@
 
 <!-- Accueil = ce qui est nouveau cette semaine. L'annuaire complet vit dans l'onglet Commerces. -->
 <main class="ct">
+  <!-- Météo et trafic du jour : de quoi ouvrir l'appli chaque matin. -->
+  <div class="jour" id="jour" hidden></div>
+
   <nav class="cats" id="cats" aria-label="Catégories" style="margin-top:18px"></nav>
 
   <div class="semaine" id="semaine"></div>
@@ -198,6 +201,44 @@ HL.ville().then(function(v){
     ac.map(function(a){ return HL.villeHtml(a, 'actus', 'accueil'); }).join('');
   document.getElementById('blocVille').hidden = false;
 });
+
+/* Météo (MET Norway) et trafic ligne L / tram T2 (Île-de-France Mobilités), via la fonction hl-quotidien. */
+fetch('https://rtdiaeskmyjjwohirhzj.supabase.co/functions/v1/hl-quotidien').then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+  if (!j || !j.ok || (!j.meteo && !j.trafic)) return;
+  var m = j.meteo, t = j.trafic || [], el = document.getElementById('jour'), esc = HL.esc, h = '';
+  if (m) {
+    h += '<div class="mt"><span class="em" aria-hidden="true">' + m.emoji + '</span><span class="tp">' + m.temp + '°</span>' +
+      '<span class="ds"><b>' + esc(m.libelle) + '</b> à La Garenne' +
+      (m.min != null ? '<br>' + (m.periode === 'demain' ? 'Demain' : "Aujourd'hui") + ' : ' + m.min + '° / ' + m.max + '°' : '') +
+      ' · ' + esc(m.pluie) + '</span></div>';
+    // Il pleut : une idée d'adresse à l'abri, chez les commerçants.
+    if (m.pleut) h += '<a class="sugg" id="jourSugg" hidden href="' + HL.BASE + 'commerces.html?cat=cafe">☕ Un café au chaud près de chez vous ›</a>';
+  }
+  if (t.length) {
+    h += '<div class="lg">' + t.map(function(l, k){
+      return '<button type="button" class="li' + (l.etat === 'perturbe' ? ' perturbe' : '') + '" data-l="' + k + '"' + (l.messages.length ? ' aria-expanded="false"' : '') + '>' +
+        '<span class="pt"></span>' + (l.mode === 'Tram' ? 'Tram ' : 'Ligne ') + esc(l.ligne) + ' · ' + (l.etat === 'perturbe' ? 'perturbé' : 'trafic normal') + (l.messages.length ? ' ›' : '') + '</button>';
+    }).join('') + '</div><div class="msg" id="jourMsg" hidden></div>';
+  }
+  h += '<span class="src">Météo : MET Norway' + (t.length ? ' · Trafic : Île-de-France Mobilités' : '') + '</span>';
+  el.innerHTML = h; el.hidden = false;
+  // La suggestion n'apparaît que s'il y a des cafés dans l'appli.
+  if (m && m.pleut) HL.charger().then(function(d){
+    if ((d.commerces || []).some(function(c){ return c.categorie === 'cafe'; })) document.getElementById('jourSugg').hidden = false;
+  });
+  el.addEventListener('click', function(e){
+    var b = e.target.closest('[data-l]'); if (!b) return;
+    var l = t[+b.getAttribute('data-l')], box = document.getElementById('jourMsg');
+    if (!l.messages.length) return;
+    var ouvert = b.getAttribute('aria-expanded') === 'true';
+    Array.prototype.forEach.call(el.querySelectorAll('[data-l]'), function(x){ if (x.hasAttribute('aria-expanded')) x.setAttribute('aria-expanded', 'false'); });
+    if (ouvert) { box.hidden = true; return; }
+    b.setAttribute('aria-expanded', 'true');
+    box.innerHTML = l.messages.map(function(x){ return '<p>' + esc(x) + '</p>'; }).join('');
+    box.hidden = false;
+    HL.track('trafic_detail', null, l.ligne);
+  });
+}).catch(function(){});
 </script>
 </body>
 </html>
