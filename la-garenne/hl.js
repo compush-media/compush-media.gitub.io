@@ -174,6 +174,46 @@
     track(el.getAttribute("data-hl"), el.getAttribute("data-slug"), el.getAttribute("data-src"));
   }, true);
 
+  /* ── La Ville : actualités et agenda de la mairie ──
+     data/ville.json, écrit deux fois par jour par .github/scripts/hl_ville.py
+     à partir des flux RSS de la mairie. On n'en reprend que le titre, la date,
+     un résumé court et la photo, et chaque élément renvoie vers le site de la
+     Ville, citée comme source. */
+  var _ville = null;
+  function ville() {
+    if (_ville) return _ville;
+    _ville = fetch(BASE + "data/ville.json", { cache: "no-cache" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .then(function (v) { return v || { actus: [], agenda: [] }; });
+    return _ville;
+  }
+  var MOIS_COURTS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
+  function dateEvenement(e) {
+    function un(d) { var p = d.split("-"); return +p[2] + " " + MOIS_COURTS[+p[1] - 1]; }
+    if (!e.debut) return "";
+    return e.fin && e.fin !== e.debut ? "du " + un(e.debut) + " au " + un(e.fin) : un(e.debut);
+  }
+  function quandEvenement(e) {
+    var auj = jour(), demain = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+    if (e.debut <= auj && (e.fin || e.debut) >= auj) return "Aujourd'hui";
+    if (e.debut === demain) return "Demain";
+    return "";
+  }
+  // Un élément de la Ville : vignette, date ou « Aujourd'hui », titre, résumé ; ouvre le site de la mairie.
+  function villeHtml(x, genre, contexte) {
+    var badge = genre === "agenda" ? (quandEvenement(x) || dateEvenement(x)) : (x.date ? "Le " + +x.date.slice(8) + " " + MOIS_COURTS[+x.date.slice(5, 7) - 1] : "Actualité");
+    return '<a class="vl" href="' + esc(x.lien) + '" target="_blank" rel="noopener" data-ville="' + esc(genre) + '" data-ctx="' + esc(contexte || "") + '">' +
+      '<span class="ph"' + (x.image ? ' style="background-image:url(\'' + esc(x.image) + '\')"' : "") + "></span>" +
+      '<span class="tx"><span class="bd' + (genre === "agenda" && quandEvenement(x) ? " vite" : "") + '">' + esc(badge) + "</span>" +
+      "<b>" + esc(x.titre) + "</b>" + (x.resume ? '<span class="rs">' + esc(x.resume) + "</span>" : "") + "</span></a>";
+  }
+  // Clic vers le site de la Ville : mesuré (sans donnée personnelle), pour savoir si la rubrique sert.
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a.vl[data-ville]");
+    if (a) track("ville_clic", null, a.getAttribute("data-ville") + ":" + (a.getAttribute("data-ctx") || ""));
+  }, true);
+
   /* ── Attribution QR/NFC ──
      Le premier commerce qui fait entrer l'habitant est retenu une fois
      pour toutes ; les scans suivants comptent comme des visites. Le pass,
@@ -592,6 +632,7 @@
     impression: impression, pubFixeHtml: pubFixeHtml, vcardHtml: vcardHtml, commerceRowHtml: commerceRowHtml,
     favoris: favoris, basculerFavori: basculerFavori, notifs: notifs,
     dureeOffre: dureeOffre, recent: recent, offreHtml: offreHtml, coupDeCoeurHtml: coupDeCoeurHtml,
-    toast: toast, nav: nav, brandbar: brandbar
+    toast: toast, nav: nav, brandbar: brandbar,
+    ville: ville, villeHtml: villeHtml
   };
 })();

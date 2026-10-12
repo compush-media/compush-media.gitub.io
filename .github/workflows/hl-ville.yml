@@ -1,0 +1,44 @@
+# ──────────────────────────────────────────────────────────────
+#  Pilote La Garenne-Colombes : actualités et agenda de la Ville.
+#
+#  Deux fois par jour, lit les flux RSS publiés par la mairie (comme un
+#  lecteur RSS) et met à jour la-garenne/data/ville.json : titre, date,
+#  résumé court, photo et lien vers le site de la Ville. Ne publie que si le
+#  contenu a changé. Script : .github/scripts/hl_ville.py.
+#
+#  Aucun secret requis.
+# ──────────────────────────────────────────────────────────────
+name: Pilote La Garenne · actualités de la Ville
+
+on:
+  schedule:
+    - cron: '23 5,16 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hl-ville
+  cancel-in-progress: false
+
+jobs:
+  ville:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Lire les flux de la Ville
+        run: python3 .github/scripts/hl_ville.py
+
+      - name: Publier s'il y a du nouveau
+        run: |
+          git add la-garenne/data/ville.json
+          if git diff --cached --quiet; then echo "Rien de nouveau."; exit 0; fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Pilote La Garenne : actualités et agenda de la Ville"
+          for i in 1 2 3; do git push && break; git pull --rebase origin main; done

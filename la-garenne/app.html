@@ -64,6 +64,13 @@
   <div class="sec-title"><h2>À la une cette semaine</h2><a href="/la-garenne/decouvrir.html">Tout voir</a></div>
   <div class="rail" id="rail"></div>
 
+  <!-- Actualités et agenda de la mairie (flux RSS de la Ville) : une raison de revenir chaque semaine. -->
+  <section id="blocVille" hidden>
+    <div class="sec-title"><h2>À La Garenne cette semaine</h2><a href="/la-garenne/ville.html">Tout voir</a></div>
+    <div class="vlist" id="ville"></div>
+    <p class="source-ville">Source : <a href="https://www.lagarennecolombes.fr/" target="_blank" rel="noopener">Ville de La Garenne-Colombes</a></p>
+  </section>
+
   <div id="notif" class="card notif hide">
     <span class="ic" id="icnAlerte"></span>
     <div style="flex:1"><b>Ne ratez pas les bons plans de La Garenne</b>
@@ -181,6 +188,16 @@
 
   });
 })();
+
+/* À La Garenne cette semaine : les 3 prochains événements et les 2 dernières actualités de la Ville. */
+HL.ville().then(function(v){
+  var ev = (v.agenda || []).slice(0, 3), ac = (v.actus || []).slice(0, 2);
+  if (!ev.length && !ac.length) return;
+  document.getElementById('ville').innerHTML =
+    ev.map(function(e){ return HL.villeHtml(e, 'agenda', 'accueil'); }).join('') +
+    ac.map(function(a){ return HL.villeHtml(a, 'actus', 'accueil'); }).join('');
+  document.getElementById('blocVille').hidden = false;
+});
 </script>
 </body>
 </html>

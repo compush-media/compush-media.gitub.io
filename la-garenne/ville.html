@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#C8206A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fidelavis">
+<link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<script>
+  /* Fichier d'installation propre au commerce, sur TOUTES les pages : on peut
+     ajouter l'appli à l'écran d'accueil depuis n'importe laquelle (souvent
+     depuis l'extrait vidéo, sans passer par installer.html). Son start_url
+     app.html?first=<slug> rouvre l'appli sur la vidéo du bon commerce.
+     Commerce connu par ?s= ou, à défaut, par celui qui a amené l'habitant. */
+  (function(){
+    var s = (new URLSearchParams(location.search).get('s') || '').toLowerCase().replace(/[^a-z0-9-]/g,'');
+    if (!s) { try { var src = JSON.parse(localStorage.getItem('hl_source') || 'null'); s = (src && src.slug || '').replace(/[^a-z0-9-]/g,''); } catch(e) {} }
+    if (s) document.getElementById('mf').href = '/la-garenne/manifests/' + s + '.json';
+  })();
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<link rel="stylesheet" href="/la-garenne/polices/polices.css">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<title>La Ville – Les Commerces de La Garenne</title>
+<style>
+  .onglets{display:flex;gap:8px;margin:4px 0 14px;}
+  .vide{color:var(--muted);font-size:14px;padding:12px 0;}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<main class="ct">
+  <h1 style="margin:6px 0 4px">La Ville</h1>
+  <p class="muted small" style="margin-bottom:12px">L'agenda et les actualités de la Ville de La Garenne-Colombes. Touchez un élément pour le lire sur le site de la mairie.</p>
+  <div class="onglets" role="tablist">
+    <button class="chip on" type="button" data-o="agenda" role="tab" aria-selected="true">Agenda</button>
+    <button class="chip" type="button" data-o="actus" role="tab" aria-selected="false">Actualités</button>
+  </div>
+  <div class="vlist" id="liste"><p class="vide">Chargement…</p></div>
+  <p class="source-ville" id="source"></p>
+</main>
+<script>
+(function(){
+  document.getElementById('bar').innerHTML = HL.brandbar(false);
+  HL.nav('');
+  var onglet = HL.qs('o') === 'actus' ? 'actus' : 'agenda', V = null;
+  function rendre(){
+    Array.prototype.forEach.call(document.querySelectorAll('[data-o]'), function(b){
+      var on = b.getAttribute('data-o') === onglet; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    var l = (V && V[onglet]) || [];
+    document.getElementById('liste').innerHTML = l.length ? l.map(function(x){ return HL.villeHtml(x, onglet, 'page'); }).join('')
+      : '<p class="vide">' + (onglet === 'agenda' ? 'Aucun événement annoncé pour le moment.' : 'Aucune actualité pour le moment.') + '</p>';
+  }
+  document.querySelector('.onglets').addEventListener('click', function(e){
+    var b = e.target.closest('[data-o]'); if (!b) return;
+    onglet = b.getAttribute('data-o'); history.replaceState(null, '', '?o=' + onglet); rendre();
+  });
+  HL.ville().then(function(v){
+    V = v; rendre();
+    var maj = v.maj ? new Date(v.maj).toLocaleString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : '';
+    document.getElementById('source').innerHTML = 'Source : <a href="https://www.lagarennecolombes.fr/" target="_blank" rel="noopener">Ville de La Garenne-Colombes</a>' + (maj ? ' · mis à jour le ' + HL.esc(maj) : '');
+  });
+  HL.trackUnique('ville_vue', null, onglet, 'ville_' + HL.jour());
+})();
+</script>
+</body>
+</html>

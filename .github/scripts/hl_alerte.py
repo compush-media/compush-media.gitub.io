@@ -2,7 +2,9 @@
 """Alerte hebdomadaire du pilote La Garenne-Colombes.
 
 Chaque lundi, une notification aux habitants qui l'ont demandée (étiquette
-Progressier « la-garenne ») : les nouvelles vidéos et offres de la semaine.
+Progressier « la-garenne ») : les nouvelles vidéos et offres de la semaine,
+et les événements de la Ville des sept jours à venir (data/ville.json, lu
+dans les flux RSS de la mairie par hl_ville.py).
 Promesse faite dans l'appli : une notification par semaine au plus. Aucune
 publicité dans l'alerte. Rien de nouveau = rien d'envoyé.
 
@@ -65,6 +67,19 @@ def nouveautes():
     return videos, offres, en_cours
 
 
+def agenda_semaine():
+    """Les événements de la Ville des 7 prochains jours (titres seulement)."""
+    chemin = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "la-garenne", "data", "ville.json")
+    try:
+        with open(chemin, encoding="utf-8") as h:
+            agenda = json.load(h).get("agenda", [])
+    except (OSError, ValueError):
+        return []
+    auj = dt.date.today()
+    fin = (auj + dt.timedelta(days=7)).isoformat()
+    return [e["titre"] for e in agenda if e.get("debut") and auj.isoformat() <= e["debut"] <= fin]
+
+
 def pluriel(n, un, plusieurs):
     return f"{n} {un if n == 1 else plusieurs}"
 
@@ -78,7 +93,8 @@ def noms(liste, maxi=2):
 
 def rediger():
     videos, offres, en_cours = nouveautes()
-    if not videos and not offres:
+    ville = agenda_semaine()
+    if not videos and not offres and not ville:
         return None
     morceaux = []
     if videos:
@@ -86,8 +102,10 @@ def rediger():
     if offres:
         morceaux.append(f"{pluriel(len(offres), 'nouvelle offre', 'nouvelles offres')} ({noms(offres)})")
     texte = " · ".join(morceaux)
-    if en_cours > len(offres):
+    if morceaux and en_cours > len(offres):
         texte += f". {pluriel(en_cours, 'offre', 'offres')} en cours en tout."
+    if ville:
+        texte += (". " if texte else "") + "En ville : " + noms(ville)
     return "Cette semaine à La Garenne", texte[:180]
 
 

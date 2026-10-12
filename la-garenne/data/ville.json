@@ -1,0 +1,183 @@
+{
+ "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
+ "source": "Ville de La Garenne-Colombes",
+ "site": "https://www.lagarennecolombes.fr/",
+ "maj": "2026-10-12T20:57+00:00",
+ "empreinte": "3b28a877dd7ed62a",
+ "actus": [
+  {
+   "titre": "Un coup de pouce pour réussir au collège !",
+   "date": "2026-09-11",
+   "resume": "L’entrée en 6e est une étape importante. Nouvel établissement, nouveaux enseignants, emploi du temps plus complexe, davantage de devoirs et d’autonomie… En quelques semaines, les jeunes collégiens…",
+   "image": "https://www.lagarennecolombes.fr/image/2026-08-23_tract_A5_recto_verso_Dispositif_CLAS_IMP_page-0001.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13921&iddossiercontenu=33"
+  },
+  {
+   "titre": "Repas de Noël des seniors : les dates à retenir",
+   "date": "",
+   "resume": "Les 7, 8 et 9 décembre, le Théâtre accueillera les traditionnels Repas de Noël proposés par la Ville aux Garennois âgés de 65 ans et plus. Un rendez-vous convivial pour se retrouver et célébrer…",
+   "image": "https://www.lagarennecolombes.fr/image/Vignette_repas_noel_seniors.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13938&iddossiercontenu=33"
+  },
+  {
+   "titre": "Véligo : testez le vélo qui vous convient dimanche 11 octobre",
+   "date": "2026-09-08",
+   "resume": "Vélo électrique, cargo ou adapté : avant de choisir, les Garennois pourront tester différents modèles grâce à la Maison du vélo mobile de Véligo Location, qui fera étape à deux reprises cet automne…",
+   "image": "https://www.lagarennecolombes.fr/image/VELIGO-3.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13918&iddossiercontenu=33"
+  },
+  {
+   "titre": "Appel à candidatures – Organisation d’un marché aux fleurs",
+   "date": "2026-08-06",
+   "resume": "La Ville de La Garenne-Colombes lance un appel à manifestation d’intérêt en vue de l’organisation d’un marché aux fleurs, destiné à promouvoir et valoriser l’horticulture, le jardinage ainsi que la…",
+   "image": "https://www.lagarennecolombes.fr/image/20260707-01_015_JARDINS-BALCONS-FLEURIS_Madame-Catherine-Dreyfus.JPG",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13888&iddossiercontenu=33"
+  },
+  {
+   "titre": "Trottinettes électriques : de nouvelles obligations de sécurité à partir d'août 2026",
+   "date": "",
+   "resume": "À compter du mois d'août 2026, les utilisateurs de trottinettes électriques et, plus largement, des engins de déplacement personnel motorisés (EDPM), devront respecter de nouvelles règles destinées à…",
+   "image": "https://www.lagarennecolombes.fr/image/let-s-kick-6dnmMqbfgBo-unsplash.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13889&iddossiercontenu=33"
+  },
+  {
+   "titre": "Marché de Noël 2026 : les inscriptions sont ouvertes",
+   "date": "2026-07-31",
+   "resume": "La Ville lance les inscriptions pour son Marché de Noël, qui se tiendra du 27 novembre au 20 décembre 2026, place de la Liberté.",
+   "image": "https://www.lagarennecolombes.fr/image/20221210-09_009_Marche-de-Noel.JPG",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13881&iddossiercontenu=33"
+  },
+  {
+   "titre": "Les travaux réalisés, en cours et à venir à La Garenne-Colombes",
+   "date": "2025-12-11",
+   "resume": "Retrouvez ici toute l’actualité travaux de votre ville.",
+   "image": "https://www.lagarennecolombes.fr/image/20240523-01_002_Chantier-travaux-palissade-Cinema.JPG",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13487&iddossiercontenu=33"
+  },
+  {
+   "titre": "La Semaine Bleue à La Garenne-Colombes",
+   "date": "2026-09-28",
+   "resume": "Du 5 au 11 octobre, la Semaine bleue met à l’honneur nos aînés et les liens qui unissent les générations. Autour du thème « Relions tous les âges dans des territoires engagés », la Ville et le Centre…",
+   "image": "",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13931&iddossiercontenu=33"
+  },
+  {
+   "titre": "Les Garennois font leur cinéma !",
+   "date": "2026-10-05",
+   "resume": "Pour l'ouverture de son cinéma, la Ville vous confie l'affiche ! 24 heures non-stop, nuit comprise, pour fêter cent ans de cinéma : un film par décennie, choisi par les Garennois. Ce mois-ci, vous…",
+   "image": "",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13937&iddossiercontenu=33"
+  },
+  {
+   "titre": "Ouverture des annexes de la Mairie le samedi",
+   "date": "2025-11-14",
+   "resume": "Les deux annexes de la Mairie, situées dans le quartier des Champs-Philippe et des Vallées, élargissent désormais leurs horaires d’accueil ! Elles seront ouvertes tous les samedis de 9h à 12h30.",
+   "image": "https://www.lagarennecolombes.fr/image/20200914-01_006_Mairie-annexe-CP_10x13.JPG",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13712&iddossiercontenu=33"
+  },
+  {
+   "titre": "Petite enfance, la Mairie recrute !",
+   "date": "2025-12-11",
+   "resume": "La Mairie de La Garenne recrute des auxiliaires de puériculture, des éducateurs de jeunes enfants et des auxilliaires de crèches.",
+   "image": "https://www.lagarennecolombes.fr/image/2024-12-112_-_Affiche_recrutement_auxilliaires_de_puericulture_V3.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13505&iddossiercontenu=33"
+  },
+  {
+   "titre": "Conservatoire : Le futur pavillon des arts vivants",
+   "date": "2026-02-13",
+   "resume": "Installé rue d’Estienne-d’Orves, un nouveau Conservatoire ouvrira en 2028 pour accueillir dans des conditions optimales, au sein d’un bâtiment moderne et décarboné, l’apprentissage de la musique, de…",
+   "image": "https://www.lagarennecolombes.fr/image/CONSERVATOIRE___Projet-Conservatoire_Ext-rue-d-Estienne-d-Orves.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13265&iddossiercontenu=33"
+  }
+ ],
+ "agenda": [
+  {
+   "titre": "Didon et Énée",
+   "debut": "2026-10-13",
+   "fin": "2026-10-13",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/DSC_0922_(pas_de_copyright).JPG.png",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13906&iddossiercontenu=9"
+  },
+  {
+   "titre": "Les voyages fantastiques",
+   "debut": "2026-10-16",
+   "fin": "2026-10-16",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/DIM_3624.jpg.png",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13905&iddossiercontenu=9"
+  },
+  {
+   "titre": "Montier-Bonnet 4",
+   "debut": "2026-10-17",
+   "fin": "2026-10-17",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/Montier-Bonnet_4_-_Copyright_Laurent_Cheron.jpg.png",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13904&iddossiercontenu=9"
+  },
+  {
+   "titre": "Vivre avec Bach",
+   "debut": "2026-11-05",
+   "fin": "2026-11-05",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/Vivre_avec_Bach.png",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13903&iddossiercontenu=9"
+  },
+  {
+   "titre": "Le loup, la jeune fille et le chasseur",
+   "debut": "2026-11-07",
+   "fin": "2026-11-07",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/normal_667bea79d680b.jpeg.png",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13901&iddossiercontenu=9"
+  },
+  {
+   "titre": "Soirée dansante : Les années 90 et 2000 !",
+   "debut": "2026-11-07",
+   "fin": "2026-11-07",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/soiree_annee_80.png",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13902&iddossiercontenu=9"
+  },
+  {
+   "titre": "L’Avare",
+   "debut": "2026-11-13",
+   "fin": "2026-11-13",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/DSCF2053.jpg.png",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13900&iddossiercontenu=9"
+  },
+  {
+   "titre": "Le jeu de l’amour et du hasard",
+   "debut": "2026-11-14",
+   "fin": "2026-11-14",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/Photo_Affiche-_opie.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13899&iddossiercontenu=9"
+  },
+  {
+   "titre": "Le Barbier de Séville",
+   "debut": "2026-11-15",
+   "fin": "2026-11-15",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/2024_05_12_-_©Chang_Martin_-_Le_Barbier_de_Seville_-_Cie_Les_Modits_-_IMG_1864.jpg.png",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13898&iddossiercontenu=9"
+  },
+  {
+   "titre": "Venise, une histoire sérénissime ! – Architecture et sculpture",
+   "debut": "2026-11-18",
+   "fin": "2026-11-18",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/AdobeStock_194913494.jpeg.png",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13897&iddossiercontenu=9"
+  },
+  {
+   "titre": "Les marchands d’étoiles",
+   "debut": "2026-11-20",
+   "fin": "2026-11-20",
+   "resume": "COMPLET",
+   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/Photo_2_Les_marchands_d_etoiles_(credit_florian_Cleret).jpeg.png",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13896&iddossiercontenu=9"
+  }
+ ]
+}
