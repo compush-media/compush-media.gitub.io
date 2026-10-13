@@ -202,32 +202,40 @@ HL.ville().then(function(v){
   document.getElementById('blocVille').hidden = false;
 });
 
-/* Météo (MET Norway), trafic ligne L / tram T2 et prochains trains à la gare (Île-de-France Mobilités),
+/* Météo (MET Norway), trafic ligne L / tram T2 et prochains passages à la gare et à Charlebourg (Île-de-France Mobilités),
    via la fonction hl-quotidien. */
-var URL_JOUR = 'https://rtdiaeskmyjjwohirhzj.supabase.co/functions/v1/hl-quotidien', trains = null;
+var URL_JOUR = 'https://rtdiaeskmyjjwohirhzj.supabase.co/functions/v1/hl-quotidien', passages = [];
 var abrege = { 'Nanterre Université': 'Nanterre U.', 'Cergy le Haut': 'Cergy', 'Maisons-Laffitte': 'Maisons-L.' };
+function lirePassages(j) { passages = j.passages || (j.trains ? [j.trains] : []); }
 // Les minutes sont recalculées sur le téléphone : l'affichage reste juste entre deux mises à jour.
 function rendreTrains() {
   var box = document.getElementById('jourTrains'); if (!box) return;
   var now = Date.now(), esc = HL.esc;
-  var venir = ((trains && trains.departs) || []).filter(function(d){ return new Date(d.depart).getTime() > now - 30e3; });
-  function ligne(liste, titre, dest) {
+  function ligne(liste, titre, tram) {
     if (!liste.length) return '';
-    return '<div class="tl"><span class="dir">' + titre + '</span><span class="hs">' + liste.slice(0, 3).map(function(d){
+    // Destination affichée seulement quand les trains d'un même sens ne vont pas tous au même endroit.
+    var dest = liste.some(function(d){ return d.vers !== liste[0].vers; });
+    return '<div class="tl"><span class="dir">→ ' + esc(titre) + '</span><span class="hs">' + liste.slice(0, 3).map(function(d){
       var mn = Math.round((new Date(d.depart).getTime() - now) / 60000);
       var t = d.annule ? '<s>' + new Date(d.depart).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + '</s> supprimé'
-        : '<b>' + (mn <= 0 ? 'à quai' : mn + ' min') + '</b>' + (d.retard ? ' <em>+' + d.retard + '</em>' : '');
+        : '<b>' + (mn <= 0 ? (tram ? 'imminent' : 'à quai') : mn + ' min') + '</b>' + (d.retard ? ' <em>+' + d.retard + '</em>' : '');
       return '<span class="dp' + (d.annule ? ' an' : '') + '">' + t + (dest ? ' <small>' + esc(abrege[d.vers] || d.vers) + '</small>' : '') + '</span>';
     }).join('') + '</span></div>';
   }
-  var h = ligne(venir.filter(function(d){ return d.paris; }), '→ Paris St-Lazare', false) +
-    ligne(venir.filter(function(d){ return !d.paris; }), '→ Nanterre / Cergy', true);
-  box.innerHTML = h ? '<div class="th">🚆 Gare de La Garenne-Colombes <span>ligne L</span></div>' + h : '';
+  var h = passages.map(function(a){
+    var venir = (a.departs || []).filter(function(d){ return new Date(d.depart).getTime() > now - 30e3; });
+    var sens = a.sens || ['Paris St-Lazare', 'Nanterre / Cergy'];
+    var tram = a.mode === 'Tram';
+    var l = ligne(venir.filter(function(d){ return d.paris; }), sens[0], tram) + ligne(venir.filter(function(d){ return !d.paris; }), sens[1], tram);
+    if (!l) return '';
+    return '<div class="th">' + (tram ? '🚊 ' : '🚆 ') + esc(a.arret || a.gare) + ' <span>' + (tram ? 'tram ' : 'ligne ') + esc(a.ligne || 'L') + '</span></div>' + l;
+  }).join('');
+  box.innerHTML = h;
   box.hidden = !h;
 }
 fetch(URL_JOUR).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
   if (!j || !j.ok || (!j.meteo && !j.trafic && !j.trains)) return;
-  trains = j.trains;
+  lirePassages(j);
   var m = j.meteo, t = j.trafic || [], el = document.getElementById('jour'), esc = HL.esc, h = '';
   if (m) {
     h += '<div class="mt"><span class="em" aria-hidden="true">' + m.emoji + '</span><span class="tp">' + m.temp + '°</span>' +
@@ -245,8 +253,8 @@ fetch(URL_JOUR).then(function(r){ return r.ok ? r.json() : null; }).then(functio
     }).join('') + '</div><div class="msg" id="jourMsg" hidden></div>';
   }
   h += '<div class="tr" id="jourTrains" hidden></div>';
-  h += '<span class="src">' + (m ? 'Météo : MET Norway' : '') + (m && (t.length || trains) ? ' · ' : '') +
-    (t.length || trains ? 'Trafic et horaires : Île-de-France Mobilités' : '') + '</span>';
+  h += '<span class="src">' + (m ? 'Météo : MET Norway' : '') + (m && (t.length || passages.length) ? ' · ' : '') +
+    (t.length || passages.length ? 'Trafic et horaires : Île-de-France Mobilités' : '') + '</span>';
   el.innerHTML = h; el.hidden = false;
   rendreTrains();
   // Page ouverte : minutes recalculées toutes les 20 s, horaires redemandés toutes les 2 minutes.
@@ -254,7 +262,7 @@ fetch(URL_JOUR).then(function(r){ return r.ok ? r.json() : null; }).then(functio
   setInterval(function(){
     if (document.hidden) return;
     fetch(URL_JOUR).then(function(r){ return r.ok ? r.json() : null; }).then(function(x){
-      if (x && x.ok) { trains = x.trains; rendreTrains(); }
+      if (x && x.ok) { lirePassages(x); rendreTrains(); }
     }).catch(function(){});
   }, 120e3);
   // La suggestion n'apparaît que s'il y a des cafés dans l'appli.

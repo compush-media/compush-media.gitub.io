@@ -224,6 +224,7 @@ img{display:block;max-width:100%;}
 .jour .tr[hidden]{display:none;}
 .jour .tr{display:grid;gap:6px;border-top:1px solid var(--line);padding-top:10px;}
 .jour .tr .th{font-size:13px;font-weight:700;color:var(--ink);}
+.jour .tr .tl+.th{margin-top:6px;}
 .jour .tr .th span{font-weight:400;color:var(--muted);font-size:12px;}
 .jour .tl{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-size:13px;}
 .jour .tl .dir{color:var(--muted);min-width:118px;}
