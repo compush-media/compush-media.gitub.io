@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#D41468">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fidelavis">
+<link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<script>
+  /* Fichier d'installation propre au commerce, sur TOUTES les pages : on peut
+     ajouter l'appli à l'écran d'accueil depuis n'importe laquelle (souvent
+     depuis l'extrait vidéo, sans passer par installer.html). Son start_url
+     app.html?first=<slug> rouvre l'appli sur la vidéo du bon commerce.
+     Commerce connu par ?s= ou, à défaut, par celui qui a amené l'habitant. */
+  (function(){
+    var s = (new URLSearchParams(location.search).get('s') || '').toLowerCase().replace(/[^a-z0-9-]/g,'');
+    if (!s) { try { var src = JSON.parse(localStorage.getItem('hl_source') || 'null'); s = (src && src.slug || '').replace(/[^a-z0-9-]/g,''); } catch(e) {} }
+    if (s) document.getElementById('mf').href = '/la-garenne/manifests/' + s + '.json';
+  })();
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<link rel="stylesheet" href="/la-garenne/polices/polices.css">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<title>Recherche – Les Commerces de La Garenne</title>
+<style>
+  .grp{margin-top:20px;}
+  .grp h2{font-family:var(--sans);font-size:15px;margin-bottom:10px;}
+  .vide{color:var(--muted);font-size:14px;padding:14px 0;}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<main class="ct">
+  <h1 style="margin:6px 0 12px">Rechercher</h1>
+  <form class="search" id="rech" role="search">
+    <span id="icn"></span>
+    <input type="search" id="q" placeholder="Un commerce, une offre, un événement…" aria-label="Rechercher un commerce, une offre, un événement" enterkeyhint="search" autofocus>
+  </form>
+  <div id="res"></div>
+</main>
+<script>
+/* Recherche unique : commerces (même logique que l'annuaire), offres, sorties et actualités de la Ville.
+   Le texte cherché n'est jamais enregistré. */
+(function(){
+  document.getElementById('bar').innerHTML = HL.brandbar(true);
+  HL.nav('');
+  document.getElementById('icn').innerHTML = HL.icone('recherche', 20);
+  var q = HL.qs('q'), input = document.getElementById('q'), D = null, V = null;
+  input.value = q;
+  function norm(t){ return (t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  function rendre(){
+    var nq = norm(q.trim()), res = document.getElementById('res');
+    if (!nq) { res.innerHTML = '<p class="vide">Tapez un nom de commerce, une catégorie (boulangerie, fleuriste…), une offre ou un événement.</p>'; return; }
+    if (!D || !V) { res.innerHTML = '<p class="vide">Recherche…</p>'; return; }
+    function ok(t){ return norm(t).indexOf(nq) !== -1; }
+    var auj = HL.jour();
+    var commerces = D.commerces.filter(function(c){ return ok(c.nom + ' ' + (c.accroche || '') + ' ' + ((HL.CATEGORIES[c.categorie] || {}).label || '') + ' ' + (c.adresse || '') + ' ' + (c.quartier || '')); });
+    var offres = D.commerces.filter(function(c){ return c.offre && HL.dureeOffre(c.offre) && ok(c.offre.titre + ' ' + (c.offre.description || '') + ' ' + c.nom); });
+    var sorties = (V.agenda || []).filter(function(e){ return (e.fin || e.debut || auj) >= auj && ok(e.titre + ' ' + (e.resume || '')); });
+    var actus = (V.actus || []).filter(function(a){ return ok(a.titre + ' ' + (a.resume || '')); });
+    function grp(titre, html){ return html ? '<section class="grp"><h2>' + titre + '</h2>' + html + '</section>' : ''; }
+    var h = grp('Commerces', commerces.length ? '<div class="clist">' + commerces.map(HL.commerceRowHtml).join('') + '</div>' : '') +
+      grp('Offres', offres.length ? '<div class="rail">' + offres.map(function(c){ return HL.offreCarteHtml(c, 'recherche'); }).join('') + '</div>' : '') +
+      grp('Sorties', sorties.length ? '<div class="rail">' + sorties.map(function(e){ return HL.sortieHtml(e, 'recherche'); }).join('') + '</div>' : '') +
+      grp('Actualités de la Ville', actus.length ? '<div class="rail">' + actus.map(function(a){ return HL.actuHtml(a, 'recherche'); }).join('') + '</div>' : '');
+    res.innerHTML = h || '<p class="vide">Aucun résultat pour « ' + HL.esc(q) + ' ».</p>';
+  }
+  var t;
+  input.addEventListener('input', function(){ q = this.value; clearTimeout(t); t = setTimeout(function(){ history.replaceState(null, '', '?q=' + encodeURIComponent(q)); rendre(); }, 150); });
+  document.getElementById('rech').addEventListener('submit', function(e){ e.preventDefault(); input.blur(); });
+  if (q) HL.track('recherche', null, 'globale');
+  rendre();
+  Promise.all([HL.charger(), HL.ville()]).then(function(r){ D = r[0]; V = r[1]; rendre(); });
+})();
+</script>
+</body>
+</html>

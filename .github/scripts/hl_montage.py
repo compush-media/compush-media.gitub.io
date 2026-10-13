@@ -594,7 +594,11 @@ def monter_avatar(plans, options, commerce, avatar, dossier):
         h.write(f"file '{scene}'\nfile '{fin}'\n")
     brut = os.path.join(dossier, "brut.mp4")
     ff("-f", "concat", "-safe", "0", "-i", liste, "-c", "copy", brut)
-    finale, affiche = finaliser(brut, duree, dossier)
+    finale, _ = finaliser(brut, duree, dossier)
+    from hl_couverture import couverture   # Pillow : installé par le workflow, seulement utile ici
+    # Couverture des cartes : le commerce (sa première photo, ou un visuel de sa catégorie), pas Anna.
+    affiche = couverture((commerce or {}).get("categorie"), os.path.join(dossier, "couverture.jpg"),
+                         plans[0][1] if plans else None)
 
     def hms(x):
         return f"{int(x // 3600):02d}:{int(x % 3600 // 60):02d}:{x % 60:06.3f}"

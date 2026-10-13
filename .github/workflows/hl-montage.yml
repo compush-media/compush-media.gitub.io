@@ -71,6 +71,9 @@ jobs:
         if: steps.file.outputs.n != '0'
         # En cas d'échec, le montage se fait quand même, sans transcription.
         run: pip install --quiet faster-whisper || echo "::warning::faster-whisper indisponible"
+      - name: Installer Pillow (couvertures des vidéos d'Anna)
+        if: steps.file.outputs.n != '0'
+        run: pip install --quiet pillow
 
       - name: Monter les vidéos et nettoyer
         env:

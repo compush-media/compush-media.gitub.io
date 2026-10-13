@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#C8206A">
+<meta name="theme-color" content="#D41468">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Fidelavis">
 <link rel="manifest" id="mf" href="/la-garenne/manifest.json">
@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="/la-garenne/polices/polices.css">
 <link rel="stylesheet" href="/la-garenne/hl.css">
 <script src="/la-garenne/hl.js"></script>
-<title>La Ville – Les Commerces de La Garenne</title>
+<title>Actualités – Les Commerces de La Garenne</title>
 <style>
   .onglets{display:flex;gap:8px;margin:4px 0 14px;}
   .vide{color:var(--muted);font-size:14px;padding:12px 0;}
@@ -33,7 +33,7 @@
 <body>
 <div id="bar"></div>
 <main class="ct">
-  <h1 style="margin:6px 0 4px">La Ville</h1>
+  <h1 style="margin:6px 0 4px">Actualités</h1>
   <p class="muted small" style="margin-bottom:12px">L'agenda et les actualités de la Ville de La Garenne-Colombes. Touchez un élément pour le lire sur le site de la mairie.</p>
   <div class="onglets" role="tablist">
     <button class="chip on" type="button" data-o="agenda" role="tab" aria-selected="true">Agenda</button>
@@ -45,7 +45,7 @@
 <script>
 (function(){
   document.getElementById('bar').innerHTML = HL.brandbar(false);
-  HL.nav('');
+  HL.nav('actualites');
   var onglet = HL.qs('o') === 'actus' ? 'actus' : 'agenda', V = null;
   function rendre(){
     Array.prototype.forEach.call(document.querySelectorAll('[data-o]'), function(b){

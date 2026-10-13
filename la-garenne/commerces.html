@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#C8206A">
+<meta name="theme-color" content="#D41468">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Fidelavis">
 <link rel="manifest" id="mf" href="/la-garenne/manifest.json">
@@ -31,7 +31,7 @@
 <main class="ct">
   <h1 id="titre" style="margin:6px 0 12px">Les commerces</h1>
   <form class="search" id="rech" style="margin-bottom:12px">
-    <span aria-hidden="true">🔍</span>
+    <span id="icnR"></span>
     <input type="search" id="q" placeholder="Rechercher un commerce…" aria-label="Rechercher un commerce">
   </form>
   <div class="chips" id="cats" style="margin-bottom:14px"></div>
@@ -44,6 +44,7 @@
   var fav = HL.qs('fav') === '1';
   HL.nav(fav ? 'favoris' : 'commerces');
   var cat = HL.qs('cat'), q = HL.qs('q');
+  document.getElementById('icnR').innerHTML = HL.icone('recherche', 20);
   document.getElementById('q').value = q;
   if (fav) document.getElementById('titre').textContent = 'Vos favoris';
 
@@ -58,7 +59,8 @@
       var favs = HL.favoris(), nq = norm(q);
       var liste = d.commerces.filter(function(c){
         if (fav && favs.indexOf(c.slug) === -1) return false;
-        if (cat && c.categorie !== cat) return false;
+        // « autres » : tout ce qui n'est ni restaurant, ni boulangerie, ni café, ni fleuriste (bouton « Commerces » de l'accueil).
+        if (cat === 'autres' ? ['restaurant','boulangerie','cafe','fleuriste'].indexOf(c.categorie) !== -1 : cat && c.categorie !== cat) return false;
         if (nq && norm(c.nom + ' ' + c.accroche + ' ' + (HL.CATEGORIES[c.categorie]||{}).label).indexOf(nq) === -1) return false;
         return true;
       });

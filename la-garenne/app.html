@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#C8206A">
+<meta name="theme-color" content="#D41468">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Fidelavis">
 <link rel="manifest" id="mf" href="/la-garenne/manifest.json">
@@ -26,52 +26,63 @@
 <script src="/la-garenne/hl.js"></script>
 <title>Les Commerces de La Garenne</title>
 <style>
-  .hero{position:relative;margin:0 16px;border-radius:22px;overflow:hidden;background:#333 url('/assets/heros/banniere-3.jpg') center/cover;padding:26px 16px 16px;color:#fff;}
-  .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.6));}
-  .hero > *{position:relative;}
-  .hero h1{font-size:25px;margin-bottom:16px;text-shadow:0 1px 8px rgba(0,0,0,.35);}
-  .bienvenue{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-start;justify-content:center;padding-top:60px;background:rgba(251,246,241,.96);}
+  .bienvenue{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-start;justify-content:center;padding-top:60px;background:rgba(250,246,242,.96);}
   .bienvenue .card{display:flex;gap:12px;align-items:center;max-width:360px;margin:0 16px;}
   .bienvenue .ck{width:36px;height:36px;border-radius:50%;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0;}
-  .notif{display:flex;gap:12px;align-items:center;margin-top:22px;}
+  .notif{display:flex;gap:12px;align-items:center;margin-top:26px;}
   .notif .ic{width:44px;height:44px;border-radius:14px;background:var(--rose-soft);color:var(--rose);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .notif .chip{background:var(--rose);color:#fff;border-color:var(--rose);white-space:nowrap;}
+  .pied{font-size:11.5px;color:var(--muted);text-align:center;margin:26px 0 8px;line-height:1.6;}
+  .pied a{color:var(--muted);}
+  #pub:empty{display:none;}
+  #pub{margin-bottom:14px;}
 </style>
 </head>
 <body>
-<div id="bar"></div>
-
+<!-- Accueil : bannière, catégories, météo et transports, puis les rubriques de la semaine.
+     Chaque rubrique se masque d'elle-même quand elle n'a rien de réel à montrer. -->
 <section class="hero">
-  <h1>Les bonnes adresses de La Garenne-Colombes</h1>
-  <form class="search" action="/la-garenne/commerces.html">
+  <div id="bar"></div>
+  <div class="ttl">
+    <h1>La Garenne-Colombes</h1>
+    <p class="st">Vos commerces, vos sorties, toute l'actualité locale</p>
+  </div>
+  <form class="search" action="/la-garenne/recherche.html" role="search">
     <span id="icnRecherche"></span>
-    <input type="search" name="q" placeholder="Rechercher un commerce…" aria-label="Rechercher un commerce">
+    <input type="search" name="q" placeholder="Rechercher un commerce, une offre, un événement…" aria-label="Rechercher un commerce, une offre, un événement" enterkeyhint="search">
+    <a class="filtre" id="icnFiltres" href="/la-garenne/commerces.html" aria-label="Parcourir les commerces par catégorie"></a>
   </form>
 </section>
 
-<!-- Accueil = ce qui est nouveau cette semaine. L'annuaire complet vit dans l'onglet Commerces. -->
 <main class="ct">
-  <!-- Météo et trafic du jour : de quoi ouvrir l'appli chaque matin. -->
-  <div class="jour" id="jour" hidden></div>
+  <nav class="cats" id="cats" aria-label="Catégories" style="margin-top:16px"></nav>
 
-  <nav class="cats" id="cats" aria-label="Catégories" style="margin-top:18px"></nav>
+  <!-- Météo et transports : une carte compacte ; horaires et messages sur transports.html. -->
+  <div class="jour charge" id="jour" aria-busy="true"></div>
 
-  <div class="semaine" id="semaine"></div>
+  <!-- Actualités de la Ville (flux RSS de la mairie) et nouveautés de l'appli. Pas les spectacles : ils sont dans « Vos prochaines sorties ». -->
+  <section id="blocMoment">
+    <div class="sec-title"><h2>La Garenne en ce moment</h2><a href="/la-garenne/ville.html?o=actus">Voir tout<span id="chv1"></span></a><p>Infos locales, travaux, nouveautés et vie de la ville</p></div>
+    <div class="rail" id="moment"><span class="sk a"></span><span class="sk a"></span></div>
+    <p class="source-ville" id="srcMoment" hidden>Actualités : <a href="https://www.lagarennecolombes.fr/" target="_blank" rel="noopener">Ville de La Garenne-Colombes</a></p>
+  </section>
 
-  <div class="sec-title"><h2>Offres de la semaine</h2><a href="/la-garenne/offres.html">Toutes</a></div>
-  <!-- Le commerce sponsorisé paie pour la première place et la plus grande
-       surface de la section : sa carte passe avant les offres standards. -->
-  <div id="pub" style="margin-bottom:14px"></div>
-  <div class="clist" id="offres"></div>
+  <section id="blocTV">
+    <div class="sec-title"><h2>Découvrez vos commerçants</h2><a href="/la-garenne/decouvrir.html">Voir tout<span id="chv2"></span></a><p>La TV locale : des vidéos pour mieux connaître vos commerces</p></div>
+    <div class="rail" id="rail"><span class="sk v"></span><span class="sk v"></span><span class="sk v"></span></div>
+  </section>
 
-  <div class="sec-title"><h2>À la une cette semaine</h2><a href="/la-garenne/decouvrir.html">Tout voir</a></div>
-  <div class="rail" id="rail"></div>
+  <!-- Le commerce sponsorisé paie pour la première place et la plus grande surface de la rubrique :
+       sa carte passe avant les offres standards. Sans pub, le « Coup de cœur » de l'association. -->
+  <section id="blocOffres" hidden>
+    <div class="sec-title"><h2>Les bons plans du quartier</h2><a href="/la-garenne/offres.html">Voir toutes les offres<span id="chv3"></span></a><p>Des offres exclusives chez vos commerçants locaux</p></div>
+    <div id="pub"></div>
+    <div class="rail" id="offres"></div>
+  </section>
 
-  <!-- Actualités et agenda de la mairie (flux RSS de la Ville) : une raison de revenir chaque semaine. -->
-  <section id="blocVille" hidden>
-    <div class="sec-title"><h2>À La Garenne cette semaine</h2><a href="/la-garenne/ville.html">Tout voir</a></div>
-    <div class="vlist" id="ville"></div>
-    <p class="source-ville">Source : <a href="https://www.lagarennecolombes.fr/" target="_blank" rel="noopener">Ville de La Garenne-Colombes</a></p>
+  <section id="blocSorties">
+    <div class="sec-title"><h2>Vos prochaines sorties</h2><a href="/la-garenne/ville.html">Voir tout<span id="chv4"></span></a><p>Spectacles, événements et animations à La Garenne</p></div>
+    <div class="rail" id="sorties"><span class="sk o"></span><span class="sk o"></span></div>
+    <p class="source-ville">Agenda : <a href="https://www.lagarennecolombes.fr/" target="_blank" rel="noopener">Ville de La Garenne-Colombes</a> · réservations sur son site</p>
   </section>
 
   <div id="notif" class="card notif hide">
@@ -81,7 +92,8 @@
   </div>
   <button class="btn hide" id="btnNotif" type="button" style="margin-top:10px"><span>Activer les alertes</span><span class="arr">›</span></button>
 
-  <p class="small" style="text-align:center;margin:26px 0 8px"><a href="/la-garenne/confidentialite.html" style="color:var(--muted)">Confidentialité et mesure d'audience</a></p>
+  <p class="pied"><a href="/la-garenne/confidentialite.html">Confidentialité et mesure d'audience</a><br>
+    Photo de la bannière : Hôtel de ville, <a href="https://commons.wikimedia.org/wiki/File:La_Garenne-Colombes_-_Hotel_de_ville.jpg" target="_blank" rel="noopener">Qjafcc</a>, licence <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.fr" target="_blank" rel="noopener">CC BY-SA 3.0</a>, via Wikimedia Commons</p>
 </main>
 
 <script>
@@ -127,17 +139,22 @@
     location.href = HL.BASE + 'installer.html' + (src ? '?s=' + encodeURIComponent(src.slug) : '');
   });
 
+  ['chv1','chv2','chv3','chv4'].forEach(function(id){ document.getElementById(id).innerHTML = HL.icone('chevron', 16); });
+  document.getElementById('icnFiltres').innerHTML = HL.icone('filtres', 21);
+  function cacher(id){ document.getElementById(id).hidden = true; }
+
   HL.charger().then(function(d){
-    // Catégories : toutes, dans l'ordre fixé, « Bientôt » quand elles sont vides
-    var nb = {};
-    d.commerces.forEach(function(c){ nb[c.categorie] = (nb[c.categorie] || 0) + 1; });
-    var cats = '<a class="cat" href="' + HL.BASE + 'commerces.html"><span class="ic">' + HL.icone('tout', 26) + '</span>Tout</a>';
-    Object.keys(HL.CATEGORIES).forEach(function(k){
-      var m = HL.CATEGORIES[k];
-      cats += nb[k]
-        ? '<a class="cat" href="' + HL.BASE + 'commerces.html?cat=' + k + '"><span class="ic">' + HL.icone(m.ic, 26) + '</span>' + HL.esc(m.label) + '</a>'
-        : '<button class="cat bientot" type="button" data-bientot="' + HL.esc(m.label) + '"><span class="ic">' + HL.icone(m.ic, 26) + '</span>' + HL.esc(m.label) + '<span class="bt">Bientôt</span></button>';
-    });
+    /* Catégories : Tout, les quatre familles principales, « Commerces » (toutes les autres) et Plus.
+       Une catégorie encore vide reste visible mais grisée, avec « Bientôt ». */
+    var nb = {}, autres = 0, PRINC = ['restaurant', 'boulangerie', 'cafe', 'fleuriste'];
+    d.commerces.forEach(function(c){ nb[c.categorie] = (nb[c.categorie] || 0) + 1; if (PRINC.indexOf(c.categorie) === -1) autres++; });
+    function cat(href, ic, label, n, on){
+      return n ? '<a class="cat' + (on ? ' on' : '') + '" href="' + HL.BASE + href + '"' + (on ? ' aria-current="page"' : '') + '><span class="ic">' + HL.icone(ic, 26) + '</span>' + HL.esc(label) + '</a>'
+        : '<button class="cat bientot" type="button" data-bientot="' + HL.esc(label) + '" aria-disabled="true"><span class="ic">' + HL.icone(ic, 26) + '</span>' + HL.esc(label) + '<span class="bt">Bientôt</span></button>';
+    }
+    var cats = cat('commerces.html', 'tout', 'Tout', 1, true);
+    PRINC.forEach(function(k){ cats += cat('commerces.html?cat=' + k, HL.CATEGORIES[k].ic, HL.CATEGORIES[k].label, nb[k]); });
+    cats += cat('commerces.html?cat=autres', 'boutique', 'Commerces', autres) + cat('commerces.html', 'plus', 'Plus', 1);
     var catsEl = document.getElementById('cats');
     catsEl.innerHTML = cats;
     catsEl.addEventListener('click', function(e){
@@ -146,142 +163,101 @@
       HL.toast(b.getAttribute('data-bientot') + ' : bientôt à La Garenne');
     });
 
-    // À la une : vidéos des commerçants, les plus récentes d'abord.
-    // Une vidéo sponsorisée peut s'y glisser, jamais en première position.
+    // Découvrez vos commerçants : les vidéos, les plus récentes d'abord ; une vidéo sponsorisée jamais en premier.
     var videos = [];
     d.commerces.forEach(function(c){ videos = videos.concat(c.videos); });
     videos.sort(function(a,b){ return (b.debut||'').localeCompare(a.debut||''); });
     var pubV = d.pubs.filter(function(p){ return p.format === 'video'; })[0];
     var html = videos.filter(function(v){ return !pubV || v.id !== pubV.video.id; }).map(function(v){ return HL.vcardHtml(v, 'accueil'); });
     if (pubV && html.length >= 1) html.splice(Math.min(2, html.length), 0, HL.vcardHtml(pubV.video, 'accueil', pubV));
-    document.getElementById('rail').innerHTML = html.join('');
-    if (pubV) { var el = document.getElementById('pub-' + pubV.id); if (el) HL.impression(el, pubV, 'accueil'); }
+    if (html.length) {
+      document.getElementById('rail').innerHTML = html.join('');
+      if (pubV) { var el = document.getElementById('pub-' + pubV.id); if (el) HL.impression(el, pubV, 'accueil'); }
+    } else cacher('blocTV');
 
-    // Offres actives, celles qui finissent le plus tôt d'abord
+    // Les bons plans : offres actives, celles qui finissent le plus tôt d'abord.
     var offres = d.commerces.filter(function(c){ return c.offre && HL.dureeOffre(c.offre); })
       .sort(function(a,b){ return (a.offre.fin || '9999').localeCompare(b.offre.fin || '9999'); });
-    // Emplacement en tête des offres :
-    // 1. la pub active qui a commencé en premier (les suivantes prennent le
-    //    relais d'elles-mêmes à leur date de début) ;
-    // 2. sinon le « Coup de cœur » de l'association, jamais marqué sponsorisé.
+    // Emplacement en tête : 1. la pub active qui a commencé en premier ; 2. sinon le « Coup de cœur »
+    // de l'association, jamais marqué sponsorisé.
     var pubF = d.pubs.filter(function(p){
       return p.format === 'fixe' && p.emplacement === 'accueil' && (p.cta !== 'offre' || p.commerce.offre);
     }).sort(function(a,b){ return (a.debut || '').localeCompare(b.debut || '') || (a.fin || '').localeCompare(b.fin || ''); })[0];
-    var enTete = null;   // commerce dont l'offre occupe déjà la grande carte
+    var enTete = null;
     if (pubF) {
       document.getElementById('pub').innerHTML = HL.pubFixeHtml(pubF, 'accueil');
       HL.impression(document.getElementById('pub-' + pubF.id), pubF, 'accueil');
       if (pubF.cta === 'offre') enTete = pubF.slug;
-    } else if (offres.length) {
+    } else if (offres.length > 1) {
       var choisi = d.parSlug[d.coupDeCoeur];
       var cdc = choisi && choisi.offre && HL.dureeOffre(choisi.offre) ? choisi : offres[0];
       document.getElementById('pub').innerHTML = HL.coupDeCoeurHtml(cdc, 'accueil');
       enTete = cdc.slug;
     }
     var standards = offres.filter(function(c){ return c.slug !== enTete; });
-    document.getElementById('offres').innerHTML = standards.slice(0,3).map(function(c){ return HL.offreHtml(c, 'accueil'); }).join('');
+    document.getElementById('offres').innerHTML = standards.slice(0, 8).map(function(c){ return HL.offreCarteHtml(c, 'accueil'); }).join('');
+    document.getElementById('blocOffres').hidden = !pubF && !offres.length;
 
-    // Cette semaine à La Garenne : ce qui est nouveau depuis 7 jours
-    var nouvelles = videos.filter(function(v){ return HL.recent(v); }).length;
-    function pl(n, un, plusieurs){ return n + ' ' + (n > 1 ? plusieurs : un); }
-    document.getElementById('semaine').innerHTML =
-      '<span class="ic">' + HL.icone('semaine', 22) + '</span><div><b>Cette semaine à La Garenne</b><p>' +
-      (nouvelles ? pl(nouvelles, 'nouvelle vidéo', 'nouvelles vidéos') : pl(videos.length, 'vidéo à découvrir', 'vidéos à découvrir')) +
-      ' · ' + pl(offres.length, 'offre', 'offres') + '</p></div>';
+    // Nouveautés de l'appli : commerces dont la première vidéo date de moins de 7 jours.
+    var nouveaux = d.commerces.map(function(c){
+      var v = c.videos.slice().sort(function(a,b){ return (a.debut||'').localeCompare(b.debut||''); })[0];
+      return v && HL.recent(v) ? { c: c, v: v } : null;
+    }).filter(Boolean);
 
+    // La Garenne en ce moment : actualités de la Ville encore utiles, puis les nouveautés.
+    HL.ville().then(function(V){
+      var agenda = (V.agenda || []).map(function(e){ return (e.titre || '').toLowerCase(); });
+      var actus = (V.actus || []).filter(function(a){
+        return !HL.actuPerimee(a) && agenda.indexOf((a.titre || '').toLowerCase()) === -1;   // pas de doublon avec les sorties
+      }).slice(0, 6);
+      var cartes = actus.map(function(a){ return HL.actuHtml(a, 'accueil'); });
+      nouveaux.slice(0, 3).forEach(function(n, i){ cartes.splice(Math.min(cartes.length, 1 + i * 2), 0, HL.nouveauHtml(n.c, n.v)); });
+      if (cartes.length) {
+        document.getElementById('moment').innerHTML = cartes.join('');
+        document.getElementById('srcMoment').hidden = !actus.length;
+      } else cacher('blocMoment');
+
+      // Vos prochaines sorties : à venir ou en cours, du plus proche au plus lointain.
+      var auj = HL.jour();
+      var sorties = (V.agenda || []).filter(function(e){ return e.titre && (e.fin || e.debut || auj) >= auj; })
+        .sort(function(a,b){ return (a.debut || '9999').localeCompare(b.debut || '9999'); }).slice(0, 8);
+      if (sorties.length) document.getElementById('sorties').innerHTML = sorties.map(function(e){ return HL.sortieHtml(e, 'accueil'); }).join('');
+      else cacher('blocSorties');
+    });
   });
 })();
 
-/* À La Garenne cette semaine : les 3 prochains événements et les 2 dernières actualités de la Ville. */
-HL.ville().then(function(v){
-  var ev = (v.agenda || []).slice(0, 3), ac = (v.actus || []).slice(0, 2);
-  if (!ev.length && !ac.length) return;
-  document.getElementById('ville').innerHTML =
-    ev.map(function(e){ return HL.villeHtml(e, 'agenda', 'accueil'); }).join('') +
-    ac.map(function(a){ return HL.villeHtml(a, 'actus', 'accueil'); }).join('');
-  document.getElementById('blocVille').hidden = false;
-});
-
-/* Météo (MET Norway), trafic ligne L / tram T2 et prochains passages à la gare et à Charlebourg (Île-de-France Mobilités),
-   via la fonction hl-quotidien. */
-var URL_JOUR = 'https://rtdiaeskmyjjwohirhzj.supabase.co/functions/v1/hl-quotidien', passages = [];
-var abrege = { 'Nanterre Université': 'Nanterre U.', 'Cergy le Haut': 'Cergy', 'Maisons-Laffitte': 'Maisons-L.' };
-function lirePassages(j) { passages = j.passages || (j.trains ? [j.trains] : []); }
-// Les minutes sont recalculées sur le téléphone : l'affichage reste juste entre deux mises à jour.
-function rendreTrains() {
-  var box = document.getElementById('jourTrains'); if (!box) return;
-  var now = Date.now(), esc = HL.esc;
-  function ligne(liste, titre, tram) {
-    if (!liste.length) return '';
-    // Destination affichée seulement quand les trains d'un même sens ne vont pas tous au même endroit.
-    var dest = liste.some(function(d){ return d.vers !== liste[0].vers; });
-    return '<div class="tl"><span class="dir">→ ' + esc(titre) + '</span><span class="hs">' + liste.slice(0, 3).map(function(d){
-      var mn = Math.round((new Date(d.depart).getTime() - now) / 60000);
-      var t = d.annule ? '<s>' + new Date(d.depart).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + '</s> supprimé'
-        : '<b>' + (mn <= 0 ? (tram ? 'imminent' : 'à quai') : mn + ' min') + '</b>' + (d.retard ? ' <em>+' + d.retard + '</em>' : '');
-      return '<span class="dp' + (d.annule ? ' an' : '') + '">' + t + (dest ? ' <small>' + esc(abrege[d.vers] || d.vers) + '</small>' : '') + '</span>';
-    }).join('') + '</span></div>';
-  }
-  var h = passages.map(function(a){
-    var venir = (a.departs || []).filter(function(d){ return new Date(d.depart).getTime() > now - 30e3; });
-    var sens = a.sens || ['Paris St-Lazare', 'Nanterre / Cergy'];
-    var tram = a.mode === 'Tram';
-    var l = ligne(venir.filter(function(d){ return d.paris; }), sens[0], tram) + ligne(venir.filter(function(d){ return !d.paris; }), sens[1], tram);
-    if (!l) return '';
-    return '<div class="th">' + (tram ? '🚊 ' : '🚆 ') + esc(a.arret || a.gare) + ' <span>' + (tram ? 'tram ' : 'ligne ') + esc(a.ligne || 'L') + '</span></div>' + l;
-  }).join('');
-  box.innerHTML = h;
-  box.hidden = !h;
-}
-fetch(URL_JOUR).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
-  if (!j || !j.ok || (!j.meteo && !j.trafic && !j.trains)) return;
-  lirePassages(j);
-  var m = j.meteo, t = j.trafic || [], el = document.getElementById('jour'), esc = HL.esc, h = '';
+/* Météo (MET Norway) et état du trafic ligne L / tram T2 (Île-de-France Mobilités), via hl-quotidien.
+   Les prochains passages et le détail des messages sont sur transports.html. */
+fetch('https://rtdiaeskmyjjwohirhzj.supabase.co/functions/v1/hl-quotidien').then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+  var el = document.getElementById('jour');
+  el.classList.remove('charge'); el.removeAttribute('aria-busy');
+  if (!j || !j.ok || (!j.meteo && !j.trafic)) { el.hidden = true; return; }
+  var m = j.meteo, t = j.trafic || [], esc = HL.esc, h = '';
   if (m) {
-    h += '<div class="mt"><span class="em" aria-hidden="true">' + m.emoji + '</span><span class="tp">' + m.temp + '°</span>' +
-      '<span class="ds"><b>' + esc(m.libelle) + '</b> à La Garenne' +
-      (m.min != null ? '<br>' + (m.periode === 'demain' ? 'Demain' : "Aujourd'hui") + ' : ' + m.min + '° / ' + m.max + '°' : '') +
-      ' · ' + esc(m.pluie) + '</span></div>';
-    // Il pleut : une idée d'adresse à l'abri, chez les commerçants.
-    if (m.pleut) h += '<a class="sugg" id="jourSugg" hidden href="' + HL.BASE + 'commerces.html?cat=cafe">☕ Un café au chaud près de chez vous ›</a>';
+    h += '<div class="mt-z"><span class="em" aria-hidden="true">' + m.emoji + '</span>' +
+      '<span class="tp" aria-label="' + m.temp + ' degrés">' + m.temp + '<sup>°</sup></span>' +
+      '<span class="ds"><b>' + esc(m.libelle === 'Partiellement nuageux' ? 'Peu nuageux' : m.libelle) + '</b>' +
+      (m.min != null ? '<span>' + (m.periode === 'demain' ? 'Demain' : "Aujourd'hui") + ' : ' + m.min + '° / ' + m.max + '°</span>' : '') +
+      '<span>' + esc(String(m.pluie || '').replace(' prévue', '')) + '</span></span></div>';
   }
   if (t.length) {
-    h += '<div class="lg">' + t.map(function(l, k){
-      var lib = { perturbe: 'perturbé', travaux: 'travaux à venir', normal: 'trafic normal' }[l.etat] || 'trafic normal';
-      return '<button type="button" class="li ' + esc(l.etat) + '" data-l="' + k + '"' + (l.messages.length ? ' aria-expanded="false"' : '') + '>' +
-        '<span class="pt"></span>' + (l.mode === 'Tram' ? 'Tram ' : 'Ligne ') + esc(l.ligne) + ' · ' + lib + (l.messages.length ? ' ›' : '') + '</button>';
-    }).join('') + '</div><div class="msg" id="jourMsg" hidden></div>';
+    var LIB = { perturbe: 'Perturbé', travaux: 'Travaux prévus', normal: 'Trafic normal' };
+    h += (m ? '<span class="sep" aria-hidden="true"></span>' : '') +
+      '<a class="tr-z" href="' + HL.BASE + 'transports.html" data-hl="transports_ouvert" data-src="accueil" aria-label="Détails des transports : horaires et trafic">' +
+      '<span class="lignes">' + t.map(function(l){
+        return '<span class="li ' + esc(l.etat) + '">' + HL.icone(l.mode === 'Tram' ? 'tram' : 'train', 19) +
+          '<span>' + (l.mode === 'Tram' ? 'Tram ' : 'Ligne ') + esc(l.ligne) + '</span><small>' + (LIB[l.etat] || LIB.normal) + '</small></span>';
+      }).join('') + '</span><span class="chev">' + HL.icone('chevron', 20) + '</span></a>';
   }
-  h += '<div class="tr" id="jourTrains" hidden></div>';
-  h += '<span class="src">' + (m ? 'Météo : MET Norway' : '') + (m && (t.length || passages.length) ? ' · ' : '') +
-    (t.length || passages.length ? 'Trafic et horaires : Île-de-France Mobilités' : '') + '</span>';
-  el.innerHTML = h; el.hidden = false;
-  rendreTrains();
-  // Page ouverte : minutes recalculées toutes les 20 s, horaires redemandés toutes les 2 minutes.
-  setInterval(rendreTrains, 20e3);
-  setInterval(function(){
-    if (document.hidden) return;
-    fetch(URL_JOUR).then(function(r){ return r.ok ? r.json() : null; }).then(function(x){
-      if (x && x.ok) { lirePassages(x); rendreTrains(); }
-    }).catch(function(){});
-  }, 120e3);
-  // La suggestion n'apparaît que s'il y a des cafés dans l'appli.
+  // Il pleut : une idée d'adresse à l'abri, seulement s'il y a des cafés dans l'appli.
+  if (m && m.pleut) h += '<a class="sugg" id="jourSugg" hidden href="' + HL.BASE + 'commerces.html?cat=cafe">☕ Un café au chaud près de chez vous ›</a>';
+  el.innerHTML = h;
+  if (!m || !t.length) el.style.gridTemplateColumns = '1fr';
   if (m && m.pleut) HL.charger().then(function(d){
     if ((d.commerces || []).some(function(c){ return c.categorie === 'cafe'; })) document.getElementById('jourSugg').hidden = false;
   });
-  el.addEventListener('click', function(e){
-    var b = e.target.closest('[data-l]'); if (!b) return;
-    var l = t[+b.getAttribute('data-l')], box = document.getElementById('jourMsg');
-    if (!l.messages.length) return;
-    var ouvert = b.getAttribute('aria-expanded') === 'true';
-    Array.prototype.forEach.call(el.querySelectorAll('[data-l]'), function(x){ if (x.hasAttribute('aria-expanded')) x.setAttribute('aria-expanded', 'false'); });
-    if (ouvert) { box.hidden = true; return; }
-    b.setAttribute('aria-expanded', 'true');
-    box.innerHTML = l.messages.map(function(x){ return '<p>' + esc(x) + '</p>'; }).join('');
-    box.hidden = false;
-    HL.track('trafic_detail', null, l.ligne);
-  });
-}).catch(function(){});
+}).catch(function(){ var el = document.getElementById('jour'); el.hidden = true; });
 </script>
 </body>
 </html>

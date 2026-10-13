@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#D41468">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fidelavis">
+<link rel="manifest" id="mf" href="/la-garenne/manifest.json">
+<script>
+  /* Fichier d'installation propre au commerce, sur TOUTES les pages : on peut
+     ajouter l'appli à l'écran d'accueil depuis n'importe laquelle (souvent
+     depuis l'extrait vidéo, sans passer par installer.html). Son start_url
+     app.html?first=<slug> rouvre l'appli sur la vidéo du bon commerce.
+     Commerce connu par ?s= ou, à défaut, par celui qui a amené l'habitant. */
+  (function(){
+    var s = (new URLSearchParams(location.search).get('s') || '').toLowerCase().replace(/[^a-z0-9-]/g,'');
+    if (!s) { try { var src = JSON.parse(localStorage.getItem('hl_source') || 'null'); s = (src && src.slug || '').replace(/[^a-z0-9-]/g,''); } catch(e) {} }
+    if (s) document.getElementById('mf').href = '/la-garenne/manifests/' + s + '.json';
+  })();
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/la-garenne/icons/icon-180.png">
+<script defer src="https://progressier.app/zb3Ezrlt6Ezd6iN3VpMW/script.js"></script>
+<link rel="stylesheet" href="/la-garenne/polices/polices.css">
+<link rel="stylesheet" href="/la-garenne/hl.css">
+<script src="/la-garenne/hl.js"></script>
+<title>Transports – Les Commerces de La Garenne</title>
+<style>
+  .intro{font-size:13px;color:var(--muted);margin:4px 0 14px;line-height:1.45;}
+  .vide{color:var(--muted);font-size:14px;padding:12px 0;}
+  .maj{font-size:11.5px;color:var(--muted);margin-top:4px;}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<main class="ct">
+  <h1 style="margin:6px 0 2px">Détails des transports</h1>
+  <p class="intro">Ligne L et tram T2 : état du trafic et prochains passages aux arrêts de La Garenne, en temps réel. Les minutes se mettent à jour toutes seules.</p>
+  <div id="lignes"><div class="jour charge"></div></div>
+  <p class="source-ville">Trafic et horaires : Île-de-France Mobilités (PRIM), licence Mobilités.</p>
+</main>
+<script>
+/* Détails des transports : messages de trafic et prochains passages (fonction hl-quotidien).
+   Rien n'est inventé : sans donnée, la rubrique le dit. */
+(function(){
+  document.getElementById('bar').innerHTML = HL.brandbar(true);
+  HL.nav('');
+  HL.trackUnique('transports_vue', null, null, 'transports_' + HL.jour());
+  var URL_JOUR = 'https://rtdiaeskmyjjwohirhzj.supabase.co/functions/v1/hl-quotidien', J = null, esc = HL.esc;
+  var abrege = { 'Nanterre Université': 'Nanterre U.', 'Cergy le Haut': 'Cergy', 'Maisons-Laffitte': 'Maisons-L.' };
+  var LIB = { perturbe: 'Perturbé', travaux: 'Travaux à venir', normal: 'Trafic normal' };
+  function ligneDeparts(liste, titre, tram, now) {
+    if (!liste.length) return '';
+    // Destination affichée seulement quand les trains d'un même sens ne vont pas tous au même endroit.
+    var dest = liste.some(function(d){ return d.vers !== liste[0].vers; });
+    return '<div class="tl"><span class="dir">→ ' + esc(titre) + '</span><span class="hs">' + liste.slice(0, 3).map(function(d){
+      var mn = Math.round((new Date(d.depart).getTime() - now) / 60000);
+      var t = d.annule ? '<s>' + new Date(d.depart).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + '</s> supprimé'
+        : '<b>' + (mn <= 0 ? (tram ? 'imminent' : 'à quai') : mn + ' min') + '</b>' + (d.retard ? ' <em>+' + d.retard + '</em>' : '');
+      return '<span class="dp' + (d.annule ? ' an' : '') + '">' + t + (dest ? ' <small>' + esc(abrege[d.vers] || d.vers) + '</small>' : '') + '</span>';
+    }).join('') + '</span></div>';
+  }
+  function rendre() {
+    var box = document.getElementById('lignes');
+    if (!J) { box.innerHTML = '<p class="vide">Informations de transport indisponibles pour le moment.</p>'; return; }
+    var now = Date.now(), passages = J.passages || (J.trains ? [J.trains] : []);
+    var lignes = (J.trafic && J.trafic.length) ? J.trafic : [{ ligne: 'L', mode: 'Transilien', etat: '', messages: [] }, { ligne: 'T2', mode: 'Tram', etat: '', messages: [] }];
+    box.innerHTML = lignes.map(function(l){
+      var tram = l.mode === 'Tram';
+      var arrets = passages.filter(function(a){ return (a.ligne || 'L') === l.ligne; }).map(function(a){
+        var venir = (a.departs || []).filter(function(d){ return new Date(d.depart).getTime() > now - 30e3; });
+        var sens = a.sens || ['Paris St-Lazare', 'Nanterre / Cergy'];
+        var h = ligneDeparts(venir.filter(function(d){ return d.paris; }), sens[0], tram, now) + ligneDeparts(venir.filter(function(d){ return !d.paris; }), sens[1], tram, now);
+        return '<div class="tr-arret"><p class="th">' + esc(a.arret || a.gare) + '</p>' + (h || '<p class="small muted">Pas de passage annoncé pour le moment.</p>') + '</div>';
+      }).join('');
+      return '<section class="tr-ligne"><h2>' + HL.icone(tram ? 'tram' : 'train', 22) + (tram ? 'Tram ' : 'Ligne ') + esc(l.ligne) +
+        (l.etat ? '<span class="etat ' + esc(l.etat) + '">' + (LIB[l.etat] || LIB.normal) + '</span>' : '') + '</h2>' +
+        ((l.messages || []).length ? '<div class="msg">' + l.messages.map(function(x){ return '<p>' + esc(x) + '</p>'; }).join('') + '</div>' : '') +
+        (arrets || (J.passages ? '<p class="small muted" style="margin-top:10px">Horaires indisponibles la nuit (1 h 15 – 4 h 45).</p>' : '')) + '</section>';
+    }).join('') + (passages[0] && passages[0].maj ? '<p class="maj">Horaires reçus à ' + new Date(passages[0].maj).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + '</p>' : '');
+  }
+  function charger() {
+    return fetch(URL_JOUR).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (j && j.ok) J = j; rendre(); }).catch(rendre);
+  }
+  charger();
+  // Page ouverte : minutes recalculées toutes les 20 s, horaires redemandés toutes les 2 minutes.
+  setInterval(function(){ if (J) rendre(); }, 20e3);
+  setInterval(function(){ if (!document.hidden) charger(); }, 120e3);
+})();
+</script>
+</body>
+</html>
