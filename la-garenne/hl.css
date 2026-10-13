@@ -221,3 +221,14 @@ img{display:block;max-width:100%;}
 .jour .msg p+p{margin-top:6px;}
 .jour .sugg{font-size:13px;font-weight:700;color:var(--rose);text-decoration:none;}
 .jour .src{font-size:11px;color:var(--muted);}
+.jour .tr[hidden]{display:none;}
+.jour .tr{display:grid;gap:6px;border-top:1px solid var(--line);padding-top:10px;}
+.jour .tr .th{font-size:13px;font-weight:700;color:var(--ink);}
+.jour .tr .th span{font-weight:400;color:var(--muted);font-size:12px;}
+.jour .tl{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-size:13px;}
+.jour .tl .dir{color:var(--muted);min-width:118px;}
+.jour .tl .hs{display:flex;flex-wrap:wrap;gap:4px 12px;}
+.jour .tl b{color:var(--ink);}
+.jour .tl em{font-style:normal;font-weight:700;color:#E07B24;font-size:12px;}
+.jour .tl small{color:var(--muted);font-size:11.5px;}
+.jour .tl .an{color:#B3261E;}

@@ -202,9 +202,32 @@ HL.ville().then(function(v){
   document.getElementById('blocVille').hidden = false;
 });
 
-/* Météo (MET Norway) et trafic ligne L / tram T2 (Île-de-France Mobilités), via la fonction hl-quotidien. */
-fetch('https://rtdiaeskmyjjwohirhzj.supabase.co/functions/v1/hl-quotidien').then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
-  if (!j || !j.ok || (!j.meteo && !j.trafic)) return;
+/* Météo (MET Norway), trafic ligne L / tram T2 et prochains trains à la gare (Île-de-France Mobilités),
+   via la fonction hl-quotidien. */
+var URL_JOUR = 'https://rtdiaeskmyjjwohirhzj.supabase.co/functions/v1/hl-quotidien', trains = null;
+var abrege = { 'Nanterre Université': 'Nanterre U.', 'Cergy le Haut': 'Cergy', 'Maisons-Laffitte': 'Maisons-L.' };
+// Les minutes sont recalculées sur le téléphone : l'affichage reste juste entre deux mises à jour.
+function rendreTrains() {
+  var box = document.getElementById('jourTrains'); if (!box) return;
+  var now = Date.now(), esc = HL.esc;
+  var venir = ((trains && trains.departs) || []).filter(function(d){ return new Date(d.depart).getTime() > now - 30e3; });
+  function ligne(liste, titre, dest) {
+    if (!liste.length) return '';
+    return '<div class="tl"><span class="dir">' + titre + '</span><span class="hs">' + liste.slice(0, 3).map(function(d){
+      var mn = Math.round((new Date(d.depart).getTime() - now) / 60000);
+      var t = d.annule ? '<s>' + new Date(d.depart).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + '</s> supprimé'
+        : '<b>' + (mn <= 0 ? 'à quai' : mn + ' min') + '</b>' + (d.retard ? ' <em>+' + d.retard + '</em>' : '');
+      return '<span class="dp' + (d.annule ? ' an' : '') + '">' + t + (dest ? ' <small>' + esc(abrege[d.vers] || d.vers) + '</small>' : '') + '</span>';
+    }).join('') + '</span></div>';
+  }
+  var h = ligne(venir.filter(function(d){ return d.paris; }), '→ Paris St-Lazare', false) +
+    ligne(venir.filter(function(d){ return !d.paris; }), '→ Nanterre / Cergy', true);
+  box.innerHTML = h ? '<div class="th">🚆 Gare de La Garenne-Colombes <span>ligne L</span></div>' + h : '';
+  box.hidden = !h;
+}
+fetch(URL_JOUR).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+  if (!j || !j.ok || (!j.meteo && !j.trafic && !j.trains)) return;
+  trains = j.trains;
   var m = j.meteo, t = j.trafic || [], el = document.getElementById('jour'), esc = HL.esc, h = '';
   if (m) {
     h += '<div class="mt"><span class="em" aria-hidden="true">' + m.emoji + '</span><span class="tp">' + m.temp + '°</span>' +
@@ -221,8 +244,19 @@ fetch('https://rtdiaeskmyjjwohirhzj.supabase.co/functions/v1/hl-quotidien').then
         '<span class="pt"></span>' + (l.mode === 'Tram' ? 'Tram ' : 'Ligne ') + esc(l.ligne) + ' · ' + lib + (l.messages.length ? ' ›' : '') + '</button>';
     }).join('') + '</div><div class="msg" id="jourMsg" hidden></div>';
   }
-  h += '<span class="src">Météo : MET Norway' + (t.length ? ' · Trafic : Île-de-France Mobilités' : '') + '</span>';
+  h += '<div class="tr" id="jourTrains" hidden></div>';
+  h += '<span class="src">' + (m ? 'Météo : MET Norway' : '') + (m && (t.length || trains) ? ' · ' : '') +
+    (t.length || trains ? 'Trafic et horaires : Île-de-France Mobilités' : '') + '</span>';
   el.innerHTML = h; el.hidden = false;
+  rendreTrains();
+  // Page ouverte : minutes recalculées toutes les 20 s, horaires redemandés toutes les 2 minutes.
+  setInterval(rendreTrains, 20e3);
+  setInterval(function(){
+    if (document.hidden) return;
+    fetch(URL_JOUR).then(function(r){ return r.ok ? r.json() : null; }).then(function(x){
+      if (x && x.ok) { trains = x.trains; rendreTrains(); }
+    }).catch(function(){});
+  }, 120e3);
   // La suggestion n'apparaît que s'il y a des cafés dans l'appli.
   if (m && m.pleut) HL.charger().then(function(d){
     if ((d.commerces || []).some(function(c){ return c.categorie === 'cafe'; })) document.getElementById('jourSugg').hidden = false;
