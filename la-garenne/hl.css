@@ -215,6 +215,8 @@ img{display:block;max-width:100%;}
 .jour .li .pt{width:9px;height:9px;border-radius:50%;background:var(--ok);}
 .jour .li.perturbe{border-color:#F3C7A0;background:#FFF4EA;}
 .jour .li.perturbe .pt{background:#E07B24;}
+.jour .li.travaux{border-color:#EADBA0;background:#FFFBEA;}
+.jour .li.travaux .pt{background:#D4A514;}
 .jour .msg{font-size:12.5px;line-height:1.45;background:#FFF4EA;border-radius:12px;padding:10px 12px;color:#6B3A10;}
 .jour .msg p+p{margin-top:6px;}
 .jour .sugg{font-size:13px;font-weight:700;color:var(--rose);text-decoration:none;}

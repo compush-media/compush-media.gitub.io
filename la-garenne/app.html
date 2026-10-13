@@ -216,8 +216,9 @@ fetch('https://rtdiaeskmyjjwohirhzj.supabase.co/functions/v1/hl-quotidien').then
   }
   if (t.length) {
     h += '<div class="lg">' + t.map(function(l, k){
-      return '<button type="button" class="li' + (l.etat === 'perturbe' ? ' perturbe' : '') + '" data-l="' + k + '"' + (l.messages.length ? ' aria-expanded="false"' : '') + '>' +
-        '<span class="pt"></span>' + (l.mode === 'Tram' ? 'Tram ' : 'Ligne ') + esc(l.ligne) + ' · ' + (l.etat === 'perturbe' ? 'perturbé' : 'trafic normal') + (l.messages.length ? ' ›' : '') + '</button>';
+      var lib = { perturbe: 'perturbé', travaux: 'travaux à venir', normal: 'trafic normal' }[l.etat] || 'trafic normal';
+      return '<button type="button" class="li ' + esc(l.etat) + '" data-l="' + k + '"' + (l.messages.length ? ' aria-expanded="false"' : '') + '>' +
+        '<span class="pt"></span>' + (l.mode === 'Tram' ? 'Tram ' : 'Ligne ') + esc(l.ligne) + ' · ' + lib + (l.messages.length ? ' ›' : '') + '</button>';
     }).join('') + '</div><div class="msg" id="jourMsg" hidden></div>';
   }
   h += '<span class="src">Météo : MET Norway' + (t.length ? ' · Trafic : Île-de-France Mobilités' : '') + '</span>';
