@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-10-12T20:57+00:00",
- "empreinte": "3b28a877dd7ed62a",
+ "maj": "2026-10-14T10:20+00:00",
+ "empreinte": "1edef070550ab9ef",
  "actus": [
   {
    "titre": "Un coup de pouce pour réussir au collège !",
@@ -91,14 +91,6 @@
   }
  ],
  "agenda": [
-  {
-   "titre": "Didon et Énée",
-   "debut": "2026-10-13",
-   "fin": "2026-10-13",
-   "resume": "",
-   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/DSC_0922_(pas_de_copyright).JPG.png",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13906&iddossiercontenu=9"
-  },
   {
    "titre": "Les voyages fantastiques",
    "debut": "2026-10-16",
