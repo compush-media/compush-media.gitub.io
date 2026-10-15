@@ -12,6 +12,33 @@
   var SUPA_KEY = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
   var BASE = "/la-garenne/";
 
+  /* Icône et nom d'écran d'accueil. Le script Progressier, commun à tous les
+     wallets Fidelavis, remplace l'apple-touch-icon et le nom sous l'icône par
+     ceux de son tableau de bord (ceux des wallets : « Le resto »). Sur l'appli
+     de La Garenne, on remet les nôtres (« La Garenne ») aussitôt : c'est ce qu'iPhone enregistre
+     au moment de « Sur l'écran d'accueil ». */
+  (function () {
+    var NOTRE = BASE + "icons/icon-180.png";
+    var meta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+    var NOM = (meta && meta.getAttribute("content")) || "La Garenne";
+    function garder() {
+      Array.prototype.forEach.call(document.querySelectorAll('meta[name="apple-mobile-web-app-title"]'), function (m) {
+        if (m.getAttribute("content") !== NOM) m.setAttribute("content", NOM);
+      });
+      var liens = document.querySelectorAll('link[rel="apple-touch-icon"], link[rel="apple-touch-icon-precomposed"]');
+      if (!liens.length) {
+        var l = document.createElement("link");
+        l.setAttribute("rel", "apple-touch-icon"); l.setAttribute("sizes", "180x180"); l.setAttribute("href", NOTRE);
+        document.head.appendChild(l);
+        return;
+      }
+      Array.prototype.forEach.call(liens, function (l) { if (l.getAttribute("href") !== NOTRE) l.setAttribute("href", NOTRE); });
+    }
+    if (!document.head) return;
+    garder();
+    new MutationObserver(garder).observe(document.head, { childList: true, subtree: true, attributes: true, attributeFilter: ["href", "rel", "content"] });
+  })();
+
   /* Catégories affichées sur l'accueil et l'annuaire, dans cet ordre, même
      vides : une catégorie sans commerce annonce « Bientôt ». */
   var CATEGORIES = {

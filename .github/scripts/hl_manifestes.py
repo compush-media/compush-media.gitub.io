@@ -25,7 +25,7 @@ DOSSIER = os.path.join(os.path.dirname(__file__), "..", "..", "la-garenne", "man
 def manifeste(slug):
     return {
         "name": "Fidelavis · La Garenne",
-        "short_name": "Fidelavis",
+        "short_name": "La Garenne",
         "description": "Les vidéos, offres et bons plans des commerces de La Garenne-Colombes.",
         "start_url": f"/la-garenne/app.html?first={slug}",
         "scope": "/la-garenne/",
