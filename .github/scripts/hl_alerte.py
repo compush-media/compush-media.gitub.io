@@ -29,6 +29,10 @@ SUPA_KEY = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ"
 APPLI = "https://app.cartefidelavis.com/la-garenne/app.html"
 ICONE = "https://app.cartefidelavis.com/la-garenne/icons/icon-192.png"
 ETIQUETTE = "la-garenne"
+# Annonce ponctuelle ajoutée en fin d'alerte jusqu'à la date indiquée (comprise), puis plus rien.
+# Elle ne déclenche jamais une alerte à elle seule : promesse « jamais d'alerte vide ».
+ANNONCE = ("Nouvelle icône : sur iPhone, supprimez l'appli de l'écran d'accueil puis réinstallez-la depuis Safari.",
+           "2026-10-26")
 
 
 def appel(url, corps, entetes):
@@ -105,8 +109,20 @@ def rediger():
     if morceaux and en_cours > len(offres):
         texte += f". {pluriel(en_cours, 'offre', 'offres')} en cours en tout."
     if ville:
-        texte += (". " if texte else "") + "En ville : " + noms(ville)
+        texte = texte.rstrip(".") + (". " if texte else "") + "En ville : " + noms(ville)
+    annonce, jusquau = ANNONCE
+    if annonce and dt.date.today().isoformat() <= jusquau:
+        # Place gardée pour l'annonce : le reste est raccourci proprement s'il le faut.
+        debut = raccourcir(texte, 120)
+        return "Cette semaine à La Garenne", (debut + (" " if debut.endswith("…") else ". ") if debut else "") + annonce
     return "Cette semaine à La Garenne", texte[:180]
+
+
+def raccourcir(texte, n):
+    texte = texte.rstrip(". ")
+    if len(texte) <= n:
+        return texte
+    return texte[:n - 1].rsplit(" ", 1)[0].rstrip(",;:·(") + "…"
 
 
 def main():
