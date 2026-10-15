@@ -392,11 +392,11 @@
           ok(!!po.image, 'Photo fournie', true) + '</ul>' + boutons + '</div></div>';
     }
     if (it.type === 'prop_video') {
-      var pv = it.v, remplacee = (it.c.doc.videos || []).filter(function(x){ return x.id === pv.id && x.statut === 'publiee'; })[0];
+      var pv = it.v, remplacee = (it.c.doc.videos || []).filter(function(x){ return x.statut === 'publiee'; })[0];   // une seule vidéo par commerce
       return '<div class="file"><div class="ph" style="background-image:url(\'' + esc(pv.affiche || '') + '\')"></div><div style="flex:1"><span class="st a_moderer">Vidéo proposée par le commerçant</span>' +
         '<p style="margin-top:6px"><b>' + esc(pv.titre) + '</b> · ' + esc(it.c.doc.nom) + '</p>' +
         (pv.description ? '<p class="small muted">' + esc(pv.description) + '</p>' : '') +
-        '<p class="small"><a href="' + esc(pv.src) + '" target="_blank" rel="noopener">Regarder la vidéo ›</a>' + (remplacee ? ' · remplacera « ' + esc(remplacee.titre) + ' »' : '') + '</p>' +
+        '<p class="small"><a href="' + esc(pv.src) + '" target="_blank" rel="noopener">Regarder la vidéo ›</a>' + '</p>' + (remplacee ? '<p class="small" style="margin-top:4px">Une seule vidéo par commerce : en la publiant, elle remplace la vidéo en ligne « ' + esc(remplacee.titre) + ' »' + (remplacee.ia ? ' (présentation d\'Anna)' : '') + '.</p>' : '') +
         '<ul class="check" id="chk-' + k + '">' +
           ok(/\.mp4(\?|$)/i.test(pv.src || ''), 'Format MP4') +
           ok(pv.duree && pv.duree <= 90, 'Durée : ' + (pv.duree ? pv.duree + ' s' : 'inconnue') + ' (90 s maximum conseillé)') +
@@ -960,7 +960,7 @@
       anna.montages = l; rendreSerie();
       var prets = l.filter(function(x){ return x.statut === 'pret'; });
       el.innerHTML = (prets.length ? '<div class="lot"><button class="b2" type="button" id="pTout">Tout cocher (' + prets.length + ' prêtes)</button>' +
-          '<button class="b2 ok" type="button" id="pPublier">Publier la sélection</button><span class="small muted">Elles deviennent la vidéo de présentation du commerce dans l\'appli.</span></div>' : '') +
+          '<button class="b2 ok" type="button" id="pPublier">Publier la sélection</button><span class="small muted">Elles deviennent la vidéo de présentation du commerce dans l\'appli (une seule par commerce ; jamais à la place d\'une vidéo du commerçant).</span></div>' : '') +
         (l.length ? l.map(function(x){
         return '<div style="border-top:1px solid var(--line);padding:12px 0;display:grid;gap:8px"><div class="row" style="gap:8px;flex-wrap:wrap">' +
           (x.statut === 'pret' ? '<input type="checkbox" data-pub="' + esc(x.id) + '" aria-label="Publier">' : '') + '<b>' + esc(nom(x.slug)) + '</b>' +
@@ -981,6 +981,8 @@
           rpc('hl_admin_avatar_publier', { p_token: jeton(), p_ids: ids }).then(function(r){
             if (!r.ok) throw new Error(r.reason);
             HL.toast(r.publiees + ' vidéo' + (r.publiees > 1 ? 's publiées' : ' publiée'));
+            // Un commerce qui a déjà sa propre vidéo la garde : Anna ne la remplace jamais.
+            if ((r.ignorees || []).length) alert('Non publiées, car le commerçant a déjà sa propre vidéo en ligne : ' + r.ignorees.map(nom).join(', ') + '.');
             return charger().then(listeAnna);
           }).catch(function(e){ alert('Publication impossible : ' + e.message); });
         });
