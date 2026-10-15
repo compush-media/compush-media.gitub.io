@@ -30,13 +30,13 @@ def manifeste(slug):
         "start_url": f"/la-garenne/app.html?first={slug}",
         "scope": "/la-garenne/",
         "display": "standalone",
-        "background_color": "#FBF6F1",
-        "theme_color": "#C8206A",
+        "background_color": "#FAF6F2",
+        "theme_color": "#D41468",
         "orientation": "portrait",
         "icons": [
             {"src": "/la-garenne/icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
             {"src": "/la-garenne/icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
-            {"src": "/la-garenne/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+            {"src": "/la-garenne/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
         ],
     }
 
