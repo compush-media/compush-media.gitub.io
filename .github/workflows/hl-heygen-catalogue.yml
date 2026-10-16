@@ -1,0 +1,36 @@
+# ──────────────────────────────────────────────────────────────
+#  Pilote La Garenne-Colombes : catalogue HeyGen (avatars et voix françaises).
+#
+#  Lancé à la main seulement. Lecture seule : aucune vidéo générée, aucun
+#  crédit consommé. Le catalogue est joint au lancement comme artefact
+#  (catalogue.json, gardé 7 jours) pour choisir l'avatar des présentations.
+#  Script : .github/scripts/hl_heygen_catalogue.py
+#
+#  Secret requis : HEYGEN_API_KEY (déjà utilisé par le montage vidéo).
+# ──────────────────────────────────────────────────────────────
+name: Pilote La Garenne · catalogue HeyGen
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  catalogue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: .github
+      - name: Lire le catalogue
+        env:
+          HEYGEN_API_KEY: ${{ secrets.HEYGEN_API_KEY }}
+        run: python3 .github/scripts/hl_heygen_catalogue.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalogue-heygen
+          path: catalogue.json
+          retention-days: 7
