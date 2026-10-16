@@ -465,12 +465,30 @@ HEYGEN_CLE = os.environ.get("HEYGEN_API_KEY", "").strip()
 # chaîne « vidéos DM » de Fidelavis. Avatar III : environ 0,0167 $ la seconde.
 AVATAR_ID = os.environ.get("HEYGEN_AVATAR_ID", "Anna_public_3_20240108")
 VOIX_ID = os.environ.get("HEYGEN_VOICE_ID", "59bb21cd39f44b8398a64530b83e008f")
+# Cadrage tête et épaules dans le rendu 1080 × 1920 de chaque avatar (largeur:hauteur:x:y),
+# avant réduction au cercle. Un avatar absent garde celui d'Anna.
+CADRAGES = {"Anna_public_3_20240108": "660:660:210:40"}
 VERT = "#00B140"
 CERCLE, CERCLE_X, CERCLE_Y = 460, (L - 460) // 2, 1000
 
 
-def empreinte_avatar(texte):
-    return hashlib.sha256("|".join([AVATAR_ID, VOIX_ID, texte.strip()]).encode()).hexdigest()[:12]
+def presentatrice(options):
+    """Avatar, voix, moteur et cadrage : ceux du montage s'ils sont précisés (essais lancés par
+    la ville), sinon ceux par défaut."""
+    o = options or {}
+    avatar = (o.get("avatar_id") or AVATAR_ID).strip()
+    cadrage = (o.get("cadrage") or CADRAGES.get(avatar) or CADRAGES[AVATAR_ID]).strip()
+    if not re.fullmatch(r"\d{2,4}:\d{2,4}:\d{1,4}:\d{1,4}", cadrage):
+        cadrage = CADRAGES[AVATAR_ID]
+    return {"avatar": avatar, "voix": (o.get("voix_id") or VOIX_ID).strip(),
+            "moteur": o.get("moteur") if o.get("moteur") in ("avatar_iii", "avatar_iv") else "avatar_iii",
+            "cadrage": cadrage}
+
+
+def empreinte_avatar(texte, p):
+    # Avatar III : même empreinte qu'avant, pour retrouver les rendus déjà payés.
+    parts = [p["avatar"], p["voix"]] + ([] if p["moteur"] == "avatar_iii" else [p["moteur"]]) + [texte.strip()]
+    return hashlib.sha256("|".join(parts).encode()).hexdigest()[:12]
 
 
 def heygen(methode, url, corps=None):
@@ -484,17 +502,21 @@ def heygen(methode, url, corps=None):
         return json.loads(r.read() or b"{}")
 
 
-def rendre_avatar(texte, sortie):
-    """Anna lit le texte sur fond vert ; renvoie le fichier téléchargé. Consomme des crédits HeyGen."""
+def rendre_avatar(texte, sortie, p):
+    """L'avatar lit le texte sur fond vert ; renvoie le fichier téléchargé. Consomme des crédits HeyGen."""
     if not HEYGEN_CLE:
         raise RuntimeError("HEYGEN_API_KEY absent")
-    rep = heygen("POST", HEYGEN, {
-        "type": "avatar", "avatar_id": AVATAR_ID, "voice_id": VOIX_ID, "script": texte.strip(),
-        "aspect_ratio": "9:16", "resolution": "1080p",
-        # Anna ne supporte pas Avatar IV, moteur par défaut de v3 (et 3 à 4 fois plus cher).
-        "engine": {"type": "avatar_iii"},
-        "background": {"type": "color", "value": VERT},
-    })
+    try:
+        rep = heygen("POST", HEYGEN, {
+            "type": "avatar", "avatar_id": p["avatar"], "voice_id": p["voix"], "script": texte.strip(),
+            "aspect_ratio": "9:16", "resolution": "1080p",
+            # Avatar III par défaut : Avatar IV, moteur par défaut de v3, coûte 3 à 4 fois plus cher.
+            "engine": {"type": p["moteur"]},
+            "background": {"type": "color", "value": VERT},
+        })
+    except urllib.error.HTTPError as e:
+        # Le message de HeyGen (sans secret) dit quoi corriger, par exemple un moteur non pris en charge.
+        raise Refus("HeyGen a refusé le rendu : " + e.read().decode(errors="replace")[:240])
     vid = rep.get("id") or rep.get("video_id") or (rep.get("data") or {}).get("video_id") or (rep.get("data") or {}).get("id")
     if not vid:
         raise RuntimeError("HeyGen : réponse sans identifiant")
@@ -570,7 +592,7 @@ def monter_avatar(plans, options, commerce, avatar, dossier):
     # Anna : détourage du vert, recadrage tête et épaules, cercle ; un disque clair derrière elle.
     graphe = (
         "[1:v]chromakey=0x00B140:0.14:0.06,despill=type=green:mix=0.5:expand=0.3,"
-        f"crop=660:660:210:40,scale={CERCLE}:{CERCLE},format=yuva420p,split[a1][a2];"
+        f"crop={presentatrice(options)['cadrage']},scale={CERCLE}:{CERCLE},format=yuva420p,split[a1][a2];"
         "[a2]alphaextract[aa];"
         "[2:v]format=gray,split[mg][mp];"
         f"[mp]scale={CERCLE}:{CERCLE}[m1];"
@@ -663,7 +685,8 @@ def obtenir_avatar(job, dossier):
     texte = (job["options"].get("texte") or "").strip()
     if len(texte) < 20:
         raise Refus("Le texte d'Anna est trop court.")
-    emp = empreinte_avatar(texte)
+    p = presentatrice(job["options"])
+    emp = empreinte_avatar(texte, p)
     local = os.path.join(dossier, "avatar.mp4")
     ancien = job.get("resultat") or {}
     if ancien.get("avatar_empreinte") == emp and ancien.get("avatar_chemin"):
@@ -674,7 +697,7 @@ def obtenir_avatar(job, dossier):
             return local, ancien["avatar_chemin"], emp
         except urllib.error.HTTPError:
             pass
-    rendre_avatar(texte, local)
+    rendre_avatar(texte, local, p)
     chemin = f"{job['slug']}/avatar-{job['id'][:8]}-{emp[:8]}.mp4"
     with open(local, "rb") as h:
         api("POST", f"/storage/v1/object/hl-rushes/{chemin}", brut=h.read(), type_contenu="video/mp4",
@@ -713,6 +736,11 @@ def traiter(job):
         if mode == "avatar":
             avatar, chemin_av, emp = obtenir_avatar(job, dossier)
             extra = {"avatar_chemin": chemin_av, "avatar_empreinte": emp}
+            if job["options"].get("essai"):
+                # Essai d'un nouvel avatar : une image du rendu brut, pour régler le cadrage dans le cercle.
+                brut = os.path.join(dossier, "cadre-brut.jpg")
+                ff("-ss", "2", "-i", avatar, "-frames:v", "1", "-q:v", "3", brut)
+                extra["apercu_brut"] = televerser(brut, f"{job['slug']}/essai-{job['id'][:8]}-brut.jpg", "image/jpeg")
             res = monter_avatar(plans, job["options"], job["commerce"], avatar, dossier)
         else:
             res = (monter_presentation if presentation else monter)(plans, job["options"], job["commerce"], dossier)
