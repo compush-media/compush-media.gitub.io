@@ -16,7 +16,7 @@ filment pas, 3 à 6 photos deviennent un diaporama animé (zoom lent, fondus),
 légendé avec les informations de la fiche (accroche, offre, horaires,
 adresse, avis), avec la même carte de fin.
 Mode « avatar » (options.mode = 'avatar', lancé par la ville seulement) :
-Anna, avatar HeyGen, lit un texte écrit à partir des avis et de la fiche
+Emery, avatar HeyGen, lit un texte écrit à partir des avis et de la fiche
 (fonction hl-avis-texte) ; elle est détourée dans un cercle sur les photos
 du commerce, sous-titrée, avec la mention « Présentation générée par IA ».
 Le rendu HeyGen est payant : il est gardé dans hl-rushes et réutilisé tant
@@ -458,16 +458,18 @@ def monter_presentation(plans, options, commerce, dossier):
     return resultat(finale, affiche, None, total)
 
 
-# ── Présentation par Anna (avatar HeyGen) ─────────────────────────────────
+# ── Présentation par avatar HeyGen (Emery par défaut) ─────────────────────
 HEYGEN = "https://api.heygen.com/v3/videos"
 HEYGEN_CLE = os.environ.get("HEYGEN_API_KEY", "").strip()
-# Anna (avatar public) et Camille Martin (voix française) : les réglages de la
-# chaîne « vidéos DM » de Fidelavis. Avatar III : environ 0,0167 $ la seconde.
-AVATAR_ID = os.environ.get("HEYGEN_AVATAR_ID", "Anna_public_3_20240108")
-VOIX_ID = os.environ.get("HEYGEN_VOICE_ID", "59bb21cd39f44b8398a64530b83e008f")
+# Avatar III : environ 0,0167 $ la seconde (Emery comme Anna).
+# Présentatrice par défaut depuis le 17 octobre 2026 : Emery (chemisier vert) et la voix
+# française Audrey (choix du client). Anna et sa voix restent réglables par montage.
+ANNA_ID, ANNA_VOIX = "Anna_public_3_20240108", "59bb21cd39f44b8398a64530b83e008f"
+AVATAR_ID = os.environ.get("HEYGEN_AVATAR_ID", "Emery_public_6")
+VOIX_ID = os.environ.get("HEYGEN_VOICE_ID", "7459d7aa599b4f97908600896a0e7ef4")
 # Cadrage tête et épaules dans le rendu 1080 × 1920 de chaque avatar (largeur:hauteur:x:y),
-# avant réduction au cercle. Un avatar absent garde celui d'Anna.
-CADRAGES = {"Anna_public_3_20240108": "660:660:210:40"}
+# avant réduction au cercle. Un avatar absent garde celui de l'avatar par défaut.
+CADRAGES = {ANNA_ID: "660:660:210:40", "Emery_public_6": "760:760:160:330"}
 VERT = "#00B140"
 CERCLE, CERCLE_X, CERCLE_Y = 460, (L - 460) // 2, 1000
 
@@ -477,9 +479,9 @@ def presentatrice(options):
     la ville), sinon ceux par défaut."""
     o = options or {}
     avatar = (o.get("avatar_id") or AVATAR_ID).strip()
-    cadrage = (o.get("cadrage") or CADRAGES.get(avatar) or CADRAGES[AVATAR_ID]).strip()
+    cadrage = (o.get("cadrage") or CADRAGES.get(avatar) or CADRAGES.get(AVATAR_ID) or CADRAGES[ANNA_ID]).strip()
     if not re.fullmatch(r"\d{2,4}:\d{2,4}:\d{1,4}:\d{1,4}", cadrage):
-        cadrage = CADRAGES[AVATAR_ID]
+        cadrage = CADRAGES.get(AVATAR_ID) or CADRAGES[ANNA_ID]
     return {"avatar": avatar, "voix": (o.get("voix_id") or VOIX_ID).strip(),
             "moteur": o.get("moteur") if o.get("moteur") in ("avatar_iii", "avatar_iv") else "avatar_iii",
             "cadrage": cadrage}
@@ -567,7 +569,7 @@ def monter_avatar(plans, options, commerce, avatar, dossier):
     if plans:
         # Fond : les photos du commerce en fondus enchaînés, le temps de la voix.
         if len(plans) < 2:
-            raise Refus("Gardez au moins deux photos pour la présentation par Anna.")
+            raise Refus("Gardez au moins deux photos pour la présentation vidéo.")
         n = len(plans)
         d = (duree + 0.3 + (n - 1) * FONDU) / n
         clips = [clip_photo(src, rang, nom, "", d, dossier, y_titre=230) for rang, (plan, src) in enumerate(plans)]
@@ -579,7 +581,7 @@ def monter_avatar(plans, options, commerce, avatar, dossier):
         clips = [carte_info(dossier, rang, etiquette, texte_carte, d) for rang, (etiquette, texte_carte) in enumerate(cartes)]
     fond, _, _ = enchainer(clips, [d] * n, dossier, "fond.mp4")
 
-    # Sous-titres : le texte validé, calé sur la voix d'Anna.
+    # Sous-titres : le texte validé, calé sur la voix de l'avatar.
     mots = transcrire(avatar, 0.0, duree, dossier)
     blocs = blocs_mots(aligner(texte, mots), duree) if mots else morceaux_phrase(texte, duree)
     sous = []
@@ -589,7 +591,7 @@ def monter_avatar(plans, options, commerce, avatar, dossier):
     mention = bloc_texte(dossier, "ia", ["Présentation générée par IA · voix et visage de synthèse"], 30, 1850,
                          POLICE_TEXTE, couleur="white@0.9", boite="black@0.35")
     masque = masque_cercle(os.path.join(dossier, "cercle.pgm"), CERCLE + 20)
-    # Anna : détourage du vert, recadrage tête et épaules, cercle ; un disque clair derrière elle.
+    # L'avatar : détourage du vert, recadrage tête et épaules, cercle ; un disque clair derrière lui.
     graphe = (
         "[1:v]chromakey=0x00B140:0.14:0.06,despill=type=green:mix=0.5:expand=0.3,"
         f"crop={presentatrice(options)['cadrage']},scale={CERCLE}:{CERCLE},format=yuva420p,split[a1][a2];"
@@ -618,7 +620,7 @@ def monter_avatar(plans, options, commerce, avatar, dossier):
     ff("-f", "concat", "-safe", "0", "-i", liste, "-c", "copy", brut)
     finale, _ = finaliser(brut, duree, dossier)
     from hl_couverture import couverture   # Pillow : installé par le workflow, seulement utile ici
-    # Couverture des cartes : le commerce (sa première photo, ou un visuel de sa catégorie), pas Anna.
+    # Couverture des cartes : le commerce (sa première photo, ou un visuel de sa catégorie), pas l'avatar.
     affiche = couverture((commerce or {}).get("categorie"), os.path.join(dossier, "couverture.jpg"),
                          plans[0][1] if plans else None)
 
@@ -651,7 +653,7 @@ def cartes_fiche(nom, commerce):
 
 
 def carte_info(dossier, rang, etiquette, texte, duree):
-    """Une carte de fond, bleu nuit et rose, texte en haut (Anna occupe le bas de l'image)."""
+    """Une carte de fond, bleu nuit et rose, texte en haut (l'avatar occupe le bas de l'image)."""
     n = max(2, round(duree * IPS))
     vf = [f"drawbox=x=0:y=0:w={L}:h={H}:color=0x1D2340:t=fill",
           # Bande rose discrète en haut, rappel de la carte de fin.
@@ -663,7 +665,7 @@ def carte_info(dossier, rang, etiquette, texte, duree):
     lignes_carte = lignes_carte[:6]
     tailles = [110 if (rang == 0 and k == 0) else 70 for _, k in lignes_carte]
     hauteur = (70 if etiquette else 0) + sum(int(t * 1.3) for t in tailles)
-    # Bloc centré dans la moitié haute, au-dessus du cercle d'Anna.
+    # Bloc centré dans la moitié haute, au-dessus du cercle de l'avatar.
     y = max(200, (CERCLE_Y - 20) // 2 + 60 - hauteur // 2)
     if etiquette:
         vf += bloc_texte(dossier, f"ce{rang}", [etiquette], 44, y, POLICE, couleur="0xF7A8C9", alpha=apparition)
@@ -681,10 +683,10 @@ def carte_info(dossier, rang, etiquette, texte, duree):
 
 
 def obtenir_avatar(job, dossier):
-    """Le rendu d'Anna pour ce texte : celui gardé dans hl-rushes s'il existe, sinon un nouveau (payant)."""
+    """Le rendu de l'avatar pour ce texte : celui gardé dans hl-rushes s'il existe, sinon un nouveau (payant)."""
     texte = (job["options"].get("texte") or "").strip()
     if len(texte) < 20:
-        raise Refus("Le texte d'Anna est trop court.")
+        raise Refus("Le texte de la présentation est trop court.")
     p = presentatrice(job["options"])
     emp = empreinte_avatar(texte, p)
     local = os.path.join(dossier, "avatar.mp4")
@@ -693,7 +695,7 @@ def obtenir_avatar(job, dossier):
         try:
             with open(local, "wb") as h:
                 h.write(api("GET", f"/storage/v1/object/hl-rushes/{ancien['avatar_chemin']}"))
-            print(f"montage {job['id'][:8]} : rendu d'Anna réutilisé")
+            print(f"montage {job['id'][:8]} : rendu de l'avatar réutilisé")
             return local, ancien["avatar_chemin"], emp
         except urllib.error.HTTPError:
             pass
@@ -702,7 +704,7 @@ def obtenir_avatar(job, dossier):
     with open(local, "rb") as h:
         api("POST", f"/storage/v1/object/hl-rushes/{chemin}", brut=h.read(), type_contenu="video/mp4",
             entetes={"x-upsert": "true"})
-    print(f"montage {job['id'][:8]} : rendu d'Anna généré")
+    print(f"montage {job['id'][:8]} : rendu de l'avatar généré")
     return local, chemin, emp
 
 
@@ -723,7 +725,7 @@ def traiter(job):
         retires = set(job["options"].get("plans_retires") or [])
         rushes = sorted((r for r in job["rushes"] if r.get("plan") not in retires),
                         key=lambda r: ordre.index(r["plan"]) if r.get("plan") in ordre else 99)
-        # Une vidéo Anna peut n'avoir aucune photo (fond « fiche ») ; sinon, deux au moins.
+        # Une vidéo d'avatar peut n'avoir aucune photo (fond « fiche ») ; sinon, deux au moins.
         if len(rushes) < 2 and not (mode == "avatar" and not rushes):
             raise Refus("Gardez au moins deux " + ("photos" if presentation else "plans") + " pour monter la vidéo.")
         plans = []
@@ -784,7 +786,7 @@ def main():
     ap.add_argument("--local", help="dossier de séquences devanture.*, interieur.*, … ou de photos photo1.* … photo6.* (essai sans Supabase)")
     ap.add_argument("--options", default="{}", help="options JSON pour l'essai local")
     ap.add_argument("--max", type=int, default=6)
-    ap.add_argument("--avatar", help="essai local du mode avatar : vidéo d'Anna sur fond vert déjà rendue")
+    ap.add_argument("--avatar", help="essai local du mode avatar : vidéo de l'avatar sur fond vert déjà rendue")
     args = ap.parse_args()
 
     if args.local:

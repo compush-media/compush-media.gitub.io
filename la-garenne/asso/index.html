@@ -199,7 +199,7 @@
     var nb = aModerer().length;
     document.getElementById('qui').textContent = ville() ? 'Niveau ville · toutes les associations' : nomAsso(D.association) + ' · vos adhérents';
     var T = ville()
-      ? [['reseau','Réseau'],['valider','À valider'],['commerces','Commerces'],['pubs','Publicités'],['cdc','Coup de cœur'],['anna','Vidéo Anna'],['associations','Associations'],['comptes','Comptes']]
+      ? [['reseau','Réseau'],['valider','À valider'],['commerces','Commerces'],['pubs','Publicités'],['cdc','Coup de cœur'],['anna','Vidéo Emery'],['associations','Associations'],['comptes','Comptes']]
       : [['reseau','Vos résultats'],['valider','À valider'],['commerces','Vos adhérents'],['pubs','Mises en avant'],['comptes','Comptes']];
     if (!T.some(function(t){ return t[0] === onglet; })) onglet = 'reseau';
     document.getElementById('tabs').innerHTML = T.map(function(t){
@@ -273,7 +273,7 @@
         '<button class="chip' + (!filtreCat ? ' on' : '') + '" data-c="">Tous (' + coms.length + ')</button>' +
         Object.keys(cats).map(function(k){ return '<button class="chip' + (k === filtreCat ? ' on' : '') + '" data-c="' + esc(k) + '">' + esc((HL.CATEGORIES[k] || {}).label || k || 'Sans catégorie') + ' (' + cats[k] + ')</button>'; }).join('') +
       '</div><div class="lot"><input type="search" id="rechValider" placeholder="Rechercher un commerce…" value="' + esc(rechercheValider) + '" style="min-height:42px;border-radius:999px;border:1.5px solid var(--line);padding:8px 16px;font:inherit;font-size:14.5px;min-width:220px;flex:1;max-width:340px">' +
-        (ville() ? '<button class="chip' + (filtreAnna ? ' on' : '') + '" id="filtreAnna" type="button">🎬 Vidéo Anna prête (<span id="nbAnna">…</span>)</button>' : '') + '</div>' +
+        (ville() ? '<button class="chip' + (filtreAnna ? ' on' : '') + '" id="filtreAnna" type="button">🎬 Vidéo Emery prête (<span id="nbAnna">…</span>)</button>' : '') + '</div>' +
       '<div class="lot"><button class="b2" id="toutCocher" type="button">Tout cocher</button><button class="b2" id="rienCocher" type="button">Tout décocher</button>' +
         '<button class="b2 ok" id="validerSel" type="button" disabled>Valider la sélection (0)</button><span class="small muted" id="selInfo">Les commerces sans adresse ne peuvent pas être cochés.</span></div>' : '';
     vue.innerHTML = '<h2 style="margin-bottom:12px">À valider</h2>' + lot + '<div class="bloc" id="file">' +
@@ -304,7 +304,7 @@
       document.getElementById('rechValider').addEventListener('input', function(){ rechercheValider = this.value; filtrer(); });
       var fa = document.getElementById('filtreAnna');
       if (fa) {
-        // Commerces dont la vidéo Anna est prête ou déjà publiée.
+        // Commerces dont la vidéo Emery est prête ou déjà publiée.
         rpc('hl_admin_avatar_liste', { p_token: jeton() }).then(function(j){
           annaPretes = {};
           (j.montages || []).forEach(function(m){ if (m.statut === 'pret' || m.statut === 'envoye') annaPretes[m.slug] = 1; });
@@ -396,7 +396,7 @@
       return '<div class="file"><div class="ph" style="background-image:url(\'' + esc(pv.affiche || '') + '\')"></div><div style="flex:1"><span class="st a_moderer">Vidéo proposée par le commerçant</span>' +
         '<p style="margin-top:6px"><b>' + esc(pv.titre) + '</b> · ' + esc(it.c.doc.nom) + '</p>' +
         (pv.description ? '<p class="small muted">' + esc(pv.description) + '</p>' : '') +
-        '<p class="small"><a href="' + esc(pv.src) + '" target="_blank" rel="noopener">Regarder la vidéo ›</a>' + '</p>' + (remplacee ? '<p class="small" style="margin-top:4px">Une seule vidéo par commerce : en la publiant, elle remplace la vidéo en ligne « ' + esc(remplacee.titre) + ' »' + (remplacee.ia ? ' (présentation d\'Anna)' : '') + '.</p>' : '') +
+        '<p class="small"><a href="' + esc(pv.src) + '" target="_blank" rel="noopener">Regarder la vidéo ›</a>' + '</p>' + (remplacee ? '<p class="small" style="margin-top:4px">Une seule vidéo par commerce : en la publiant, elle remplace la vidéo en ligne « ' + esc(remplacee.titre) + ' »' + (remplacee.ia ? ' (présentation d\'Emery)' : '') + '.</p>' : '') +
         '<ul class="check" id="chk-' + k + '">' +
           ok(/\.mp4(\?|$)/i.test(pv.src || ''), 'Format MP4') +
           ok(pv.duree && pv.duree <= 90, 'Durée : ' + (pv.duree ? pv.duree + ' s' : 'inconnue') + ' (90 s maximum conseillé)') +
@@ -712,16 +712,16 @@
     });
   }
 
-  /* ── Vidéo Anna (niveau ville) : Claude lit les avis et écrit le texte,
+  /* ── Vidéo Emery (niveau ville) : Claude lit les avis et écrit le texte,
      l'avatar HeyGen le lit sur les photos du commerce. Chaque rendu est
      payant : le commerçant valide le texte avant le lancement. ── */
   var anna = { photos: {}, suivi: null, montages: [], textes: {}, coches: {} };
   function vueAnna(){
     var coms = D.commerces.filter(function(c){ return c.statut === 'valide' || c.statut === 'en_attente'; });
-    var h = '<h2 style="margin-bottom:8px">Vidéo présentée par Anna</h2>' +
-      '<p class="muted" style="margin-bottom:14px">Collez les avis du commerce : Claude en tire les points forts et écrit le texte qu\'Anna, présentatrice virtuelle, lira sur les photos du commerce. La vidéo arrive ensuite dans l\'espace du commerçant, qui l\'envoie à son association.</p>' +
+    var h = '<h2 style="margin-bottom:8px">Vidéo présentée par Emery</h2>' +
+      '<p class="muted" style="margin-bottom:14px">Collez les avis du commerce : Claude en tire les points forts et écrit le texte qu\'Emery, présentatrice virtuelle, lira sur les photos du commerce. La vidéo arrive ensuite dans l\'espace du commerçant, qui l\'envoie à son association.</p>' +
       '<div class="bloc" id="aSerie"><h3>En série · tous les commerces sans vidéo</h3>' +
-        '<p class="small muted">Claude cherche les avis publics de chaque commerce sur le web, les analyse avec la fiche (nom, catégorie, adresse, horaires, offre) et écrit le texte ; Anna le lit sur des cartes aux couleurs de l\'appli. Vous relisez les textes avant de lancer, puis vous publiez les vidéos.</p>' +
+        '<p class="small muted">Claude cherche les avis publics de chaque commerce sur le web, les analyse avec la fiche (nom, catégorie, adresse, horaires, offre) et écrit le texte ; Emery le lit sur des cartes aux couleurs de l\'appli. Vous relisez les textes avant de lancer, puis vous publiez les vidéos.</p>' +
         '<label class="ck" style="margin-top:8px"><input type="checkbox" id="sWeb" checked> Chercher les avis sur le web (plus long : 30 s à 1 min par commerce, environ 5 centimes)</label>' +
         '<div class="lot" style="margin-top:10px"><button class="b2" type="button" id="sTout">Tout cocher</button><button class="b2" type="button" id="sRien">Tout décocher</button>' +
         '<button class="b2" type="button" id="sTextes">Écrire les textes</button><button class="b2 ok" type="button" id="sLancer" disabled>Lancer les vidéos</button></div>' +
@@ -733,16 +733,16 @@
         '<label class="f large"><span>Avis clients (copiés depuis la fiche Google du commerçant, avec son accord)</span><textarea id="aAvis" style="min-height:160px" placeholder="Laissez vide : Claude cherche lui-même les avis publics sur le web. Ou collez ici 10 à 100 avis. Rien n\'est conservé."></textarea></label>' +
       '</div><p class="small muted" id="aNb"></p>' +
       '<div class="bar"><button class="btn" id="aAnalyser" type="button"><span>Écrire le texte avec Claude</span><span class="arr">›</span></button><span class="msg" id="aMsg1"></span></div></div>' +
-      '<div class="bloc" id="aRes" hidden><h3>2 · Le texte d\'Anna</h3><div id="aAnalyse"></div><div class="form">' +
-        '<label class="f large"><span>Texte lu par Anna (corrigez si besoin, puis faites-le valider au commerçant)</span><textarea id="aTexte" style="min-height:120px;font-weight:400" maxlength="700"></textarea></label>' +
+      '<div class="bloc" id="aRes" hidden><h3>2 · Le texte d\'Emery</h3><div id="aAnalyse"></div><div class="form">' +
+        '<label class="f large"><span>Texte lu par Emery (corrigez si besoin, puis faites-le valider au commerçant)</span><textarea id="aTexte" style="min-height:120px;font-weight:400" maxlength="700"></textarea></label>' +
       '</div><p class="small muted" id="aDuree"></p></div>' +
       '<div class="bloc" id="aLance" hidden><h3>3 · Photos et lancement</h3>' +
         '<p class="small muted">2 à 6 photos du commerce, à la verticale de préférence. Le nom du commerce s\'affiche sur la 1<sup>re</sup>.</p>' +
         '<div class="row" id="aPhotos" style="flex-wrap:wrap;gap:10px;margin:10px 0"></div>' +
         '<div class="form"><label class="f"><span>Bouton de fin</span><select id="aCta">' + opts(CTAS, 'offre') + '</select></label></div>' +
         '<label class="ck" style="margin-top:12px"><input type="checkbox" id="aAccord"> Le commerçant a relu ce texte et accepte une vidéo présentée par un avatar, avec la mention « générée par IA ».</label>' +
-        '<div class="bar"><button class="btn" id="aLancer" type="button"><span>Lancer la vidéo Anna</span><span class="arr">›</span></button><span class="msg" id="aMsg2"></span></div></div>' +
-      '<div class="bloc"><h3>Vidéos Anna récentes</h3><div id="aListe"><p class="muted small">Chargement…</p></div></div>';
+        '<div class="bar"><button class="btn" id="aLancer" type="button"><span>Lancer la vidéo Emery</span><span class="arr">›</span></button><span class="msg" id="aMsg2"></span></div></div>' +
+      '<div class="bloc"><h3>Vidéos Emery récentes</h3><div id="aListe"><p class="muted small">Chargement…</p></div></div>';
     vue.innerHTML = h;
     anna.photos = {};
     rendrePhotosAnna();
@@ -850,7 +850,7 @@
     if (ids.length < 2) return ko('Ajoutez au moins 2 photos.');
     if (!document.getElementById('aAccord').checked) return ko('Cochez l\'accord du commerçant.');
     var c = commerce(slug);
-    if (!confirm('Lancer la vidéo Anna pour ' + (c ? c.doc.nom : slug) + ' ? Le rendu consomme des crédits HeyGen.')) return;
+    if (!confirm('Lancer la vidéo Emery pour ' + (c ? c.doc.nom : slug) + ' ? Le rendu consomme des crédits HeyGen.')) return;
     b.disabled = true; m.className = 'msg'; m.textContent = 'Envoi des photos…';
     var rushes = [];
     ids.reduce(function(ch, k){ return ch.then(function(){ return televerserPhoto(slug, anna.photos[k].blob).then(function(chemin){ rushes.push({ plan: k, chemin: chemin }); }); }); }, Promise.resolve())
@@ -864,7 +864,7 @@
       listeAnna();
     }).catch(function(e){ b.disabled = false; ko('Impossible : ' + e.message); });
   }
-  /* ── Série : commerces sans vidéo publiée ni vidéo Anna déjà demandée ── */
+  /* ── Série : commerces sans vidéo publiée ni vidéo Emery déjà demandée ── */
   function sansVideo(){
     var pris = {};
     anna.montages.forEach(function(m){ if (m.statut !== 'erreur') pris[m.slug] = 1; });
@@ -883,7 +883,7 @@
         (t != null ? '<textarea data-st="' + esc(c.slug) + '" maxlength="700" style="width:100%;min-height:76px;border-radius:10px;border:1.5px solid var(--line);padding:8px 12px;font:inherit;font-size:14px">' + esc(t) + '</textarea>' : '') +
         (anna.infos && anna.infos[c.slug] ? '<p class="small muted">' + esc(anna.infos[c.slug]) + '</p>' : '') +
         (anna.remarques && anna.remarques[c.slug] ? '<p class="small" style="color:#8A2B2B">⚠️ ' + esc(anna.remarques[c.slug]) + '</p>' : '') + '</div>';
-    }).join('') : '<p class="muted small">Tous les commerces ont une vidéo ou une vidéo Anna en cours.</p>';
+    }).join('') : '<p class="muted small">Tous les commerces ont une vidéo ou une vidéo Emery en cours.</p>';
     majSerie();
   }
   function choisisSerie(){ return sansVideo().filter(function(c){ return anna.coches[c.slug]; }); }
@@ -932,7 +932,7 @@
     var l = choisisSerie().filter(function(c){ return (anna.textes[c.slug] || '').length >= 20; }), b = this, m = document.getElementById('sMsg');
     if (!l.length) return;
     var cout = l.reduce(function(n, c){ return n + anna.textes[c.slug].split(/\s+/).length; }, 0) / 2.6 * 0.0167;
-    if (!confirm('Lancer ' + l.length + ' vidéo' + (l.length > 1 ? 's' : '') + ' Anna ? Coût HeyGen estimé : ' + cout.toFixed(2).replace('.', ',') + ' $. Les rendus se font les uns après les autres (2 à 3 minutes chacun).')) return;
+    if (!confirm('Lancer ' + l.length + ' vidéo' + (l.length > 1 ? 's' : '') + ' Emery ? Coût HeyGen estimé : ' + cout.toFixed(2).replace('.', ',') + ' $. Les rendus se font les uns après les autres (2 à 3 minutes chacun).')) return;
     b.disabled = true; var faits = 0, echecs = [];
     l.reduce(function(ch, c){
       return ch.then(function(){
@@ -969,19 +969,19 @@
           (x.src ? '<video controls playsinline preload="metadata" style="width:100%;max-width:280px;aspect-ratio:9/16;border-radius:12px;background:#111" poster="' + esc(x.affiche || '') + '" src="' + esc(x.src) + '">' +
             (x.sousTitres ? '<track kind="subtitles" srclang="fr" label="Français" default src="' + esc(x.sousTitres) + '">' : '') + '</video>' : '') +
           '<p class="small muted">« ' + esc(x.texte || '') + ' »</p></div>';
-      }).join('') : '<p class="muted small">Aucune vidéo Anna pour le moment.</p>');
+      }).join('') : '<p class="muted small">Aucune vidéo Emery pour le moment.</p>');
       var pt = document.getElementById('pTout');
       if (pt) {
         pt.addEventListener('click', function(){ Array.prototype.forEach.call(el.querySelectorAll('[data-pub]'), function(c){ c.checked = true; }); });
         document.getElementById('pPublier').addEventListener('click', function(){
           var ids = Array.prototype.filter.call(el.querySelectorAll('[data-pub]'), function(c){ return c.checked; }).map(function(c){ return c.getAttribute('data-pub'); });
           if (!ids.length) { alert('Cochez les vidéos à publier.'); return; }
-          if (!confirm('Publier ' + ids.length + ' vidéo' + (ids.length > 1 ? 's' : '') + ' Anna dans l\'appli ?')) return;
+          if (!confirm('Publier ' + ids.length + ' vidéo' + (ids.length > 1 ? 's' : '') + ' Emery dans l\'appli ?')) return;
           this.disabled = true;
           rpc('hl_admin_avatar_publier', { p_token: jeton(), p_ids: ids }).then(function(r){
             if (!r.ok) throw new Error(r.reason);
             HL.toast(r.publiees + ' vidéo' + (r.publiees > 1 ? 's publiées' : ' publiée'));
-            // Un commerce qui a déjà sa propre vidéo la garde : Anna ne la remplace jamais.
+            // Un commerce qui a déjà sa propre vidéo la garde : Emery ne la remplace jamais.
             if ((r.ignorees || []).length) alert('Non publiées, car le commerçant a déjà sa propre vidéo en ligne : ' + r.ignorees.map(nom).join(', ') + '.');
             return charger().then(listeAnna);
           }).catch(function(e){ alert('Publication impossible : ' + e.message); });

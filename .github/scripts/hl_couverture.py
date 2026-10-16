@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Couverture des vidéos présentées par Anna, pour les cartes de l'appli.
+"""Couverture des vidéos présentées par l'avatar (Emery), pour les cartes de l'appli.
 
 Les cartes vidéo de l'accueil et de la TV locale montrent le commerce, pas
-l'animatrice : avec des photos, la couverture est la première photo du
+l'avatar : avec des photos, la couverture est la première photo du
 commerce, recadrée en 9:16 ; sans photo, un visuel aux couleurs de l'appli
 (dégradé bleu nuit vers rose) avec l'icône de la catégorie. Aucun texte sur
 l'image : la carte affiche déjà le nom, la catégorie et la durée.

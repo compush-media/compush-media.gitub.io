@@ -387,7 +387,7 @@
     // Grand lecteur : il prend la forme de la vidéo (lue sur l'affiche), pour
     // qu'une vidéo verticale ne soit pas rognée en haut et en bas.
     el.style.aspectRatio = ""; el.style.width = "";
-    // Vidéo présentée par Anna : mention IA et moyen pour le commerçant de la faire modifier ou retirer.
+    // Vidéo présentée par Emery, avatar IA : mention IA et moyen pour le commerçant de la faire modifier ou retirer.
     var note = el.nextElementSibling;
     if (note && note.classList.contains("ia-note")) note.remove();
     if (v.ia && o.wide) {
