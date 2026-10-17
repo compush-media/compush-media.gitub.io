@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-10-14T10:20+00:00",
- "empreinte": "1edef070550ab9ef",
+ "maj": "2026-10-17T09:30+00:00",
+ "empreinte": "ffb05f93aff7b144",
  "actus": [
   {
    "titre": "Un coup de pouce pour réussir au collège !",
@@ -91,14 +91,6 @@
   }
  ],
  "agenda": [
-  {
-   "titre": "Les voyages fantastiques",
-   "debut": "2026-10-16",
-   "fin": "2026-10-16",
-   "resume": "",
-   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/DIM_3624.jpg.png",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13905&iddossiercontenu=9"
-  },
   {
    "titre": "Montier-Bonnet 4",
    "debut": "2026-10-17",
