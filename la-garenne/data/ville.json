@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-10-17T09:30+00:00",
- "empreinte": "ffb05f93aff7b144",
+ "maj": "2026-10-18T09:43+00:00",
+ "empreinte": "b382e1a57d9ea514",
  "actus": [
   {
    "titre": "Un coup de pouce pour réussir au collège !",
@@ -91,14 +91,6 @@
   }
  ],
  "agenda": [
-  {
-   "titre": "Montier-Bonnet 4",
-   "debut": "2026-10-17",
-   "fin": "2026-10-17",
-   "resume": "",
-   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/Montier-Bonnet_4_-_Copyright_Laurent_Cheron.jpg.png",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13904&iddossiercontenu=9"
-  },
   {
    "titre": "Vivre avec Bach",
    "debut": "2026-11-05",
