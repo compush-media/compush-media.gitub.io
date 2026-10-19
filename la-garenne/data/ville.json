@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-10-18T09:43+00:00",
- "empreinte": "b382e1a57d9ea514",
+ "maj": "2026-10-19T10:56+00:00",
+ "empreinte": "e5711a25e06e9ccb",
  "actus": [
   {
    "titre": "Un coup de pouce pour réussir au collège !",
@@ -55,13 +55,6 @@
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13487&iddossiercontenu=33"
   },
   {
-   "titre": "La Semaine Bleue à La Garenne-Colombes",
-   "date": "2026-09-28",
-   "resume": "Du 5 au 11 octobre, la Semaine bleue met à l’honneur nos aînés et les liens qui unissent les générations. Autour du thème « Relions tous les âges dans des territoires engagés », la Ville et le Centre…",
-   "image": "",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13931&iddossiercontenu=33"
-  },
-  {
    "titre": "Les Garennois font leur cinéma !",
    "date": "2026-10-05",
    "resume": "Pour l'ouverture de son cinéma, la Ville vous confie l'affiche ! 24 heures non-stop, nuit comprise, pour fêter cent ans de cinéma : un film par décennie, choisi par les Garennois. Ce mois-ci, vous…",
@@ -88,6 +81,13 @@
    "resume": "Installé rue d’Estienne-d’Orves, un nouveau Conservatoire ouvrira en 2028 pour accueillir dans des conditions optimales, au sein d’un bâtiment moderne et décarboné, l’apprentissage de la musique, de…",
    "image": "https://www.lagarennecolombes.fr/image/CONSERVATOIRE___Projet-Conservatoire_Ext-rue-d-Estienne-d-Orves.jpg",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13265&iddossiercontenu=33"
+  },
+  {
+   "titre": "Que faire de vos déchets chimiques sur le territoire?",
+   "date": "",
+   "resume": "De nombreuses solutions ont été déployées pour mieux collecter ces déchets afin de les traiter et ainsi réduire leur impact sur l’environnement. Que ce soit dans votre magasin préféré ou dans votre…",
+   "image": "https://www.lagarennecolombes.fr/image/AdobeStock_588171217.jpeg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13301&iddossiercontenu=33"
   }
  ],
  "agenda": [
