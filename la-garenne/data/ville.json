@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-10-19T10:56+00:00",
- "empreinte": "e5711a25e06e9ccb",
+ "maj": "2026-10-20T10:11+00:00",
+ "empreinte": "918022da0236c06d",
  "actus": [
   {
    "titre": "Un coup de pouce pour réussir au collège !",
@@ -112,7 +112,7 @@
    "debut": "2026-11-07",
    "fin": "2026-11-07",
    "resume": "",
-   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/soiree_annee_80.png",
+   "image": "https://www.lagarennecolombes.fr/image/Saison_culturelle_26-27-Soiree-dansante-Annees-90-2000_page-0001.jpg",
    "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13902&iddossiercontenu=9"
   },
   {
