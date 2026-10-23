@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-10-20T10:11+00:00",
- "empreinte": "918022da0236c06d",
+ "maj": "2026-10-23T20:00+00:00",
+ "empreinte": "0e8ca42e6c230c27",
  "actus": [
   {
    "titre": "Un coup de pouce pour réussir au collège !",
@@ -57,7 +57,7 @@
   {
    "titre": "Les Garennois font leur cinéma !",
    "date": "2026-10-05",
-   "resume": "Pour l'ouverture de son cinéma, la Ville vous confie l'affiche ! 24 heures non-stop, nuit comprise, pour fêter cent ans de cinéma : un film par décennie, choisi par les Garennois. Ce mois-ci, vous…",
+   "resume": "Pour l'ouverture de son cinéma, la Ville vous confie l'affiche ! 24 heures non-stop, nuit comprise, pour fêter cent ans de cinéma : un film par décennie, choisi par les Garennois. Place aux votes !",
    "image": "",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13937&iddossiercontenu=33"
   },
