@@ -452,6 +452,10 @@
             "Vous retrouverez votre Action du jour en un geste, comme une application.",
           ),
           el("ol", {}, etapes.map((etape) => el("li", {}, etape))),
+          // Chrome sur iPhone n'affiche pas la fin de l'adresse : on dit clairement si l'accès est prêt.
+          accesPret()
+            ? el("p", { class: "succes" }, "✓ Votre accès est prêt : l'application s'ouvrira connectée.")
+            : null,
           bouton,
         );
       }
@@ -462,11 +466,14 @@
       // L'accès vaut une heure ; au-delà de 50 minutes, il est renouvelé. Sur Android, la connexion est
       // déjà partagée avec le navigateur.
       const ACCES_FRAIS_MS = 50 * 60 * 1000;
+      const accesPret = () => {
+        const parametres = new URLSearchParams(location.search);
+        return IPHONE && Boolean(parametres.get("installation")) &&
+          Date.now() - Number(parametres.get("le")) < ACCES_FRAIS_MS;
+      };
       async function preparerInstallation(session) {
         if (!IPHONE || INSTALLE) return;
-        const parametres = new URLSearchParams(location.search);
-        const prepareLe = Number(parametres.get("le"));
-        if (parametres.get("installation") && Date.now() - prepareLe < ACCES_FRAIS_MS) return;
+        if (accesPret()) return;
         try {
           const reponse = await fetch(ADRESSE_AGENT, {
             method: "POST",
