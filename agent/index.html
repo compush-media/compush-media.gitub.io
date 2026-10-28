@@ -182,6 +182,10 @@
         auth: { persistSession: true, detectSessionInUrl: false, storageKey: "fidelavis-agent" },
       });
       const zone = document.getElementById("espace");
+      // replaceChildren écrirait « null » en toutes lettres : les blocs absents sont retirés avant.
+      const afficher = (...blocs) => zone.replaceChildren(...blocs.filter(Boolean));
+      const IPHONE = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      const INSTALLE = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
 
       function el(balise, attributs, ...enfants) {
         const noeud = document.createElement(balise);
@@ -277,7 +281,7 @@
           erreur.textContent = "L'envoi n'a pas abouti. Réessayez dans un instant.";
           erreur.hidden = false;
         });
-        zone.replaceChildren(entete(null), form);
+        afficher(entete(null), form);
       }
 
       async function demanderCode(email) {
@@ -361,7 +365,7 @@
           }
           await afficherEspace(data.session);
         });
-        zone.replaceChildren(entete(null), form);
+        afficher(entete(null), form);
         champ.focus();
       }
 
@@ -374,31 +378,35 @@
         document.getElementById("installer")?.removeAttribute("hidden");
       });
       function installation() {
-        const installe = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
-        if (installe) return null;
+        if (INSTALLE) return null;
         const ua = navigator.userAgent;
-        const iphone = /iphone|ipad|ipod/i.test(ua);
-        const derniere =
-          "Ouvrez Fidelavis Agent depuis votre écran d'accueil, touchez « Recevoir mon code » et entrez le code reçu par e-mail : vous ne le ferez qu'une fois.";
+        const iphone = IPHONE;
+        const derniere = IPHONE
+          ? "Ouvrez Fidelavis Agent depuis votre écran d'accueil : vous êtes connecté directement. S'il vous demande un code, touchez « Recevoir mon code »."
+          : "Ouvrez Fidelavis Agent depuis votre écran d'accueil : vous êtes connecté directement.";
+        const ecranAccueil =
+          "Touchez ••• « En voir plus » si besoin, puis « Sur l'écran d'accueil ».";
         let etapes;
         if (iphone && /CriOS|EdgiOS|FxiOS/.test(ua)) {
           // Chrome, Edge et Firefox sur iPhone ajoutent à l'écran d'accueil depuis leur bouton Partager.
           etapes = [
-            "Touchez le bouton Partager, à droite de la barre d'adresse.",
-            "Choisissez « Ajouter à l'écran d'accueil », puis « Ajouter ».",
+            "Touchez le bouton Partager (le carré avec une flèche), à droite de la barre d'adresse.",
+            ecranAccueil,
+            "Touchez « Ajouter ».",
             derniere,
           ];
         } else if (iphone && /Safari\//.test(ua) && !/GSA\/|FBAN|FBAV|Instagram/.test(ua)) {
           etapes = [
             "Touchez le bouton Partager (le carré avec une flèche), en bas de l'écran.",
-            "Choisissez « Sur l'écran d'accueil », puis « Ajouter ».",
+            ecranAccueil,
+            "Touchez « Ajouter ».",
             derniere,
           ];
         } else if (iphone) {
           // Navigateur intégré à une application (Google, Gmail, Facebook…) : il faut passer par Safari.
           etapes = [
             "Ouvrez cette page dans Safari : touchez ••• ou le bouton Partager, puis « Ouvrir dans Safari ».",
-            "Dans Safari, touchez Partager, puis « Sur l'écran d'accueil ».",
+            `Dans Safari, touchez Partager. ${ecranAccueil}`,
             derniere,
           ];
         } else {
@@ -435,6 +443,48 @@
           el("ol", {}, etapes.map((etape) => el("li", {}, etape))),
           bouton,
         );
+      }
+
+      // Sur iPhone, l'application ajoutée à l'écran d'accueil ne partage pas la connexion du navigateur.
+      // Avant l'ajout, on place dans l'adresse de la page un accès à usage unique : l'application
+      // installée l'utilise à sa première ouverture, sans code. Sur Android, la connexion est partagée.
+      async function preparerInstallation(session) {
+        if (!IPHONE || INSTALLE) return;
+        try {
+          const reponse = await fetch(ADRESSE_AGENT, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({ action: "installation" }),
+          });
+          if (!reponse.ok) return;
+          const { token_hash: jeton } = await reponse.json();
+          if (!jeton) return;
+          const adresse = new URL(`/agent/?installation=${encodeURIComponent(jeton)}`, location.href).href;
+          history.replaceState(null, "", adresse);
+          // Même adresse dans le manifeste, au cas où l'iPhone lise le point de départ du manifeste.
+          const manifeste = {
+            name: "Fidelavis Agent",
+            short_name: "Fidelavis",
+            lang: "fr",
+            start_url: adresse,
+            scope: new URL("/agent/", location.href).href,
+            display: "standalone",
+            background_color: "#F5F5F3",
+            theme_color: "#1F7A55",
+            icons: [{
+              src: new URL("/agent/icons/icon-512.png", location.href).href,
+              sizes: "512x512",
+              type: "image/png",
+            }],
+          };
+          document.querySelector('link[rel="manifest"]').href =
+            "data:application/manifest+json," + encodeURIComponent(JSON.stringify(manifeste));
+        } catch {
+          // Sans accès préparé, l'application installée demandera un code : rien de bloquant.
+        }
       }
 
       function positionDeDepart(depart) {
@@ -476,7 +526,7 @@
           connexion(null, null);
         });
         if (error || !commercant) {
-          zone.replaceChildren(
+          afficher(
             entete(null),
             el(
               "section",
@@ -493,7 +543,8 @@
           return;
         }
         const enEssai = commercant.statut === "essai";
-        zone.replaceChildren(
+        preparerInstallation(session);
+        afficher(
           entete(commercant.prenom),
           el(
             "section",
@@ -518,6 +569,16 @@
       async function demarrer() {
         const parametres = new URLSearchParams(location.search);
         const jetonLien = parametres.get("token_hash");
+        // Accès préparé avant l'ajout à l'écran d'accueil : il ne sert que dans l'application installée,
+        // jamais dans le navigateur (qui l'épuiserait avant elle).
+        const jetonInstallation = parametres.get("installation");
+        if (jetonInstallation && INSTALLE) {
+          const { data: existante } = await db.auth.getSession();
+          if (!existante.session) {
+            await db.auth.verifyOtp({ token_hash: jetonInstallation, type: "email" });
+          }
+          history.replaceState(null, "", location.pathname);
+        }
         if (jetonLien) {
           // Le jeton ne sert qu'une fois : on le retire tout de suite de l'adresse affichée.
           history.replaceState(null, "", location.pathname);
