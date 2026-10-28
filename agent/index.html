@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#1F7A55" />
+    <title>Fidelavis Agent</title>
+    <link rel="manifest" href="/agent/manifest.webmanifest" />
+    <link rel="icon" href="/agent/icons/icon-512.png" />
+    <link rel="apple-touch-icon" href="/agent/icons/icon-512.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Fidelavis" />
+    <style>
+      :root {
+        --fond: #F5F5F3;
+        --carte: #FFFFFF;
+        --encre: #17201B;
+        --texte: #33403A;
+        --doux: #5F6B65;
+        --trait: #E7E7E3;
+        --vert: #1F7A55;
+        --vert-clair: #E3F1EA;
+        --orange: #A8521C;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      body {
+        margin: 0;
+        background: var(--fond);
+        color: var(--texte);
+        font: 17px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      main {
+        max-width: 480px;
+        margin: 0 auto;
+        padding: max(24px, env(safe-area-inset-top)) 20px 40px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .date {
+        color: var(--doux);
+        margin: 0;
+      }
+      h1 {
+        color: var(--encre);
+        font-size: 30px;
+        line-height: 1.15;
+        margin: 2px 0 0;
+      }
+      .marque {
+        background: var(--vert-clair);
+        color: var(--vert);
+        font-weight: 700;
+        font-size: 15px;
+        border-radius: 999px;
+        padding: 6px 14px;
+        white-space: nowrap;
+      }
+      .carte {
+        background: var(--carte);
+        border-radius: 22px;
+        padding: 22px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 2px rgba(23, 32, 27, 0.05);
+      }
+      .etiquette {
+        color: var(--vert);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin: 0 0 8px;
+      }
+      h2 {
+        color: var(--encre);
+        font-size: 24px;
+        line-height: 1.2;
+        margin: 0 0 10px;
+      }
+      p {
+        margin: 0 0 10px;
+      }
+      .doux {
+        color: var(--doux);
+      }
+      .position {
+        color: var(--encre);
+        font-size: 24px;
+        font-weight: 800;
+        margin: 2px 0 6px;
+      }
+      ol {
+        margin: 0;
+        padding-left: 22px;
+      }
+      li {
+        margin-bottom: 6px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin: 6px 0;
+      }
+      input[type="email"] {
+        width: 100%;
+        font: inherit;
+        padding: 14px;
+        border: 1px solid var(--trait);
+        border-radius: 12px;
+        margin-bottom: 12px;
+      }
+      .bouton {
+        display: block;
+        width: 100%;
+        border: 0;
+        border-radius: 16px;
+        background: var(--vert);
+        color: #fff;
+        font: inherit;
+        font-weight: 700;
+        padding: 16px;
+        cursor: pointer;
+      }
+      .bouton[disabled] {
+        opacity: 0.6;
+      }
+      .lien {
+        background: none;
+        border: 0;
+        color: var(--doux);
+        font: inherit;
+        text-decoration: underline;
+        cursor: pointer;
+        padding: 0;
+      }
+      .erreur {
+        color: var(--orange);
+      }
+      .succes {
+        color: var(--vert);
+        font-weight: 600;
+      }
+      .pied {
+        text-align: center;
+        margin-top: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="espace">
+      <p class="doux">Chargement…</p>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+    <script>
+      "use strict";
+      // Espace du commerçant Fidelavis Agent. Connexion sans mot de passe : le lien reçu par e-mail porte
+      // un jeton à usage unique, vérifié ici. Le commerçant ne lit que sa propre fiche (règle RLS).
+      const SUPABASE_URL = "https://rtdiaeskmyjjwohirhzj.supabase.co";
+      // Clé publique (publishable) : faite pour être dans une page, les droits sont tenus par RLS.
+      const SUPABASE_CLE = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
+      const ADRESSE_AGENT = `${SUPABASE_URL}/functions/v1/agent`;
+
+      const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_CLE, {
+        auth: { persistSession: true, detectSessionInUrl: false, storageKey: "fidelavis-agent" },
+      });
+      const zone = document.getElementById("espace");
+
+      function el(balise, attributs, ...enfants) {
+        const noeud = document.createElement(balise);
+        for (const [nom, valeur] of Object.entries(attributs ?? {})) {
+          if (valeur !== null && valeur !== undefined && valeur !== false) {
+            noeud.setAttribute(nom, valeur === true ? "" : valeur);
+          }
+        }
+        for (const enfant of enfants.flat(Infinity)) {
+          if (enfant === null || enfant === undefined || enfant === false) continue;
+          noeud.append(typeof enfant === "string" ? document.createTextNode(enfant) : enfant);
+        }
+        return noeud;
+      }
+
+      const jour = (date, options) =>
+        new Date(date).toLocaleDateString("fr-FR", options ?? { day: "numeric", month: "long" });
+      const rang = (n) => (n === 1 ? "1re" : `${n}e`);
+
+      function entete(prenom) {
+        const aujourdhui = jour(new Date(), { weekday: "long", day: "numeric", month: "long" });
+        return el(
+          "header",
+          {},
+          el(
+            "div",
+            {},
+            el("p", { class: "date" }, aujourdhui.charAt(0).toUpperCase() + aujourdhui.slice(1)),
+            el("h1", {}, prenom ? `Bonjour ${prenom}` : "Bonjour"),
+          ),
+          el("span", { class: "marque" }, "Fidelavis"),
+        );
+      }
+
+      // Sans session : on demande l'adresse de l'essai et on renvoie un lien de connexion.
+      function connexion(message) {
+        const erreur = el("p", { class: "erreur", hidden: !message }, message ?? "");
+        const champ = el("input", {
+          id: "email",
+          type: "email",
+          autocomplete: "email",
+          required: true,
+          placeholder: "vous@exemple.fr",
+        });
+        const bouton = el("button", { class: "bouton", type: "submit" }, "Recevoir mon lien");
+        const form = el(
+          "form",
+          { class: "carte", novalidate: true },
+          el("p", { class: "etiquette" }, "Votre espace"),
+          el("h2", {}, "Connexion"),
+          el(
+            "p",
+            { class: "doux" },
+            "Indiquez l'adresse e-mail de votre essai : nous vous envoyons un lien de connexion, sans mot de passe.",
+          ),
+          el("label", { for: "email" }, "E-mail"),
+          champ,
+          bouton,
+          erreur,
+        );
+        form.addEventListener("submit", async (evenement) => {
+          evenement.preventDefault();
+          const email = champ.value.trim();
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+            erreur.textContent = "Vérifiez votre adresse e-mail.";
+            erreur.hidden = false;
+            return;
+          }
+          bouton.disabled = true;
+          bouton.textContent = "Envoi en cours…";
+          try {
+            const reponse = await fetch(ADRESSE_AGENT, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ action: "lien", email }),
+            });
+            if (!reponse.ok) throw new Error("refus");
+            form.replaceChildren(
+              el("p", { class: "etiquette" }, "Votre espace"),
+              el("h2", {}, "Regardez vos e-mails"),
+              el(
+                "p",
+                { class: "succes" },
+                "Si cette adresse a un essai en cours, un lien de connexion vient de partir. Il est valable une heure.",
+              ),
+            );
+          } catch {
+            bouton.disabled = false;
+            bouton.textContent = "Recevoir mon lien";
+            erreur.textContent = "L'envoi n'a pas abouti. Réessayez dans un instant.";
+            erreur.hidden = false;
+          }
+        });
+        zone.replaceChildren(entete(null), form);
+      }
+
+      // Guide d'installation : l'espace doit être sur l'écran d'accueil pour recevoir l'Action du jour.
+      // Android propose l'installation quand il le juge possible : le bouton n'apparaît qu'à ce moment-là.
+      let invitationAndroid = null;
+      addEventListener("beforeinstallprompt", (evenement) => {
+        evenement.preventDefault();
+        invitationAndroid = evenement;
+        document.getElementById("installer")?.removeAttribute("hidden");
+      });
+      function installation() {
+        const installe = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+        if (installe) return null;
+        const iphone = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        const etapes = iphone
+          ? [
+            "Ouvrez cette page dans Safari.",
+            "Touchez le bouton Partager (le carré avec une flèche).",
+            "Choisissez « Sur l'écran d'accueil », puis « Ajouter ».",
+          ]
+          : [
+            "Touchez le menu ⋮ de votre navigateur.",
+            "Choisissez « Installer l'application » ou « Ajouter à l'écran d'accueil ».",
+          ];
+        const bouton = !iphone
+          ? el(
+            "button",
+            { id: "installer", class: "bouton", type: "button", hidden: !invitationAndroid },
+            "Installer Fidelavis Agent",
+          )
+          : null;
+        bouton?.addEventListener("click", async () => {
+          if (!invitationAndroid) return;
+          invitationAndroid.prompt();
+          await invitationAndroid.userChoice;
+          invitationAndroid = null;
+          bouton.hidden = true;
+        });
+        return el(
+          "section",
+          { class: "carte" },
+          el("p", { class: "etiquette" }, "À faire une fois"),
+          el("h2", {}, "Ajoutez Fidelavis Agent à votre écran d'accueil"),
+          el(
+            "p",
+            { class: "doux" },
+            "Vous retrouverez votre Action du jour en un geste, comme une application.",
+          ),
+          el("ol", {}, etapes.map((etape) => el("li", {}, etape))),
+          bouton,
+        );
+      }
+
+      function positionDeDepart(depart) {
+        if (!depart?.mot_cle) return null;
+        const autres = (depart.autres_positions ?? []).map((a) =>
+          el(
+            "p",
+            { class: "doux" },
+            `Sur « ${a.mot_cle} » tout court : ${
+              a.position === null ? `au-delà des ${a.profondeur} premiers` : rang(a.position)
+            }.`,
+          )
+        );
+        return el(
+          "section",
+          { class: "carte" },
+          el("p", { class: "doux" }, `« ${depart.mot_cle} » sur Google Maps`),
+          el(
+            "p",
+            { class: "position" },
+            depart.position === null
+              ? "Hors des résultats relevés"
+              : `Vous êtes ${rang(depart.position)}`,
+          ),
+          autres,
+          depart.releve_le
+            ? el("p", { class: "doux" }, `Point de départ relevé le ${jour(depart.releve_le)}.`)
+            : null,
+        );
+      }
+
+      async function afficherEspace(session) {
+        const { data: commercant, error } = await db.from("commercants")
+          .select("prenom, nom_fiche, mot_cle_suivi, statut, essai_fin, depart")
+          .eq("user_id", session.user.id).maybeSingle();
+        const deconnexion = el("button", { class: "lien", type: "button" }, "Se déconnecter");
+        deconnexion.addEventListener("click", async () => {
+          await db.auth.signOut();
+          connexion(null);
+        });
+        if (error || !commercant) {
+          zone.replaceChildren(
+            entete(null),
+            el(
+              "section",
+              { class: "carte" },
+              el("h2", {}, "Aucun essai pour cette adresse"),
+              el(
+                "p",
+                { class: "doux" },
+                "Pour commencer, utilisez le bouton « Essayer 15 jours gratuitement » de votre audit.",
+              ),
+            ),
+            el("p", { class: "pied" }, deconnexion),
+          );
+          return;
+        }
+        const enEssai = commercant.statut === "essai";
+        zone.replaceChildren(
+          entete(commercant.prenom),
+          el(
+            "section",
+            { class: "carte" },
+            el("p", { class: "etiquette" }, enEssai ? "Essai gratuit" : "Votre espace"),
+            el("h2", {}, commercant.nom_fiche),
+            enEssai
+              ? el("p", {}, `Votre essai court jusqu'au ${jour(commercant.essai_fin)}.`)
+              : null,
+            el(
+              "p",
+              { class: "doux" },
+              "Chaque matin, votre Action du jour s'affichera ici : une chose simple à faire en 2 minutes, depuis votre téléphone, pour faire progresser votre fiche Google.",
+            ),
+          ),
+          installation(),
+          positionDeDepart(commercant.depart),
+          el("p", { class: "pied" }, deconnexion),
+        );
+      }
+
+      async function demarrer() {
+        const parametres = new URLSearchParams(location.search);
+        const jetonLien = parametres.get("token_hash");
+        if (jetonLien) {
+          // Le jeton ne sert qu'une fois : on le retire tout de suite de l'adresse affichée.
+          history.replaceState(null, "", location.pathname);
+          const { error } = await db.auth.verifyOtp({ token_hash: jetonLien, type: "email" });
+          if (error) {
+            const { data } = await db.auth.getSession();
+            if (!data.session) {
+              connexion("Ce lien a expiré ou a déjà servi. Demandez-en un nouveau ci-dessous.");
+              return;
+            }
+          }
+        }
+        const { data } = await db.auth.getSession();
+        if (data.session) await afficherEspace(data.session);
+        else connexion(null);
+      }
+
+      if ("serviceWorker" in navigator) navigator.serviceWorker.register("/agent/sw.js").catch(() => {});
+      demarrer().catch(() => connexion("Un problème est survenu. Réessayez dans un instant."));
+    </script>
+  </body>
+</html>
