@@ -6,7 +6,18 @@
     <meta name="robots" content="noindex" />
     <meta name="theme-color" content="#1F7A55" />
     <title>Fidelavis Agent</title>
-    <link rel="manifest" href="/agent/manifest.webmanifest" />
+    <script>
+      // Sur iPhone, l'icône de l'écran d'accueil reprend l'adresse de la page : son manifeste n'a donc
+      // pas d'adresse de départ fixe (voir preparerInstallation). Ailleurs, le manifeste habituel.
+      (function () {
+        var lien = document.createElement("link");
+        lien.rel = "manifest";
+        lien.href = /iphone|ipad|ipod/i.test(navigator.userAgent)
+          ? "/agent/manifest-iphone.webmanifest"
+          : "/agent/manifest.webmanifest";
+        document.head.appendChild(lien);
+      })();
+    </script>
     <link rel="icon" href="/agent/icons/icon-512.png" />
     <link rel="apple-touch-icon" href="/agent/icons/icon-512.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -446,10 +457,16 @@
       }
 
       // Sur iPhone, l'application ajoutée à l'écran d'accueil ne partage pas la connexion du navigateur.
-      // Avant l'ajout, on place dans l'adresse de la page un accès à usage unique : l'application
-      // installée l'utilise à sa première ouverture, sans code. Sur Android, la connexion est partagée.
+      // Avant l'ajout, la page se recharge à une adresse qui porte un accès à usage unique : l'icône
+      // reprend cette adresse, et l'application installée s'en sert à sa première ouverture, sans code.
+      // L'accès vaut une heure ; au-delà de 50 minutes, il est renouvelé. Sur Android, la connexion est
+      // déjà partagée avec le navigateur.
+      const ACCES_FRAIS_MS = 50 * 60 * 1000;
       async function preparerInstallation(session) {
         if (!IPHONE || INSTALLE) return;
+        const parametres = new URLSearchParams(location.search);
+        const prepareLe = Number(parametres.get("le"));
+        if (parametres.get("installation") && Date.now() - prepareLe < ACCES_FRAIS_MS) return;
         try {
           const reponse = await fetch(ADRESSE_AGENT, {
             method: "POST",
@@ -462,26 +479,7 @@
           if (!reponse.ok) return;
           const { token_hash: jeton } = await reponse.json();
           if (!jeton) return;
-          const adresse = new URL(`/agent/?installation=${encodeURIComponent(jeton)}`, location.href).href;
-          history.replaceState(null, "", adresse);
-          // Même adresse dans le manifeste, au cas où l'iPhone lise le point de départ du manifeste.
-          const manifeste = {
-            name: "Fidelavis Agent",
-            short_name: "Fidelavis",
-            lang: "fr",
-            start_url: adresse,
-            scope: new URL("/agent/", location.href).href,
-            display: "standalone",
-            background_color: "#F5F5F3",
-            theme_color: "#1F7A55",
-            icons: [{
-              src: new URL("/agent/icons/icon-512.png", location.href).href,
-              sizes: "512x512",
-              type: "image/png",
-            }],
-          };
-          document.querySelector('link[rel="manifest"]').href =
-            "data:application/manifest+json," + encodeURIComponent(JSON.stringify(manifeste));
+          location.replace(`/agent/?installation=${encodeURIComponent(jeton)}&le=${Date.now()}`);
         } catch {
           // Sans accès préparé, l'application installée demandera un code : rien de bloquant.
         }

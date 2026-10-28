@@ -1,0 +1,19 @@
+{
+  "name": "Fidelavis Agent",
+  "short_name": "Fidelavis",
+  "description": "Votre action du jour pour faire progresser votre fiche Google.",
+  "lang": "fr",
+  "scope": "/agent/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5F5F3",
+  "theme_color": "#1F7A55",
+  "icons": [
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
