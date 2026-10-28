@@ -39,7 +39,8 @@
       main {
         max-width: 480px;
         margin: 0 auto;
-        padding: max(24px, env(safe-area-inset-top)) 20px 40px;
+        /* Marge basse : les barres flottantes des navigateurs (Chrome sur iPhone) ne cachent rien. */
+        padding: max(24px, env(safe-area-inset-top)) 20px calc(140px + env(safe-area-inset-bottom));
       }
       header {
         display: flex;
@@ -112,7 +113,8 @@
         font-weight: 600;
         margin: 6px 0;
       }
-      input[type="email"] {
+      input[type="email"],
+      input.code {
         width: 100%;
         font: inherit;
         padding: 14px;
@@ -144,6 +146,11 @@
         cursor: pointer;
         padding: 0;
       }
+      input.code {
+        font-size: 28px;
+        letter-spacing: 8px;
+        text-align: center;
+      }
       .erreur {
         color: var(--orange);
       }
@@ -164,8 +171,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
     <script>
       "use strict";
-      // Espace du commerçant Fidelavis Agent. Connexion sans mot de passe : le lien reçu par e-mail porte
-      // un jeton à usage unique, vérifié ici. Le commerçant ne lit que sa propre fiche (règle RLS).
+      // Espace du commerçant Fidelavis Agent. Connexion sans mot de passe : l'e-mail porte un lien et un
+      // code à usage unique, vérifiés ici. Le commerçant ne lit que sa propre fiche (règle RLS).
       const SUPABASE_URL = "https://rtdiaeskmyjjwohirhzj.supabase.co";
       // Clé publique (publishable) : faite pour être dans une page, les droits sont tenus par RLS.
       const SUPABASE_CLE = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
@@ -193,6 +200,8 @@
       const jour = (date, options) =>
         new Date(date).toLocaleDateString("fr-FR", options ?? { day: "numeric", month: "long" });
       const rang = (n) => (n === 1 ? "1re" : `${n}e`);
+      const majuscule = (prenom) =>
+        prenom.toLocaleLowerCase("fr").replace(/(^|[\s-])(\p{L})/gu, (_, sep, l) => sep + l.toLocaleUpperCase("fr"));
 
       function entete(prenom) {
         const aujourdhui = jour(new Date(), { weekday: "long", day: "numeric", month: "long" });
@@ -203,14 +212,18 @@
             "div",
             {},
             el("p", { class: "date" }, aujourdhui.charAt(0).toUpperCase() + aujourdhui.slice(1)),
-            el("h1", {}, prenom ? `Bonjour ${prenom}` : "Bonjour"),
+            el("h1", {}, prenom ? `Bonjour ${majuscule(prenom)}` : "Bonjour"),
           ),
           el("span", { class: "marque" }, "Fidelavis"),
         );
       }
 
-      // Sans session : on demande l'adresse de l'essai et on renvoie un lien de connexion.
-      function connexion(message) {
+      // Sans session : on demande l'adresse de l'essai, un e-mail part avec un lien et un code.
+      // Le code est indispensable sur iPhone : l'application ajoutée à l'écran d'accueil ne partage pas
+      // la connexion du navigateur, et un lien reçu par e-mail s'ouvre toujours dans le navigateur.
+      const ADRESSE_VALIDE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+      function connexion(message, emailConnu) {
         const erreur = el("p", { class: "erreur", hidden: !message }, message ?? "");
         const champ = el("input", {
           id: "email",
@@ -218,8 +231,10 @@
           autocomplete: "email",
           required: true,
           placeholder: "vous@exemple.fr",
+          value: emailConnu ?? null,
         });
-        const bouton = el("button", { class: "bouton", type: "submit" }, "Recevoir mon lien");
+        const bouton = el("button", { class: "bouton", type: "submit" }, "Recevoir mon code");
+        const dejaUnCode = el("button", { class: "lien", type: "button" }, "J'ai déjà un code");
         const form = el(
           "form",
           { class: "carte", novalidate: true },
@@ -228,47 +243,126 @@
           el(
             "p",
             { class: "doux" },
-            "Indiquez l'adresse e-mail de votre essai : nous vous envoyons un lien de connexion, sans mot de passe.",
+            "Indiquez l'adresse e-mail de votre essai : nous vous envoyons un code de connexion, sans mot de passe.",
           ),
           el("label", { for: "email" }, "E-mail"),
           champ,
           bouton,
           erreur,
+          el("p", { class: "pied" }, dejaUnCode),
         );
+        const adresse = () => {
+          const email = champ.value.trim();
+          if (ADRESSE_VALIDE.test(email)) return email;
+          erreur.textContent = "Vérifiez votre adresse e-mail.";
+          erreur.hidden = false;
+          return null;
+        };
+        dejaUnCode.addEventListener("click", () => {
+          const email = adresse();
+          if (email) saisieDuCode(email, false);
+        });
         form.addEventListener("submit", async (evenement) => {
           evenement.preventDefault();
-          const email = champ.value.trim();
-          if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-            erreur.textContent = "Vérifiez votre adresse e-mail.";
+          const email = adresse();
+          if (!email) return;
+          bouton.disabled = true;
+          bouton.textContent = "Envoi en cours…";
+          if (await demanderCode(email)) {
+            saisieDuCode(email, true);
+            return;
+          }
+          bouton.disabled = false;
+          bouton.textContent = "Recevoir mon code";
+          erreur.textContent = "L'envoi n'a pas abouti. Réessayez dans un instant.";
+          erreur.hidden = false;
+        });
+        zone.replaceChildren(entete(null), form);
+      }
+
+      async function demanderCode(email) {
+        try {
+          const reponse = await fetch(ADRESSE_AGENT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "lien", email }),
+          });
+          return reponse.ok;
+        } catch {
+          return false;
+        }
+      }
+
+      function saisieDuCode(email, envoye) {
+        const erreur = el("p", { class: "erreur", hidden: true });
+        const champ = el("input", {
+          id: "code",
+          type: "text",
+          inputmode: "numeric",
+          autocomplete: "one-time-code",
+          pattern: "[0-9]*",
+          maxlength: "10",
+          required: true,
+          placeholder: "Code reçu par e-mail",
+          class: "code",
+        });
+        const bouton = el("button", { class: "bouton", type: "submit" }, "Se connecter");
+        const renvoyer = el("button", { class: "lien", type: "button" }, "Renvoyer un code");
+        const autreAdresse = el("button", { class: "lien", type: "button" }, "Changer d'adresse");
+        const form = el(
+          "form",
+          { class: "carte", novalidate: true },
+          el("p", { class: "etiquette" }, "Votre espace"),
+          el("h2", {}, "Entrez votre code"),
+          el(
+            "p",
+            { class: envoye ? "succes" : "doux" },
+            envoye
+              ? `Si ${email} a un essai en cours, un e-mail avec votre code vient de partir. Il est valable une heure.`
+              : `Entrez le code reçu par e-mail à ${email}.`,
+          ),
+          el("label", { for: "code" }, "Code"),
+          champ,
+          bouton,
+          erreur,
+          el("p", { class: "pied" }, renvoyer, " · ", autreAdresse),
+        );
+        renvoyer.addEventListener("click", async () => {
+          renvoyer.disabled = true;
+          const ok = await demanderCode(email);
+          erreur.textContent = ok
+            ? "Un nouveau code vient de partir (au plus un par minute)."
+            : "L'envoi n'a pas abouti. Réessayez dans un instant.";
+          erreur.className = ok ? "succes" : "erreur";
+          erreur.hidden = false;
+          renvoyer.disabled = false;
+        });
+        autreAdresse.addEventListener("click", () => connexion(null, email));
+        form.addEventListener("submit", async (evenement) => {
+          evenement.preventDefault();
+          const code = champ.value.replace(/\D/g, "");
+          if (code.length < 6) {
+            erreur.textContent = "Vérifiez le code reçu par e-mail.";
+            erreur.className = "erreur";
             erreur.hidden = false;
             return;
           }
           bouton.disabled = true;
-          bouton.textContent = "Envoi en cours…";
-          try {
-            const reponse = await fetch(ADRESSE_AGENT, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ action: "lien", email }),
-            });
-            if (!reponse.ok) throw new Error("refus");
-            form.replaceChildren(
-              el("p", { class: "etiquette" }, "Votre espace"),
-              el("h2", {}, "Regardez vos e-mails"),
-              el(
-                "p",
-                { class: "succes" },
-                "Si cette adresse a un essai en cours, un lien de connexion vient de partir. Il est valable une heure.",
-              ),
-            );
-          } catch {
+          bouton.textContent = "Connexion…";
+          const { data, error } = await db.auth.verifyOtp({ email, token: code, type: "email" });
+          if (error || !data.session) {
             bouton.disabled = false;
-            bouton.textContent = "Recevoir mon lien";
-            erreur.textContent = "L'envoi n'a pas abouti. Réessayez dans un instant.";
+            bouton.textContent = "Se connecter";
+            erreur.textContent =
+              "Ce code ne fonctionne pas : il a peut-être expiré ou déjà servi. Demandez-en un nouveau.";
+            erreur.className = "erreur";
             erreur.hidden = false;
+            return;
           }
+          await afficherEspace(data.session);
         });
         zone.replaceChildren(entete(null), form);
+        champ.focus();
       }
 
       // Guide d'installation : l'espace doit être sur l'écran d'accueil pour recevoir l'Action du jour.
@@ -282,17 +376,38 @@
       function installation() {
         const installe = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
         if (installe) return null;
-        const iphone = /iphone|ipad|ipod/i.test(navigator.userAgent);
-        const etapes = iphone
-          ? [
-            "Ouvrez cette page dans Safari.",
-            "Touchez le bouton Partager (le carré avec une flèche).",
+        const ua = navigator.userAgent;
+        const iphone = /iphone|ipad|ipod/i.test(ua);
+        const derniere =
+          "Ouvrez Fidelavis Agent depuis votre écran d'accueil, touchez « Recevoir mon code » et entrez le code reçu par e-mail : vous ne le ferez qu'une fois.";
+        let etapes;
+        if (iphone && /CriOS|EdgiOS|FxiOS/.test(ua)) {
+          // Chrome, Edge et Firefox sur iPhone ajoutent à l'écran d'accueil depuis leur bouton Partager.
+          etapes = [
+            "Touchez le bouton Partager, à droite de la barre d'adresse.",
+            "Choisissez « Ajouter à l'écran d'accueil », puis « Ajouter ».",
+            derniere,
+          ];
+        } else if (iphone && /Safari\//.test(ua) && !/GSA\/|FBAN|FBAV|Instagram/.test(ua)) {
+          etapes = [
+            "Touchez le bouton Partager (le carré avec une flèche), en bas de l'écran.",
             "Choisissez « Sur l'écran d'accueil », puis « Ajouter ».",
-          ]
-          : [
+            derniere,
+          ];
+        } else if (iphone) {
+          // Navigateur intégré à une application (Google, Gmail, Facebook…) : il faut passer par Safari.
+          etapes = [
+            "Ouvrez cette page dans Safari : touchez ••• ou le bouton Partager, puis « Ouvrir dans Safari ».",
+            "Dans Safari, touchez Partager, puis « Sur l'écran d'accueil ».",
+            derniere,
+          ];
+        } else {
+          etapes = [
             "Touchez le menu ⋮ de votre navigateur.",
             "Choisissez « Installer l'application » ou « Ajouter à l'écran d'accueil ».",
+            derniere,
           ];
+        }
         const bouton = !iphone
           ? el(
             "button",
@@ -358,7 +473,7 @@
         const deconnexion = el("button", { class: "lien", type: "button" }, "Se déconnecter");
         deconnexion.addEventListener("click", async () => {
           await db.auth.signOut();
-          connexion(null);
+          connexion(null, null);
         });
         if (error || !commercant) {
           zone.replaceChildren(
@@ -410,18 +525,18 @@
           if (error) {
             const { data } = await db.auth.getSession();
             if (!data.session) {
-              connexion("Ce lien a expiré ou a déjà servi. Demandez-en un nouveau ci-dessous.");
+              connexion("Ce lien a expiré ou a déjà servi. Demandez un code ci-dessous.", null);
               return;
             }
           }
         }
         const { data } = await db.auth.getSession();
         if (data.session) await afficherEspace(data.session);
-        else connexion(null);
+        else connexion(null, null);
       }
 
       if ("serviceWorker" in navigator) navigator.serviceWorker.register("/agent/sw.js").catch(() => {});
-      demarrer().catch(() => connexion("Un problème est survenu. Réessayez dans un instant."));
+      demarrer().catch(() => connexion("Un problème est survenu. Réessayez dans un instant.", null));
     </script>
   </body>
 </html>
