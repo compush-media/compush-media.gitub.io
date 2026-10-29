@@ -291,6 +291,9 @@
       // Clé publique (publishable) : faite pour être dans une page, les droits sont tenus par RLS.
       const SUPABASE_CLE = "sb_publishable_V9jcAKPdqxhupYWxoejARQ_D_AmOpcZ";
       const ADRESSE_AGENT = `${SUPABASE_URL}/functions/v1/agent`;
+      // Clé publique des notifications (VAPID) : elle identifie Fidelavis auprès d'Apple et Google.
+      const CLE_NOTIFICATIONS =
+        "BKdYVmcJy3fASYOQyzNhH5rAs3Lf5Cy9wIPcPOiUt80qmBptcOwsx4zjAnHlc299SbVG0O5d3vv4Z7awAR0vLho";
 
       const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_CLE, {
         auth: { persistSession: true, detectSessionInUrl: false, storageKey: "fidelavis-agent" },
@@ -798,9 +801,80 @@
         );
       }
 
+      // --- Notifications ------------------------------------------------------------------------------
+      // Sur iPhone, elles ne marchent que dans l'application ajoutée à l'écran d'accueil. Sans elles,
+      // l'Action du jour arrive par e-mail.
+      const NOTIFICATIONS_POSSIBLES = "serviceWorker" in navigator && "PushManager" in window &&
+        "Notification" in window && (INSTALLE || !IPHONE);
+
+      function octetsDeBase64(texte) {
+        const base64 = (texte + "=".repeat((4 - (texte.length % 4)) % 4))
+          .replace(/-/g, "+").replace(/_/g, "/");
+        return Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+      }
+
+      async function abonner() {
+        const enregistrement = await navigator.serviceWorker.ready;
+        const abonnement = await enregistrement.pushManager.getSubscription() ??
+          await enregistrement.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: octetsDeBase64(CLE_NOTIFICATIONS),
+          });
+        const { error } = await db.rpc("agent_enregistrer_notifications", {
+          abonnement: abonnement.toJSON(),
+        });
+        if (error) throw error;
+      }
+
+      function blocNotifications(dejaAbonne) {
+        if (!NOTIFICATIONS_POSSIBLES) return null;
+        if (Notification.permission === "granted") {
+          // Le téléphone peut renouveler son abonnement : on le réenregistre à chaque ouverture.
+          abonner().catch(() => {});
+          return dejaAbonne
+            ? el("p", { class: "doux pied" }, "Notifications activées : votre action arrive chaque matin.")
+            : null;
+        }
+        if (Notification.permission === "denied") {
+          return el(
+            "p",
+            { class: "doux pied" },
+            "Notifications bloquées sur ce téléphone : votre Action du jour arrive par e-mail.",
+          );
+        }
+        const bouton = el("button", { class: "bouton", type: "button" }, "Recevoir mon action chaque matin");
+        const message = el("p", { class: "doux" }, "Une notification par jour au plus, à 8 h, et un rappel à 18 h si besoin.");
+        const bloc = el(
+          "section",
+          { class: "carte" },
+          el("p", { class: "etiquette" }, "Notifications"),
+          message,
+          bouton,
+        );
+        bouton.addEventListener("click", async () => {
+          bouton.disabled = true;
+          try {
+            if ((await Notification.requestPermission()) !== "granted") {
+              message.textContent = "D'accord : votre Action du jour arrivera par e-mail.";
+              bouton.hidden = true;
+              return;
+            }
+            await abonner();
+            bloc.replaceChildren(
+              el("p", { class: "etiquette" }, "Notifications"),
+              el("p", { class: "succes" }, "C'est activé : votre action arrivera chaque matin."),
+            );
+          } catch {
+            message.textContent = "L'activation n'a pas marché. Réessayez dans un instant.";
+            bouton.disabled = false;
+          }
+        });
+        return bloc;
+      }
+
       async function afficherEspace(session) {
         const { data: commercant, error } = await db.from("commercants")
-          .select("id, prenom, nom_fiche, place_id, mot_cle_suivi, statut, essai_fin, depart")
+          .select("id, prenom, nom_fiche, place_id, mot_cle_suivi, statut, essai_fin, depart, push_subscription")
           .eq("user_id", session.user.id).maybeSingle();
         const deconnexion = el("button", { class: "lien", type: "button" }, "Se déconnecter");
         deconnexion.addEventListener("click", async () => {
@@ -844,6 +918,7 @@
           entete(commercant.prenom),
           carteAction(action, avis, commercant, surRetour),
           ...semaine(actions ?? [], aujourdhui),
+          blocNotifications(Boolean(commercant.push_subscription)),
           installation(),
           positionSuivie(releve, commercant),
           el(
