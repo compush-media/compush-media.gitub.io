@@ -969,6 +969,7 @@
           points: ["Une action chaque jour", "Demandes d'avis et réponses préparées", "Rappel le soir si besoin", "Veille de 3 recherches : les 3 premiers et le concurrent juste au-dessus", "Carte de votre position, chaque mois", "Engagement 3 mois"],
         },
       ];
+      const NOMS_FORMULES = { essentiel: "Essentiel", visibilite: "Visibilité", croissance: "Croissance" };
       const euros = (n) => `${n.toLocaleString("fr-FR")} €`;
 
       function choixDesFormules(commercant) {
@@ -983,9 +984,28 @@
           parAn.setAttribute("aria-pressed", String(annuel));
           liste.replaceChildren(...FORMULES.map((f) => {
             const bouton = el("button", { class: f.cle === conseillee ? "bouton" : "bouton secondaire", type: "button" }, `Choisir ${f.nom}`);
-            bouton.addEventListener("click", () => {
+            bouton.addEventListener("click", async () => {
+              // La page de paiement est celle de Stripe : la carte n'est jamais saisie chez Fidelavis.
+              bouton.disabled = true;
               message.hidden = false;
-              message.textContent = "Le paiement en ligne arrive très prochainement : votre essai et vos données restent en place d'ici là.";
+              message.textContent = "Ouverture de la page de paiement sécurisée…";
+              try {
+                const { data } = await db.auth.getSession();
+                const reponse = await fetch(ADRESSE_AGENT, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${data.session?.access_token ?? ""}`,
+                  },
+                  body: JSON.stringify({ action: "paiement", formule: f.cle, rythme: annuel ? "annuel" : "mensuel" }),
+                });
+                const corps = await reponse.json();
+                if (!reponse.ok || !corps.url) throw new Error(corps.erreur);
+                location.href = corps.url;
+              } catch {
+                message.textContent = "Le paiement n'a pas pu s'ouvrir. Réessayez dans un instant.";
+                bouton.disabled = false;
+              }
             });
             return el(
               "section",
@@ -1014,7 +1034,7 @@
 
       async function afficherEspace(session) {
         const { data: commercant, error } = await db.from("commercants")
-          .select("id, prenom, nom_fiche, place_id, metier, mot_cle_suivi, statut, essai_fin, depart, push_subscription, bilan")
+          .select("id, prenom, nom_fiche, place_id, metier, mot_cle_suivi, statut, essai_fin, depart, push_subscription, bilan, formule")
           .eq("user_id", session.user.id).maybeSingle();
         const deconnexion = el("button", { class: "lien", type: "button" }, "Se déconnecter");
         deconnexion.addEventListener("click", async () => {
@@ -1055,13 +1075,34 @@
           : { data: null };
         const surRetour = () => afficherEspace(session);
         const termine = commercant.statut === "termine";
-        const formules = (commercant.bilan || termine || new URLSearchParams(location.search).has("formules"))
+        const abonne = commercant.statut === "actif";
+        // Retour de la page Stripe : le compte passe « actif » dès que Stripe confirme, en quelques secondes.
+        const retourPaiement = new URLSearchParams(location.search).has("paiement");
+        if (retourPaiement) history.replaceState(null, "", location.pathname);
+        const merci = retourPaiement || abonne
+          ? el(
+            "section",
+            { class: "carte" },
+            el("p", { class: "etiquette" }, "Votre abonnement"),
+            el("h2", {}, abonne ? `Formule ${NOMS_FORMULES[commercant.formule] ?? ""} active` : "Merci, paiement reçu"),
+            el(
+              "p",
+              { class: "doux" },
+              abonne
+                ? "Votre Action du jour continue chaque matin."
+                : "Votre abonnement s'active dans quelques instants : votre Action du jour continue dès demain matin.",
+            ),
+          )
+          : null;
+        const formules = !abonne && !retourPaiement &&
+            (commercant.bilan || termine || new URLSearchParams(location.search).has("formules"))
           ? choixDesFormules(commercant)
           : null;
         if (termine) {
           afficher(
             entete(commercant.prenom),
-            commercant.bilan ? carteBilan(commercant) : null,
+            merci,
+            commercant.bilan && !retourPaiement ? carteBilan(commercant) : null,
             formules,
             positionSuivie(releve, commercant),
             el("p", { class: "pied" }, deconnexion),
@@ -1072,7 +1113,8 @@
           entete(commercant.prenom),
           carteAction(action, avis, commercant, surRetour),
           ...semaine(actions ?? [], aujourdhui),
-          commercant.bilan ? carteBilan(commercant) : null,
+          retourPaiement ? merci : null,
+          commercant.bilan && !abonne && !retourPaiement ? carteBilan(commercant) : null,
           formules,
           blocNotifications(Boolean(commercant.push_subscription)),
           installation(),
@@ -1080,7 +1122,7 @@
           el(
             "section",
             { class: "carte" },
-            el("p", { class: "etiquette" }, enEssai ? "Essai gratuit" : "Votre espace"),
+            el("p", { class: "etiquette" }, enEssai ? "Essai gratuit" : abonne ? `Formule ${NOMS_FORMULES[commercant.formule] ?? ""}` : "Votre espace"),
             el("h2", {}, commercant.nom_fiche),
             enEssai
               ? el("p", { class: "doux" }, `Votre essai court jusqu'au ${jour(commercant.essai_fin)}.`)
