@@ -3,7 +3,15 @@
 // Rien n'est mis en cache : l'Action du jour et les positions doivent toujours être celles du jour.
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (evenement) => evenement.waitUntil(self.clients.claim()));
-self.addEventListener("fetch", () => {});
+// La page de l'espace est toujours redemandée au serveur, jamais reprise du cache du navigateur :
+// une nouvelle version publiée est visible à la prochaine ouverture. Hors connexion, la requête normale.
+self.addEventListener("fetch", (evenement) => {
+  const requete = evenement.request;
+  if (requete.mode !== "navigate" || !new URL(requete.url).pathname.startsWith("/agent/")) return;
+  evenement.respondWith(
+    fetch(requete.url, { cache: "no-store", credentials: "same-origin" }).catch(() => fetch(requete)),
+  );
+});
 
 self.addEventListener("push", (evenement) => {
   let message = {};

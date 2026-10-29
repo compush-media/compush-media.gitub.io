@@ -1120,6 +1120,23 @@
         else connexion(null, null);
       }
 
+      // L'application installée reste ouverte des jours entiers en arrière-plan : au retour, si elle est
+      // restée cachée plus de 10 minutes ou si la date a changé, on recharge la page (nouvelle version
+      // publiée, nouvelle Action du jour). Un aller-retour rapide vers Google, pour coller un texte, ne
+      // recharge rien.
+      const ABSENCE_AVANT_RECHARGE_MS = 10 * 60_000;
+      let cacheeDepuis = null;
+      const jourAffiche = new Date().toDateString();
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+          cacheeDepuis = Date.now();
+          return;
+        }
+        const longue = cacheeDepuis !== null && Date.now() - cacheeDepuis > ABSENCE_AVANT_RECHARGE_MS;
+        if (longue || new Date().toDateString() !== jourAffiche) location.reload();
+        cacheeDepuis = null;
+      });
+
       if ("serviceWorker" in navigator) navigator.serviceWorker.register("/agent/sw.js").catch(() => {});
       demarrer().catch(() => connexion("Un problème est survenu. Réessayez dans un instant.", null));
     </script>
