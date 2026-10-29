@@ -635,6 +635,8 @@
         new Intl.DateTimeFormat("fr-CA", { timeZone: "Europe/Paris" }).format(date);
       const ficheGoogle = (commercant) =>
         `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(commercant.nom_fiche)}&query_place_id=${encodeURIComponent(commercant.place_id)}`;
+      // Types qu'un relevé public peut confirmer (photos, réponse sous l'avis, nouveaux avis).
+      const VERIFIABLES = ["photo", "video", "reponse_avis", "demande_avis"];
       const etoiles = (note) => (note ? "★".repeat(Math.round(note)) : "");
 
       function lundiDeLaSemaine(aujourdhui) {
@@ -702,9 +704,13 @@
             "section",
             { class: "carte action" },
             el("p", { class: "etiquette" }, "Action du jour"),
-            el("h2", {}, "C'est noté, merci"),
+            el("h2", {}, action.verifiee_le ? "Vérifié sur votre fiche ✓" : "C'est noté, merci"),
             el("p", {}, action.titre),
-            el("p", { class: "doux" }, "Nous vérifierons demain sur votre fiche Google publique."),
+            action.verifiee_le
+              ? el("p", { class: "succes" }, "Votre fiche Google publique le montre déjà.")
+              : VERIFIABLES.includes(action.type)
+              ? el("p", { class: "doux" }, "Nous le vérifierons sur votre fiche Google publique dans les prochains jours.")
+              : null,
           );
         }
         const zoneTexte = action.contenu_propose
@@ -902,7 +908,7 @@
         preparerInstallation(session);
         const aujourdhui = jourDeParis(new Date());
         const [{ data: actions }, { data: releve }] = await Promise.all([
-          db.from("actions").select("id, date, type, titre, message, contenu_propose, statut, avis_id")
+          db.from("actions").select("id, date, type, titre, message, contenu_propose, statut, avis_id, verifiee_le")
             .eq("commercant_id", commercant.id).gte("date", lundiDeLaSemaine(aujourdhui))
             .order("date"),
           db.from("releves").select("date, position").eq("commercant_id", commercant.id)
