@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-10-28T21:15+00:00",
- "empreinte": "d3c8a584716a45ff",
+ "maj": "2026-10-29T11:37+00:00",
+ "empreinte": "97477502c9030e2c",
  "actus": [
   {
    "titre": "Un coup de pouce pour réussir au collège !",
@@ -56,7 +56,7 @@
   },
   {
    "titre": "Enquête publique : la Ville et le CCAS à votre écoute !",
-   "date": "",
+   "date": "2026-10-28",
    "resume": "Vous habitez La Garenne-Colombes ? La Ville et le CCAS (Centre communal d’action sociale) lancent une enquête afin de mieux connaître vos besoins et d’adapter leurs actions au quotidien.",
    "image": "",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13944&iddossiercontenu=33"
