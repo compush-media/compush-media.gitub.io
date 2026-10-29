@@ -173,6 +173,109 @@
         text-align: center;
         margin-top: 24px;
       }
+      .duree {
+        color: var(--doux);
+        font-weight: 400;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+      .action h2 {
+        font-size: 28px;
+      }
+      .coches {
+        list-style: none;
+        padding: 0;
+        margin: 4px 0 16px;
+      }
+      .coches li {
+        display: flex;
+        gap: 12px;
+      }
+      .coches li::before {
+        content: "✓";
+        color: var(--vert);
+        font-weight: 700;
+      }
+      .avis-cite {
+        border-left: 3px solid var(--vert-clair);
+        padding-left: 12px;
+        margin: 4px 0 14px;
+      }
+      textarea.contenu {
+        width: 100%;
+        min-height: 150px;
+        font: inherit;
+        font-size: 16px;
+        padding: 14px;
+        border: 1px solid var(--trait);
+        border-radius: 12px;
+        margin: 4px 0 12px;
+        resize: vertical;
+      }
+      a.bouton {
+        text-align: center;
+        text-decoration: none;
+        box-sizing: border-box;
+      }
+      .bouton + .bouton {
+        margin-top: 10px;
+      }
+      .bouton.secondaire {
+        background: var(--carte);
+        color: var(--encre);
+        border: 1px solid var(--trait);
+      }
+      .deux .bouton {
+        margin-top: 0;
+      }
+      .deux {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+      .semaine-titre {
+        display: flex;
+        justify-content: space-between;
+        color: var(--encre);
+        font-weight: 700;
+        margin: 22px 4px 10px;
+      }
+      .semaine-titre span {
+        color: var(--doux);
+        font-weight: 400;
+      }
+      .semaine {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        text-align: center;
+        color: var(--doux);
+        font-size: 14px;
+        margin-bottom: 22px;
+      }
+      .semaine .case {
+        aspect-ratio: 1;
+        border-radius: 12px;
+        background: var(--trait);
+        margin-bottom: 4px;
+        box-sizing: border-box;
+      }
+      .semaine .faite {
+        background: var(--vert);
+      }
+      .semaine .aujourdhui {
+        background: var(--carte);
+        border: 2px solid var(--vert);
+      }
+      .semaine .repos {
+        background: none;
+        border: 2px dashed var(--trait);
+      }
+      .semaine .jour-courant {
+        color: var(--encre);
+        font-weight: 700;
+      }
     </style>
   </head>
   <body>
@@ -521,9 +624,183 @@
         );
       }
 
+      // --- Action du jour ---------------------------------------------------------------------------
+      // Préparée chaque matin par Fidelavis. Le commerçant la fait lui-même sur sa fiche Google (copier,
+      // ouvrir la fiche, coller) : rien n'est publié sans lui. « Déjà fait » sera vérifié demain sur sa
+      // fiche publique.
+      const jourDeParis = (date) =>
+        new Intl.DateTimeFormat("fr-CA", { timeZone: "Europe/Paris" }).format(date);
+      const ficheGoogle = (commercant) =>
+        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(commercant.nom_fiche)}&query_place_id=${encodeURIComponent(commercant.place_id)}`;
+      const etoiles = (note) => (note ? "★".repeat(Math.round(note)) : "");
+
+      function lundiDeLaSemaine(aujourdhui) {
+        const date = new Date(`${aujourdhui}T12:00:00Z`);
+        const decalage = (date.getUTCDay() + 6) % 7;
+        date.setUTCDate(date.getUTCDate() - decalage);
+        return date.toISOString().slice(0, 10);
+      }
+
+      function boutonCopier(zoneTexte, libelle, secondaire) {
+        const bouton = el(
+          "button",
+          { class: secondaire ? "bouton secondaire" : "bouton", type: "button" },
+          libelle,
+        );
+        bouton.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(zoneTexte.value);
+          } catch {
+            zoneTexte.select();
+            document.execCommand("copy");
+          }
+          bouton.textContent = "Texte copié ✓";
+          setTimeout(() => (bouton.textContent = libelle), 2500);
+        });
+        return bouton;
+      }
+
+      function boutonsPrincipaux(action, commercant, zoneTexte) {
+        const ouvrir = (principal) =>
+          el(
+            "a",
+            {
+              class: principal ? "bouton" : "bouton secondaire",
+              href: ficheGoogle(commercant),
+              target: "_blank",
+              rel: "noopener",
+            },
+            "Ouvrir ma fiche Google",
+          );
+        if (action.type === "demande_avis" && zoneTexte) {
+          const sms = el("a", { class: "bouton", href: "#" }, "Envoyer par SMS");
+          sms.addEventListener("click", (evenement) => {
+            evenement.preventDefault();
+            location.href = `sms:${IPHONE ? "&" : "?"}body=${encodeURIComponent(zoneTexte.value)}`;
+          });
+          return [sms, boutonCopier(zoneTexte, "Copier le message", true)];
+        }
+        if (zoneTexte) return [boutonCopier(zoneTexte, "Copier le texte"), ouvrir(false)];
+        return [ouvrir(true)];
+      }
+
+      function carteAction(action, avis, commercant, surRetour) {
+        if (!action) {
+          return el(
+            "section",
+            { class: "carte action" },
+            el("p", { class: "etiquette" }, "Action du jour"),
+            el("h2", {}, "Rien à faire aujourd'hui"),
+            el("p", { class: "doux" }, "Votre prochaine Action du jour arrivera un matin de la semaine, ici."),
+          );
+        }
+        if (action.statut === "faite") {
+          return el(
+            "section",
+            { class: "carte action" },
+            el("p", { class: "etiquette" }, "Action du jour"),
+            el("h2", {}, "C'est noté, merci"),
+            el("p", {}, action.titre),
+            el("p", { class: "doux" }, "Nous vérifierons demain sur votre fiche Google publique."),
+          );
+        }
+        const zoneTexte = action.contenu_propose
+          ? el("textarea", { class: "contenu", "aria-label": "Texte proposé, modifiable" })
+          : null;
+        if (zoneTexte) zoneTexte.value = action.contenu_propose;
+        const dejaFait = el("button", { class: "bouton secondaire", type: "button" }, "Déjà fait");
+        const plusTard = el("button", { class: "bouton secondaire", type: "button" }, "Plus tard");
+        const retour = async (choix, bouton) => {
+          bouton.disabled = true;
+          const { error } = await db.rpc("agent_retour_action", { action_id: action.id, choix });
+          bouton.disabled = false;
+          if (!error) surRetour(choix);
+        };
+        dejaFait.addEventListener("click", () => retour("faite", dejaFait));
+        plusTard.addEventListener("click", () => retour("reportee", plusTard));
+        return el(
+          "section",
+          { class: "carte action" },
+          el("p", { class: "etiquette" }, "Action du jour ", el("span", { class: "duree" }, "· 2 min")),
+          el("h2", {}, action.titre),
+          el("p", {}, action.message),
+          action.type === "photo"
+            ? el(
+              "ul",
+              { class: "coches" },
+              el("li", {}, "Avant ou après l'intervention"),
+              el("li", {}, "Bien éclairée, sans client ni adresse visible"),
+            )
+            : null,
+          avis
+            ? el(
+              "div",
+              { class: "avis-cite" },
+              el("p", {}, `${etoiles(avis.note)} ${avis.auteur_prenom ?? "Un client"}`),
+              avis.texte ? el("p", { class: "doux" }, `« ${avis.texte} »`) : null,
+            )
+            : null,
+          zoneTexte,
+          boutonsPrincipaux(action, commercant, zoneTexte),
+          action.statut === "reportee"
+            ? el("p", { class: "doux pied" }, "Gardée pour plus tard : elle reste ici aujourd'hui.")
+            : null,
+          el("div", { class: "deux" }, dejaFait, action.statut === "reportee" ? null : plusTard),
+        );
+      }
+
+      function semaine(actions, aujourdhui) {
+        const lundi = lundiDeLaSemaine(aujourdhui);
+        const lettres = ["L", "M", "M", "J", "V", "S", "D"];
+        const parJour = new Map(actions.map((a) => [a.date, a]));
+        const cases = lettres.map((lettre, i) => {
+          const date = new Date(`${lundi}T12:00:00Z`);
+          date.setUTCDate(date.getUTCDate() + i);
+          const iso = date.toISOString().slice(0, 10);
+          const classe = parJour.get(iso)?.statut === "faite"
+            ? "faite"
+            : iso === aujourdhui
+            ? "aujourdhui"
+            : i === 6
+            ? "repos"
+            : "";
+          return el(
+            "div",
+            { class: iso === aujourdhui ? "jour-courant" : null },
+            el("div", { class: `case ${classe}` }),
+            lettre,
+          );
+        });
+        const faites = actions.filter((a) => a.statut === "faite").length;
+        return [
+          el(
+            "div",
+            { class: "semaine-titre" },
+            "Cette semaine",
+            el("span", {}, `${faites} action${faites > 1 ? "s" : ""} sur ${actions.length}`),
+          ),
+          el("div", { class: "semaine" }, cases),
+        ];
+      }
+
+      function positionSuivie(releve, commercant) {
+        if (!releve || !commercant.mot_cle_suivi) return positionDeDepart(commercant.depart);
+        return el(
+          "section",
+          { class: "carte" },
+          el("p", { class: "doux" }, `« ${commercant.mot_cle_suivi} » sur Google Maps`),
+          el(
+            "p",
+            { class: "position" },
+            releve.position === null ? "Hors des résultats relevés" : `Vous êtes ${rang(releve.position)}`,
+          ),
+          el("p", { class: "doux" }, `Relevé le ${jour(releve.date)}.`),
+        );
+      }
+
       async function afficherEspace(session) {
         const { data: commercant, error } = await db.from("commercants")
-          .select("prenom, nom_fiche, mot_cle_suivi, statut, essai_fin, depart")
+          .select("id, prenom, nom_fiche, place_id, mot_cle_suivi, statut, essai_fin, depart")
           .eq("user_id", session.user.id).maybeSingle();
         const deconnexion = el("button", { class: "lien", type: "button" }, "Se déconnecter");
         deconnexion.addEventListener("click", async () => {
@@ -549,24 +826,35 @@
         }
         const enEssai = commercant.statut === "essai";
         preparerInstallation(session);
+        const aujourdhui = jourDeParis(new Date());
+        const [{ data: actions }, { data: releve }] = await Promise.all([
+          db.from("actions").select("id, date, type, titre, message, contenu_propose, statut, avis_id")
+            .eq("commercant_id", commercant.id).gte("date", lundiDeLaSemaine(aujourdhui))
+            .order("date"),
+          db.from("releves").select("date, position").eq("commercant_id", commercant.id)
+            .eq("statut", "termine").order("date", { ascending: false }).limit(1).maybeSingle(),
+        ]);
+        const action = (actions ?? []).find((a) => a.date === aujourdhui) ?? null;
+        const { data: avis } = action?.avis_id
+          ? await db.from("avis").select("auteur_prenom, note, texte").eq("id", action.avis_id)
+            .maybeSingle()
+          : { data: null };
+        const surRetour = () => afficherEspace(session);
         afficher(
           entete(commercant.prenom),
+          carteAction(action, avis, commercant, surRetour),
+          ...semaine(actions ?? [], aujourdhui),
+          installation(),
+          positionSuivie(releve, commercant),
           el(
             "section",
             { class: "carte" },
             el("p", { class: "etiquette" }, enEssai ? "Essai gratuit" : "Votre espace"),
             el("h2", {}, commercant.nom_fiche),
             enEssai
-              ? el("p", {}, `Votre essai court jusqu'au ${jour(commercant.essai_fin)}.`)
+              ? el("p", { class: "doux" }, `Votre essai court jusqu'au ${jour(commercant.essai_fin)}.`)
               : null,
-            el(
-              "p",
-              { class: "doux" },
-              "Chaque matin, votre Action du jour s'affichera ici : une chose simple à faire en 2 minutes, depuis votre téléphone, pour faire progresser votre fiche Google.",
-            ),
           ),
-          installation(),
-          positionDeDepart(commercant.depart),
           el("p", { class: "pied" }, deconnexion),
         );
       }
