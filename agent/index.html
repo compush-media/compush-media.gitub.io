@@ -276,6 +276,40 @@
         color: var(--encre);
         font-weight: 700;
       }
+      .bascule {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background: var(--trait);
+        border-radius: 999px;
+        padding: 4px;
+        margin: 4px 0 16px;
+      }
+      .bascule button {
+        border: 0;
+        background: none;
+        font: inherit;
+        font-weight: 600;
+        padding: 10px;
+        border-radius: 999px;
+        color: var(--doux);
+        cursor: pointer;
+      }
+      .bascule button[aria-pressed="true"] {
+        background: var(--carte);
+        color: var(--encre);
+      }
+      .formule.conseillee {
+        outline: 2px solid var(--vert);
+      }
+      .prix {
+        color: var(--encre);
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0;
+      }
+      .formule ul {
+        margin: 10px 0 16px;
+      }
     </style>
   </head>
   <body>
@@ -878,9 +912,109 @@
         return bloc;
       }
 
+      // --- Fin de l'essai : bilan et formules -----------------------------------------------------------
+      // Le bilan affiché est celui qui a été envoyé, tel quel : uniquement des valeurs relevées.
+      function lignesDuBilan(bilan) {
+        const lignes = [];
+        if (bilan.depart?.position && bilan.actuel?.position) {
+          lignes.push(`Sur « ${bilan.mot_cle} » : ${rang(bilan.depart.position)} au départ, ${rang(bilan.actuel.position)} au dernier relevé.`);
+        }
+        if (bilan.avis_gagnes !== null && bilan.avis_gagnes !== undefined) {
+          lignes.push(bilan.avis_gagnes > 0
+            ? `${bilan.avis_gagnes} ${bilan.avis_gagnes > 1 ? "nouveaux avis" : "nouvel avis"} sur votre fiche depuis le début.`
+            : "Pas encore de nouvel avis sur votre fiche depuis le début.");
+        }
+        if (bilan.actions_proposees > 0) {
+          const s = (n) => (n > 1 ? "s" : "");
+          lignes.push(bilan.actions_faites === 0
+            ? `${bilan.actions_proposees} action${s(bilan.actions_proposees)} proposée${s(bilan.actions_proposees)}, pas encore faite${s(bilan.actions_proposees)}.`
+            : `${bilan.actions_faites} action${s(bilan.actions_faites)} faite${s(bilan.actions_faites)} sur ${bilan.actions_proposees}` +
+              (bilan.actions_verifiees > 0 ? `, dont ${bilan.actions_verifiees} vérifiée${s(bilan.actions_verifiees)} sur votre fiche publique.` : "."));
+        }
+        return lignes;
+      }
+
+      function carteBilan(commercant) {
+        const termine = commercant.statut === "termine";
+        return el(
+          "section",
+          { class: "carte" },
+          el("p", { class: "etiquette" }, termine ? "Essai terminé" : "Votre bilan"),
+          el("h2", {}, termine ? "Votre essai est terminé" : "Votre bilan de l'essai"),
+          lignesDuBilan(commercant.bilan).map((ligne) => el("p", {}, ligne)),
+          termine
+            ? el("p", { class: "doux" }, "Vos données sont conservées. Choisissez une formule pour retrouver votre Action du jour.")
+            : el("p", { class: "doux" }, `Votre essai continue jusqu'au ${jour(commercant.essai_fin)}.`),
+        );
+      }
+
+      // Grille du cahier des charges (prix HT par mois ; paiement annuel : 2 mois offerts).
+      const FORMULES = [
+        {
+          cle: "essentiel",
+          nom: "Essentiel",
+          prix: 59,
+          points: ["1 action par semaine sur votre téléphone", "Demandes d'avis et réponses préparées", "Sans engagement"],
+        },
+        {
+          cle: "visibilite",
+          nom: "Visibilité",
+          prix: 99,
+          points: ["Une action chaque jour", "Demandes d'avis et réponses préparées", "Rappel le soir si besoin", "Veille du 1er et du concurrent juste au-dessus", "Engagement 3 mois"],
+        },
+        {
+          cle: "croissance",
+          nom: "Croissance",
+          prix: 149,
+          points: ["Une action chaque jour", "Demandes d'avis et réponses préparées", "Rappel le soir si besoin", "Veille de 3 recherches : les 3 premiers et le concurrent juste au-dessus", "Carte de votre position, chaque mois", "Engagement 3 mois"],
+        },
+      ];
+      const euros = (n) => `${n.toLocaleString("fr-FR")} €`;
+
+      function choixDesFormules(commercant) {
+        const conseillee = commercant.bilan?.formule_conseillee ?? "croissance";
+        let annuel = false;
+        const liste = el("div", {});
+        const message = el("p", { class: "doux", hidden: true });
+        const mensuel = el("button", { type: "button", "aria-pressed": "true" }, "Mensuel");
+        const parAn = el("button", { type: "button", "aria-pressed": "false" }, "Annuel");
+        const dessiner = () => {
+          mensuel.setAttribute("aria-pressed", String(!annuel));
+          parAn.setAttribute("aria-pressed", String(annuel));
+          liste.replaceChildren(...FORMULES.map((f) => {
+            const bouton = el("button", { class: f.cle === conseillee ? "bouton" : "bouton secondaire", type: "button" }, `Choisir ${f.nom}`);
+            bouton.addEventListener("click", () => {
+              message.hidden = false;
+              message.textContent = "Le paiement en ligne arrive très prochainement : votre essai et vos données restent en place d'ici là.";
+            });
+            return el(
+              "section",
+              { class: f.cle === conseillee ? "carte formule conseillee" : "carte formule" },
+              f.cle === conseillee ? el("p", { class: "etiquette" }, "Conseillée pour vous") : null,
+              el("h2", {}, f.nom),
+              el("p", { class: "prix" }, annuel ? `${euros(f.prix * 10)} HT / an` : `${euros(f.prix)} HT / mois`),
+              annuel ? el("p", { class: "doux" }, `Soit 2 mois offerts sur ${euros(f.prix * 12)}.`) : null,
+              el("ul", {}, f.points.map((p) => el("li", {}, p))),
+              bouton,
+            );
+          }));
+        };
+        mensuel.addEventListener("click", () => { annuel = false; dessiner(); });
+        parAn.addEventListener("click", () => { annuel = true; dessiner(); });
+        dessiner();
+        return el(
+          "div",
+          { id: "formules" },
+          el("div", { class: "semaine-titre" }, "Choisir ma formule"),
+          el("div", { class: "bascule" }, mensuel, parAn),
+          liste,
+          message,
+        );
+      }
+
       async function afficherEspace(session) {
         const { data: commercant, error } = await db.from("commercants")
-          .select("id, prenom, nom_fiche, place_id, mot_cle_suivi, statut, essai_fin, depart, push_subscription")
+          .select("id, prenom, nom_fiche, place_id, metier, mot_cle_suivi, statut, essai_fin, depart, push_subscription, bilan")
           .eq("user_id", session.user.id).maybeSingle();
         const deconnexion = el("button", { class: "lien", type: "button" }, "Se déconnecter");
         deconnexion.addEventListener("click", async () => {
@@ -920,10 +1054,26 @@
             .maybeSingle()
           : { data: null };
         const surRetour = () => afficherEspace(session);
+        const termine = commercant.statut === "termine";
+        const formules = (commercant.bilan || termine || new URLSearchParams(location.search).has("formules"))
+          ? choixDesFormules(commercant)
+          : null;
+        if (termine) {
+          afficher(
+            entete(commercant.prenom),
+            commercant.bilan ? carteBilan(commercant) : null,
+            formules,
+            positionSuivie(releve, commercant),
+            el("p", { class: "pied" }, deconnexion),
+          );
+          return;
+        }
         afficher(
           entete(commercant.prenom),
           carteAction(action, avis, commercant, surRetour),
           ...semaine(actions ?? [], aujourdhui),
+          commercant.bilan ? carteBilan(commercant) : null,
+          formules,
           blocNotifications(Boolean(commercant.push_subscription)),
           installation(),
           positionSuivie(releve, commercant),
