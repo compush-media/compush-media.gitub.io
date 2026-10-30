@@ -948,7 +948,7 @@
         );
       }
 
-      // Grille du cahier des charges (prix HT par mois ; paiement annuel : 2 mois offerts).
+      // Grille du cahier des charges (prix TTC par mois ; paiement annuel : 2 mois offerts).
       const FORMULES = [
         {
           cle: "essentiel",
@@ -1018,7 +1018,7 @@
               { class: f.cle === conseillee ? "carte formule conseillee" : "carte formule" },
               f.cle === conseillee ? el("p", { class: "etiquette" }, "Conseillée pour vous") : null,
               el("h2", {}, f.nom),
-              el("p", { class: "prix" }, annuel ? `${euros(f.prix * 10)} HT / an` : `${euros(f.prix)} HT / mois`),
+              el("p", { class: "prix" }, annuel ? `${euros(f.prix * 10)} TTC / an` : `${euros(f.prix)} TTC / mois`),
               annuel ? el("p", { class: "doux" }, `Soit 2 mois offerts sur ${euros(f.prix * 12)}.`) : null,
               el("ul", {}, f.points.map((p) => el("li", {}, p))),
               bouton,
