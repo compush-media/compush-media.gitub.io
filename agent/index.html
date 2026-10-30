@@ -337,6 +337,40 @@
       .point-carte.rouge {
         background: #c0392b;
       }
+      .recherches {
+        list-style: none;
+        padding: 0;
+        margin: 14px 0 0;
+        border-top: 1px solid var(--trait);
+      }
+      .recherches li {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--trait);
+      }
+      .recherches strong {
+        display: block;
+        color: var(--encre);
+      }
+      .onglets {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 10px 0 4px;
+      }
+      .onglets button {
+        font: inherit;
+        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--trait);
+        background: var(--carte);
+        color: var(--encre);
+      }
+      .onglets button[aria-pressed="true"] {
+        background: var(--encre);
+        border-color: var(--encre);
+        color: var(--carte);
+      }
       .legende {
         display: flex;
         gap: 14px;
@@ -882,6 +916,27 @@
             releve.position === null ? "Hors des résultats relevés" : `Vous êtes ${rang(releve.position)}`,
           ),
           el("p", { class: "doux" }, `Relevé le ${jour(releve.date)}.`),
+          autresRecherches(releve.recherches),
+        );
+      }
+
+      // Croissance : les 2 autres recherches suivies, relevées le même soir.
+      function autresRecherches(recherches) {
+        if (!recherches?.length) return null;
+        return el(
+          "ul",
+          { class: "recherches" },
+          ...recherches.map((r) =>
+            el(
+              "li",
+              {},
+              el("strong", {}, `« ${r.mot_cle} »`),
+              el("span", {}, r.position === null ? "Hors des résultats relevés" : `Vous êtes ${rang(r.position)}`),
+              r.dessus?.nom
+                ? el("p", { class: "doux" }, `Juste au-dessus : ${r.dessus.nom} (${rang(r.dessus.position)}).`)
+                : null,
+            )
+          ),
         );
       }
 
@@ -1117,56 +1172,85 @@
         position && position <= 3 ? "vert" : position && position <= 10 ? "orange" : "rouge";
       const virgule = (n) => String(n).replace(".", ",");
 
-      function carteDePosition(cartes) {
-        const [actuelle, precedente] = cartes;
-        if (!actuelle || typeof L === "undefined") return null;
-        const plan = el("div", { class: "plan", role: "img", "aria-label": "Carte de votre position autour du commerce" });
-        const ecart = precedente ? actuelle.part_visibilite - precedente.part_visibilite : null;
-        const bloc = el(
+      // Une carte par recherche suivie (jusqu'à 3) : la recherche principale d'abord, les autres en onglets.
+      function carteDePosition(cartes, motCleSuivi) {
+        if (!cartes.length || typeof L === "undefined") return null;
+        const mois = cartes[0].mois;
+        const actuelles = cartes.filter((c) => c.mois === mois)
+          .sort((a, b) => (b.mot_cle === motCleSuivi) - (a.mot_cle === motCleSuivi));
+        const contenu = el("div", {});
+        let carte = null;
+        const onglets = actuelles.length > 1
+          ? el(
+            "div",
+            { class: "onglets", role: "group", "aria-label": "Recherche affichée" },
+            ...actuelles.map((c, i) => {
+              const bouton = el("button", { type: "button", "aria-pressed": String(i === 0) }, c.mot_cle);
+              bouton.addEventListener("click", () => {
+                for (const b of onglets.children) b.setAttribute("aria-pressed", String(b === bouton));
+                montrer(c);
+              });
+              return bouton;
+            }),
+          )
+          : null;
+
+        function montrer(actuelle) {
+          const precedente = cartes.find((c) => c.mot_cle === actuelle.mot_cle && c.mois < actuelle.mois);
+          const plan = el("div", { class: "plan", role: "img", "aria-label": `Carte de votre position pour « ${actuelle.mot_cle} »` });
+          const ecart = precedente ? actuelle.part_visibilite - precedente.part_visibilite : null;
+          contenu.replaceChildren(...[
+            el("h2", {}, `« ${actuelle.mot_cle} » autour de vous`),
+            el("p", {}, `Dans les 3 premiers sur ${virgule(actuelle.part_visibilite)} % de la zone.`),
+            ecart !== null && ecart !== 0
+              ? el("p", { class: "doux" }, `${ecart > 0 ? "+" : ""}${virgule(Math.round(ecart * 10) / 10)} point${Math.abs(ecart) >= 2 ? "s" : ""} par rapport au mois dernier.`)
+              : null,
+            plan,
+            el(
+              "div",
+              { class: "legende" },
+              el("span", { style: "--pastille:#1f7a55" }, "1 à 3"),
+              el("span", { style: "--pastille:#d9822b" }, "4 à 10"),
+              el("span", { style: "--pastille:#c0392b" }, `au-delà ou absent`),
+            ),
+            actuelle.position_moyenne
+              ? el("p", { class: "doux" }, `Position moyenne : ${virgule(actuelle.position_moyenne)}e, sur les ${actuelle.points_trouves} points où vous apparaissez.`)
+              : el("p", { class: "doux" }, `Vous n'apparaissez dans les ${actuelle.profondeur} premiers résultats sur aucun point.`),
+            el("p", { class: "doux" }, `Relevé le ${jour(actuelle.termine_le)}, sur ${actuelle.points.length} points espacés de ${actuelle.espacement_m} m.`),
+          ].filter(Boolean));
+          // Leaflet a besoin de la taille réelle du bloc : la carte est dessinée une fois la page affichée.
+          requestAnimationFrame(() => {
+            carte?.remove();
+            carte = L.map(plan, { zoomControl: false, attributionControl: true, scrollWheelZoom: false });
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+              maxZoom: 18,
+              attribution: "© OpenStreetMap",
+            }).addTo(carte);
+            const limites = [];
+            for (const point of actuelle.points) {
+              const texte = point.position ? String(point.position) : "–";
+              L.marker([point.latitude, point.longitude], {
+                icon: L.divIcon({
+                  className: "",
+                  html: `<div class="point-carte ${couleurDuPoint(point.position)}">${texte}</div>`,
+                  iconSize: [26, 26],
+                }),
+                title: point.premier ? `1er : ${point.premier}` : "",
+              }).addTo(carte);
+              limites.push([point.latitude, point.longitude]);
+            }
+            carte.fitBounds(limites, { padding: [16, 16] });
+          });
+        }
+
+        montrer(actuelles[0]);
+        return el(
           "section",
           { class: "carte" },
           el("p", { class: "etiquette" }, "Où vous êtes visible"),
-          el("h2", {}, `« ${actuelle.mot_cle} » autour de vous`),
-          el("p", {}, `Dans les 3 premiers sur ${virgule(actuelle.part_visibilite)} % de la zone.`),
-          ecart !== null && ecart !== 0
-            ? el("p", { class: "doux" }, `${ecart > 0 ? "+" : ""}${virgule(Math.round(ecart * 10) / 10)} point${Math.abs(ecart) >= 2 ? "s" : ""} par rapport au mois dernier.`)
-            : null,
-          plan,
-          el(
-            "div",
-            { class: "legende" },
-            el("span", { style: "--pastille:#1f7a55" }, "1 à 3"),
-            el("span", { style: "--pastille:#d9822b" }, "4 à 10"),
-            el("span", { style: "--pastille:#c0392b" }, `au-delà ou absent`),
-          ),
-          actuelle.position_moyenne
-            ? el("p", { class: "doux" }, `Position moyenne : ${virgule(actuelle.position_moyenne)}e, sur les ${actuelle.points_trouves} points où vous apparaissez.`)
-            : el("p", { class: "doux" }, `Vous n'apparaissez dans les ${actuelle.profondeur} premiers résultats sur aucun point.`),
-          el("p", { class: "doux" }, `Relevé le ${jour(actuelle.termine_le)}, sur ${actuelle.points.length} points espacés de ${actuelle.espacement_m} m.`),
+          onglets,
+          contenu,
         );
-        // Leaflet a besoin de la taille réelle du bloc : la carte est dessinée une fois la page affichée.
-        requestAnimationFrame(() => {
-          const carte = L.map(plan, { zoomControl: false, attributionControl: true, scrollWheelZoom: false });
-          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            maxZoom: 18,
-            attribution: "© OpenStreetMap",
-          }).addTo(carte);
-          const limites = [];
-          for (const point of actuelle.points) {
-            const texte = point.position ? String(point.position) : "–";
-            L.marker([point.latitude, point.longitude], {
-              icon: L.divIcon({
-                className: "",
-                html: `<div class="point-carte ${couleurDuPoint(point.position)}">${texte}</div>`,
-                iconSize: [26, 26],
-              }),
-              title: point.premier ? `1er : ${point.premier}` : "",
-            }).addTo(carte);
-            limites.push([point.latitude, point.longitude]);
-          }
-          carte.fitBounds(limites, { padding: [16, 16] });
-        });
-        return bloc;
       }
 
       async function afficherEspace(session) {
@@ -1202,12 +1286,12 @@
           db.from("actions").select("id, date, type, titre, message, contenu_propose, statut, avis_id, verifiee_le")
             .eq("commercant_id", commercant.id).gte("date", lundiDeLaSemaine(aujourdhui))
             .order("date"),
-          db.from("releves").select("date, position").eq("commercant_id", commercant.id)
+          db.from("releves").select("date, position, recherches").eq("commercant_id", commercant.id)
             .eq("statut", "termine").order("date", { ascending: false }).limit(1).maybeSingle(),
           db.from("cartes_grille")
             .select("mot_cle, mois, part_visibilite, position_moyenne, points_trouves, points, espacement_m, profondeur, termine_le")
             .eq("commercant_id", commercant.id).eq("statut", "termine")
-            .order("mois", { ascending: false }).limit(2),
+            .order("mois", { ascending: false }).limit(6),
         ]);
         const action = (actions ?? []).find((a) => a.date === aujourdhui) ?? null;
         const { data: avis } = action?.avis_id
@@ -1250,7 +1334,7 @@
             commercant.bilan && !retourPaiement ? carteBilan(commercant) : null,
             formules,
             positionSuivie(releve, commercant),
-            carteDePosition(cartes ?? []),
+            carteDePosition(cartes ?? [], commercant.mot_cle_suivi),
             el("p", { class: "pied" }, deconnexion),
           );
           return;
@@ -1265,7 +1349,7 @@
           blocNotifications(Boolean(commercant.push_subscription)),
           installation(),
           positionSuivie(releve, commercant),
-          carteDePosition(cartes ?? []),
+          carteDePosition(cartes ?? [], commercant.mot_cle_suivi),
           el(
             "section",
             { class: "carte" },
