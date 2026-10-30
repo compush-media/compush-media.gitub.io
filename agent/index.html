@@ -1001,6 +1001,12 @@
                 });
                 const corps = await reponse.json();
                 if (!reponse.ok || !corps.url) throw new Error(corps.erreur);
+                // Au retour de Stripe, l'application se recharge pour afficher l'abonnement (voir plus bas).
+                try {
+                  sessionStorage.setItem("paiement_en_cours", "1");
+                } catch {
+                  // Sans stockage, le rechargement habituel après 10 minutes suffit.
+                }
                 location.href = corps.url;
               } catch {
                 message.textContent = "Le paiement n'a pas pu s'ouvrir. Réessayez dans un instant.";
@@ -1159,7 +1165,21 @@
         }
         const { data } = await db.auth.getSession();
         if (data.session) await afficherEspace(data.session);
-        else connexion(null, null);
+        else if (parametres.has("paiement")) {
+          // Sur iPhone, Stripe revient dans une fenêtre Safari où le commerçant n'est pas connecté :
+          // le paiement est fait, il lui suffit de revenir à l'application.
+          history.replaceState(null, "", location.pathname);
+          afficher(
+            entete(null),
+            el(
+              "section",
+              { class: "carte" },
+              el("p", { class: "etiquette" }, "Votre abonnement"),
+              el("h2", {}, "Merci, paiement reçu"),
+              el("p", {}, "Votre abonnement est enregistré. Fermez cette page et revenez à l'application Fidelavis Agent."),
+            ),
+          );
+        } else connexion(null, null);
       }
 
       // L'application installée reste ouverte des jours entiers en arrière-plan : au retour, si elle est
@@ -1167,6 +1187,13 @@
       // publiée, nouvelle Action du jour). Un aller-retour rapide vers Google, pour coller un texte, ne
       // recharge rien.
       const ABSENCE_AVANT_RECHARGE_MS = 10 * 60_000;
+      const paiementEnCours = () => {
+        try {
+          return sessionStorage.getItem("paiement_en_cours") === "1";
+        } catch {
+          return false;
+        }
+      };
       let cacheeDepuis = null;
       const jourAffiche = new Date().toDateString();
       document.addEventListener("visibilitychange", () => {
@@ -1175,6 +1202,17 @@
           return;
         }
         const longue = cacheeDepuis !== null && Date.now() - cacheeDepuis > ABSENCE_AVANT_RECHARGE_MS;
+        // Retour de la page de paiement Stripe (ouverte par-dessus l'application sur iPhone) : on
+        // recharge tout de suite pour afficher l'abonnement confirmé.
+        if (paiementEnCours()) {
+          try {
+            sessionStorage.removeItem("paiement_en_cours");
+          } catch {
+            // rien à retirer
+          }
+          location.reload();
+          return;
+        }
         if (longue || new Date().toDateString() !== jourAffiche) location.reload();
         cacheeDepuis = null;
       });
