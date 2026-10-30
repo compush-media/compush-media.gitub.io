@@ -20,6 +20,7 @@
     </script>
     <link rel="icon" href="/agent/icons/icon-512.png" />
     <link rel="apple-touch-icon" href="/agent/icons/icon-512.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Fidelavis" />
     <style>
@@ -310,6 +311,48 @@
       .formule ul {
         margin: 10px 0 16px;
       }
+      .plan {
+        height: 330px;
+        border-radius: 14px;
+        margin: 10px 0 12px;
+        z-index: 0;
+      }
+      .point-carte {
+        display: grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        color: #fff;
+        font: 700 12px/1 -apple-system, BlinkMacSystemFont, sans-serif;
+        border: 2px solid #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+      .point-carte.vert {
+        background: #1f7a55;
+      }
+      .point-carte.orange {
+        background: #d9822b;
+      }
+      .point-carte.rouge {
+        background: #c0392b;
+      }
+      .legende {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        font-size: 14px;
+        color: var(--doux);
+      }
+      .legende span::before {
+        content: "";
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 6px;
+        background: var(--pastille);
+      }
     </style>
   </head>
   <body>
@@ -317,6 +360,7 @@
       <p class="doux">Chargement…</p>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
       "use strict";
       // Espace du commerçant Fidelavis Agent. Connexion sans mot de passe : l'e-mail porte un lien et un
@@ -1067,6 +1111,64 @@
         return el("div", {}, bouton, message);
       }
 
+      // --- Carte de position (Croissance) -----------------------------------------------------------------
+      // 49 recherches Google Maps autour du commerce : vert dans les 3 premiers, orange de 4 à 10, rouge au-delà.
+      const couleurDuPoint = (position) =>
+        position && position <= 3 ? "vert" : position && position <= 10 ? "orange" : "rouge";
+      const virgule = (n) => String(n).replace(".", ",");
+
+      function carteDePosition(cartes) {
+        const [actuelle, precedente] = cartes;
+        if (!actuelle || typeof L === "undefined") return null;
+        const plan = el("div", { class: "plan", role: "img", "aria-label": "Carte de votre position autour du commerce" });
+        const ecart = precedente ? actuelle.part_visibilite - precedente.part_visibilite : null;
+        const bloc = el(
+          "section",
+          { class: "carte" },
+          el("p", { class: "etiquette" }, "Où vous êtes visible"),
+          el("h2", {}, `« ${actuelle.mot_cle} » autour de vous`),
+          el("p", {}, `Dans les 3 premiers sur ${virgule(actuelle.part_visibilite)} % de la zone.`),
+          ecart !== null && ecart !== 0
+            ? el("p", { class: "doux" }, `${ecart > 0 ? "+" : ""}${virgule(Math.round(ecart * 10) / 10)} point${Math.abs(ecart) >= 2 ? "s" : ""} par rapport au mois dernier.`)
+            : null,
+          plan,
+          el(
+            "div",
+            { class: "legende" },
+            el("span", { style: "--pastille:#1f7a55" }, "1 à 3"),
+            el("span", { style: "--pastille:#d9822b" }, "4 à 10"),
+            el("span", { style: "--pastille:#c0392b" }, `au-delà ou absent`),
+          ),
+          actuelle.position_moyenne
+            ? el("p", { class: "doux" }, `Position moyenne : ${virgule(actuelle.position_moyenne)}e, sur les ${actuelle.points_trouves} points où vous apparaissez.`)
+            : el("p", { class: "doux" }, `Vous n'apparaissez dans les ${actuelle.profondeur} premiers résultats sur aucun point.`),
+          el("p", { class: "doux" }, `Relevé le ${jour(actuelle.termine_le)}, sur ${actuelle.points.length} points espacés de ${actuelle.espacement_m} m.`),
+        );
+        // Leaflet a besoin de la taille réelle du bloc : la carte est dessinée une fois la page affichée.
+        requestAnimationFrame(() => {
+          const carte = L.map(plan, { zoomControl: false, attributionControl: true, scrollWheelZoom: false });
+          L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 18,
+            attribution: "© OpenStreetMap",
+          }).addTo(carte);
+          const limites = [];
+          for (const point of actuelle.points) {
+            const texte = point.position ? String(point.position) : "–";
+            L.marker([point.latitude, point.longitude], {
+              icon: L.divIcon({
+                className: "",
+                html: `<div class="point-carte ${couleurDuPoint(point.position)}">${texte}</div>`,
+                iconSize: [26, 26],
+              }),
+              title: point.premier ? `1er : ${point.premier}` : "",
+            }).addTo(carte);
+            limites.push([point.latitude, point.longitude]);
+          }
+          carte.fitBounds(limites, { padding: [16, 16] });
+        });
+        return bloc;
+      }
+
       async function afficherEspace(session) {
         const { data: commercant, error } = await db.from("commercants")
           .select("id, prenom, nom_fiche, place_id, metier, mot_cle_suivi, statut, essai_fin, depart, push_subscription, bilan, formule")
@@ -1096,12 +1198,16 @@
         const enEssai = commercant.statut === "essai";
         preparerInstallation(session);
         const aujourdhui = jourDeParis(new Date());
-        const [{ data: actions }, { data: releve }] = await Promise.all([
+        const [{ data: actions }, { data: releve }, { data: cartes }] = await Promise.all([
           db.from("actions").select("id, date, type, titre, message, contenu_propose, statut, avis_id, verifiee_le")
             .eq("commercant_id", commercant.id).gte("date", lundiDeLaSemaine(aujourdhui))
             .order("date"),
           db.from("releves").select("date, position").eq("commercant_id", commercant.id)
             .eq("statut", "termine").order("date", { ascending: false }).limit(1).maybeSingle(),
+          db.from("cartes_grille")
+            .select("mot_cle, mois, part_visibilite, position_moyenne, points_trouves, points, espacement_m, profondeur, termine_le")
+            .eq("commercant_id", commercant.id).eq("statut", "termine")
+            .order("mois", { ascending: false }).limit(2),
         ]);
         const action = (actions ?? []).find((a) => a.date === aujourdhui) ?? null;
         const { data: avis } = action?.avis_id
@@ -1144,6 +1250,7 @@
             commercant.bilan && !retourPaiement ? carteBilan(commercant) : null,
             formules,
             positionSuivie(releve, commercant),
+            carteDePosition(cartes ?? []),
             el("p", { class: "pied" }, deconnexion),
           );
           return;
@@ -1158,6 +1265,7 @@
           blocNotifications(Boolean(commercant.push_subscription)),
           installation(),
           positionSuivie(releve, commercant),
+          carteDePosition(cartes ?? []),
           el(
             "section",
             { class: "carte" },
