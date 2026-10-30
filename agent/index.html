@@ -1038,6 +1038,34 @@
         );
       }
 
+      // Carte, factures et résiliation : la page client de Stripe, ouverte à la demande (son lien expire).
+      function boutonPortail() {
+        const bouton = el("button", { class: "bouton secondaire", type: "button" }, "Gérer mon abonnement");
+        const message = el("p", { class: "doux", hidden: true });
+        bouton.addEventListener("click", async () => {
+          bouton.disabled = true;
+          try {
+            const { data } = await db.auth.getSession();
+            const reponse = await fetch(ADRESSE_AGENT, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${data.session?.access_token ?? ""}`,
+              },
+              body: JSON.stringify({ action: "portail" }),
+            });
+            const corps = await reponse.json();
+            if (!reponse.ok || !corps.url) throw new Error(corps.erreur);
+            location.href = corps.url;
+          } catch {
+            message.hidden = false;
+            message.textContent = "La page de votre abonnement n'a pas pu s'ouvrir. Réessayez dans un instant.";
+            bouton.disabled = false;
+          }
+        });
+        return el("div", {}, bouton, message);
+      }
+
       async function afficherEspace(session) {
         const { data: commercant, error } = await db.from("commercants")
           .select("id, prenom, nom_fiche, place_id, metier, mot_cle_suivi, statut, essai_fin, depart, push_subscription, bilan, formule")
@@ -1084,6 +1112,9 @@
         const abonne = commercant.statut === "actif";
         // Retour de la page Stripe : le compte passe « actif » dès que Stripe confirme, en quelques secondes.
         const retourPaiement = new URLSearchParams(location.search).has("paiement");
+        if (new URLSearchParams(location.search).has("abonnement")) {
+          history.replaceState(null, "", location.pathname);
+        }
         if (retourPaiement) history.replaceState(null, "", location.pathname);
         const merci = retourPaiement || abonne
           ? el(
@@ -1098,6 +1129,7 @@
                 ? "Votre Action du jour continue chaque matin."
                 : "Votre abonnement s'active dans quelques instants : votre Action du jour continue dès demain matin.",
             ),
+            abonne ? boutonPortail() : null,
           )
           : null;
         const formules = !abonne && !retourPaiement &&
@@ -1119,7 +1151,7 @@
           entete(commercant.prenom),
           carteAction(action, avis, commercant, surRetour),
           ...semaine(actions ?? [], aujourdhui),
-          retourPaiement ? merci : null,
+          merci,
           commercant.bilan && !abonne && !retourPaiement ? carteBilan(commercant) : null,
           formules,
           blocNotifications(Boolean(commercant.push_subscription)),
