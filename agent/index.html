@@ -126,6 +126,8 @@
         margin: 6px 0;
       }
       input[type="email"],
+      input[type="text"],
+      input[type="tel"],
       input.code {
         width: 100%;
         font: inherit;
@@ -370,6 +372,34 @@
         background: var(--encre);
         border-color: var(--encre);
         color: var(--carte);
+      }
+      .accord {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        font-weight: 400;
+        margin: 4px 0 16px;
+      }
+      .accord input {
+        width: 22px;
+        height: 22px;
+        margin: 2px 0 0;
+        flex: none;
+        accent-color: var(--vert);
+      }
+      .visites {
+        list-style: none;
+        padding: 0;
+        margin: 16px 0 0;
+      }
+      .visites li {
+        border-top: 1px solid var(--trait);
+        padding: 10px 0 4px;
+        margin: 0;
+      }
+      .visites .doux {
+        font-size: 15px;
+        margin: 0;
       }
       .legende {
         display: flex;
@@ -1166,6 +1196,140 @@
         return el("div", {}, bouton, message);
       }
 
+      // --- Demande d'avis après intervention ---------------------------------------------------------------
+      // Le commerçant marque l'intervention terminée ; le SMS part plus tard, tout seul (jamais pendant
+      // l'intervention), avec le même texte pour tous les clients. Seulement avec l'accord du client.
+      const RAISONS = {
+        desinscrit: "ce client a demandé à ne plus être sollicité",
+        deja_demandee: "une demande est déjà prévue pour ce client",
+        moins_60_jours: "ce client a déjà reçu une demande il y a moins de 60 jours",
+      };
+
+      // Mobile au format international : 06 12 34 56 78 → +33612345678. Les fixes ne reçoivent pas de SMS.
+      function mobileInternational(saisie) {
+        const chiffres = saisie.replace(/[\s.\-()]/g, "");
+        if (/^0[67]\d{8}$/.test(chiffres)) return `+33${chiffres.slice(1)}`;
+        if (/^0033[67]\d{8}$/.test(chiffres)) return `+${chiffres.slice(2)}`;
+        if (/^\+33[67]\d{8}$/.test(chiffres)) return chiffres;
+        if (/^\+(?!33)[1-9]\d{6,14}$/.test(chiffres)) return chiffres;
+        return null;
+      }
+
+      const quand = (date) => {
+        const options = { timeZone: "Europe/Paris" };
+        const jourJ = new Date(date).toLocaleDateString("fr-FR", { ...options, weekday: "long", day: "numeric", month: "long" });
+        const heureJ = new Date(date).toLocaleTimeString("fr-FR", { ...options, hour: "numeric", minute: "2-digit" });
+        return `${jourJ} à ${heureJ.replace(":", " h ").replace(" h 00", " h")}`;
+      };
+
+      function etatDeLaDemande(visite) {
+        if (visite.demande_statut === "envoyee") return `SMS envoyé ${quand(visite.demande_avis_envoyee_le)}`;
+        if (visite.demande_statut === "a_envoyer") return `SMS prévu ${quand(visite.demande_prevue_le)}`;
+        if (visite.demande_statut === "echec") return "Le SMS n'a pas pu partir";
+        return `Pas de SMS : ${RAISONS[visite.demande_raison] ?? "demande écartée"}`;
+      }
+
+      function carteDemandesAvis(visites, surEnvoi) {
+        const ouvrir = el("button", { class: "bouton", type: "button" }, "Intervention terminée");
+        const prenom = el("input", { type: "text", id: "client-prenom", autocomplete: "off", maxlength: "40", required: true });
+        const mobile = el("input", { type: "tel", id: "client-mobile", autocomplete: "off", inputmode: "tel", required: true });
+        const travaux = el("input", {
+          type: "text",
+          id: "client-travaux",
+          autocomplete: "off",
+          maxlength: "40",
+          placeholder: "ex. réparation de fuite",
+        });
+        const accord = el("input", { type: "checkbox", id: "client-accord", required: true });
+        const message = el("p", { class: "erreur", hidden: true });
+        const valider = el("button", { class: "bouton", type: "submit" }, "Enregistrer");
+        const annuler = el("button", { class: "lien", type: "button" }, "Annuler");
+        const formulaire = el(
+          "form",
+          { hidden: true },
+          el("label", { for: "client-prenom" }, "Prénom du client"),
+          prenom,
+          el("label", { for: "client-mobile" }, "Son mobile"),
+          mobile,
+          el("label", { for: "client-travaux" }, "Ce que vous avez fait (facultatif)"),
+          travaux,
+          el(
+            "label",
+            { class: "accord", for: "client-accord" },
+            accord,
+            el("span", {}, "Le client accepte de recevoir un SMS de remerciement avec un lien pour donner son avis."),
+          ),
+          message,
+          valider,
+          el("p", { class: "pied" }, annuler),
+        );
+        const fermer = () => {
+          formulaire.reset();
+          formulaire.hidden = true;
+          ouvrir.hidden = false;
+          message.hidden = true;
+        };
+        ouvrir.addEventListener("click", () => {
+          formulaire.hidden = false;
+          ouvrir.hidden = true;
+          prenom.focus();
+        });
+        annuler.addEventListener("click", fermer);
+        formulaire.addEventListener("submit", async (evenement) => {
+          evenement.preventDefault();
+          const numero = mobileInternational(mobile.value);
+          message.hidden = true;
+          if (!numero) {
+            message.hidden = false;
+            message.textContent = "Indiquez un numéro de mobile (06 ou 07) : un fixe ne reçoit pas les SMS.";
+            return;
+          }
+          valider.disabled = true;
+          const { error } = await db.rpc("agent_intervention_terminee", {
+            prenom: prenom.value.trim(),
+            telephone: numero,
+            intervention: travaux.value.trim(),
+            accord: accord.checked,
+          });
+          valider.disabled = false;
+          if (error) {
+            message.hidden = false;
+            message.textContent = "L'enregistrement n'a pas abouti. Réessayez dans un instant.";
+            return;
+          }
+          fermer();
+          surEnvoi();
+        });
+        const liste = visites.length
+          ? el(
+            "ul",
+            { class: "visites" },
+            visites.map((visite) =>
+              el(
+                "li",
+                {},
+                el("p", {}, [visite.clients_finaux?.prenom, visite.intervention].filter(Boolean).join(" · ")),
+                el("p", { class: "doux" }, etatDeLaDemande(visite)),
+              )
+            ),
+          )
+          : null;
+        return el(
+          "section",
+          { class: "carte" },
+          el("p", { class: "etiquette" }, "Demandes d'avis"),
+          el("h2", {}, "Après chaque intervention"),
+          el(
+            "p",
+            { class: "doux" },
+            "Nous envoyons un SMS de remerciement à votre client en fin de journée ou le lendemain matin, jamais pendant l'intervention. Le même message part à tous vos clients.",
+          ),
+          ouvrir,
+          formulaire,
+          liste,
+        );
+      }
+
       // --- Carte de position (Croissance) -----------------------------------------------------------------
       // 49 recherches Google Maps autour du commerce : vert dans les 3 premiers, orange de 4 à 10, rouge au-delà.
       const couleurDuPoint = (position) =>
@@ -1282,7 +1446,7 @@
         const enEssai = commercant.statut === "essai";
         preparerInstallation(session);
         const aujourdhui = jourDeParis(new Date());
-        const [{ data: actions }, { data: releve }, { data: cartes }] = await Promise.all([
+        const [{ data: actions }, { data: releve }, { data: cartes }, { data: visites }] = await Promise.all([
           db.from("actions").select("id, date, type, titre, message, contenu_propose, statut, avis_id, verifiee_le")
             .eq("commercant_id", commercant.id).gte("date", lundiDeLaSemaine(aujourdhui))
             .order("date"),
@@ -1292,6 +1456,9 @@
             .select("mot_cle, mois, part_visibilite, position_moyenne, points_trouves, points, espacement_m, profondeur, termine_le")
             .eq("commercant_id", commercant.id).eq("statut", "termine")
             .order("mois", { ascending: false }).limit(6),
+          db.from("visites")
+            .select("intervention, demande_statut, demande_raison, demande_prevue_le, demande_avis_envoyee_le, clients_finaux(prenom)")
+            .eq("commercant_id", commercant.id).order("cree_le", { ascending: false }).limit(5),
         ]);
         const action = (actions ?? []).find((a) => a.date === aujourdhui) ?? null;
         const { data: avis } = action?.avis_id
@@ -1343,6 +1510,7 @@
           entete(commercant.prenom),
           carteAction(action, avis, commercant, surRetour),
           ...semaine(actions ?? [], aujourdhui),
+          carteDemandesAvis(visites ?? [], surRetour),
           merci,
           commercant.bilan && !abonne && !retourPaiement ? carteBilan(commercant) : null,
           formules,
