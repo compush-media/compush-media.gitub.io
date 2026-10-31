@@ -275,6 +275,47 @@
         height: 20px;
         display: block;
       }
+      .carte.notifications {
+        background: var(--vert-clair);
+        border: 2px solid var(--vert);
+      }
+      .notifications .grand {
+        color: var(--encre);
+        font-weight: 800;
+        font-size: 17px;
+        line-height: 1.35;
+        margin: 6px 0 16px;
+      }
+      .notifications .bouton + .doux {
+        margin: 12px 0 0;
+        font-size: 14px;
+      }
+      .notifications .etape + .doux {
+        margin: 16px 0 0;
+      }
+      .notifications .etape .numero {
+        background: var(--carte);
+      }
+      .bouton.battement {
+        animation: battement 2s ease-out infinite;
+      }
+      @keyframes battement {
+        0% {
+          box-shadow: 0 0 0 0 rgba(31, 122, 85, 0.55);
+        }
+        70% {
+          box-shadow: 0 0 0 14px rgba(31, 122, 85, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(31, 122, 85, 0);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .bouton.battement {
+          animation: none;
+          box-shadow: 0 0 0 4px rgba(31, 122, 85, 0.25);
+        }
+      }
       .installation .succes {
         margin-top: 16px;
       }
@@ -1150,50 +1191,98 @@
         if (error) throw error;
       }
 
-      function blocNotifications(dejaAbonne) {
-        if (!NOTIFICATIONS_POSSIBLES) return null;
+      // Tant que les notifications ne sont pas activées, leur carte passe en haut de l'écran, juste
+      // après l'installation, avec un bouton qui « bat » doucement. Une fois activées, il ne reste
+      // qu'une ligne discrète en bas de page.
+      function etapesReglages() {
+        if (IPHONE) {
+          return [
+            "Ouvrez les **Réglages** de l'iPhone, puis **Notifications**.",
+            "Touchez **Fidelavis Agent**.",
+            "Activez **Autoriser les notifications**, puis revenez ici.",
+          ];
+        }
+        return INSTALLE
+          ? [
+            "Restez appuyé sur l'icône **Fidelavis Agent** de l'écran d'accueil.",
+            "Touchez **ⓘ** (Infos sur l'appli), puis **Notifications**.",
+            "Activez les notifications, puis revenez ici.",
+          ]
+          : [
+            "Touchez l'icône à gauche de l'adresse, en haut de l'écran.",
+            "Ouvrez **Autorisations** ou **Notifications**.",
+            "Choisissez **Autoriser**, puis revenez ici.",
+          ];
+      }
+
+      function carteNotificationsBloquees() {
+        // Au retour des réglages, la page se recharge pour enregistrer l'abonnement.
+        addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible" && Notification.permission === "granted") location.reload();
+        });
+        return el(
+          "section",
+          { class: "carte notifications" },
+          el("p", { class: "etiquette" }, "Notifications bloquées"),
+          el("p", { class: "grand" }, "Votre Action du jour ne peut pas s'afficher à 8 h."),
+          etapesReglages().map((texte, i) => etape(i + 1, texte)),
+          el("p", { class: "doux" }, "En attendant, elle vous arrive par e-mail."),
+        );
+      }
+
+      function notifications(dejaAbonne) {
+        if (!NOTIFICATIONS_POSSIBLES) return { haut: null, bas: null };
         if (Notification.permission === "granted") {
           // Le téléphone peut renouveler son abonnement : on le réenregistre à chaque ouverture.
           abonner().catch(() => {});
-          return dejaAbonne
-            ? el("p", { class: "doux pied" }, "Notifications activées : votre action arrive chaque matin.")
-            : null;
+          return {
+            haut: null,
+            bas: dejaAbonne
+              ? el("p", { class: "doux pied" }, "Notifications activées : votre action arrive chaque matin.")
+              : null,
+          };
         }
-        if (Notification.permission === "denied") {
-          return el(
-            "p",
-            { class: "doux pied" },
-            "Notifications bloquées sur ce téléphone : votre Action du jour arrive par e-mail.",
-          );
-        }
-        const bouton = el("button", { class: "bouton", type: "button" }, "Recevoir mon action chaque matin");
+        if (Notification.permission === "denied") return { haut: carteNotificationsBloquees(), bas: null };
+
+        const bouton = el("button", { class: "bouton battement", type: "button" }, "🔔 Activer mon action du matin");
         const message = el("p", { class: "doux" }, "Une notification par jour au plus, à 8 h, et un rappel à 18 h si besoin.");
         const bloc = el(
           "section",
-          { class: "carte" },
-          el("p", { class: "etiquette" }, "Notifications"),
-          message,
+          { class: "carte notifications" },
+          el("p", { class: "etiquette" }, "Dernière étape"),
+          el(
+            "p",
+            { class: "grand" },
+            "Activez les notifications. Sans elles, vous ne verrez pas votre Action du jour à 8 h.",
+          ),
           bouton,
+          message,
         );
         bouton.addEventListener("click", async () => {
           bouton.disabled = true;
           try {
-            if ((await Notification.requestPermission()) !== "granted") {
-              message.textContent = "D'accord : votre Action du jour arrivera par e-mail.";
-              bouton.hidden = true;
+            const reponse = await Notification.requestPermission();
+            if (reponse === "denied") {
+              bloc.replaceWith(carteNotificationsBloquees());
+              return;
+            }
+            if (reponse !== "granted") {
+              // Fenêtre fermée sans choisir : on pourra redemander.
+              message.textContent = "Vous pourrez réessayer quand vous voulez : touchez de nouveau le bouton.";
+              bouton.disabled = false;
               return;
             }
             await abonner();
             bloc.replaceChildren(
               el("p", { class: "etiquette" }, "Notifications"),
-              el("p", { class: "succes" }, "C'est activé : votre action arrivera chaque matin."),
+              el("p", { class: "succes" }, "C'est activé : votre action arrivera chaque matin à 8 h."),
             );
           } catch {
             message.textContent = "L'activation n'a pas marché. Réessayez dans un instant.";
             bouton.disabled = false;
           }
         });
-        return bloc;
+        return { haut: bloc, bas: null };
       }
 
       // --- Fin de l'essai : bilan et formules -----------------------------------------------------------
@@ -1661,16 +1750,18 @@
           );
           return;
         }
+        const alerteNotifications = notifications(Boolean(commercant.push_subscription));
         afficher(
           entete(commercant.prenom),
           installation(),
+          alerteNotifications.haut,
           carteAction(action, avis, commercant, surRetour),
           ...semaine(actions ?? [], aujourdhui),
           carteDemandesAvis(visites ?? [], surRetour),
           merci,
           commercant.bilan && !abonne && !retourPaiement ? carteBilan(commercant) : null,
           formules,
-          blocNotifications(Boolean(commercant.push_subscription)),
+          alerteNotifications.bas,
           positionSuivie(releve, commercant),
           carteDePosition(cartes ?? [], commercant.mot_cle_suivi),
           el(
