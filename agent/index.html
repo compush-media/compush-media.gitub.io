@@ -185,6 +185,123 @@
       .action h2 {
         font-size: 28px;
       }
+      /* Installation : même mise en page que l'installation des cartes Fidelavis (pastille, étapes
+         numérotées, icône iPhone à droite de chaque étape), aux couleurs de l'Agent. */
+      .installation {
+        text-align: center;
+        margin: 4px 0 20px;
+      }
+      .pastille-installation {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid var(--trait);
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.05);
+        font-weight: 800;
+        font-size: 13px;
+        color: var(--texte);
+      }
+      .pastille-installation::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 99px;
+        background: var(--vert);
+        box-shadow: 0 0 0 6px rgba(31, 122, 85, 0.12);
+      }
+      .installation h2 {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.4px;
+        margin: 14px 0 6px;
+      }
+      .installation > .doux {
+        font-size: 15px;
+        line-height: 1.4;
+        margin: 0 0 18px;
+      }
+      .installation .carte {
+        text-align: left;
+        border: 1px solid var(--trait);
+        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.08);
+        margin-bottom: 0;
+      }
+      .installation .grand {
+        color: var(--encre);
+        font-weight: 800;
+        font-size: 17px;
+        margin: 0 0 14px;
+      }
+      .etape {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        margin: 0 0 14px;
+        font-size: 15px;
+        line-height: 1.4;
+      }
+      .etape:last-of-type {
+        margin-bottom: 0;
+      }
+      .etape .numero {
+        width: 28px;
+        height: 28px;
+        border-radius: 10px;
+        background: var(--vert-clair);
+        color: var(--vert);
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        flex: none;
+      }
+      .etape .texte-etape {
+        flex: 1 1 auto;
+        padding-top: 3px;
+      }
+      .etape .icone {
+        flex: none;
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        color: var(--texte);
+        align-self: center;
+      }
+      .etape .icone svg {
+        width: 20px;
+        height: 20px;
+        display: block;
+      }
+      .installation .succes {
+        margin-top: 16px;
+      }
+      .barre-installation {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 50;
+        padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+        background: linear-gradient(180deg, rgba(245, 245, 243, 0) 0%, rgba(245, 245, 243, 0.92) 28%, rgba(245, 245, 243, 0.98) 100%);
+        backdrop-filter: blur(10px);
+      }
+      .barre-installation > div {
+        max-width: 480px;
+        margin: 0 auto;
+        background: var(--carte);
+        border: 1px solid var(--trait);
+        border-radius: 18px;
+        padding: 12px;
+        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      .barre-installation .doux {
+        font-size: 14px;
+        margin: 10px 0 0;
+      }
       .coches {
         list-style: none;
         padding: 0;
@@ -629,82 +746,120 @@
       }
 
       // Guide d'installation : l'espace doit être sur l'écran d'accueil pour recevoir l'Action du jour.
-      // Android propose l'installation quand il le juge possible : le bouton n'apparaît qu'à ce moment-là.
+      // Android installe tout seul : le bouton « Installer maintenant » rejoue l'invitation du navigateur,
+      // gardée ici dès qu'il l'envoie. Sans invitation (navigateur qui n'en envoie pas), le menu ⋮ prend le relais.
       let invitationAndroid = null;
       addEventListener("beforeinstallprompt", (evenement) => {
         evenement.preventDefault();
         invitationAndroid = evenement;
-        document.getElementById("installer")?.removeAttribute("hidden");
       });
+      // Icônes telles que l'iPhone les montre : le client cherche exactement ce symbole sur son écran.
+      const ICONES = {
+        partager:
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m8 7 4-4 4 4"/><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/></svg>',
+        plus:
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="16" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg>',
+        ajouter:
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8.5v7M8.5 12h7"/></svg>',
+        safari:
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg>',
+      };
+
+      // « **mot** » passe en gras ; le reste est du texte simple.
+      const avecGras = (texte) =>
+        texte.split(/\*\*(.+?)\*\*/).map((morceau, i) => (i % 2 ? el("b", {}, morceau) : morceau));
+
+      function etape(numero, texte, icone) {
+        const pictogramme = icone ? el("div", { class: "icone", "aria-hidden": "true" }) : null;
+        if (pictogramme) pictogramme.innerHTML = ICONES[icone];
+        return el(
+          "div",
+          { class: "etape" },
+          el("div", { class: "numero" }, String(numero)),
+          el("div", { class: "texte-etape" }, avecGras(texte)),
+          pictogramme,
+        );
+      }
+
       function installation() {
         if (INSTALLE) return null;
         const ua = navigator.userAgent;
         const iphone = IPHONE;
-        const derniere = IPHONE
-          ? "Ouvrez Fidelavis Agent depuis votre écran d'accueil : vous êtes connecté directement. S'il vous demande un code, touchez « Recevoir mon code »."
-          : "Ouvrez Fidelavis Agent depuis votre écran d'accueil : vous êtes connecté directement.";
-        const ecranAccueil =
-          "Touchez ••• « En voir plus » si besoin, puis « Sur l'écran d'accueil ».";
+        const ouvrir = IPHONE
+          ? "Ouvrez **Fidelavis Agent** depuis votre écran d'accueil : vous êtes connecté directement."
+          : "Ouvrez **Fidelavis Agent** depuis votre écran d'accueil.";
         let etapes;
         if (iphone && /CriOS|EdgiOS|FxiOS/.test(ua)) {
           // Chrome, Edge et Firefox sur iPhone ajoutent à l'écran d'accueil depuis leur bouton Partager.
           etapes = [
-            "Touchez le bouton Partager (le carré avec une flèche), à droite de la barre d'adresse.",
-            ecranAccueil,
-            "Touchez « Ajouter ».",
-            derniere,
+            ["Appuyez sur **Partager**, à droite de la barre d'adresse.", "partager"],
+            ["Si besoin, touchez **En voir plus**.", "plus"],
+            ["Choisissez **Sur l'écran d'accueil**, puis **Ajouter**.", "ajouter"],
+            [ouvrir],
           ];
         } else if (iphone && /Safari\//.test(ua) && !/GSA\/|FBAN|FBAV|Instagram/.test(ua)) {
           etapes = [
-            "Touchez le bouton Partager (le carré avec une flèche), en bas de l'écran.",
-            ecranAccueil,
-            "Touchez « Ajouter ».",
-            derniere,
+            ["Appuyez sur **Partager**.", "partager"],
+            ["Si besoin, touchez **En voir plus**.", "plus"],
+            ["Choisissez **Sur l'écran d'accueil**, puis **Ajouter**.", "ajouter"],
+            [ouvrir],
           ];
         } else if (iphone) {
           // Navigateur intégré à une application (Google, Gmail, Facebook…) : il faut passer par Safari.
           etapes = [
-            "Ouvrez cette page dans Safari : touchez ••• ou le bouton Partager, puis « Ouvrir dans Safari ».",
-            `Dans Safari, touchez Partager. ${ecranAccueil}`,
-            derniere,
+            ["Ouvrez cette page dans **Safari** : touchez ••• ou Partager, puis **Ouvrir dans Safari**.", "safari"],
+            ["Dans Safari, appuyez sur **Partager**, puis **En voir plus** si besoin.", "partager"],
+            ["Choisissez **Sur l'écran d'accueil**, puis **Ajouter**.", "ajouter"],
+            [ouvrir],
           ];
         } else {
           etapes = [
-            "Touchez le menu ⋮ de votre navigateur.",
-            "Choisissez « Installer l'application » ou « Ajouter à l'écran d'accueil ».",
-            derniere,
+            ["Appuyez sur **Installer maintenant** ci-dessous."],
+            ["Validez : l'application apparaît sur votre écran d'accueil."],
+            [ouvrir],
           ];
         }
-        const bouton = !iphone
-          ? el(
-            "button",
-            { id: "installer", class: "bouton", type: "button", hidden: !invitationAndroid },
-            "Installer Fidelavis Agent",
-          )
-          : null;
-        bouton?.addEventListener("click", async () => {
-          if (!invitationAndroid) return;
+        // Android : bouton fixé en bas de l'écran, comme sur les cartes Fidelavis. Rien sur iPhone :
+        // aucune page ne peut y ouvrir le menu Partager, la consigne est l'action.
+        const secours = el(
+          "p",
+          { class: "doux", hidden: true },
+          "Votre navigateur ne propose pas l'installation directe : touchez son menu ⋮, puis « Installer l'application » ou « Ajouter à l'écran d'accueil ».",
+        );
+        const bouton = el("button", { class: "bouton", type: "button" }, "📲 Installer maintenant");
+        const barre = !iphone ? el("div", { class: "barre-installation" }, el("div", {}, bouton, secours)) : null;
+        bouton.addEventListener("click", async () => {
+          if (!invitationAndroid) {
+            secours.hidden = false;
+            return;
+          }
           invitationAndroid.prompt();
-          await invitationAndroid.userChoice;
+          const { outcome } = await invitationAndroid.userChoice;
           invitationAndroid = null;
-          bouton.hidden = true;
+          if (outcome === "accepted") barre.remove();
         });
+        addEventListener("appinstalled", () => barre?.remove(), { once: true });
         return el(
           "section",
-          { class: "carte" },
-          el("p", { class: "etiquette" }, "À faire une fois"),
-          el("h2", {}, "Ajoutez Fidelavis Agent à votre écran d'accueil"),
+          { class: "installation" },
+          el("span", { class: "pastille-installation" }, "À faire 1 seule fois"),
+          el("h2", {}, "Installer Fidelavis Agent"),
           el(
             "p",
             { class: "doux" },
-            "Vous retrouverez votre Action du jour en un geste, comme une application.",
+            "Ajoutez l'application à votre écran d'accueil pour recevoir votre Action du jour chaque matin.",
           ),
-          el("ol", {}, etapes.map((etape) => el("li", {}, etape))),
-          // Chrome sur iPhone n'affiche pas la fin de l'adresse : on dit clairement si l'accès est prêt.
-          accesPret()
-            ? el("p", { class: "succes" }, "✓ Votre accès est prêt : l'application s'ouvrira connectée.")
-            : null,
-          bouton,
+          el(
+            "div",
+            { class: "carte" },
+            el("p", { class: "grand" }, "Votre Action du jour, en un geste."),
+            etapes.map(([texte, icone], i) => etape(i + 1, texte, icone)),
+            // Chrome sur iPhone n'affiche pas la fin de l'adresse : on dit clairement si l'accès est prêt.
+            accesPret()
+              ? el("p", { class: "succes" }, "✓ Votre accès est prêt : l'application s'ouvrira connectée.")
+              : null,
+          ),
+          barre,
         );
       }
 
@@ -1508,6 +1663,7 @@
         }
         afficher(
           entete(commercant.prenom),
+          installation(),
           carteAction(action, avis, commercant, surRetour),
           ...semaine(actions ?? [], aujourdhui),
           carteDemandesAvis(visites ?? [], surRetour),
@@ -1515,7 +1671,6 @@
           commercant.bilan && !abonne && !retourPaiement ? carteBilan(commercant) : null,
           formules,
           blocNotifications(Boolean(commercant.push_subscription)),
-          installation(),
           positionSuivie(releve, commercant),
           carteDePosition(cartes ?? [], commercant.mot_cle_suivi),
           el(
