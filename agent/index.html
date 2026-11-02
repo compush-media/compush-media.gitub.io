@@ -924,6 +924,23 @@
         );
       }
 
+      // Arrivée depuis le SMS de l'Action du jour (lien « ?sms ») : sur iPhone, un lien ouvre toujours le
+      // navigateur, jamais l'application installée. On rappelle de l'ouvrir et d'activer les notifications.
+      function bandeauSms() {
+        if (!IPHONE || INSTALLE || !new URLSearchParams(location.search).has("sms")) return null;
+        return el(
+          "section",
+          { class: "carte notifications" },
+          el("p", { class: "etiquette" }, "Vous avez installé l'application ?"),
+          el(
+            "p",
+            { class: "grand" },
+            "Ouvrez-la depuis votre écran d'accueil et activez les notifications : vous recevrez votre Action du jour directement, sans SMS.",
+          ),
+          el("p", { class: "doux" }, "Pas encore installée ? Suivez les étapes juste en dessous."),
+        );
+      }
+
       function installation() {
         if (INSTALLE) return null;
         const ua = navigator.userAgent;
@@ -1954,6 +1971,7 @@
         const alerteNotifications = notifications(Boolean(commercant.push_subscription));
         afficher(
           entete(commercant.prenom),
+          bandeauSms(),
           installation(),
           alerteNotifications.haut,
           rapportAAfficher(rapport) ? carteRapport(rapport) : null,
