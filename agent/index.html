@@ -275,6 +275,108 @@
         height: 20px;
         display: block;
       }
+      .rapport h2 {
+        margin-bottom: 2px;
+      }
+      .rapport .position-grande {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 4px 14px;
+        font-size: 56px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        color: var(--encre);
+        margin: 10px 0 2px;
+      }
+      .rapport .evolution {
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 0;
+        color: var(--doux);
+      }
+      .rapport .evolution.gain {
+        color: var(--vert);
+      }
+      .rapport .evolution.perte {
+        color: var(--orange);
+      }
+      .tuiles {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin: 18px 0 6px;
+      }
+      .tuile {
+        border: 1px solid var(--trait);
+        border-radius: 18px;
+        padding: 14px 16px;
+        color: var(--doux);
+        font-size: 15px;
+      }
+      .tuile strong {
+        display: block;
+        color: var(--encre);
+        font-size: 30px;
+        font-weight: 800;
+      }
+      .rapport .sous-titre {
+        color: var(--encre);
+        font-weight: 700;
+        margin: 18px 0 4px;
+      }
+      .dernieres {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 8px;
+      }
+      .dernieres li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--trait);
+      }
+      .dernieres li:last-child {
+        border-bottom: 0;
+      }
+      .dernieres strong {
+        display: block;
+        color: var(--encre);
+      }
+      .dernieres .doux {
+        font-size: 14px;
+      }
+      .badge {
+        flex: none;
+        border-radius: 99px;
+        padding: 5px 12px;
+        font-size: 14px;
+        font-weight: 700;
+        background: #ECECE8;
+        color: var(--doux);
+      }
+      .badge.fait {
+        background: var(--vert-clair);
+        color: var(--vert);
+      }
+      .rapport .ligne-rapport {
+        font-size: 15px;
+        margin: 6px 0;
+      }
+      .rapport .conseil {
+        background: var(--vert-clair);
+        border-radius: 16px;
+        padding: 14px 16px;
+        margin-top: 16px;
+      }
+      .rapport .conseil p {
+        margin: 0;
+      }
+      .rapport .conseil .etiquette {
+        margin-bottom: 6px;
+      }
       .carte.notifications {
         background: var(--vert-clair);
         border: 2px solid var(--vert);
@@ -1285,6 +1387,103 @@
         return { haut: bloc, bas: null };
       }
 
+      // --- Rapport du mois (abonnés) ------------------------------------------------------------------
+      // Le rapport est préparé et envoyé le 1er ; il reste en haut de l'écran 7 jours, au-dessus de l'Action
+      // du jour. Tout ce qui s'affiche vient du rapport figé en base : uniquement des valeurs relevées.
+      const JOURS_DU_RAPPORT = 7;
+      const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+      const nomDuMois = (mois) => MOIS[Number(mois.slice(5, 7)) - 1];
+      const duMois = (mois) => (/^[aeiouéâ]/.test(nomDuMois(mois)) ? `d'${nomDuMois(mois)}` : `de ${nomDuMois(mois)}`);
+      const pluriel = (n, mot, motPluriel = `${mot}s`) => `${n} ${n > 1 ? motPluriel : mot}`;
+
+      function rapportAAfficher(rapport) {
+        if (!rapport) return false;
+        if (new URLSearchParams(location.search).has("rapport")) return true;
+        return Boolean(rapport.envoye_le) &&
+          Date.now() - Date.parse(rapport.envoye_le) < JOURS_DU_RAPPORT * 86_400_000;
+      }
+
+      function carteRapport(rapport) {
+        const r = rapport.contenu;
+        const { debut, fin, places_gagnees: places } = r;
+        let position;
+        if (fin?.position) {
+          const evolution = !debut?.position
+            ? null
+            : places > 0
+            ? el("span", { class: "evolution gain" }, pluriel(places, "place gagnée", "places gagnées"))
+            : places < 0
+            ? el("span", { class: "evolution perte" }, pluriel(-places, "place perdue", "places perdues"))
+            : el("span", { class: "evolution" }, "position stable");
+          const details = [
+            debut?.position ? `${rang(debut.position)} au début du mois` : null,
+            r.premier?.nom ? `le 1er : ${r.premier.nom}` : null,
+          ].filter(Boolean).join(" · ");
+          position = [
+            el("p", { class: "position-grande" }, rang(fin.position), evolution),
+            details ? el("p", { class: "doux" }, details) : null,
+          ];
+        } else {
+          position = el("p", { class: "doux" }, "Pas encore dans les 100 premiers résultats.");
+        }
+
+        const tuiles = [
+          r.actions.proposees > 0
+            ? el("div", { class: "tuile" }, el("strong", {}, `${r.actions.faites} / ${r.actions.proposees}`), "actions faites")
+            : null,
+          r.client?.avis_gagnes !== null && r.client?.avis_gagnes !== undefined
+            ? el("div", { class: "tuile" }, el("strong", {}, `+${r.client.avis_gagnes}`), r.client.avis_gagnes > 1 ? "nouveaux avis" : "nouvel avis")
+            : null,
+        ].filter(Boolean);
+
+        const autres = [
+          fin?.position_metier_seul ? `Pour un client tout proche qui cherche votre métier seul : ${rang(fin.position_metier_seul)}.` : null,
+          r.client?.photos_ajoutees ? `${pluriel(r.client.photos_ajoutees, "photo ajoutée", "photos ajoutées")} sur votre fiche.` : null,
+          r.premier?.nom && r.premier.avis_gagnes !== null
+            ? `Le 1er : ${r.premier.avis_gagnes > 0 ? pluriel(r.premier.avis_gagnes, "nouvel avis", "nouveaux avis") : "aucun nouvel avis"} ce mois-ci.`
+            : null,
+          r.dessus?.nom && r.dessus.avis_gagnes !== null
+            ? `Juste au-dessus de vous, ${r.dessus.nom} : ${r.dessus.avis_gagnes > 0 ? pluriel(r.dessus.avis_gagnes, "nouvel avis", "nouveaux avis") : "aucun nouvel avis"}.`
+            : null,
+          r.demandes_avis.envoyees > 0
+            ? `${pluriel(r.demandes_avis.envoyees, "demande d'avis envoyée", "demandes d'avis envoyées")} à vos clients, ${pluriel(r.demandes_avis.cliquees, "lien ouvert", "liens ouverts")}.`
+            : null,
+          r.visibilite
+            ? `Carte de position : dans les 3 premiers sur ${r.visibilite.part} % de votre quartier` +
+              (r.visibilite.part_precedente !== null ? ` (${r.visibilite.part_precedente} % le mois précédent).` : ".")
+            : null,
+        ].filter(Boolean);
+
+        return el(
+          "section",
+          { class: "carte rapport" },
+          el("p", { class: "etiquette" }, "Rapport du mois"),
+          el("h2", {}, `Votre mois ${duMois(rapport.mois)}`),
+          el("p", { class: "doux" }, `« ${r.mot_cle} » sur Google Maps`),
+          position,
+          tuiles.length ? el("div", { class: "tuiles" }, tuiles) : null,
+          r.actions.dernieres.length
+            ? [
+              el("p", { class: "sous-titre" }, "Dernières actions"),
+              el(
+                "ul",
+                { class: "dernieres" },
+                r.actions.dernieres.map((a) =>
+                  el(
+                    "li",
+                    {},
+                    el("div", {}, el("strong", {}, a.titre), el("span", { class: "doux" }, jour(`${a.date}T12:00:00`, { weekday: "short", day: "numeric", month: "short" }))),
+                    el("span", { class: a.faite ? "badge fait" : "badge" }, a.faite ? "Fait" : "Non fait"),
+                  )
+                ),
+              ),
+            ]
+            : null,
+          autres.map((ligne) => el("p", { class: "doux ligne-rapport" }, ligne)),
+          el("div", { class: "conseil" }, el("p", { class: "etiquette" }, "Notre conseil"), el("p", {}, rapport.conseil)),
+        );
+      }
+
       // --- Fin de l'essai : bilan et formules -----------------------------------------------------------
       // Le bilan affiché est celui qui a été envoyé, tel quel : uniquement des valeurs relevées.
       function lignesDuBilan(bilan) {
@@ -1690,7 +1889,7 @@
         const enEssai = commercant.statut === "essai";
         preparerInstallation(session);
         const aujourdhui = jourDeParis(new Date());
-        const [{ data: actions }, { data: releve }, { data: cartes }, { data: visites }] = await Promise.all([
+        const [{ data: actions }, { data: releve }, { data: cartes }, { data: visites }, { data: rapport }] = await Promise.all([
           db.from("actions").select("id, date, type, titre, message, contenu_propose, statut, avis_id, verifiee_le")
             .eq("commercant_id", commercant.id).gte("date", lundiDeLaSemaine(aujourdhui))
             .order("date"),
@@ -1703,6 +1902,8 @@
           db.from("visites")
             .select("intervention, demande_statut, demande_raison, demande_prevue_le, demande_avis_envoyee_le, clients_finaux(prenom)")
             .eq("commercant_id", commercant.id).order("cree_le", { ascending: false }).limit(5),
+          db.from("rapports_mensuels").select("mois, ligne_cle, conseil, contenu, envoye_le")
+            .eq("commercant_id", commercant.id).order("mois", { ascending: false }).limit(1).maybeSingle(),
         ]);
         const action = (actions ?? []).find((a) => a.date === aujourdhui) ?? null;
         const { data: avis } = action?.avis_id
@@ -1755,6 +1956,7 @@
           entete(commercant.prenom),
           installation(),
           alerteNotifications.haut,
+          rapportAAfficher(rapport) ? carteRapport(rapport) : null,
           carteAction(action, avis, commercant, surRetour),
           ...semaine(actions ?? [], aujourdhui),
           carteDemandesAvis(visites ?? [], surRetour),
