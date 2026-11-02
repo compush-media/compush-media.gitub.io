@@ -1877,7 +1877,20 @@
         );
       }
 
+      // Chaque ouverture est notée (au chargement et au retour sur l'application) : abonné aux
+      // notifications mais sans ouverture depuis 7 jours, le commerçant reçoit son action par SMS.
+      let ouvertureSuivie = false;
+      function noterOuverture() {
+        db.rpc("agent_ouverture").then(() => {}, () => {});
+        if (ouvertureSuivie) return;
+        ouvertureSuivie = true;
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") db.rpc("agent_ouverture").then(() => {}, () => {});
+        });
+      }
+
       async function afficherEspace(session) {
+        noterOuverture();
         const { data: commercant, error } = await db.from("commercants")
           .select("id, prenom, nom_fiche, place_id, metier, mot_cle_suivi, statut, essai_fin, depart, push_subscription, bilan, formule")
           .eq("user_id", session.user.id).maybeSingle();
