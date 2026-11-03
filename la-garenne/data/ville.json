@@ -2,12 +2,12 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-02T23:37+00:00",
- "empreinte": "462aabedecdc24fa",
+ "maj": "2026-11-03T12:53+00:00",
+ "empreinte": "63d1654474bb95dc",
  "actus": [
   {
    "titre": "Sécheresse : maintien des mesures de vigilance dans les Hauts-de-Seine",
-   "date": "",
+   "date": "2026-11-02",
    "resume": "Suite à une situation hydrologique qui ne s’est pas améliorée, notamment au niveau de la Marne, les mesures de sensibilisation et de surveillance liées au franchissement du seuil de vigilance de la…",
    "image": "https://www.lagarennecolombes.fr/image/1080x1350_info_niveaux_alerte.jpg",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13945&iddossiercontenu=33"
