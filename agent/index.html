@@ -1208,6 +1208,9 @@
             : null,
           zoneTexte,
           boutonsPrincipaux(action, commercant, zoneTexte),
+          action.statut === "deleguee"
+            ? el("p", { class: "doux pied" }, `Envoyée à ${commercant.delegue_nom ?? "votre relais"} ce soir par SMS.`)
+            : null,
           action.statut === "reportee"
             ? el("p", { class: "doux pied" }, "Gardée pour plus tard : elle reste ici aujourd'hui.")
             : null,
@@ -1790,6 +1793,108 @@
         );
       }
 
+      // --- Délégué (essai, Visibilité, Croissance) ------------------------------------------------------
+      // Un proche qui gère aussi la fiche Google reçoit l'action par SMS à 19 h 30 si elle n'est pas faite
+      // après le rappel de 18 h (lundi, mercredi, vendredi, avis négatif). Seulement avec son accord.
+      const relaisPermis = (commercant) => commercant.statut === "essai" || commercant.formule !== "essentiel";
+      const masquer = (telephone) => `${telephone.slice(0, 2)} •• •• •• ${telephone.slice(-2)}`;
+
+      function carteDelegue(commercant, surChangement) {
+        if (!relaisPermis(commercant)) return null;
+        const message = el("p", { class: "erreur", hidden: true });
+        const erreur = (texte) => {
+          message.hidden = false;
+          message.textContent = texte;
+        };
+        if (commercant.delegue_telephone) {
+          const retirer = el("button", { class: "lien", type: "button" }, "Retirer ce relais");
+          retirer.addEventListener("click", async () => {
+            retirer.disabled = true;
+            const { error } = await db.rpc("agent_enregistrer_delegue", { nom: null, telephone: null, accord: false });
+            retirer.disabled = false;
+            if (error) return erreur("Le retrait n'a pas abouti. Réessayez dans un instant.");
+            surChangement();
+          });
+          return el(
+            "section",
+            { class: "carte" },
+            el("p", { class: "etiquette" }, "Votre relais"),
+            el("h2", {}, `${commercant.delegue_nom} · ${masquer(commercant.delegue_telephone)}`),
+            el(
+              "p",
+              { class: "doux" },
+              "Si votre action n'est pas faite après le rappel de 18 h, elle lui est envoyée par SMS à 19 h 30, le lundi, le mercredi et le vendredi (et pour un avis négatif).",
+            ),
+            message,
+            el("p", { class: "pied" }, retirer),
+          );
+        }
+        const ouvrir = el("button", { class: "bouton secondaire", type: "button" }, "Ajouter un relais");
+        const prenom = el("input", { type: "text", id: "delegue-prenom", autocomplete: "off", maxlength: "40", required: true });
+        const mobile = el("input", { type: "tel", id: "delegue-mobile", autocomplete: "off", inputmode: "tel", required: true });
+        const accord = el("input", { type: "checkbox", id: "delegue-accord", required: true });
+        const valider = el("button", { class: "bouton", type: "submit" }, "Enregistrer");
+        const annuler = el("button", { class: "lien", type: "button" }, "Annuler");
+        const formulaire = el(
+          "form",
+          { hidden: true },
+          el("label", { for: "delegue-prenom" }, "Son prénom"),
+          prenom,
+          el("label", { for: "delegue-mobile" }, "Son mobile"),
+          mobile,
+          el(
+            "label",
+            { class: "accord", for: "delegue-accord" },
+            accord,
+            el("span", {}, "Cette personne est d'accord pour recevoir mes actions par SMS, et elle peut modifier ma fiche Google."),
+          ),
+          message,
+          valider,
+          el("p", { class: "pied" }, annuler),
+        );
+        ouvrir.addEventListener("click", () => {
+          formulaire.hidden = false;
+          ouvrir.hidden = true;
+          prenom.focus();
+        });
+        annuler.addEventListener("click", () => {
+          formulaire.reset();
+          formulaire.hidden = true;
+          ouvrir.hidden = false;
+          message.hidden = true;
+        });
+        formulaire.addEventListener("submit", async (evenement) => {
+          evenement.preventDefault();
+          message.hidden = true;
+          const numero = mobileInternational(mobile.value);
+          if (!numero || !/^\+33[67]/.test(numero)) {
+            return erreur("Indiquez un mobile français (06 ou 07) : le relais reçoit l'action par SMS.");
+          }
+          valider.disabled = true;
+          const { error } = await db.rpc("agent_enregistrer_delegue", {
+            nom: prenom.value.trim(),
+            telephone: numero,
+            accord: accord.checked,
+          });
+          valider.disabled = false;
+          if (error) return erreur("L'enregistrement n'a pas abouti. Réessayez dans un instant.");
+          surChangement();
+        });
+        return el(
+          "section",
+          { class: "carte" },
+          el("p", { class: "etiquette" }, "Relais"),
+          el("h2", {}, "Un proche peut prendre le relais"),
+          el(
+            "p",
+            { class: "doux" },
+            "Votre conjoint ou votre secrétaire gère aussi votre fiche Google ? Si votre action n'est pas faite le soir, elle lui arrive par SMS à 19 h 30.",
+          ),
+          ouvrir,
+          formulaire,
+        );
+      }
+
       // --- Carte de position (Croissance) -----------------------------------------------------------------
       // 49 recherches Google Maps autour du commerce : vert dans les 3 premiers, orange de 4 à 10, rouge au-delà.
       const couleurDuPoint = (position) =>
@@ -1892,7 +1997,7 @@
       async function afficherEspace(session) {
         noterOuverture();
         const { data: commercant, error } = await db.from("commercants")
-          .select("id, prenom, nom_fiche, place_id, metier, mot_cle_suivi, statut, essai_fin, depart, push_subscription, bilan, formule")
+          .select("id, prenom, nom_fiche, place_id, metier, mot_cle_suivi, statut, essai_fin, depart, push_subscription, bilan, formule, delegue_nom, delegue_telephone")
           .eq("user_id", session.user.id).maybeSingle();
         const deconnexion = el("button", { class: "lien", type: "button" }, "Se déconnecter");
         deconnexion.addEventListener("click", async () => {
@@ -1991,6 +2096,7 @@
           carteAction(action, avis, commercant, surRetour),
           ...semaine(actions ?? [], aujourdhui),
           carteDemandesAvis(visites ?? [], surRetour),
+          carteDelegue(commercant, surRetour),
           merci,
           commercant.bilan && !abonne && !retourPaiement ? carteBilan(commercant) : null,
           formules,
