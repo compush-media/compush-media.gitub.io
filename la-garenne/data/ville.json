@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-03T12:53+00:00",
- "empreinte": "63d1654474bb95dc",
+ "maj": "2026-11-05T22:07+00:00",
+ "empreinte": "d5bf01d2f173c4d9",
  "actus": [
   {
    "titre": "Sécheresse : maintien des mesures de vigilance dans les Hauts-de-Seine",
@@ -27,10 +27,10 @@
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13938&iddossiercontenu=33"
   },
   {
-   "titre": "Véligo : testez le vélo qui vous convient dimanche 11 octobre",
+   "titre": "Grande Collecte Solidaire des Jouets : donnez-leur une seconde vie en novembre !",
    "date": "2026-09-08",
-   "resume": "Vélo électrique, cargo ou adapté : avant de choisir, les Garennois pourront tester différents modèles grâce à la Maison du vélo mobile de Véligo Location, qui fera étape à deux reprises cet automne…",
-   "image": "https://www.lagarennecolombes.fr/image/VELIGO-3.jpg",
+   "resume": "À l’approche des fêtes de fin d’année, Paris Ouest La Défense organise aux côtés des éco-organismes Ecomaison et ecosystem la Grande Collecte Solidaire des Jouets. Du 2 au 30 novembre 2026, déposez…",
+   "image": "https://www.lagarennecolombes.fr/image/Aff_40_60_Paris_Ouest_Defense-683x1024.png",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13918&iddossiercontenu=33"
   },
   {
