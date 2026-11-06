@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-05T22:07+00:00",
- "empreinte": "d5bf01d2f173c4d9",
+ "maj": "2026-11-06T13:03+00:00",
+ "empreinte": "586bda496367e66e",
  "actus": [
   {
    "titre": "Sécheresse : maintien des mesures de vigilance dans les Hauts-de-Seine",
@@ -91,14 +91,6 @@
   }
  ],
  "agenda": [
-  {
-   "titre": "Vivre avec Bach",
-   "debut": "2026-11-05",
-   "fin": "2026-11-05",
-   "resume": "",
-   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/Vivre_avec_Bach.png",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13903&iddossiercontenu=9"
-  },
   {
    "titre": "Le loup, la jeune fille et le chasseur",
    "debut": "2026-11-07",
