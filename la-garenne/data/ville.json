@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-06T13:03+00:00",
- "empreinte": "586bda496367e66e",
+ "maj": "2026-11-08T12:00+00:00",
+ "empreinte": "26dc468450746be3",
  "actus": [
   {
    "titre": "Sécheresse : maintien des mesures de vigilance dans les Hauts-de-Seine",
@@ -91,22 +91,6 @@
   }
  ],
  "agenda": [
-  {
-   "titre": "Le loup, la jeune fille et le chasseur",
-   "debut": "2026-11-07",
-   "fin": "2026-11-07",
-   "resume": "",
-   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/normal_667bea79d680b.jpeg.png",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13901&iddossiercontenu=9"
-  },
-  {
-   "titre": "Soirée dansante : Les années 90 et 2000 !",
-   "debut": "2026-11-07",
-   "fin": "2026-11-07",
-   "resume": "",
-   "image": "https://www.lagarennecolombes.fr/image/Saison_culturelle_26-27-Soiree-dansante-Annees-90-2000_page-0001.jpg",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13902&iddossiercontenu=9"
-  },
   {
    "titre": "L’Avare",
    "debut": "2026-11-13",
