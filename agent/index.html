@@ -1073,10 +1073,25 @@
           el(
             "p",
             { class: "position" },
-            depart.position === null
+            depart.fourchette
+              ? depart.fourchette.min === depart.fourchette.max
+                ? `Vous êtes ${rang(depart.fourchette.min)}`
+                : `Entre la ${rang(depart.fourchette.min)} et la ${rang(depart.fourchette.max)} place`
+              : depart.position === null
               ? "Hors des résultats relevés"
               : `Vous êtes ${rang(depart.position)}`,
           ),
+          depart.fourchette
+            ? el(
+              "p",
+              { class: "doux" },
+              `À ${depart.fourchette.distance_m}\u00a0m de chez vous, selon le côté${
+                depart.fourchette.absents > 0
+                  ? ` ; absent ${depart.fourchette.absents === 1 ? "d'un côté" : `de ${depart.fourchette.absents} côtés`}`
+                  : ""
+              }.`,
+            )
+            : null,
           autres,
           depart.releve_le
             ? el("p", { class: "doux" }, `Point de départ relevé le ${jour(depart.releve_le)}.`)
