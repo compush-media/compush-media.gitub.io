@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-10T00:19+00:00",
- "empreinte": "7c11d7b9f108a9a5",
+ "maj": "2026-11-10T13:37+00:00",
+ "empreinte": "26dc468450746be3",
  "actus": [
   {
    "titre": "Sécheresse : maintien des mesures de vigilance dans les Hauts-de-Seine",
@@ -62,6 +62,13 @@
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13487&iddossiercontenu=33"
   },
   {
+   "titre": "Enquête publique : la Ville et le CCAS à votre écoute !",
+   "date": "2026-10-28",
+   "resume": "Vous habitez La Garenne-Colombes ? La Ville et le CCAS (Centre communal d’action sociale) lancent une enquête afin de mieux connaître vos besoins et d’adapter leurs actions au quotidien.",
+   "image": "",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13944&iddossiercontenu=33"
+  },
+  {
    "titre": "Les Garennois font leur cinéma !",
    "date": "2026-10-05",
    "resume": "Pour l'ouverture de son cinéma, la Ville vous confie l'affiche ! 24 heures non-stop, nuit comprise, pour fêter cent ans de cinéma : un film par décennie, choisi par les Garennois. Place aux votes !",
@@ -81,13 +88,6 @@
    "resume": "La Mairie de La Garenne recrute des auxiliaires de puériculture, des éducateurs de jeunes enfants et des auxilliaires de crèches.",
    "image": "https://www.lagarennecolombes.fr/image/2024-12-112_-_Affiche_recrutement_auxilliaires_de_puericulture_V3.jpg",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13505&iddossiercontenu=33"
-  },
-  {
-   "titre": "Conservatoire : Le futur pavillon des arts vivants",
-   "date": "2026-02-13",
-   "resume": "Installé rue d’Estienne-d’Orves, un nouveau Conservatoire ouvrira en 2028 pour accueillir dans des conditions optimales, au sein d’un bâtiment moderne et décarboné, l’apprentissage de la musique, de…",
-   "image": "https://www.lagarennecolombes.fr/image/CONSERVATOIRE___Projet-Conservatoire_Ext-rue-d-Estienne-d-Orves.jpg",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13265&iddossiercontenu=33"
   }
  ],
  "agenda": [
