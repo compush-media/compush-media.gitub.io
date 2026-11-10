@@ -2,15 +2,15 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-10T13:37+00:00",
- "empreinte": "26dc468450746be3",
+ "maj": "2026-11-10T21:51+00:00",
+ "empreinte": "c2efb4a3f09c508c",
  "actus": [
   {
-   "titre": "Sécheresse : maintien des mesures de vigilance dans les Hauts-de-Seine",
-   "date": "2026-11-02",
-   "resume": "Suite à une situation hydrologique qui ne s’est pas améliorée, notamment au niveau de la Marne, les mesures de sensibilisation et de surveillance liées au franchissement du seuil de vigilance de la…",
-   "image": "https://www.lagarennecolombes.fr/image/1080x1350_info_niveaux_alerte.jpg",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13945&iddossiercontenu=33"
+   "titre": "Ouverture/fermeture des équipements publics le mercredi 11 novembre 2026",
+   "date": "2025-10-28",
+   "resume": "Retrouvez, ci-dessous, la liste des établissements ouverts ou fermés le mercredi 11 novembre",
+   "image": "https://www.lagarennecolombes.fr/image/19430037_10155270753202597_2636433546633437765_n.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=11939&iddossiercontenu=33"
   },
   {
    "titre": "Un coup de pouce pour réussir au collège !",
@@ -18,13 +18,6 @@
    "resume": "L’entrée en 6e est une étape importante. Nouvel établissement, nouveaux enseignants, emploi du temps plus complexe, davantage de devoirs et d’autonomie… En quelques semaines, les jeunes collégiens…",
    "image": "https://www.lagarennecolombes.fr/image/2026-08-23_tract_A5_recto_verso_Dispositif_CLAS_IMP_page-0001.jpg",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13921&iddossiercontenu=33"
-  },
-  {
-   "titre": "Repas de Noël des seniors : les dates à retenir",
-   "date": "",
-   "resume": "Les 7, 8 et 9 décembre, le Théâtre accueillera les traditionnels Repas de Noël proposés par la Ville aux Garennois âgés de 65 ans et plus. Un rendez-vous convivial pour se retrouver et célébrer…",
-   "image": "https://www.lagarennecolombes.fr/image/Vignette_repas_noel_seniors.jpg",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13938&iddossiercontenu=33"
   },
   {
    "titre": "Grande Collecte Solidaire des Jouets : donnez-leur une seconde vie en novembre !",
@@ -53,6 +46,13 @@
    "resume": "La Ville lance les inscriptions pour son Marché de Noël, qui se tiendra du 27 novembre au 20 décembre 2026, place de la Liberté.",
    "image": "https://www.lagarennecolombes.fr/image/20221210-09_009_Marche-de-Noel.JPG",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13881&iddossiercontenu=33"
+  },
+  {
+   "titre": "Sécheresse : maintien des mesures de vigilance dans les Hauts-de-Seine",
+   "date": "2026-11-02",
+   "resume": "Suite à une situation hydrologique qui ne s’est pas améliorée, notamment au niveau de la Marne, les mesures de sensibilisation et de surveillance liées au franchissement du seuil de vigilance de la…",
+   "image": "https://www.lagarennecolombes.fr/image/1080x1350_info_niveaux_alerte.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13945&iddossiercontenu=33"
   },
   {
    "titre": "Les travaux réalisés, en cours et à venir à La Garenne-Colombes",
