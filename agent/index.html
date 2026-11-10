@@ -1069,7 +1069,7 @@
         return el(
           "section",
           { class: "carte" },
-          el("p", { class: "doux" }, `« ${depart.mot_cle} » sur Google Maps`),
+          el("p", { class: "doux" }, `« ${depart.mot_cle} » sur Google Maps${depart.lieu ? `, ${depart.lieu}` : ""}`),
           el(
             "p",
             { class: "position" },
@@ -1272,7 +1272,7 @@
         return el(
           "section",
           { class: "carte" },
-          el("p", { class: "doux" }, `« ${commercant.mot_cle_suivi} » sur Google Maps`),
+          el("p", { class: "doux" }, `« ${commercant.mot_cle_suivi} » sur Google Maps${commercant.depart?.lieu ? `, ${commercant.depart.lieu}` : ""}`),
           el(
             "p",
             { class: "position" },
@@ -1524,7 +1524,7 @@
       function lignesDuBilan(bilan) {
         const lignes = [];
         if (bilan.depart?.position && bilan.actuel?.position) {
-          lignes.push(`Sur « ${bilan.mot_cle} » : ${rang(bilan.depart.position)} au départ, ${rang(bilan.actuel.position)} au dernier relevé.`);
+          lignes.push(`Sur « ${bilan.mot_cle} »${bilan.lieu ? `, ${bilan.lieu}` : ""} : ${rang(bilan.depart.position)} au départ, ${rang(bilan.actuel.position)} au dernier relevé.`);
         }
         if (bilan.avis_gagnes !== null && bilan.avis_gagnes !== undefined) {
           lignes.push(bilan.avis_gagnes > 0
