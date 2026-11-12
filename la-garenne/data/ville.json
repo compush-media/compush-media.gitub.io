@@ -2,16 +2,9 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-10T21:51+00:00",
- "empreinte": "c2efb4a3f09c508c",
+ "maj": "2026-11-12T13:52+00:00",
+ "empreinte": "e8d6d2c732eb6c15",
  "actus": [
-  {
-   "titre": "Ouverture/fermeture des équipements publics le mercredi 11 novembre 2026",
-   "date": "2025-10-28",
-   "resume": "Retrouvez, ci-dessous, la liste des établissements ouverts ou fermés le mercredi 11 novembre",
-   "image": "https://www.lagarennecolombes.fr/image/19430037_10155270753202597_2636433546633437765_n.jpg",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=11939&iddossiercontenu=33"
-  },
   {
    "titre": "Un coup de pouce pour réussir au collège !",
    "date": "2026-09-11",
@@ -88,6 +81,13 @@
    "resume": "La Mairie de La Garenne recrute des auxiliaires de puériculture, des éducateurs de jeunes enfants et des auxilliaires de crèches.",
    "image": "https://www.lagarennecolombes.fr/image/2024-12-112_-_Affiche_recrutement_auxilliaires_de_puericulture_V3.jpg",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13505&iddossiercontenu=33"
+  },
+  {
+   "titre": "Conservatoire : Le futur pavillon des arts vivants",
+   "date": "2026-02-13",
+   "resume": "Installé rue d’Estienne-d’Orves, un nouveau Conservatoire ouvrira en 2028 pour accueillir dans des conditions optimales, au sein d’un bâtiment moderne et décarboné, l’apprentissage de la musique, de…",
+   "image": "https://www.lagarennecolombes.fr/image/CONSERVATOIRE___Projet-Conservatoire_Ext-rue-d-Estienne-d-Orves.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13265&iddossiercontenu=33"
   }
  ],
  "agenda": [
