@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-12T13:52+00:00",
- "empreinte": "e8d6d2c732eb6c15",
+ "maj": "2026-11-14T12:19+00:00",
+ "empreinte": "33d93ab464ea4064",
  "actus": [
   {
    "titre": "Un coup de pouce pour réussir au collège !",
@@ -91,14 +91,6 @@
   }
  ],
  "agenda": [
-  {
-   "titre": "L’Avare",
-   "debut": "2026-11-13",
-   "fin": "2026-11-13",
-   "resume": "",
-   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/DSCF2053.jpg.png",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13900&iddossiercontenu=9"
-  },
   {
    "titre": "Le jeu de l’amour et du hasard",
    "debut": "2026-11-14",
