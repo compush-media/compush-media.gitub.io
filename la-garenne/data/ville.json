@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-15T12:50+00:00",
- "empreinte": "b9cc050cd4dba0ad",
+ "maj": "2026-11-16T13:48+00:00",
+ "empreinte": "cb57b97b3afd8b65",
  "actus": [
   {
    "titre": "Un coup de pouce pour réussir au collège !",
@@ -91,14 +91,6 @@
   }
  ],
  "agenda": [
-  {
-   "titre": "Le Barbier de Séville",
-   "debut": "2026-11-15",
-   "fin": "2026-11-15",
-   "resume": "",
-   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/2024_05_12_-_©Chang_Martin_-_Le_Barbier_de_Seville_-_Cie_Les_Modits_-_IMG_1864.jpg.png",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13898&iddossiercontenu=9"
-  },
   {
    "titre": "Venise, une histoire sérénissime ! – Architecture et sculpture",
    "debut": "2026-11-18",
