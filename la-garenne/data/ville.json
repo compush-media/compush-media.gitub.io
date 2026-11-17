@@ -2,9 +2,16 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-17T00:19+00:00",
- "empreinte": "18de2d6953a4a8e3",
+ "maj": "2026-11-17T14:40+00:00",
+ "empreinte": "404310b652c6cd88",
  "actus": [
+  {
+   "titre": "Conseil municipal du 19 novembre 2026",
+   "date": "2026-11-13",
+   "resume": "Le prochain Conseil municipal se tiendra le jeudi 19 novembre 2026, à 19 heures en Salle du Conseil. Découvrez l’ordre du jour.",
+   "image": "https://www.lagarennecolombes.fr/image/dsd.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=11514&iddossiercontenu=33"
+  },
   {
    "titre": "Un coup de pouce pour réussir au collège !",
    "date": "2026-09-11",
@@ -81,13 +88,6 @@
    "resume": "Installé rue d’Estienne-d’Orves, un nouveau Conservatoire ouvrira en 2028 pour accueillir dans des conditions optimales, au sein d’un bâtiment moderne et décarboné, l’apprentissage de la musique, de…",
    "image": "https://www.lagarennecolombes.fr/image/CONSERVATOIRE___Projet-Conservatoire_Ext-rue-d-Estienne-d-Orves.jpg",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13265&iddossiercontenu=33"
-  },
-  {
-   "titre": "Que faire de vos déchets chimiques sur le territoire?",
-   "date": "",
-   "resume": "De nombreuses solutions ont été déployées pour mieux collecter ces déchets afin de les traiter et ainsi réduire leur impact sur l’environnement. Que ce soit dans votre magasin préféré ou dans votre…",
-   "image": "https://www.lagarennecolombes.fr/image/AdobeStock_588171217.jpeg",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13301&iddossiercontenu=33"
   }
  ],
  "agenda": [
