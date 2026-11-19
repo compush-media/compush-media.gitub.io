@@ -2,16 +2,9 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-19T14:31+00:00",
- "empreinte": "dcf48cb9b077228a",
+ "maj": "2026-11-19T23:07+00:00",
+ "empreinte": "7d15a5b74059bea9",
  "actus": [
-  {
-   "titre": "Conseil municipal du 19 novembre 2026",
-   "date": "2026-11-13",
-   "resume": "Le prochain Conseil municipal se tiendra le jeudi 19 novembre 2026, à 19 heures en Salle du Conseil. Découvrez l’ordre du jour.",
-   "image": "https://www.lagarennecolombes.fr/image/dsd.jpg",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=11514&iddossiercontenu=33"
-  },
   {
    "titre": "Un coup de pouce pour réussir au collège !",
    "date": "2026-09-11",
@@ -88,6 +81,13 @@
    "resume": "De nombreuses solutions ont été déployées pour mieux collecter ces déchets afin de les traiter et ainsi réduire leur impact sur l’environnement. Que ce soit dans votre magasin préféré ou dans votre…",
    "image": "https://www.lagarennecolombes.fr/image/AdobeStock_588171217.jpeg",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13301&iddossiercontenu=33"
+  },
+  {
+   "titre": "Jumelage Allemagne 2027 : les inscriptions sont ouvertes !",
+   "date": "2026-10-01",
+   "resume": "Vous avez entre 12 et 16 ans et souhaitez vivre une expérience internationale, découvrir l’Allemagne et rencontrer de jeunes Allemands ? Les inscriptions au séjour linguistique à Wangen-im-Allgäu…",
+   "image": "",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13936&iddossiercontenu=33"
   }
  ],
  "agenda": [
