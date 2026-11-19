@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-18T14:18+00:00",
- "empreinte": "f6abf706f22e379d",
+ "maj": "2026-11-19T14:31+00:00",
+ "empreinte": "dcf48cb9b077228a",
  "actus": [
   {
    "titre": "Conseil municipal du 19 novembre 2026",
@@ -91,14 +91,6 @@
   }
  ],
  "agenda": [
-  {
-   "titre": "Venise, une histoire sérénissime ! – Architecture et sculpture",
-   "debut": "2026-11-18",
-   "fin": "2026-11-18",
-   "resume": "",
-   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/AdobeStock_194913494.jpeg.png",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13897&iddossiercontenu=9"
-  },
   {
    "titre": "Les marchands d’étoiles",
    "debut": "2026-11-20",
