@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-20T14:10+00:00",
- "empreinte": "f4ee464dc56858df",
+ "maj": "2026-11-21T13:35+00:00",
+ "empreinte": "b52e17dfe98e478b",
  "actus": [
   {
    "titre": "Le Salon des Artistes garennois célèbre sa 40e édition",
@@ -55,6 +55,13 @@
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13265&iddossiercontenu=33"
   },
   {
+   "titre": "Festival Entr'actes 92 : Cinq jours, sept spectacles et toutes les émotions du théâtre",
+   "date": "2026-07-31",
+   "resume": "Du 25 au 29 novembre, la 11e edition du Festival de Theatre de La Garenne investit l'Auditorium de la Mediatheque. Comedies, rencontres historiques et histoires troublantes : a vous de choisir … ou…",
+   "image": "",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13887&iddossiercontenu=33"
+  },
+  {
    "titre": "Que faire de vos déchets chimiques sur le territoire?",
    "date": "",
    "resume": "De nombreuses solutions ont été déployées pour mieux collecter ces déchets afin de les traiter et ainsi réduire leur impact sur l’environnement. Que ce soit dans votre magasin préféré ou dans votre…",
@@ -81,13 +88,6 @@
    "resume": "Les Garennois aident les Garennois. Avec « Un jour, une heure, une minute », la Ville propose à des personnes bénévoles de donner un peu de leur temps pour rendre des petits services ; donner un jour…",
    "image": "https://www.lagarennecolombes.fr/image/Vignette_1j1h1m.png",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=12832&iddossiercontenu=33"
-  },
-  {
-   "titre": "Gardons notre ville propre !",
-   "date": "",
-   "resume": "Déjections canines, dépôts sauvages, non-respect des horaires de sortie des bacs de collecte : les incivilités sont encore trop nombreuses et dégradent l’espace communal, malgré les efforts…",
-   "image": "https://www.lagarennecolombes.fr/image/20220523-01_009-modif_proprete-corbeillevignette.jpg",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=12234&iddossiercontenu=33"
   }
  ],
  "agenda": [
