@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-21T13:35+00:00",
- "empreinte": "b52e17dfe98e478b",
+ "maj": "2026-11-23T16:12+00:00",
+ "empreinte": "3245b080d59b01aa",
  "actus": [
   {
    "titre": "Le Salon des Artistes garennois célèbre sa 40e édition",
@@ -92,12 +92,60 @@
  ],
  "agenda": [
   {
-   "titre": "Les marchands d’étoiles",
-   "debut": "2026-11-20",
-   "fin": "2026-11-20",
-   "resume": "COMPLET",
-   "image": "https://www.lagarennecolombes.fr/image/0.AA_Saison_culturelle/Photo_2_Les_marchands_d_etoiles_(credit_florian_Cleret).jpeg.png",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13896&iddossiercontenu=9"
+   "titre": "Tap Factory",
+   "debut": "2026-12-05",
+   "fin": "2026-12-05",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/Tap_Factory_bogota_CreditPhoto_VincentPausanias.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13952&iddossiercontenu=9"
+  },
+  {
+   "titre": "Cat's Claw",
+   "debut": "2026-12-05",
+   "fin": "2026-12-05",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/Cat_s_Claw.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13953&iddossiercontenu=9"
+  },
+  {
+   "titre": "Nathasha St-Pier",
+   "debut": "2026-12-12",
+   "fin": "2026-12-12",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/Natasha_St-Pier_-__credits_Thomas_Braut_.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13954&iddossiercontenu=9"
+  },
+  {
+   "titre": "Tom Sawyer",
+   "debut": "2026-12-18",
+   "fin": "2026-12-18",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/TOM_SAWYER_PHOTO_2018_CREDIT_MAXIME_GUERVILLE_11b.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13955&iddossiercontenu=9"
+  },
+  {
+   "titre": "Maîtrise de Sainte-Croix de Neuilly the Paris Boys Choir",
+   "debut": "2027-01-09",
+   "fin": "2027-01-09",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/Maitrise-Sainte-Croix-Neuilly.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13956&iddossiercontenu=9"
+  },
+  {
+   "titre": "Le vélo sans les mains",
+   "debut": "2027-01-17",
+   "fin": "2027-01-17",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/Le-velo-sans-les-mains.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13957&iddossiercontenu=9"
+  },
+  {
+   "titre": "Le chant de Bérénice",
+   "debut": "2027-01-22",
+   "fin": "2027-01-22",
+   "resume": "",
+   "image": "https://www.lagarennecolombes.fr/image/Le-chant-de-Berenice_Photo_pour_La_Garenne_assise.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Agenda?idpage=10049&idmetacontenu=13958&iddossiercontenu=9"
   }
  ]
 }
