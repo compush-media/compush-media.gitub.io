@@ -2,8 +2,8 @@
  "_lisez_moi": "Généré par .github/scripts/hl_ville.py à partir des flux RSS de la Ville. Ne pas modifier à la main.",
  "source": "Ville de La Garenne-Colombes",
  "site": "https://www.lagarennecolombes.fr/",
- "maj": "2026-11-23T16:12+00:00",
- "empreinte": "3245b080d59b01aa",
+ "maj": "2026-11-24T16:00+00:00",
+ "empreinte": "d62d0fb21df19267",
  "actus": [
   {
    "titre": "Le Salon des Artistes garennois célèbre sa 40e édition",
@@ -25,6 +25,13 @@
    "resume": "À compter du mois d'août 2026, les utilisateurs de trottinettes électriques et, plus largement, des engins de déplacement personnel motorisés (EDPM), devront respecter de nouvelles règles destinées à…",
    "image": "https://www.lagarennecolombes.fr/image/let-s-kick-6dnmMqbfgBo-unsplash.jpg",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13889&iddossiercontenu=33"
+  },
+  {
+   "titre": "Sécheresse : maintien des mesures de vigilance dans les Hauts-de-Seine",
+   "date": "2026-11-02",
+   "resume": "Suite à une situation hydrologique qui ne s’est pas améliorée, notamment au niveau de la Marne, les mesures de sensibilisation et de surveillance liées au franchissement du seuil de vigilance de la…",
+   "image": "https://www.lagarennecolombes.fr/image/1080x1350_info_niveaux_alerte.jpg",
+   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13945&iddossiercontenu=33"
   },
   {
    "titre": "Les travaux réalisés, en cours et à venir à La Garenne-Colombes",
@@ -81,13 +88,6 @@
    "resume": "À La Garenne-Colombes, ecosystem collecte à votre domicilie le gros électroménager dont vous souhaitez vous défaire, en partenariat avec Paris Ouest la Défense.",
    "image": "https://www.lagarennecolombes.fr/image/csm_221012_flyerJDME_GOSB_E2_70__747d6fe473.png",
    "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=13259&iddossiercontenu=33"
-  },
-  {
-   "titre": "Découvrez le dispositif ”Un jour, une heure, une minute”",
-   "date": "2026-07-03",
-   "resume": "Les Garennois aident les Garennois. Avec « Un jour, une heure, une minute », la Ville propose à des personnes bénévoles de donner un peu de leur temps pour rendre des petits services ; donner un jour…",
-   "image": "https://www.lagarennecolombes.fr/image/Vignette_1j1h1m.png",
-   "lien": "https://www.lagarennecolombes.fr/index.php/Actualites?idpage=10005&idmetacontenu=12832&iddossiercontenu=33"
   }
  ],
  "agenda": [
